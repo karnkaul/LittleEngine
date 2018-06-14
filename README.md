@@ -23,4 +23,6 @@ In the very least, it is desired for the engine to be capable of the following:
 1. Microsoft Visual Studio 15 (2017)
 2. Windows 10 SDK
 
-If you would like to use another version of SFML, you'll need to fork and replace the corresponding libraries. 
+Unzip the SFML libraries (in /lib_x86 and /lib_x64) before linking.
+
+If you would like to use another version of SFML and/or another IDE/compiler(/OS), you'll need to get the corresponding libraries from SFML's website, and set up your project to include the SFML headers and downloaded libraries, before you will be able to build.
