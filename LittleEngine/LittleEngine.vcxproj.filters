@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source\Engine">
+      <UniqueIdentifier>{9cf2c215-85df-45e3-99f9-948ccccc59d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Config">
+      <UniqueIdentifier>{2a3158e8-7a1e-4163-86db-e08089da355c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Entities">
+      <UniqueIdentifier>{fa0d6af0-758d-4a7d-83c0-5b4fbede3aa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\SFMLInterface">
+      <UniqueIdentifier>{51d77dcf-3f4c-45d4-a596-ba84962d4031}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\SFMLInterface\Rendering">
+      <UniqueIdentifier>{ca83ac04-101b-47ef-a66c-886f9299e5a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Utils">
+      <UniqueIdentifier>{8ea3e943-97e5-49b1-ae8d-d3c8359d79d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Levels">
+      <UniqueIdentifier>{78895023-a746-4450-8fe4-26abedf8bd7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Logger">
+      <UniqueIdentifier>{c26bc2b8-8754-43bf-ba5f-97d070f42291}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Components">
+      <UniqueIdentifier>{3ec12c58-fbcf-4835-a1f4-dc5c01406f7d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Actor.h">
+      <Filter>Source\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\InputHandler.h">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\WindowController.h">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Rendering\Renderer.h">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Rendering\RenderFactory.h">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Rendering\RenderParams.h">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Rendering\ShapeRenderer.h">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Rendering\SpriteRenderer.h">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utils\FileRW.h">
+      <Filter>Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utils\Fixed.h">
+      <Filter>Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utils\PropRW.h">
+      <Filter>Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utils\Transform.h">
+      <Filter>Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utils\Vector2.h">
+      <Filter>Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Assets.h">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Rendering\TextRenderer.h">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Levels\Level.h">
+      <Filter>Source\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Engine.h">
+      <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\EngineCommands.h">
+      <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Object.h">
+      <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\World.h">
+      <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Config\EngineConfig.h">
+      <Filter>Source\Engine\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Levels\LevelManager.h">
+      <Filter>Source\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Logger\Logger.h">
+      <Filter>Source\Engine\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Levels\BootLevel.h">
+      <Filter>Source\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Levels\TestLevel.h">
+      <Filter>Source\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\GameClock.h">
+      <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\SystemClock.h">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Logger\FileLogger.h">
+      <Filter>Source\Engine\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Components\Component.h">
+      <Filter>Source\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Components\RenderComponent.h">
+      <Filter>Source\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Components\ControllerComponent.h">
+      <Filter>Source\Components</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Entities\Actor.cpp">
+      <Filter>Source\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\InputHandler.cpp">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\WindowController.cpp">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Rendering\Renderer.cpp">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Rendering\RenderParams.cpp">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Rendering\ShapeRenderer.cpp">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Rendering\SpriteRenderer.cpp">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\FileRW.cpp">
+      <Filter>Source\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\Fixed.cpp">
+      <Filter>Source\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\PropRW.cpp">
+      <Filter>Source\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\Transform.cpp">
+      <Filter>Source\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\Vector2.cpp">
+      <Filter>Source\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Assets.cpp">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Rendering\TextRenderer.cpp">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Levels\Level.cpp">
+      <Filter>Source\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LittleEngine.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Engine.cpp">
+      <Filter>Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\EngineCommands.cpp">
+      <Filter>Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\World.cpp">
+      <Filter>Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Config\EngineConfig.cpp">
+      <Filter>Source\Engine\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Source\Levels\LevelManager.cpp">
+      <Filter>Source\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Logger\Logger.cpp">
+      <Filter>Source\Engine\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Levels\BootLevel.cpp">
+      <Filter>Source\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Levels\TestLevel.cpp">
+      <Filter>Source\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\GameClock.cpp">
+      <Filter>Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\SystemClock.cpp">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Logger\FileLogger.cpp">
+      <Filter>Source\Engine\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\Component.cpp">
+      <Filter>Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\RenderComponent.cpp">
+      <Filter>Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\ControllerComponent.cpp">
+      <Filter>Source\Components</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
