@@ -178,7 +178,7 @@
     <ClInclude Include="Source\Levels\TestLevel.h" />
     <ClInclude Include="Source\SFMLInterface\Assets.h" />
     <ClInclude Include="Source\SFMLInterface\SystemClock.h" />
-    <ClInclude Include="Source\SFMLInterface\InputHandler.h" />
+    <ClInclude Include="Source\SFMLInterface\Input.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\Renderer.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\RenderFactory.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\RenderParams.h" />
@@ -212,8 +212,9 @@
     <ClCompile Include="Source\Levels\TestLevel.cpp" />
     <ClCompile Include="Source\LittleEngine.cpp" />
     <ClCompile Include="Source\SFMLInterface\Assets.cpp" />
+    <ClCompile Include="Source\SFMLInterface\Rendering\RenderFactory.cpp" />
     <ClCompile Include="Source\SFMLInterface\SystemClock.cpp" />
-    <ClCompile Include="Source\SFMLInterface\InputHandler.cpp" />
+    <ClCompile Include="Source\SFMLInterface\Input.cpp" />
     <ClCompile Include="Source\SFMLInterface\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\SFMLInterface\Rendering\RenderParams.cpp" />
     <ClCompile Include="Source\SFMLInterface\Rendering\ShapeRenderer.cpp" />

@@ -6,7 +6,7 @@
 #include "Utils/Vector2.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
-#include "SFMLInterface/InputHandler.h"
+#include "SFMLInterface/Input.h"
 #include "SFMLInterface/Assets.h"
 #include "Entities/Actor.h"
 

@@ -4,7 +4,7 @@
 #include "Entities/Actor.h"
 #include "Engine/Logger/Logger.h"
 #include "Utils/Transform.h"
-#include "SFMLInterface/InputHandler.h"
+#include "SFMLInterface/Input.h"
 #include "Levels/Level.h"
 
 namespace Game {

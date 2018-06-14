@@ -6,9 +6,10 @@
 #include "Entities/Actor.h"
 #include "Components/RenderComponent.h"
 #include "Components/ControllerComponent.h"
-#include "SFMLInterface/InputHandler.h"
+#include "SFMLInterface/Input.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 #include "SFMLInterface/Rendering/RenderFactory.h"
+#include "SFMLInterface/Rendering/TextRenderer.h"
 #include "SFMLInterface/Rendering/ShapeRenderer.h"
 #include "SFMLInterface/Assets.h"
 

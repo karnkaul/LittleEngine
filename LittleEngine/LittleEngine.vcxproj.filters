@@ -51,9 +51,6 @@
     <ClInclude Include="Source\Entities\Actor.h">
       <Filter>Source\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SFMLInterface\InputHandler.h">
-      <Filter>Source\SFMLInterface</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SFMLInterface\WindowController.h">
       <Filter>Source\SFMLInterface</Filter>
     </ClInclude>
@@ -141,13 +138,13 @@
     <ClInclude Include="Source\Components\ControllerComponent.h">
       <Filter>Source\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Input.h">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
       <Filter>Source\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SFMLInterface\InputHandler.cpp">
-      <Filter>Source\SFMLInterface</Filter>
     </ClCompile>
     <ClCompile Include="Source\SFMLInterface\WindowController.cpp">
       <Filter>Source\SFMLInterface</Filter>
@@ -233,6 +230,12 @@
     </ClCompile>
     <ClCompile Include="Source\Components\ControllerComponent.cpp">
       <Filter>Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Rendering\RenderFactory.cpp">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Input.cpp">
+      <Filter>Source\SFMLInterface</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

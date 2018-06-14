@@ -7,6 +7,9 @@
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Rendering/RenderFactory.h"
 #include "SFMLInterface/Rendering/Renderer.h"
+#include "SFMLInterface/Rendering/ShapeRenderer.h"
+#include "SFMLInterface/Rendering/SpriteRenderer.h"
+#include "SFMLInterface/Rendering/TextRenderer.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 
 namespace Game {

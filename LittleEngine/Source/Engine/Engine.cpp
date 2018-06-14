@@ -11,7 +11,7 @@
 #include "GameClock.h"
 
 #include "SFMLInterface/Assets.h"
-#include "SFMLInterface/InputHandler.h"
+#include "SFMLInterface/Input.h"
 #include "SFMLInterface/WindowController.h"
 #include "SFMLInterface/Rendering/Renderer.h"
 #include "SFMLInterface/Rendering/RenderParams.h"

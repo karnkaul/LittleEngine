@@ -1,7 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "Utils/Fixed.h"
-#include "InputHandler.h"
+#include "Input.h"
 #include "SystemClock.h"
 
 namespace Game {

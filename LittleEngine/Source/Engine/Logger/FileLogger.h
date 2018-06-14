@@ -22,7 +22,6 @@ namespace Game {
 
 		FileLogger(const FileLogger&) = delete;
 		FileLogger& operator=(const FileLogger&) = delete;
-		std::thread Spawn();
 		std::thread worker;
 		void AsyncWrite();
 	};
