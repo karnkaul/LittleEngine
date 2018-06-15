@@ -1,7 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "Utils/Fixed.h"
-#include "InputHandler.h"
+#include "Input.h"
 #include "SystemClock.h"
 
 namespace Game {
@@ -34,12 +34,12 @@ namespace Game {
 		void Display();
 		// Destroy SFML RenderWindow
 		void CloseWindow();
-		const InputHandler& GetInputHandler() const;
+		const Input& GetInputHandler() const;
 	private:
 		WindowController(const WindowController&) = delete;
 		WindowController& operator=(const WindowController&) = delete;
 		std::unique_ptr<sf::RenderWindow> window;
-		InputHandler inputHandler;
+		Input inputHandler;
 		bool _focus = false;
 	};
 }

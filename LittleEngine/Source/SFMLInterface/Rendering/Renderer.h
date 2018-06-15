@@ -5,7 +5,7 @@
 
 namespace Game {
 	// Wrapper class for SFML Color
-	class Colour {
+	struct Colour {
 	public:
 		Fixed r;
 		Fixed g;

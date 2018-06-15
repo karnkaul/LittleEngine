@@ -167,6 +167,7 @@
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\EngineCommands.h" />
     <ClInclude Include="Source\Engine\GameClock.h" />
+    <ClInclude Include="Source\Engine\Input\InputHandler.h" />
     <ClInclude Include="Source\Engine\Logger\FileLogger.h" />
     <ClInclude Include="Source\Engine\Logger\Logger.h" />
     <ClInclude Include="Source\Engine\Object.h" />
@@ -177,8 +178,9 @@
     <ClInclude Include="Source\Levels\LevelManager.h" />
     <ClInclude Include="Source\Levels\TestLevel.h" />
     <ClInclude Include="Source\SFMLInterface\Assets.h" />
+    <ClInclude Include="SOURCE\SFMLINTERFACE\INPUTHANDLER.H" />
     <ClInclude Include="Source\SFMLInterface\SystemClock.h" />
-    <ClInclude Include="Source\SFMLInterface\InputHandler.h" />
+    <ClInclude Include="Source\SFMLInterface\Input.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\Renderer.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\RenderFactory.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\RenderParams.h" />
@@ -202,6 +204,7 @@
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\EngineCommands.cpp" />
     <ClCompile Include="Source\Engine\GameClock.cpp" />
+    <ClCompile Include="Source\Engine\Input\InputHandler.cpp" />
     <ClCompile Include="Source\Engine\Logger\FileLogger.cpp" />
     <ClCompile Include="Source\Engine\Logger\Logger.cpp" />
     <ClCompile Include="Source\Engine\World.cpp" />
@@ -212,8 +215,9 @@
     <ClCompile Include="Source\Levels\TestLevel.cpp" />
     <ClCompile Include="Source\LittleEngine.cpp" />
     <ClCompile Include="Source\SFMLInterface\Assets.cpp" />
+    <ClCompile Include="Source\SFMLInterface\Rendering\RenderFactory.cpp" />
     <ClCompile Include="Source\SFMLInterface\SystemClock.cpp" />
-    <ClCompile Include="Source\SFMLInterface\InputHandler.cpp" />
+    <ClCompile Include="Source\SFMLInterface\Input.cpp" />
     <ClCompile Include="Source\SFMLInterface\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\SFMLInterface\Rendering\RenderParams.cpp" />
     <ClCompile Include="Source\SFMLInterface\Rendering\ShapeRenderer.cpp" />

@@ -40,7 +40,8 @@ namespace Game {
 			static_assert(std::is_base_of<Component, T>::value, "T must derive from Component: check Output window for erroneous call");
 			for (auto& component : components) {
 				Component* c = component.get();
-				return dynamic_cast<T*>(c);
+				T* t = dynamic_cast<T*>(c);
+				if (t != nullptr) return t;
 			}
 			return nullptr;
 		}

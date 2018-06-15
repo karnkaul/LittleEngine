@@ -40,6 +40,9 @@
     <Filter Include="Source\Components">
       <UniqueIdentifier>{3ec12c58-fbcf-4835-a1f4-dc5c01406f7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\Input">
+      <UniqueIdentifier>{6d05a15d-504c-4e4c-aacc-9800c6ec9333}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -50,9 +53,6 @@
     </ClInclude>
     <ClInclude Include="Source\Entities\Actor.h">
       <Filter>Source\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SFMLInterface\InputHandler.h">
-      <Filter>Source\SFMLInterface</Filter>
     </ClInclude>
     <ClInclude Include="Source\SFMLInterface\WindowController.h">
       <Filter>Source\SFMLInterface</Filter>
@@ -141,13 +141,19 @@
     <ClInclude Include="Source\Components\ControllerComponent.h">
       <Filter>Source\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Input.h">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Input\InputHandler.h">
+      <Filter>Source\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="SOURCE\SFMLINTERFACE\INPUTHANDLER.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
       <Filter>Source\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SFMLInterface\InputHandler.cpp">
-      <Filter>Source\SFMLInterface</Filter>
     </ClCompile>
     <ClCompile Include="Source\SFMLInterface\WindowController.cpp">
       <Filter>Source\SFMLInterface</Filter>
@@ -233,6 +239,15 @@
     </ClCompile>
     <ClCompile Include="Source\Components\ControllerComponent.cpp">
       <Filter>Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Rendering\RenderFactory.cpp">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Input.cpp">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Input\InputHandler.cpp">
+      <Filter>Source\Engine\Input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

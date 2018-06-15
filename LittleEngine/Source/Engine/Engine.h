@@ -13,13 +13,14 @@ namespace Consts {
 namespace Game {
 	class Actor;
 	class World;
-	class InputHandler;
+	class Input;
 	class EngineConfig;
 	class AssetManager;
 	class Level;
 	class LevelManager;
 	class WindowController;
 	class EngineCommand;
+	class InputHandler;
 
 	enum class ExitCode { 
 		OK,
@@ -42,7 +43,9 @@ namespace Game {
 		// Returns exit code
 		int Run();
 
-		const InputHandler& GetInputHandler() const;
+		// TODO: Remove SFML Input
+		const Input& GetInput() const;
+		InputHandler& GetInputHandler() const;
 		const World& GetWorld() const;
 		AssetManager& GetAssetManager() const;
 		void LoadLevel(int id);
@@ -53,6 +56,7 @@ namespace Game {
 		std::unique_ptr<EngineConfig> config;
 		std::unique_ptr<World> world;
 		std::unique_ptr<WindowController> windowController;
+		std::unique_ptr<InputHandler> inputHandler;
 		std::vector<std::unique_ptr<EngineCommand> > commands;
 		SystemClock clock;
 		ExitCode exitCode = ExitCode::OK;

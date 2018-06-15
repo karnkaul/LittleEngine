@@ -6,7 +6,8 @@
 #include "Utils/Vector2.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
-#include "SFMLInterface/InputHandler.h"
+#include "Engine/Input/InputHandler.h"
+#include "SFMLInterface/Input.h"
 #include "SFMLInterface/Assets.h"
 #include "Entities/Actor.h"
 
@@ -63,7 +64,11 @@ namespace Game {
 		actor->_destroyed = true;
 	}
 
-	const InputHandler& Level::GetInputHandler() const {
+	const Input& Level::GetInput() const {
+		return engine->GetInput();
+	}
+
+	InputHandler & Level::GetInputHandler() const {
 		return engine->GetInputHandler();
 	}
 

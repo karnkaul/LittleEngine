@@ -9,7 +9,10 @@ namespace Game {
 		file = std::make_unique<FileRW>(logFilePath);
 		if (clearFile) file->Write("");
 		std::cout << "FileLogger created and writing to [ " << logFilePath << "] (console only)" << std::endl;
-		worker = std::move(Spawn());
+		// std::thread does not work directly with class methods, so using a lambda that calls it
+		worker = std::thread(
+			[this] { AsyncWrite(); }
+		);
 	}
 	
 	FileLogger::~FileLogger() {
@@ -30,12 +33,6 @@ namespace Game {
 		buffer.push_back(newLine);
 	}
 
-	std::thread FileLogger::Spawn() {
-		return std::thread(
-			[this] { AsyncWrite(); }
-		);
-	}
-
 	void FileLogger::AsyncWrite() {
 		while (writing) {
 			if (!pauseWriting) {
@@ -47,12 +44,8 @@ namespace Game {
 				file->Append(flush);
 				buffer.clear();
 			}
-			int ms = 0;
-			while (ms++ < 1000) {
+			for (int ms = 0; ms++ < 1000 && writing; ++ms) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(1));
-				if (!writing) {
-					break;
-				}
 			}
 		}
 	}

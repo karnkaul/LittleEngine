@@ -5,7 +5,7 @@
 #include "Engine/Logger/Logger.h"
 #include "Entities/Actor.h"
 #include "Components/RenderComponent.h"
-#include "SFMLInterface/InputHandler.h"
+#include "SFMLInterface/Input.h"
 #include "SFMLInterface/Rendering/Renderer.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 #include "SFMLInterface/Rendering/RenderFactory.h"
@@ -28,7 +28,7 @@ namespace Game {
 
 	void BootLevel::Tick(Fixed deltaTime) {
 		Level::Tick(deltaTime);
-		if (GetInputHandler().IsKeyPressed(KeyCode::Enter)) {
+		if (GetInput().IsKeyPressed(KeyCode::Enter)) {
 			engine->LoadLevel(1);
 		}
 

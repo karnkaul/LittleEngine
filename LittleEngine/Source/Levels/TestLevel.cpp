@@ -6,9 +6,10 @@
 #include "Entities/Actor.h"
 #include "Components/RenderComponent.h"
 #include "Components/ControllerComponent.h"
-#include "SFMLInterface/InputHandler.h"
+#include "SFMLInterface/Input.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 #include "SFMLInterface/Rendering/RenderFactory.h"
+#include "SFMLInterface/Rendering/TextRenderer.h"
 #include "SFMLInterface/Rendering/ShapeRenderer.h"
 #include "SFMLInterface/Assets.h"
 
@@ -43,7 +44,7 @@ namespace Game {
 		if (!actors.empty()) {
 			// TODO: TextShape
 			actors[0]->GetTransform()->Rotate(2);
-			KeyState state = level->GetInputHandler().GetKeyState(KeyCode::Space);
+			KeyState state = level->GetInput().GetKeyState(KeyCode::Space);
 			if (!parentSet && state.pressed) {
 				actors[0]->GetTransform()->SetParent(actors[1]->GetTransform(), !state.modifier.control);
 				parentSet = true;
