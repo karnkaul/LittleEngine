@@ -7,9 +7,10 @@ namespace Game {
 	class Engine;
 	class World;
 	class Actor;
-	class InputHandler;
+	class Input;
 	struct RenderParams;
 	class AssetManager;
+	class InputHandler;
 
 	class Level : public Object {
 	public:
@@ -18,7 +19,8 @@ namespace Game {
 		virtual void Tick(Fixed deltaTime);
 		virtual void Render(RenderParams& params);
 		
-		const InputHandler& GetInputHandler() const;
+		const Input& GetInput() const;
+		InputHandler& GetInputHandler() const;
 		int64_t LevelTimeMicroSeconds() const;
 		int LevelTimeMilliSeconds() const;
 		int GameTimeMilliSeconds() const;

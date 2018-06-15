@@ -9,6 +9,7 @@
 #include "Utils/PropRW.h"
 #include "Config/EngineConfig.h"
 #include "GameClock.h"
+#include "Input/InputHandler.h"
 
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Input.h"
@@ -36,6 +37,7 @@ namespace Game {
 			world = std::make_unique<World>(config->GetScreenSize(), config->GetWorldSize());
 			assetManager = std::make_unique<AssetManager>();
 			levelManager = std::make_unique<LevelManager>(*this);
+			inputHandler = std::make_unique<InputHandler>();
 			Logger::Log(*this, "Engine constructed and ready to Run()", Logger::Severity::Debug);
 		}
 		catch (std::bad_alloc e) {
@@ -48,6 +50,7 @@ namespace Game {
 		levelManager = nullptr;
 		assetManager = nullptr;
 		world = nullptr;
+		inputHandler = nullptr;
 		windowController = nullptr;
 		SaveConfig();
 		config = nullptr;
@@ -67,8 +70,12 @@ namespace Game {
 		return (int)exitCode;
 	}
 
-	const InputHandler& Engine::GetInputHandler() const {
+	const Input& Engine::GetInput() const {
 		return windowController->GetInputHandler();
+	}
+
+	InputHandler & Engine::GetInputHandler() const {
+		return *inputHandler;
 	}
 
 	const World& Engine::GetWorld() const {
@@ -107,6 +114,7 @@ namespace Game {
 
 	void Engine::Tick(Fixed deltaTime) {
 		GameClock::Tick(deltaTime);
+		inputHandler->FireInput(windowController->GetInputHandler());
 		levelManager->GetActiveLevel().Tick(deltaTime);
 	}
 

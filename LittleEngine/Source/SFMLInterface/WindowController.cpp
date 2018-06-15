@@ -67,7 +67,7 @@ namespace Game {
 		window->close();
 	}
 
-	const InputHandler& WindowController::GetInputHandler() const {
+	const Input& WindowController::GetInputHandler() const {
 		return inputHandler;
 	}
 }

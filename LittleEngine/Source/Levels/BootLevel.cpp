@@ -28,7 +28,7 @@ namespace Game {
 
 	void BootLevel::Tick(Fixed deltaTime) {
 		Level::Tick(deltaTime);
-		if (GetInputHandler().IsKeyPressed(KeyCode::Enter)) {
+		if (GetInput().IsKeyPressed(KeyCode::Enter)) {
 			engine->LoadLevel(1);
 		}
 

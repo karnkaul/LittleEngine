@@ -40,6 +40,9 @@
     <Filter Include="Source\Components">
       <UniqueIdentifier>{3ec12c58-fbcf-4835-a1f4-dc5c01406f7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\Input">
+      <UniqueIdentifier>{6d05a15d-504c-4e4c-aacc-9800c6ec9333}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -141,6 +144,12 @@
     <ClInclude Include="Source\SFMLInterface\Input.h">
       <Filter>Source\SFMLInterface</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Input\InputHandler.h">
+      <Filter>Source\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="SOURCE\SFMLINTERFACE\INPUTHANDLER.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -236,6 +245,9 @@
     </ClCompile>
     <ClCompile Include="Source\SFMLInterface\Input.cpp">
       <Filter>Source\SFMLInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Input\InputHandler.cpp">
+      <Filter>Source\Engine\Input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

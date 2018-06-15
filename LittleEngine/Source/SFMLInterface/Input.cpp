@@ -46,7 +46,7 @@ namespace Game {
 		return sf::Keyboard::LAlt;
 	}
 
-	KeyState* InputHandler::GetOrCreateKeyState(KeyCode code) {
+	KeyState* Input::GetOrCreateKeyState(KeyCode code) {
 		for (auto & keyState : keyStates) {
 			if (keyState.GetKeyCode() == code) {
 				return &keyState;
@@ -56,7 +56,7 @@ namespace Game {
 		return &keyStates[keyStates.size() - 1];
 	}
 
-	bool InputHandler::IsKeyPressed(KeyCode code) const {
+	bool Input::IsKeyPressed(KeyCode code) const {
 		for (const auto& iter : keyStates) {
 			if (iter.GetKeyCode() == code) {
 				return iter.pressed;
@@ -65,7 +65,7 @@ namespace Game {
 		return false;
 	}
 
-	const KeyState InputHandler::GetKeyState(KeyCode code) const {
+	const KeyState Input::GetKeyState(KeyCode code) const {
 		for (const auto& iter : keyStates) {
 			if (iter.GetKeyCode() == code) {
 				return iter;
@@ -74,7 +74,7 @@ namespace Game {
 		return KeyState(code);
 	}
 
-	const std::vector<KeyState> InputHandler::GetPressed() const {
+	const std::vector<KeyState> Input::GetPressed() const {
 		std::vector<KeyState> pressed;
 		for (const auto& iter : keyStates) {
 			if (iter.pressed) {
@@ -84,14 +84,14 @@ namespace Game {
 		return pressed;
 	}
 
-	void InputHandler::OnKeyDown(const sf::Event::KeyEvent& key) {
+	void Input::OnKeyDown(const sf::Event::KeyEvent& key) {
 		bool newKeyCode = true;
 		KeyState* toModify = GetOrCreateKeyState(Convert(key.code));
 		toModify->modifier = KeyMod(key);
 		toModify->pressed = true;
 	}
 
-	void InputHandler::OnKeyUp(const sf::Event::KeyEvent& key) {
+	void Input::OnKeyUp(const sf::Event::KeyEvent& key) {
 		bool newKeyCode = true;
 		KeyState* toModify = GetOrCreateKeyState(Convert(key.code));
 		toModify->modifier = KeyMod();

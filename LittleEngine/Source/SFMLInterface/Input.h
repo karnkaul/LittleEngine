@@ -24,7 +24,7 @@ namespace Game {
 		KeyMod() : control(false), alt(false), shift(false) {}
 		KeyMod(bool control, bool alt, bool shift) : control(control), alt(alt), shift(shift) {}
 	private:
-		friend class InputHandler;
+		friend class Input;
 		KeyMod(const sf::Event::KeyEvent& event) : control(event.control), alt(event.alt), shift(event.shift) {}
 	};
 
@@ -43,9 +43,9 @@ namespace Game {
 	};
 
 	// Concrete class that a WindowController can update KeyStates to every frame
-	class InputHandler {
+	class Input {
 	public:
-		InputHandler() {
+		Input() {
 			// Pre-defined keys
 			keyStates.emplace_back(KeyState(KeyCode::Left, "Left"));
 			keyStates.emplace_back(KeyState(KeyCode::Right, "Right"));
@@ -65,8 +65,8 @@ namespace Game {
 		const std::vector<KeyState> GetPressed() const;
 		
 	private:
-		InputHandler(const InputHandler&) = delete;
-		InputHandler& operator=(const InputHandler&) = delete;
+		Input(const Input&) = delete;
+		Input& operator=(const Input&) = delete;
 		friend class WindowController;
 		KeyState* GetOrCreateKeyState(KeyCode code);
 		void OnKeyDown(const sf::Event::KeyEvent& key);
