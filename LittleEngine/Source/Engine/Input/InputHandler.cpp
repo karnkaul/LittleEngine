@@ -20,7 +20,7 @@ namespace Game {
 	InputHandler::Token InputHandler::Register(Callback callback, KeyCode keyCode, bool consume) {
 		auto iter = observers.find(keyCode);
 		auto ptr = std::make_shared<Callback>(callback);
-		int size = 0;
+		size_t size = 0;
 		if (iter != observers.end()) {
 			auto& vec = iter->second;
 			vec.push_back(Observer(ptr, keyCode, consume));
@@ -35,25 +35,6 @@ namespace Game {
 		Logger::Log(*this, "Registered new callback for KeyCode " + std::to_string((int)keyCode) + " Total: " + std::to_string(size));
 		return ptr;
 	}
-
-	//void InputHandler::Unregister(Callback callback, KeyCode keyCode) {
-	//	auto iter = observers.find(keyCode);
-	//	if (iter != observers.end()) {
-	//		auto vec = iter->second;
-	//		int before = vec.size();
-	//		vec.erase(std::remove_if(vec.begin(), vec.end(), 
-	//			[callback, keyCode](Observer ob) { 
-	//				return &ob.callback == &callback && keyCode == ob.keyCode;
-	//			}
-	//		), vec.end());
-	//		if (vec.size() - 1 != before) {
-	//			Logger::Log(*this, "Error in unregistering callback for KeyCode " + std::to_string((int)keyCode) + " Before: " + std::to_string(before) + " After: " + std::to_string(vec.size()), Logger::Severity::Warning);
-	//		}
-	//		else {
-	//			Logger::Log(*this, "Unregistered callback for KeyCode " + std::to_string((int)keyCode) + " Total: " + std::to_string(vec.size()));
-	//		}
-	//	}
-	//}
 
 	void InputHandler::FireInput(const Input & input) {
 		std::vector<KeyState> pressed = input.GetPressed();

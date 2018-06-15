@@ -15,7 +15,11 @@ namespace Game {
 
 	private:
 		std::vector<InputHandler::Token> tokens;
+		Fixed prevDeltaTime = 0;
+
 		void OnLeftPressed(KeyState keyState);
-		void OnKeyPressed(const KeyState & state, Fixed deltaTime);
+		void OnRightPressed(KeyState keyState);
+		void OnUpPressed(KeyState keyState);
+		void OnDownPressed(KeyState keyState);
 	};
 }

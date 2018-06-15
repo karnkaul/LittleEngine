@@ -15,8 +15,8 @@ namespace Game {
 		~InputHandler();
 		using Callback = std::function<void(const KeyState&)>;
 		using Token = std::shared_ptr<Callback>;
+		// Store token to keep callback registered; discard it to unregister
 		Token Register(Callback callback, KeyCode keyCode, bool consume = false);
-		//void Unregister(Callback callback, KeyCode keyCode);
 	private:
 		struct Observer {
 			std::weak_ptr<Callback> callback;
@@ -25,6 +25,7 @@ namespace Game {
 
 			Observer(std::weak_ptr<Callback> callback, KeyCode keyCode, bool consume);
 		};
+
 		friend class Engine;
 		std::unordered_map<KeyCode, std::vector<Observer> > observers;
 
