@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
 #include <unordered_map>
-#include <functional>
 #include "Engine/Object.h"
+#include "Utils/Delegate.hpp"
 
 namespace Game {
 	struct KeyState;
@@ -13,22 +13,20 @@ namespace Game {
 	public:
 		InputHandler();
 		~InputHandler();
-		using Callback = std::function<void(const KeyState&)>;
-		using Token = std::shared_ptr<Callback>;
 		// Store token to keep callback registered; discard it to unregister
-		Token Register(Callback callback, KeyCode keyCode, bool consume = false);
+		Delegate<const KeyState&>::Token Register(Delegate<const KeyState&>::Callback callback, KeyCode keyCode, bool consume = false);
 	private:
 		struct Observer {
-			std::weak_ptr<Callback> callback;
-			KeyCode keyCode;
+			Delegate<const KeyState&> callback;
 			bool consume;
 
-			Observer(std::weak_ptr<Callback> callback, KeyCode keyCode, bool consume);
+			Observer(Delegate<const KeyState&> callback, bool consume);
 		};
 
 		friend class Engine;
 		std::unordered_map<KeyCode, std::vector<Observer> > observers;
 
+		void Cleanup(std::vector<Observer>& vec);
 		void FireInput(const Input& input);
 	};
 }

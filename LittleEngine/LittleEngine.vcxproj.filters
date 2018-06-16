@@ -144,11 +144,11 @@
     <ClInclude Include="Source\SFMLInterface\Input.h">
       <Filter>Source\SFMLInterface</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Utils\Delegate.hpp">
+      <Filter>Source\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Engine\Input\InputHandler.h">
       <Filter>Source\Engine\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="SOURCE\SFMLINTERFACE\INPUTHANDLER.H">
-      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

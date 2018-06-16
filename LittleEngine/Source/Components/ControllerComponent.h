@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "Component.h"
-#include "Engine/Input/InputHandler.h"
+#include "Utils/Delegate.hpp"
 
 namespace Game {
 	class Actor;
@@ -14,12 +14,12 @@ namespace Game {
 		virtual void Tick(Fixed deltaTime) override;
 
 	private:
-		std::vector<InputHandler::Token> tokens;
+		std::vector<Delegate<const KeyState&>::Token> tokens;
 		Fixed prevDeltaTime = 0;
 
-		void OnLeftPressed(KeyState keyState);
-		void OnRightPressed(KeyState keyState);
-		void OnUpPressed(KeyState keyState);
-		void OnDownPressed(KeyState keyState);
+		void OnLeftPressed(const KeyState& keyState);
+		void OnRightPressed(const KeyState& keyState);
+		void OnUpPressed(const KeyState& keyState);
+		void OnDownPressed(const KeyState& keyState);
 	};
 }

@@ -71,21 +71,21 @@ namespace Game {
 		}
 	}
 
-	void ControllerComponent::OnLeftPressed(KeyState keyState) {
+	void ControllerComponent::OnLeftPressed(const KeyState& keyState) {
 		if (keyState.modifier.control) GetActor().GetTransform()->Rotate(prevDeltaTime / 3);
 		else GetActor().GetTransform()->localPosition.x -= prevDeltaTime;
 	}
 
-	void ControllerComponent::OnRightPressed(KeyState keyState) {
+	void ControllerComponent::OnRightPressed(const KeyState& keyState) {
 		if (keyState.modifier.control) GetActor().GetTransform()->Rotate(-prevDeltaTime/ 3);
 		else GetActor().GetTransform()->localPosition.x += prevDeltaTime;
 	}
 
-	void ControllerComponent::OnUpPressed(KeyState keyState) {
+	void ControllerComponent::OnUpPressed(const KeyState& keyState) {
 		GetActor().GetTransform()->localPosition.y += prevDeltaTime;
 	}
 
-	void ControllerComponent::OnDownPressed(KeyState keyState) {
+	void ControllerComponent::OnDownPressed(const KeyState& keyState) {
 		GetActor().GetTransform()->localPosition.y -= prevDeltaTime;
 	}
 }

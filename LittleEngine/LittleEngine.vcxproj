@@ -178,7 +178,6 @@
     <ClInclude Include="Source\Levels\LevelManager.h" />
     <ClInclude Include="Source\Levels\TestLevel.h" />
     <ClInclude Include="Source\SFMLInterface\Assets.h" />
-    <ClInclude Include="SOURCE\SFMLINTERFACE\INPUTHANDLER.H" />
     <ClInclude Include="Source\SFMLInterface\SystemClock.h" />
     <ClInclude Include="Source\SFMLInterface\Input.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\Renderer.h" />
@@ -188,6 +187,7 @@
     <ClInclude Include="Source\SFMLInterface\Rendering\SpriteRenderer.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\TextRenderer.h" />
     <ClInclude Include="Source\SFMLInterface\WindowController.h" />
+    <ClInclude Include="Source\Utils\Delegate.hpp" />
     <ClInclude Include="Source\Utils\FileRW.h" />
     <ClInclude Include="Source\Utils\Fixed.h" />
     <ClInclude Include="Source\Utils\PropRW.h" />
