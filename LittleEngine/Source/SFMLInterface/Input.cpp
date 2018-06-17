@@ -52,7 +52,7 @@ namespace Game {
 				return &keyState;
 			}
 		}
-		keyStates.emplace_back(KeyState(code));
+		keyStates.emplace_back(code);
 		return &keyStates[keyStates.size() - 1];
 	}
 

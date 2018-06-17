@@ -47,14 +47,14 @@ namespace Game {
 	public:
 		Input() {
 			// Pre-defined keys
-			keyStates.emplace_back(KeyState(KeyCode::Left, "Left"));
-			keyStates.emplace_back(KeyState(KeyCode::Right, "Right"));
-			keyStates.emplace_back(KeyState(KeyCode::Up, "Up"));
-			keyStates.emplace_back(KeyState(KeyCode::Down, "Down"));
-			keyStates.emplace_back(KeyState(KeyCode::Space, "Space"));
-			keyStates.emplace_back(KeyState(KeyCode::Enter, "Enter"));
-			keyStates.emplace_back(KeyState(KeyCode::Escape, "Escape"));
-			keyStates.emplace_back(KeyState(KeyCode::Tab, "Tab"));
+			keyStates.emplace_back(KeyCode::Left, "Left");
+			keyStates.emplace_back(KeyCode::Right, "Right");
+			keyStates.emplace_back(KeyCode::Up, "Up");
+			keyStates.emplace_back(KeyCode::Down, "Down");
+			keyStates.emplace_back(KeyCode::Space, "Space");
+			keyStates.emplace_back(KeyCode::Enter, "Enter");
+			keyStates.emplace_back(KeyCode::Escape, "Escape");
+			keyStates.emplace_back(KeyCode::Tab, "Tab");
 		}
 
 		// Call this to check if a Key was pressed in this frame
