@@ -2,6 +2,8 @@
 #include "Input.h"
 
 namespace Game {
+	const KeyMod KeyMod::Default = KeyMod();
+
 	KeyCode Convert(const sf::Keyboard::Key& code) {
 		switch (code) {
 		case sf::Keyboard::Left:
@@ -20,6 +22,14 @@ namespace Game {
 			return KeyCode::Escape;
 		case sf::Keyboard::Tab:
 			return KeyCode::Tab;
+		case sf::Keyboard::W:
+			return KeyCode::W;
+		case sf::Keyboard::A:
+			return KeyCode::A;
+		case sf::Keyboard::S:
+			return KeyCode::S;
+		case sf::Keyboard::D:
+			return KeyCode::D;
 		}
 		return KeyCode::Invalid;
 	}
@@ -34,6 +44,14 @@ namespace Game {
 			return sf::Keyboard::Up;
 		case KeyCode::Down:
 			return sf::Keyboard::Down;
+		case KeyCode::W:
+			return sf::Keyboard::W;
+		case KeyCode::A:
+			return sf::Keyboard::A;
+		case KeyCode::S:
+			return sf::Keyboard::S;
+		case KeyCode::D:
+			return sf::Keyboard::D;
 		case KeyCode::Space:
 			return sf::Keyboard::Space;
 		case KeyCode::Enter:

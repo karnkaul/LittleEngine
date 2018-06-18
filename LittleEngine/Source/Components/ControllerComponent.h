@@ -2,6 +2,7 @@
 #include <vector>
 #include "Component.h"
 #include "Utils/Delegate.hpp"
+#include "Engine/Input/InputHandler.h"
 
 namespace Game {
 	class Actor;
@@ -14,12 +15,14 @@ namespace Game {
 		virtual void Tick(Fixed deltaTime) override;
 
 	private:
-		std::vector<Delegate<const KeyState&>::Token> tokens;
+		std::vector<OnInput::Token> tokens;
 		Fixed prevDeltaTime = 0;
 
-		void OnLeftPressed(const KeyState& keyState);
-		void OnRightPressed(const KeyState& keyState);
-		void OnUpPressed(const KeyState& keyState);
-		void OnDownPressed(const KeyState& keyState);
+		void OnMoveLeft();
+		void OnRotateLeft();
+		void OnMoveRight();
+		void OnRotateRight();
+		void OnMoveUp();
+		void OnMoveDown();
 	};
 }

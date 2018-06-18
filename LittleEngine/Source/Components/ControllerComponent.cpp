@@ -12,11 +12,11 @@
 #include "SFMLInterface/Input.h"
 #include "Levels/Level.h"
 
-void Test(const Game::KeyState& keyState) {
+void Test() {
 	Game::Logger::Log("Another left detected!");
 }
 
-void Test2(const Game::KeyState& keyState) {
+void Test2() {
 	Game::Logger::Log("Consuming left detected! (no other Lefts should be triggered)");
 }
 
@@ -38,14 +38,16 @@ void ClampPosition(Vector2& position, const Vector2& worldBoundsX, const Vector2
 namespace Game {
 	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent") {
 		InputHandler& inputHandler = actor.GetActiveLevel().GetInputHandler();
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnLeftPressed, this, std::placeholders::_1), KeyCode::Left));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRightPressed, this, std::placeholders::_1), KeyCode::Right));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnUpPressed, this, std::placeholders::_1), KeyCode::Up));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnDownPressed, this, std::placeholders::_1), KeyCode::Down));
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveLeft, this), GameCommand::MoveLeft));
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRotateLeft, this), GameCommand::RotateLeft));
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveRight, this), GameCommand::MoveRight));
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRotateRight, this), GameCommand::RotateRight));
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveUp, this), GameCommand::MoveUp));
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveDown, this), GameCommand::MoveDown));
 		
 		// Tests
-		tokens.push_back(inputHandler.Register(&Test, KeyCode::Left));
-		tokens.push_back(inputHandler.Register(&Test2, KeyCode::Left, true));
+		tokens.push_back(inputHandler.Register(&Test, GameCommand::MoveLeft));
+		tokens.push_back(inputHandler.Register(&Test2, GameCommand::MoveLeft, true));
 	}
 
 	ControllerComponent::~ControllerComponent() {
@@ -71,21 +73,27 @@ namespace Game {
 		}
 	}
 
-	void ControllerComponent::OnLeftPressed(const KeyState& keyState) {
-		if (keyState.modifier.control) GetActor().GetTransform()->Rotate(prevDeltaTime / 3);
-		else GetActor().GetTransform()->localPosition.x -= prevDeltaTime;
+	void ControllerComponent::OnMoveLeft() {
+		GetActor().GetTransform()->localPosition.x -= prevDeltaTime;
 	}
 
-	void ControllerComponent::OnRightPressed(const KeyState& keyState) {
-		if (keyState.modifier.control) GetActor().GetTransform()->Rotate(-prevDeltaTime/ 3);
-		else GetActor().GetTransform()->localPosition.x += prevDeltaTime;
+	void ControllerComponent::OnRotateLeft() {
+		GetActor().GetTransform()->Rotate(prevDeltaTime / 3);
 	}
 
-	void ControllerComponent::OnUpPressed(const KeyState& keyState) {
+	void ControllerComponent::OnMoveRight() {
+		GetActor().GetTransform()->localPosition.x += prevDeltaTime;
+	}
+
+	void ControllerComponent::OnRotateRight() {
+		GetActor().GetTransform()->Rotate(-prevDeltaTime / 3);
+	}
+
+	void ControllerComponent::OnMoveUp() {
 		GetActor().GetTransform()->localPosition.y += prevDeltaTime;
 	}
 
-	void ControllerComponent::OnDownPressed(const KeyState& keyState) {
+	void ControllerComponent::OnMoveDown() {
 		GetActor().GetTransform()->localPosition.y -= prevDeltaTime;
 	}
 }

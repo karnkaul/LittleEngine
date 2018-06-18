@@ -1,5 +1,6 @@
 #pragma once
 #include "Level.h"
+#include "Engine/Input/InputHandler.h"
 
 namespace Game {
 	class Engine;
@@ -13,6 +14,9 @@ namespace Game {
 	private:
 		TextRenderer* logoRenderer;
 		std::shared_ptr<Actor> logo;
+		OnInput::Token inputToken;
+
 		void LoadAssets();
+		void OnLoadNextLevel();
 	};
 }
