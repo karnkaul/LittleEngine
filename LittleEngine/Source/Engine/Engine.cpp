@@ -114,7 +114,7 @@ namespace Game {
 
 	void Engine::Tick(Fixed deltaTime) {
 		GameClock::Tick(deltaTime);
-		inputHandler->FireInput(windowController->GetInputHandler());
+		inputHandler->FireInput(windowController->GetInputHandler().GetPressed());
 		levelManager->GetActiveLevel().Tick(deltaTime);
 	}
 

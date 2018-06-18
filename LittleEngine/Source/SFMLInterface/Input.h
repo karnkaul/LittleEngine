@@ -10,6 +10,10 @@ namespace Game {
 		Right,
 		Up,
 		Down,
+		W,
+		A,
+		S,
+		D,
 		Space,
 		Enter,
 		Escape,
@@ -23,6 +27,7 @@ namespace Game {
 		bool shift;
 		KeyMod() : control(false), alt(false), shift(false) {}
 		KeyMod(bool control, bool alt, bool shift) : control(control), alt(alt), shift(shift) {}
+		const static KeyMod Default;
 	private:
 		friend class Input;
 		KeyMod(const sf::Event::KeyEvent& event) : control(event.control), alt(event.alt), shift(event.shift) {}
@@ -47,14 +52,18 @@ namespace Game {
 	public:
 		Input() {
 			// Pre-defined keys
-			keyStates.emplace_back(KeyState(KeyCode::Left, "Left"));
-			keyStates.emplace_back(KeyState(KeyCode::Right, "Right"));
-			keyStates.emplace_back(KeyState(KeyCode::Up, "Up"));
-			keyStates.emplace_back(KeyState(KeyCode::Down, "Down"));
-			keyStates.emplace_back(KeyState(KeyCode::Space, "Space"));
-			keyStates.emplace_back(KeyState(KeyCode::Enter, "Enter"));
-			keyStates.emplace_back(KeyState(KeyCode::Escape, "Escape"));
-			keyStates.emplace_back(KeyState(KeyCode::Tab, "Tab"));
+			keyStates.emplace_back(KeyCode::Left, "Left");
+			keyStates.emplace_back(KeyCode::Right, "Right");
+			keyStates.emplace_back(KeyCode::Up, "Up");
+			keyStates.emplace_back(KeyCode::Down, "Down");
+			keyStates.emplace_back(KeyCode::W, "W");
+			keyStates.emplace_back(KeyCode::A, "A");
+			keyStates.emplace_back(KeyCode::S, "S");
+			keyStates.emplace_back(KeyCode::D, "D");
+			keyStates.emplace_back(KeyCode::Space, "Space");
+			keyStates.emplace_back(KeyCode::Enter, "Enter");
+			keyStates.emplace_back(KeyCode::Escape, "Escape");
+			keyStates.emplace_back(KeyCode::Tab, "Tab");
 		}
 
 		// Call this to check if a Key was pressed in this frame

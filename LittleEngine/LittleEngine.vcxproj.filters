@@ -144,11 +144,14 @@
     <ClInclude Include="Source\SFMLInterface\Input.h">
       <Filter>Source\SFMLInterface</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Utils\Delegate.hpp">
+      <Filter>Source\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Engine\Input\InputHandler.h">
       <Filter>Source\Engine\Input</Filter>
     </ClInclude>
-    <ClInclude Include="SOURCE\SFMLINTERFACE\INPUTHANDLER.H">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Source\Engine\Input\Gamepad.h">
+      <Filter>Source\Engine\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +250,9 @@
       <Filter>Source\SFMLInterface</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Input\InputHandler.cpp">
+      <Filter>Source\Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Input\Gamepad.cpp">
       <Filter>Source\Engine\Input</Filter>
     </ClCompile>
   </ItemGroup>

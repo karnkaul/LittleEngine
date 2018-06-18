@@ -1,34 +1,44 @@
 #pragma once
 #include <vector>
 #include <unordered_map>
-#include <functional>
 #include "Engine/Object.h"
+#include "Utils/Delegate.hpp"
+#include "Gamepad.h"
 
 namespace Game {
 	struct KeyState;
 	enum class KeyCode;
-	class Input;
+	using OnInput = Action;
 
 	class InputHandler : public Object {
 	public:
 		InputHandler();
 		~InputHandler();
-		using Callback = std::function<void(const KeyState&)>;
-		using Token = std::shared_ptr<Callback>;
+
 		// Store token to keep callback registered; discard it to unregister
-		Token Register(Callback callback, KeyCode keyCode, bool consume = false);
+		OnInput::Token Register(OnInput::Callback callback, GameCommand keyCode, bool consume = false);
 	private:
-		struct Observer {
-			std::weak_ptr<Callback> callback;
-			KeyCode keyCode;
+		InputHandler(const InputHandler&) = delete;
+		InputHandler & operator=(const InputHandler&) = delete;
+		// Convenience struct
+		struct InputObserver {
+			OnInput callback;
 			bool consume;
 
-			Observer(std::weak_ptr<Callback> callback, KeyCode keyCode, bool consume);
+			InputObserver(OnInput&& callback, bool consume);
+			InputObserver& operator=(InputObserver&& move);
+			InputObserver(InputObserver&&) = default;
+			InputObserver(const InputObserver&) = default;
 		};
 
 		friend class Engine;
-		std::unordered_map<KeyCode, std::vector<Observer> > observers;
-
-		void FireInput(const Input& input);
+		std::unordered_map<GameCommand, std::vector<InputObserver> > observers;
+		
+		Gamepad gamepad;
+		
+		void SetupInputBindings();
+		void Cleanup(std::vector<InputObserver>& vec);
+		// Engine to call 
+		void FireInput(const std::vector<KeyState>& pressedKeys);
 	};
 }

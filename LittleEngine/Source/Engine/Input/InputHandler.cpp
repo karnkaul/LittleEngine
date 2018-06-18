@@ -1,15 +1,21 @@
 #include "stdafx.h"
-#include <string>
 #include "InputHandler.h"
 #include "Engine/Logger/Logger.h"
 #include "SFMLInterface/Input.h"
 
 namespace Game {
-	InputHandler::Observer::Observer(std::weak_ptr<Callback> callback, KeyCode keyCode, bool consume) 
-		: callback(callback), keyCode(keyCode), consume(consume) {
+	InputHandler::InputObserver::InputObserver(OnInput&& callback, bool consume)
+		: callback(std::move(callback)), consume(consume) {
+	}
+
+	InputHandler::InputObserver & InputHandler::InputObserver::operator=(InputObserver && move) {
+		callback = std::move(move.callback);
+		consume = move.consume;
+		return *this;
 	}
 
 	InputHandler::InputHandler() : Object("InputHandler") {
+		SetupInputBindings();
 		Logger::Log(*this, "InputHandler constructed");
 	}
 
@@ -17,42 +23,77 @@ namespace Game {
 		Logger::Log(*this, "InputHandler destroyed");
 	}
 
-	InputHandler::Token InputHandler::Register(Callback callback, KeyCode keyCode, bool consume) {
+	OnInput::Token Game::InputHandler::Register(OnInput::Callback callback, GameCommand keyCode, bool consume) {
+		OnInput newDelegate;
+		OnInput::Token token = newDelegate.Register(callback);
+		
 		auto iter = observers.find(keyCode);
-		auto ptr = std::make_shared<Callback>(callback);
 		size_t size = 0;
 		if (iter != observers.end()) {
 			auto& vec = iter->second;
-			vec.push_back(Observer(ptr, keyCode, consume));
+			vec.emplace_back(std::move(newDelegate), consume);
 			size = vec.size();
 		}
 		else {
-			std::vector<Observer> vec;
-			vec.push_back(Observer(ptr, keyCode, consume));
-			observers.insert(std::pair<KeyCode, std::vector<Observer> >(keyCode, std::move(vec)));
-			size = 1;
+			std::vector<InputObserver> newVec {
+				InputObserver(std::move(newDelegate), consume)
+			};
+			size = newVec.size();
+			observers.insert(std::pair<GameCommand, std::vector<InputObserver> >(keyCode, std::move(newVec)));
 		}
-		Logger::Log(*this, "Registered new callback for KeyCode " + std::to_string((int)keyCode) + " Total: " + std::to_string(size));
-		return ptr;
+		Logger::Log(*this, "Registered new callback for KeyCode: " + std::to_string((int)keyCode) + " Total: " + std::to_string(size));
+		return token;
 	}
 
-	void InputHandler::FireInput(const Input & input) {
-		std::vector<KeyState> pressed = input.GetPressed();
-		for (const auto& keyState : pressed) {
-			auto iter = observers.find(keyState.GetKeyCode());
+	void InputHandler::SetupInputBindings() {
+		KeyMod _default;
+		KeyMod _ctrl(true, false, false);
+		KeyMod _shift(false, false, true);
+
+		gamepad.Bind(KeyCode::Up, _default, GameCommand::MoveUp);
+		gamepad.Bind(KeyCode::W, _default, GameCommand::MoveUp);
+		gamepad.Bind(KeyCode::Down, _default, GameCommand::MoveDown);
+		gamepad.Bind(KeyCode::S, _default, GameCommand::MoveDown);
+		gamepad.Bind(KeyCode::Left, _default, GameCommand::MoveLeft);
+		gamepad.Bind(KeyCode::A, _default, GameCommand::MoveLeft);
+		gamepad.Bind(KeyCode::Right, _default, GameCommand::MoveRight);
+		gamepad.Bind(KeyCode::D, _default, GameCommand::MoveRight);
+		gamepad.Bind(KeyCode::Left, _ctrl, GameCommand::RotateLeft);
+		gamepad.Bind(KeyCode::A, _ctrl, GameCommand::RotateLeft);
+		gamepad.Bind(KeyCode::Right, _ctrl, GameCommand::RotateRight);
+		gamepad.Bind(KeyCode::D, _ctrl, GameCommand::RotateRight);
+		gamepad.Bind(KeyCode::Enter, _default, GameCommand::Enter);
+		gamepad.Bind(KeyCode::Escape, _default, GameCommand::Exit);
+		gamepad.Bind(KeyCode::Space, _default, GameCommand::Fire);
+		gamepad.Bind(KeyCode::Tab, _default, GameCommand::Select);
+	}
+
+	void InputHandler::Cleanup(std::vector<InputObserver>& vec) {
+		int before = vec.size();
+		vec.erase(std::remove_if(vec.begin(), vec.end(),
+			[](InputObserver& observer) {
+				return !observer.callback.IsAlive();
+			}
+		), vec.end());
+		int deleted = before - vec.size();
+		if (deleted > 0) {
+			Logger::Log(*this, std::to_string(deleted) + " expired Observers deleted", Logger::Severity::Debug);
+		}
+	}
+
+	void InputHandler::FireInput(const std::vector<KeyState>& pressedKeys) {
+		for (auto& keyState : pressedKeys) {
+			GameCommand key = gamepad.Convert(keyState);
+			if (key == GameCommand::Invalid) return;
+			
+			auto iter = observers.find(key);
 			if (iter != observers.end()) {
 				auto& vec = iter->second;
-				int before = vec.size();
-				vec.erase(std::remove_if(vec.begin(), vec.end(),
-					[](Observer observer) {
-						return observer.callback.lock() == nullptr;
-					}
-				), vec.end());
-				int after = vec.size();
-				for(auto iter = vec.rbegin(); iter != vec.rend(); ++iter) {
-					std::shared_ptr<Callback> callback = iter->callback.lock();
-					(*callback)(keyState);
-					if (iter->consume) {
+				Cleanup(vec);
+				for (auto iter = vec.rbegin(); iter != vec.rend(); ++iter) {
+					auto& observer = *iter;
+					observer.callback();
+					if (observer.consume) {
 						break;
 					}
 				}

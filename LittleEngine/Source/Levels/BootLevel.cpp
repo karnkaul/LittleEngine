@@ -5,7 +5,6 @@
 #include "Engine/Logger/Logger.h"
 #include "Entities/Actor.h"
 #include "Components/RenderComponent.h"
-#include "SFMLInterface/Input.h"
 #include "SFMLInterface/Rendering/Renderer.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 #include "SFMLInterface/Rendering/RenderFactory.h"
@@ -24,23 +23,28 @@ namespace Game {
 		auto& renderer = logo->AddComponent<RenderComponent>();
 		logoRenderer = &renderer.SetTextRenderer("... Press Enter to Start ...");
 		logo->GetTransform()->localPosition = Vector2(0, logoY);
+
+		inputToken = GetInputHandler().Register(std::bind(&BootLevel::OnLoadNextLevel, this), GameCommand::Enter);
 	}
 
 	void BootLevel::Tick(Fixed deltaTime) {
-		Level::Tick(deltaTime);
-		if (GetInput().IsKeyPressed(KeyCode::Enter)) {
-			engine->LoadLevel(1);
-		}
-
+		// Fade logo
 		Fixed seconds = Fixed(static_cast<int>(LevelTimeMilliSeconds()), 1000);
 		Fixed speed = 2;
 		Fixed alpha = (seconds * speed).Sin().Abs() * 255;
 		Colour c = logoRenderer->GetTextData().fillColour;
 		logoRenderer->GetTextData().fillColour = Colour(c.r, c.g, c.g, alpha);
+
+		// Tick all actors etc
+		Level::Tick(deltaTime);
 	}
 
 	void BootLevel::LoadAssets() {
 		Logger::Log(*this, "Loading Assets...", Logger::Severity::Debug);
 		engine->GetAssetManager().LoadAllTextures({ "Assets/Ship.png" });
+	}
+
+	void BootLevel::OnLoadNextLevel() {
+		engine->LoadLevel(1);
 	}
 }
