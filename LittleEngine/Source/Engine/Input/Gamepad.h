@@ -3,45 +3,46 @@
 #include "SFMLInterface/Input.h"
 
 namespace Game {
-	enum class GameCommand {
+	enum class GameInput {
 		Invalid,
-		MoveLeft,
-		MoveRight,
-		MoveUp,
-		MoveDown,
-		RotateLeft,
-		RotateRight,
+		Left,
+		Right,
+		Up,
+		Down,
 		Enter,
 		Exit,
-		Fire,
-		Select
+		Select,
+		X,
+		Y,
+		LB,
+		RB
 	};
 
 	class Gamepad {
 	public:
-		GameCommand Convert(const KeyState& input) const;
-		void Bind(KeyCode keyCode, KeyMod keyMod, GameCommand key);
+		GameInput Convert(const KeyState& input) const;
+		void Bind(KeyCode keyCode, GameInput key);
 
 	private:
 		struct RawInput {
 			KeyCode keyCode;
-			KeyMod keyMod;
+			//KeyMod keyMod;
 
-			RawInput(KeyCode keyCode, KeyMod keyMod);
+			RawInput(KeyCode keyCode);
 			bool operator==(const RawInput& rhs) const;
 			bool operator!=(const RawInput& rhs) const;
 		};
 
-		struct GameInput {
-			GameInput(GameCommand key);
-			GameInput(GameCommand key, KeyCode keyCode, KeyMod keyMode = KeyMod::Default);
-			void Bind(KeyCode keyCode, KeyMod keyMod = KeyMod::Default);
-			bool IsMapped(KeyCode keyCode, KeyMod keyMod) const;
+		struct InputMapping {
+			InputMapping(GameInput key);
+			InputMapping(GameInput key, KeyCode keyCode);
+			void Bind(KeyCode keyCode);
+			bool IsMapped(KeyCode keyCode) const;
 
-			GameCommand key;
+			GameInput key;
 			std::vector<RawInput> rawInputs;
 		};
 
-		std::vector<GameInput> bindings;
+		std::vector<InputMapping> bindings;
 	};
 }

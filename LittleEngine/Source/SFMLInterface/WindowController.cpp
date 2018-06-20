@@ -39,6 +39,7 @@ namespace Game {
 
 			case sf::Event::GainedFocus:
 				_focus = true;
+				inputHandler.ResetKeyStates();
 				break;
 
 			case sf::Event::KeyPressed:

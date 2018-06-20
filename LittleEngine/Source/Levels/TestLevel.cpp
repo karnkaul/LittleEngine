@@ -44,9 +44,10 @@ namespace Game {
 		if (!actors.empty()) {
 			// TODO: TextShape
 			actors[0]->GetTransform()->Rotate(2);
-			KeyState state = level->GetInput().GetKeyState(KeyCode::Space);
-			if (!parentSet && state.pressed) {
-				actors[0]->GetTransform()->SetParent(actors[1]->GetTransform(), !state.modifier.control);
+			KeyState space = level->GetInput().GetKeyState(KeyCode::Space);
+			KeyState control = level->GetInput().GetKeyState(KeyCode::Control);
+			if (!parentSet && space.pressed) {
+				actors[0]->GetTransform()->SetParent(actors[1]->GetTransform(), !control.pressed);
 				parentSet = true;
 			}
 		}

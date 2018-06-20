@@ -2,59 +2,55 @@
 #include "Gamepad.h"
 
 namespace Game {
-	Gamepad::RawInput::RawInput(KeyCode keyCode, KeyMod keyMod)
-		: keyMod(keyMod), keyCode(keyCode) {
+	Gamepad::RawInput::RawInput(KeyCode keyCode)
+		: keyCode(keyCode) {
 	}
 
 	bool Gamepad::RawInput::operator==(const RawInput & rhs) const {
-		return 
-			keyMod.alt == rhs.keyMod.alt &&
-			keyMod.control == rhs.keyMod.control &&
-			keyMod.shift == rhs.keyMod.shift &&
-			keyCode == rhs.keyCode;
+		return keyCode == rhs.keyCode;
 	}
 
 	bool Gamepad::RawInput::operator!=(const RawInput & rhs) const {
 		return !(*this == rhs);
 	}
 
-	Gamepad::GameInput::GameInput(GameCommand key) : key(key) {
+	Gamepad::InputMapping::InputMapping(GameInput key) : key(key) {
 	}
 
-	Gamepad::GameInput::GameInput(GameCommand key, KeyCode keyCode, KeyMod keyMod)
+	Gamepad::InputMapping::InputMapping(GameInput key, KeyCode keyCode)
 		: key(key) {
-		Bind(keyCode, keyMod);
+		Bind(keyCode);
 	}
 
-	void Gamepad::GameInput::Bind(KeyCode keyCode, KeyMod keyMod) {
-		rawInputs.emplace_back(keyCode, keyMod);
+	void Gamepad::InputMapping::Bind(KeyCode keyCode) {
+		rawInputs.emplace_back(keyCode);
 	}
 
-	bool Gamepad::GameInput::IsMapped(KeyCode keyCode, KeyMod keyMod) const {
-		RawInput toFind(keyCode, keyMod);
+	bool Gamepad::InputMapping::IsMapped(KeyCode keyCode) const {
+		RawInput toFind(keyCode);
 		auto iter = std::find(rawInputs.begin(), rawInputs.end(), toFind);
 		return iter != rawInputs.end();
 	}
 
-	GameCommand Gamepad::Convert(const KeyState & input) const {
+	GameInput Gamepad::Convert(const KeyState & input) const {
 		for (auto& binding : bindings) {
-			if (binding.IsMapped(input.GetKeyCode(), input.modifier)) {
+			if (binding.IsMapped(input.GetKeyCode())) {
 				return binding.key;
 			}
 		}
-		return GameCommand::Invalid;
+		return GameInput::Invalid;
 	}
 
-	void Gamepad::Bind(KeyCode keyCode, KeyMod keyMod, GameCommand key) {
+	void Gamepad::Bind(KeyCode keyCode, GameInput key) {
 		for (auto& binding : bindings) {
 			if (binding.key == key) {
-				if (!binding.IsMapped(keyCode, keyMod)) {
-					binding.Bind(keyCode, keyMod);
+				if (!binding.IsMapped(keyCode)) {
+					binding.Bind(keyCode);
 				}
 				return;
 			}
 		}
 
-		bindings.emplace_back(key, keyCode, keyMod);
+		bindings.emplace_back(key, keyCode);
 	}
 }

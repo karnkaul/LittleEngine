@@ -22,6 +22,15 @@ namespace Game {
 			return KeyCode::Escape;
 		case sf::Keyboard::Tab:
 			return KeyCode::Tab;
+		case sf::Keyboard::LControl:
+		case sf::Keyboard::RControl:
+			return KeyCode::Control;
+		case sf::Keyboard::LShift:
+		case sf::Keyboard::RShift:
+			return KeyCode::Shift;
+		case sf::Keyboard::LAlt:
+		case sf::Keyboard::RAlt:
+			return KeyCode::Alt;
 		case sf::Keyboard::W:
 			return KeyCode::W;
 		case sf::Keyboard::A:
@@ -32,36 +41,6 @@ namespace Game {
 			return KeyCode::D;
 		}
 		return KeyCode::Invalid;
-	}
-
-	sf::Keyboard::Key Convert(const KeyCode& code) {
-		switch (code) {
-		case KeyCode::Left:
-			return sf::Keyboard::Left;
-		case KeyCode::Right:
-			return sf::Keyboard::Right;
-		case KeyCode::Up:
-			return sf::Keyboard::Up;
-		case KeyCode::Down:
-			return sf::Keyboard::Down;
-		case KeyCode::W:
-			return sf::Keyboard::W;
-		case KeyCode::A:
-			return sf::Keyboard::A;
-		case KeyCode::S:
-			return sf::Keyboard::S;
-		case KeyCode::D:
-			return sf::Keyboard::D;
-		case KeyCode::Space:
-			return sf::Keyboard::Space;
-		case KeyCode::Enter:
-			return sf::Keyboard::Enter;
-		case KeyCode::Escape:
-			return sf::Keyboard::Escape;
-		case KeyCode::Tab:
-			return sf::Keyboard::Tab;
-		}
-		return sf::Keyboard::LAlt;
 	}
 
 	KeyState* Input::GetOrCreateKeyState(KeyCode code) {
@@ -105,14 +84,21 @@ namespace Game {
 	void Input::OnKeyDown(const sf::Event::KeyEvent& key) {
 		bool newKeyCode = true;
 		KeyState* toModify = GetOrCreateKeyState(Convert(key.code));
-		toModify->modifier = KeyMod(key);
+		//toModify->modifier = KeyMod(key);
 		toModify->pressed = true;
 	}
 
 	void Input::OnKeyUp(const sf::Event::KeyEvent& key) {
 		bool newKeyCode = true;
 		KeyState* toModify = GetOrCreateKeyState(Convert(key.code));
-		toModify->modifier = KeyMod();
+		//toModify->modifier = KeyMod();
 		toModify->pressed = false;
+	}
+
+	void Input::ResetKeyStates() {
+		for (auto& keyState : keyStates) {
+			//keyState.modifier = KeyMod();
+			keyState.pressed = false;
+		}
 	}
 }

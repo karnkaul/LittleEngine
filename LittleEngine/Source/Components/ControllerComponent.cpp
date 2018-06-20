@@ -38,16 +38,16 @@ void ClampPosition(Vector2& position, const Vector2& worldBoundsX, const Vector2
 namespace Game {
 	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent") {
 		InputHandler& inputHandler = actor.GetActiveLevel().GetInputHandler();
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveLeft, this), GameCommand::MoveLeft));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRotateLeft, this), GameCommand::RotateLeft));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveRight, this), GameCommand::MoveRight));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRotateRight, this), GameCommand::RotateRight));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveUp, this), GameCommand::MoveUp));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveDown, this), GameCommand::MoveDown));
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveLeft, this), GameInput::Left));
+		//tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRotateLeft, this), GameCommand::RotateLeft));
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveRight, this), GameInput::Right));
+		//tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRotateRight, this), GameCommand::RotateRight));
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveUp, this), GameInput::Up));
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveDown, this), GameInput::Down));
 		
 		// Tests
-		tokens.push_back(inputHandler.Register(&Test, GameCommand::MoveLeft));
-		tokens.push_back(inputHandler.Register(&Test2, GameCommand::MoveLeft, true));
+		tokens.push_back(inputHandler.Register(&Test, GameInput::Left));
+		tokens.push_back(inputHandler.Register(&Test2, GameInput::Left, true));
 	}
 
 	ControllerComponent::~ControllerComponent() {
