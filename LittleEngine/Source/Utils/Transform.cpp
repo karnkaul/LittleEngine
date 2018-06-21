@@ -2,25 +2,27 @@
 #include <iostream>
 #include "Transform.h"
 
-void Transform::SetParent(std::weak_ptr<Transform> parent, bool modifyWorldSpace) {
-	m_parent = parent;
-	std::shared_ptr<Transform> transform;
-	if (transform = m_parent.lock()) {
-		if (!modifyWorldSpace) {
-			localPosition -= transform->localPosition;
-			localRotation -= transform->localRotation;
-		}
-		transform->AddChild(this->shared_from_this());
-	}
+Transform::Ptr Transform::Create() {
+	struct shared_enabler : public Transform {};
+	return std::make_shared<shared_enabler>();
 }
 
-std::weak_ptr<Transform> Transform::GetParent() const {
+void Transform::SetParent(Ptr parent, bool modifyWorldSpace) {
+	m_parent = parent;
+	if (!modifyWorldSpace) {
+		localPosition -= parent->localPosition;
+		localRotation -= parent->localRotation;
+	}
+	parent->AddChild(this->shared_from_this());
+}
+
+Transform::wPtr Transform::GetParent() const {
 	return m_parent;
 }
 
 Vector2 Transform::Position() const {
 	Vector2 position = localPosition;
-	std::shared_ptr<Transform> transform;
+	Ptr transform;
 	if (transform = m_parent.lock()) {
 		position += transform->Position();
 	}
@@ -30,7 +32,7 @@ Vector2 Transform::Position() const {
 Fixed Transform::Rotation() {
 	localRotation %= 360;
 	Fixed rotation = localRotation;
-	std::shared_ptr<Transform> transform;
+	Ptr transform;
 	if (transform = m_parent.lock()) {
 		rotation += transform->Rotation();
 	}
@@ -43,7 +45,7 @@ void Transform::Rotate(Fixed angle) {
 	if (!m_children.empty()) {
 		Fixed rad = angle * Consts::DEG_TO_RAD;
 		for (const auto& child : m_children) {
-			std::shared_ptr<Transform> transform;
+			Ptr transform;
 			if (transform = child.lock()) {
 				Vector2 p = transform->localPosition;
 				Fixed s = rad.Sin(), c = rad.Cos();
@@ -60,6 +62,10 @@ std::string Transform::ToString() const {
 	return localPosition.ToString() + " , " + localRotation.ToString();
 }
 
-void Transform::AddChild(std::shared_ptr<Transform> child) {
+Transform::Transform() : localPosition(Vector2::Zero()), localRotation(Fixed(0)) {}
+
+Transform::~Transform() = default;
+
+void Transform::AddChild(Ptr child) {
 	m_children.emplace_back(child);
 }
