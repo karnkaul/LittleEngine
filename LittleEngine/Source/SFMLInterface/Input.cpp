@@ -14,6 +14,20 @@ namespace Game {
 			return KeyCode::Up;
 		case sf::Keyboard::Down:
 			return KeyCode::Down;
+		case sf::Keyboard::W:
+			return KeyCode::W;
+		case sf::Keyboard::A:
+			return KeyCode::A;
+		case sf::Keyboard::S:
+			return KeyCode::S;
+		case sf::Keyboard::D:
+			return KeyCode::D;
+		case sf::Keyboard::E:
+			return KeyCode::E;
+		case sf::Keyboard::R:
+			return KeyCode::R;
+		case sf::Keyboard::F:
+			return KeyCode::F;
 		case sf::Keyboard::Space:
 			return KeyCode::Space;
 		case sf::Keyboard::Enter:
@@ -31,14 +45,6 @@ namespace Game {
 		case sf::Keyboard::LAlt:
 		case sf::Keyboard::RAlt:
 			return KeyCode::Alt;
-		case sf::Keyboard::W:
-			return KeyCode::W;
-		case sf::Keyboard::A:
-			return KeyCode::A;
-		case sf::Keyboard::S:
-			return KeyCode::S;
-		case sf::Keyboard::D:
-			return KeyCode::D;
 		}
 		return KeyCode::Invalid;
 	}
@@ -84,20 +90,17 @@ namespace Game {
 	void Input::OnKeyDown(const sf::Event::KeyEvent& key) {
 		bool newKeyCode = true;
 		KeyState* toModify = GetOrCreateKeyState(Convert(key.code));
-		//toModify->modifier = KeyMod(key);
 		toModify->pressed = true;
 	}
 
 	void Input::OnKeyUp(const sf::Event::KeyEvent& key) {
 		bool newKeyCode = true;
 		KeyState* toModify = GetOrCreateKeyState(Convert(key.code));
-		//toModify->modifier = KeyMod();
 		toModify->pressed = false;
 	}
 
 	void Input::ResetKeyStates() {
 		for (auto& keyState : keyStates) {
-			//keyState.modifier = KeyMod();
 			keyState.pressed = false;
 		}
 	}

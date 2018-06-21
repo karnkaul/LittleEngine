@@ -70,10 +70,6 @@ namespace Game {
 		return (int)exitCode;
 	}
 
-	const Input& Engine::GetInput() const {
-		return windowController->GetInputHandler();
-	}
-
 	InputHandler & Engine::GetInputHandler() const {
 		return *inputHandler;
 	}
@@ -98,6 +94,7 @@ namespace Game {
 		if (isPaused && windowController->IsWindowFocussed()) {
 			OnUnpaused();
 		}
+		inputHandler->CaptureState(windowController->GetInputHandler().GetPressed());
 	}
 
 	void Engine::FixedTick(Fixed& lag) {
@@ -114,7 +111,7 @@ namespace Game {
 
 	void Engine::Tick(Fixed deltaTime) {
 		GameClock::Tick(deltaTime);
-		inputHandler->FireInput(windowController->GetInputHandler().GetPressed());
+		inputHandler->FireInput();
 		levelManager->GetActiveLevel().Tick(deltaTime);
 	}
 

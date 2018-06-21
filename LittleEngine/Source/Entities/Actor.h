@@ -16,7 +16,7 @@ namespace Game {
 		Actor(Level& level, std::string name);
 		virtual ~Actor();
 
-		std::shared_ptr<Transform> GetTransform() const;
+		Transform::Ptr GetTransform() const;
 		virtual std::string ToString() const;
 
 		virtual void FixedTick();
@@ -48,7 +48,7 @@ namespace Game {
 
 	protected:
 		std::vector<std::unique_ptr<Component> > components;
-		std::shared_ptr<Transform> transform;
+		Transform::Ptr transform;
 		Level* level;
 		bool _destroyed = false;
 

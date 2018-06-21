@@ -14,6 +14,10 @@ namespace Game {
 		A,
 		S,
 		D,
+		Q,
+		E,
+		R,
+		F,
 		Space,
 		Enter,
 		Escape,
@@ -39,7 +43,6 @@ namespace Game {
 	// Wrapper struct to store state of sf::Event::KeyEvent
 	struct KeyState {
 		bool pressed;
-		//KeyMod modifier;
 
 		KeyState(KeyCode keyCode) : keyCode(keyCode), pressed(false), name("Unknown") {}
 		KeyState(KeyCode keyCode, const std::string& name) : keyCode(keyCode), pressed(false), name(name) {}

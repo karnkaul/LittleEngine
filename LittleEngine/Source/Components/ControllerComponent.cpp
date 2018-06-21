@@ -36,14 +36,13 @@ void ClampPosition(Vector2& position, const Vector2& worldBoundsX, const Vector2
 }
 
 namespace Game {
-	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent") {
-		InputHandler& inputHandler = actor.GetActiveLevel().GetInputHandler();
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveLeft, this), GameInput::Left));
+	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent"), inputHandler(actor.GetActiveLevel().GetInputHandler()) {
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnLeft, this), GameInput::Left));
 		//tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRotateLeft, this), GameCommand::RotateLeft));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveRight, this), GameInput::Right));
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRight, this), GameInput::Right));
 		//tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRotateRight, this), GameCommand::RotateRight));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveUp, this), GameInput::Up));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveDown, this), GameInput::Down));
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnUp, this), GameInput::Up));
+		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnDown, this), GameInput::Down));
 		
 		// Tests
 		tokens.push_back(inputHandler.Register(&Test, GameInput::Left));
@@ -73,27 +72,29 @@ namespace Game {
 		}
 	}
 
-	void ControllerComponent::OnMoveLeft() {
-		GetActor().GetTransform()->localPosition.x -= prevDeltaTime;
+	void ControllerComponent::OnLeft() {
+		if (inputHandler.IsKeyPressed(GameInput::LB)) {
+			GetActor().GetTransform()->Rotate(prevDeltaTime / 3);
+		}
+		else {
+			GetActor().GetTransform()->localPosition.x -= prevDeltaTime;
+		}
 	}
 
-	void ControllerComponent::OnRotateLeft() {
-		GetActor().GetTransform()->Rotate(prevDeltaTime / 3);
+	void ControllerComponent::OnRight() {
+		if (inputHandler.IsKeyPressed(GameInput::LB)) {
+			GetActor().GetTransform()->Rotate(-prevDeltaTime / 3);
+		}
+		else {
+			GetActor().GetTransform()->localPosition.x += prevDeltaTime;
+		}
 	}
 
-	void ControllerComponent::OnMoveRight() {
-		GetActor().GetTransform()->localPosition.x += prevDeltaTime;
-	}
-
-	void ControllerComponent::OnRotateRight() {
-		GetActor().GetTransform()->Rotate(-prevDeltaTime / 3);
-	}
-
-	void ControllerComponent::OnMoveUp() {
+	void ControllerComponent::OnUp() {
 		GetActor().GetTransform()->localPosition.y += prevDeltaTime;
 	}
 
-	void ControllerComponent::OnMoveDown() {
+	void ControllerComponent::OnDown() {
 		GetActor().GetTransform()->localPosition.y -= prevDeltaTime;
 	}
 }

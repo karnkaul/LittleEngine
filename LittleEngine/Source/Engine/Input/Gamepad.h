@@ -20,7 +20,7 @@ namespace Game {
 
 	class Gamepad {
 	public:
-		GameInput Convert(const KeyState& input) const;
+		GameInput ToGameInput(const KeyState& input) const;
 		void Bind(KeyCode keyCode, GameInput key);
 
 	private:

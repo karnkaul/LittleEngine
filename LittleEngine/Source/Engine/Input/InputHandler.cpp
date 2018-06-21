@@ -23,6 +23,11 @@ namespace Game {
 		Logger::Log(*this, "InputHandler destroyed");
 	}
 
+	bool InputHandler::IsKeyPressed(GameInput keyCode) const {
+		auto iter = std::find(storedState.begin(), storedState.end(), keyCode);
+		return iter != storedState.end();
+	}
+
 	OnInput::Token Game::InputHandler::Register(OnInput::Callback callback, GameInput keyCode, bool consume) {
 		OnInput newDelegate;
 		OnInput::Token token = newDelegate.Register(callback);
@@ -54,14 +59,23 @@ namespace Game {
 		gamepad.Bind(KeyCode::A, GameInput::Left);
 		gamepad.Bind(KeyCode::Right, GameInput::Right);
 		gamepad.Bind(KeyCode::D, GameInput::Right);
-		/*gamepad.Bind(KeyCode::Left, _ctrl, GameCommand::RotateLeft);
-		gamepad.Bind(KeyCode::A, _ctrl, GameCommand::RotateLeft);
-		gamepad.Bind(KeyCode::Right, _ctrl, GameCommand::RotateRight);
-		gamepad.Bind(KeyCode::D, _ctrl, GameCommand::RotateRight);*/
 		gamepad.Bind(KeyCode::Enter, GameInput::Enter);
 		gamepad.Bind(KeyCode::Escape, GameInput::Exit);
-		gamepad.Bind(KeyCode::Space, GameInput::X);
 		gamepad.Bind(KeyCode::Tab, GameInput::Select);
+
+		gamepad.Bind(KeyCode::Space, GameInput::X);
+		gamepad.Bind(KeyCode::E, GameInput::Y);
+		gamepad.Bind(KeyCode::Control, GameInput::LB);
+		gamepad.Bind(KeyCode::Shift, GameInput::RB);
+	}
+
+	void InputHandler::CaptureState(const std::vector<KeyState>& pressedKeys) {
+		storedState.clear();
+		for (const auto& key : pressedKeys) {
+			if (key.GetKeyCode() != KeyCode::Invalid) {
+				storedState.push_back(gamepad.ToGameInput(key));
+			}
+		}
 	}
 
 	void InputHandler::Cleanup(std::vector<InputObserver>& vec) {
@@ -77,11 +91,8 @@ namespace Game {
 		}
 	}
 
-	void InputHandler::FireInput(const std::vector<KeyState>& pressedKeys) {
-		for (auto& keyState : pressedKeys) {
-			GameInput key = gamepad.Convert(keyState);
-			if (key == GameInput::Invalid) return;
-			
+	void InputHandler::FireInput() {
+		for (auto& key : storedState) {
 			auto iter = observers.find(key);
 			if (iter != observers.end()) {
 				auto& vec = iter->second;

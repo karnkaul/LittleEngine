@@ -32,7 +32,7 @@ namespace Game {
 		return iter != rawInputs.end();
 	}
 
-	GameInput Gamepad::Convert(const KeyState & input) const {
+	GameInput Gamepad::ToGameInput(const KeyState & input) const {
 		for (auto& binding : bindings) {
 			if (binding.IsMapped(input.GetKeyCode())) {
 				return binding.key;
