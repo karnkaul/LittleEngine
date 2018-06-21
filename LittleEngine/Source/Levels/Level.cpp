@@ -64,10 +64,6 @@ namespace Game {
 		actor->_destroyed = true;
 	}
 
-	const Input& Level::GetInput() const {
-		return engine->GetInput();
-	}
-
 	InputHandler & Level::GetInputHandler() const {
 		return engine->GetInputHandler();
 	}

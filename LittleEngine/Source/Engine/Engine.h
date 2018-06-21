@@ -13,7 +13,6 @@ namespace Consts {
 namespace Game {
 	class Actor;
 	class World;
-	class Input;
 	class EngineConfig;
 	class AssetManager;
 	class Level;
@@ -43,8 +42,6 @@ namespace Game {
 		// Returns exit code
 		int Run();
 
-		// TODO: Remove SFML Input
-		const Input& GetInput() const;
 		InputHandler& GetInputHandler() const;
 		const World& GetWorld() const;
 		AssetManager& GetAssetManager() const;

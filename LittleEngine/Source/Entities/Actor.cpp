@@ -16,7 +16,7 @@
 namespace Game {
 	Actor::Actor(Level& level, std::string name) : Object(name) {
 		this->level = &level;
-		transform = std::make_shared<Transform>();
+		transform = Transform::Create();
 		Logger::Log(*this, "Created new actor \"" + name + "\" at " + transform->Position().ToString());
 	}
 
@@ -25,7 +25,7 @@ namespace Game {
 		Logger::Log(*this, "Destroyed actor \"" + name + "\"");
 	}
 
-	std::shared_ptr<Transform> Actor::GetTransform() const {
+	Transform::Ptr Actor::GetTransform() const {
 		return transform;
 	}
 

@@ -15,8 +15,9 @@ namespace Game {
 		InputHandler();
 		~InputHandler();
 
+		bool IsKeyPressed(GameInput keyCode) const;
 		// Store token to keep callback registered; discard it to unregister
-		OnInput::Token Register(OnInput::Callback callback, GameCommand keyCode, bool consume = false);
+		OnInput::Token Register(OnInput::Callback callback, GameInput keyCode, bool consume = false);
 	private:
 		InputHandler(const InputHandler&) = delete;
 		InputHandler & operator=(const InputHandler&) = delete;
@@ -32,13 +33,14 @@ namespace Game {
 		};
 
 		friend class Engine;
-		std::unordered_map<GameCommand, std::vector<InputObserver> > observers;
-		
+		std::unordered_map<GameInput, std::vector<InputObserver> > observers;
+		std::vector<GameInput> storedState;
 		Gamepad gamepad;
 		
 		void SetupInputBindings();
 		void Cleanup(std::vector<InputObserver>& vec);
 		// Engine to call 
-		void FireInput(const std::vector<KeyState>& pressedKeys);
+		void CaptureState(const std::vector<KeyState>& pressedKeys);
+		void FireInput();
 	};
 }

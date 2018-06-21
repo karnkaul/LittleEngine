@@ -14,6 +14,25 @@
 #include "SFMLInterface/Assets.h"
 
 namespace Game {
+	// Tests
+	namespace _TestLevel {
+		bool parentSet = false;
+		Action::Token token0, token1;
+		Actor* actor0 = nullptr, *actor1 = nullptr;
+		void OnXPressed() {
+			if (!parentSet && actor0 != nullptr && actor1 != nullptr) {
+				actor0->GetTransform()->SetParent(actor1->GetTransform());
+				parentSet = true;
+			}
+		}
+		void OnYPressed() {
+			if (!parentSet && actor0 != nullptr && actor1 != nullptr) {
+				actor0->GetTransform()->SetParent(actor1->GetTransform(), false);
+				parentSet = true;
+			}
+		}
+	}
+
 	TestLevel::TestLevel(Engine& engine) : Level("TestLevel", engine) {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 
@@ -37,18 +56,24 @@ namespace Game {
 		tr.SetColour(Colour(200, 150, 50)).SetSize(50);
 		yPos -= tr.GetBounds().y;
 		actor1->GetTransform()->localPosition = Vector2(0, yPos - 50);
+
+		// Tests
+		_TestLevel::actor0 = actor0.get();
+		_TestLevel::actor1 = player.get();
+		_TestLevel::token0 = GetInputHandler().Register(&_TestLevel::OnXPressed, GameInput::X);
+		_TestLevel::token1 = GetInputHandler().Register(&_TestLevel::OnYPressed, GameInput::Y);
 	}
 
-	bool parentSet = false;
 	void RenderTests(Level* level, std::vector<std::shared_ptr<Actor> >& actors, RenderParams& params) {
 		if (!actors.empty()) {
 			// TODO: TextShape
 			actors[0]->GetTransform()->Rotate(2);
-			KeyState state = level->GetInput().GetKeyState(KeyCode::Space);
-			if (!parentSet && state.pressed) {
-				actors[0]->GetTransform()->SetParent(actors[1]->GetTransform(), !state.modifier.control);
+			/*KeyState space = level->GetInput().GetKeyState(KeyCode::Space);
+			KeyState control = level->GetInput().GetKeyState(KeyCode::Control);
+			if (!parentSet && space.pressed) {
+				actors[0]->GetTransform()->SetParent(actors[1]->GetTransform(), !control.pressed);
 				parentSet = true;
-			}
+			}*/
 		}
 	}
 
