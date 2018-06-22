@@ -60,8 +60,8 @@ namespace Game {
 		// Tests
 		_TestLevel::actor0 = actor0.get();
 		_TestLevel::actor1 = player.get();
-		_TestLevel::token0 = GetInputHandler().OnHeld(GameInput::X, &_TestLevel::OnXPressed);
-		_TestLevel::token1 = GetInputHandler().OnHeld(GameInput::Y, &_TestLevel::OnYPressed);
+		_TestLevel::token0 = GetInputHandler().Register(GameInput::X, &_TestLevel::OnXPressed, OnKey::Released);
+		_TestLevel::token1 = GetInputHandler().Register(GameInput::Y, &_TestLevel::OnYPressed, OnKey::Released, true);
 	}
 
 	void RenderTests(Level* level, std::vector<std::shared_ptr<Actor> >& actors, RenderParams& params) {

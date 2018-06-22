@@ -4,13 +4,14 @@
 #include "SFMLInterface/Input.h"
 
 namespace Game {
-	InputHandler::InputObserver::InputObserver(OnInput&& callback, bool consume)
-		: callback(std::move(callback)), consume(consume) {
+	InputHandler::InputObserver::InputObserver(OnInput&& callback, bool consume, OnKey type)
+		: callback(std::move(callback)), consume(consume), type(type) {
 	}
 
 	InputHandler::InputObserver & InputHandler::InputObserver::operator=(InputObserver && move) {
 		callback = std::move(move.callback);
 		consume = move.consume;
+		type = move.type;
 		return *this;
 	}
 
@@ -28,19 +29,24 @@ namespace Game {
 		return iter != currentSnapshot.end();
 	}
 
-	OnInput::Token InputHandler::OnPressed(GameInput input, OnInput::Callback callback, bool consume) {
-		Logger::Log(*this, "Registered OnPressed callback for GameInput: " + std::to_string((int)input) + " Total: " + std::to_string(onPressedObservers.size()) + " [consume: " + std::to_string(consume) + "]");
-		return Register(onPressedObservers, callback, input, consume);
-	}
-
-	OnInput::Token Game::InputHandler::OnHeld(GameInput input, OnInput::Callback callback, bool consume) {
-		Logger::Log(*this, "Registered OnHeld callback for GameInput: " + std::to_string((int)input) + " Total: " + std::to_string(onHeldObservers.size()) + " [consume: " + std::to_string(consume) + "]");
-		return Register(onHeldObservers, callback, input, consume);
-	}
-
-	OnInput::Token InputHandler::OnReleased(GameInput input, OnInput::Callback callback, bool consume) {
-		Logger::Log(*this, "Registered OnReleased callback for GameInput: " + std::to_string((int)input) + " Total: " + std::to_string(onReleasedObservers.size()) + " [consume: " + std::to_string(consume) + "]");
-		return Register(onReleasedObservers, callback, input, consume);
+	OnInput::Token InputHandler::Register(GameInput input, OnInput::Callback callback, OnKey type, bool consume) {
+		OnInput newDelegate;
+		OnInput::Token token = newDelegate.Register(callback);
+		auto iter = inputObservers.find(input);
+		size_t size = 0;
+		if (iter != inputObservers.end()) {
+			auto& vec = iter->second;
+			vec.emplace_back(std::move(newDelegate), consume, type);
+			size = vec.size();
+		}
+		else {
+			std::vector<InputObserver> newVec {
+				InputObserver(std::move(newDelegate), consume, type)
+			};
+			size = newVec.size();
+			inputObservers.insert(std::pair<GameInput, std::vector<InputObserver> >(input, std::move(newVec)));
+		}
+		return token;
 	}
 
 	void InputHandler::SetupInputBindings() {
@@ -96,12 +102,12 @@ namespace Game {
 		size_t size = 0;
 		if (iter != map.end()) {
 			auto& vec = iter->second;
-			vec.emplace_back(std::move(newDelegate), consume);
+			vec.emplace_back(std::move(newDelegate), consume, OnKey::Held);
 			size = vec.size();
 		}
 		else {
 			std::vector<InputObserver> newVec{
-				InputObserver(std::move(newDelegate), consume)
+				InputObserver(std::move(newDelegate), consume, OnKey::Held)
 			};
 			size = newVec.size();
 			map.insert(std::pair<GameInput, std::vector<InputObserver> >(keyCode, std::move(newVec)));
@@ -109,15 +115,17 @@ namespace Game {
 		return token;
 	}
 
-	void InputHandler::FireCallbacks(const std::vector<GameInput>& inputs, std::unordered_map<GameInput, std::vector<InputObserver>>& map) {
-		for (auto& key : inputs) {
-			auto iter = map.find(key);
+	void InputHandler::FireCallbacks(const std::vector<GameInput>& inputs, std::unordered_map<GameInput, std::vector<InputObserver>>& map, OnKey type) {
+		for (const auto& input : inputs) {
+			auto iter = map.find(input);
 			if (iter != map.end()) {
 				auto& vec = iter->second;
 				Cleanup(vec);
 				for (auto iter = vec.rbegin(); iter != vec.rend(); ++iter) {
 					auto& observer = *iter;
-					observer.callback();
+					if (observer.type == type) {
+						observer.callback();
+					}
 					if (observer.consume) {
 						break;
 					}
@@ -127,8 +135,9 @@ namespace Game {
 	}
 
 	void InputHandler::FireInput() {
-		// Build OnPressed, OnHeld and OnReleased
-		std::vector<GameInput> onPressed, onHeld, onReleased;
+		std::vector<GameInput> onPressed, onHeld;
+		
+		// Build OnPressed and OnHeld vectors
 		for (auto input : currentSnapshot) {
 			auto search = std::find(previousSnapshot.begin(), previousSnapshot.end(), input);
 			if (search != previousSnapshot.end()) {
@@ -139,13 +148,10 @@ namespace Game {
 				onPressed.push_back(input);
 			}
 		}
-		for (const auto& input : previousSnapshot) {
-			onReleased.push_back(input);
-		}
 
-		// Dispatch all callbacks
-		FireCallbacks(onPressed, onPressedObservers);
-		FireCallbacks(onHeld, onHeldObservers);
-		FireCallbacks(onReleased, onReleasedObservers);
+		// Fire callbacks
+		FireCallbacks(onPressed, inputObservers, OnKey::Pressed);
+		FireCallbacks(onHeld, inputObservers, OnKey::Held);
+		FireCallbacks(previousSnapshot, inputObservers, OnKey::Released);
 	}
 }

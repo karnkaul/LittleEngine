@@ -17,7 +17,6 @@
 #include "SFMLInterface/Rendering/Renderer.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 
-#include "Entities/Actor.h"
 #include "Levels/Level.h"
 #include "Levels/LevelManager.h"
 

@@ -26,7 +26,6 @@ namespace Game {
 	private:
 		struct RawInput {
 			KeyCode keyCode;
-			//KeyMod keyMod;
 
 			RawInput(KeyCode keyCode);
 			bool operator==(const RawInput& rhs) const;
