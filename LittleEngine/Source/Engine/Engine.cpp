@@ -86,6 +86,10 @@ namespace Game {
 		commands.emplace_back(std::make_unique<LoadLevelCommand>(*this, id));
 	}
 
+	void Engine::Quit() {
+		isQuitting = true;
+	}
+
 	void Engine::PollInput() {
 		windowController->PollInput();
 		if (!isPaused && !windowController->IsWindowFocussed()) {
@@ -180,7 +184,7 @@ namespace Game {
 		double previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
 		Fixed deltaTime = 0;
 		Fixed lag = 0;
-		while (windowController->IsWindowOpen()) {
+		while (windowController->IsWindowOpen() && !isQuitting) {
 			PollInput();
 			double current = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
 			deltaTime = Fixed(current - previous);

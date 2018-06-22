@@ -24,30 +24,23 @@ namespace Game {
 	}
 
 	bool InputHandler::IsKeyPressed(GameInput keyCode) const {
-		auto iter = std::find(storedState.begin(), storedState.end(), keyCode);
-		return iter != storedState.end();
+		auto iter = std::find(currentSnapshot.begin(), currentSnapshot.end(), keyCode);
+		return iter != currentSnapshot.end();
 	}
 
-	OnInput::Token Game::InputHandler::Register(OnInput::Callback callback, GameInput keyCode, bool consume) {
-		OnInput newDelegate;
-		OnInput::Token token = newDelegate.Register(callback);
-		
-		auto iter = observers.find(keyCode);
-		size_t size = 0;
-		if (iter != observers.end()) {
-			auto& vec = iter->second;
-			vec.emplace_back(std::move(newDelegate), consume);
-			size = vec.size();
-		}
-		else {
-			std::vector<InputObserver> newVec {
-				InputObserver(std::move(newDelegate), consume)
-			};
-			size = newVec.size();
-			observers.insert(std::pair<GameInput, std::vector<InputObserver> >(keyCode, std::move(newVec)));
-		}
-		Logger::Log(*this, "Registered new callback for KeyCode: " + std::to_string((int)keyCode) + " Total: " + std::to_string(size));
-		return token;
+	OnInput::Token InputHandler::OnPressed(GameInput input, OnInput::Callback callback, bool consume) {
+		Logger::Log(*this, "Registered OnPressed callback for GameInput: " + std::to_string((int)input) + " Total: " + std::to_string(onPressedObservers.size()) + " [consume: " + std::to_string(consume) + "]");
+		return Register(onPressedObservers, callback, input, consume);
+	}
+
+	OnInput::Token Game::InputHandler::OnHeld(GameInput input, OnInput::Callback callback, bool consume) {
+		Logger::Log(*this, "Registered OnHeld callback for GameInput: " + std::to_string((int)input) + " Total: " + std::to_string(onHeldObservers.size()) + " [consume: " + std::to_string(consume) + "]");
+		return Register(onHeldObservers, callback, input, consume);
+	}
+
+	OnInput::Token InputHandler::OnReleased(GameInput input, OnInput::Callback callback, bool consume) {
+		Logger::Log(*this, "Registered OnReleased callback for GameInput: " + std::to_string((int)input) + " Total: " + std::to_string(onReleasedObservers.size()) + " [consume: " + std::to_string(consume) + "]");
+		return Register(onReleasedObservers, callback, input, consume);
 	}
 
 	void InputHandler::SetupInputBindings() {
@@ -70,10 +63,15 @@ namespace Game {
 	}
 
 	void InputHandler::CaptureState(const std::vector<KeyState>& pressedKeys) {
-		storedState.clear();
+		previousSnapshot = currentSnapshot;
+		currentSnapshot.clear();
 		for (const auto& key : pressedKeys) {
-			if (key.GetKeyCode() != KeyCode::Invalid) {
-				storedState.push_back(gamepad.ToGameInput(key));
+			GameInput input = gamepad.ToGameInput(key);
+			if (input != GameInput::Invalid) {
+				auto duplicate = std::find(currentSnapshot.begin(), currentSnapshot.end(), input);
+				if (duplicate == currentSnapshot.end()) {
+					currentSnapshot.push_back(input);
+				}
 			}
 		}
 	}
@@ -91,10 +89,30 @@ namespace Game {
 		}
 	}
 
-	void InputHandler::FireInput() {
-		for (auto& key : storedState) {
-			auto iter = observers.find(key);
-			if (iter != observers.end()) {
+	OnInput::Token InputHandler::Register(std::unordered_map<GameInput, std::vector<InputObserver>>& map, OnInput::Callback callback, GameInput keyCode, bool consume) {
+		OnInput newDelegate;
+		OnInput::Token token = newDelegate.Register(callback);
+		auto iter = map.find(keyCode);
+		size_t size = 0;
+		if (iter != map.end()) {
+			auto& vec = iter->second;
+			vec.emplace_back(std::move(newDelegate), consume);
+			size = vec.size();
+		}
+		else {
+			std::vector<InputObserver> newVec{
+				InputObserver(std::move(newDelegate), consume)
+			};
+			size = newVec.size();
+			map.insert(std::pair<GameInput, std::vector<InputObserver> >(keyCode, std::move(newVec)));
+		}
+		return token;
+	}
+
+	void InputHandler::FireCallbacks(const std::vector<GameInput>& inputs, std::unordered_map<GameInput, std::vector<InputObserver>>& map) {
+		for (auto& key : inputs) {
+			auto iter = map.find(key);
+			if (iter != map.end()) {
 				auto& vec = iter->second;
 				Cleanup(vec);
 				for (auto iter = vec.rbegin(); iter != vec.rend(); ++iter) {
@@ -106,5 +124,28 @@ namespace Game {
 				}
 			}
 		}
+	}
+
+	void InputHandler::FireInput() {
+		// Build OnPressed, OnHeld and OnReleased
+		std::vector<GameInput> onPressed, onHeld, onReleased;
+		for (auto input : currentSnapshot) {
+			auto search = std::find(previousSnapshot.begin(), previousSnapshot.end(), input);
+			if (search != previousSnapshot.end()) {
+				onHeld.push_back(input);
+				previousSnapshot.erase(search);
+			}
+			else {
+				onPressed.push_back(input);
+			}
+		}
+		for (const auto& input : previousSnapshot) {
+			onReleased.push_back(input);
+		}
+
+		// Dispatch all callbacks
+		FireCallbacks(onPressed, onPressedObservers);
+		FireCallbacks(onHeld, onHeldObservers);
+		FireCallbacks(onReleased, onReleasedObservers);
 	}
 }

@@ -24,7 +24,8 @@ namespace Game {
 		logoRenderer = &renderer.SetTextRenderer("... Press Enter to Start ...");
 		logo->GetTransform()->localPosition = Vector2(0, logoY);
 
-		inputToken = GetInputHandler().Register(std::bind(&BootLevel::OnLoadNextLevel, this), GameInput::Enter);
+		inputTokens.push_back(GetInputHandler().OnReleased(GameInput::Enter, std::bind(&BootLevel::OnLoadNextLevel, this)));
+		inputTokens.push_back(GetInputHandler().OnReleased(GameInput::Return, std::bind(&BootLevel::OnQuit, this)));
 	}
 
 	void BootLevel::Tick(Fixed deltaTime) {
@@ -45,6 +46,12 @@ namespace Game {
 	}
 
 	void BootLevel::OnLoadNextLevel() {
+		inputTokens.clear();
 		engine.LoadLevel(1);
+	}
+
+	void BootLevel::OnQuit() {
+		inputTokens.clear();
+		engine.Quit();
 	}
 }

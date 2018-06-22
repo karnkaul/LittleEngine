@@ -46,6 +46,7 @@ namespace Game {
 		const World& GetWorld() const;
 		AssetManager& GetAssetManager() const;
 		void LoadLevel(int id);
+		void Quit();
 
 	private:
 		std::unique_ptr<AssetManager> assetManager;
@@ -58,6 +59,7 @@ namespace Game {
 		SystemClock clock;
 		ExitCode exitCode = ExitCode::OK;
 		bool isPaused = false;
+		bool isQuitting = false;
 
 		Engine();
 

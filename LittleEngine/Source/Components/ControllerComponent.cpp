@@ -37,16 +37,14 @@ void ClampPosition(Vector2& position, const Vector2& worldBoundsX, const Vector2
 
 namespace Game {
 	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent"), inputHandler(actor.GetActiveLevel().GetInputHandler()) {
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnLeft, this), GameInput::Left));
-		//tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRotateLeft, this), GameCommand::RotateLeft));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRight, this), GameInput::Right));
-		//tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRotateRight, this), GameCommand::RotateRight));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnUp, this), GameInput::Up));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnDown, this), GameInput::Down));
+		tokens.push_back(inputHandler.OnHeld(GameInput::Left, std::bind(&ControllerComponent::OnLeft, this)));
+		tokens.push_back(inputHandler.OnHeld(GameInput::Right, std::bind(&ControllerComponent::OnRight, this)));
+		tokens.push_back(inputHandler.OnHeld(GameInput::Up, std::bind(&ControllerComponent::OnUp, this)));
+		tokens.push_back(inputHandler.OnHeld(GameInput::Down, std::bind(&ControllerComponent::OnDown, this)));
 		
 		// Tests
-		tokens.push_back(inputHandler.Register(&Test, GameInput::Left));
-		tokens.push_back(inputHandler.Register(&Test2, GameInput::Left, true));
+		tokens.push_back(inputHandler.OnHeld(GameInput::Left, &Test));
+		tokens.push_back(inputHandler.OnHeld(GameInput::Left, &Test2, true));
 	}
 
 	ControllerComponent::~ControllerComponent() {
