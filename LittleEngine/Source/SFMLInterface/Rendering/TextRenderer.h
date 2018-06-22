@@ -1,11 +1,9 @@
 #pragma once
 #include <string>
 #include "Renderer.h"
+#include "SFMLInterface/Assets.h"
 
 namespace Game {
-	class FontAsset;
-	class TextureAsset;
-
 	enum Style {
 
 	};
@@ -18,14 +16,14 @@ namespace Game {
 		Fixed outlineSize;
 		Colour outlineColour;
 
-		TextData(FontAsset& font, const std::string& text);
-		TextData(FontAsset& font, const std::string& text, Fixed pixelSize, Colour fillColour);
-		TextData(FontAsset& font, const std::string& text, Fixed pixelSize, Colour fillColour, Fixed outlineSize, Colour outlineColour);
-		void SetFont(FontAsset& font);
+		TextData(FontAsset::Ptr font, const std::string& text);
+		TextData(FontAsset::Ptr font, const std::string& text, Fixed pixelSize, Colour fillColour);
+		TextData(FontAsset::Ptr font, const std::string& text, Fixed pixelSize, Colour fillColour, Fixed outlineSize, Colour outlineColour);
+		void SetFont(FontAsset::Ptr font);
 
 	private:
 		friend class TextRenderer;
-		FontAsset* font;
+		FontAsset::Ptr font;
 	};
 
 	class TextRenderer : public Renderer {

@@ -62,7 +62,7 @@ std::string Transform::ToString() const {
 	return localPosition.ToString() + " , " + localRotation.ToString();
 }
 
-Transform::Transform() : localPosition(Vector2::Zero()), localRotation(Fixed(0)) {}
+Transform::Transform() : localPosition(Vector2::Zero), localRotation(Fixed::Zero) {}
 
 Transform::~Transform() = default;
 

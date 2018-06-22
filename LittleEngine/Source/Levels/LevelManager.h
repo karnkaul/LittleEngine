@@ -13,7 +13,7 @@ namespace Game {
 		bool LoadLevel(int levelIndex);
 	private:
 		friend class Engine;
-		Engine* engine;
+		Engine& engine;
 		std::unique_ptr<Level> activeLevel;
 	};
 }

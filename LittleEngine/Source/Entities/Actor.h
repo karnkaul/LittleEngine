@@ -49,7 +49,7 @@ namespace Game {
 	protected:
 		std::vector<std::unique_ptr<Component> > components;
 		Transform::Ptr transform;
-		Level* level;
+		Level& level;
 		bool _destroyed = false;
 
 		std::shared_ptr<Actor> This();

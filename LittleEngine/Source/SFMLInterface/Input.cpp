@@ -49,14 +49,14 @@ namespace Game {
 		return KeyCode::Invalid;
 	}
 
-	KeyState* Input::GetOrCreateKeyState(KeyCode code) {
+	KeyState& Input::GetOrCreateKeyState(KeyCode code) {
 		for (auto & keyState : keyStates) {
 			if (keyState.GetKeyCode() == code) {
-				return &keyState;
+				return keyState;
 			}
 		}
 		keyStates.emplace_back(code);
-		return &keyStates[keyStates.size() - 1];
+		return keyStates[keyStates.size() - 1];
 	}
 
 	bool Input::IsKeyPressed(KeyCode code) const {
@@ -89,14 +89,14 @@ namespace Game {
 
 	void Input::OnKeyDown(const sf::Event::KeyEvent& key) {
 		bool newKeyCode = true;
-		KeyState* toModify = GetOrCreateKeyState(Convert(key.code));
-		toModify->pressed = true;
+		KeyState& toModify = GetOrCreateKeyState(Convert(key.code));
+		toModify.pressed = true;
 	}
 
 	void Input::OnKeyUp(const sf::Event::KeyEvent& key) {
 		bool newKeyCode = true;
-		KeyState* toModify = GetOrCreateKeyState(Convert(key.code));
-		toModify->pressed = false;
+		KeyState& toModify = GetOrCreateKeyState(Convert(key.code));
+		toModify.pressed = false;
 	}
 
 	void Input::ResetKeyStates() {

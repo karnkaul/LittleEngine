@@ -83,7 +83,7 @@ namespace Game {
 		Input(const Input&) = delete;
 		Input& operator=(const Input&) = delete;
 		friend class WindowController;
-		KeyState* GetOrCreateKeyState(KeyCode code);
+		KeyState& GetOrCreateKeyState(KeyCode code);
 		void OnKeyDown(const sf::Event::KeyEvent& key);
 		void OnKeyUp(const sf::Event::KeyEvent& key);
 		void ResetKeyStates();

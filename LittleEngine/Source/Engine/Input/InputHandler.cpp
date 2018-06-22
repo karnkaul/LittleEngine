@@ -60,7 +60,7 @@ namespace Game {
 		gamepad.Bind(KeyCode::Right, GameInput::Right);
 		gamepad.Bind(KeyCode::D, GameInput::Right);
 		gamepad.Bind(KeyCode::Enter, GameInput::Enter);
-		gamepad.Bind(KeyCode::Escape, GameInput::Exit);
+		gamepad.Bind(KeyCode::Escape, GameInput::Return);
 		gamepad.Bind(KeyCode::Tab, GameInput::Select);
 
 		gamepad.Bind(KeyCode::Space, GameInput::X);

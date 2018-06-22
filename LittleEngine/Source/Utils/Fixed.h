@@ -4,6 +4,8 @@
 struct Fixed final {
 public:
 	static const int SCALE_FACTOR = 100000;
+	static const Fixed Zero;
+	static const Fixed One;
 
 	Fixed() = default;
 	explicit Fixed(double);

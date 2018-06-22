@@ -10,7 +10,7 @@ namespace Game {
 		Up,
 		Down,
 		Enter,
-		Exit,
+		Return,
 		Select,
 		X,
 		Y,

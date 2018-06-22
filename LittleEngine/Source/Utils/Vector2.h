@@ -8,8 +8,8 @@ public:
 	Vector2() : x(0), y(0) {}
 	Vector2(Fixed x, Fixed y) : x(x), y(y) {}
 
-	static Vector2 Zero() { return Vector2(0, 0); }
-	static Vector2 One() { return Vector2(1, 1); }
+	static const Vector2 Zero;
+	static const Vector2 One;
 
 	Vector2& operator+=(const Vector2& rhs);
 	Vector2& operator-=(const Vector2& rhs);

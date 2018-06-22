@@ -50,7 +50,7 @@ namespace Game {
 
 		//pawn0 = actor0;		// Must not compile
 		auto actor1 = NewActor("Actor1-TextRenderer");
-		Fixed yPos = this->engine->GetWorld().GetWorldSize().y / 2;
+		Fixed yPos = this->engine.GetWorld().GetWorldSize().y / 2;
 		auto& rc = actor1->AddComponent<RenderComponent>();
 		auto& tr = rc.SetTextRenderer("Hello World!");
 		tr.SetColour(Colour(200, 150, 50)).SetSize(50);
@@ -66,14 +66,7 @@ namespace Game {
 
 	void RenderTests(Level* level, std::vector<std::shared_ptr<Actor> >& actors, RenderParams& params) {
 		if (!actors.empty()) {
-			// TODO: TextShape
 			actors[0]->GetTransform()->Rotate(2);
-			/*KeyState space = level->GetInput().GetKeyState(KeyCode::Space);
-			KeyState control = level->GetInput().GetKeyState(KeyCode::Control);
-			if (!parentSet && space.pressed) {
-				actors[0]->GetTransform()->SetParent(actors[1]->GetTransform(), !control.pressed);
-				parentSet = true;
-			}*/
 		}
 	}
 

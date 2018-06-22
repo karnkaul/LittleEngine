@@ -14,8 +14,7 @@
 #include "Components/Component.h"
 
 namespace Game {
-	Actor::Actor(Level& level, std::string name) : Object(name) {
-		this->level = &level;
+	Actor::Actor(Level& level, std::string name) : Object(name), level(level) {
 		transform = Transform::Create();
 		Logger::Log(*this, "Created new actor \"" + name + "\" at " + transform->Position().ToString());
 	}
@@ -56,7 +55,7 @@ namespace Game {
 	}
 
 	Level & Actor::GetActiveLevel() const {
-		return *level;
+		return level;
 	}
 
 	std::shared_ptr<Actor> Actor::This() {

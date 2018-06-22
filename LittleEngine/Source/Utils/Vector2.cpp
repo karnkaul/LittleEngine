@@ -3,6 +3,9 @@
 #include <math.h>
 #include "Vector2.h"
 
+const Vector2 Vector2::Zero = Vector2(0, 0);
+const Vector2 Vector2::One = Vector2(1, 1);
+
 Vector2 Vector2::operator+(const Vector2& rhs) const {
 	return Vector2(*this) += rhs;
 }

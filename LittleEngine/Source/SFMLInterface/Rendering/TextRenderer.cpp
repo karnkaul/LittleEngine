@@ -5,17 +5,17 @@
 #include "SFMLInterface/Assets.h"
 
 namespace Game {
-	TextData::TextData(FontAsset & font, const std::string & text)
+	TextData::TextData(FontAsset::Ptr font, const std::string & text)
 		: TextData(font, text, 25, Colour::White, 0, Colour::Black) {
 	}
-	TextData::TextData(FontAsset & font, const std::string & text, Fixed pixelSize, Colour fillColour)
+	TextData::TextData(FontAsset::Ptr font, const std::string & text, Fixed pixelSize, Colour fillColour)
 		: TextData(font, text, pixelSize, fillColour, 0, Colour::Black) {
 	}
-	TextData::TextData(FontAsset & font, const std::string & text, Fixed pixelSize, Colour fillColour, Fixed outlineSize, Colour outlineColour)
-		: font(&font), text(text), pixelSize(pixelSize), fillColour(fillColour), outlineSize(outlineSize), outlineColour(outlineColour) {
+	TextData::TextData(FontAsset::Ptr font, const std::string & text, Fixed pixelSize, Colour fillColour, Fixed outlineSize, Colour outlineColour)
+		: font(font), text(text), pixelSize(pixelSize), fillColour(fillColour), outlineSize(outlineSize), outlineColour(outlineColour) {
 	}
-	void TextData::SetFont(FontAsset & font) {
-		this->font = &font;
+	void TextData::SetFont(FontAsset::Ptr font) {
+		this->font = font;
 	}
 
 	TextRenderer::TextRenderer(const TextData & data) :
