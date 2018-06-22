@@ -39,14 +39,15 @@ namespace Game {
 
 			case sf::Event::GainedFocus:
 				_focus = true;
+				input.ResetKeyStates();
 				break;
 
 			case sf::Event::KeyPressed:
-				inputHandler.OnKeyDown(event.key);
+				input.OnKeyDown(event.key);
 				break;
 
 			case sf::Event::KeyReleased:
-				inputHandler.OnKeyUp(event.key);
+				input.OnKeyUp(event.key);
 			}
 		}
 	}
@@ -68,6 +69,6 @@ namespace Game {
 	}
 
 	const Input& WindowController::GetInputHandler() const {
-		return inputHandler;
+		return input;
 	}
 }

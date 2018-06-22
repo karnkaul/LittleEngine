@@ -36,8 +36,8 @@ namespace Game {
 		}
 	}
 
-	FontAsset& AssetManager::GetDefaultFont() const {
-		return *defaultFont;
+	FontAsset::Ptr AssetManager::GetDefaultFont() const {
+		return defaultFont;
 	}
 
 	void AssetManager::Clear() {

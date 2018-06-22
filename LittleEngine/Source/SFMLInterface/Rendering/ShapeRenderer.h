@@ -17,9 +17,9 @@ namespace Game {
 		}
 
 		template<typename T>
-		T* CastShape() const {
+		T& CastShape() const {
 			static_assert(std::is_base_of<sf::Shape, T>::value, "T must derive from sf::Shape; check Output window for erroneous call");
-			return dynamic_cast<T*>(shape.get());
+			return dynamic_cast<T&>(*shape);
 		}
 	};
 

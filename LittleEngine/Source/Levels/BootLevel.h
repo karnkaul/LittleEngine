@@ -14,9 +14,10 @@ namespace Game {
 	private:
 		TextRenderer* logoRenderer;
 		std::shared_ptr<Actor> logo;
-		OnInput::Token inputToken;
+		std::vector<OnInput::Token> inputTokens;
 
 		void LoadAssets();
 		void OnLoadNextLevel();
+		void OnQuit();
 	};
 }

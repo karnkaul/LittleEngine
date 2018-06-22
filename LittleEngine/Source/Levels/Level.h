@@ -19,7 +19,6 @@ namespace Game {
 		virtual void Tick(Fixed deltaTime);
 		virtual void Render(RenderParams& params);
 		
-		const Input& GetInput() const;
 		InputHandler& GetInputHandler() const;
 		int64_t LevelTimeMicroSeconds() const;
 		int LevelTimeMilliSeconds() const;
@@ -33,7 +32,7 @@ namespace Game {
 	protected:
 		std::vector<std::shared_ptr<Actor> > actors;
 		GameClock clock;
-		Engine* engine;
+		Engine& engine;
 		
 		Level(const std::string& name, Engine& engine);
 		static bool IsActorDestroyed(const std::shared_ptr<Actor>& actor);

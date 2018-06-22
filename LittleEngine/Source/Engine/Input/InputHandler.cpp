@@ -23,49 +23,57 @@ namespace Game {
 		Logger::Log(*this, "InputHandler destroyed");
 	}
 
-	OnInput::Token Game::InputHandler::Register(OnInput::Callback callback, GameCommand keyCode, bool consume) {
-		OnInput newDelegate;
-		OnInput::Token token = newDelegate.Register(callback);
-		
-		auto iter = observers.find(keyCode);
-		size_t size = 0;
-		if (iter != observers.end()) {
-			auto& vec = iter->second;
-			vec.emplace_back(std::move(newDelegate), consume);
-			size = vec.size();
-		}
-		else {
-			std::vector<InputObserver> newVec {
-				InputObserver(std::move(newDelegate), consume)
-			};
-			size = newVec.size();
-			observers.insert(std::pair<GameCommand, std::vector<InputObserver> >(keyCode, std::move(newVec)));
-		}
-		Logger::Log(*this, "Registered new callback for KeyCode: " + std::to_string((int)keyCode) + " Total: " + std::to_string(size));
-		return token;
+	bool InputHandler::IsKeyPressed(GameInput keyCode) const {
+		auto iter = std::find(currentSnapshot.begin(), currentSnapshot.end(), keyCode);
+		return iter != currentSnapshot.end();
+	}
+
+	OnInput::Token InputHandler::OnPressed(GameInput input, OnInput::Callback callback, bool consume) {
+		Logger::Log(*this, "Registered OnPressed callback for GameInput: " + std::to_string((int)input) + " Total: " + std::to_string(onPressedObservers.size()) + " [consume: " + std::to_string(consume) + "]");
+		return Register(onPressedObservers, callback, input, consume);
+	}
+
+	OnInput::Token Game::InputHandler::OnHeld(GameInput input, OnInput::Callback callback, bool consume) {
+		Logger::Log(*this, "Registered OnHeld callback for GameInput: " + std::to_string((int)input) + " Total: " + std::to_string(onHeldObservers.size()) + " [consume: " + std::to_string(consume) + "]");
+		return Register(onHeldObservers, callback, input, consume);
+	}
+
+	OnInput::Token InputHandler::OnReleased(GameInput input, OnInput::Callback callback, bool consume) {
+		Logger::Log(*this, "Registered OnReleased callback for GameInput: " + std::to_string((int)input) + " Total: " + std::to_string(onReleasedObservers.size()) + " [consume: " + std::to_string(consume) + "]");
+		return Register(onReleasedObservers, callback, input, consume);
 	}
 
 	void InputHandler::SetupInputBindings() {
-		KeyMod _default;
-		KeyMod _ctrl(true, false, false);
-		KeyMod _shift(false, false, true);
+		gamepad.Bind(KeyCode::Up, GameInput::Up);
+		gamepad.Bind(KeyCode::W, GameInput::Up);
+		gamepad.Bind(KeyCode::Down, GameInput::Down);
+		gamepad.Bind(KeyCode::S, GameInput::Down);
+		gamepad.Bind(KeyCode::Left, GameInput::Left);
+		gamepad.Bind(KeyCode::A, GameInput::Left);
+		gamepad.Bind(KeyCode::Right, GameInput::Right);
+		gamepad.Bind(KeyCode::D, GameInput::Right);
+		gamepad.Bind(KeyCode::Enter, GameInput::Enter);
+		gamepad.Bind(KeyCode::Escape, GameInput::Return);
+		gamepad.Bind(KeyCode::Tab, GameInput::Select);
 
-		gamepad.Bind(KeyCode::Up, _default, GameCommand::MoveUp);
-		gamepad.Bind(KeyCode::W, _default, GameCommand::MoveUp);
-		gamepad.Bind(KeyCode::Down, _default, GameCommand::MoveDown);
-		gamepad.Bind(KeyCode::S, _default, GameCommand::MoveDown);
-		gamepad.Bind(KeyCode::Left, _default, GameCommand::MoveLeft);
-		gamepad.Bind(KeyCode::A, _default, GameCommand::MoveLeft);
-		gamepad.Bind(KeyCode::Right, _default, GameCommand::MoveRight);
-		gamepad.Bind(KeyCode::D, _default, GameCommand::MoveRight);
-		gamepad.Bind(KeyCode::Left, _ctrl, GameCommand::RotateLeft);
-		gamepad.Bind(KeyCode::A, _ctrl, GameCommand::RotateLeft);
-		gamepad.Bind(KeyCode::Right, _ctrl, GameCommand::RotateRight);
-		gamepad.Bind(KeyCode::D, _ctrl, GameCommand::RotateRight);
-		gamepad.Bind(KeyCode::Enter, _default, GameCommand::Enter);
-		gamepad.Bind(KeyCode::Escape, _default, GameCommand::Exit);
-		gamepad.Bind(KeyCode::Space, _default, GameCommand::Fire);
-		gamepad.Bind(KeyCode::Tab, _default, GameCommand::Select);
+		gamepad.Bind(KeyCode::Space, GameInput::X);
+		gamepad.Bind(KeyCode::E, GameInput::Y);
+		gamepad.Bind(KeyCode::Control, GameInput::LB);
+		gamepad.Bind(KeyCode::Shift, GameInput::RB);
+	}
+
+	void InputHandler::CaptureState(const std::vector<KeyState>& pressedKeys) {
+		previousSnapshot = currentSnapshot;
+		currentSnapshot.clear();
+		for (const auto& key : pressedKeys) {
+			GameInput input = gamepad.ToGameInput(key);
+			if (input != GameInput::Invalid) {
+				auto duplicate = std::find(currentSnapshot.begin(), currentSnapshot.end(), input);
+				if (duplicate == currentSnapshot.end()) {
+					currentSnapshot.push_back(input);
+				}
+			}
+		}
 	}
 
 	void InputHandler::Cleanup(std::vector<InputObserver>& vec) {
@@ -81,13 +89,30 @@ namespace Game {
 		}
 	}
 
-	void InputHandler::FireInput(const std::vector<KeyState>& pressedKeys) {
-		for (auto& keyState : pressedKeys) {
-			GameCommand key = gamepad.Convert(keyState);
-			if (key == GameCommand::Invalid) return;
-			
-			auto iter = observers.find(key);
-			if (iter != observers.end()) {
+	OnInput::Token InputHandler::Register(std::unordered_map<GameInput, std::vector<InputObserver>>& map, OnInput::Callback callback, GameInput keyCode, bool consume) {
+		OnInput newDelegate;
+		OnInput::Token token = newDelegate.Register(callback);
+		auto iter = map.find(keyCode);
+		size_t size = 0;
+		if (iter != map.end()) {
+			auto& vec = iter->second;
+			vec.emplace_back(std::move(newDelegate), consume);
+			size = vec.size();
+		}
+		else {
+			std::vector<InputObserver> newVec{
+				InputObserver(std::move(newDelegate), consume)
+			};
+			size = newVec.size();
+			map.insert(std::pair<GameInput, std::vector<InputObserver> >(keyCode, std::move(newVec)));
+		}
+		return token;
+	}
+
+	void InputHandler::FireCallbacks(const std::vector<GameInput>& inputs, std::unordered_map<GameInput, std::vector<InputObserver>>& map) {
+		for (auto& key : inputs) {
+			auto iter = map.find(key);
+			if (iter != map.end()) {
 				auto& vec = iter->second;
 				Cleanup(vec);
 				for (auto iter = vec.rbegin(); iter != vec.rend(); ++iter) {
@@ -99,5 +124,28 @@ namespace Game {
 				}
 			}
 		}
+	}
+
+	void InputHandler::FireInput() {
+		// Build OnPressed, OnHeld and OnReleased
+		std::vector<GameInput> onPressed, onHeld, onReleased;
+		for (auto input : currentSnapshot) {
+			auto search = std::find(previousSnapshot.begin(), previousSnapshot.end(), input);
+			if (search != previousSnapshot.end()) {
+				onHeld.push_back(input);
+				previousSnapshot.erase(search);
+			}
+			else {
+				onPressed.push_back(input);
+			}
+		}
+		for (const auto& input : previousSnapshot) {
+			onReleased.push_back(input);
+		}
+
+		// Dispatch all callbacks
+		FireCallbacks(onPressed, onPressedObservers);
+		FireCallbacks(onHeld, onHeldObservers);
+		FireCallbacks(onReleased, onReleasedObservers);
 	}
 }

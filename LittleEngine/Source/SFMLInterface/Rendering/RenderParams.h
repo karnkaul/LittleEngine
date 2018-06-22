@@ -15,6 +15,6 @@ namespace Game {
 		RenderParams(WindowController& controller);
 		WindowController& GetWindowController();
 	private:
-		WindowController* windowController;
+		WindowController& windowController;
 	};
 }

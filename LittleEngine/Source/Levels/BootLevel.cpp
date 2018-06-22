@@ -17,14 +17,15 @@ namespace Game {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 		LoadAssets();
 		
-		Vector2 worldY = this->engine->GetWorld().GetWorldBoundsY();
+		Vector2 worldY = this->engine.GetWorld().GetWorldBoundsY();
 		Fixed logoY = worldY.x + 200;
 		logo = NewActor("Logo");
 		auto& renderer = logo->AddComponent<RenderComponent>();
 		logoRenderer = &renderer.SetTextRenderer("... Press Enter to Start ...");
 		logo->GetTransform()->localPosition = Vector2(0, logoY);
 
-		inputToken = GetInputHandler().Register(std::bind(&BootLevel::OnLoadNextLevel, this), GameCommand::Enter);
+		inputTokens.push_back(GetInputHandler().OnReleased(GameInput::Enter, std::bind(&BootLevel::OnLoadNextLevel, this)));
+		inputTokens.push_back(GetInputHandler().OnReleased(GameInput::Return, std::bind(&BootLevel::OnQuit, this)));
 	}
 
 	void BootLevel::Tick(Fixed deltaTime) {
@@ -41,10 +42,16 @@ namespace Game {
 
 	void BootLevel::LoadAssets() {
 		Logger::Log(*this, "Loading Assets...", Logger::Severity::Debug);
-		engine->GetAssetManager().LoadAllTextures({ "Assets/Ship.png" });
+		engine.GetAssetManager().LoadAllTextures({ "Assets/Ship.png" });
 	}
 
 	void BootLevel::OnLoadNextLevel() {
-		engine->LoadLevel(1);
+		inputTokens.clear();
+		engine.LoadLevel(1);
+	}
+
+	void BootLevel::OnQuit() {
+		inputTokens.clear();
+		engine.Quit();
 	}
 }

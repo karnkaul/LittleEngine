@@ -14,14 +14,6 @@ namespace Game {
 			return KeyCode::Up;
 		case sf::Keyboard::Down:
 			return KeyCode::Down;
-		case sf::Keyboard::Space:
-			return KeyCode::Space;
-		case sf::Keyboard::Enter:
-			return KeyCode::Enter;
-		case sf::Keyboard::Escape:
-			return KeyCode::Escape;
-		case sf::Keyboard::Tab:
-			return KeyCode::Tab;
 		case sf::Keyboard::W:
 			return KeyCode::W;
 		case sf::Keyboard::A:
@@ -30,48 +22,41 @@ namespace Game {
 			return KeyCode::S;
 		case sf::Keyboard::D:
 			return KeyCode::D;
+		case sf::Keyboard::E:
+			return KeyCode::E;
+		case sf::Keyboard::R:
+			return KeyCode::R;
+		case sf::Keyboard::F:
+			return KeyCode::F;
+		case sf::Keyboard::Space:
+			return KeyCode::Space;
+		case sf::Keyboard::Enter:
+			return KeyCode::Enter;
+		case sf::Keyboard::Escape:
+			return KeyCode::Escape;
+		case sf::Keyboard::Tab:
+			return KeyCode::Tab;
+		case sf::Keyboard::LControl:
+		case sf::Keyboard::RControl:
+			return KeyCode::Control;
+		case sf::Keyboard::LShift:
+		case sf::Keyboard::RShift:
+			return KeyCode::Shift;
+		case sf::Keyboard::LAlt:
+		case sf::Keyboard::RAlt:
+			return KeyCode::Alt;
 		}
 		return KeyCode::Invalid;
 	}
 
-	sf::Keyboard::Key Convert(const KeyCode& code) {
-		switch (code) {
-		case KeyCode::Left:
-			return sf::Keyboard::Left;
-		case KeyCode::Right:
-			return sf::Keyboard::Right;
-		case KeyCode::Up:
-			return sf::Keyboard::Up;
-		case KeyCode::Down:
-			return sf::Keyboard::Down;
-		case KeyCode::W:
-			return sf::Keyboard::W;
-		case KeyCode::A:
-			return sf::Keyboard::A;
-		case KeyCode::S:
-			return sf::Keyboard::S;
-		case KeyCode::D:
-			return sf::Keyboard::D;
-		case KeyCode::Space:
-			return sf::Keyboard::Space;
-		case KeyCode::Enter:
-			return sf::Keyboard::Enter;
-		case KeyCode::Escape:
-			return sf::Keyboard::Escape;
-		case KeyCode::Tab:
-			return sf::Keyboard::Tab;
-		}
-		return sf::Keyboard::LAlt;
-	}
-
-	KeyState* Input::GetOrCreateKeyState(KeyCode code) {
+	KeyState& Input::GetOrCreateKeyState(KeyCode code) {
 		for (auto & keyState : keyStates) {
 			if (keyState.GetKeyCode() == code) {
-				return &keyState;
+				return keyState;
 			}
 		}
 		keyStates.emplace_back(code);
-		return &keyStates[keyStates.size() - 1];
+		return keyStates[keyStates.size() - 1];
 	}
 
 	bool Input::IsKeyPressed(KeyCode code) const {
@@ -104,15 +89,19 @@ namespace Game {
 
 	void Input::OnKeyDown(const sf::Event::KeyEvent& key) {
 		bool newKeyCode = true;
-		KeyState* toModify = GetOrCreateKeyState(Convert(key.code));
-		toModify->modifier = KeyMod(key);
-		toModify->pressed = true;
+		KeyState& toModify = GetOrCreateKeyState(Convert(key.code));
+		toModify.pressed = true;
 	}
 
 	void Input::OnKeyUp(const sf::Event::KeyEvent& key) {
 		bool newKeyCode = true;
-		KeyState* toModify = GetOrCreateKeyState(Convert(key.code));
-		toModify->modifier = KeyMod();
-		toModify->pressed = false;
+		KeyState& toModify = GetOrCreateKeyState(Convert(key.code));
+		toModify.pressed = false;
+	}
+
+	void Input::ResetKeyStates() {
+		for (auto& keyState : keyStates) {
+			keyState.pressed = false;
+		}
 	}
 }

@@ -21,8 +21,12 @@ namespace Game {
 		this->renderer = std::move(renderer);
 	}
 
-	Renderer* RenderComponent::GetRenderer() const {
-		return renderer.get();
+	Vector2 RenderComponent::GetBounds() const {
+		return renderer == nullptr ? Vector2::Zero : renderer->GetBounds();
+	}
+
+	Vector2 RenderComponent::GetWorldBounds(const World& world) const {
+		return renderer == nullptr ? Vector2::Zero : renderer->GetWorldBounds(world);
 	}
 
 	CircleRenderer & RenderComponent::SetCircleRenderer(std::unique_ptr<CircleRenderer> circleRenderer) {
@@ -45,13 +49,13 @@ namespace Game {
 	}
 
 	SpriteRenderer& RenderComponent::SetSpriteRenderer(const std::string & texturePath) {
-		std::shared_ptr<TextureAsset> texture = GetActor().GetActiveLevel().GetAssetManager().LoadAsset<TextureAsset>(texturePath);
-		SetRenderer(RenderFactory::NewSprite(*texture));
+		TextureAsset::Ptr texture = GetActor().GetActiveLevel().GetAssetManager().LoadAsset<TextureAsset>(texturePath);
+		SetRenderer(RenderFactory::NewSprite(texture));
 		return *dynamic_cast<SpriteRenderer*>(renderer.get());
 	}
 
 	TextRenderer& RenderComponent::SetTextRenderer(const std::string & text) {
-		FontAsset& font = GetActor().GetActiveLevel().GetAssetManager().GetDefaultFont();
+		FontAsset::Ptr font = GetActor().GetActiveLevel().GetAssetManager().GetDefaultFont();
 		TextData textData(font, text);
 		SetRenderer(RenderFactory::NewText(textData));
 		return *dynamic_cast<TextRenderer*>(renderer.get());

@@ -18,7 +18,7 @@ namespace Game { namespace RenderFactory {
 	std::unique_ptr<RectangleRenderer> NewRectangle(const Vector2& size, const Colour& colour) {
 		return std::make_unique<Game::RectangleRenderer>(size, colour);
 	}
-	std::unique_ptr<SpriteRenderer> NewSprite(const TextureAsset& texture) {
+	std::unique_ptr<SpriteRenderer> NewSprite(TextureAsset::Ptr texture) {
 		return std::make_unique<SpriteRenderer>(texture);
 	}
 	std::unique_ptr<TextRenderer> NewText(const TextData& data) {

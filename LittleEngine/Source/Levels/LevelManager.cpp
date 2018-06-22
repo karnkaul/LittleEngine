@@ -8,8 +8,7 @@
 #include "TestLevel.h"
 
 namespace Game {
-	LevelManager::LevelManager(Engine& engine) : Object("LevelManager") {
-		this->engine = &engine;
+	LevelManager::LevelManager(Engine& engine) : Object("LevelManager"), engine(engine) {
 		Logger::Log(*this, "LevelManager created");
 	}
 
@@ -27,11 +26,11 @@ namespace Game {
 		switch (levelIndex) {
 		case 0:
 		default:
-			activeLevel = std::make_unique<BootLevel>(*engine);
+			activeLevel = std::make_unique<BootLevel>(engine);
 			return true;
 			
 		case 1:
-			activeLevel = std::make_unique<TestLevel>(*engine);
+			activeLevel = std::make_unique<TestLevel>(engine);
 			return true;
 		}
 		return false;

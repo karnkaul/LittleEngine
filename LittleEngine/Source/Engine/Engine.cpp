@@ -70,10 +70,6 @@ namespace Game {
 		return (int)exitCode;
 	}
 
-	const Input& Engine::GetInput() const {
-		return windowController->GetInputHandler();
-	}
-
 	InputHandler & Engine::GetInputHandler() const {
 		return *inputHandler;
 	}
@@ -90,6 +86,10 @@ namespace Game {
 		commands.emplace_back(std::make_unique<LoadLevelCommand>(*this, id));
 	}
 
+	void Engine::Quit() {
+		isQuitting = true;
+	}
+
 	void Engine::PollInput() {
 		windowController->PollInput();
 		if (!isPaused && !windowController->IsWindowFocussed()) {
@@ -98,6 +98,7 @@ namespace Game {
 		if (isPaused && windowController->IsWindowFocussed()) {
 			OnUnpaused();
 		}
+		inputHandler->CaptureState(windowController->GetInputHandler().GetPressed());
 	}
 
 	void Engine::FixedTick(Fixed& lag) {
@@ -114,7 +115,7 @@ namespace Game {
 
 	void Engine::Tick(Fixed deltaTime) {
 		GameClock::Tick(deltaTime);
-		inputHandler->FireInput(windowController->GetInputHandler().GetPressed());
+		inputHandler->FireInput();
 		levelManager->GetActiveLevel().Tick(deltaTime);
 	}
 
@@ -183,7 +184,7 @@ namespace Game {
 		double previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
 		Fixed deltaTime = 0;
 		Fixed lag = 0;
-		while (windowController->IsWindowOpen()) {
+		while (windowController->IsWindowOpen() && !isQuitting) {
 			PollInput();
 			double current = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
 			deltaTime = Fixed(current - previous);

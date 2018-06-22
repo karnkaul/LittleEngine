@@ -36,18 +36,15 @@ void ClampPosition(Vector2& position, const Vector2& worldBoundsX, const Vector2
 }
 
 namespace Game {
-	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent") {
-		InputHandler& inputHandler = actor.GetActiveLevel().GetInputHandler();
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveLeft, this), GameCommand::MoveLeft));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRotateLeft, this), GameCommand::RotateLeft));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveRight, this), GameCommand::MoveRight));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnRotateRight, this), GameCommand::RotateRight));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveUp, this), GameCommand::MoveUp));
-		tokens.push_back(inputHandler.Register(std::bind(&ControllerComponent::OnMoveDown, this), GameCommand::MoveDown));
+	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent"), inputHandler(actor.GetActiveLevel().GetInputHandler()) {
+		tokens.push_back(inputHandler.OnHeld(GameInput::Left, std::bind(&ControllerComponent::OnLeft, this)));
+		tokens.push_back(inputHandler.OnHeld(GameInput::Right, std::bind(&ControllerComponent::OnRight, this)));
+		tokens.push_back(inputHandler.OnHeld(GameInput::Up, std::bind(&ControllerComponent::OnUp, this)));
+		tokens.push_back(inputHandler.OnHeld(GameInput::Down, std::bind(&ControllerComponent::OnDown, this)));
 		
 		// Tests
-		tokens.push_back(inputHandler.Register(&Test, GameCommand::MoveLeft));
-		tokens.push_back(inputHandler.Register(&Test2, GameCommand::MoveLeft, true));
+		tokens.push_back(inputHandler.OnHeld(GameInput::Left, &Test));
+		tokens.push_back(inputHandler.OnHeld(GameInput::Left, &Test2, true));
 	}
 
 	ControllerComponent::~ControllerComponent() {
@@ -63,7 +60,7 @@ namespace Game {
 		const World& world = actor.GetActiveLevel().GetWorld();
 		Vector2 worldX = world.GetWorldBoundsX();
 		Vector2 worldY = world.GetWorldBoundsY();
-		Vector2 padding = actor.GetComponent<RenderComponent>()->GetRenderer()->GetWorldBounds(world) * Fixed(1, 2);
+		Vector2 padding = actor.GetComponent<RenderComponent>()->GetWorldBounds(world) * Fixed(1, 2);
 		ClampPosition(actor.GetTransform()->localPosition, worldX, worldY, padding);
 
 		// TESTS
@@ -73,27 +70,29 @@ namespace Game {
 		}
 	}
 
-	void ControllerComponent::OnMoveLeft() {
-		GetActor().GetTransform()->localPosition.x -= prevDeltaTime;
+	void ControllerComponent::OnLeft() {
+		if (inputHandler.IsKeyPressed(GameInput::LB)) {
+			GetActor().GetTransform()->Rotate(prevDeltaTime / 3);
+		}
+		else {
+			GetActor().GetTransform()->localPosition.x -= prevDeltaTime;
+		}
 	}
 
-	void ControllerComponent::OnRotateLeft() {
-		GetActor().GetTransform()->Rotate(prevDeltaTime / 3);
+	void ControllerComponent::OnRight() {
+		if (inputHandler.IsKeyPressed(GameInput::LB)) {
+			GetActor().GetTransform()->Rotate(-prevDeltaTime / 3);
+		}
+		else {
+			GetActor().GetTransform()->localPosition.x += prevDeltaTime;
+		}
 	}
 
-	void ControllerComponent::OnMoveRight() {
-		GetActor().GetTransform()->localPosition.x += prevDeltaTime;
-	}
-
-	void ControllerComponent::OnRotateRight() {
-		GetActor().GetTransform()->Rotate(-prevDeltaTime / 3);
-	}
-
-	void ControllerComponent::OnMoveUp() {
+	void ControllerComponent::OnUp() {
 		GetActor().GetTransform()->localPosition.y += prevDeltaTime;
 	}
 
-	void ControllerComponent::OnMoveDown() {
+	void ControllerComponent::OnDown() {
 		GetActor().GetTransform()->localPosition.y -= prevDeltaTime;
 	}
 }

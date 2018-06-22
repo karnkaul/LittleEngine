@@ -15,14 +15,13 @@ namespace Game {
 		virtual void Tick(Fixed deltaTime) override;
 
 	private:
+		InputHandler& inputHandler;
 		std::vector<OnInput::Token> tokens;
 		Fixed prevDeltaTime = 0;
 
-		void OnMoveLeft();
-		void OnRotateLeft();
-		void OnMoveRight();
-		void OnRotateRight();
-		void OnMoveUp();
-		void OnMoveDown();
+		void OnLeft();
+		void OnRight();
+		void OnUp();
+		void OnDown();
 	};
 }

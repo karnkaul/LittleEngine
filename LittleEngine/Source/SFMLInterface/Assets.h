@@ -24,18 +24,23 @@ namespace Game {
 	// Concrete wrapper class for SFML Textures
 	class TextureAsset : public Asset {
 	public:
-		// Path must be relative to the executable
-		TextureAsset(const std::string& path);
+		using Ptr = std::shared_ptr<TextureAsset>;
 	private:
 		// Prevents having to expose texture to code outside SFMLInterface
 		friend class SpriteRenderer;
+		friend class AssetManager;
+		// Path must be relative to the executable
+		TextureAsset(const std::string& path);
 		sf::Texture sfTexture;
 	};
 
 	class FontAsset : public Asset {
 	public:
-		FontAsset(const std::string& path);
+		using Ptr = std::shared_ptr<FontAsset>;
 	private:
+		friend class AssetManager;
+		// Path must be relative to the executable
+		FontAsset(const std::string& path);
 		friend class TextRenderer;
 		sf::Font sfFont;
 	};
@@ -59,20 +64,21 @@ namespace Game {
 			}
 
 			Logger::Log("AssetManager", "Loading Asset [" + path + "]", Logger::Severity::Debug);
-			std::shared_ptr<T> t_ptr = std::make_shared<T>(path);
+			struct enable_shared : public T { enable_shared(const std::string& path) : T(path) {} };
+			std::shared_ptr<T> t_ptr = std::make_shared<enable_shared>(path);
 			std::shared_ptr<Asset> t_asset = std::dynamic_pointer_cast<Asset>(t_ptr);
 			loaded.insert(std::pair<std::string, std::shared_ptr<Asset> >(path, t_asset));
 			return t_ptr;
 		}
 		
-		FontAsset& GetDefaultFont() const;
+		FontAsset::Ptr GetDefaultFont() const;
 		void LoadAllTextures(std::initializer_list<std::string> texturePaths);
 		void Clear();
 
 	private:
 		AssetManager(const AssetManager&) = delete;
 		AssetManager& operator=(const AssetManager&) = delete;
-		std::shared_ptr<FontAsset> defaultFont;
+		FontAsset::Ptr defaultFont;
 		std::unordered_map<std::string, std::shared_ptr<Asset> > loaded;
 	};
 }

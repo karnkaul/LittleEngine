@@ -2,13 +2,12 @@
 #include "SpriteRenderer.h"
 #include "ShapeRenderer.h"
 #include "RenderParams.h"
-#include "SFMLInterface/Assets.h"
 #include "SFMLInterface/WindowController.h"
 
 namespace Game {
-	SpriteRenderer::SpriteRenderer(const TextureAsset& texture) : Renderer("SpriteRenderer"), texture(&texture) {
+	SpriteRenderer::SpriteRenderer(TextureAsset::Ptr texture) : Renderer("SpriteRenderer"), texture(texture) {
 		SetTexture(texture);
-		SetPosition(Vector2::Zero());
+		SetPosition(Vector2::Zero);
 	}
 
 	void SpriteRenderer::SetPosition(const Vector2 screenPosition) {
@@ -32,9 +31,9 @@ namespace Game {
 		);
 	}
 
-	void SpriteRenderer::SetTexture(const TextureAsset &texture) {
-		Logger::Log(*this, "Setting texture to [" + texture.GetResourcePath() + "]", Logger::Severity::Debug);
-		sprite.setTexture(texture.sfTexture);
+	void SpriteRenderer::SetTexture(TextureAsset::Ptr texture) {
+		Logger::Log(*this, "Setting texture to [" + texture->GetResourcePath() + "]", Logger::Severity::Debug);
+		sprite.setTexture(texture->sfTexture);
 		sprite.setOrigin(sprite.getLocalBounds().width * 0.5f, sprite.getLocalBounds().height * 0.5f);
 	}
 }

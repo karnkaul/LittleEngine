@@ -16,7 +16,7 @@ namespace Game {
 		LoadLevelCommand(Engine& engine, int levelID);
 		virtual bool Execute() override;
 	private:
-		Engine* engine;
+		Engine& engine;
 		int levelID;
 	};
 }

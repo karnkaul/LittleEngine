@@ -8,10 +8,10 @@ namespace Game {
 	// Wrapper struct for SFML Drawable
 	struct Drawable {
 	public:
-		Drawable(sf::Drawable& drawable) : drawable(&drawable) { }
-		const sf::Drawable& GetSFMLDrawable() { return *drawable; }
+		Drawable(sf::Drawable& drawable) : drawable(drawable) { }
+		const sf::Drawable& GetSFMLDrawable() { return drawable; }
 	private:
-		sf::Drawable* drawable;
+		sf::Drawable& drawable;
 	};
 
 	// Conrete class that can create an SFML RenderWindow 
@@ -39,7 +39,7 @@ namespace Game {
 		WindowController(const WindowController&) = delete;
 		WindowController& operator=(const WindowController&) = delete;
 		std::unique_ptr<sf::RenderWindow> window;
-		Input inputHandler;
+		Input input;
 		bool _focus = false;
 	};
 }
