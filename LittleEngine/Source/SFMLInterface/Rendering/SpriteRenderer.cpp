@@ -5,8 +5,8 @@
 #include "SFMLInterface/WindowController.h"
 
 namespace Game {
-	SpriteRenderer::SpriteRenderer(TextureAsset::Ptr texture) : Renderer("SpriteRenderer"), texture(texture) {
-		SetTexture(texture);
+	SpriteRenderer::SpriteRenderer(const SpriteData& data) : Renderer("SpriteRenderer"), data(data) {
+		ApplyData();
 		SetPosition(Vector2::Zero);
 	}
 
@@ -19,6 +19,7 @@ namespace Game {
 	}
 
 	void SpriteRenderer::Render(RenderParams & params) {
+		ApplyData();
 		SetPosition(params.screenPosition);
 		SetRotation(params.screenRotation);
 		params.GetWindowController().Draw(sprite);
@@ -26,14 +27,22 @@ namespace Game {
 
 	Vector2 SpriteRenderer::GetBounds() const {
 		return Vector2(
-			static_cast<int>(sprite.getLocalBounds().width),
-			static_cast<int>(sprite.getLocalBounds().height)
+			Fixed(static_cast<double>(sprite.getLocalBounds().width)),
+			Fixed(static_cast<double>(sprite.getLocalBounds().height))
 		);
 	}
 
 	void SpriteRenderer::SetTexture(TextureAsset::Ptr texture) {
 		Logger::Log(*this, "Setting texture to [" + texture->GetResourcePath() + "]", Logger::Severity::Debug);
-		sprite.setTexture(texture->sfTexture);
-		sprite.setOrigin(sprite.getLocalBounds().width * 0.5f, sprite.getLocalBounds().height * 0.5f);
+		data.texture = texture;
+	}
+
+	void SpriteRenderer::ApplyData() {
+		sprite.setTexture(data.texture->sfTexture);
+		sprite.setColor(Convert(data.colour));
+		sprite.setOrigin(
+			sprite.getLocalBounds().width * 0.5f, 
+			sprite.getLocalBounds().height * 0.5f
+		);
 	}
 }
