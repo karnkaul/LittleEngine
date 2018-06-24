@@ -50,7 +50,8 @@ namespace Game {
 
 	SpriteRenderer& RenderComponent::SetSpriteRenderer(const std::string & texturePath) {
 		TextureAsset::Ptr texture = GetActor().GetActiveLevel().GetAssetManager().LoadAsset<TextureAsset>(texturePath);
-		SetRenderer(RenderFactory::NewSprite(texture));
+		SpriteData spriteData(texture);
+		SetRenderer(RenderFactory::NewSprite(spriteData));
 		return *dynamic_cast<SpriteRenderer*>(renderer.get());
 	}
 
