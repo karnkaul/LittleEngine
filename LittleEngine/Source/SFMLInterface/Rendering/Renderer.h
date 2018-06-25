@@ -30,8 +30,6 @@ namespace Game {
 	public:
 		Renderer(std::string name);
 		virtual ~Renderer();
-		virtual void SetPosition(const Vector2 screenPosition) = 0;
-		virtual void SetRotation(const Fixed screenRotation) = 0;
 		// Call this to render the entity using the passed RenderParams
 		virtual void Render(struct RenderParams& params) = 0;
 		// Subclass will return its max Bounds in screen space
@@ -40,6 +38,8 @@ namespace Game {
 		virtual Vector2 GetWorldBounds(const class World& world) const;
 	
 	protected:
+		virtual void SetPosition(const Vector2 screenPosition) = 0;
+		virtual void SetRotation(const Fixed screenRotation) = 0;
 		sf::Vector2f Convert(const Vector2& vector);
 		sf::Color Convert(const Colour& colour);
 		Colour Convert(const sf::Color& colour);

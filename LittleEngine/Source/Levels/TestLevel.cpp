@@ -16,19 +16,18 @@
 namespace Game {
 	// Tests
 	namespace _TestLevel {
-		bool parentSet = false;
 		Action::Token token0, token1;
 		Actor* actor0 = nullptr, *actor1 = nullptr;
 		void OnXPressed() {
-			if (!parentSet && actor0 != nullptr && actor1 != nullptr) {
+			if (actor0 != nullptr && actor1 != nullptr) {
 				actor0->GetTransform()->SetParent(actor1->GetTransform());
-				parentSet = true;
+				token0 = token1 = nullptr;
 			}
 		}
 		void OnYPressed() {
-			if (!parentSet && actor0 != nullptr && actor1 != nullptr) {
+			if (actor0 != nullptr && actor1 != nullptr) {
 				actor0->GetTransform()->SetParent(actor1->GetTransform(), false);
-				parentSet = true;
+				token0 = token1 = nullptr;
 			}
 		}
 	}
@@ -39,7 +38,7 @@ namespace Game {
 		auto actor0 = NewActor("Actor0-RectangleRenderer");
 		actor0->GetTransform()->localPosition = Vector2(300, 200);
 		auto& rc0 = actor0->AddComponent<RenderComponent>();
-		rc0.SetRectangleRenderer(RenderFactory::NewRectangle(Vector2(300, 100), Colour::Magenta));
+		rc0.SetRectangleRenderer(ShapeData(Vector2(300, 100), Colour::Magenta));
 
 		auto player = NewActor("Player");
 		player->GetTransform()->localPosition = Vector2(-200, -300);

@@ -6,7 +6,6 @@
 #include "Engine/World.h"
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Rendering/RenderFactory.h"
-#include "SFMLInterface/Rendering/Renderer.h"
 #include "SFMLInterface/Rendering/ShapeRenderer.h"
 #include "SFMLInterface/Rendering/SpriteRenderer.h"
 #include "SFMLInterface/Rendering/TextRenderer.h"
@@ -29,25 +28,21 @@ namespace Game {
 		return renderer == nullptr ? Vector2::Zero : renderer->GetWorldBounds(world);
 	}
 
-	CircleRenderer & RenderComponent::SetCircleRenderer(std::unique_ptr<CircleRenderer> circleRenderer) {
-		CircleRenderer* c = circleRenderer.get();
-		SetRenderer(std::move(circleRenderer));
+	CircleRenderer & RenderComponent::SetCircleRenderer(const ShapeData & shapeData) {
+		Fixed radius = shapeData.size.Magnitude();
+		std::unique_ptr<CircleRenderer> renderer = RenderFactory::NewCircle(radius, shapeData.colour);
+		CircleRenderer* c = renderer.get();
+		SetRenderer(std::move(renderer));
 		return *c;
 	}
 
-	void RenderComponent::Render(RenderParams& params) {
-		params.screenPosition = GetActor().GetActiveLevel().GetWorld().WorldToScreenPoint(GetActor().GetTransform()->Position());
-		// Convert Transform::Rotation to SFML orientation (+ is counter-clockwise)
-		params.screenRotation = -GetActor().GetTransform()->Rotation();
-		renderer->Render(params);
-	}
-
-	RectangleRenderer & RenderComponent::SetRectangleRenderer(std::unique_ptr<RectangleRenderer> rectangleRenderer) {
-		RectangleRenderer* r = rectangleRenderer.get();
-		SetRenderer(std::move(rectangleRenderer));
+	RectangleRenderer & RenderComponent::SetRectangleRenderer(const ShapeData & shapeData) {
+		std::unique_ptr<RectangleRenderer> renderer = RenderFactory::NewRectangle(shapeData.size, shapeData.colour);
+		RectangleRenderer* r = renderer.get();
+		SetRenderer(std::move(renderer));
 		return *r;
 	}
-
+	
 	SpriteRenderer& RenderComponent::SetSpriteRenderer(const std::string & texturePath) {
 		TextureAsset::Ptr texture = GetActor().GetActiveLevel().GetAssetManager().LoadAsset<TextureAsset>(texturePath);
 		SpriteData spriteData(texture);
@@ -60,5 +55,12 @@ namespace Game {
 		TextData textData(font, text);
 		SetRenderer(RenderFactory::NewText(textData));
 		return *dynamic_cast<TextRenderer*>(renderer.get());
+	}
+
+	void RenderComponent::Render(RenderParams& params) {
+		params.screenPosition = GetActor().GetActiveLevel().GetWorld().WorldToScreenPoint(GetActor().GetTransform()->Position());
+		// Convert Transform::Rotation to SFML orientation (+ is counter-clockwise)
+		params.screenRotation = -GetActor().GetTransform()->Rotation();
+		renderer->Render(params);
 	}
 }
