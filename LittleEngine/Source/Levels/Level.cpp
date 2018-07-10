@@ -34,6 +34,7 @@ namespace Game {
 
 	void Level::FixedTick() {
 		Logger::Log(*this, "Executing Fixed Tick", Logger::Severity::HOT);
+		collisionManager.FixedTick();
 		size_t countThisTurn = actors.size();
 		for (size_t i = 0; i < countThisTurn; ++i) {
 			if (!actors[i]->_destroyed) {
@@ -85,6 +86,10 @@ namespace Game {
 
 	AssetManager & Level::GetAssetManager() const {
 		return engine.GetAssetManager();
+	}
+
+	CollisionManager & Level::GetCollisionManager() {
+		return collisionManager;
 	}
 
 	std::shared_ptr<Game::Actor> Level::NewActor(const std::string& name) {

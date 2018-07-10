@@ -172,6 +172,8 @@
     <ClInclude Include="Source\Engine\Logger\FileLogger.h" />
     <ClInclude Include="Source\Engine\Logger\Logger.h" />
     <ClInclude Include="Source\Engine\Object.h" />
+    <ClInclude Include="Source\Engine\Physics\Collider.h" />
+    <ClInclude Include="Source\Engine\Physics\CollisionManager.h" />
     <ClInclude Include="Source\Engine\World.h" />
     <ClInclude Include="Source\Entities\Actor.h" />
     <ClInclude Include="Source\Levels\BootLevel.h" />
@@ -209,6 +211,8 @@
     <ClCompile Include="Source\Engine\Input\InputHandler.cpp" />
     <ClCompile Include="Source\Engine\Logger\FileLogger.cpp" />
     <ClCompile Include="Source\Engine\Logger\Logger.cpp" />
+    <ClCompile Include="Source\Engine\Physics\Collider.cpp" />
+    <ClCompile Include="Source\Engine\Physics\CollisionManager.cpp" />
     <ClCompile Include="Source\Engine\World.cpp" />
     <ClCompile Include="Source\Entities\Actor.cpp" />
     <ClCompile Include="Source\Levels\BootLevel.cpp" />
