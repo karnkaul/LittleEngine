@@ -20,8 +20,8 @@ namespace Game {
 		Vector2 worldY = this->engine.GetWorld().GetWorldBoundsY();
 		Fixed logoY = worldY.x + 200;
 		logo = NewActor("Logo");
-		auto& renderer = logo->AddComponent<RenderComponent>();
-		logoRenderer = &renderer.SetTextRenderer("... Press Enter to Start ...");
+		auto renderer = logo->AddComponent<RenderComponent>();
+		logoRenderer = &renderer->SetTextRenderer("... Press Enter to Start ...");
 		logo->GetTransform()->localPosition = Vector2(0, logoY);
 
 		inputTokens.push_back(GetInputHandler().Register(GameInput::Enter, std::bind(&BootLevel::OnLoadNextLevel, this), OnKey::Released));

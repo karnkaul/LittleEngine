@@ -43,6 +43,9 @@
     <Filter Include="Source\Engine\Input">
       <UniqueIdentifier>{6d05a15d-504c-4e4c-aacc-9800c6ec9333}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\Physics">
+      <UniqueIdentifier>{054812d5-7519-4308-a14e-870cebf4634e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -153,6 +156,12 @@
     <ClInclude Include="Source\Engine\Input\Gamepad.h">
       <Filter>Source\Engine\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Physics\CollisionManager.h">
+      <Filter>Source\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Physics\Collider.h">
+      <Filter>Source\Engine\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -254,6 +263,12 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\Input\Gamepad.cpp">
       <Filter>Source\Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Physics\CollisionManager.cpp">
+      <Filter>Source\Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Physics\Collider.cpp">
+      <Filter>Source\Engine\Physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -20,6 +20,9 @@ namespace Game {
 	}
 
 	Actor::~Actor() {
+		if (collider != nullptr && GetActiveLevel().GetCollisionManager().Unregister(collider)) {
+			collider = nullptr;
+		}
 		components.clear();
 		Logger::Log(*this, "Destroyed actor \"" + name + "\"");
 	}
@@ -56,9 +59,5 @@ namespace Game {
 
 	Level & Actor::GetActiveLevel() const {
 		return level;
-	}
-
-	std::shared_ptr<Actor> Actor::This() {
-		return this->shared_from_this();
 	}
 }
