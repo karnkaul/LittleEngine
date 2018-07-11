@@ -2,6 +2,7 @@
 #include "Engine/Object.h"
 #include "Utils/Fixed.h"
 #include "Engine/GameClock.h"
+#include "Engine/Physics/CollisionManager.h"
 
 namespace Game {
 	class Engine;
@@ -25,6 +26,8 @@ namespace Game {
 		int GameTimeMilliSeconds() const;
 		const World& GetWorld() const;
 		AssetManager& GetAssetManager() const;
+		CollisionManager& GetCollisionManager();
+
 
 		std::shared_ptr<Actor> NewActor(const std::string& name);
 		void DestroyActor(const std::shared_ptr<Actor>& actor);
@@ -32,6 +35,7 @@ namespace Game {
 	protected:
 		std::vector<std::shared_ptr<Actor> > actors;
 		GameClock clock;
+		CollisionManager collisionManager;
 		Engine& engine;
 		
 		Level(const std::string& name, Engine& engine);

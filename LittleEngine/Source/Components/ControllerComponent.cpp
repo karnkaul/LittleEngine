@@ -58,8 +58,9 @@ namespace Game {
 		Actor& actor = GetActor();
 
 		const World& world = actor.GetActiveLevel().GetWorld();
-		Vector2 worldX = world.GetWorldBoundsX();
-		Vector2 worldY = world.GetWorldBoundsY();
+		const Level& level = actor.GetActiveLevel();
+		Vector2 worldX = world.GetScreenBoundsX();
+		Vector2 worldY = world.GetScreenBoundsY();
 		Vector2 padding = actor.GetComponent<RenderComponent>()->GetWorldBounds(world) * Fixed(1, 2);
 		ClampPosition(actor.GetTransform()->localPosition, worldX, worldY, padding);
 

@@ -2,6 +2,8 @@
 #include "Engine/Object.h"
 #include "Utils/Transform.h"
 
+#include "Engine/Physics/Collider.h"
+
 class Transform;
 
 namespace Game {
@@ -26,33 +28,41 @@ namespace Game {
 		Level& GetActiveLevel() const;
 		
 		template<typename T>
-		T& AddComponent() {
+		std::shared_ptr<T> AddComponent() {
 			static_assert(std::is_base_of<Component, T>::value, "T must derive from Component: check Output window for erroneous call");
-			std::unique_ptr<T> component = std::make_unique<T>(*this);
-			T* ptr = &(*component);
-			components.push_back(std::move(component));
-			return *ptr;
+			static_assert(!std::is_base_of<Collider, T>::value, "Colliders must be added via AddCollider<T>(): check Output window for erroneous call");
+			std::shared_ptr<T> component = std::make_shared<T>(*this);
+			std::shared_ptr<Component> _component = std::static_pointer_cast<Component>(component);
+			components.push_back(_component);
+			return component;
 		}
 
 		// Warning: Will return nullptr if not found
 		template<typename T>
-		T* GetComponent() {
+		std::shared_ptr<T> GetComponent() {
 			static_assert(std::is_base_of<Component, T>::value, "T must derive from Component: check Output window for erroneous call");
 			for (auto& component : components) {
-				Component* c = component.get();
-				T* t = dynamic_cast<T*>(c);
-				if (t != nullptr) return t;
+				std::shared_ptr<T> c = std::dynamic_pointer_cast<T>(component);
+				if (c != nullptr) return c;
 			}
 			return nullptr;
 		}
 
+		template<typename T>
+		std::shared_ptr<T> AddCollider() {
+			static_assert(std::is_base_of<Collider, T>::value, "T must derive from Collider: check Output window for erroneous call");
+			std::shared_ptr<T> collider = std::make_shared<T>(*this);
+			this->collider = std::static_pointer_cast<Collider>(collider);
+			GetActiveLevel().GetCollisionManager().Register(this->collider);
+			return collider;
+		}
+
 	protected:
-		std::vector<std::unique_ptr<Component> > components;
+		std::vector<std::shared_ptr<Component> > components;
+		Collider::Ptr collider;
 		Transform::Ptr transform;
 		Level& level;
 		bool _destroyed = false;
-
-		std::shared_ptr<Actor> This();
 		
 	private:
 		friend class Level;

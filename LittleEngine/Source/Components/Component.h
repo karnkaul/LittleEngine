@@ -14,10 +14,10 @@ namespace Game {
 		virtual void FixedTick();
 		virtual void Render(RenderParams& params);
 		bool enabled = true;
+		Actor& GetActor() const;
 
 	protected:
 		Component(Actor& actor, const std::string& name);
-		Actor& GetActor() const;
 	
 	private:
 		Actor* actor;

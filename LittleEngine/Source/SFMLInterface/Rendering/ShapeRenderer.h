@@ -28,10 +28,11 @@ namespace Game {
 	public:
 		CircleRenderer(Fixed radius);
 		CircleRenderer(Fixed radius, const Colour& colour);
-		virtual void SetPosition(const Vector2 screenPosition) override;
-		virtual void SetRotation(const Fixed screenRotation) override;
 		// Returns radius of CircleShape
 		virtual Vector2 GetBounds() const override;
+	protected:
+		virtual void SetPosition(const Vector2 screenPosition) override;
+		virtual void SetRotation(const Fixed screenRotation) override;
 	};
 
 	// Concrete class to draw a RectangleShape
@@ -39,9 +40,10 @@ namespace Game {
 	public:
 		RectangleRenderer(Vector2 size);
 		RectangleRenderer(Vector2 size, Colour colour);
-		virtual void SetPosition(const Vector2 screenPosition) override;
-		virtual void SetRotation(const Fixed screenRotation) override;
 		// Returns bounds of RectangleShape
 		virtual Vector2 GetBounds() const override;
+	protected:
+		virtual void SetPosition(const Vector2 screenPosition) override;
+		virtual void SetRotation(const Fixed screenRotation) override;
 	};
 }

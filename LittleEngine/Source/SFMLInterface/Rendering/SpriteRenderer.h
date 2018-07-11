@@ -6,7 +6,8 @@
 namespace Game {
 	struct SpriteData {
 	public:
-		SpriteData(TextureAsset::Ptr texture) : texture(texture) {}
+		SpriteData(TextureAsset::Ptr texture) : SpriteData(texture, Colour::White) {}
+		SpriteData(TextureAsset::Ptr texture, Colour colour) : texture(texture), colour(colour) {}
 		Colour colour;
 	private:
 		friend class SpriteRenderer;
@@ -16,12 +17,12 @@ namespace Game {
 	class SpriteRenderer : public Renderer {
 	public:
 		SpriteRenderer(const SpriteData& data);
-		virtual void SetPosition(const Vector2 screenPosition) override;
-		virtual void SetRotation(const Fixed screenRotation) override;
 		virtual void Render(RenderParams& params) override;
 		virtual Vector2 GetBounds() const override;
 		void SetTexture(TextureAsset::Ptr texture);
 	protected:
+		virtual void SetPosition(const Vector2 screenPosition) override;
+		virtual void SetRotation(const Fixed screenRotation) override;
 		void ApplyData();
 	private:
 		SpriteData data;

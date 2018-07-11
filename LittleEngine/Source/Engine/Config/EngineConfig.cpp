@@ -8,8 +8,6 @@ namespace Game {
 		logLevel = Property(LOG_LEVEL_KEY(), "INFO");
 		screenWidth = Property(SCREEN_WIDTH_KEY(), "1280");
 		screenHeight = Property(SCREEN_HEIGHT_KEY(), "720");
-		worldWidth = Property(WORLD_WIDTH_KEY(), "1920");
-		worldHeight = Property(WORLD_HEIGHT_KEY(), "1080");
 	}
 
 	bool EngineConfig::Load(const std::string& path) {
@@ -20,13 +18,6 @@ namespace Game {
 		if (width > 0 && height > 0) {
 			screenWidth.stringValue = std::to_string(width);
 			screenHeight.stringValue = std::to_string(height);
-		}
-
-		width = persistor->GetProp(WORLD_WIDTH_KEY()).intValue();
-		height = persistor->GetProp(WORLD_HEIGHT_KEY()).intValue();
-		if (width > 0 && height > 0) {
-			worldWidth.stringValue = std::to_string(width);
-			worldHeight.stringValue = std::to_string(height);
 		}
 
 		std::string logLevelValue = persistor->GetProp(LOG_LEVEL_KEY());
@@ -49,8 +40,6 @@ namespace Game {
 		persistor->SetProp(logLevel);
 		persistor->SetProp(screenWidth);
 		persistor->SetProp(screenHeight);
-		persistor->SetProp(worldWidth);
-		persistor->SetProp(worldHeight);
 		return persistor->Save(path);
 	}
 
@@ -66,10 +55,6 @@ namespace Game {
 		return Vector2(screenWidth.intValue(), screenHeight.intValue());
 	}
 
-	const Vector2 EngineConfig::GetWorldSize() const {
-		return Vector2(worldWidth.intValue(), worldHeight.intValue());
-	}
-
 	void EngineConfig::SetWindowTitle(const std::string& windowTitle) {
 		this->windowTitle.stringValue = windowTitle;
 	}
@@ -81,11 +66,6 @@ namespace Game {
 	void EngineConfig::SetScreenSize(const Vector2& screenSize) {
 		screenWidth.stringValue = std::to_string(screenSize.x.GetInt());
 		screenHeight.stringValue = std::to_string(screenSize.y.GetInt());
-	}
-
-	void EngineConfig::SetWorldSize(const Vector2& worldSize) {
-		worldWidth.stringValue = worldSize.x.ToString();
-		worldHeight.stringValue = worldSize.y.ToString();
 	}
 
 	Logger::Severity EngineConfig::ParseLogLevel(std::string str) {
