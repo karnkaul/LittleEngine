@@ -28,7 +28,7 @@ public:
 	Vector2 Normalised() const;
 	void Normalise();
 	Fixed Magnitude() const;
-	Fixed SqrMagnitude() const;
+	double SqrMagnitude() const;
 
 	std::string ToString() const;
 	friend std::ostream& operator<<(std::ostream& out, Vector2& vector2) {

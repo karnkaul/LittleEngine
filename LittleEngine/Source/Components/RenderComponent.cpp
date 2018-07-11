@@ -29,7 +29,7 @@ namespace Game {
 	}
 
 	CircleRenderer & RenderComponent::SetCircleRenderer(const ShapeData & shapeData) {
-		Fixed radius = shapeData.size.Magnitude();
+		Fixed radius = shapeData.size.Magnitude() / 2;
 		std::unique_ptr<CircleRenderer> renderer = RenderFactory::NewCircle(radius, shapeData.colour);
 		CircleRenderer* c = renderer.get();
 		SetRenderer(std::move(renderer));

@@ -35,10 +35,10 @@ namespace Game {
 		}
 		void OnEnterPressed() {
 			if (actor2 == nullptr) {
-				actor2 = level->NewActor("Yellow Rectangle");
+				actor2 = level->NewActor("Yellow Shape");
 				actor2->GetTransform()->localPosition = Vector2(-300, 300);
 				auto rc0 = actor2->AddComponent<RenderComponent>();
-				rc0->SetRectangleRenderer(ShapeData(Vector2(100, 100), Colour::Yellow));
+				rc0->SetCircleRenderer(ShapeData(Vector2(200, 0), Colour::Yellow));
 				auto t0 = actor2->AddCollider<Collider>();
 				t0->SetBounds(AABB(50, 50));
 				

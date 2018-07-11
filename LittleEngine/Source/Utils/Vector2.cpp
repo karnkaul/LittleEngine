@@ -58,15 +58,10 @@ bool Vector2::operator!=(const Vector2& rhs) const {
 	return !(*this == rhs);
 }
 
-#include <iostream>
-
 Vector2 Vector2::Normalised() const {
-	std::cout << " sqrt(x + y): " << std::sqrt(x.GetInt() + y.GetInt());
-	Fixed sq = (x * x) + (y * y);
-	Fixed coeff = Fixed(std::sqrt(sq.GetDouble()));
-	std::cout << " sqrt(x + y): " << coeff;
+	double sq = SqrMagnitude();
+	Fixed coeff = Fixed(std::sqrt(sq));
 	coeff = coeff.Inverse();
-	std::cout << " inv: " << coeff << "\n";
 	return Vector2(x * coeff, y * coeff);
 }
 
@@ -75,11 +70,11 @@ void Vector2::Normalise() {
 }
 
 Fixed Vector2::Magnitude() const {
-	return SqrMagnitude().Sqrt();
+	return Fixed(std::sqrt(SqrMagnitude()));
 }
 
-Fixed Vector2::SqrMagnitude() const {
-	return Fixed((x * x) + (y * y));
+double Vector2::SqrMagnitude() const {
+	return (x.GetDouble() * x.GetDouble()) + (y.GetDouble() * y.GetDouble());
 }
 
 std::string Vector2::ToString() const {
