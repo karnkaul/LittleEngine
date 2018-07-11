@@ -2,6 +2,7 @@
 #include "CollisionManager.h"
 #include "Collider.h"
 #include "Engine/Logger/Logger.h"
+#include "Entities/Actor.h"
 
 namespace Game {
 	CollisionManager::CollisionManager() : Object("CollisionManager") {
@@ -14,27 +15,38 @@ namespace Game {
 	
 
 	bool CollisionManager::Unregister(Collider::Ptr collider) {
-		auto search = std::find_if(colliders.begin(), colliders.end(),
-		[collider](Collider::wPtr c) {
-			Collider::Ptr _c = c.lock();
-			if (_c != nullptr) {
-				return _c.get() == collider.get();
+		if (!colliders.empty()) {
+			auto end = colliders.end();
+			auto search = std::find_if(colliders.begin(), colliders.end(),
+									   [collider](Collider::wPtr c) {
+				Collider::Ptr _c = c.lock();
+				if (_c != nullptr) {
+					return _c.get() == collider.get();
+				}
+				return false;
 			}
-			return false;
-		}
-		);
-		if (search != colliders.end()) {
-			colliders.erase(search);
-			return true;
+			);
+			if (search != colliders.end()) {
+				colliders.erase(search);
+				return true;
+			}
 		}
 		return false;
 	}
 
 	void CollisionManager::FixedTick() {
 		Cleanup();
+		if (colliders.size() < 2) return;
 		Logger::Log(*this, "Processing " + std::to_string(colliders.size()) + " Colliders", Logger::Severity::HOT);
-		for (auto& collider : colliders) {
-			// Check collisions
+		for (size_t i = 0; i < colliders.size(); ++i) {
+			auto lhs = colliders[i].lock();
+			if (lhs != nullptr) {
+				for (int j = i + 1; j < colliders.size(); ++j) {
+					auto rhs = colliders[j].lock();
+					if (rhs == nullptr) continue;
+					ProcessCollision(*lhs, *rhs);
+				}
+			}
 		}
 	}
 
@@ -42,12 +54,20 @@ namespace Game {
 		int count = colliders.size();
 		auto ptr = std::remove_if(colliders.begin(), colliders.end(),
 			[](Collider::wPtr& collider) { return collider.lock() == nullptr; }
-		);
+		); 
 		colliders.erase(ptr, colliders.end());
 
 		int diff = count - colliders.size();
 		if (diff > 0) {
 			Logger::Log(*this, "Removed " + std::to_string(diff) + " stale Colliders ", Logger::Severity::Debug);
+		}
+	}
+
+	void CollisionManager::ProcessCollision(Collider & lhs, Collider & rhs) {
+		AABB lhsBounds = lhs.GetWorldAABB();
+		AABB rhsBounds = rhs.GetWorldAABB();
+		if (lhsBounds.Intersecting(rhsBounds)) {
+			Logger::Log(*this, lhs.GetActor().GetName() + " is colliding with " + rhs.GetActor().GetName(), Logger::Severity::Debug);
 		}
 	}
 }

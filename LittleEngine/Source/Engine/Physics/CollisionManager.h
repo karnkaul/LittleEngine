@@ -15,5 +15,6 @@ namespace Game {
 		CollisionManager& operator=(const CollisionManager&) = delete;
 		std::vector<Collider::wPtr> colliders;
 		void Cleanup();
+		void ProcessCollision(Collider& lhs, Collider& rhs);
 	};
 }

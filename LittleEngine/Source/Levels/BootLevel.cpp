@@ -17,7 +17,7 @@ namespace Game {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 		LoadAssets();
 		
-		Vector2 worldY = this->engine.GetWorld().GetWorldBoundsY();
+		Vector2 worldY = this->engine.GetWorld().GetScreenBoundsY();
 		Fixed logoY = worldY.x + 200;
 		logo = NewActor("Logo");
 		auto renderer = logo->AddComponent<RenderComponent>();

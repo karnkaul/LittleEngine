@@ -194,6 +194,7 @@
     <ClInclude Include="Source\Utils\FileRW.h" />
     <ClInclude Include="Source\Utils\Fixed.h" />
     <ClInclude Include="Source\Utils\PropRW.h" />
+    <ClInclude Include="Source\Utils\AABB.h" />
     <ClInclude Include="Source\Utils\Transform.h" />
     <ClInclude Include="Source\Utils\Vector2.h" />
     <ClInclude Include="stdafx.h" />
@@ -233,6 +234,7 @@
     <ClCompile Include="Source\Utils\FileRW.cpp" />
     <ClCompile Include="Source\Utils\Fixed.cpp" />
     <ClCompile Include="Source\Utils\PropRW.cpp" />
+    <ClCompile Include="Source\Utils\AABB.cpp" />
     <ClCompile Include="Source\Utils\Transform.cpp" />
     <ClCompile Include="Source\Utils\Vector2.cpp" />
     <ClCompile Include="stdafx.cpp">

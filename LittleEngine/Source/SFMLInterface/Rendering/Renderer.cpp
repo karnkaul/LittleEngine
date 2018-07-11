@@ -24,11 +24,7 @@ namespace Game {
 	}
 
 	Vector2 Renderer::GetWorldBounds(const World & world) const {
-		const Vector2& worldSize = world.GetWorldSize();
-		const Vector2& screenSize = world.GetScreenSize();
-		Vector2 scaler = Vector2(worldSize.x / screenSize.x, worldSize.y / screenSize.y);
-		Vector2 localBounds = GetBounds();
-		return Vector2(localBounds.x * scaler.x, localBounds.y * scaler.y);
+		return GetBounds();
 	}
 
 	sf::Vector2f Renderer::Convert(const Vector2& vector) {

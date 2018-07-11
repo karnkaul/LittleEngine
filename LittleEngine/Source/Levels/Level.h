@@ -28,6 +28,7 @@ namespace Game {
 		AssetManager& GetAssetManager() const;
 		CollisionManager& GetCollisionManager();
 
+
 		std::shared_ptr<Actor> NewActor(const std::string& name);
 		void DestroyActor(const std::shared_ptr<Actor>& actor);
 

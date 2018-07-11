@@ -7,15 +7,18 @@
 #include "Engine/Logger/Logger.h"
 
 namespace Game {
-	Collider::Collider(Actor& actor, const std::string& name) : Component(actor, name) {
+	Collider::Collider(Actor& actor) : Component(actor, "Collider") {
 	}
-
-	Collider::~Collider() = default;
 
 	CollisionManager & Collider::GetCollisionManager() {
 		return GetActor().GetActiveLevel().GetCollisionManager();
 	}
 
-	BoxCollider::BoxCollider(Actor& actor) : Collider(actor, "BoxCollider") {
+	AABB Collider::GetWorldAABB() const {
+		return bounds + GetActor().GetTransform()->localPosition;
+	}
+
+	void Collider::SetBounds(AABB bounds) {
+		this->bounds = bounds;
 	}
 }

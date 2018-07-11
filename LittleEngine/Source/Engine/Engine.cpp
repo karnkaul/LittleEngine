@@ -33,7 +33,7 @@ namespace Game {
 		Logger::Log(*this, "Constructing Engine");
 		LoadConfig();
 		try {
-			world = std::make_unique<World>(config->GetScreenSize(), config->GetWorldSize());
+			world = std::make_unique<World>(config->GetScreenSize());
 			assetManager = std::make_unique<AssetManager>();
 			levelManager = std::make_unique<LevelManager>(*this);
 			inputHandler = std::make_unique<InputHandler>();

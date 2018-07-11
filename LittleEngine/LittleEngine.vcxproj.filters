@@ -162,6 +162,9 @@
     <ClInclude Include="Source\Engine\Physics\Collider.h">
       <Filter>Source\Engine\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Utils\AABB.h">
+      <Filter>Source\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -269,6 +272,9 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\Physics\Collider.cpp">
       <Filter>Source\Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\AABB.cpp">
+      <Filter>Source\Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
