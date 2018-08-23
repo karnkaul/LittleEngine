@@ -35,19 +35,19 @@ namespace Game {
 		}
 		void OnEnterPressed() {
 			if (actor2 == nullptr) {
-				actor2 = level->NewActor("Yellow Rectangle");
+				actor2 = level->NewActor("Yellow Circle");
 				actor2->GetTransform()->localPosition = Vector2(-300, 300);
 				auto rc0 = actor2->AddComponent<RenderComponent>();
-				rc0->SetRectangleRenderer(ShapeData(Vector2(100, 100), Colour::Yellow));
-				auto t0 = actor2->AddCollider<Collider>();
-				t0->SetBounds(AABB(50, 50));
+				rc0->SetCircleRenderer(ShapeData(Vector2(100, 0), Colour::Yellow));
+				auto t0 = actor2->AddCollider<CircleCollider>();
+				t0->SetCircle(100);
 				
 				actor3 = level->NewActor("Blue Rectangle");
 				//actor3->GetTransform()->localPosition = Vector2(300, 100);
 				auto rc1 = actor3->AddComponent<RenderComponent>();
 				rc1->SetRectangleRenderer(ShapeData(Vector2(600, 100), Colour::Blue));
-				auto t1 = actor3->AddCollider<Collider>();
-				t1->SetBounds(AABB(300, 50));
+				auto t1 = actor3->AddCollider<AABBCollider>();
+				t1->SetBounds(AABBData(300, 50));
 			}
 			else { 
 				level->DestroyActor(actor2);
@@ -71,8 +71,8 @@ namespace Game {
 		player->AddComponent<ControllerComponent>();
 		auto playerRenderer = player->AddComponent<RenderComponent>();
 		playerRenderer->SetSpriteRenderer("Assets/Ship.png");
-		auto collider = player->AddCollider<Collider>();
-		collider->SetBounds(AABB(64, 64));
+		auto collider = player->AddCollider<AABBCollider>();
+		collider->SetBounds(AABBData(40, 40));
 		//actor0->GetTransform()->SetParent(pawn0->GetTransform());
 
 		//pawn0 = actor0;		// Must not compile

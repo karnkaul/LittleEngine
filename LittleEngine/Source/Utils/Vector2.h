@@ -7,6 +7,10 @@ public:
 	Fixed y;
 	Vector2() : x(0), y(0) {}
 	Vector2(Fixed x, Fixed y) : x(x), y(y) {}
+	Vector2(const Vector2& other) = default;
+	Vector2& operator=(const Vector2&) = default;
+	Vector2(Vector2&&) = default;
+	Vector2& operator=(Vector2&&) = default;
 
 	static const Vector2 Zero;
 	static const Vector2 One;
@@ -28,7 +32,7 @@ public:
 	Vector2 Normalised() const;
 	void Normalise();
 	Fixed Magnitude() const;
-	Fixed SqrMagnitude() const;
+	double SqrMagnitude() const;
 
 	std::string ToString() const;
 	friend std::ostream& operator<<(std::ostream& out, Vector2& vector2) {

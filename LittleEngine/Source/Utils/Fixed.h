@@ -11,7 +11,9 @@ public:
 	explicit Fixed(double);
 	explicit Fixed(float);
 	Fixed(const Fixed&);
+	Fixed(Fixed&&) = default;
 	Fixed& operator=(const Fixed&);
+	Fixed& operator=(Fixed&&) = default;
 
 	Fixed(int numerator, int denominator = 1);
 	int GetInt() const;

@@ -13,6 +13,8 @@ public:
 	using wPtr = std::weak_ptr<Transform>;
 	
 	static Ptr Create();
+	Transform& operator=(const Transform&) = delete;
+	Transform(Transform&&) = delete;
 	~Transform();
 
 	// Position world space
