@@ -7,20 +7,29 @@ struct AABBData {
 	Vector2 upperBound;
 
 	AABBData() = default;
+	AABBData(const AABBData&) = default;
+	AABBData(AABBData&&) = default;
+	AABBData& operator=(const AABBData&) = default;
+	AABBData& operator=(AABBData&&) = default;
 	AABBData(const Vector2& lowerBound, const Vector2& upperBound);
 	AABBData(Fixed xMax, Fixed yMax);
 
-	bool Intersecting(const AABBData& other);
-	friend AABBData operator+(const AABBData& lhs, const Vector2& displacement) {
-		return AABBData(lhs.lowerBound + displacement, lhs.upperBound + displacement);
-	}
+	bool Intersecting(const AABBData& other) const;
+	bool IsPointInRect(Vector2 point) const;
 };
 
 struct CircleData {
 	const static CircleData One;
 	Fixed radius;
-	Fixed centre;
+	Vector2 centre;
 
 	CircleData() = default;
-	CircleData(Fixed radius, Fixed centre);
+	CircleData(Fixed radius, Vector2 centre);
+	CircleData(const CircleData&) = default;
+	CircleData(CircleData&&) = default;
+	CircleData& operator=(const CircleData&) = default;
+	CircleData& operator=(CircleData&&) = default;
+
+	bool IsIntersecting(const CircleData& other) const;
+	bool IsPointInCircle(const Vector2 point) const;
 };

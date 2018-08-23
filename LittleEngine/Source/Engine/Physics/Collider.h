@@ -23,14 +23,14 @@ namespace Game {
 	public:
 		CircleCollider(Actor& actor);
 		virtual bool IsIntersecting(const Collider& rhs) const override;
-		Fixed GetRadius() const;
-		void SetRadius(Fixed radius);
+		CircleData GetWorldCircle() const;
+		void SetCircle(Fixed radius);
 	protected:
 		friend class AABBCollider;
 		virtual bool IsIntersectAABB(const AABBCollider& rhs) const override;
 		virtual bool IsIntersectCircle(const CircleCollider& rhs) const override;
 	private:
-		Fixed radius = Fixed::One;
+		CircleData circle = CircleData::One;
 	};
 
 	class AABBCollider : public Collider {

@@ -35,12 +35,12 @@ namespace Game {
 		}
 		void OnEnterPressed() {
 			if (actor2 == nullptr) {
-				actor2 = level->NewActor("Yellow Shape");
+				actor2 = level->NewActor("Yellow Circle");
 				actor2->GetTransform()->localPosition = Vector2(-300, 300);
 				auto rc0 = actor2->AddComponent<RenderComponent>();
-				rc0->SetCircleRenderer(ShapeData(Vector2(200, 0), Colour::Yellow));
-				auto t0 = actor2->AddCollider<AABBCollider>();
-				t0->SetBounds(AABBData(50, 50));
+				rc0->SetCircleRenderer(ShapeData(Vector2(100, 0), Colour::Yellow));
+				auto t0 = actor2->AddCollider<CircleCollider>();
+				t0->SetCircle(100);
 				
 				actor3 = level->NewActor("Blue Rectangle");
 				//actor3->GetTransform()->localPosition = Vector2(300, 100);
@@ -72,7 +72,7 @@ namespace Game {
 		auto playerRenderer = player->AddComponent<RenderComponent>();
 		playerRenderer->SetSpriteRenderer("Assets/Ship.png");
 		auto collider = player->AddCollider<AABBCollider>();
-		collider->SetBounds(AABBData(64, 64));
+		collider->SetBounds(AABBData(40, 40));
 		//actor0->GetTransform()->SetParent(pawn0->GetTransform());
 
 		//pawn0 = actor0;		// Must not compile
