@@ -17,17 +17,17 @@ namespace Game {
 		return rhs.IsIntersectAABB(*this);
 	}
 
-	AABB AABBCollider::GetWorldAABB() const {
+	AABBData AABBCollider::GetWorldAABB() const {
 		return bounds + GetActor().GetTransform()->Position();
 	}
 
-	void AABBCollider::SetBounds(AABB bounds) {
+	void AABBCollider::SetBounds(AABBData bounds) {
 		this->bounds = bounds;
 	}
 
 	bool AABBCollider::IsIntersectAABB(const AABBCollider & rhs) const {
-		AABB lhsBounds = GetWorldAABB();
-		AABB rhsBounds = rhs.GetWorldAABB();
+		AABBData lhsBounds = GetWorldAABB();
+		AABBData rhsBounds = rhs.GetWorldAABB();
 		return lhsBounds.Intersecting(rhsBounds);
 	}
 

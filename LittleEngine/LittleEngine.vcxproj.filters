@@ -162,7 +162,7 @@
     <ClInclude Include="Source\Engine\Physics\Collider.h">
       <Filter>Source\Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Physics\AABB.h">
+    <ClInclude Include="Source\Engine\Physics\ColliderData.h">
       <Filter>Source\Engine\Physics</Filter>
     </ClInclude>
   </ItemGroup>
@@ -273,7 +273,7 @@
     <ClCompile Include="Source\Engine\Physics\Collider.cpp">
       <Filter>Source\Engine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Physics\AABB.cpp">
+    <ClCompile Include="Source\Engine\Physics\ColliderData.cpp">
       <Filter>Source\Engine\Physics</Filter>
     </ClCompile>
   </ItemGroup>

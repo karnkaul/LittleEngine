@@ -1,6 +1,6 @@
 #pragma once
 #include "Components/Component.h"
-#include "AABB.h"
+#include "ColliderData.h"
 
 namespace Game {
 	class Actor;
@@ -37,13 +37,13 @@ namespace Game {
 	public:
 		AABBCollider(Actor& actor);
 		virtual bool IsIntersecting(const Collider& rhs) const override;
-		AABB GetWorldAABB() const;
-		void SetBounds(AABB bounds);
+		AABBData GetWorldAABB() const;
+		void SetBounds(AABBData bounds);
 	protected:
 		friend class CircleCollider;
 		virtual bool IsIntersectAABB(const class AABBCollider& rhs) const override;
 		virtual bool IsIntersectCircle(const class CircleCollider& rhs) const override;
 	private:
-		AABB bounds = AABB::One;
+		AABBData bounds = AABBData::One;
 	};
 }

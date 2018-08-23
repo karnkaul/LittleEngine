@@ -1,16 +1,16 @@
 #include "stdafx.h"
-#include "AABB.h"
+#include "ColliderData.h"
 
 const Fixed half = Fixed(1, 2);
-const AABB AABB::One = AABB(Vector2(-half, -half), Vector2(half, half));
+const AABBData AABBData::One = AABBData(Vector2(-half, -half), Vector2(half, half));
 
-AABB::AABB(const Vector2& lowerBound, const Vector2& upperBound) : lowerBound(lowerBound), upperBound(upperBound) {
+AABBData::AABBData(const Vector2& lowerBound, const Vector2& upperBound) : lowerBound(lowerBound), upperBound(upperBound) {
 }
 
-AABB::AABB(Fixed xMax, Fixed yMax) : AABB(Vector2(-xMax, -yMax), Vector2(xMax, yMax)) {
+AABBData::AABBData(Fixed xMax, Fixed yMax) : AABBData(Vector2(-xMax, -yMax), Vector2(xMax, yMax)) {
 }
 
-bool AABB::Intersecting(const AABB & other) {
+bool AABBData::Intersecting(const AABBData & other) {
 	bool xIntersects = 
 		(other.lowerBound.x >= lowerBound.x && other.lowerBound.x <= upperBound.x) ||
 		(lowerBound.x >= other.lowerBound.x && lowerBound.x <= other.upperBound.x);
