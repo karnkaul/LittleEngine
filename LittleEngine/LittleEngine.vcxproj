@@ -172,6 +172,7 @@
     <ClInclude Include="Source\Engine\Logger\FileLogger.h" />
     <ClInclude Include="Source\Engine\Logger\Logger.h" />
     <ClInclude Include="Source\Engine\Object.h" />
+    <ClInclude Include="Source\Engine\Physics\AABB.h" />
     <ClInclude Include="Source\Engine\Physics\Collider.h" />
     <ClInclude Include="Source\Engine\Physics\CollisionManager.h" />
     <ClInclude Include="Source\Engine\World.h" />
@@ -194,7 +195,6 @@
     <ClInclude Include="Source\Utils\FileRW.h" />
     <ClInclude Include="Source\Utils\Fixed.h" />
     <ClInclude Include="Source\Utils\PropRW.h" />
-    <ClInclude Include="Source\Utils\AABB.h" />
     <ClInclude Include="Source\Utils\Transform.h" />
     <ClInclude Include="Source\Utils\Vector2.h" />
     <ClInclude Include="stdafx.h" />
@@ -212,6 +212,7 @@
     <ClCompile Include="Source\Engine\Input\InputHandler.cpp" />
     <ClCompile Include="Source\Engine\Logger\FileLogger.cpp" />
     <ClCompile Include="Source\Engine\Logger\Logger.cpp" />
+    <ClCompile Include="Source\Engine\Physics\AABB.cpp" />
     <ClCompile Include="Source\Engine\Physics\Collider.cpp" />
     <ClCompile Include="Source\Engine\Physics\CollisionManager.cpp" />
     <ClCompile Include="Source\Engine\World.cpp" />
@@ -234,7 +235,6 @@
     <ClCompile Include="Source\Utils\FileRW.cpp" />
     <ClCompile Include="Source\Utils\Fixed.cpp" />
     <ClCompile Include="Source\Utils\PropRW.cpp" />
-    <ClCompile Include="Source\Utils\AABB.cpp" />
     <ClCompile Include="Source\Utils\Transform.cpp" />
     <ClCompile Include="Source\Utils\Vector2.cpp" />
     <ClCompile Include="stdafx.cpp">

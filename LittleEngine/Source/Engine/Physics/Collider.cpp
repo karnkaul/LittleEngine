@@ -7,18 +7,58 @@
 #include "Engine/Logger/Logger.h"
 
 namespace Game {
-	Collider::Collider(Actor& actor) : Component(actor, "Collider") {
+	Collider::Collider(Actor& actor, std::string name) : Component(actor, name) {
 	}
 
-	CollisionManager & Collider::GetCollisionManager() {
-		return GetActor().GetActiveLevel().GetCollisionManager();
+	AABBCollider::AABBCollider(Actor& actor) : Collider(actor, "AABBCollider") {
 	}
 
-	AABB Collider::GetWorldAABB() const {
-		return bounds + GetActor().GetTransform()->localPosition;
+	bool AABBCollider::IsIntersecting(const Collider & rhs) const {
+		return rhs.IsIntersectAABB(*this);
 	}
 
-	void Collider::SetBounds(AABB bounds) {
+	AABB AABBCollider::GetWorldAABB() const {
+		return bounds + GetActor().GetTransform()->Position();
+	}
+
+	void AABBCollider::SetBounds(AABB bounds) {
 		this->bounds = bounds;
+	}
+
+	bool AABBCollider::IsIntersectAABB(const AABBCollider & rhs) const {
+		AABB lhsBounds = GetWorldAABB();
+		AABB rhsBounds = rhs.GetWorldAABB();
+		return lhsBounds.Intersecting(rhsBounds);
+	}
+
+	bool AABBCollider::IsIntersectCircle(const CircleCollider & rhs) const {
+		return false;
+	}
+
+	CircleCollider::CircleCollider(Actor& actor) : Collider(actor, "CircleCollider") {
+	}
+
+	bool CircleCollider::IsIntersecting(const Collider & rhs) const {
+		return rhs.IsIntersectCircle(*this);
+	}
+
+	Fixed CircleCollider::GetRadius() const {
+		return radius;
+	}
+
+	void CircleCollider::SetRadius(Fixed radius) {
+		this->radius = radius;
+	}
+
+	bool CircleCollider::IsIntersectAABB(const AABBCollider & rhs) const {
+		return rhs.IsIntersectCircle(*this);
+	}
+
+	bool CircleCollider::IsIntersectCircle(const CircleCollider & rhs) const {
+		Vector2 lhsPos = GetActor().GetTransform()->Position();
+		Vector2 rhsPos = rhs.GetActor().GetTransform()->Position();
+		Fixed centreDist = (rhsPos - lhsPos).Magnitude();
+		Fixed radiiDist = rhs.radius + radius;
+		return radiiDist >= centreDist;
 	}
 }

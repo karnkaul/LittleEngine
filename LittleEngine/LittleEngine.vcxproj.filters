@@ -162,8 +162,8 @@
     <ClInclude Include="Source\Engine\Physics\Collider.h">
       <Filter>Source\Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Utils\AABB.h">
-      <Filter>Source\Utils</Filter>
+    <ClInclude Include="Source\Engine\Physics\AABB.h">
+      <Filter>Source\Engine\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -273,8 +273,8 @@
     <ClCompile Include="Source\Engine\Physics\Collider.cpp">
       <Filter>Source\Engine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Utils\AABB.cpp">
-      <Filter>Source\Utils</Filter>
+    <ClCompile Include="Source\Engine\Physics\AABB.cpp">
+      <Filter>Source\Engine\Physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

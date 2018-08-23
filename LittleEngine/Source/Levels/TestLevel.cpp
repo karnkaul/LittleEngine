@@ -39,14 +39,14 @@ namespace Game {
 				actor2->GetTransform()->localPosition = Vector2(-300, 300);
 				auto rc0 = actor2->AddComponent<RenderComponent>();
 				rc0->SetCircleRenderer(ShapeData(Vector2(200, 0), Colour::Yellow));
-				auto t0 = actor2->AddCollider<Collider>();
+				auto t0 = actor2->AddCollider<AABBCollider>();
 				t0->SetBounds(AABB(50, 50));
 				
 				actor3 = level->NewActor("Blue Rectangle");
 				//actor3->GetTransform()->localPosition = Vector2(300, 100);
 				auto rc1 = actor3->AddComponent<RenderComponent>();
 				rc1->SetRectangleRenderer(ShapeData(Vector2(600, 100), Colour::Blue));
-				auto t1 = actor3->AddCollider<Collider>();
+				auto t1 = actor3->AddCollider<AABBCollider>();
 				t1->SetBounds(AABB(300, 50));
 			}
 			else { 
@@ -71,7 +71,7 @@ namespace Game {
 		player->AddComponent<ControllerComponent>();
 		auto playerRenderer = player->AddComponent<RenderComponent>();
 		playerRenderer->SetSpriteRenderer("Assets/Ship.png");
-		auto collider = player->AddCollider<Collider>();
+		auto collider = player->AddCollider<AABBCollider>();
 		collider->SetBounds(AABB(64, 64));
 		//actor0->GetTransform()->SetParent(pawn0->GetTransform());
 

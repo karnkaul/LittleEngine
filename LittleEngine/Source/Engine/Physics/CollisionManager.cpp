@@ -64,9 +64,7 @@ namespace Game {
 	}
 
 	void CollisionManager::ProcessCollision(Collider & lhs, Collider & rhs) {
-		AABB lhsBounds = lhs.GetWorldAABB();
-		AABB rhsBounds = rhs.GetWorldAABB();
-		if (lhsBounds.Intersecting(rhsBounds)) {
+		if (lhs.IsIntersecting(rhs)) {
 			Logger::Log(*this, lhs.GetActor().GetName() + " is colliding with " + rhs.GetActor().GetName(), Logger::Severity::Debug);
 		}
 	}
