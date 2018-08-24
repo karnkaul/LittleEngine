@@ -19,10 +19,13 @@ namespace Game {
 		
 		Vector2 worldY = this->engine.GetWorld().GetScreenBoundsY();
 		Fixed logoY = worldY.x + 200;
-		logo = NewActor("Logo");
-		auto renderer = logo->AddComponent<RenderComponent>();
-		logoRenderer = &renderer->SetTextRenderer("... Press Enter to Start ...");
-		logo->GetTransform()->localPosition = Vector2(0, logoY);
+		_logo = SpawnActor("Logo");
+		std::shared_ptr<Actor> logo = nullptr;
+		if ((logo = _logo.lock()) != nullptr) {
+			auto renderer = logo->AddComponent<RenderComponent>();
+			logoRenderer = &renderer->SetTextRenderer("... Press Enter to Start ...");
+			logo->GetTransform()->localPosition = Vector2(0, logoY);
+		}
 
 		inputTokens.push_back(GetInputHandler().Register(GameInput::Enter, std::bind(&BootLevel::OnLoadNextLevel, this), OnKey::Released));
 		inputTokens.push_back(GetInputHandler().Register(GameInput::Return, std::bind(&BootLevel::OnQuit, this), OnKey::Released));

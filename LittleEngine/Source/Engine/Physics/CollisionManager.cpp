@@ -5,6 +5,18 @@
 #include "Entities/Actor.h"
 
 namespace Game {
+	struct ColliderComparer {
+		ColliderComparer(Collider::Ptr lhs) : lhs(lhs) {}
+		Collider::Ptr lhs;
+		bool operator()(Collider::wPtr rhs) {
+			Collider::Ptr _c = rhs.lock();
+			if (_c != nullptr) {
+				return _c.get() == lhs.get();
+			}
+			return false;
+		}
+	};
+
 	CollisionManager::CollisionManager() : Object("CollisionManager") {
 	}
 
@@ -16,16 +28,8 @@ namespace Game {
 
 	bool CollisionManager::Unregister(Collider::Ptr collider) {
 		if (!colliders.empty()) {
-			auto end = colliders.end();
-			auto search = std::find_if(colliders.begin(), colliders.end(),
-									   [collider](Collider::wPtr c) {
-				Collider::Ptr _c = c.lock();
-				if (_c != nullptr) {
-					return _c.get() == collider.get();
-				}
-				return false;
-			}
-			);
+			ColliderComparer comparer(collider);
+			auto search = std::find_if(colliders.begin(), colliders.end(), comparer);
 			if (search != colliders.end()) {
 				colliders.erase(search);
 				return true;
@@ -53,7 +57,9 @@ namespace Game {
 	void CollisionManager::Cleanup() {
 		int count = colliders.size();
 		auto ptr = std::remove_if(colliders.begin(), colliders.end(),
-			[](Collider::wPtr& collider) { return collider.lock() == nullptr; }
+			[](Collider::wPtr& collider) { 
+				return collider.lock() == nullptr; 
+			}
 		); 
 		colliders.erase(ptr, colliders.end());
 
@@ -64,8 +70,12 @@ namespace Game {
 	}
 
 	void CollisionManager::ProcessCollision(Collider & lhs, Collider & rhs) {
+		static int DEBUG_skip = 0;
 		if (lhs.IsIntersecting(rhs)) {
-			Logger::Log(*this, lhs.GetActor().GetName() + " is colliding with " + rhs.GetActor().GetName(), Logger::Severity::Debug);
+			if (++DEBUG_skip > 10) {
+				Logger::Log(*this, lhs.GetActor().GetName() + " is colliding with " + rhs.GetActor().GetName(), Logger::Severity::Debug);
+				DEBUG_skip = 0;
+			}
 		}
 	}
 }

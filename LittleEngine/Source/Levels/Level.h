@@ -2,17 +2,17 @@
 #include "Engine/Object.h"
 #include "Utils/Fixed.h"
 #include "Engine/GameClock.h"
+#include "Entities/Actor.h"
 #include "Engine/Physics/CollisionManager.h"
 
 namespace Game {
 	class Engine;
 	class World;
-	class Actor;
 	class Input;
 	struct RenderParams;
 	class AssetManager;
 	class InputHandler;
-
+	
 	class Level : public Object {
 	public:
 		virtual ~Level();
@@ -28,18 +28,17 @@ namespace Game {
 		AssetManager& GetAssetManager() const;
 		CollisionManager& GetCollisionManager();
 
-
-		std::shared_ptr<Actor> NewActor(const std::string& name);
-		void DestroyActor(const std::shared_ptr<Actor>& actor);
+		Actor::wPtr SpawnActor(const std::string& name);
+		void DestroyActor(Actor::Ptr actor);
 
 	protected:
-		std::vector<std::shared_ptr<Actor> > actors;
+		std::vector<Actor::Ptr> actors;
 		GameClock clock;
 		CollisionManager collisionManager;
 		Engine& engine;
 		
 		Level(const std::string& name, Engine& engine);
-		static bool IsActorDestroyed(const std::shared_ptr<Actor>& actor);
+		static bool IsActorDestroyed(Actor::Ptr actor);
 		void Cleanup();
 	};
 }

@@ -16,8 +16,8 @@ namespace Game {
 		Logger::Log(*this, "Level created [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
 	}
 
-	bool Level::IsActorDestroyed(const std::shared_ptr<Actor>& actor) {
-		return actor->_destroyed;
+	bool Level::IsActorDestroyed(Actor::Ptr actor) {
+		return actor == nullptr || actor->_destroyed;
 	}
 
 	void Level::Cleanup() {
@@ -60,8 +60,13 @@ namespace Game {
 		}
 	}
 
-	void Level::DestroyActor(const std::shared_ptr<Actor>& actor) {
-		actor->_destroyed = true;
+	void Level::DestroyActor(Actor::Ptr actor) {
+		if (actor != nullptr) {
+			actor->_destroyed = true;
+		}
+		else {
+			Logger::Log(*this, "Call to DestroyActor(nullptr)", Logger::Severity::Warning);
+		}
 	}
 
 	InputHandler & Level::GetInputHandler() const {
@@ -92,7 +97,7 @@ namespace Game {
 		return collisionManager;
 	}
 
-	std::shared_ptr<Game::Actor> Level::NewActor(const std::string& name) {
+	Actor::wPtr Level::SpawnActor(const std::string& name) {
 		auto actor = std::make_shared<Game::Actor>(*this, name);
 		actors.push_back(actor);
 		return actor;

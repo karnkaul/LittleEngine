@@ -35,6 +35,10 @@ namespace Game {
 		return name + " : " + transform->ToString();
 	}
 
+	void Actor::Destruct() {
+		_destroyed = true;
+	}
+
 	void Actor::FixedTick() {
 		for (const auto& component : components) {
 			if (component != nullptr && component->enabled) {

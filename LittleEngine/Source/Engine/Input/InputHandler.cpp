@@ -44,7 +44,7 @@ namespace Game {
 				InputObserver(std::move(newDelegate), consume, type)
 			};
 			size = newVec.size();
-			inputObservers.insert(std::pair<GameInput, std::vector<InputObserver> >(input, std::move(newVec)));
+			inputObservers.insert(std::pair<GameInput, std::vector<InputObserver>>(input, std::move(newVec)));
 		}
 		return token;
 	}
@@ -110,7 +110,7 @@ namespace Game {
 				InputObserver(std::move(newDelegate), consume, OnKey::Held)
 			};
 			size = newVec.size();
-			map.insert(std::pair<GameInput, std::vector<InputObserver> >(keyCode, std::move(newVec)));
+			map.insert(std::pair<GameInput, std::vector<InputObserver>>(keyCode, std::move(newVec)));
 		}
 		return token;
 	}
