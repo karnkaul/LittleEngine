@@ -196,6 +196,7 @@
     <ClInclude Include="Source\Utils\Fixed.h" />
     <ClInclude Include="Source\Utils\PropRW.h" />
     <ClInclude Include="Source\Utils\Random.h" />
+    <ClInclude Include="Source\Utils\Rect2.h" />
     <ClInclude Include="Source\Utils\Transform.h" />
     <ClInclude Include="Source\Utils\Vector2.h" />
     <ClInclude Include="stdafx.h" />

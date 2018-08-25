@@ -6,6 +6,7 @@ public:
 	static const int SCALE_FACTOR = 100000;
 	static const Fixed Zero;
 	static const Fixed One;
+	static const Fixed Half;
 
 	Fixed() = default;
 	explicit Fixed(double);

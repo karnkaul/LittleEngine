@@ -11,65 +11,67 @@ namespace Game {
 		params.GetWindowController().Draw(*shape);
 	}
 
+	void ShapeRenderer::SetFillColour(const Colour & colour) {
+		shape->setFillColor(Convert(colour));
+	}
+
+	void ShapeRenderer::SetBorder(Fixed width, const Colour & colour) {
+		shape->setOutlineColor(Convert(colour));
+		if (width < 0) {
+			width = 0;
+		}
+		shape->setOutlineThickness(width.GetFloat());
+	}
+
+	void ShapeRenderer::SetPosition(const Vector2 screenPosition) {
+		shape->setPosition(Convert(screenPosition));
+	}
+
+	void ShapeRenderer::SetRotation(const Fixed screenRotation) {
+		shape->setRotation(screenRotation.GetFloat());
+	}
+
 	CircleRenderer::CircleRenderer(Fixed radius)
 		: ShapeRenderer("CircleRenderer", std::make_unique<sf::CircleShape>(radius.GetFloat())) {
-		auto& circle = CastShape<sf::CircleShape>();
-		circle.setOrigin(radius.GetFloat(), radius.GetFloat());
+		circle = &CastShape<sf::CircleShape>();
+		circle->setOrigin(radius.GetFloat(), radius.GetFloat());
 	}
 
 	CircleRenderer::CircleRenderer(Fixed radius, const Colour& colour)
 		: ShapeRenderer("CircleRenderer", std::make_unique<sf::CircleShape>(radius.GetFloat())) {
-		auto& circle = CastShape<sf::CircleShape>();
-		circle.setOrigin(radius.GetFloat(), radius.GetFloat());
-		circle.setFillColor(Convert(colour));
+		circle = &CastShape<sf::CircleShape>();
+		circle->setOrigin(radius.GetFloat(), radius.GetFloat());
+		SetFillColour(colour);
 	}
 
-	void CircleRenderer::SetPosition(const Vector2 screenPosition) {
-		auto& circle = CastShape<sf::CircleShape>();
-		circle.setPosition(Convert(screenPosition));
-	}
-
-	void CircleRenderer::SetRotation(const Fixed screenRotation) {
-		auto& circle = CastShape<sf::CircleShape>();
-		circle.setRotation(screenRotation.GetFloat());
-	}
-
-	Vector2 CircleRenderer::GetBounds() const {
-		auto& circle = CastShape<sf::CircleShape>();
-		return Vector2(
-			static_cast<int>(circle.getRadius() * 2),
-			static_cast<int>(circle.getRadius() * 2)
+	Rect2 CircleRenderer::GetBounds() const {
+		Fixed radius(circle->getRadius());
+		return Rect2(
+			Vector2(-radius, -radius),
+			Vector2(radius, radius)
 		);
 	}
 
 	RectangleRenderer::RectangleRenderer(Vector2 size)
-		: ShapeRenderer("RectangleRenderer", std::make_unique<sf::RectangleShape>(Convert(size))) {
-		auto& rectangle = CastShape<sf::RectangleShape>();
-		rectangle.setOrigin(rectangle.getSize().x * 0.5f, rectangle.getSize().y * 0.5f);
+		: ShapeRenderer("RectangleRenderer", std::make_unique<sf::RectangleShape>(sf::Vector2f(size.x.GetFloat(), size.y.GetFloat()))) {
+		rectangle = &CastShape<sf::RectangleShape>();
+		rectangle->setOrigin(rectangle->getSize().x * 0.5f, rectangle->getSize().y * 0.5f);
 	}
 
 	RectangleRenderer::RectangleRenderer(Vector2 size, Colour colour)
-		: ShapeRenderer("RectangleRenderer", std::make_unique<sf::RectangleShape>(Convert(size))) {
-		auto& rectangle = CastShape<sf::RectangleShape>();
-		rectangle.setOrigin(rectangle.getSize().x * 0.5f, rectangle.getSize().y * 0.5f);
-		rectangle.setFillColor(Convert(colour));
+		: ShapeRenderer("RectangleRenderer", std::make_unique<sf::RectangleShape>(sf::Vector2f(size.x.GetFloat(), size.y.GetFloat()))) {
+		rectangle = &CastShape<sf::RectangleShape>();
+		rectangle->setOrigin(rectangle->getSize().x * 0.5f, rectangle->getSize().y * 0.5f);
+		SetFillColour(colour);
 	}
 
-	void RectangleRenderer::SetPosition(const Vector2 screenPosition) {
-		auto& rectangle = CastShape<sf::RectangleShape>();
-		rectangle.setPosition(Convert(screenPosition));
-	}
-
-	void RectangleRenderer::SetRotation(const Fixed screenRotation) {
-		auto& rectangle = CastShape<sf::RectangleShape>();
-		rectangle.setRotation(screenRotation.GetFloat());
-	}
-
-	Vector2 RectangleRenderer::GetBounds() const {
-		auto& rectangle = CastShape<sf::RectangleShape>();
-		return Vector2(
-			static_cast<int>(rectangle.getSize().x),
-			static_cast<int>(rectangle.getSize().y)
+	Rect2 RectangleRenderer::GetBounds() const {
+		sf::Vector2f size = rectangle->getSize();
+		Fixed width(size.x);
+		Fixed height(size.y);
+		return Rect2(
+			Vector2(-width * Fixed::Half, -height * Fixed::Half),
+			Vector2(width * Fixed::Half, height * Fixed::Half)
 		);
 	}
 }

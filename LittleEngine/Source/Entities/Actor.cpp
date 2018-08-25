@@ -45,6 +45,9 @@ namespace Game {
 				component->FixedTick();
 			}
 		}
+		if (collider != nullptr) {
+			collider->FixedTick();
+		}
 	}
 
 	void Actor::Tick(Fixed deltaTime) {
@@ -53,11 +56,17 @@ namespace Game {
 				component->Tick(deltaTime);
 			}
 		}
+		if (collider != nullptr) {
+			collider->Tick(deltaTime);
+		}
 	}
 
 	void Actor::Render(RenderParams& params) {
 		for (auto& component : components) {
 			component->Render(params);
+		}
+		if (collider != nullptr) {
+			collider->Render(params);
 		}
 	}
 

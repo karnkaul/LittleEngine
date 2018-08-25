@@ -18,7 +18,7 @@ namespace Game {
 	public:
 		SpriteRenderer(const SpriteData& data);
 		virtual void Render(RenderParams& params) override;
-		virtual Vector2 GetBounds() const override;
+		virtual Rect2 GetBounds() const override;
 		void SetTexture(TextureAsset::Ptr texture);
 	protected:
 		virtual void SetPosition(const Vector2 screenPosition) override;

@@ -68,6 +68,31 @@ namespace Game {
 				actor3->Destruct();
 			}
 		}
+
+		bool drawn = false;
+		Action::Token token3;
+		void OnLBPressed() {
+			drawn = !drawn;
+			auto actor1 = _actor1.lock();
+			auto actor2 = _actor2.lock();
+			auto actor3 = _actor3.lock();
+			if (actor1 != nullptr) {
+				std::shared_ptr<AABBCollider> ac = actor1->GetCollider<AABBCollider>();
+				if (ac != nullptr) {
+					ac->DrawDebugShape(drawn);
+				}
+			}
+			if (actor2 != nullptr && actor3 != nullptr) {
+				std::shared_ptr<CircleCollider> cc = actor2->GetCollider<CircleCollider>();
+				if (cc != nullptr) {
+					cc->DrawDebugShape(drawn);
+				}
+				std::shared_ptr<AABBCollider> ac = actor3->GetCollider<AABBCollider>();
+				if (ac != nullptr) {
+					ac->DrawDebugShape(drawn);
+				}
+			}
+		}
 	}
 
 	TestLevel::TestLevel(Engine& engine) : Level("TestLevel", engine) {
@@ -98,7 +123,6 @@ namespace Game {
 			auto rc = actor1->AddComponent<RenderComponent>();
 			auto& tr = rc->SetTextRenderer("Hello World!");
 			tr.SetColour(Colour(200, 150, 50)).SetSize(50);
-			yPos -= tr.GetBounds().y;
 			actor1->GetTransform()->localPosition = Vector2(0, yPos - 50);
 		}
 
@@ -109,6 +133,7 @@ namespace Game {
 		_TestLevel::token1 = GetInputHandler().Register(GameInput::Y, &_TestLevel::OnYPressed, OnKey::Released, true);
 		_TestLevel::level = this;
 		_TestLevel::token2 = GetInputHandler().Register(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
+		_TestLevel::token3 = GetInputHandler().Register(GameInput::LB, &_TestLevel::OnLBPressed, OnKey::Released);
 	}
 
 	void RenderTests(Level* level, std::vector<Actor::Ptr>& actors, RenderParams& params) {

@@ -64,6 +64,16 @@ namespace Game {
 			return collider;
 		}
 
+		template<typename T>
+		std::shared_ptr<T> GetCollider() {
+			static_assert(std::is_base_of<Collider, T>::value, "T must derive from Collider: check Output window for erroneous call");
+			if (collider != nullptr) {
+				std::shared_ptr<T> ret = std::dynamic_pointer_cast<T>(collider);
+				return ret;
+			}
+			return nullptr;
+		}
+
 	protected:
 		std::vector<std::shared_ptr<Component>> components;
 		Collider::Ptr collider;

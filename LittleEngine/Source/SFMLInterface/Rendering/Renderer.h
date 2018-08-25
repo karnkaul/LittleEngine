@@ -1,6 +1,7 @@
 #pragma once
 #include "Utils/Vector2.h"
 #include "Engine/Object.h"
+#include "Utils/Rect2.h"
 #include "SFML/Graphics.hpp"
 
 namespace Game {
@@ -33,9 +34,7 @@ namespace Game {
 		// Call this to render the entity using the passed RenderParams
 		virtual void Render(struct RenderParams& params) = 0;
 		// Subclass will return its max Bounds in screen space
-		virtual Vector2 GetBounds() const = 0;
-		// Returns bounds in world space
-		virtual Vector2 GetWorldBounds(const class World& world) const;
+		virtual Rect2 GetBounds() const = 0;
 	
 	protected:
 		virtual void SetPosition(const Vector2 screenPosition) = 0;

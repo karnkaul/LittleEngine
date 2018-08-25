@@ -5,6 +5,7 @@
 
 const Fixed Fixed::Zero = Fixed(0);
 const Fixed Fixed::One = Fixed(1);
+const Fixed Fixed::Half = Fixed(1, 2);
 
 Fixed::Fixed(double value) {
 	m_value = static_cast<int>(value * SCALE_FACTOR);

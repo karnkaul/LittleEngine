@@ -25,10 +25,13 @@ namespace Game {
 		params.GetWindowController().Draw(sprite);
 	}
 
-	Vector2 SpriteRenderer::GetBounds() const {
-		return Vector2(
-			Fixed(static_cast<double>(sprite.getLocalBounds().width)),
-			Fixed(static_cast<double>(sprite.getLocalBounds().height))
+	Rect2 SpriteRenderer::GetBounds() const {
+		sf::FloatRect bounds = sprite.getLocalBounds();
+		Fixed width(bounds.width);
+		Fixed height(bounds.height);
+		return Rect2(
+			Vector2(-width * Fixed::Half, -height * Fixed::Half),
+			Vector2(width * Fixed::Half, height * Fixed::Half)
 		);
 	}
 
