@@ -196,7 +196,6 @@
     <ClInclude Include="Source\Utils\Fixed.h" />
     <ClInclude Include="Source\Utils\Maths.h" />
     <ClInclude Include="Source\Utils\PropRW.h" />
-    <ClInclude Include="Source\Utils\Random.h" />
     <ClInclude Include="Source\Utils\Rect2.h" />
     <ClInclude Include="Source\Utils\Transform.h" />
     <ClInclude Include="Source\Utils\Vector2.h" />
@@ -239,7 +238,6 @@
     <ClCompile Include="Source\Utils\Fixed.cpp" />
     <ClCompile Include="Source\Utils\Maths.cpp" />
     <ClCompile Include="Source\Utils\PropRW.cpp" />
-    <ClCompile Include="Source\Utils\Random.cpp" />
     <ClCompile Include="Source\Utils\Transform.cpp" />
     <ClCompile Include="Source\Utils\Vector2.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -165,9 +165,6 @@
     <ClInclude Include="Source\Engine\Physics\ColliderData.h">
       <Filter>Source\Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Utils\Random.h">
-      <Filter>Source\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Utils\Rect2.h">
       <Filter>Source\Utils</Filter>
     </ClInclude>
@@ -284,9 +281,6 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\Physics\ColliderData.cpp">
       <Filter>Source\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\Random.cpp">
-      <Filter>Source\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utils\Maths.cpp">
       <Filter>Source\Utils</Filter>

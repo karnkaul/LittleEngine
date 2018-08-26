@@ -18,6 +18,26 @@ namespace Game {
 		return this->layerID;
 	}
 
+	void WindowController::Buffer::Push(Drawable drawable, int index) {
+		std::vector<Drawable>& vec = buffer[index];
+		vec.push_back(drawable);
+	}
+
+	void WindowController::Buffer::ForEach(std::function<void(std::vector<Drawable>)> Callback) const {
+		for (int i = 0; i <= MAX_LAYERID; ++i) {
+			std::vector<Drawable> vec = buffer[i];
+			if (!vec.empty()) {
+				Callback(vec);
+			}
+		}
+	}
+
+	void WindowController::Buffer::Clear() {
+		for (int i = 0; i < MAX_LAYERID; ++i) {
+			buffer[i].clear();
+		}
+	}
+
 	WindowController::WindowController(int screenWidth, int screenHeight, std::string windowTitle) {
 		window = std::make_unique<sf::RenderWindow>(sf::VideoMode(
 			screenWidth,
@@ -69,21 +89,19 @@ namespace Game {
 	void WindowController::Push(Drawable drawable) {
 		int index = drawable.layer.GetLayerID();
 		index = Maths::Clamp(index, 0, MAX_LAYERID);
-		std::vector<Drawable>& vec = buffer[index];
-		vec.push_back(drawable);
+		buffer.Push(drawable, index);
 	}
 
 	void WindowController::Draw() {
 		window->clear();
-		for (int i = 0; i < MAX_LAYERID; ++i) {
-			std::vector<Drawable>& vec = buffer[i];
-			if (!vec.empty()) {
-				for (Drawable& drawable : vec) {
-					window->draw(drawable.GetSFMLDrawable());
+		buffer.ForEach(
+			[&w = this->window](std::vector<Drawable> drawables) {
+				for (Drawable& drawable : drawables) {
+					w->draw(drawable.GetSFMLDrawable());
 				}
-				vec.clear();
 			}
-		}
+		);
+		buffer.Clear();
 		window->display();
 	}
 
