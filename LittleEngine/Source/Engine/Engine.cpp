@@ -119,10 +119,9 @@ namespace Game {
 	}
 
 	void Engine::Render() {
-		windowController->Clear();
 		RenderParams params(*windowController);
 		levelManager->GetActiveLevel().Render(params);
-		windowController->Display();
+		windowController->Draw();
 	}
 
 	void Engine::PostRender(double &frameStartMS) {

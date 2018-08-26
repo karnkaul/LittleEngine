@@ -2,6 +2,7 @@
 #include "Utils/Vector2.h"
 #include "Engine/Object.h"
 #include "Utils/Rect2.h"
+#include "RenderParams.h"
 #include "SFML/Graphics.hpp"
 
 namespace Game {
@@ -29,6 +30,8 @@ namespace Game {
 	// Base class for all SFML Rendering
 	class Renderer : public Object {
 	public:
+		LayerInfo layer;
+
 		Renderer(std::string name);
 		virtual ~Renderer();
 		// Call this to render the entity using the passed RenderParams

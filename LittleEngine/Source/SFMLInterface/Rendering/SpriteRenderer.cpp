@@ -22,7 +22,7 @@ namespace Game {
 		ApplyData();
 		SetPosition(params.screenPosition);
 		SetRotation(params.screenRotation);
-		params.GetWindowController().Draw(sprite);
+		params.GetWindowController().Push(Drawable(sprite, layer));
 	}
 
 	Rect2 SpriteRenderer::GetBounds() const {

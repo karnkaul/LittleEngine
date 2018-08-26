@@ -8,7 +8,7 @@ namespace Game {
 	void ShapeRenderer::Render(RenderParams & params) {
 		SetPosition(params.screenPosition);
 		SetRotation(params.screenRotation);
-		params.GetWindowController().Draw(*shape);
+		params.GetWindowController().Push(Drawable(*shape, layer));
 	}
 
 	void ShapeRenderer::SetFillColour(const Colour & colour) {

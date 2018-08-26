@@ -47,7 +47,7 @@ namespace Game {
 		ApplyData();
 		SetPosition(params.screenPosition);
 		SetRotation(params.screenRotation);
-		params.GetWindowController().Draw(text);
+		params.GetWindowController().Push(Drawable(text, layer));
 	}
 
 	Rect2 TextRenderer::GetBounds() const {

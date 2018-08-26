@@ -16,6 +16,14 @@ namespace Game {
 		: Component(actor, "RenderComponent") {
 	}
 
+	LayerInfo RenderComponent::GetLayer() const {
+		return renderer->layer;
+	}
+
+	void RenderComponent::SetLayer(LayerInfo layer) {
+		renderer->layer = layer;
+	}
+
 	void RenderComponent::SetRenderer(std::unique_ptr<Renderer> renderer) {
 		this->renderer = std::move(renderer);
 	}

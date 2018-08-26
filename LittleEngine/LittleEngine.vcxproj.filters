@@ -171,6 +171,9 @@
     <ClInclude Include="Source\Utils\Rect2.h">
       <Filter>Source\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Utils\Maths.h">
+      <Filter>Source\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -283,6 +286,9 @@
       <Filter>Source\Engine\Physics</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utils\Random.cpp">
+      <Filter>Source\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\Maths.cpp">
       <Filter>Source\Utils</Filter>
     </ClCompile>
   </ItemGroup>

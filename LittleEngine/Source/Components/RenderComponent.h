@@ -22,6 +22,9 @@ namespace Game {
 	class RenderComponent : public Component {
 	public:
 		RenderComponent(Actor& actor);
+
+		LayerInfo GetLayer() const;
+		void SetLayer(LayerInfo layer);
 		void SetRenderer(std::unique_ptr<Renderer> renderer);
 		Rect2 GetBounds() const;
 		CircleRenderer& SetCircleRenderer(const ShapeData& shapeData);

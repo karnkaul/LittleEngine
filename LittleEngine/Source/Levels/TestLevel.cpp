@@ -111,6 +111,7 @@ namespace Game {
 			player->AddComponent<ControllerComponent>();
 			auto playerRenderer = player->AddComponent<RenderComponent>();
 			playerRenderer->SetSpriteRenderer("Assets/Ship.png");
+			playerRenderer->SetLayer(5);
 			auto collider = player->AddCollider<AABBCollider>();
 			collider->SetBounds(AABBData(40, 40));
 			//actor0->GetTransform()->SetParent(pawn0->GetTransform());
