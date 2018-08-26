@@ -67,7 +67,7 @@ namespace Game {
 			struct enable_shared : public T { enable_shared(const std::string& path) : T(path) {} };
 			std::shared_ptr<T> t_ptr = std::make_shared<enable_shared>(path);
 			std::shared_ptr<Asset> t_asset = std::dynamic_pointer_cast<Asset>(t_ptr);
-			loaded.insert(std::pair<std::string, std::shared_ptr<Asset> >(path, t_asset));
+			loaded.insert(std::pair<std::string, std::shared_ptr<Asset>>(path, t_asset));
 			return t_ptr;
 		}
 		
@@ -79,6 +79,6 @@ namespace Game {
 		AssetManager(const AssetManager&) = delete;
 		AssetManager& operator=(const AssetManager&) = delete;
 		FontAsset::Ptr defaultFont;
-		std::unordered_map<std::string, std::shared_ptr<Asset> > loaded;
+		std::unordered_map<std::string, std::shared_ptr<Asset>> loaded;
 	};
 }

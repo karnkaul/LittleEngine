@@ -47,13 +47,16 @@ namespace Game {
 		ApplyData();
 		SetPosition(params.screenPosition);
 		SetRotation(params.screenRotation);
-		params.GetWindowController().Draw(text);
+		params.GetWindowController().Push(Drawable(text, layer));
 	}
 
-	Vector2 TextRenderer::GetBounds() const {
-		return Vector2(
-			static_cast<int>(text.getLocalBounds().width),
-			static_cast<int>(text.getLocalBounds().height)
+	Rect2 TextRenderer::GetBounds() const {
+		sf::FloatRect bounds = text.getLocalBounds();
+		Fixed width(bounds.width);
+		Fixed height(bounds.height);
+		return Rect2(
+			Vector2(-width * Fixed::Half, -height * Fixed::Half),
+			Vector2(width * Fixed::Half, height * Fixed::Half)
 		);
 	}
 

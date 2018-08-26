@@ -4,7 +4,6 @@
 
 namespace Game {
 	class Engine;
-	class Actor;
 	class TextRenderer;
 
 	class BootLevel : public Level {
@@ -13,7 +12,7 @@ namespace Game {
 		virtual void Tick(Fixed deltaTime) override;
 	private:
 		TextRenderer* logoRenderer;
-		std::shared_ptr<Actor> logo;
+		Actor::wPtr _logo;
 		std::vector<OnInput::Token> inputTokens;
 
 		void LoadAssets();

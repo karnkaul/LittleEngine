@@ -31,13 +31,13 @@ public:
 		return !callbacks.empty();
 	}
 private:
-	std::vector<std::weak_ptr<Callback> > callbacks;
+	std::vector<std::weak_ptr<Callback>> callbacks;
 	// Remove expired weak_ptrs
 	void Cleanup() {
 		callbacks.erase(std::remove_if(callbacks.begin(), callbacks.end(),
-									   [](std::weak_ptr<Callback> ptr) {
-			return ptr.lock() == nullptr;
-		}
+			[](std::weak_ptr<Callback> ptr) {
+				return ptr.lock() == nullptr;
+			}
 		), callbacks.end());
 	}
 };
@@ -76,7 +76,7 @@ public:
 		return !callbacks.empty();
 	}
 private:
-	std::vector<std::weak_ptr<Callback> > callbacks;
+	std::vector<std::weak_ptr<Callback>> callbacks;
 	// Remove expired weak_ptrs
 	void Cleanup() {
 		callbacks.erase(std::remove_if(callbacks.begin(), callbacks.end(),

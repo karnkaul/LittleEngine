@@ -1,6 +1,6 @@
 #pragma once
 #include "Component.h"
-#include "Utils/Vector2.h"
+#include "Utils/Rect2.h"
 #include "SFMLInterface/Rendering/Renderer.h"
 
 namespace Game {
@@ -22,9 +22,11 @@ namespace Game {
 	class RenderComponent : public Component {
 	public:
 		RenderComponent(Actor& actor);
+
+		LayerInfo GetLayer() const;
+		void SetLayer(LayerInfo layer);
 		void SetRenderer(std::unique_ptr<Renderer> renderer);
-		Vector2 GetBounds() const;
-		Vector2 GetWorldBounds(const class World& world) const;
+		Rect2 GetBounds() const;
 		CircleRenderer& SetCircleRenderer(const ShapeData& shapeData);
 		RectangleRenderer& SetRectangleRenderer(const ShapeData& shapeData);
 		SpriteRenderer& SetSpriteRenderer(const std::string& texturePath);

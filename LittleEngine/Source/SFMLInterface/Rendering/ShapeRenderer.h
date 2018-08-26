@@ -8,6 +8,8 @@ namespace Game {
 	class ShapeRenderer : public Renderer {
 	public:
 		virtual void Render(RenderParams& params) override;
+		void SetFillColour(const Colour& colour);
+		void SetBorder(Fixed width, const Colour& colour);
 
 	protected:
 		std::unique_ptr<sf::Shape> shape;	// sf::Shape cannot be a direct member
@@ -15,6 +17,9 @@ namespace Game {
 		ShapeRenderer(std::string name, std::unique_ptr<sf::Shape> shape) : Renderer(name) {
 			this->shape = std::move(shape);
 		}
+
+		virtual void SetPosition(const Vector2 screenPosition) override;
+		virtual void SetRotation(const Fixed screenRotation) override;
 
 		template<typename T>
 		T& CastShape() const {
@@ -28,11 +33,11 @@ namespace Game {
 	public:
 		CircleRenderer(Fixed radius);
 		CircleRenderer(Fixed radius, const Colour& colour);
+
 		// Returns radius of CircleShape
-		virtual Vector2 GetBounds() const override;
-	protected:
-		virtual void SetPosition(const Vector2 screenPosition) override;
-		virtual void SetRotation(const Fixed screenRotation) override;
+		virtual Rect2 GetBounds() const override;
+	private:
+		sf::CircleShape* circle;
 	};
 
 	// Concrete class to draw a RectangleShape
@@ -40,10 +45,10 @@ namespace Game {
 	public:
 		RectangleRenderer(Vector2 size);
 		RectangleRenderer(Vector2 size, Colour colour);
+
 		// Returns bounds of RectangleShape
-		virtual Vector2 GetBounds() const override;
-	protected:
-		virtual void SetPosition(const Vector2 screenPosition) override;
-		virtual void SetRotation(const Fixed screenRotation) override;
+		virtual Rect2 GetBounds() const override;
+	private:
+		sf::RectangleShape* rectangle;
 	};
 }

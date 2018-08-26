@@ -35,11 +35,18 @@ namespace Game {
 		return name + " : " + transform->ToString();
 	}
 
+	void Actor::Destruct() {
+		_destroyed = true;
+	}
+
 	void Actor::FixedTick() {
 		for (const auto& component : components) {
 			if (component != nullptr && component->enabled) {
 				component->FixedTick();
 			}
+		}
+		if (collider != nullptr) {
+			collider->FixedTick();
 		}
 	}
 
@@ -49,11 +56,17 @@ namespace Game {
 				component->Tick(deltaTime);
 			}
 		}
+		if (collider != nullptr) {
+			collider->Tick(deltaTime);
+		}
 	}
 
 	void Actor::Render(RenderParams& params) {
 		for (auto& component : components) {
 			component->Render(params);
+		}
+		if (collider != nullptr) {
+			collider->Render(params);
 		}
 	}
 

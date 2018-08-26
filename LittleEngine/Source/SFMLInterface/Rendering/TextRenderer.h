@@ -30,7 +30,7 @@ namespace Game {
 	public:
 		TextRenderer(const TextData& data);
 		virtual void Render(struct RenderParams& params) override;
-		virtual Vector2 GetBounds() const override;
+		virtual Rect2 GetBounds() const override;
 		TextData& GetTextData();
 		TextRenderer& SetSize(Fixed pixelSize);
 		TextRenderer& SetColour(Colour colour);

@@ -16,16 +16,20 @@ namespace Game {
 		: Component(actor, "RenderComponent") {
 	}
 
+	LayerInfo RenderComponent::GetLayer() const {
+		return renderer->layer;
+	}
+
+	void RenderComponent::SetLayer(LayerInfo layer) {
+		renderer->layer = layer;
+	}
+
 	void RenderComponent::SetRenderer(std::unique_ptr<Renderer> renderer) {
 		this->renderer = std::move(renderer);
 	}
 
-	Vector2 RenderComponent::GetBounds() const {
-		return renderer == nullptr ? Vector2::Zero : renderer->GetBounds();
-	}
-
-	Vector2 RenderComponent::GetWorldBounds(const World& world) const {
-		return renderer == nullptr ? Vector2::Zero : renderer->GetWorldBounds(world);
+	Rect2 RenderComponent::GetBounds() const {
+		return renderer == nullptr ? Rect2(Vector2::Zero, Vector2::Zero) : renderer->GetBounds();
 	}
 
 	CircleRenderer & RenderComponent::SetCircleRenderer(const ShapeData & shapeData) {

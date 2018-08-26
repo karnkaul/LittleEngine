@@ -2,8 +2,11 @@
 #include <string>
 #include "Collider.h"
 #include "Entities/Actor.h"
+#include "Engine/World.h"
 #include "Levels/Level.h"
 #include "CollisionManager.h"
+#include "SFMLInterface/Rendering/RenderParams.h"
+#include "SFMLInterface/Rendering/ShapeRenderer.h"
 #include "Engine/Logger/Logger.h"
 
 namespace Game {
@@ -43,7 +46,9 @@ namespace Game {
 		return ret;
 	}
 
-	Collider::Collider(Actor& actor, std::string name) : Component(actor, name) {
+	const Fixed Collider::BORDER = 1;
+
+	Collider::Collider(Actor& actor, std::string name) : Component(actor, name), world(actor.GetActiveLevel().GetWorld()) {
 	}
 
 	AABBCollider::AABBCollider(Actor& actor) : Collider(actor, "AABBCollider") {
@@ -60,6 +65,30 @@ namespace Game {
 
 	void AABBCollider::SetBounds(AABBData bounds) {
 		this->bounds = bounds;
+	}
+
+	void AABBCollider::DrawDebugShape(bool show, Fixed thickness) {
+		if (show) {
+			Vector2 size(bounds.lowerBound.x * 2, bounds.upperBound.y * 2);
+			debugRect = std::make_unique<RectangleRenderer>(size, Colour::Transparent);
+			debugRect->SetBorder(thickness, Colour::Green);
+			Logger::Log(*this, "Drawing debug collision rect", Logger::Severity::Debug);
+		}
+		else {
+			debugRect = nullptr;
+			Logger::Log(*this, "Hiding debug collision rect", Logger::Severity::Debug);
+		}
+	}
+
+	void AABBCollider::Render(RenderParams & params) {
+		if (debugRect != nullptr) {
+			AABBData worldRect = GetWorldAABB();
+			Fixed w = worldRect.upperBound.x - worldRect.lowerBound.x;
+			Fixed h = worldRect.upperBound.y - worldRect.lowerBound.y;
+			Vector2 delta(w * Fixed::Half, h * Fixed::Half);
+			params.screenPosition = world.WorldToScreenPoint(worldRect.lowerBound + delta);
+			debugRect->Render(params);
+		}
 	}
 
 	bool AABBCollider::IsIntersectAABB(const AABBCollider & rhs) const {
@@ -89,6 +118,18 @@ namespace Game {
 		circle.radius = radius;
 	}
 
+	void CircleCollider::DrawDebugShape(bool show, Fixed thickness) {
+		if (show) {
+			debugCircle = std::make_unique<CircleRenderer>(circle.radius, Colour::Transparent);
+			debugCircle->SetBorder(thickness, Colour::Green);
+			Logger::Log(*this, "Drawing debug collision circle", Logger::Severity::Debug);
+		}
+		else {
+			debugCircle = nullptr;
+			Logger::Log(*this, "Hiding debug collision circle", Logger::Severity::Debug);
+		}
+	}
+
 	bool CircleCollider::IsIntersectAABB(const AABBCollider & rhs) const {
 		return rhs.IsIntersectCircle(*this);
 	}
@@ -97,5 +138,13 @@ namespace Game {
 		CircleData lhsCircle = GetWorldCircle();
 		CircleData rhsCircle = rhs.GetWorldCircle();
 		return lhsCircle.IsIntersecting(rhsCircle);
+	}
+
+	void CircleCollider::Render(RenderParams& params) {
+		if (debugCircle != nullptr) {
+			CircleData c = GetWorldCircle();
+			params.screenPosition = world.WorldToScreenPoint(c.centre);
+			debugCircle->Render(params);
+		}
 	}
 }

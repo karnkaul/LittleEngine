@@ -41,6 +41,7 @@ namespace Game {
 		tokens.push_back(inputHandler.Register(GameInput::Right, std::bind(&ControllerComponent::OnRight, this), OnKey::Held));
 		tokens.push_back(inputHandler.Register(GameInput::Up, std::bind(&ControllerComponent::OnUp, this), OnKey::Held));
 		tokens.push_back(inputHandler.Register(GameInput::Down, std::bind(&ControllerComponent::OnDown, this), OnKey::Held));
+		renderer = actor.GetComponent<RenderComponent>();
 		
 		// Tests
 		tokens.push_back(inputHandler.Register(GameInput::Left, &Test, OnKey::Released));
@@ -61,7 +62,7 @@ namespace Game {
 		const Level& level = actor.GetActiveLevel();
 		Vector2 worldX = world.GetScreenBoundsX();
 		Vector2 worldY = world.GetScreenBoundsY();
-		Vector2 padding = actor.GetComponent<RenderComponent>()->GetWorldBounds(world) * Fixed(1, 2);
+		Vector2 padding = GetRenderPadding();
 		ClampPosition(actor.GetTransform()->localPosition, worldX, worldY, padding);
 
 		// TESTS
@@ -69,6 +70,17 @@ namespace Game {
 			_deletedToken = true;
 			tokens.pop_back();
 		}
+	}
+
+	Vector2 ControllerComponent::GetRenderPadding() {
+		if (renderer == nullptr) {
+			renderer = GetActor().GetComponent<RenderComponent>();
+		}
+		if (renderer == nullptr) {
+			Logger::Log(*this, "ControllerComponent's owning Actor does not have a RenderComponent", Logger::Severity::Warning);
+			return Vector2::Zero;
+		}
+		return renderer->GetBounds().upper;
 	}
 
 	void ControllerComponent::OnLeft() {

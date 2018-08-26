@@ -8,6 +8,18 @@ namespace sf {
 namespace Game {
 	class WindowController;
 
+	struct LayerInfo {
+	public:
+		LayerInfo() = default;
+		LayerInfo(int layerID);
+
+		int GetLayerID();
+		int SetLayerID(int layerID);
+
+	private:
+		int layerID = 0;
+	};
+
 	struct RenderParams {
 		Vector2 screenPosition;
 		Fixed screenRotation;
