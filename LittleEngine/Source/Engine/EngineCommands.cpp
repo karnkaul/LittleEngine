@@ -8,7 +8,7 @@
 namespace Game {
 	LoadLevelCommand::LoadLevelCommand(Engine& engine, int levelID) : engine(engine), levelID(levelID) {}
 
-	bool LoadLevelCommand::Execute() {
+	bool LoadLevelCommand::operator()() {
 		return engine.levelManager->LoadLevel(levelID);
 	}
 }

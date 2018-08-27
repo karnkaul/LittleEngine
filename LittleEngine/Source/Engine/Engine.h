@@ -63,17 +63,7 @@ namespace Game {
 
 		Engine();
 
-		void PollInput();
-		void FixedTick(Fixed& lag);
-		void Tick(Fixed deltaTime);
-		void Render();
-		void PostRender(double &frameStartMS);
-
-		void LoadConfig();
-		void SaveConfig();
 		bool CreateWindow();
-		void RunGameLoop();
-
 		void OnPaused();
 		void OnUnpaused();
 

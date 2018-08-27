@@ -6,7 +6,7 @@ namespace Game {
 	class EngineCommand {
 	public:
 		virtual ~EngineCommand() = default;
-		virtual bool Execute() = 0;
+		virtual bool operator()() = 0;
 	protected:
 		EngineCommand() = default;
 	};
@@ -14,7 +14,7 @@ namespace Game {
 	class LoadLevelCommand : public EngineCommand {
 	public:
 		LoadLevelCommand(Engine& engine, int levelID);
-		virtual bool Execute() override;
+		virtual bool operator()() override;
 	private:
 		Engine& engine;
 		int levelID;

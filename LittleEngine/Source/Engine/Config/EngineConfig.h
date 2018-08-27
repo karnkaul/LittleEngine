@@ -18,7 +18,7 @@ namespace Game {
 		void SetWindowTitle(const std::string& windowTitle);
 		void SetLogLevel(Logger::Severity level);
 		void SetScreenSize(const Vector2& screenSize);
-		void SetColliderBorderWidth(int shapeWidth);
+		void SetColliderBorderWidth(Fixed shapeWidth);
 	private:
 		const static std::string WINDOW_TITLE_KEY;
 		const static std::string LOG_LEVEL_KEY;

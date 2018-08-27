@@ -85,8 +85,8 @@ namespace Game {
 		screenHeight.stringValue = std::to_string(screenSize.y.GetInt());
 	}
 
-	void EngineConfig::SetColliderBorderWidth(int shapeWidth) {
-		colliderBorderWidth.stringValue = std::to_string(shapeWidth);
+	void EngineConfig::SetColliderBorderWidth(Fixed shapeWidth) {
+		colliderBorderWidth.stringValue = std::to_string(shapeWidth.GetInt());
 	}
 
 	Logger::Severity EngineConfig::ParseLogLevel(std::string str) {
