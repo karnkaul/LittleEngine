@@ -63,7 +63,7 @@ namespace Game {
 		Vector2 worldX = world.GetScreenBoundsX();
 		Vector2 worldY = world.GetScreenBoundsY();
 		Vector2 padding = GetRenderPadding();
-		ClampPosition(actor.GetTransform()->localPosition, worldX, worldY, padding);
+		ClampPosition(actor.GetTransform().localPosition, worldX, worldY, padding);
 
 		// TESTS
 		if (actor.GetActiveLevel().LevelTimeMilliSeconds() > 3000 && !_deletedToken) {
@@ -85,27 +85,27 @@ namespace Game {
 
 	void ControllerComponent::OnLeft() {
 		if (inputHandler.IsKeyPressed(GameInput::LB)) {
-			GetActor().GetTransform()->Rotate(prevDeltaTime / 3);
+			GetActor().GetTransform().Rotate(prevDeltaTime / 3);
 		}
 		else {
-			GetActor().GetTransform()->localPosition.x -= prevDeltaTime;
+			GetActor().GetTransform().localPosition.x -= prevDeltaTime;
 		}
 	}
 
 	void ControllerComponent::OnRight() {
 		if (inputHandler.IsKeyPressed(GameInput::LB)) {
-			GetActor().GetTransform()->Rotate(-prevDeltaTime / 3);
+			GetActor().GetTransform().Rotate(-prevDeltaTime / 3);
 		}
 		else {
-			GetActor().GetTransform()->localPosition.x += prevDeltaTime;
+			GetActor().GetTransform().localPosition.x += prevDeltaTime;
 		}
 	}
 
 	void ControllerComponent::OnUp() {
-		GetActor().GetTransform()->localPosition.y += prevDeltaTime;
+		GetActor().GetTransform().localPosition.y += prevDeltaTime;
 	}
 
 	void ControllerComponent::OnDown() {
-		GetActor().GetTransform()->localPosition.y -= prevDeltaTime;
+		GetActor().GetTransform().localPosition.y -= prevDeltaTime;
 	}
 }

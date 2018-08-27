@@ -7,13 +7,13 @@ Transform::Ptr Transform::Create() {
 	return std::make_shared<shared_enabler>();
 }
 
-void Transform::SetParent(Ptr parent, bool modifyWorldSpace) {
-	m_parent = parent;
+void Transform::SetParent(Transform& parent, bool modifyWorldSpace) {
+	m_parent = parent.shared_from_this();
 	if (!modifyWorldSpace) {
-		localPosition -= parent->localPosition;
-		localRotation -= parent->localRotation;
+		localPosition -= parent.localPosition;
+		localRotation -= parent.localRotation;
 	}
-	parent->AddChild(this->shared_from_this());
+	parent.AddChild(this->shared_from_this());
 }
 
 Transform::wPtr Transform::GetParent() const {
@@ -41,6 +41,8 @@ Fixed Transform::Rotation() {
 
 void Transform::Rotate(Fixed angle) {
 	localRotation += angle;
+	auto iter = std::remove_if(m_children.begin(), m_children.end(), [](wPtr child) { return child.lock() == nullptr; });
+	m_children.erase(iter, m_children.end());
 	// Children need to be repositioned
 	if (!m_children.empty()) {
 		Fixed rad = angle * Consts::DEG_TO_RAD;

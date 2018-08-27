@@ -27,8 +27,8 @@ namespace Game {
 		Logger::Log(*this, "Destroyed actor \"" + name + "\"");
 	}
 
-	Transform::Ptr Actor::GetTransform() const {
-		return transform;
+	Transform& Actor::GetTransform() const {
+		return *transform;
 	}
 
 	std::string Actor::ToString() const {
@@ -40,31 +40,49 @@ namespace Game {
 	}
 
 	void Actor::FixedTick() {
+		// Don't do anything if about to be destroyed
+		if (_destroyed) {
+			return;
+		}
+		// FixedTick each component
 		for (const auto& component : components) {
 			if (component != nullptr && component->enabled) {
 				component->FixedTick();
 			}
 		}
+		// FixedTick collider if any
 		if (collider != nullptr) {
 			collider->FixedTick();
 		}
 	}
 
 	void Actor::Tick(Fixed deltaTime) {
+		// Don't do anything if about to be destroyed
+		if (_destroyed) {
+			return;
+		}
+		// Tick each enabled component
 		for (const auto& component : components) {
 			if (component->enabled) {
 				component->Tick(deltaTime);
 			}
 		}
+		// Tick collider if any
 		if (collider != nullptr) {
 			collider->Tick(deltaTime);
 		}
 	}
 
 	void Actor::Render(RenderParams& params) {
+		// Don't add to render buffer if about to be destroyed
+		if (_destroyed) {
+			return;
+		}
+		// Render each component
 		for (auto& component : components) {
 			component->Render(params);
 		}
+		// Render collider if any
 		if (collider != nullptr) {
 			collider->Render(params);
 		}

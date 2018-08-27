@@ -9,6 +9,10 @@ namespace Game {
 		SetLayerID(layerID);
 	}
 
+	LayerInfo::LayerInfo(LayerID layerID) {
+		SetLayerID(static_cast<int>(layerID));
+	}
+
 	int LayerInfo::GetLayerID() {
 		return layerID;
 	}
@@ -16,6 +20,10 @@ namespace Game {
 	int LayerInfo::SetLayerID(int layerID) {
 		this->layerID = Maths::Clamp<int>(layerID, 0, WindowController::MAX_LAYERID);
 		return this->layerID;
+	}
+
+	int LayerInfo::SetLayerID(LayerID layerID) {
+		return SetLayerID(static_cast<int>(layerID));
 	}
 
 	void WindowController::Buffer::Push(Drawable drawable, int index) {
