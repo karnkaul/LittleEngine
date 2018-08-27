@@ -23,7 +23,7 @@ public:
 	Fixed localRotation;
 	
 	// Call this to attach this to another transform as its parent
-	void SetParent(Ptr parent, bool modifyWorldSpace = true);
+	void SetParent(Transform& parent, bool modifyWorldSpace = true);
 	wPtr GetParent() const;
 	// Returns position from parent's origin as position in world space
 	Vector2 Position() const;

@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "Utils/Vector2.h"
+#include "Utils/Rect2.h"
 
 namespace Game {
 	class World : public Object {
@@ -9,8 +10,7 @@ namespace Game {
 		~World();
 		const Vector2& GetScreenSize() const { return screenSize; }
 		Vector2 WorldToScreenPoint(const Vector2& worldPoint) const;
-		Vector2 GetScreenBoundsX() const;
-		Vector2 GetScreenBoundsY() const;
+		Rect2 GetScreenBounds() const;
 
 	private:
 		Vector2 screenSize;

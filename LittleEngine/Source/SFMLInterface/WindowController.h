@@ -5,6 +5,7 @@
 #include "SystemClock.h"
 #include "Rendering/RenderParams.h"
 #include <array>
+#include <functional>
 
 namespace Game {
 	// Wrapper struct for SFML Drawable
@@ -28,9 +29,18 @@ namespace Game {
 	// and draw a buffer of Drawables to it.
 	// Provides an InputHandler to poll inputs every frame
 	class WindowController {
+	private:
+		struct Buffer {
+			static constexpr int MAX_LAYERS = 100;
+			void Push(Drawable drawable, int index);
+			void ForEach(std::function<void(std::vector<Drawable>)> Callback) const;
+			void Clear();
+		private:
+			std::array<std::vector<Drawable>, MAX_LAYERS> buffer;
+		};
+
 	public:
-		static constexpr int MAX_LAYERS = 100;
-		static constexpr int MAX_LAYERID = MAX_LAYERS - 1;
+		static constexpr int MAX_LAYERID = Buffer::MAX_LAYERS - 1;
 
 		WindowController(int screenWidth, int screenHeight, std::string windowTitle);
 		~WindowController();
@@ -49,7 +59,7 @@ namespace Game {
 		const Input& GetInputHandler() const;
 
 	private:
-		std::array<std::vector<Drawable>, MAX_LAYERS> buffer;
+		Buffer buffer;
 		WindowController(const WindowController&) = delete;
 		WindowController& operator=(const WindowController&) = delete;
 		std::unique_ptr<sf::RenderWindow> window;

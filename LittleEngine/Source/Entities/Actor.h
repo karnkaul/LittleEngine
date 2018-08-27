@@ -18,10 +18,13 @@ namespace Game {
 		using Ptr = std::shared_ptr<Actor>;
 		using wPtr = std::weak_ptr<Actor>;
 
+		// Each Actor must be owned by an active Level, 
+		// and be passed a reference to it in the constructor
 		Actor(Level& level, std::string name);
+		// For subclassing Actor, if required
 		virtual ~Actor();
 
-		Transform::Ptr GetTransform() const;
+		Transform& GetTransform() const;
 		virtual std::string ToString() const;
 		void Destruct();
 

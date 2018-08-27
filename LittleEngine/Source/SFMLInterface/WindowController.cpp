@@ -2,11 +2,15 @@
 #include <string>
 #include "Engine/Logger/Logger.h"
 #include "WindowController.h"
-#include "Utils/Maths.h"
+#include "Utils/Utils.h"
 
 namespace Game {
 	LayerInfo::LayerInfo(int layerID) {
 		SetLayerID(layerID);
+	}
+
+	LayerInfo::LayerInfo(LayerID layerID) {
+		SetLayerID(static_cast<int>(layerID));
 	}
 
 	int LayerInfo::GetLayerID() {
@@ -14,8 +18,32 @@ namespace Game {
 	}
 
 	int LayerInfo::SetLayerID(int layerID) {
-		this->layerID = Maths::Clamp<int>(layerID, 0, WindowController::MAX_LAYERID);
+		this->layerID = Maths::Clamp(layerID, 0, WindowController::MAX_LAYERID);
 		return this->layerID;
+	}
+
+	int LayerInfo::SetLayerID(LayerID layerID) {
+		return SetLayerID(static_cast<int>(layerID));
+	}
+
+	void WindowController::Buffer::Push(Drawable drawable, int index) {
+		std::vector<Drawable>& vec = buffer[index];
+		vec.push_back(drawable);
+	}
+
+	void WindowController::Buffer::ForEach(std::function<void(std::vector<Drawable>)> Callback) const {
+		for (int i = 0; i <= MAX_LAYERID; ++i) {
+			std::vector<Drawable> vec = buffer[i];
+			if (!vec.empty()) {
+				Callback(vec);
+			}
+		}
+	}
+
+	void WindowController::Buffer::Clear() {
+		for (int i = 0; i < MAX_LAYERID; ++i) {
+			buffer[i].clear();
+		}
 	}
 
 	WindowController::WindowController(int screenWidth, int screenHeight, std::string windowTitle) {
@@ -69,21 +97,19 @@ namespace Game {
 	void WindowController::Push(Drawable drawable) {
 		int index = drawable.layer.GetLayerID();
 		index = Maths::Clamp(index, 0, MAX_LAYERID);
-		std::vector<Drawable>& vec = buffer[index];
-		vec.push_back(drawable);
+		buffer.Push(drawable, index);
 	}
 
 	void WindowController::Draw() {
 		window->clear();
-		for (int i = 0; i < MAX_LAYERID; ++i) {
-			std::vector<Drawable>& vec = buffer[i];
-			if (!vec.empty()) {
-				for (Drawable& drawable : vec) {
-					window->draw(drawable.GetSFMLDrawable());
+		buffer.ForEach(
+			[&w = this->window](std::vector<Drawable> drawables) {
+				for (Drawable& drawable : drawables) {
+					w->draw(drawable.GetSFMLDrawable());
 				}
-				vec.clear();
 			}
-		}
+		);
+		buffer.Clear();
 		window->display();
 	}
 

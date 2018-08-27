@@ -62,9 +62,9 @@ namespace Game {
 	}
 
 	void RenderComponent::Render(RenderParams& params) {
-		params.screenPosition = GetActor().GetActiveLevel().GetWorld().WorldToScreenPoint(GetActor().GetTransform()->Position());
+		params.screenPosition = GetActor().GetActiveLevel().GetWorld().WorldToScreenPoint(GetActor().GetTransform().Position());
 		// Convert Transform::Rotation to SFML orientation (+ is counter-clockwise)
-		params.screenRotation = -GetActor().GetTransform()->Rotation();
+		params.screenRotation = -GetActor().GetTransform().Rotation();
 		renderer->Render(params);
 	}
 }

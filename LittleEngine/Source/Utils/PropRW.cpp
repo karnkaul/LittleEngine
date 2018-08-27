@@ -24,16 +24,14 @@ std::vector<std::string> Tokenize(const std::string& s, char c) {
 	return v;
 }
 
-std::string PropertiesToString(const std::map<std::string, Property>& map) {
-	auto iter = map.begin();
+std::string PropertiesToString(const std::vector<Property>& vec) {
 	std::string fileContents;
-	while (iter != map.end()) {
-		std::string value = iter->second;
-		fileContents += (iter->first + ":" + value + "\n");
-		++iter;
+	for (const auto& prop : vec) {
+		fileContents += (prop.key + ":" + prop.stringValue + "\n");
 	}
 	return fileContents;
 }
+
 
 bool PropRW::Load(const std::string& filePath) {
 	FileRW fileRW(filePath);
@@ -55,24 +53,25 @@ bool PropRW::Load(const std::string& filePath) {
 }
 
 bool PropRW::Save(const std::string& filePath) const {
-		FileRW file(filePath);
+	FileRW file(filePath);
 	return file.Write(PropertiesToString(properties));
 }
 
 Property PropRW::GetProp(const std::string& key) const {
-	auto search = properties.find(key);
-	if (search != properties.end()) {
-		return Property(search->second);
+	for (auto& prop : properties) {
+		if (prop.key == key) {
+			return prop;
+		}
 	}
 	return Property();
 }
 
 void PropRW::SetProp(const Property& property) {
-	auto search = properties.find(property.key);
-	if (search != properties.end()) {
-		search->second.stringValue = property.stringValue;
+	for (auto& prop : properties) {
+		if (prop.key == property.key) {
+			prop.stringValue = property.stringValue;
+			return;
+		}
 	}
-	else {
-		properties.insert(std::pair<std::string, Property>(property.key, property));
-	}
+	properties.push_back(property);
 }

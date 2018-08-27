@@ -46,7 +46,7 @@ namespace Game {
 		return ret;
 	}
 
-	const Fixed Collider::BORDER = 1;
+	Fixed Collider::DEBUG_BORDER_WIDTH = 1;
 
 	Collider::Collider(Actor& actor, std::string name) : Component(actor, name), world(actor.GetActiveLevel().GetWorld()) {
 	}
@@ -59,7 +59,7 @@ namespace Game {
 	}
 
 	AABBData AABBCollider::GetWorldAABB() const {
-		Vector2 displacement = GetActor().GetTransform()->Position();
+		Vector2 displacement = GetActor().GetTransform().Position();
 		return AABBData(bounds.lowerBound + displacement, bounds.upperBound + displacement);
 	}
 
@@ -72,6 +72,7 @@ namespace Game {
 			Vector2 size(bounds.lowerBound.x * 2, bounds.upperBound.y * 2);
 			debugRect = std::make_unique<RectangleRenderer>(size, Colour::Transparent);
 			debugRect->SetBorder(thickness, Colour::Green);
+			debugRect->layer = LayerID::Collider;
 			Logger::Log(*this, "Drawing debug collision rect", Logger::Severity::Debug);
 		}
 		else {
@@ -111,7 +112,7 @@ namespace Game {
 	}
 
 	CircleData CircleCollider::GetWorldCircle() const {
-		return CircleData(circle.radius, GetActor().GetTransform()->Position());
+		return CircleData(circle.radius, GetActor().GetTransform().Position());
 	}
 
 	void CircleCollider::SetCircle(Fixed radius) {
@@ -122,6 +123,7 @@ namespace Game {
 		if (show) {
 			debugCircle = std::make_unique<CircleRenderer>(circle.radius, Colour::Transparent);
 			debugCircle->SetBorder(thickness, Colour::Green);
+			debugCircle->layer = LayerID::Collider;
 			Logger::Log(*this, "Drawing debug collision circle", Logger::Severity::Debug);
 		}
 		else {

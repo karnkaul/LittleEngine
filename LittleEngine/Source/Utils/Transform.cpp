@@ -1,19 +1,20 @@
 #include "stdafx.h"
 #include <iostream>
 #include "Transform.h"
+#include "Utils/Utils.h"
 
 Transform::Ptr Transform::Create() {
 	struct shared_enabler : public Transform {};
 	return std::make_shared<shared_enabler>();
 }
 
-void Transform::SetParent(Ptr parent, bool modifyWorldSpace) {
-	m_parent = parent;
+void Transform::SetParent(Transform& parent, bool modifyWorldSpace) {
+	m_parent = parent.shared_from_this();
 	if (!modifyWorldSpace) {
-		localPosition -= parent->localPosition;
-		localRotation -= parent->localRotation;
+		localPosition -= parent.localPosition;
+		localRotation -= parent.localRotation;
 	}
-	parent->AddChild(this->shared_from_this());
+	parent.AddChild(this->shared_from_this());
 }
 
 Transform::wPtr Transform::GetParent() const {
@@ -41,6 +42,7 @@ Fixed Transform::Rotation() {
 
 void Transform::Rotate(Fixed angle) {
 	localRotation += angle;
+	Utils::EraseWeakPtrs<Transform>(m_children);
 	// Children need to be repositioned
 	if (!m_children.empty()) {
 		Fixed rad = angle * Consts::DEG_TO_RAD;

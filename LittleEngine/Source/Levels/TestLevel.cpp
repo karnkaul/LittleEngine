@@ -25,7 +25,7 @@ namespace Game {
 			auto actor0 = _actor0.lock();
 			auto actor1 = _actor1.lock();
 			if (actor0 != nullptr && actor1 != nullptr) {
-				actor0->GetTransform()->SetParent(actor1->GetTransform());
+				actor0->GetTransform().SetParent(actor1->GetTransform());
 				token0 = token1 = nullptr;
 			}
 		}
@@ -33,7 +33,7 @@ namespace Game {
 			auto actor0 = _actor0.lock();
 			auto actor1 = _actor1.lock();
 			if (actor0 != nullptr && actor1 != nullptr) {
-				actor0->GetTransform()->SetParent(actor1->GetTransform(), false);
+				actor0->GetTransform().SetParent(actor1->GetTransform(), false);
 				token0 = token1 = nullptr;
 			}
 		}
@@ -47,9 +47,9 @@ namespace Game {
 				_actor2 = level->SpawnActor("Yellow Circle");
 				auto actor2 = _actor2.lock();
 				if (actor2 != nullptr) {
-					actor2->GetTransform()->localPosition = Vector2(-300, 300);
+					actor2->GetTransform().localPosition = Vector2(-300, 300);
 					auto rc0 = actor2->AddComponent<RenderComponent>();
-					rc0->SetCircleRenderer(ShapeData(Vector2(100, 0), Colour::Yellow));
+					auto& r0 = rc0->SetCircleRenderer(ShapeData(Vector2(100, 0), Colour::Yellow));
 					auto t0 = actor2->AddCollider<CircleCollider>();
 					t0->SetCircle(100);
 				}
@@ -100,31 +100,30 @@ namespace Game {
 
 		auto actor0 = SpawnActor("Actor0-RectangleRenderer").lock();
 		if (actor0 != nullptr) {
-			actor0->GetTransform()->localPosition = Vector2(300, 200);
+			actor0->GetTransform().localPosition = Vector2(300, 200);
 			auto rc0 = actor0->AddComponent<RenderComponent>();
 			rc0->SetRectangleRenderer(ShapeData(Vector2(300, 100), Colour::Magenta));
 		}
 
 		auto player = SpawnActor("Player").lock();
 		if (player != nullptr) {
-			player->GetTransform()->localPosition = Vector2(-200, -300);
+			player->GetTransform().localPosition = Vector2(-200, -300);
 			player->AddComponent<ControllerComponent>();
 			auto playerRenderer = player->AddComponent<RenderComponent>();
 			playerRenderer->SetSpriteRenderer("Assets/Ship.png");
-			playerRenderer->SetLayer(5);
+			playerRenderer->SetLayer(LayerID::Player);
 			auto collider = player->AddCollider<AABBCollider>();
 			collider->SetBounds(AABBData(40, 40));
-			//actor0->GetTransform()->SetParent(pawn0->GetTransform());
 		}
 
-		//pawn0 = actor0;		// Must not compile
 		auto actor1 = SpawnActor("Actor1-TextRenderer").lock();
 		if (actor1 != nullptr) {
 			Fixed yPos = this->engine.GetWorld().GetScreenSize().y / 2;
 			auto rc = actor1->AddComponent<RenderComponent>();
 			auto& tr = rc->SetTextRenderer("Hello World!");
+			tr.layer = LayerID::UI;
 			tr.SetColour(Colour(200, 150, 50)).SetSize(50);
-			actor1->GetTransform()->localPosition = Vector2(0, yPos - 50);
+			actor1->GetTransform().localPosition = Vector2(0, yPos - 50);
 		}
 
 		// Tests
@@ -139,7 +138,7 @@ namespace Game {
 
 	void RenderTests(Level* level, std::vector<Actor::Ptr>& actors, RenderParams& params) {
 		if (!actors.empty()) {
-			actors[0]->GetTransform()->Rotate(2);
+			actors[0]->GetTransform().Rotate(2);
 		}
 	}
 

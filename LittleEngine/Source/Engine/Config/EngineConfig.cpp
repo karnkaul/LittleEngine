@@ -2,32 +2,44 @@
 #include "EngineConfig.h"
 
 namespace Game {
+	const std::string EngineConfig::WINDOW_TITLE_KEY = "WINDOW_TITLE";
+	const std::string EngineConfig::LOG_LEVEL_KEY = "LOG_LEVEL";
+	const std::string EngineConfig::SCREEN_WIDTH_KEY = "SCREEN_WIDTH";
+	const std::string EngineConfig::SCREEN_HEIGHT_KEY = "SCREEN_HEIGHT";
+	const std::string EngineConfig::COLLIDER_SHAPE_WIDTH_KEY = "COLLIDER_SHAPE_BORDER_WIDTH";
+
 	EngineConfig::EngineConfig() {
 		persistor = std::make_unique<PropRW>();
-		windowTitle = Property(WINDOW_TITLE_KEY(), "Game Window");
-		logLevel = Property(LOG_LEVEL_KEY(), "INFO");
-		screenWidth = Property(SCREEN_WIDTH_KEY(), "1280");
-		screenHeight = Property(SCREEN_HEIGHT_KEY(), "720");
+		windowTitle = Property(WINDOW_TITLE_KEY, "Game Window");
+		logLevel = Property(LOG_LEVEL_KEY, "Info");
+		screenWidth = Property(SCREEN_WIDTH_KEY, "1280");
+		screenHeight = Property(SCREEN_HEIGHT_KEY, "720");
+		colliderBorderWidth = Property(COLLIDER_SHAPE_WIDTH_KEY, "1");
 	}
 
 	bool EngineConfig::Load(const std::string& path) {
 		bool loaded = persistor->Load(path);
 
-		int width = persistor->GetProp(SCREEN_WIDTH_KEY()).intValue();
-		int height = persistor->GetProp(SCREEN_HEIGHT_KEY()).intValue();
+		int width = persistor->GetProp(SCREEN_WIDTH_KEY).intValue();
+		int height = persistor->GetProp(SCREEN_HEIGHT_KEY).intValue();
 		if (width > 0 && height > 0) {
 			screenWidth.stringValue = std::to_string(width);
 			screenHeight.stringValue = std::to_string(height);
 		}
 
-		std::string logLevelValue = persistor->GetProp(LOG_LEVEL_KEY());
+		std::string logLevelValue = persistor->GetProp(LOG_LEVEL_KEY);
 		if (!logLevelValue.empty()) {
 			logLevel.stringValue = logLevelValue;
 		}
 
-		std::string windowTitleValue = persistor->GetProp(WINDOW_TITLE_KEY());
+		std::string windowTitleValue = persistor->GetProp(WINDOW_TITLE_KEY);
 		if (!windowTitleValue.empty()) {
 			windowTitle.stringValue = windowTitleValue;
+		}
+
+		int colliderWidth = persistor->GetProp(COLLIDER_SHAPE_WIDTH_KEY).intValue();
+		if (colliderWidth > 0) {
+			colliderBorderWidth.stringValue = std::to_string(colliderWidth);
 		}
 		return loaded;
 	}
@@ -40,11 +52,16 @@ namespace Game {
 		persistor->SetProp(logLevel);
 		persistor->SetProp(screenWidth);
 		persistor->SetProp(screenHeight);
+		persistor->SetProp(colliderBorderWidth);
 		return persistor->Save(path);
 	}
 
 	std::string EngineConfig::GetWindowTitle() const {
 		return windowTitle.stringValue;
+	}
+
+	Fixed EngineConfig::GetColliderBorderWidth() const {
+		return colliderBorderWidth.intValue();
 	}
 
 	Logger::Severity EngineConfig::GetLogLevel() const {
@@ -66,6 +83,10 @@ namespace Game {
 	void EngineConfig::SetScreenSize(const Vector2& screenSize) {
 		screenWidth.stringValue = std::to_string(screenSize.x.GetInt());
 		screenHeight.stringValue = std::to_string(screenSize.y.GetInt());
+	}
+
+	void EngineConfig::SetColliderBorderWidth(int shapeWidth) {
+		colliderBorderWidth.stringValue = std::to_string(shapeWidth);
 	}
 
 	Logger::Severity EngineConfig::ParseLogLevel(std::string str) {

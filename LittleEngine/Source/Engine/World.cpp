@@ -27,13 +27,12 @@ namespace Game {
 		return screenPoint;
 	}
 
-	Vector2 World::GetScreenBoundsX() const {
-		Fixed halfScreenX = screenSize.x / 2;
-		return Vector2(-halfScreenX, halfScreenX);
-	}
-
-	Vector2 World::GetScreenBoundsY() const {
-		Fixed halfScreenY = screenSize.y / 2;
-		return Vector2(-halfScreenY, halfScreenY);
+	Rect2 World::GetScreenBounds() const {
+		Fixed halfScreenX = screenSize.x * Fixed::Half;
+		Fixed halfScreenY = screenSize.y * Fixed::Half;
+		return Rect2(
+			Vector2(-halfScreenX, -halfScreenY),
+			Vector2(halfScreenX, halfScreenY)
+		);
 	}
 }
