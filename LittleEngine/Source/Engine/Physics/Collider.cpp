@@ -46,7 +46,7 @@ namespace Game {
 		return ret;
 	}
 
-	const Fixed Collider::BORDER = 1;
+	Fixed Collider::DEBUG_BORDER_WIDTH = 1;
 
 	Collider::Collider(Actor& actor, std::string name) : Component(actor, name), world(actor.GetActiveLevel().GetWorld()) {
 	}

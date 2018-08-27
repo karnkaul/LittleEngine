@@ -9,11 +9,11 @@ namespace Game {
 
 	class Collider : public Component {
 	public:
-		const static Fixed BORDER;
+		static Fixed DEBUG_BORDER_WIDTH;
 		using Ptr = std::shared_ptr<Collider>;
 		using wPtr = std::weak_ptr<Collider>;
 		virtual bool IsIntersecting(const Collider& rhs) const = 0;
-		virtual void DrawDebugShape(bool show, Fixed thickness = BORDER) = 0;
+		virtual void DrawDebugShape(bool show, Fixed thickness = DEBUG_BORDER_WIDTH) = 0;
 
 	protected:
 		const World& world;
@@ -30,7 +30,7 @@ namespace Game {
 		virtual bool IsIntersecting(const Collider& rhs) const override;
 		CircleData GetWorldCircle() const;
 		void SetCircle(Fixed radius);
-		virtual void DrawDebugShape(bool show, Fixed thickness = BORDER) override;
+		virtual void DrawDebugShape(bool show, Fixed thickness = DEBUG_BORDER_WIDTH) override;
 		virtual void Render(RenderParams& params) override;
 
 	protected:
@@ -49,7 +49,7 @@ namespace Game {
 		virtual bool IsIntersecting(const Collider& rhs) const override;
 		AABBData GetWorldAABB() const;
 		void SetBounds(AABBData bounds);
-		virtual void DrawDebugShape(bool show, Fixed thickness = BORDER) override;
+		virtual void DrawDebugShape(bool show, Fixed thickness = DEBUG_BORDER_WIDTH) override;
 		virtual void Render(RenderParams& params) override;
 
 	protected:

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <ctime>
-#include "Maths.h"
+#include "Utils.h"
 
 namespace Maths {
 	bool _init = false;

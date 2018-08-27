@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include "Transform.h"
+#include "Utils/Utils.h"
 
 Transform::Ptr Transform::Create() {
 	struct shared_enabler : public Transform {};
@@ -41,8 +42,7 @@ Fixed Transform::Rotation() {
 
 void Transform::Rotate(Fixed angle) {
 	localRotation += angle;
-	auto iter = std::remove_if(m_children.begin(), m_children.end(), [](wPtr child) { return child.lock() == nullptr; });
-	m_children.erase(iter, m_children.end());
+	Utils::EraseWeakPtrs<Transform>(m_children);
 	// Children need to be repositioned
 	if (!m_children.empty()) {
 		Fixed rad = angle * Consts::DEG_TO_RAD;

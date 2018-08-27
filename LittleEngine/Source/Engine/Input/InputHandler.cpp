@@ -2,6 +2,7 @@
 #include "InputHandler.h"
 #include "Engine/Logger/Logger.h"
 #include "SFMLInterface/Input.h"
+#include "Utils/Utils.h"
 
 namespace Game {
 	InputHandler::InputObserver::InputObserver(OnInput&& callback, bool consume, OnKey type)
@@ -84,11 +85,7 @@ namespace Game {
 
 	void InputHandler::Cleanup(std::vector<InputObserver>& vec) {
 		int before = vec.size();
-		vec.erase(std::remove_if(vec.begin(), vec.end(),
-			[](InputObserver& observer) {
-				return !observer.callback.IsAlive();
-			}
-		), vec.end());
+		Utils::CleanVector<InputObserver>(vec, [](InputObserver& observer) { return !observer.callback.IsAlive(); });
 		int deleted = before - vec.size();
 		if (deleted > 0) {
 			Logger::Log(*this, std::to_string(deleted) + " expired Observers deleted", Logger::Severity::Debug);

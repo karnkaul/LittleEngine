@@ -2,7 +2,7 @@
 #include <string>
 #include "Engine/Logger/Logger.h"
 #include "WindowController.h"
-#include "Utils/Maths.h"
+#include "Utils/Utils.h"
 
 namespace Game {
 	LayerInfo::LayerInfo(int layerID) {
@@ -18,7 +18,7 @@ namespace Game {
 	}
 
 	int LayerInfo::SetLayerID(int layerID) {
-		this->layerID = Maths::Clamp<int>(layerID, 0, WindowController::MAX_LAYERID);
+		this->layerID = Maths::Clamp(layerID, 0, WindowController::MAX_LAYERID);
 		return this->layerID;
 	}
 

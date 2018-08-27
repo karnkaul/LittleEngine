@@ -4,6 +4,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Logger/Logger.h"
 #include "Utils/Vector2.h"
+#include "Utils/Utils.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
 #include "Engine/Input/InputHandler.h"
@@ -21,10 +22,7 @@ namespace Game {
 	}
 
 	void Level::Cleanup() {
-		// Move all destroyed actors to end of vector
-		auto iter = std::remove_if(actors.begin(), actors.end(), &Level::IsActorDestroyed);
-		// Erase all destroyed actors
-		actors.erase(iter, actors.end());
+		Utils::CleanVector<Actor::Ptr>(actors, &Level::IsActorDestroyed);
 	}
 
 	Level::~Level() {

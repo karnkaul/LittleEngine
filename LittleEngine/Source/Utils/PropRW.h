@@ -1,5 +1,5 @@
 #pragma once
-#include <map>
+#include <vector>
 #include <string>
 
 struct Property {
@@ -42,7 +42,7 @@ public:
 	Property GetProp(const std::string& key) const;
 	void SetProp(const Property& property);
 private:
-	std::map<std::string, Property> properties;
+	std::vector<Property> properties;
 };
 
 

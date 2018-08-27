@@ -43,6 +43,7 @@ namespace Game {
 			Logger::Log(*this, "Error constructing engine components!", Logger::Severity::Error);
 			exitCode = ExitCode::InitError;
 		}
+		Collider::DEBUG_BORDER_WIDTH = config->GetColliderBorderWidth();
 	}
 
 	Engine::~Engine() {

@@ -3,6 +3,7 @@
 #include "Collider.h"
 #include "Engine/Logger/Logger.h"
 #include "Entities/Actor.h"
+#include "Utils/Utils.h"
 
 namespace Game {
 	struct ColliderComparer {
@@ -56,13 +57,7 @@ namespace Game {
 
 	void CollisionManager::Cleanup() {
 		int count = colliders.size();
-		auto ptr = std::remove_if(colliders.begin(), colliders.end(),
-			[](Collider::wPtr& collider) { 
-				return collider.lock() == nullptr; 
-			}
-		); 
-		colliders.erase(ptr, colliders.end());
-
+		Utils::EraseWeakPtrs<Collider>(colliders);
 		int diff = count - colliders.size();
 		if (diff > 0) {
 			Logger::Log(*this, "Removed " + std::to_string(diff) + " stale Colliders ", Logger::Severity::Debug);
