@@ -49,6 +49,7 @@ namespace Game {
 		template<typename T>
 		std::shared_ptr<T> GetComponent() {
 			static_assert(std::is_base_of<Component, T>::value, "T must derive from Component: check Output window for erroneous call");
+			static_assert(!std::is_base_of<Collider, T>::value, "Colliders must be obtained via GetCollider<T>(): check Output window for erroneous call");
 			for (auto& component : components) {
 				std::shared_ptr<T> c = std::dynamic_pointer_cast<T>(component);
 				if (c != nullptr) {

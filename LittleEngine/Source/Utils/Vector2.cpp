@@ -38,6 +38,10 @@ Vector2& Vector2::operator/=(const Fixed& fixed) {
 	return *this;
 }
 
+Vector2 Vector2::operator-() const {
+	return Vector2(-x, -y);
+}
+
 Vector2 Vector2::operator*(const Fixed& rhs) const {
 	return Vector2(*this) *= rhs;
 }
