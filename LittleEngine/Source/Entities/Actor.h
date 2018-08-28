@@ -25,6 +25,9 @@ namespace Game {
 		virtual ~Actor();
 
 		Transform& GetTransform() const;
+		// x, y E [-1, 1] where -1/+1: edge of screen, 0: centre
+		// Note: Undefined behaviour if Transform is parented
+		void SetNormalisedPosition(Vector2 localNPosition);
 		virtual std::string ToString() const;
 		void Destruct();
 

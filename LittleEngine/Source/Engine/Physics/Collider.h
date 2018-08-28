@@ -22,6 +22,7 @@ namespace Game {
 		virtual bool IsIntersectAABB(const class AABBCollider& rhs) const = 0;
 		friend class CircleCollider;
 		virtual bool IsIntersectCircle(const class CircleCollider& rhs) const = 0;
+		std::shared_ptr<class ShapeRenderer> debugShape;
 	};
 
 	class CircleCollider : public Collider {
@@ -40,7 +41,6 @@ namespace Game {
 
 	private:
 		CircleData circle = CircleData::One;
-		std::unique_ptr<class CircleRenderer> debugCircle;
 	};
 
 	class AABBCollider : public Collider {
@@ -59,6 +59,5 @@ namespace Game {
 
 	private:
 		AABBData bounds = AABBData::One;
-		std::unique_ptr<class RectangleRenderer> debugRect;
 	};
 }

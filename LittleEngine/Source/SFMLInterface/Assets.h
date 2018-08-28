@@ -53,6 +53,7 @@ namespace Game {
 		~AssetManager();
 
 		// Loads Asset at path. T must derive from Asset!
+		// Note: Not meant to be used in hot code!
 		template<typename T>
 		std::shared_ptr<T> LoadAsset(const std::string& path) {
 			static_assert(std::is_base_of<Asset, T>::value, "T must derive from Asset: check Output window for erroneous call");
@@ -72,8 +73,10 @@ namespace Game {
 		}
 		
 		FontAsset::Ptr GetDefaultFont() const;
+		// Note: Not meant to be used in hot code!
 		void LoadAllTextures(std::initializer_list<std::string> texturePaths);
-		void Clear();
+		// Unload all assets
+		void UnloadAll();
 
 	private:
 		AssetManager(const AssetManager&) = delete;

@@ -5,14 +5,13 @@ namespace Game {
 	class Engine;
 	class Level;
 
-	class LevelManager : public Object {
+	class LevelManager final : public Object {
 	public:
 		LevelManager(Engine& engine);
 		~LevelManager();
-		Level& GetActiveLevel();
+		Level& GetActiveLevel() const;
 		bool LoadLevel(int levelIndex);
 	private:
-		friend class Engine;
 		Engine& engine;
 		std::unique_ptr<Level> activeLevel;
 	};

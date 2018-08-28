@@ -28,7 +28,7 @@ namespace Game {
 	// Conrete class that can create an SFML RenderWindow,
 	// and draw a buffer of Drawables to it.
 	// Provides an InputHandler to poll inputs every frame
-	class WindowController {
+	class WindowController final {
 	private:
 		struct Buffer {
 			static constexpr int MAX_LAYERS = 100;

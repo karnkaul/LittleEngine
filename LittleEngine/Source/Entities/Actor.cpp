@@ -12,6 +12,7 @@
 #include "SFMLInterface/Rendering/RenderFactory.h"
 #include "SFMLInterface/Rendering/SpriteRenderer.h"
 #include "Components/Component.h"
+#include "Utils/Utils.h"
 
 namespace Game {
 	Actor::Actor(Level& level, std::string name) : Object(name), level(level) {
@@ -29,6 +30,14 @@ namespace Game {
 
 	Transform& Actor::GetTransform() const {
 		return *transform;
+	}
+
+	void Actor::SetNormalisedPosition(Vector2 localNPosition) {
+		localNPosition.x = Maths::Clamp(localNPosition.x, -Fixed::One, Fixed::One);
+		localNPosition.y = Maths::Clamp(localNPosition.y, -Fixed::One, Fixed::One);
+		Vector2 screenSize = level.GetWorld().GetScreenBounds().upper;
+		Vector2 newPos(localNPosition.x * screenSize.x, localNPosition.y * screenSize.y);
+		transform->localPosition = newPos;
 	}
 
 	std::string Actor::ToString() const {

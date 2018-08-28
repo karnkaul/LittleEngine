@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Game {
-	class Engine;
+	class LevelManager;
 
 	class EngineCommand {
 	public:
@@ -13,10 +13,10 @@ namespace Game {
 
 	class LoadLevelCommand : public EngineCommand {
 	public:
-		LoadLevelCommand(Engine& engine, int levelID);
+		LoadLevelCommand(LevelManager& levelManager, int levelID);
 		virtual bool operator()() override;
 	private:
-		Engine& engine;
+		LevelManager& levelManager;
 		int levelID;
 	};
 }

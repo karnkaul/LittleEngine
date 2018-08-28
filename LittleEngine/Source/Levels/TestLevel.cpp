@@ -130,12 +130,11 @@ namespace Game {
 
 		auto actor1 = SpawnActor("Actor1-TextRenderer").lock();
 		if (actor1 != nullptr) {
-			Fixed yPos = this->engine.GetWorld().GetScreenSize().y / 2;
+			actor1->SetNormalisedPosition(Vector2(0, Fixed(0.9f)));
 			auto rc = actor1->AddComponent<RenderComponent>();
 			auto& tr = rc->SetTextRenderer("Hello World!");
 			tr.layer = LayerID::UI;
 			tr.SetColour(Colour(200, 150, 50)).SetSize(50);
-			actor1->GetTransform().localPosition = Vector2(0, yPos - 50);
 		}
 
 		quitLevelToken = GetInputHandler().Register(GameInput::Return, std::bind(&TestLevel::OnQuitPressed, this), OnKey::Released);
@@ -146,7 +145,7 @@ namespace Game {
 		_TestLevel::token1 = GetInputHandler().Register(GameInput::Y, &_TestLevel::OnYPressed, OnKey::Released, true);
 		_TestLevel::level = this;
 		_TestLevel::token2 = GetInputHandler().Register(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
-		_TestLevel::token3 = GetInputHandler().Register(GameInput::LB, &_TestLevel::OnLBPressed, OnKey::Released);
+		_TestLevel::token3 = GetInputHandler().Register(GameInput::RB, &_TestLevel::OnLBPressed, OnKey::Released);
 	}
 
 	void RenderTests(Level* level, std::vector<Actor::Ptr>& actors, RenderParams& params) {

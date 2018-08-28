@@ -5,7 +5,7 @@
 #include "RenderParams.h"
 
 namespace Game {
-	void ShapeRenderer::Render(RenderParams & params) {
+	void ShapeRenderer::RenderInternal(RenderParams & params) {
 		SetPosition(params.screenPosition);
 		SetRotation(params.screenRotation);
 		params.GetWindowController().Push(Drawable(*shape, layer));
@@ -44,6 +44,11 @@ namespace Game {
 		SetFillColour(colour);
 	}
 
+	void CircleRenderer::SetRadius(Fixed radius) {
+		circle->setRadius(radius.GetFloat());
+		circle->setOrigin(radius.GetFloat(), radius.GetFloat());
+	}
+
 	Rect2 CircleRenderer::GetBounds() const {
 		Fixed radius(circle->getRadius());
 		return Rect2(
@@ -63,6 +68,11 @@ namespace Game {
 		rectangle = &CastShape<sf::RectangleShape>();
 		rectangle->setOrigin(rectangle->getSize().x * 0.5f, rectangle->getSize().y * 0.5f);
 		SetFillColour(colour);
+	}
+
+	void RectangleRenderer::SetSize(Vector2 size) {
+		rectangle->setSize(Convert(size));
+		rectangle->setOrigin(rectangle->getSize().x * 0.5f, rectangle->getSize().y * 0.5f);
 	}
 
 	Rect2 RectangleRenderer::GetBounds() const {

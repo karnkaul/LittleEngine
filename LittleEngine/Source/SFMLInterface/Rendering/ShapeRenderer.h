@@ -7,7 +7,6 @@ namespace Game {
 	// Abstract class for drawing SFML Shapes
 	class ShapeRenderer : public Renderer {
 	public:
-		virtual void Render(RenderParams& params) override;
 		void SetFillColour(const Colour& colour);
 		void SetBorder(Fixed width, const Colour& colour);
 
@@ -18,6 +17,7 @@ namespace Game {
 			this->shape = std::move(shape);
 		}
 
+		virtual void RenderInternal(RenderParams& params) override; 
 		virtual void SetPosition(const Vector2 screenPosition) override;
 		virtual void SetRotation(const Fixed screenRotation) override;
 
@@ -33,6 +33,7 @@ namespace Game {
 	public:
 		CircleRenderer(Fixed radius);
 		CircleRenderer(Fixed radius, const Colour& colour);
+		void SetRadius(Fixed radius);
 
 		// Returns radius of CircleShape
 		virtual Rect2 GetBounds() const override;
@@ -45,6 +46,7 @@ namespace Game {
 	public:
 		RectangleRenderer(Vector2 size);
 		RectangleRenderer(Vector2 size, Colour colour);
+		void SetSize(Vector2 size);
 
 		// Returns bounds of RectangleShape
 		virtual Rect2 GetBounds() const override;

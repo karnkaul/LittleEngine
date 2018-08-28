@@ -56,21 +56,7 @@ namespace Game {
 	// Concrete class that a WindowController can update KeyStates to every frame
 	class Input {
 	public:
-		Input() {
-			// Pre-defined keys
-			keyStates.emplace_back(KeyCode::Left, "Left");
-			keyStates.emplace_back(KeyCode::Right, "Right");
-			keyStates.emplace_back(KeyCode::Up, "Up");
-			keyStates.emplace_back(KeyCode::Down, "Down");
-			keyStates.emplace_back(KeyCode::W, "W");
-			keyStates.emplace_back(KeyCode::A, "A");
-			keyStates.emplace_back(KeyCode::S, "S");
-			keyStates.emplace_back(KeyCode::D, "D");
-			keyStates.emplace_back(KeyCode::Space, "Space");
-			keyStates.emplace_back(KeyCode::Enter, "Enter");
-			keyStates.emplace_back(KeyCode::Escape, "Escape");
-			keyStates.emplace_back(KeyCode::Tab, "Tab");
-		}
+		Input();
 
 		// Call this to check if a Key was pressed in this frame
 		bool IsKeyPressed(KeyCode code) const;
@@ -80,13 +66,16 @@ namespace Game {
 		const std::vector<KeyState> GetPressed() const;
 		
 	private:
+		std::vector<KeyState> keyStates;
+
 		Input(const Input&) = delete;
 		Input& operator=(const Input&) = delete;
-		friend class WindowController;
+
 		KeyState& GetOrCreateKeyState(KeyCode code);
 		void OnKeyDown(const sf::Event::KeyEvent& key);
 		void OnKeyUp(const sf::Event::KeyEvent& key);
 		void ResetKeyStates();
-		std::vector<KeyState> keyStates;
+
+		friend class WindowController;
 	};
 }

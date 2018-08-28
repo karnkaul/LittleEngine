@@ -24,7 +24,8 @@ namespace Game {
 		if ((logo = _logo.lock()) != nullptr) {
 			auto renderer = logo->AddComponent<RenderComponent>();
 			logoRenderer = &renderer->SetTextRenderer("... Press Enter to Start ...");
-			logo->GetTransform().localPosition = Vector2(0, logoY);
+			//logo->GetTransform().localPosition = Vector2(0, logoY);
+			logo->SetNormalisedPosition(Vector2(0, Fixed(-0.66f)));
 		}
 
 		inputTokens.push_back(GetInputHandler().Register(GameInput::Enter, std::bind(&BootLevel::OnLoadNextLevel, this), OnKey::Released));

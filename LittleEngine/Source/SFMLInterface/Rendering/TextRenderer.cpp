@@ -43,7 +43,7 @@ namespace Game {
 		text.setRotation(screenRotation.GetFloat());
 	}
 
-	void TextRenderer::Render(RenderParams & params) {
+	void TextRenderer::RenderInternal(RenderParams & params) {
 		ApplyData();
 		SetPosition(params.screenPosition);
 		SetRotation(params.screenRotation);

@@ -29,12 +29,12 @@ namespace Game {
 	class TextRenderer : public Renderer {
 	public:
 		TextRenderer(const TextData& data);
-		virtual void Render(struct RenderParams& params) override;
 		virtual Rect2 GetBounds() const override;
 		TextData& GetTextData();
 		TextRenderer& SetSize(Fixed pixelSize);
 		TextRenderer& SetColour(Colour colour);
 	protected:
+		virtual void RenderInternal(struct RenderParams& params) override;
 		virtual void SetPosition(const Vector2 screenPosition) override;
 		virtual void SetRotation(const Fixed screenRotation) override;
 		void ApplyData();

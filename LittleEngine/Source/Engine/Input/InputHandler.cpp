@@ -17,7 +17,24 @@ namespace Game {
 	}
 
 	InputHandler::InputHandler() : Object("InputHandler") {
-		SetupInputBindings();
+		/* Setup Input Bindings */ {
+			gamepad.Bind(KeyCode::Up, GameInput::Up);
+			gamepad.Bind(KeyCode::W, GameInput::Up);
+			gamepad.Bind(KeyCode::Down, GameInput::Down);
+			gamepad.Bind(KeyCode::S, GameInput::Down);
+			gamepad.Bind(KeyCode::Left, GameInput::Left);
+			gamepad.Bind(KeyCode::A, GameInput::Left);
+			gamepad.Bind(KeyCode::Right, GameInput::Right);
+			gamepad.Bind(KeyCode::D, GameInput::Right);
+			gamepad.Bind(KeyCode::Enter, GameInput::Enter);
+			gamepad.Bind(KeyCode::Escape, GameInput::Return);
+			gamepad.Bind(KeyCode::Tab, GameInput::Select);
+
+			gamepad.Bind(KeyCode::Space, GameInput::X);
+			gamepad.Bind(KeyCode::E, GameInput::Y);
+			gamepad.Bind(KeyCode::Control, GameInput::LB);
+			gamepad.Bind(KeyCode::Shift, GameInput::RB);
+		}
 		Logger::Log(*this, "InputHandler constructed");
 	}
 
@@ -48,25 +65,6 @@ namespace Game {
 			inputObservers.insert(std::pair<GameInput, std::vector<InputObserver>>(input, std::move(newVec)));
 		}
 		return token;
-	}
-
-	void InputHandler::SetupInputBindings() {
-		gamepad.Bind(KeyCode::Up, GameInput::Up);
-		gamepad.Bind(KeyCode::W, GameInput::Up);
-		gamepad.Bind(KeyCode::Down, GameInput::Down);
-		gamepad.Bind(KeyCode::S, GameInput::Down);
-		gamepad.Bind(KeyCode::Left, GameInput::Left);
-		gamepad.Bind(KeyCode::A, GameInput::Left);
-		gamepad.Bind(KeyCode::Right, GameInput::Right);
-		gamepad.Bind(KeyCode::D, GameInput::Right);
-		gamepad.Bind(KeyCode::Enter, GameInput::Enter);
-		gamepad.Bind(KeyCode::Escape, GameInput::Return);
-		gamepad.Bind(KeyCode::Tab, GameInput::Select);
-
-		gamepad.Bind(KeyCode::Space, GameInput::X);
-		gamepad.Bind(KeyCode::E, GameInput::Y);
-		gamepad.Bind(KeyCode::Control, GameInput::LB);
-		gamepad.Bind(KeyCode::Shift, GameInput::RB);
 	}
 
 	void InputHandler::CaptureState(const std::vector<KeyState>& pressedKeys) {

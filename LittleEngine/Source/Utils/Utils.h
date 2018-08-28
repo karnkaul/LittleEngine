@@ -31,6 +31,17 @@ namespace Maths {
 		return val;
 	}
 
+	template<typename T>
+	T Clamp01(T val) {
+		if (val < 0) {
+			val = 0;
+		}
+		if (val > 1) {
+			val = 1;
+		}
+		return val;
+	}
+
 	namespace Random {
 		Fixed Range(Fixed min = 0, Fixed max = 1);
 		int Range(int min, int max);

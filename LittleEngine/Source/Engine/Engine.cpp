@@ -93,10 +93,12 @@ namespace Game {
 					/* Poll Input */ {
 						windowController->PollInput();
 						if (!isPaused && !windowController->IsWindowFocussed()) {
-							OnPaused();
+							isPaused = true;
+							Logger::Log(*this, "Game paused");
 						}
 						if (isPaused && windowController->IsWindowFocussed()) {
-							OnUnpaused();
+							isPaused = false;
+							Logger::Log(*this, "Game unpaused");
 						}
 						inputHandler->CaptureState(windowController->GetInputHandler().GetPressed());
 					}
@@ -167,7 +169,7 @@ namespace Game {
 	}
 
 	void Engine::LoadLevel(int id) {
-		commands.emplace_back(std::make_unique<LoadLevelCommand>(*this, id));
+		commands.emplace_back(std::make_unique<LoadLevelCommand>(*levelManager, id));
 	}
 
 	void Engine::Quit() {
@@ -188,15 +190,5 @@ namespace Game {
 		}
 		clock.Restart();
 		return true;
-	}
-
-	void Engine::OnPaused() {
-		isPaused = true;
-		Logger::Log(*this, "Game paused");
-	}
-
-	void Engine::OnUnpaused() {
-		isPaused = false;
-		Logger::Log(*this, "Game unpaused");
 	}
 }

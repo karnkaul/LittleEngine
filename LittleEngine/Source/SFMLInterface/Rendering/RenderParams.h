@@ -1,10 +1,6 @@
 #pragma once
 #include "Utils/Vector2.h"
 
-namespace sf {
-	class RenderWindow;
-}
-
 namespace Game {
 	class WindowController;
 

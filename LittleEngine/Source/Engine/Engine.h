@@ -33,7 +33,9 @@ namespace Game {
 	class Engine : Object {
 	public:
 		using Ptr = std::unique_ptr<Engine>;
+		// (Only) Factory for unique_ptr<Engine>
 		static Ptr Create();
+		// Disable Object's intended constructor
 		Engine(const std::string&) = delete;
 		~Engine();
 		// Copy constructor and copy assignment operators
@@ -64,9 +66,5 @@ namespace Game {
 		Engine();
 
 		bool CreateWindow();
-		void OnPaused();
-		void OnUnpaused();
-
-		friend class LoadLevelCommand;
 	};
 }

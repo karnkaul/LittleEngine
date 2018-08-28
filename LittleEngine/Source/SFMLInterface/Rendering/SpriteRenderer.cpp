@@ -18,7 +18,7 @@ namespace Game {
 		sprite.setRotation(screenRotation.GetFloat());
 	}
 
-	void SpriteRenderer::Render(RenderParams & params) {
+	void SpriteRenderer::RenderInternal(RenderParams & params) {
 		ApplyData();
 		SetPosition(params.screenPosition);
 		SetRotation(params.screenRotation);

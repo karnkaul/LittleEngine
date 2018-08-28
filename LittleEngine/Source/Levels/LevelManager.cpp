@@ -17,7 +17,7 @@ namespace Game {
 		Logger::Log(*this, "LevelManager destroyed");
 	}
 
-	Level& LevelManager::GetActiveLevel() {
+	Level& LevelManager::GetActiveLevel() const {
 		return *activeLevel;
 	}
 

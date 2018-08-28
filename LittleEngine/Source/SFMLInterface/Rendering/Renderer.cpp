@@ -23,6 +23,20 @@ namespace Game {
 		Logger::Log(*this, name + " destroyed");
 	}
 
+	void Renderer::Render(RenderParams & params) {
+		if (isEnabled) {
+			RenderInternal(params);
+		}
+	}
+
+	bool Renderer::IsEnabled() const {
+		return isEnabled;
+	}
+
+	void Renderer::SetEnabled(bool enabled) {
+		isEnabled = enabled;
+	}
+
 	sf::Vector2f Renderer::Convert(const Vector2& vector) {
 		return sf::Vector2f(vector.x.GetFloat(), vector.y.GetFloat());
 	}
