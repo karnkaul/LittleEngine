@@ -79,7 +79,7 @@ namespace Game {
 		debugShape->SetEnabled(show);
 		debugShape->SetBorder(thickness, Colour::Green);
 		std::string prefix = show ? "Drawing " : "Hiding ";
-		Logger::Log(*this, prefix + "debug collision rect", Logger::Severity::Debug);
+		Logger::Log(*this, prefix + "debug collision rect on " + GetActor().GetName(), Logger::Severity::Debug);
 	}
 
 	void AABBCollider::Render(RenderParams & params) {
@@ -131,7 +131,7 @@ namespace Game {
 		debugShape->SetEnabled(show);
 		debugShape->SetBorder(thickness, Colour::Green);
 		std::string prefix = show ? "Drawing " : "Hiding ";
-		Logger::Log(*this, prefix + "debug collision rect", Logger::Severity::Debug);
+		Logger::Log(*this, prefix + "debug collision circle on " + GetActor().GetName(), Logger::Severity::Debug);
 	}
 
 	bool CircleCollider::IsIntersectAABB(const AABBCollider & rhs) const {

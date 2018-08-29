@@ -17,7 +17,7 @@
 namespace Game {
 	Actor::Actor(Level& level, std::string name) : Object(name), level(level) {
 		transform = Transform::Create();
-		Logger::Log(*this, "Created new actor \"" + name + "\" at " + transform->Position().ToString());
+		Logger::Log(*this, "Actor Spawned at " + transform->Position().ToString());
 	}
 
 	Actor::~Actor() {
@@ -25,16 +25,14 @@ namespace Game {
 			collider = nullptr;
 		}
 		components.clear();
-		Logger::Log(*this, "Destroyed actor \"" + name + "\"");
-	}
-
-	Transform& Actor::GetTransform() const {
-		return *transform;
+		Logger::Log(*this, "Actor Destroyed");
 	}
 
 	void Actor::SetNormalisedPosition(Vector2 localNPosition) {
-		localNPosition.x = Maths::Clamp(localNPosition.x, -Fixed::One, Fixed::One);
-		localNPosition.y = Maths::Clamp(localNPosition.y, -Fixed::One, Fixed::One);
+		// -1 <= x, y <= 1
+		localNPosition.x = Maths::Clamp_11(localNPosition.x);
+		localNPosition.y = Maths::Clamp_11(localNPosition.y);
+		// r` = r * screen.r
 		Vector2 screenSize = level.GetWorld().GetScreenBounds().upper;
 		Vector2 newPos(localNPosition.x * screenSize.x, localNPosition.y * screenSize.y);
 		transform->localPosition = newPos;
@@ -45,6 +43,7 @@ namespace Game {
 	}
 
 	void Actor::Destruct() {
+		// Allow ActiveLevel to collect this Actor
 		_destroyed = true;
 	}
 

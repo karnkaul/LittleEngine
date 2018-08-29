@@ -16,11 +16,13 @@ namespace Game {
 		bool enabled = true;
 		Actor& GetActor() const;
 
+		virtual std::string ToString() const override;
+
 	protected:
 		Component(Actor& actor, const std::string& name);
 	
 	private:
-		Actor* actor;
+		Actor& actor;
 		Component(const Component&) = delete;
 		Component& operator=(Component&) = delete;
 	};

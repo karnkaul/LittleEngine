@@ -98,6 +98,8 @@ namespace Game {
 						}
 						if (isPaused && windowController->IsWindowFocussed()) {
 							isPaused = false;
+							// Reset FixedTick time lag (account for clock not pausing)
+							previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
 							Logger::Log(*this, "Game unpaused");
 						}
 						inputHandler->CaptureState(windowController->GetInputHandler().GetPressed());
