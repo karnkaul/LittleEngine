@@ -20,13 +20,13 @@ namespace Maths {
 		}
 		int random = rand();
 		Fixed normalised(random, RAND_MAX);
-		return normalised * (max - min);
+		return (normalised * (max - min)) + min;
 	}
 
 	int Random::Range(int min, int max) {
 		if (!_init) {
 			InitRand();
 		}
-		return (rand() * (max - min)) / RAND_MAX;
+		return ((rand() * (max - min)) / RAND_MAX) + min;
 	}
 }
