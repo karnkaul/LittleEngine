@@ -2,6 +2,7 @@
 #include <string>
 
 namespace Game {
+	// \brief Base class for ease of logging
 	class Object {
 	public:
 		Object(const std::string& name) : name(name) {}

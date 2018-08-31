@@ -7,6 +7,9 @@ namespace Consts {
 	const Fixed DEG_TO_RAD = Fixed(PI / 180);
 }
 
+// \brief Class maintains a position and orientation in 2D space, 
+// and provides an API for parenting to other Transforms.
+// Must be created using shared_ptr<Transform>
 class Transform : public std::enable_shared_from_this<Transform> {
 public:
 	using Ptr = std::shared_ptr<Transform>;

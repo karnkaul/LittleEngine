@@ -9,7 +9,7 @@ namespace Game {
 		SetLayerID(layerID);
 	}
 
-	LayerInfo::LayerInfo(LayerID layerID) {
+	LayerInfo::LayerInfo(const LayerID& layerID) {
 		SetLayerID(static_cast<int>(layerID));
 	}
 
@@ -22,11 +22,11 @@ namespace Game {
 		return this->layerID;
 	}
 
-	int LayerInfo::SetLayerID(LayerID layerID) {
+	int LayerInfo::SetLayerID(const LayerID& layerID) {
 		return SetLayerID(static_cast<int>(layerID));
 	}
 
-	void WindowController::Buffer::Push(Drawable drawable, int index) {
+	void WindowController::Buffer::Push(Drawable&& drawable, int index) {
 		std::vector<Drawable>& vec = buffer[index];
 		vec.push_back(drawable);
 	}
@@ -90,10 +90,10 @@ namespace Game {
 		}
 	}
 
-	void WindowController::Push(Drawable drawable) {
+	void WindowController::Push(Drawable&& drawable) {
 		int index = drawable.layer.GetLayerID();
 		index = Maths::Clamp(index, 0, MAX_LAYERID);
-		buffer.Push(drawable, index);
+		buffer.Push(std::move(drawable), index);
 	}
 
 	void WindowController::Draw() {

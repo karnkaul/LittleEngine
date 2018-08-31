@@ -87,6 +87,10 @@ namespace Game {
 		if (_destroyed) {
 			return;
 		}
+		// Convert Transform::Position to sscreen position
+		params.screenPosition = level->GetWorld().WorldToScreenPoint(transform->Position());
+		// Convert Transform::Rotation to SFML orientation (+ is counter-clockwise)
+		params.screenRotation = -transform->Rotation();
 		// Render each component
 		for (auto& component : components) {
 			component->Render(params);

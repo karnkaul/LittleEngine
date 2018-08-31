@@ -72,18 +72,6 @@ namespace Game {
 		return engine->GetInputHandler();
 	}
 
-	int64_t Level::LevelTimeMicroSeconds() const {
-		return clock.GetElapsedMicroSeconds();
-	}
-
-	int Level::LevelTimeMilliSeconds() const {
-		return clock.GetElapsedMilliSeconds();
-	}
-
-	int Level::GameTimeMilliSeconds() const {
-		return clock.GetGameTimeMilliSeconds();
-	}
-
 	const World & Level::GetWorld() const {
 		return engine->GetWorld();
 	}
@@ -94,6 +82,18 @@ namespace Game {
 
 	CollisionManager & Level::GetCollisionManager() {
 		return collisionManager;
+	}
+
+	int64_t Level::LevelTimeMicroSeconds() const {
+		return clock.GetElapsedMicroSeconds();
+	}
+
+	int Level::LevelTimeMilliSeconds() const {
+		return clock.GetElapsedMilliSeconds();
+	}
+
+	int Level::GameTimeMilliSeconds() const {
+		return clock.GetGameTimeMilliSeconds();
 	}
 
 	Actor::wPtr Level::SpawnActor(const std::string& name) {

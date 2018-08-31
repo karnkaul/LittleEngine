@@ -5,7 +5,7 @@
 #include "Utils/Utils.h"
 
 namespace Game {
-	InputHandler::InputObserver::InputObserver(OnInput&& callback, bool consume, OnKey type)
+	InputHandler::InputObserver::InputObserver(OnInput&& callback, bool consume, const OnKey& type)
 		: callback(std::move(callback)), consume(consume), type(type) {
 	}
 
@@ -42,12 +42,12 @@ namespace Game {
 		Logger::Log(*this, "InputHandler destroyed");
 	}
 
-	bool InputHandler::IsKeyPressed(GameInput keyCode) const {
+	bool InputHandler::IsKeyPressed(const GameInput& keyCode) const {
 		auto iter = std::find(currentSnapshot.begin(), currentSnapshot.end(), keyCode);
 		return iter != currentSnapshot.end();
 	}
 
-	OnInput::Token InputHandler::Register(GameInput input, OnInput::Callback callback, OnKey type, bool consume) {
+	OnInput::Token InputHandler::Register(const GameInput& input, OnInput::Callback callback, const OnKey& type, bool consume) {
 		OnInput newDelegate;
 		OnInput::Token token = newDelegate.Register(callback);
 		auto iter = inputObservers.find(input);

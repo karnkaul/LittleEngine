@@ -3,6 +3,8 @@
 #include "SFML/System/Clock.hpp"
 
 namespace Game {
+	// \brief Real Time clock using sf::Clock
+	// Note: this clock cannot be paused, only restarted
 	class SystemClock {
 	public:
 		int GetCurrentMilliseconds() const;

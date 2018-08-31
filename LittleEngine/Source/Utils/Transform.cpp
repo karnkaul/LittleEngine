@@ -23,8 +23,7 @@ Transform::wPtr Transform::GetParent() const {
 
 Vector2 Transform::Position() const {
 	Vector2 position = localPosition;
-	Ptr transform;
-	if (transform = m_parent.lock()) {
+	if (Ptr transform = m_parent.lock()) {
 		position += transform->Position();
 	}
 	return position;
@@ -33,8 +32,7 @@ Vector2 Transform::Position() const {
 Fixed Transform::Rotation() {
 	localRotation %= 360;
 	Fixed rotation = localRotation;
-	Ptr transform;
-	if (transform = m_parent.lock()) {
+	if (Ptr transform = m_parent.lock()) {
 		rotation += transform->Rotation();
 	}
 	return rotation;
@@ -42,15 +40,14 @@ Fixed Transform::Rotation() {
 
 void Transform::Rotate(Fixed angle) {
 	localRotation += angle;
-	Utils::EraseWeakPtrs<Transform>(m_children);
+	Utils::EraseNullWeakPtrs<Transform>(m_children);
 	// Children need to be repositioned
 	if (!m_children.empty()) {
 		Fixed rad = angle * Consts::DEG_TO_RAD;
+		Fixed s = rad.Sin(), c = rad.Cos();
 		for (const auto& child : m_children) {
-			Ptr transform;
-			if (transform = child.lock()) {
+			if (Ptr transform = child.lock()) {
 				Vector2 p = transform->localPosition;
-				Fixed s = rad.Sin(), c = rad.Cos();
 				transform->localPosition = Vector2(
 					(p.x * c) - (p.y * s),
 					(p.x * s) + (p.y * c)

@@ -7,6 +7,7 @@
 class FileRW;
 
 namespace Game {
+	// \brief RAII Asynchronous file logger; sleeps thread for a millisecond 1000 times
 	class FileLogger {
 	public:
 		FileLogger(const std::string& fileName, bool clearFile = true);

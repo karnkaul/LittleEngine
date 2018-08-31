@@ -1,6 +1,7 @@
 #pragma once
 #include "Utils/Fixed.h"
 
+// \brief 2D geometric vector using Fixed
 struct Vector2 {
 public:
 	Fixed x;

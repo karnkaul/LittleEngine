@@ -8,7 +8,7 @@
 #include <functional>
 
 namespace Game {
-	// Wrapper struct for SFML Drawable
+	// \brief Wrapper struct for SFML Drawable
 	struct Drawable {
 	public:
 		LayerInfo layer;
@@ -25,16 +25,20 @@ namespace Game {
 		sf::Drawable& drawable;
 	};
 
-	// Conrete class that can create an SFML RenderWindow,
+	// \brief Conrete class that can create an SFML RenderWindow,
 	// and draw a buffer of Drawables to it.
 	// Provides an InputHandler to poll inputs every frame
 	class WindowController final {
 	private:
+		// \brief Sprite buffer; contains MAX_LAYERS layers, 
+		// each with a vector of Drawables.
 		struct Buffer {
 			static constexpr int MAX_LAYERS = 100;
-			void Push(Drawable drawable, int index);
+
+			void Push(Drawable&& drawable, int index);
 			void ForEach(std::function<void(std::vector<Drawable>)> Callback) const;
 			void Clear();
+
 		private:
 			std::array<std::vector<Drawable>, MAX_LAYERS> buffer;
 		};
@@ -45,14 +49,15 @@ namespace Game {
 		WindowController(int screenWidth, int screenHeight, const std::string& windowTitle);
 		~WindowController();
 
-		// Convenience methods for Game Loop etc
+		// For Game Loop
 		bool IsWindowOpen() const;
+		// For Game Loop
 		bool IsWindowFocussed() const;
 
 		// Call this to update InputHandler's state for this frame
 		void PollInput();
 		// Add drawable to buffer
-		void Push(Drawable drawable);
+		void Push(Drawable&& drawable);
 		// Clear screen and draw current buffer
 		void Draw();
 		// Destroy SFML RenderWindow

@@ -19,19 +19,18 @@ namespace Game {
 	}
 
 	Level& LevelManager::GetActiveLevel() const {
-		
 		return *activeLevel;
 	}
 
-	bool LevelManager::LoadLevel(int levelIndex) {
+	bool LevelManager::LoadLevel(const LevelID& levelID) {
 		activeLevel = nullptr;
-		switch (levelIndex) {
-		case 0:
+		switch (levelID) {
+		case LevelID::BootLevel:
 		default:
 			activeLevel = std::make_unique<BootLevel>(*engine);
 			return true;
 			
-		case 1:
+		case LevelID::TestLevel:
 			activeLevel = std::make_unique<TestLevel>(*engine);
 			return true;
 		}

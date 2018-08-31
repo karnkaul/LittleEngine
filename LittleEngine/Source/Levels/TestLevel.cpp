@@ -139,6 +139,7 @@ namespace Game {
 
 		quitLevelToken = GetInputHandler().Register(GameInput::Return, std::bind(&TestLevel::OnQuitPressed, this), OnKey::Released);
 		// Tests
+		_TestLevel::drawn = false;
 		_TestLevel::_actor0 = actor0;
 		_TestLevel::_actor1 = player;
 		_TestLevel::token0 = GetInputHandler().Register(GameInput::X, &_TestLevel::OnXPressed, OnKey::Released);
@@ -161,6 +162,6 @@ namespace Game {
 
 	void TestLevel::OnQuitPressed() {
 		_TestLevel::CleanupTests();
-		engine->LoadLevel(0);
+		engine->LoadLevel(LevelID::BootLevel);
 	}
 }

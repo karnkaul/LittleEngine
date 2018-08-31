@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "Engine/Logger/Logger.h"
 #include "Entities/Actor.h"
+#include "SFMLInterface/Rendering/RenderParams.h"
 
 namespace Game {
 	Component::Component(Actor& actor, const std::string& name) : Object(name) {
@@ -19,7 +20,7 @@ namespace Game {
 	void Component::FixedTick() {
 	}
 
-	void Component::Render(RenderParams& params) {
+	void Component::Render(RenderParams params) {
 	}
 
 	Actor& Component::GetActor() const {

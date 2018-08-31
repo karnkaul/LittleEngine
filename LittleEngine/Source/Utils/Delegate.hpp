@@ -2,6 +2,11 @@
 #include <vector>
 #include <functional>
 
+// \brief Tokenised callback without any parameters. 
+// Usage: Declare an Action using the type that will be passed in 
+// as a parameter when triggering the delegate (operator()).
+// Registering object to keep received Token alive to maintain registration
+// Discard received Token to unregister associated callback
 class Action {
 public:
 	using Callback = std::function<void()>;
@@ -42,6 +47,7 @@ private:
 	}
 };
 
+// \brief Tokenised callback with a parameter
 // Usage: Declare a Delegate using the type that will be passed in 
 // as a parameter when triggering the delegate (operator()).
 // Registering object to keep received Token alive to maintain registration

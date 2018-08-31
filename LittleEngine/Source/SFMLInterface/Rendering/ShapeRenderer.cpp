@@ -8,6 +8,7 @@ namespace Game {
 	void ShapeRenderer::RenderInternal(RenderParams & params) {
 		SetPosition(params.screenPosition);
 		SetRotation(params.screenRotation);
+		// Push shape into appropriate drawing layer
 		params.GetWindowController().Push(Drawable(*shape, layer));
 	}
 
@@ -15,37 +16,33 @@ namespace Game {
 		shape->setFillColor(Convert(colour));
 	}
 
-	void ShapeRenderer::SetBorder(Fixed width, const Colour & colour) {
+	void ShapeRenderer::SetBorder(const Fixed& width, const Colour & colour) {
 		shape->setOutlineColor(Convert(colour));
-		if (width < 0) {
-			width = 0;
-		}
-		shape->setOutlineThickness(width.GetFloat());
+		shape->setOutlineThickness(width > 0 ? width.GetFloat() : 0);
 	}
 
-	void ShapeRenderer::SetPosition(const Vector2 screenPosition) {
+	void ShapeRenderer::SetPosition(const Vector2& screenPosition) {
 		shape->setPosition(Convert(screenPosition));
 	}
 
-	void ShapeRenderer::SetRotation(const Fixed screenRotation) {
+	void ShapeRenderer::SetRotation(const Fixed& screenRotation) {
 		shape->setRotation(screenRotation.GetFloat());
 	}
 
-	CircleRenderer::CircleRenderer(Fixed radius)
-		: ShapeRenderer("CircleRenderer", std::make_unique<sf::CircleShape>(radius.GetFloat())) {
+	CircleRenderer::CircleRenderer(const Fixed& radius) : ShapeRenderer("CircleRenderer", std::make_unique<sf::CircleShape>(radius.GetFloat())) {
 		circle = &CastShape<sf::CircleShape>();
 		circle->setOrigin(radius.GetFloat(), radius.GetFloat());
 	}
 
-	CircleRenderer::CircleRenderer(Fixed radius, const Colour& colour)
-		: ShapeRenderer("CircleRenderer", std::make_unique<sf::CircleShape>(radius.GetFloat())) {
+	CircleRenderer::CircleRenderer(const Fixed& radius, const Colour& colour) : ShapeRenderer("CircleRenderer", std::make_unique<sf::CircleShape>(radius.GetFloat())) {
 		circle = &CastShape<sf::CircleShape>();
 		circle->setOrigin(radius.GetFloat(), radius.GetFloat());
 		SetFillColour(colour);
 	}
 
-	void CircleRenderer::SetRadius(Fixed radius) {
+	void CircleRenderer::SetRadius(const Fixed& radius) {
 		circle->setRadius(radius.GetFloat());
+		// Reposition local centre
 		circle->setOrigin(radius.GetFloat(), radius.GetFloat());
 	}
 
@@ -57,31 +54,30 @@ namespace Game {
 		);
 	}
 
-	RectangleRenderer::RectangleRenderer(Vector2 size)
-		: ShapeRenderer("RectangleRenderer", std::make_unique<sf::RectangleShape>(sf::Vector2f(size.x.GetFloat(), size.y.GetFloat()))) {
+	RectangleRenderer::RectangleRenderer(const Vector2& size) : ShapeRenderer("RectangleRenderer", std::make_unique<sf::RectangleShape>(sf::Vector2f(size.x.GetFloat(), size.y.GetFloat()))) {
 		rectangle = &CastShape<sf::RectangleShape>();
 		rectangle->setOrigin(rectangle->getSize().x * 0.5f, rectangle->getSize().y * 0.5f);
 	}
 
-	RectangleRenderer::RectangleRenderer(Vector2 size, Colour colour)
-		: ShapeRenderer("RectangleRenderer", std::make_unique<sf::RectangleShape>(sf::Vector2f(size.x.GetFloat(), size.y.GetFloat()))) {
+	RectangleRenderer::RectangleRenderer(const Vector2& size, const Colour& colour) : ShapeRenderer("RectangleRenderer", std::make_unique<sf::RectangleShape>(sf::Vector2f(size.x.GetFloat(), size.y.GetFloat()))) {
 		rectangle = &CastShape<sf::RectangleShape>();
 		rectangle->setOrigin(rectangle->getSize().x * 0.5f, rectangle->getSize().y * 0.5f);
 		SetFillColour(colour);
 	}
 
-	void RectangleRenderer::SetSize(Vector2 size) {
+	void RectangleRenderer::SetSize(const Vector2& size) {
 		rectangle->setSize(Convert(size));
+		// Reposition local centre
 		rectangle->setOrigin(rectangle->getSize().x * 0.5f, rectangle->getSize().y * 0.5f);
 	}
 
 	Rect2 RectangleRenderer::GetBounds() const {
 		sf::Vector2f size = rectangle->getSize();
-		Fixed width(size.x);
-		Fixed height(size.y);
+		Fixed width = Fixed(size.x) * Fixed::Half;
+		Fixed height = Fixed(size.y) * Fixed::Half;
 		return Rect2(
-			Vector2(-width * Fixed::Half, -height * Fixed::Half),
-			Vector2(width * Fixed::Half, height * Fixed::Half)
+			Vector2(-width, -height),
+			Vector2(width, height)
 		);
 	}
 }

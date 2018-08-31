@@ -57,7 +57,7 @@ namespace Game {
 
 	void CollisionManager::Cleanup() {
 		int count = colliders.size();
-		Utils::EraseWeakPtrs<Collider>(colliders);
+		Utils::EraseNullWeakPtrs<Collider>(colliders);
 		int diff = count - colliders.size();
 		if (diff > 0) {
 			Logger::Log(*this, "Removed " + std::to_string(diff) + " stale Colliders ", Logger::Severity::Debug);

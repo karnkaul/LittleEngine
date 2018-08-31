@@ -14,12 +14,13 @@ namespace Utils {
 
 	// Given a vector<weak_ptr<T>>, erase all elements where t.lock() == nullptr
 	template<typename T>
-	void EraseWeakPtrs(std::vector<std::weak_ptr<T>>& vec) {
+	void EraseNullWeakPtrs(std::vector<std::weak_ptr<T>>& vec) {
 		CleanVector<std::weak_ptr<T>>(vec, [](std::weak_ptr<T>& ptr) { return ptr.lock() == nullptr; });
 	}
 }
 
 namespace Maths {
+	// Returns val E [min, max]
 	template<typename T>
 	T Clamp(T val, T min, T max) {
 		if (val < min) {
@@ -31,6 +32,7 @@ namespace Maths {
 		return val;
 	}
 
+	// Returns val E [0, 1]
 	template<typename T>
 	T Clamp01(T val) {
 		if (val < 0) {
@@ -42,6 +44,7 @@ namespace Maths {
 		return val;
 	}
 
+	// Returns val E [-1, 1]
 	template<typename T>
 	T Clamp_11(T val) {
 		if (val < -1) {
@@ -54,7 +57,9 @@ namespace Maths {
 	}
 
 	namespace Random {
+		// Returns [min, max]
 		Fixed Range(Fixed min = 0, Fixed max = 1);
+		// Returns [min, max)
 		int Range(int min, int max);
 	};
 }

@@ -51,7 +51,7 @@ namespace Game {
 
 	void BootLevel::OnLoadNextLevel() {
 		inputTokens.clear();
-		engine->LoadLevel(1);
+		engine->LoadLevel(LevelID::TestLevel);
 	}
 
 	void BootLevel::OnQuit() {

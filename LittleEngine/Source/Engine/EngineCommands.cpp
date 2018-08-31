@@ -5,7 +5,7 @@
 #include "Levels/LevelManager.h"
 
 namespace Game {
-	LoadLevelCommand::LoadLevelCommand(LevelManager& levelManager, int levelID) {
+	LoadLevelCommand::LoadLevelCommand(LevelManager& levelManager, const LevelID& levelID) {
 		this->levelID = levelID;
 		this->levelManager = &levelManager;
 	}

@@ -9,6 +9,7 @@ namespace Game {
 	class Actor;
 	struct KeyState;
 	
+	// \brief Player Controller Component
 	class ControllerComponent : public Component {
 	public:
 		ControllerComponent(Actor& actor);
@@ -16,10 +17,10 @@ namespace Game {
 		virtual void Tick(Fixed deltaTime) override;
 
 	private:
-		InputHandler& inputHandler;
 		std::shared_ptr<class RenderComponent> renderer;
 		std::vector<OnInput::Token> tokens;
 		Fixed prevDeltaTime = 0;
+		InputHandler* inputHandler;
 
 		Vector2 GetRenderPadding();
 		void OnLeft();

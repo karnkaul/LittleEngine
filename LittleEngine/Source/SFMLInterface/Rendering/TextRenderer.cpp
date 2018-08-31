@@ -35,11 +35,11 @@ namespace Game {
 		);
 	}
 
-	void TextRenderer::SetPosition(const Vector2 screenPosition) {
+	void TextRenderer::SetPosition(const Vector2& screenPosition) {
 		text.setPosition(Convert(screenPosition));
 	}
 
-	void TextRenderer::SetRotation(const Fixed screenRotation) {
+	void TextRenderer::SetRotation(const Fixed& screenRotation) {
 		text.setRotation(screenRotation.GetFloat());
 	}
 
@@ -64,12 +64,12 @@ namespace Game {
 		return data;
 	}
 
-	TextRenderer& TextRenderer::SetSize(Fixed pixelSize) {
+	TextRenderer& TextRenderer::SetSize(const Fixed& pixelSize) {
 		data.pixelSize = pixelSize;
 		return *this;
 	}
 
-	TextRenderer& TextRenderer::SetColour(Colour colour) {
+	TextRenderer& TextRenderer::SetColour(const Colour& colour) {
 		data.fillColour = colour;
 		return *this;
 	}

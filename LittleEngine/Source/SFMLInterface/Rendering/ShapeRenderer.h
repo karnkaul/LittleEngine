@@ -4,11 +4,11 @@
 #include "Renderer.h"
 
 namespace Game {
-	// Abstract class for drawing SFML Shapes
+	// \brief Abstract class for drawing SFML Shapes
 	class ShapeRenderer : public Renderer {
 	public:
 		void SetFillColour(const Colour& colour);
-		void SetBorder(Fixed width, const Colour& colour);
+		void SetBorder(const Fixed& width, const Colour& colour);
 
 	protected:
 		std::unique_ptr<sf::Shape> shape;	// sf::Shape cannot be a direct member
@@ -18,8 +18,8 @@ namespace Game {
 		}
 
 		virtual void RenderInternal(RenderParams& params) override; 
-		virtual void SetPosition(const Vector2 screenPosition) override;
-		virtual void SetRotation(const Fixed screenRotation) override;
+		virtual void SetPosition(const Vector2& screenPosition) override;
+		virtual void SetRotation(const Fixed& screenRotation) override;
 
 		template<typename T>
 		T& CastShape() const {
@@ -28,25 +28,27 @@ namespace Game {
 		}
 	};
 
-	// Concrete class to draw a CircleShape
+	// \brief Concrete class to draw a CircleShape
 	class CircleRenderer : public ShapeRenderer {
 	public:
-		CircleRenderer(Fixed radius);
-		CircleRenderer(Fixed radius, const Colour& colour);
-		void SetRadius(Fixed radius);
+		CircleRenderer(const Fixed& radius);
+		CircleRenderer(const Fixed& radius, const Colour& colour);
 
-		// Returns radius of CircleShape
+		void SetRadius(const Fixed& radius);
+
+		// Returns outer rect of CircleShape (|any point| = radius)
 		virtual Rect2 GetBounds() const override;
 	private:
 		sf::CircleShape* circle;
 	};
 
-	// Concrete class to draw a RectangleShape
+	// \brief Concrete class to draw a RectangleShape
 	class RectangleRenderer : public ShapeRenderer {
 	public:
-		RectangleRenderer(Vector2 size);
-		RectangleRenderer(Vector2 size, Colour colour);
-		void SetSize(Vector2 size);
+		RectangleRenderer(const Vector2& size);
+		RectangleRenderer(const Vector2& size, const Colour& colour);
+
+		void SetSize(const Vector2& size);
 
 		// Returns bounds of RectangleShape
 		virtual Rect2 GetBounds() const override;
