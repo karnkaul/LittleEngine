@@ -35,7 +35,7 @@ namespace Game {
 		std::vector<Actor::Ptr> actors;
 		GameClock clock;
 		CollisionManager collisionManager;
-		Engine& engine;
+		Engine* engine;
 		
 		Level(const std::string& name, Engine& engine);
 		static bool IsActorDestroyed(Actor::Ptr actor);

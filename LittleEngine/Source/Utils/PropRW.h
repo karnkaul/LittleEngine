@@ -41,6 +41,7 @@ public:
 	bool Save(const std::string& filePath) const;
 	Property GetProp(const std::string& key) const;
 	void SetProp(const Property& property);
+
 private:
 	std::vector<Property> properties;
 };

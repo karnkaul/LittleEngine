@@ -161,6 +161,6 @@ namespace Game {
 
 	void TestLevel::OnQuitPressed() {
 		_TestLevel::CleanupTests();
-		engine.LoadLevel(0);
+		engine->LoadLevel(0);
 	}
 }

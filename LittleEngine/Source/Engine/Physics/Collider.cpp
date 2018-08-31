@@ -48,7 +48,8 @@ namespace Game {
 
 	Fixed Collider::DEBUG_BORDER_WIDTH = 1;
 
-	Collider::Collider(Actor& actor, std::string name) : Component(actor, name), world(actor.GetActiveLevel().GetWorld()) {
+	Collider::Collider(Actor& actor, std::string name) : Component(actor, name) {
+		this->world = &actor.GetActiveLevel().GetWorld();
 	}
 
 	AABBCollider::AABBCollider(Actor& actor) : Collider(actor, "AABBCollider") {
@@ -88,7 +89,7 @@ namespace Game {
 			Fixed w = worldRect.upperBound.x - worldRect.lowerBound.x;
 			Fixed h = worldRect.upperBound.y - worldRect.lowerBound.y;
 			Vector2 delta(w * Fixed::Half, h * Fixed::Half);
-			params.screenPosition = world.WorldToScreenPoint(worldRect.lowerBound + delta);
+			params.screenPosition = world->WorldToScreenPoint(worldRect.lowerBound + delta);
 			params.screenRotation = 0;
 			debugShape->Render(params);
 		}
@@ -147,7 +148,7 @@ namespace Game {
 	void CircleCollider::Render(RenderParams& params) {
 		if (debugShape->IsEnabled()) {
 			CircleData c = GetWorldCircle();
-			params.screenPosition = world.WorldToScreenPoint(c.centre);
+			params.screenPosition = world->WorldToScreenPoint(c.centre);
 			params.screenRotation = 0;
 			debugShape->Render(params);
 		}

@@ -42,8 +42,9 @@ namespace Game {
 	public:
 		static constexpr int MAX_LAYERID = Buffer::MAX_LAYERS - 1;
 
-		WindowController(int screenWidth, int screenHeight, std::string windowTitle);
+		WindowController(int screenWidth, int screenHeight, const std::string& windowTitle);
 		~WindowController();
+
 		// Convenience methods for Game Loop etc
 		bool IsWindowOpen() const;
 		bool IsWindowFocussed() const;
@@ -60,10 +61,11 @@ namespace Game {
 
 	private:
 		Buffer buffer;
-		WindowController(const WindowController&) = delete;
-		WindowController& operator=(const WindowController&) = delete;
-		std::unique_ptr<sf::RenderWindow> window;
 		Input input;
+		std::unique_ptr<sf::RenderWindow> window;
 		bool _focus = false;
+
+		WindowController(const WindowController&) = delete;
+		WindowController& operator=(const WindowController&) = delete;	
 	};
 }

@@ -46,12 +46,8 @@ namespace Game {
 		}
 	}
 
-	WindowController::WindowController(int screenWidth, int screenHeight, std::string windowTitle) {
-		window = std::make_unique<sf::RenderWindow>(sf::VideoMode(
-			screenWidth,
-			screenHeight),
-			windowTitle
-			);
+	WindowController::WindowController(int screenWidth, int screenHeight, const std::string& windowTitle) {
+		window = std::make_unique<sf::RenderWindow>(sf::VideoMode(screenWidth, screenHeight), windowTitle);
 		_focus = true;
 	}
 

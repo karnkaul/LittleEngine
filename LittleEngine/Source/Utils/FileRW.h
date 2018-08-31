@@ -5,6 +5,7 @@
 class FileRW {
 public:
 	FileRW(std::string path) : path(path) {}
+
 	bool Exists() const;
 	const std::vector<std::string>& Read();
 	bool Write(const std::string& contents, bool append = false);

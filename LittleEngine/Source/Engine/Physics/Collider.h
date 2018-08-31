@@ -12,25 +12,31 @@ namespace Game {
 		static Fixed DEBUG_BORDER_WIDTH;
 		using Ptr = std::shared_ptr<Collider>;
 		using wPtr = std::weak_ptr<Collider>;
+
 		virtual bool IsIntersecting(const Collider& rhs) const = 0;
 		virtual void DrawDebugShape(bool show, Fixed thickness = DEBUG_BORDER_WIDTH) = 0;
 
 	protected:
-		const World& world;
+		const World* world;
+		std::shared_ptr<class ShapeRenderer> debugShape;
+
 		Collider(Actor& actor, std::string name);
+		
 		friend class AABBCollider;
 		virtual bool IsIntersectAABB(const class AABBCollider& rhs) const = 0;
+		
 		friend class CircleCollider;
 		virtual bool IsIntersectCircle(const class CircleCollider& rhs) const = 0;
-		std::shared_ptr<class ShapeRenderer> debugShape;
 	};
 
 	class CircleCollider : public Collider {
 	public:
 		CircleCollider(Actor& actor);
-		virtual bool IsIntersecting(const Collider& rhs) const override;
+		
 		CircleData GetWorldCircle() const;
 		void SetCircle(Fixed radius);
+
+		virtual bool IsIntersecting(const Collider& rhs) const override;
 		virtual void DrawDebugShape(bool show, Fixed thickness = DEBUG_BORDER_WIDTH) override;
 		virtual void Render(RenderParams& params) override;
 
@@ -46,9 +52,11 @@ namespace Game {
 	class AABBCollider : public Collider {
 	public:
 		AABBCollider(Actor& actor);
-		virtual bool IsIntersecting(const Collider& rhs) const override;
+
 		AABBData GetWorldAABB() const;
 		void SetBounds(AABBData bounds);
+		
+		virtual bool IsIntersecting(const Collider& rhs) const override;
 		virtual void DrawDebugShape(bool show, Fixed thickness = DEBUG_BORDER_WIDTH) override;
 		virtual void Render(RenderParams& params) override;
 

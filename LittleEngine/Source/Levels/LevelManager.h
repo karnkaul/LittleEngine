@@ -12,7 +12,7 @@ namespace Game {
 		Level& GetActiveLevel() const;
 		bool LoadLevel(int levelIndex);
 	private:
-		Engine& engine;
+		Engine* engine;
 		std::unique_ptr<Level> activeLevel;
 	};
 }

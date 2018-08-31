@@ -91,7 +91,7 @@ namespace Game {
 		std::vector<std::shared_ptr<Component>> components;
 		Collider::Ptr collider;
 		Transform::Ptr transform;
-		Level& level;
+		Level* level;
 		bool _destroyed = false;
 		
 		virtual void FixedTick();

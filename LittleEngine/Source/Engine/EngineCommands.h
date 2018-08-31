@@ -16,7 +16,7 @@ namespace Game {
 		LoadLevelCommand(LevelManager& levelManager, int levelID);
 		virtual bool operator()() override;
 	private:
-		LevelManager& levelManager;
+		LevelManager* levelManager;
 		int levelID;
 	};
 }
