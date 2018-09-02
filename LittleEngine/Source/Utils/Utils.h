@@ -19,7 +19,7 @@ namespace Utils {
 	}
 
 	template<typename T>
-	typename std::vector<T>::const_iterator Find(const std::vector<T>& vec, const T& value) {
+	typename std::vector<T>::const_iterator VectorSearch(const std::vector<T>& vec, const T& value) {
 		typename std::vector<T>::const_iterator iter = std::find(vec.begin(), vec.end(), value);
 		return iter;
 	}
