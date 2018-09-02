@@ -19,8 +19,9 @@ std::vector<std::string> Tokenize(const std::string& s, char c) {
 			start = end;
 		}
 	}
-	if (start != end)
+	if (start != end) {
 		v.emplace_back(start, end);
+	}
 	return v;
 }
 
@@ -39,10 +40,10 @@ bool PropRW::Load(const std::string& filePath) {
 		return false;
 	}
 
-	std::vector<std::string> lines = fileRW.Read();
+	const std::vector<std::string>& lines = fileRW.Read();
 	for (const auto& line : lines) {
 		if (line.length() <= 0) continue;
-		if (line.c_str()[0] == '#') continue;
+		if (line.c_str()[0] == '#') continue;	// Ignore comments
 
 		std::vector<std::string> tokens = Tokenize(line, ':');
 		if (tokens.size() > 1) {

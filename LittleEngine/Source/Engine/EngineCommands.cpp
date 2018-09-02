@@ -2,13 +2,15 @@
 #include <vector>
 #include "EngineCommands.h"
 #include "Engine.h"
-#include "Levels/Level.h"
 #include "Levels/LevelManager.h"
 
 namespace Game {
-	LoadLevelCommand::LoadLevelCommand(Engine& engine, int levelID) : engine(engine), levelID(levelID) {}
+	LoadLevelCommand::LoadLevelCommand(LevelManager& levelManager, const LevelID& levelID) {
+		this->levelID = levelID;
+		this->levelManager = &levelManager;
+	}
 
-	bool LoadLevelCommand::Execute() {
-		return engine.levelManager->LoadLevel(levelID);
+	bool LoadLevelCommand::operator()() {
+		return levelManager->LoadLevel(levelID);
 	}
 }

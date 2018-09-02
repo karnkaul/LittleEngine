@@ -20,7 +20,7 @@ namespace Game {
 		return renderer->layer;
 	}
 
-	void RenderComponent::SetLayer(LayerInfo layer) {
+	void RenderComponent::SetLayer(const LayerInfo& layer) {
 		renderer->layer = layer;
 	}
 
@@ -61,10 +61,7 @@ namespace Game {
 		return *dynamic_cast<TextRenderer*>(renderer.get());
 	}
 
-	void RenderComponent::Render(RenderParams& params) {
-		params.screenPosition = GetActor().GetActiveLevel().GetWorld().WorldToScreenPoint(GetActor().GetTransform().Position());
-		// Convert Transform::Rotation to SFML orientation (+ is counter-clockwise)
-		params.screenRotation = -GetActor().GetTransform().Rotation();
+	void RenderComponent::Render(RenderParams params) {
 		renderer->Render(params);
 	}
 }

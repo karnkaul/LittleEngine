@@ -4,16 +4,21 @@
 #include "Engine/Physics/Collider.h"
 
 namespace Game {
+	// \brief Handles Collider registrations and collision notifications
 	class CollisionManager final : public Object {
 	public:
 		CollisionManager();
+		
 		void Register(Collider::Ptr collider);
 		bool Unregister(Collider::Ptr collider);
 		void FixedTick();
+
 	private:
+		std::vector<Collider::wPtr> colliders;
+
 		CollisionManager(const CollisionManager&) = delete;
 		CollisionManager& operator=(const CollisionManager&) = delete;
-		std::vector<Collider::wPtr> colliders;
+		
 		void Cleanup();
 		void ProcessCollision(Collider& lhs, Collider& rhs);
 	};

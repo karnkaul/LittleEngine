@@ -31,19 +31,29 @@ namespace Game {
 
 	Engine::Engine() : Object("Engine") {
 		Logger::Log(*this, "Constructing Engine");
-		LoadConfig();
 		try {
-			world = std::make_unique<World>(config->GetScreenSize());
-			assetManager = std::make_unique<AssetManager>();
-			levelManager = std::make_unique<LevelManager>(*this);
-			inputHandler = std::make_unique<InputHandler>();
-			Logger::Log(*this, "Engine constructed and ready to Run()", Logger::Severity::Debug);
+			/* Load Config */ {
+				config = std::make_unique<EngineConfig>();
+				if (config->Load("config.ini")) {
+					Logger::Log(*this, "Loaded config.ini successfully", Logger::Severity::Debug);
+				}
+				Logger::SetLogLevel(config->GetLogLevel());
+			}
+			
+			/* Instantiate entities */ {
+				world = std::make_unique<World>(config->GetScreenSize());
+				assetManager = std::make_unique<AssetManager>();
+				levelManager = std::make_unique<LevelManager>(*this);
+				inputHandler = std::make_unique<InputHandler>();
+				Logger::Log(*this, "Engine constructed and ready to Run()", Logger::Severity::Debug);
+			}
+
+			Collider::DEBUG_BORDER_WIDTH = config->GetColliderBorderWidth();
 		}
 		catch (std::bad_alloc e) {
 			Logger::Log(*this, "Error constructing engine components!", Logger::Severity::Error);
 			exitCode = ExitCode::InitError;
-		}
-		Collider::DEBUG_BORDER_WIDTH = config->GetColliderBorderWidth();
+		}	
 	}
 
 	Engine::~Engine() {
@@ -52,7 +62,12 @@ namespace Game {
 		world = nullptr;
 		inputHandler = nullptr;
 		windowController = nullptr;
-		SaveConfig();
+		if (config->Save("config.ini")) {
+			Logger::Log(*this, "config.ini saved successfully");
+		}
+		else {
+			Logger::Log(*this, "Could not save config.ini!", Logger::Severity::Warning);
+		}
 		config = nullptr;
 		
 		Logger::Log(*this, "Engine destroyed");
@@ -63,7 +78,80 @@ namespace Game {
 
 		if (exitCode == ExitCode::OK) {
 			if (CreateWindow()) {
-				RunGameLoop();
+				/* Load Level 0 */
+				if (!levelManager->LoadLevel(LevelID::BootLevel)) {
+					Logger::Log(*this, "Could not load level 0!", Logger::Severity::Error);
+					exitCode = ExitCode::ExecutionError;
+					return (int)exitCode;
+				}
+
+				/* Core Game Loop */
+				double previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
+				Fixed deltaTime = 0;
+				Fixed lag = 0;
+				while (windowController->IsWindowOpen() && !isQuitting) {
+					/* Poll Input */ {
+						windowController->PollInput();
+						if (!isPaused && !windowController->IsWindowFocussed()) {
+							isPaused = true;
+							Logger::Log(*this, "Game paused");
+						}
+						if (isPaused && windowController->IsWindowFocussed()) {
+							isPaused = false;
+							// Reset FixedTick time lag (account for clock not pausing)
+							previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
+							Logger::Log(*this, "Game unpaused");
+						}
+						inputHandler->CaptureState(windowController->GetInputHandler().GetPressed());
+					}
+
+					/* Process Frame */
+					if (!isPaused) {
+						double current = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
+						deltaTime = Fixed(current - previous);
+						previous = current;
+						lag += deltaTime;
+
+						/* Fixed Tick */ {
+							int fixedTicks = 0;
+							while (lag >= Consts::MS_PER_FIXED_TICK) {
+								levelManager->GetActiveLevel().FixedTick();
+								lag -= Consts::MS_PER_FIXED_TICK;
+								if (++fixedTicks > Consts::MAX_FIXED_TICKS) {
+									Logger::Log(*this, "Timeout during FixedTick(). Ignore if pausing rendering", Logger::Severity::Warning);
+									break;
+								}
+							}
+						}
+
+						/* Tick */ {
+							GameClock::Tick(deltaTime);
+							inputHandler->FireInput();
+							levelManager->GetActiveLevel().Tick(deltaTime);
+						}
+
+						/* Render */ {
+							RenderParams params(*windowController);
+							levelManager->GetActiveLevel().Render(params);
+							windowController->Draw();
+						}
+						
+						/* Post Render: Commands */
+						for (const auto& command : commands) {
+							(*command)();
+						}
+						commands.clear();
+
+						/* Post Render: Sleep */
+						double sinceStartMS = (static_cast<double>(clock.GetCurrentMicroseconds()) / 1000.0f) - current;
+						Fixed minFrameTimeMS = Fixed(1000, Consts::MAX_FPS);
+						Fixed residue = Fixed(minFrameTimeMS.GetDouble() - sinceStartMS);
+						if (residue > 0) {
+							Logger::Log(*this, "Sleeping game loop for: " + residue.ToString() + "ms", Logger::Severity::HOT);
+							std::this_thread::sleep_for(std::chrono::milliseconds(residue.GetInt()));
+						}
+					}
+				}
 			}
 		}
 
@@ -82,79 +170,12 @@ namespace Game {
 		return *assetManager;
 	}
 
-	void Engine::LoadLevel(int id) {
-		commands.emplace_back(std::make_unique<LoadLevelCommand>(*this, id));
+	void Engine::LoadLevel(const LevelID& levelID) {
+		commands.emplace_back(std::make_unique<LoadLevelCommand>(*levelManager, levelID));
 	}
 
 	void Engine::Quit() {
 		isQuitting = true;
-	}
-
-	void Engine::PollInput() {
-		windowController->PollInput();
-		if (!isPaused && !windowController->IsWindowFocussed()) {
-			OnPaused();
-		}
-		if (isPaused && windowController->IsWindowFocussed()) {
-			OnUnpaused();
-		}
-		inputHandler->CaptureState(windowController->GetInputHandler().GetPressed());
-	}
-
-	void Engine::FixedTick(Fixed& lag) {
-		int fixedTicks = 0;
-		while (lag >= Consts::MS_PER_FIXED_TICK) {
-			levelManager->GetActiveLevel().FixedTick();
-			lag -= Consts::MS_PER_FIXED_TICK;
-			if (++fixedTicks > Consts::MAX_FIXED_TICKS) {
-				Logger::Log(*this, "Timeout during FixedTick(). Ignore if pausing rendering", Logger::Severity::Warning);
-				break;
-			}
-		}
-	}
-
-	void Engine::Tick(Fixed deltaTime) {
-		GameClock::Tick(deltaTime);
-		inputHandler->FireInput();
-		levelManager->GetActiveLevel().Tick(deltaTime);
-	}
-
-	void Engine::Render() {
-		RenderParams params(*windowController);
-		levelManager->GetActiveLevel().Render(params);
-		windowController->Draw();
-	}
-
-	void Engine::PostRender(double &frameStartMS) {
-		for (const auto& command : commands) {
-			command->Execute();
-		}
-		commands.clear();
-
-		double sinceStartMS = (static_cast<double>(clock.GetCurrentMicroseconds()) / 1000.0f) - frameStartMS;
-		Fixed minFrameTimeMS = Fixed(1000, Consts::MAX_FPS);
-		Fixed residue = Fixed(minFrameTimeMS.GetDouble() - sinceStartMS);
-		if (residue > 0) {
-			Logger::Log(*this, "Sleeping game loop for: " + residue.ToString() + "ms", Logger::Severity::HOT);
-			std::this_thread::sleep_for(std::chrono::milliseconds(residue.GetInt()));
-		}
-	}
-
-	void Engine::LoadConfig() {
-		config = std::make_unique<EngineConfig>();
-		if (config->Load("config.ini")) {
-			Logger::Log(*this, "Loaded config.ini successfully", Logger::Severity::Debug);
-		}
-		Logger::SetLogLevel(config->GetLogLevel());
-	}
-
-	void Engine::SaveConfig() {
-		if (config->Save("config.ini")) {
-			Logger::Log(*this, "config.ini saved successfully");
-		}
-		else {
-			Logger::Log(*this, "Could not save config.ini!", Logger::Severity::Warning);
-		}
 	}
 
 	bool Engine::CreateWindow() {
@@ -171,41 +192,5 @@ namespace Game {
 		}
 		clock.Restart();
 		return true;
-	}
-
-	void Engine::RunGameLoop() {
-		if (!levelManager->LoadLevel(0)) {
-			Logger::Log(*this, "Could not load level 0!", Logger::Severity::Error);
-			exitCode = ExitCode::ExecutionError;
-			return;
-		}
-
-		double previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
-		Fixed deltaTime = 0;
-		Fixed lag = 0;
-		while (windowController->IsWindowOpen() && !isQuitting) {
-			PollInput();
-			double current = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
-			deltaTime = Fixed(current - previous);
-			previous = current;
-			
-			if (!isPaused) {
-				lag += deltaTime;
-				FixedTick(lag);
-				Tick(deltaTime);
-				Render();
-				PostRender(current);
-			}
-		}
-	}
-
-	void Engine::OnPaused() {
-		isPaused = true;
-		Logger::Log(*this, "Game paused");
-	}
-
-	void Engine::OnUnpaused() {
-		isPaused = false;
-		Logger::Log(*this, "Game unpaused");
 	}
 }

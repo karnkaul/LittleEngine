@@ -7,12 +7,11 @@
 class Transform;
 
 namespace Game {
-	// Forward declarations
 	struct RenderParams;
 	class Level;
 	class Component;
 
-	// Base class representing an entity in the world
+	// \brief Base class representing a renderable entity in the world
 	class Actor : public Object, public std::enable_shared_from_this<Actor> {
 	public:
 		using Ptr = std::shared_ptr<Actor>;
@@ -24,17 +23,23 @@ namespace Game {
 		// For subclassing Actor, if required
 		virtual ~Actor();
 
-		Transform& GetTransform() const;
-		virtual std::string ToString() const;
+		// x, y E [-1, 1] where -1/+1: edge of screen, 0: centre
+		// Note: Undefined behaviour if Transform is parented
+		void SetNormalisedPosition(Vector2 localNPosition);
+		// Call this to Destroy this Actor
 		void Destruct();
-
-		virtual void FixedTick();
-		virtual void Tick(Fixed deltaTime);
-		virtual void Render(RenderParams& params);
 
 		// Every Actor must always be owned by a Level
 		Level& GetActiveLevel() const;
 		
+		Transform& GetTransform() {
+			return transform;
+		}
+
+		virtual std::string ToString() const override;
+		
+		// Add object of T : Component to this Actor; except T : Collider
+		// An actor can contain N components
 		template<typename T>
 		std::shared_ptr<T> AddComponent() {
 			static_assert(std::is_base_of<Component, T>::value, "T must derive from Component: check Output window for erroneous call");
@@ -45,10 +50,12 @@ namespace Game {
 			return component;
 		}
 
-		// Warning: Will return nullptr if not found
+		// Warning: Will return nullptr if not found!
+		// Note: Heavyweight function
 		template<typename T>
 		std::shared_ptr<T> GetComponent() {
 			static_assert(std::is_base_of<Component, T>::value, "T must derive from Component: check Output window for erroneous call");
+			static_assert(!std::is_base_of<Collider, T>::value, "Colliders must be obtained via GetCollider<T>(): check Output window for erroneous call");
 			for (auto& component : components) {
 				std::shared_ptr<T> c = std::dynamic_pointer_cast<T>(component);
 				if (c != nullptr) {
@@ -58,6 +65,7 @@ namespace Game {
 			return nullptr;
 		}
 
+		// Add object of T : Collider to this Actor; only one Collider supported
 		template<typename T>
 		std::shared_ptr<T> AddCollider() {
 			static_assert(std::is_base_of<Collider, T>::value, "T must derive from Collider: check Output window for erroneous call");
@@ -67,6 +75,7 @@ namespace Game {
 			return collider;
 		}
 
+		// Note: Incurs runtime cast
 		template<typename T>
 		std::shared_ptr<T> GetCollider() {
 			static_assert(std::is_base_of<Collider, T>::value, "T must derive from Collider: check Output window for erroneous call");
@@ -80,10 +89,14 @@ namespace Game {
 	protected:
 		std::vector<std::shared_ptr<Component>> components;
 		Collider::Ptr collider;
-		Transform::Ptr transform;
-		Level& level;
+		Transform transform;
+		Level* level;
 		bool _destroyed = false;
 		
+		virtual void FixedTick();
+		virtual void Tick(Fixed deltaTime);
+		virtual void Render(RenderParams& params);
+
 		friend class Level;
 
 	private:

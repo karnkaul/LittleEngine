@@ -17,14 +17,15 @@ namespace Game {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 		LoadAssets();
 		
-		Vector2 lowerBound = this->engine.GetWorld().GetScreenBounds().lower;
+		Vector2 lowerBound = this->engine->GetWorld().GetScreenBounds().lower;
 		Fixed logoY = lowerBound.y + 200;
 		_logo = SpawnActor("Logo");
 		std::shared_ptr<Actor> logo = nullptr;
 		if ((logo = _logo.lock()) != nullptr) {
 			auto renderer = logo->AddComponent<RenderComponent>();
 			logoRenderer = &renderer->SetTextRenderer("... Press Enter to Start ...");
-			logo->GetTransform().localPosition = Vector2(0, logoY);
+			//logo->GetTransform().localPosition = Vector2(0, logoY);
+			logo->SetNormalisedPosition(Vector2(0, Fixed(-0.66f)));
 		}
 
 		inputTokens.push_back(GetInputHandler().Register(GameInput::Enter, std::bind(&BootLevel::OnLoadNextLevel, this), OnKey::Released));
@@ -45,16 +46,16 @@ namespace Game {
 
 	void BootLevel::LoadAssets() {
 		Logger::Log(*this, "Loading Assets...", Logger::Severity::Debug);
-		engine.GetAssetManager().LoadAllTextures({ "Assets/Ship.png" });
+		engine->GetAssetManager().LoadAllTextures({ "Assets/Ship.png" });
 	}
 
 	void BootLevel::OnLoadNextLevel() {
 		inputTokens.clear();
-		engine.LoadLevel(1);
+		engine->LoadLevel(LevelID::TestLevel);
 	}
 
 	void BootLevel::OnQuit() {
 		inputTokens.clear();
-		engine.Quit();
+		engine->Quit();
 	}
 }

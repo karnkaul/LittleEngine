@@ -3,7 +3,7 @@
 #include "SFML/Window.hpp"
 
 namespace Game {
-	// Wrapper enum for sf::KeyBoard::Key
+	// \brief Wrapper enum for sf::KeyBoard::Key
 	enum class KeyCode {
 		Invalid,
 		Left,
@@ -27,20 +27,23 @@ namespace Game {
 		Alt
 	};
 
-	// Wrapper struct that holds key state modifiers
+	// \brief Wrapper struct that holds key state modifiers
 	struct KeyMod {
 		bool control;
 		bool alt;
 		bool shift;
+		
+		const static KeyMod Default;
+		
 		KeyMod() : control(false), alt(false), shift(false) {}
 		KeyMod(bool control, bool alt, bool shift) : control(control), alt(alt), shift(shift) {}
-		const static KeyMod Default;
+		
 	private:
-		friend class Input;
 		KeyMod(const sf::Event::KeyEvent& event) : control(event.control), alt(event.alt), shift(event.shift) {}
+		friend class Input;
 	};
 
-	// Wrapper struct to store state of sf::Event::KeyEvent
+	// \brief Wrapper struct to store state of sf::Event::KeyEvent
 	struct KeyState {
 		bool pressed;
 
@@ -53,24 +56,10 @@ namespace Game {
 		std::string name;
 	};
 
-	// Concrete class that a WindowController can update KeyStates to every frame
+	// \brief Concrete class that a WindowController can update KeyStates to every frame
 	class Input {
 	public:
-		Input() {
-			// Pre-defined keys
-			keyStates.emplace_back(KeyCode::Left, "Left");
-			keyStates.emplace_back(KeyCode::Right, "Right");
-			keyStates.emplace_back(KeyCode::Up, "Up");
-			keyStates.emplace_back(KeyCode::Down, "Down");
-			keyStates.emplace_back(KeyCode::W, "W");
-			keyStates.emplace_back(KeyCode::A, "A");
-			keyStates.emplace_back(KeyCode::S, "S");
-			keyStates.emplace_back(KeyCode::D, "D");
-			keyStates.emplace_back(KeyCode::Space, "Space");
-			keyStates.emplace_back(KeyCode::Enter, "Enter");
-			keyStates.emplace_back(KeyCode::Escape, "Escape");
-			keyStates.emplace_back(KeyCode::Tab, "Tab");
-		}
+		Input();
 
 		// Call this to check if a Key was pressed in this frame
 		bool IsKeyPressed(KeyCode code) const;
@@ -80,13 +69,20 @@ namespace Game {
 		const std::vector<KeyState> GetPressed() const;
 		
 	private:
+		std::vector<KeyState> keyStates;
+
 		Input(const Input&) = delete;
 		Input& operator=(const Input&) = delete;
-		friend class WindowController;
+
 		KeyState& GetOrCreateKeyState(KeyCode code);
+
+		// For WindowController
 		void OnKeyDown(const sf::Event::KeyEvent& key);
+		// For WindowController
 		void OnKeyUp(const sf::Event::KeyEvent& key);
+		// For WindowController
 		void ResetKeyStates();
-		std::vector<KeyState> keyStates;
+
+		friend class WindowController;
 	};
 }

@@ -20,21 +20,34 @@ namespace Game {
 		Action::Token token0, token1;
 		Level* level;
 		Actor::wPtr _actor0, _actor1;
+		bool parented = false;
 		
 		void OnXPressed() {
 			auto actor0 = _actor0.lock();
 			auto actor1 = _actor1.lock();
 			if (actor0 != nullptr && actor1 != nullptr) {
-				actor0->GetTransform().SetParent(actor1->GetTransform());
-				token0 = token1 = nullptr;
+				if (!parented) {
+					actor0->GetTransform().SetParent(actor1->GetTransform());
+					parented = true;
+				}
+				else {
+					actor0->GetTransform().UnsetParent();
+					parented = false;
+				}
 			}
 		}
 		void OnYPressed() {
 			auto actor0 = _actor0.lock();
 			auto actor1 = _actor1.lock();
 			if (actor0 != nullptr && actor1 != nullptr) {
-				actor0->GetTransform().SetParent(actor1->GetTransform(), false);
-				token0 = token1 = nullptr;
+				if (!parented) {
+					actor0->GetTransform().SetParent(actor1->GetTransform(), false);
+					parented = true;
+				}
+				else {
+					actor0->GetTransform().UnsetParent(false);
+					parented = false;
+				}
 			}
 		}
 
@@ -73,24 +86,36 @@ namespace Game {
 		Action::Token token3;
 		void OnLBPressed() {
 			drawn = !drawn;
-			auto actor1 = _actor1.lock();
-			auto actor2 = _actor2.lock();
-			auto actor3 = _actor3.lock();
-			if (actor1 != nullptr) {
+			if (auto actor1 = _actor1.lock()) {
 				std::shared_ptr<AABBCollider> ac = actor1->GetCollider<AABBCollider>();
 				if (ac != nullptr) {
 					ac->DrawDebugShape(drawn);
 				}
 			}
-			if (actor2 != nullptr && actor3 != nullptr) {
-				std::shared_ptr<CircleCollider> cc = actor2->GetCollider<CircleCollider>();
-				if (cc != nullptr) {
-					cc->DrawDebugShape(drawn);
+			if (auto actor2 = _actor2.lock()) {
+				if (auto actor3 = _actor3.lock()) {
+					std::shared_ptr<CircleCollider> cc = actor2->GetCollider<CircleCollider>();
+					if (cc != nullptr) {
+						cc->DrawDebugShape(drawn);
+					}
+					std::shared_ptr<AABBCollider> ac = actor3->GetCollider<AABBCollider>();
+					if (ac != nullptr) {
+						ac->DrawDebugShape(drawn);
+					}
 				}
-				std::shared_ptr<AABBCollider> ac = actor3->GetCollider<AABBCollider>();
-				if (ac != nullptr) {
-					ac->DrawDebugShape(drawn);
-				}
+			}
+		}
+
+		void CleanupTests() {
+			token0 = token1 = token2 = token3 = nullptr;
+			if (auto actor1 = _actor1.lock()) {
+				actor1->Destruct();
+			}
+			if (auto actor2 = _actor2.lock()) {
+				actor2->Destruct();
+			}
+			if (auto actor3 = _actor3.lock()) {
+				actor3->Destruct();
 			}
 		}
 	}
@@ -118,22 +143,23 @@ namespace Game {
 
 		auto actor1 = SpawnActor("Actor1-TextRenderer").lock();
 		if (actor1 != nullptr) {
-			Fixed yPos = this->engine.GetWorld().GetScreenSize().y / 2;
+			actor1->SetNormalisedPosition(Vector2(0, Fixed(0.9f)));
 			auto rc = actor1->AddComponent<RenderComponent>();
 			auto& tr = rc->SetTextRenderer("Hello World!");
 			tr.layer = LayerID::UI;
 			tr.SetColour(Colour(200, 150, 50)).SetSize(50);
-			actor1->GetTransform().localPosition = Vector2(0, yPos - 50);
 		}
 
+		quitLevelToken = GetInputHandler().Register(GameInput::Return, std::bind(&TestLevel::OnQuitPressed, this), OnKey::Released);
 		// Tests
+		_TestLevel::drawn = false;
 		_TestLevel::_actor0 = actor0;
 		_TestLevel::_actor1 = player;
 		_TestLevel::token0 = GetInputHandler().Register(GameInput::X, &_TestLevel::OnXPressed, OnKey::Released);
-		_TestLevel::token1 = GetInputHandler().Register(GameInput::Y, &_TestLevel::OnYPressed, OnKey::Released, true);
+		_TestLevel::token1 = GetInputHandler().Register(GameInput::Y, &_TestLevel::OnYPressed, OnKey::Released);
 		_TestLevel::level = this;
 		_TestLevel::token2 = GetInputHandler().Register(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
-		_TestLevel::token3 = GetInputHandler().Register(GameInput::LB, &_TestLevel::OnLBPressed, OnKey::Released);
+		_TestLevel::token3 = GetInputHandler().Register(GameInput::RB, &_TestLevel::OnLBPressed, OnKey::Released);
 	}
 
 	void RenderTests(Level* level, std::vector<Actor::Ptr>& actors, RenderParams& params) {
@@ -145,5 +171,10 @@ namespace Game {
 	void TestLevel::Render(RenderParams & params) {
 		RenderTests(this, actors, params);
  		Level::Render(params);
+	}
+
+	void TestLevel::OnQuitPressed() {
+		_TestLevel::CleanupTests();
+		engine->LoadLevel(LevelID::BootLevel);
 	}
 }

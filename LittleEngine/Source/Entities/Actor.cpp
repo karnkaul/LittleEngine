@@ -12,11 +12,12 @@
 #include "SFMLInterface/Rendering/RenderFactory.h"
 #include "SFMLInterface/Rendering/SpriteRenderer.h"
 #include "Components/Component.h"
+#include "Utils/Utils.h"
 
 namespace Game {
-	Actor::Actor(Level& level, std::string name) : Object(name), level(level) {
-		transform = Transform::Create();
-		Logger::Log(*this, "Created new actor \"" + name + "\" at " + transform->Position().ToString());
+	Actor::Actor(Level& level, std::string name) : Object(name) {
+		this->level = &level;
+		Logger::Log(*this, "Actor Spawned at " + transform.Position().ToString());
 	}
 
 	Actor::~Actor() {
@@ -24,18 +25,25 @@ namespace Game {
 			collider = nullptr;
 		}
 		components.clear();
-		Logger::Log(*this, "Destroyed actor \"" + name + "\"");
+		Logger::Log(*this, "Actor Destroyed");
 	}
 
-	Transform& Actor::GetTransform() const {
-		return *transform;
+	void Actor::SetNormalisedPosition(Vector2 localNPosition) {
+		// -1 <= x, y <= 1
+		localNPosition.x = Maths::Clamp_11(localNPosition.x);
+		localNPosition.y = Maths::Clamp_11(localNPosition.y);
+		// r` = r * screen.r
+		Vector2 screenSize = level->GetWorld().GetScreenBounds().upper;
+		Vector2 newPos(localNPosition.x * screenSize.x, localNPosition.y * screenSize.y);
+		transform.localPosition = newPos;
 	}
 
 	std::string Actor::ToString() const {
-		return name + " : " + transform->ToString();
+		return name + " : " + transform.ToString();
 	}
 
 	void Actor::Destruct() {
+		// Allow ActiveLevel to collect this Actor
 		_destroyed = true;
 	}
 
@@ -78,6 +86,10 @@ namespace Game {
 		if (_destroyed) {
 			return;
 		}
+		// Convert Transform::Position to Screen position
+		params.screenPosition = level->GetWorld().WorldToScreenPoint(transform.Position());
+		// Convert Transform::Rotation to SFML orientation (+ is counter-clockwise)
+		params.screenRotation = -transform.Rotation();
 		// Render each component
 		for (auto& component : components) {
 			component->Render(params);
@@ -89,6 +101,6 @@ namespace Game {
 	}
 
 	Level & Actor::GetActiveLevel() const {
-		return level;
+		return *level;
 	}
 }

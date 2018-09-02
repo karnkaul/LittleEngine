@@ -7,35 +7,39 @@ namespace Consts {
 	const Fixed DEG_TO_RAD = Fixed(PI / 180);
 }
 
-class Transform : public std::enable_shared_from_this<Transform> {
+// \brief Class maintains a position and orientation in 2D space, 
+// and provides an API for parenting to other Transforms.
+// Must be created using shared_ptr<Transform>
+class Transform /*: public std::enable_shared_from_this<Transform>*/ {
 public:
-	using Ptr = std::shared_ptr<Transform>;
-	using wPtr = std::weak_ptr<Transform>;
-	
-	static Ptr Create();
-	Transform& operator=(const Transform&) = delete;
-	Transform(Transform&&) = delete;
-	~Transform();
-
 	// Position world space
 	Vector2 localPosition;
 	// Rotation in world orientation (+ is clockwise)
 	Fixed localRotation;
 	
-	// Call this to attach this to another transform as its parent
+	Transform();
+	~Transform();
+	
+	// Attaches this to another transform as its parent
 	void SetParent(Transform& parent, bool modifyWorldSpace = true);
-	wPtr GetParent() const;
+	// Unsets parent, if any
+	void UnsetParent(bool modifyWorldPosition = true);
+
+	// Note: Might return nullptr
+	Transform* GetParent() const;
 	// Returns position from parent's origin as position in world space
 	Vector2 Position() const;
 	// Returns rotation in world orientation (+ is clockwise)
 	Fixed Rotation();
 	// Call this to Rotate this and all children
 	void Rotate(Fixed angle);
+
 	std::string ToString() const;
 
 private:
-	Transform();
-	wPtr m_parent;
-	void AddChild(Ptr child);
-	std::vector<wPtr> m_children;
+	std::vector<Transform*> m_children;
+	Transform* m_parent = nullptr;
+	
+	void AddChild(Transform* child);
+	void RemoveChild(Transform* child);
 };

@@ -4,16 +4,19 @@
 namespace Game {
 	class Engine;
 	class Level;
+	enum class LevelID;
 
-	class LevelManager : public Object {
+	// \brief Owner of currently active level that Engine is updating
+	class LevelManager final : public Object {
 	public:
 		LevelManager(Engine& engine);
 		~LevelManager();
-		Level& GetActiveLevel();
-		bool LoadLevel(int levelIndex);
+
+		Level& GetActiveLevel() const;
+		bool LoadLevel(const LevelID& levelID);
+
 	private:
-		friend class Engine;
-		Engine& engine;
+		Engine* engine;
 		std::unique_ptr<Level> activeLevel;
 	};
 }

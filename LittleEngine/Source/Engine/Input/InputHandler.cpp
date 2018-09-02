@@ -5,7 +5,7 @@
 #include "Utils/Utils.h"
 
 namespace Game {
-	InputHandler::InputObserver::InputObserver(OnInput&& callback, bool consume, OnKey type)
+	InputHandler::InputObserver::InputObserver(OnInput&& callback, bool consume, const OnKey& type)
 		: callback(std::move(callback)), consume(consume), type(type) {
 	}
 
@@ -17,7 +17,24 @@ namespace Game {
 	}
 
 	InputHandler::InputHandler() : Object("InputHandler") {
-		SetupInputBindings();
+		/* Setup Input Bindings */ {
+			gamepad.Bind(KeyCode::Up, GameInput::Up);
+			gamepad.Bind(KeyCode::W, GameInput::Up);
+			gamepad.Bind(KeyCode::Down, GameInput::Down);
+			gamepad.Bind(KeyCode::S, GameInput::Down);
+			gamepad.Bind(KeyCode::Left, GameInput::Left);
+			gamepad.Bind(KeyCode::A, GameInput::Left);
+			gamepad.Bind(KeyCode::Right, GameInput::Right);
+			gamepad.Bind(KeyCode::D, GameInput::Right);
+			gamepad.Bind(KeyCode::Enter, GameInput::Enter);
+			gamepad.Bind(KeyCode::Escape, GameInput::Return);
+			gamepad.Bind(KeyCode::Tab, GameInput::Select);
+
+			gamepad.Bind(KeyCode::Space, GameInput::X);
+			gamepad.Bind(KeyCode::E, GameInput::Y);
+			gamepad.Bind(KeyCode::Control, GameInput::LB);
+			gamepad.Bind(KeyCode::Shift, GameInput::RB);
+		}
 		Logger::Log(*this, "InputHandler constructed");
 	}
 
@@ -25,12 +42,12 @@ namespace Game {
 		Logger::Log(*this, "InputHandler destroyed");
 	}
 
-	bool InputHandler::IsKeyPressed(GameInput keyCode) const {
-		auto iter = std::find(currentSnapshot.begin(), currentSnapshot.end(), keyCode);
+	bool InputHandler::IsKeyPressed(const GameInput& keyCode) const {
+		auto iter = Utils::VectorSearch(currentSnapshot, keyCode);
 		return iter != currentSnapshot.end();
 	}
 
-	OnInput::Token InputHandler::Register(GameInput input, OnInput::Callback callback, OnKey type, bool consume) {
+	OnInput::Token InputHandler::Register(const GameInput& input, OnInput::Callback callback, const OnKey& type, bool consume) {
 		OnInput newDelegate;
 		OnInput::Token token = newDelegate.Register(callback);
 		auto iter = inputObservers.find(input);
@@ -50,32 +67,13 @@ namespace Game {
 		return token;
 	}
 
-	void InputHandler::SetupInputBindings() {
-		gamepad.Bind(KeyCode::Up, GameInput::Up);
-		gamepad.Bind(KeyCode::W, GameInput::Up);
-		gamepad.Bind(KeyCode::Down, GameInput::Down);
-		gamepad.Bind(KeyCode::S, GameInput::Down);
-		gamepad.Bind(KeyCode::Left, GameInput::Left);
-		gamepad.Bind(KeyCode::A, GameInput::Left);
-		gamepad.Bind(KeyCode::Right, GameInput::Right);
-		gamepad.Bind(KeyCode::D, GameInput::Right);
-		gamepad.Bind(KeyCode::Enter, GameInput::Enter);
-		gamepad.Bind(KeyCode::Escape, GameInput::Return);
-		gamepad.Bind(KeyCode::Tab, GameInput::Select);
-
-		gamepad.Bind(KeyCode::Space, GameInput::X);
-		gamepad.Bind(KeyCode::E, GameInput::Y);
-		gamepad.Bind(KeyCode::Control, GameInput::LB);
-		gamepad.Bind(KeyCode::Shift, GameInput::RB);
-	}
-
 	void InputHandler::CaptureState(const std::vector<KeyState>& pressedKeys) {
 		previousSnapshot = currentSnapshot;
 		currentSnapshot.clear();
 		for (const auto& key : pressedKeys) {
 			GameInput input = gamepad.ToGameInput(key);
 			if (input != GameInput::Invalid) {
-				auto duplicate = std::find(currentSnapshot.begin(), currentSnapshot.end(), input);
+				auto duplicate = Utils::VectorSearch(currentSnapshot, input);
 				if (duplicate == currentSnapshot.end()) {
 					currentSnapshot.push_back(input);
 				}
@@ -136,7 +134,7 @@ namespace Game {
 		
 		// Build OnPressed and OnHeld vectors
 		for (auto input : currentSnapshot) {
-			auto search = std::find(previousSnapshot.begin(), previousSnapshot.end(), input);
+			auto search = Utils::VectorSearch(previousSnapshot, input);
 			if (search != previousSnapshot.end()) {
 				onHeld.push_back(input);
 				previousSnapshot.erase(search);

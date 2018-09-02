@@ -20,6 +20,7 @@ namespace Game {
 	class WindowController;
 	class EngineCommand;
 	class InputHandler;
+	enum class LevelID;
 
 	enum class ExitCode { 
 		OK,
@@ -30,14 +31,19 @@ namespace Game {
 		CleanupError
 	};
 	
+	// \brief Core Engine class
 	class Engine : Object {
 	public:
 		using Ptr = std::unique_ptr<Engine>;
-		static Ptr Create();
+		
+		// Disable Object's intended constructor
 		Engine(const std::string&) = delete;
 		~Engine();
 		// Copy constructor and copy assignment operators
 		// will be auto-deleted due to unique_ptr members
+		
+		// (Only) Factory for unique_ptr<Engine>
+		static Ptr Create();
 
 		// Returns exit code
 		int Run();
@@ -45,7 +51,7 @@ namespace Game {
 		InputHandler& GetInputHandler() const;
 		const World& GetWorld() const;
 		AssetManager& GetAssetManager() const;
-		void LoadLevel(int id);
+		void LoadLevel(const LevelID& levelID);
 		void Quit();
 
 	private:
@@ -63,20 +69,6 @@ namespace Game {
 
 		Engine();
 
-		void PollInput();
-		void FixedTick(Fixed& lag);
-		void Tick(Fixed deltaTime);
-		void Render();
-		void PostRender(double &frameStartMS);
-
-		void LoadConfig();
-		void SaveConfig();
 		bool CreateWindow();
-		void RunGameLoop();
-
-		void OnPaused();
-		void OnUnpaused();
-
-		friend class LoadLevelCommand;
 	};
 }

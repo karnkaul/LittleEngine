@@ -1,16 +1,15 @@
 #include "stdafx.h"
 #include "World.h"
-
 #include "Engine/Logger/Logger.h"
-#include <sstream>
 
 namespace Game {
 	World::World(const Vector2& screenSize) : Object("World") {
 		this->screenSize = screenSize;
-		screenCentre = Vector2(this->screenSize.x / 2, this->screenSize.y / 2);
-		std::stringstream ss;
-		ss << "Created World for Screen " << this->screenSize.ToString();
-		Logger::Log(*this, ss.str());
+		Fixed halfScreenX = screenSize.x * Fixed::Half;
+		Fixed halfScreenY = screenSize.y * Fixed::Half;
+		screenCentre = Vector2(halfScreenX, halfScreenY);
+		screenBounds = Rect2(-screenCentre, screenCentre);
+		Logger::Log(*this, "Created World for Screen " + this->screenSize.ToString());
 	}
 
 	World::~World() {
@@ -20,19 +19,8 @@ namespace Game {
 	}
 
 	Vector2 World::WorldToScreenPoint(const Vector2 & worldPoint) const {
-		Vector2 screenPoint;
-		screenPoint.x = worldPoint.x;
-		screenPoint.y = -worldPoint.y;
+		Vector2 screenPoint(worldPoint.x, -worldPoint.y);
 		screenPoint += screenCentre;
 		return screenPoint;
-	}
-
-	Rect2 World::GetScreenBounds() const {
-		Fixed halfScreenX = screenSize.x * Fixed::Half;
-		Fixed halfScreenY = screenSize.y * Fixed::Half;
-		return Rect2(
-			Vector2(-halfScreenX, -halfScreenY),
-			Vector2(halfScreenX, halfScreenY)
-		);
 	}
 }

@@ -40,13 +40,13 @@ namespace Game {
 		return defaultFont;
 	}
 
-	void AssetManager::Clear() {
+	void AssetManager::UnloadAll() {
 		loaded.clear();
 		Logger::Log(*this, "AssetManager cleared");
 	}
 
 	AssetManager::~AssetManager() {
-		Clear();
+		UnloadAll();
 		defaultFont = nullptr;
 		Logger::Log(*this, "AssetManager destroyed");
 	}

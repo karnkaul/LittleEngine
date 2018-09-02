@@ -59,6 +59,22 @@ namespace Game {
 		return keyStates[keyStates.size() - 1];
 	}
 
+	Input::Input() {
+		// Pre-defined keys
+		keyStates.emplace_back(KeyCode::Left, "Left");
+		keyStates.emplace_back(KeyCode::Right, "Right");
+		keyStates.emplace_back(KeyCode::Up, "Up");
+		keyStates.emplace_back(KeyCode::Down, "Down");
+		keyStates.emplace_back(KeyCode::W, "W");
+		keyStates.emplace_back(KeyCode::A, "A");
+		keyStates.emplace_back(KeyCode::S, "S");
+		keyStates.emplace_back(KeyCode::D, "D");
+		keyStates.emplace_back(KeyCode::Space, "Space");
+		keyStates.emplace_back(KeyCode::Enter, "Enter");
+		keyStates.emplace_back(KeyCode::Escape, "Escape");
+		keyStates.emplace_back(KeyCode::Tab, "Tab");
+	}
+
 	bool Input::IsKeyPressed(KeyCode code) const {
 		for (const auto& iter : keyStates) {
 			if (iter.GetKeyCode() == code) {

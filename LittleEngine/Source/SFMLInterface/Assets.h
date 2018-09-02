@@ -6,11 +6,11 @@
 #include "SFML/Graphics.hpp"
 
 namespace Game {
-	// Abstract Wrapper class for all files that can be read as SFML assets
+	// \brief Abstract Wrapper class for all files that can be read as SFML assets
 	class Asset {
 	public:
-		// Path must be relative to the executable
 		Asset() = delete;
+		// Path must be relative to the executable
 		Asset(const std::string& path);
 		virtual ~Asset();
 		const std::string& GetResourcePath() const;
@@ -21,7 +21,7 @@ namespace Game {
 		Asset& operator=(const Asset&) = delete;
 	};
 
-	// Concrete wrapper class for SFML Textures
+	// \brief Concrete wrapper class for SFML Textures
 	class TextureAsset : public Asset {
 	public:
 		using Ptr = std::shared_ptr<TextureAsset>;
@@ -34,6 +34,7 @@ namespace Game {
 		sf::Texture sfTexture;
 	};
 
+	// \brief Concrete wrapper for SFML Fonts
 	class FontAsset : public Asset {
 	public:
 		using Ptr = std::shared_ptr<FontAsset>;
@@ -45,14 +46,15 @@ namespace Game {
 		sf::Font sfFont;
 	};
 
-	// Class that handles all Asset Loading
-	// (Maintains a clearable cache)
+	// \brief Class that handles all Asset Loading. (Maintains a clearable cache)
 	class AssetManager final : public Object {
 	public:
 		AssetManager();
 		~AssetManager();
 
 		// Loads Asset at path. T must derive from Asset!
+		// Note: Not meant to be used in hot code!
+		// @param path: local/relative path from executable
 		template<typename T>
 		std::shared_ptr<T> LoadAsset(const std::string& path) {
 			static_assert(std::is_base_of<Asset, T>::value, "T must derive from Asset: check Output window for erroneous call");
@@ -72,13 +74,16 @@ namespace Game {
 		}
 		
 		FontAsset::Ptr GetDefaultFont() const;
+		// Note: Not meant to be used in hot code!
 		void LoadAllTextures(std::initializer_list<std::string> texturePaths);
-		void Clear();
+		// Unload all assets
+		void UnloadAll();
 
 	private:
-		AssetManager(const AssetManager&) = delete;
-		AssetManager& operator=(const AssetManager&) = delete;
 		FontAsset::Ptr defaultFont;
 		std::unordered_map<std::string, std::shared_ptr<Asset>> loaded;
+
+		AssetManager(const AssetManager&) = delete;
+		AssetManager& operator=(const AssetManager&) = delete;
 	};
 }

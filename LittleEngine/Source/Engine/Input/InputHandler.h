@@ -12,24 +12,28 @@ namespace Game {
 
 	enum class OnKey { Pressed, Held, Released };
 
-	class InputHandler : public Object {
+	// \brief Handles Tokenised callback subscription towards Gamepad Input
+	class InputHandler final : public Object {
 	public:
 		InputHandler();
 		~InputHandler();
 
-		bool IsKeyPressed(GameInput keyCode) const;
-		// Store token to keep callback registered; discard it to unregister
-		OnInput::Token Register(GameInput input, OnInput::Callback callback, OnKey type, bool consume = false);
+		bool IsKeyPressed(const GameInput& keyCode) const;
+		// \brief Register a callback for an input here
+		// @returns Token: Store to keep callback registered; discard it to unregister
+		OnInput::Token Register(const GameInput& input, OnInput::Callback callback, const OnKey& type, bool consume = false);
+	
 	private:
 		InputHandler(const InputHandler&) = delete;
 		InputHandler & operator=(const InputHandler&) = delete;
+		
 		// Convenience struct
 		struct InputObserver {
 			OnInput callback;
 			OnKey type;
 			bool consume;
 
-			InputObserver(OnInput&& callback, bool consume, OnKey type);
+			InputObserver(OnInput&& callback, bool consume, const OnKey& type);
 			InputObserver& operator=(InputObserver&& move);
 			InputObserver(InputObserver&&) = default;
 			InputObserver(const InputObserver&) = default;
@@ -37,14 +41,10 @@ namespace Game {
 
 		friend class Engine;
 		std::unordered_map<GameInput, std::vector<InputObserver>> inputObservers;
-		std::unordered_map<GameInput, std::vector<InputObserver>> onHeldObservers;
-		std::unordered_map<GameInput, std::vector<InputObserver>> onPressedObservers;
-		std::unordered_map<GameInput, std::vector<InputObserver>> onReleasedObservers;
 		std::vector<GameInput> currentSnapshot;
 		std::vector<GameInput> previousSnapshot;
 		Gamepad gamepad;
 		
-		void SetupInputBindings();
 		void Cleanup(std::vector<InputObserver>& vec);
 		OnInput::Token Register(std::unordered_map<GameInput, std::vector<InputObserver>>& map, OnInput::Callback callback, GameInput keyCode, bool consume);
 		void FireCallbacks(const std::vector<GameInput>& inputs, std::unordered_map<GameInput, std::vector<InputObserver>>& map, OnKey type);

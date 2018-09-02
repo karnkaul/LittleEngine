@@ -1,22 +1,27 @@
 #pragma once
+#include "Levels/Level.h"
 
 namespace Game {
-	class Engine;
+	class LevelManager;
 
+	// \brief Commands as Functors
 	class EngineCommand {
 	public:
 		virtual ~EngineCommand() = default;
-		virtual bool Execute() = 0;
+		virtual bool operator()() = 0;
+	
 	protected:
 		EngineCommand() = default;
 	};
 
+	// \brief Will invoke LevelManager::LoadLevel(levelID) when called
 	class LoadLevelCommand : public EngineCommand {
 	public:
-		LoadLevelCommand(Engine& engine, int levelID);
-		virtual bool Execute() override;
+		LoadLevelCommand(LevelManager& levelManager, const LevelID& levelID);
+		virtual bool operator()() override;
+	
 	private:
-		Engine& engine;
-		int levelID;
+		LevelManager* levelManager;
+		LevelID levelID;
 	};
 }
