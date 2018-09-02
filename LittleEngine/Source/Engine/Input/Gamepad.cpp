@@ -29,7 +29,7 @@ namespace Game {
 
 	bool Gamepad::InputMapping::IsMapped(KeyCode keyCode) const {
 		RawInput toFind(keyCode);
-		auto iter = Utils::Find(rawInputs, toFind);
+		auto iter = Utils::VectorSearch(rawInputs, toFind);
 		return iter != rawInputs.end();
 	}
 
