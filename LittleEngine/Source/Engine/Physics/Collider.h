@@ -2,7 +2,7 @@
 #include "Components/Component.h"
 #include "ColliderData.h"
 
-namespace Game {
+namespace LittleEngine {
 	class Actor;
 	class CollisionManager;
 	class World;

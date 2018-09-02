@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "EngineConfig.h"
 
-namespace Game {
+namespace LittleEngine {
 	const std::string EngineConfig::WINDOW_TITLE_KEY = "WINDOW_TITLE";
 	const std::string EngineConfig::LOG_LEVEL_KEY = "LOG_LEVEL";
 	const std::string EngineConfig::SCREEN_WIDTH_KEY = "SCREEN_WIDTH";

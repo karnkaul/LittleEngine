@@ -4,7 +4,7 @@
 #include "Engine/World.h"
 #include "SFML/Graphics.hpp"
 
-namespace Game {
+namespace LittleEngine {
 	const Colour Colour::Black(0, 0, 0);
 	const Colour Colour::White;
 	const Colour Colour::Red(255, 0, 0);

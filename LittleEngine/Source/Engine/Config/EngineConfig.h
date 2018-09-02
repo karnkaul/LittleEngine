@@ -5,7 +5,12 @@
 #include "Engine/Logger/Logger.h"	// Logger::Severity
 #include "Utils/Vector2.h"	// Vector2
 
-namespace Game {
+namespace LittleEngine {
+	using Fixed = Utils::Fixed;
+	using Vector2 = Utils::Vector2;
+	using PropRW = Utils::PropRW;
+	using Property = Utils::Property;
+	
 	// \brief Wrapper to maintain properties saved to / loaded from config.ini
 	class EngineConfig {
 	public:

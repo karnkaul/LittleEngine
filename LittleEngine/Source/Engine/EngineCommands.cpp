@@ -4,7 +4,7 @@
 #include "Engine.h"
 #include "Levels/LevelManager.h"
 
-namespace Game {
+namespace LittleEngine {
 	LoadLevelCommand::LoadLevelCommand(LevelManager& levelManager, const LevelID& levelID) {
 		this->levelID = levelID;
 		this->levelManager = &levelManager;

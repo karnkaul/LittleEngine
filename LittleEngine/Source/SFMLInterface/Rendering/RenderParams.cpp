@@ -2,7 +2,7 @@
 #include "RenderParams.h"
 #include "SFMLInterface/WindowController.h"
 
-namespace Game {
+namespace LittleEngine {
 	RenderParams::RenderParams(WindowController& controller) {
 		this->windowController = &controller;
 	}

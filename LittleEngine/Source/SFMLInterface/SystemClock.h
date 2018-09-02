@@ -2,7 +2,7 @@
 #include "Utils/Fixed.h"
 #include "SFML/System/Clock.hpp"
 
-namespace Game {
+namespace LittleEngine {
 	// \brief Real Time clock using sf::Clock
 	// Note: this clock cannot be paused, only restarted
 	class SystemClock {

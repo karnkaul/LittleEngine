@@ -11,7 +11,7 @@
 #include "SFMLInterface/Rendering/TextRenderer.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 
-namespace Game {
+namespace LittleEngine {
 	RenderComponent::RenderComponent(Actor& actor) 
 		: Component(actor, "RenderComponent") {
 	}

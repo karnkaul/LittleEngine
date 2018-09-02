@@ -7,7 +7,7 @@
 #include <array>
 #include <functional>
 
-namespace Game {
+namespace LittleEngine {
 	// \brief Wrapper struct for SFML Drawable
 	struct Drawable {
 	public:

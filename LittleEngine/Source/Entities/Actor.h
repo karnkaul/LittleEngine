@@ -4,12 +4,12 @@
 
 #include "Engine/Physics/Collider.h"
 
-class Transform;
-
-namespace Game {
+namespace LittleEngine {
 	struct RenderParams;
 	class Level;
 	class Component;
+
+	using Transform = Utils::Transform;
 
 	// \brief Base class representing a renderable entity in the world
 	class Actor : public Object, public std::enable_shared_from_this<Actor> {

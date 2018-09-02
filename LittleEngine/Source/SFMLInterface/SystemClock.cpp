@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SystemClock.h"
 
-namespace Game {
+namespace LittleEngine {
 	int SystemClock::GetCurrentMilliseconds() const {
 		return clock.getElapsedTime().asMilliseconds();
 	}

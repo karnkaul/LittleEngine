@@ -10,7 +10,7 @@ namespace Consts {
 	constexpr int MAX_FPS = 125;
 }
 
-namespace Game {
+namespace LittleEngine {
 	class Actor;
 	class World;
 	class EngineConfig;

@@ -5,7 +5,9 @@
 #include "RenderParams.h"
 #include "SFML/Graphics.hpp"
 
-namespace Game {
+namespace LittleEngine {
+	using Rect2 = Utils::Rect2;
+
 	// \brief Wrapper struct for SFML Color
 	struct Colour {
 	public:

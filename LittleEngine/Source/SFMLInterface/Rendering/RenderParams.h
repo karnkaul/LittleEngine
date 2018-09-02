@@ -1,8 +1,11 @@
 #pragma once
 #include "Utils/Vector2.h"
 
-namespace Game {
+namespace LittleEngine {
 	class WindowController;
+
+	using Vector2 = Utils::Vector2;
+	using Fixed = Utils::Fixed;
 
 	// \brief Shorthand codes for layer spaces
 	// Note: Assumes availability of at least 100 layers!

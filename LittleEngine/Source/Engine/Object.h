@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-namespace Game {
+namespace LittleEngine {
 	// \brief Base class for ease of logging
 	class Object {
 	public:

@@ -4,7 +4,7 @@
 #include "SFMLInterface/WindowController.h"
 #include "RenderParams.h"
 
-namespace Game {
+namespace LittleEngine {
 	void ShapeRenderer::RenderInternal(RenderParams & params) {
 		SetPosition(params.screenPosition);
 		SetRotation(params.screenRotation);

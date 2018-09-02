@@ -12,8 +12,8 @@
 #include "SFMLInterface/Assets.h"
 #include "Entities/Actor.h"
 
-namespace Game {
-	Level::Level(const std::string& name, Game::Engine& engine) : Object(name) {
+namespace LittleEngine {
+	Level::Level(const std::string& name, LittleEngine::Engine& engine) : Object(name) {
 		this->engine = &engine;
 		Logger::Log(*this, GetNameInBrackets() + " (Level) created [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
 	}
@@ -97,7 +97,7 @@ namespace Game {
 	}
 
 	Actor::wPtr Level::SpawnActor(const std::string& name) {
-		auto actor = std::make_shared<Game::Actor>(*this, name);
+		auto actor = std::make_shared<LittleEngine::Actor>(*this, name);
 		actors.push_back(actor);
 		return actor;
 	}

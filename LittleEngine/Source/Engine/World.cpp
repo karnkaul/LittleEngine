@@ -2,7 +2,7 @@
 #include "World.h"
 #include "Engine/Logger/Logger.h"
 
-namespace Game {
+namespace LittleEngine {
 	World::World(const Vector2& screenSize) : Object("World") {
 		this->screenSize = screenSize;
 		Fixed halfScreenX = screenSize.x * Fixed::Half;

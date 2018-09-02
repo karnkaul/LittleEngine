@@ -4,7 +4,7 @@
 #include "TextRenderer.h"
 #include "SFMLInterface/Assets.h"
 
-namespace Game {
+namespace LittleEngine {
 	TextData::TextData(FontAsset::Ptr font, const std::string & text)
 		: TextData(font, text, 25, Colour::White, 0, Colour::Black) {
 	}

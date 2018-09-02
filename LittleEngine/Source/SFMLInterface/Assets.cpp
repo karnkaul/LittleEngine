@@ -2,7 +2,7 @@
 #include "Assets.h"
 #include "Engine/Logger/Logger.h"
 
-namespace Game {
+namespace LittleEngine {
 	Asset::Asset(const std::string& path) : resourcePath(path) {}
 
 	Asset::~Asset() {

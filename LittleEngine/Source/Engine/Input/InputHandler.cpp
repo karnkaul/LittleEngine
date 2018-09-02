@@ -4,7 +4,7 @@
 #include "SFMLInterface/Input.h"
 #include "Utils/Utils.h"
 
-namespace Game {
+namespace LittleEngine {
 	InputHandler::InputObserver::InputObserver(OnInput&& callback, bool consume, const OnKey& type)
 		: callback(std::move(callback)), consume(consume), type(type) {
 	}

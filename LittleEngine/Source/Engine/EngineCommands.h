@@ -1,7 +1,7 @@
 #pragma once
 #include "Levels/Level.h"
 
-namespace Game {
+namespace LittleEngine {
 	class LevelManager;
 
 	// \brief Commands as Functors

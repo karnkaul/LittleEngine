@@ -9,7 +9,7 @@
 #include "SFMLInterface/Rendering/ShapeRenderer.h"
 #include "Engine/Logger/Logger.h"
 
-namespace Game {
+namespace LittleEngine {
 	// \brief Wrapper to calculate locus of intersection of Circle with an AABB:
 	// Calculated via tracing centre of circle along radial boundary of AABB.
 	struct CircleLocus {

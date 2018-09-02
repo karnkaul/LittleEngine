@@ -2,7 +2,7 @@
 #include <vector>
 #include "SFMLInterface/Input.h"
 
-namespace Game {
+namespace LittleEngine {
 	// \brief Virtual gamepad input types
 	enum class GameInput {
 		Invalid,

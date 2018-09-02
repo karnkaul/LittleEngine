@@ -20,7 +20,8 @@
 #include "Levels/Level.h"
 #include "Levels/LevelManager.h"
 
-namespace Game {
+namespace LittleEngine {
+	using Fixed = Utils::Fixed;
 
 	Engine::Ptr Engine::Create() {
 		// std::make_unique requires public constructor and destructor access

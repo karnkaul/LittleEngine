@@ -3,7 +3,7 @@
 #include "Renderer.h"
 #include "SFMLInterface/Assets.h"
 
-namespace Game {
+namespace LittleEngine {
 	enum Style {
 
 	};

@@ -5,7 +5,7 @@
 #include "Entities/Actor.h"
 #include "Utils/Utils.h"
 
-namespace Game {
+namespace LittleEngine {
 	struct ColliderComparer {
 		ColliderComparer(Collider::Ptr lhs) : lhs(lhs) {}
 		Collider::Ptr lhs;

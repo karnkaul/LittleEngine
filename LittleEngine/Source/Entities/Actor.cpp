@@ -14,7 +14,7 @@
 #include "Components/Component.h"
 #include "Utils/Utils.h"
 
-namespace Game {
+namespace LittleEngine {
 	Actor::Actor(Level& level, std::string name) : Object(name) {
 		this->level = &level;
 		Logger::Log(*this, GetNameInBrackets() + " (Actor) Spawned at " + transform.Position().ToString());

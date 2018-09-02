@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/Object.h"
 
-namespace Game {
+namespace LittleEngine {
 	class Engine;
 	class Level;
 	enum class LevelID;

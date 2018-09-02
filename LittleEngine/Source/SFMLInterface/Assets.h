@@ -5,7 +5,7 @@
 #include "Engine/Logger/Logger.h"
 #include "SFML/Graphics.hpp"
 
-namespace Game {
+namespace LittleEngine {
 	// \brief Abstract Wrapper class for all files that can be read as SFML assets
 	class Asset {
 	public:

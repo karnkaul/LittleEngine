@@ -2,7 +2,11 @@
 #include "Object.h"
 #include "Utils/Rect2.h"
 
-namespace Game {
+namespace LittleEngine {
+	using Fixed = Utils::Fixed;
+	using Vector2 = Utils::Vector2;
+	using Rect2 = Utils::Rect2;
+
 	// \brief Wrapper for Screen Size
 	class World : public Object {
 	public:

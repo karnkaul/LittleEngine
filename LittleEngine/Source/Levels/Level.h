@@ -5,7 +5,7 @@
 #include "Entities/Actor.h"
 #include "Engine/Physics/CollisionManager.h"
 
-namespace Game {
+namespace LittleEngine {
 	class Engine;
 	class World;
 	class Input;

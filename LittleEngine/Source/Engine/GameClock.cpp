@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameClock.h"
 
-namespace Game {
+namespace LittleEngine {
 	double GameClock::gameTime = 0;
 
 	GameClock::GameClock() {

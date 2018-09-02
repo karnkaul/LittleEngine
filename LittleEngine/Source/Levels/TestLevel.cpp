@@ -14,7 +14,7 @@
 #include "SFMLInterface/Assets.h"
 #include "Engine/Physics/Collider.h"
 
-namespace Game {
+namespace LittleEngine {
 	// Tests
 	namespace _TestLevel {
 		Action::Token token0, token1;

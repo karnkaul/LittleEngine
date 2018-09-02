@@ -12,7 +12,7 @@
 #include "SFMLInterface/Rendering/TextRenderer.h"
 #include "SFMLInterface/Assets.h"
 
-namespace Game {
+namespace LittleEngine {
 	BootLevel::BootLevel(Engine& engine) : Level("BootLevel", engine) {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 		LoadAssets();
