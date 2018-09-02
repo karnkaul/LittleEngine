@@ -17,8 +17,7 @@
 namespace Game {
 	Actor::Actor(Level& level, std::string name) : Object(name) {
 		this->level = &level;
-		transform = Transform::Create();
-		Logger::Log(*this, "Actor Spawned at " + transform->Position().ToString());
+		Logger::Log(*this, "Actor Spawned at " + transform.Position().ToString());
 	}
 
 	Actor::~Actor() {
@@ -36,11 +35,11 @@ namespace Game {
 		// r` = r * screen.r
 		Vector2 screenSize = level->GetWorld().GetScreenBounds().upper;
 		Vector2 newPos(localNPosition.x * screenSize.x, localNPosition.y * screenSize.y);
-		transform->localPosition = newPos;
+		transform.localPosition = newPos;
 	}
 
 	std::string Actor::ToString() const {
-		return name + " : " + transform->ToString();
+		return name + " : " + transform.ToString();
 	}
 
 	void Actor::Destruct() {
@@ -87,10 +86,10 @@ namespace Game {
 		if (_destroyed) {
 			return;
 		}
-		// Convert Transform::Position to sscreen position
-		params.screenPosition = level->GetWorld().WorldToScreenPoint(transform->Position());
+		// Convert Transform::Position to Screen position
+		params.screenPosition = level->GetWorld().WorldToScreenPoint(transform.Position());
 		// Convert Transform::Rotation to SFML orientation (+ is counter-clockwise)
-		params.screenRotation = -transform->Rotation();
+		params.screenRotation = -transform.Rotation();
 		// Render each component
 		for (auto& component : components) {
 			component->Render(params);

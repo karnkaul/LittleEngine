@@ -20,21 +20,34 @@ namespace Game {
 		Action::Token token0, token1;
 		Level* level;
 		Actor::wPtr _actor0, _actor1;
+		bool parented = false;
 		
 		void OnXPressed() {
 			auto actor0 = _actor0.lock();
 			auto actor1 = _actor1.lock();
 			if (actor0 != nullptr && actor1 != nullptr) {
-				actor0->GetTransform().SetParent(actor1->GetTransform());
-				token0 = token1 = nullptr;
+				if (!parented) {
+					actor0->GetTransform().SetParent(actor1->GetTransform());
+					parented = true;
+				}
+				else {
+					actor0->GetTransform().UnsetParent();
+					parented = false;
+				}
 			}
 		}
 		void OnYPressed() {
 			auto actor0 = _actor0.lock();
 			auto actor1 = _actor1.lock();
 			if (actor0 != nullptr && actor1 != nullptr) {
-				actor0->GetTransform().SetParent(actor1->GetTransform(), false);
-				token0 = token1 = nullptr;
+				if (!parented) {
+					actor0->GetTransform().SetParent(actor1->GetTransform(), false);
+					parented = true;
+				}
+				else {
+					actor0->GetTransform().UnsetParent(false);
+					parented = false;
+				}
 			}
 		}
 
@@ -143,7 +156,7 @@ namespace Game {
 		_TestLevel::_actor0 = actor0;
 		_TestLevel::_actor1 = player;
 		_TestLevel::token0 = GetInputHandler().Register(GameInput::X, &_TestLevel::OnXPressed, OnKey::Released);
-		_TestLevel::token1 = GetInputHandler().Register(GameInput::Y, &_TestLevel::OnYPressed, OnKey::Released, true);
+		_TestLevel::token1 = GetInputHandler().Register(GameInput::Y, &_TestLevel::OnYPressed, OnKey::Released);
 		_TestLevel::level = this;
 		_TestLevel::token2 = GetInputHandler().Register(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
 		_TestLevel::token3 = GetInputHandler().Register(GameInput::RB, &_TestLevel::OnLBPressed, OnKey::Released);

@@ -10,24 +10,23 @@ namespace Consts {
 // \brief Class maintains a position and orientation in 2D space, 
 // and provides an API for parenting to other Transforms.
 // Must be created using shared_ptr<Transform>
-class Transform : public std::enable_shared_from_this<Transform> {
+class Transform /*: public std::enable_shared_from_this<Transform>*/ {
 public:
-	using Ptr = std::shared_ptr<Transform>;
-	using wPtr = std::weak_ptr<Transform>;
-
 	// Position world space
 	Vector2 localPosition;
 	// Rotation in world orientation (+ is clockwise)
 	Fixed localRotation;
 	
-	static Ptr Create();
-	Transform& operator=(const Transform&) = delete;
-	Transform(Transform&&) = delete;
+	Transform();
 	~Transform();
 	
-	// Call this to attach this to another transform as its parent
+	// Attaches this to another transform as its parent
 	void SetParent(Transform& parent, bool modifyWorldSpace = true);
-	wPtr GetParent() const;
+	// Unsets parent, if any
+	void UnsetParent(bool modifyWorldPosition = true);
+
+	// Note: Might return nullptr
+	Transform* GetParent() const;
 	// Returns position from parent's origin as position in world space
 	Vector2 Position() const;
 	// Returns rotation in world orientation (+ is clockwise)
@@ -38,11 +37,9 @@ public:
 	std::string ToString() const;
 
 private:
-	std::vector<wPtr> m_children;
-	wPtr m_parent;
-
-	Transform();
+	std::vector<Transform*> m_children;
+	Transform* m_parent = nullptr;
 	
-	void AddChild(Ptr child);
-	
+	void AddChild(Transform* child);
+	void RemoveChild(Transform* child);
 };
