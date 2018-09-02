@@ -50,6 +50,14 @@ namespace Game {
 
 	Fixed Collider::DEBUG_BORDER_WIDTH = 1;
 
+	void Collider::OnHit(Collider & other) {
+		static int DEBUG_skip = 0;
+		if (++DEBUG_skip > 20) {
+			Logger::Log(*this, "[" + GetActor().GetName() + "] colliding with [" + other.GetActor().GetName() + "] (throttled log)", Logger::Severity::Debug);
+			DEBUG_skip = 0;
+		}
+	}
+
 	Collider::Collider(Actor& actor, const std::string& name) : Component(actor, name) {
 		this->world = &actor.GetActiveLevel().GetWorld();
 	}

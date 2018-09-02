@@ -15,7 +15,7 @@
 namespace Game {
 	Level::Level(const std::string& name, Game::Engine& engine) : Object(name) {
 		this->engine = &engine;
-		Logger::Log(*this, "Level created [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
+		Logger::Log(*this, GetNameInBrackets() + " (Level) created [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
 	}
 
 	bool Level::IsActorDestroyed(Actor::Ptr actor) {
@@ -28,7 +28,7 @@ namespace Game {
 
 	Level::~Level() {
 		actors.clear();
-		Logger::Log(*this, "Level destroyed");
+		Logger::Log(*this, GetNameInBrackets() + " (Level) destroyed");
 	}
 
 	void Level::FixedTick() {

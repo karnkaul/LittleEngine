@@ -65,12 +65,9 @@ namespace Game {
 	}
 
 	void CollisionManager::ProcessCollision(Collider & lhs, Collider & rhs) {
-		static int DEBUG_skip = 0;
 		if (lhs.IsIntersecting(rhs)) {
-			if (++DEBUG_skip > 10) {
-				Logger::Log(*this, lhs.GetActor().GetName() + " is colliding with " + rhs.GetActor().GetName(), Logger::Severity::Debug);
-				DEBUG_skip = 0;
-			}
+			lhs.OnHit(rhs);
+			rhs.OnHit(lhs);
 		}
 	}
 }

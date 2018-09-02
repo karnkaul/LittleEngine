@@ -19,6 +19,8 @@ namespace Game {
 		virtual bool IsIntersecting(const Collider& rhs) const = 0;
 		virtual void DrawDebugShape(bool show, const Fixed& thickness = DEBUG_BORDER_WIDTH) = 0;
 
+		void OnHit(Collider& other);
+
 	protected:
 		const World* world;
 		std::shared_ptr<class ShapeRenderer> debugShape;

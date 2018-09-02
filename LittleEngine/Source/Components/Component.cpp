@@ -28,6 +28,6 @@ namespace Game {
 	}
 
 	std::string Component::ToString() const {
-		return Object::GetName() + ":" + actor->GetName();
+		return "[" + actor->GetName() + ":" + GetName() + "]";
 	}
 }

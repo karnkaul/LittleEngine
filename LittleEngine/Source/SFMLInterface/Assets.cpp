@@ -6,7 +6,7 @@ namespace Game {
 	Asset::Asset(const std::string& path) : resourcePath(path) {}
 
 	Asset::~Asset() {
-		Logger::Log("Asset pointing to [" + resourcePath + "] destroyed");
+		Logger::Log("[" + resourcePath + "] (Asset) destroyed");
 	}
 
 	const std::string & Asset::GetResourcePath() const {

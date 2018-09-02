@@ -17,7 +17,7 @@
 namespace Game {
 	Actor::Actor(Level& level, std::string name) : Object(name) {
 		this->level = &level;
-		Logger::Log(*this, "Actor Spawned at " + transform.Position().ToString());
+		Logger::Log(*this, GetNameInBrackets() + " (Actor) Spawned at " + transform.Position().ToString());
 	}
 
 	Actor::~Actor() {
@@ -25,7 +25,7 @@ namespace Game {
 			collider = nullptr;
 		}
 		components.clear();
-		Logger::Log(*this, "Actor Destroyed");
+		Logger::Log(*this, GetNameInBrackets() + " (Actor) Destroyed");
 	}
 
 	void Actor::SetNormalisedPosition(Vector2 localNPosition) {

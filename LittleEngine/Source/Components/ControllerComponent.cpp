@@ -13,12 +13,13 @@
 #include "Levels/Level.h"
 
 namespace _ControllerComponent {
+	Game::Logger::Severity s = Game::Logger::Severity::Debug;
 	void Test() {
-		Game::Logger::Log("Another left detected!");
+		Game::Logger::Log("Another left detected!", s);
 	}
 
 	void Test2() {
-		Game::Logger::Log("Consuming left detected! (no other Lefts should be triggered)");
+		Game::Logger::Log("Consuming left detected! (no other Lefts should be triggered)", s);
 	}
 }
 

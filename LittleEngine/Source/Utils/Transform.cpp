@@ -88,9 +88,6 @@ void Transform::AddChild(Transform* child) {
 
 void Transform::RemoveChild(Transform* child) {
 	if (child != nullptr) {
-		auto search = Utils::VectorSearch<Transform*>(m_children, child);
-		if (search != m_children.end()) {
-			m_children.erase(search);
-		}
+		Utils::VectorErase(m_children, child);
 	}
 }
