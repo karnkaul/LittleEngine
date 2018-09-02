@@ -6,19 +6,24 @@
 #include "Utils/Vector2.h"	// Vector2
 
 namespace Game {
+	// \brief Wrapper to maintain properties saved to / loaded from config.ini
 	class EngineConfig {
 	public:
 		EngineConfig();
+
 		bool Load(const std::string& path);
 		bool Save(const std::string& path, bool loadFirst = true);
+
 		std::string GetWindowTitle() const;
 		Fixed GetColliderBorderWidth() const;
 		Logger::Severity GetLogLevel() const;
 		const Vector2 GetScreenSize() const;
+
 		void SetWindowTitle(const std::string& windowTitle);
 		void SetLogLevel(Logger::Severity level);
 		void SetScreenSize(const Vector2& screenSize);
-		void SetColliderBorderWidth(Fixed shapeWidth);
+		void SetColliderBorderWidth(const Fixed& shapeWidth);
+
 	private:
 		const static std::string WINDOW_TITLE_KEY;
 		const static std::string LOG_LEVEL_KEY;

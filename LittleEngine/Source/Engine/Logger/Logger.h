@@ -5,6 +5,8 @@ namespace Game {
 	class Object;
 	class FileLogger;
 
+	// \brief Simple runtime stdout logger; 
+	// Writes to debug.log using FileLogger
 	class Logger {
 	public:
 		enum class Severity { Error, Warning, Info, Debug, HOT };

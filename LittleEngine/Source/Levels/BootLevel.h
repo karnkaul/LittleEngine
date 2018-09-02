@@ -6,6 +6,7 @@ namespace Game {
 	class Engine;
 	class TextRenderer;
 
+	// \brief First level that Engine will load
 	class BootLevel : public Level {
 	public:
 		BootLevel(Engine& engine);

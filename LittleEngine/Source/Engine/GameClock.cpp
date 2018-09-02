@@ -38,7 +38,7 @@ namespace Game {
 		return m + ":" + s + ":" + _m;
 	}
 
-	void GameClock::Tick(Fixed deltaTime) {
+	void GameClock::Tick(const Fixed& deltaTime) {
 		gameTime += deltaTime.GetDouble();
 	}
 

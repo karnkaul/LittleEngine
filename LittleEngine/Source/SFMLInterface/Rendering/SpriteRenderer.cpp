@@ -10,11 +10,11 @@ namespace Game {
 		SetPosition(Vector2::Zero);
 	}
 
-	void SpriteRenderer::SetPosition(const Vector2 screenPosition) {
+	void SpriteRenderer::SetPosition(const Vector2& screenPosition) {
 		sprite.setPosition(Convert(screenPosition));
 	}
 
-	void SpriteRenderer::SetRotation(const Fixed screenRotation) {
+	void SpriteRenderer::SetRotation(const Fixed& screenRotation) {
 		sprite.setRotation(screenRotation.GetFloat());
 	}
 

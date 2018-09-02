@@ -4,7 +4,7 @@
 #include "Component.h"
 #include "Entities/Actor.h"
 #include "Engine/Logger/Logger.h"
-#include "Engine/Input/InputHandler.h"
+#include "Engine/Input/inputHandler.h"
 #include "Engine/World.h"
 #include "SFMLInterface/Rendering/Renderer.h"
 #include "Components/RenderComponent.h"
@@ -12,12 +12,14 @@
 #include "SFMLInterface/Input.h"
 #include "Levels/Level.h"
 
-void Test() {
-	Game::Logger::Log("Another left detected!");
-}
+namespace _ControllerComponent {
+	void Test() {
+		Game::Logger::Log("Another left detected!");
+	}
 
-void Test2() {
-	Game::Logger::Log("Consuming left detected! (no other Lefts should be triggered)");
+	void Test2() {
+		Game::Logger::Log("Consuming left detected! (no other Lefts should be triggered)");
+	}
 }
 
 void ClampPosition(Vector2& position, const Rect2& worldBounds, const Vector2& padding) {
@@ -36,16 +38,17 @@ void ClampPosition(Vector2& position, const Rect2& worldBounds, const Vector2& p
 }
 
 namespace Game {
-	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent"), inputHandler(actor.GetActiveLevel().GetInputHandler()) {
-		tokens.push_back(inputHandler.Register(GameInput::Left, std::bind(&ControllerComponent::OnLeft, this), OnKey::Held));
-		tokens.push_back(inputHandler.Register(GameInput::Right, std::bind(&ControllerComponent::OnRight, this), OnKey::Held));
-		tokens.push_back(inputHandler.Register(GameInput::Up, std::bind(&ControllerComponent::OnUp, this), OnKey::Held));
-		tokens.push_back(inputHandler.Register(GameInput::Down, std::bind(&ControllerComponent::OnDown, this), OnKey::Held));
+	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent") {
+		this->inputHandler = &actor.GetActiveLevel().GetInputHandler();
+		tokens.push_back(inputHandler->Register(GameInput::Left, std::bind(&ControllerComponent::OnLeft, this), OnKey::Held));
+		tokens.push_back(inputHandler->Register(GameInput::Right, std::bind(&ControllerComponent::OnRight, this), OnKey::Held));
+		tokens.push_back(inputHandler->Register(GameInput::Up, std::bind(&ControllerComponent::OnUp, this), OnKey::Held));
+		tokens.push_back(inputHandler->Register(GameInput::Down, std::bind(&ControllerComponent::OnDown, this), OnKey::Held));
 		renderer = actor.GetComponent<RenderComponent>();
 		
 		// Tests
-		tokens.push_back(inputHandler.Register(GameInput::Left, &Test, OnKey::Released));
-		tokens.push_back(inputHandler.Register(GameInput::Left, &Test2, OnKey::Released, true));
+		tokens.push_back(inputHandler->Register(GameInput::Left, &_ControllerComponent::Test, OnKey::Released));
+		tokens.push_back(inputHandler->Register(GameInput::Left, &_ControllerComponent::Test2, OnKey::Released, true));
 	}
 
 	ControllerComponent::~ControllerComponent() {
@@ -65,7 +68,7 @@ namespace Game {
 		ClampPosition(actor.GetTransform().localPosition, worldBounds, padding);
 
 		// TESTS
-		if (actor.GetActiveLevel().LevelTimeMilliSeconds() > 3000 && !_deletedToken) {
+		if (actor.GetActiveLevel().LevelTimeMilliSeconds() > 2000 && !_deletedToken) {
 			_deletedToken = true;
 			tokens.pop_back();
 		}
@@ -83,7 +86,7 @@ namespace Game {
 	}
 
 	void ControllerComponent::OnLeft() {
-		if (inputHandler.IsKeyPressed(GameInput::LB)) {
+		if (inputHandler->IsKeyPressed(GameInput::LB)) {
 			GetActor().GetTransform().Rotate(prevDeltaTime / 3);
 		}
 		else {
@@ -92,7 +95,7 @@ namespace Game {
 	}
 
 	void ControllerComponent::OnRight() {
-		if (inputHandler.IsKeyPressed(GameInput::LB)) {
+		if (inputHandler->IsKeyPressed(GameInput::LB)) {
 			GetActor().GetTransform().Rotate(-prevDeltaTime / 3);
 		}
 		else {

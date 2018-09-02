@@ -2,6 +2,8 @@
 #include <vector>
 #include <string>
 
+// \brief Maps a string Key to string Value; capable of parsing Value 
+// as int/float. Intention: simple serialisation.
 struct Property {
 	std::string key;
 	std::string stringValue;
@@ -35,14 +37,17 @@ struct Property {
 	}
 };
 
+// \brief Property persistor; implementation uses a file reader/writer
 class PropRW {
 public:
 	bool Load(const std::string& filePath);
 	bool Save(const std::string& filePath) const;
 	Property GetProp(const std::string& key) const;
 	void SetProp(const Property& property);
+
 private:
-	std::vector<Property> properties;
+	// Vector instead of sets/maps to preserve order of insertion
+	std::vector<Property> properties;	
 };
 
 

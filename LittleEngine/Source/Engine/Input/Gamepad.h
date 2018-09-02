@@ -3,6 +3,7 @@
 #include "SFMLInterface/Input.h"
 
 namespace Game {
+	// \brief Virtual gamepad input types
 	enum class GameInput {
 		Invalid,
 		Left,
@@ -18,6 +19,7 @@ namespace Game {
 		RB
 	};
 
+	// \brief Virtual gamepad: binds KeyCodes to GameInput
 	class Gamepad {
 	public:
 		GameInput ToGameInput(const KeyState& input) const;

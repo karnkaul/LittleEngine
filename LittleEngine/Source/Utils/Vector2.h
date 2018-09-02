@@ -1,10 +1,15 @@
 #pragma once
 #include "Utils/Fixed.h"
 
+// \brief 2D geometric vector using Fixed
 struct Vector2 {
 public:
 	Fixed x;
 	Fixed y;
+
+	static const Vector2 Zero;
+	static const Vector2 One;
+
 	Vector2() : x(0), y(0) {}
 	Vector2(Fixed x, Fixed y) : x(x), y(y) {}
 	Vector2(const Vector2& other) = default;
@@ -12,16 +17,12 @@ public:
 	Vector2(Vector2&&) = default;
 	Vector2& operator=(Vector2&&) = default;
 
-	static const Vector2 Zero;
-	static const Vector2 One;
-
 	Vector2& operator+=(const Vector2& rhs);
 	Vector2& operator-=(const Vector2& rhs);
 	Vector2& operator*=(const Fixed& fixed);
 	Vector2& operator/=(const Fixed& fixed);
 
 	Vector2 operator-() const;
-	
 	Vector2 operator+(const Vector2& rhs) const;
 	Vector2 operator-(const Vector2& rhs) const;
 	Vector2 operator*(const Fixed& rhs) const;
@@ -37,8 +38,8 @@ public:
 	double SqrMagnitude() const;
 
 	std::string ToString() const;
-	friend std::ostream& operator<<(std::ostream& out, Vector2& vector2) {
-		return out << "[" << vector2.x << ", " << vector2.y << "]";
-	}
+	
 private:
 };
+
+std::ostream& operator<<(std::ostream& out, Vector2& vector2);

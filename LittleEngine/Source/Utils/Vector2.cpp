@@ -84,3 +84,7 @@ double Vector2::SqrMagnitude() const {
 std::string Vector2::ToString() const {
 	return "[" + x.ToString() + ", " + y.ToString() + "]";
 }
+
+std::ostream& operator<<(std::ostream& out, Vector2& vector2) {
+	return out << "[" << vector2.x << ", " << vector2.y << "]";
+}

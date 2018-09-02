@@ -3,10 +3,11 @@
 #include "SFMLInterface/WindowController.h"
 
 namespace Game {
-	RenderParams::RenderParams(WindowController& controller) : windowController(controller) {
+	RenderParams::RenderParams(WindowController& controller) {
+		this->windowController = &controller;
 	}
 
 	WindowController& RenderParams::GetWindowController() {
-		return windowController;
+		return *windowController;
 	}
 }

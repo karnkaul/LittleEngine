@@ -79,7 +79,7 @@ namespace Game {
 		if (exitCode == ExitCode::OK) {
 			if (CreateWindow()) {
 				/* Load Level 0 */
-				if (!levelManager->LoadLevel(0)) {
+				if (!levelManager->LoadLevel(LevelID::BootLevel)) {
 					Logger::Log(*this, "Could not load level 0!", Logger::Severity::Error);
 					exitCode = ExitCode::ExecutionError;
 					return (int)exitCode;
@@ -170,8 +170,8 @@ namespace Game {
 		return *assetManager;
 	}
 
-	void Engine::LoadLevel(int id) {
-		commands.emplace_back(std::make_unique<LoadLevelCommand>(*levelManager, id));
+	void Engine::LoadLevel(const LevelID& levelID) {
+		commands.emplace_back(std::make_unique<LoadLevelCommand>(*levelManager, levelID));
 	}
 
 	void Engine::Quit() {

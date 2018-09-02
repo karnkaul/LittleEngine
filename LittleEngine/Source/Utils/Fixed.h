@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+// \brief Fixed point POD using constant scale factor
 struct Fixed final {
 public:
 	static const int SCALE_FACTOR = 100000;

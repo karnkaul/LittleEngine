@@ -12,9 +12,11 @@ namespace Game {
 	class TextRenderer;
 	class SpriteRenderer;
 
+	// \brief Structure loosely describing a shape to be constructed
 	struct ShapeData {
 		Vector2 size;
 		Colour colour;
+
 		ShapeData(const Vector2& size) : ShapeData(size, Colour::White) {}
 		ShapeData(const Vector2& size, const Colour& colour) : size(size), colour(colour) {}
 	};
@@ -24,14 +26,19 @@ namespace Game {
 		RenderComponent(Actor& actor);
 
 		LayerInfo GetLayer() const;
-		void SetLayer(LayerInfo layer);
-		void SetRenderer(std::unique_ptr<Renderer> renderer);
+		void SetLayer(const LayerInfo& layer);
 		Rect2 GetBounds() const;
+
 		CircleRenderer& SetCircleRenderer(const ShapeData& shapeData);
 		RectangleRenderer& SetRectangleRenderer(const ShapeData& shapeData);
 		SpriteRenderer& SetSpriteRenderer(const std::string& texturePath);
 		TextRenderer& SetTextRenderer(const std::string& text);
-		virtual void Render(RenderParams& params) override;
+
+		virtual void Render(RenderParams params) override;
+		
+	protected:
+		void SetRenderer(std::unique_ptr<Renderer> renderer);
+
 	private:
 		std::unique_ptr<Renderer> renderer = nullptr;
 	};

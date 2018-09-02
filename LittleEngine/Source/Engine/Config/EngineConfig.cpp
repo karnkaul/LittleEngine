@@ -85,7 +85,7 @@ namespace Game {
 		screenHeight.stringValue = std::to_string(screenSize.y.GetInt());
 	}
 
-	void EngineConfig::SetColliderBorderWidth(Fixed shapeWidth) {
+	void EngineConfig::SetColliderBorderWidth(const Fixed& shapeWidth) {
 		colliderBorderWidth.stringValue = std::to_string(shapeWidth.GetInt());
 	}
 

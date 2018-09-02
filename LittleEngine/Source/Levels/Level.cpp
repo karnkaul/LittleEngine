@@ -13,7 +13,8 @@
 #include "Entities/Actor.h"
 
 namespace Game {
-	Level::Level(const std::string& name, Game::Engine& engine) : engine(engine), Object(name) {
+	Level::Level(const std::string& name, Game::Engine& engine) : Object(name) {
+		this->engine = &engine;
 		Logger::Log(*this, "Level created [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
 	}
 
@@ -68,7 +69,19 @@ namespace Game {
 	}
 
 	InputHandler & Level::GetInputHandler() const {
-		return engine.GetInputHandler();
+		return engine->GetInputHandler();
+	}
+
+	const World & Level::GetWorld() const {
+		return engine->GetWorld();
+	}
+
+	AssetManager & Level::GetAssetManager() const {
+		return engine->GetAssetManager();
+	}
+
+	CollisionManager & Level::GetCollisionManager() {
+		return collisionManager;
 	}
 
 	int64_t Level::LevelTimeMicroSeconds() const {
@@ -81,18 +94,6 @@ namespace Game {
 
 	int Level::GameTimeMilliSeconds() const {
 		return clock.GetGameTimeMilliSeconds();
-	}
-
-	const World & Level::GetWorld() const {
-		return engine.GetWorld();
-	}
-
-	AssetManager & Level::GetAssetManager() const {
-		return engine.GetAssetManager();
-	}
-
-	CollisionManager & Level::GetCollisionManager() {
-		return collisionManager;
 	}
 
 	Actor::wPtr Level::SpawnActor(const std::string& name) {

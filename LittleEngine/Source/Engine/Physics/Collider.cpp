@@ -10,6 +10,8 @@
 #include "Engine/Logger/Logger.h"
 
 namespace Game {
+	// \brief Wrapper to calculate locus of intersection of Circle with an AABB:
+	// Calculated via tracing centre of circle along radial boundary of AABB.
 	struct CircleLocus {
 		CircleData topLeft;
 		CircleData topRight;
@@ -21,7 +23,7 @@ namespace Game {
 		CircleLocus(CircleLocus&&) = default;
 		CircleLocus& operator=(CircleLocus&&) = default;
 
-		bool IsPointIn(Vector2 point) {
+		bool IsPointIn(const Vector2& point) {
 			return topLeft.IsPointInCircle(point) ||
 				topRight.IsPointInCircle(point) ||
 				bottomLeft.IsPointInCircle(point) ||
@@ -31,7 +33,7 @@ namespace Game {
 		}
 	};
 	
-	CircleLocus Intersect(AABBData bounds, CircleData circle) {
+	CircleLocus Intersect(const AABBData& bounds, const CircleData& circle) {
 		CircleLocus ret;
 		ret.topLeft.centre = Vector2(bounds.lowerBound.x, bounds.upperBound.y);
 		ret.topRight.centre = Vector2(bounds.upperBound.x, bounds.upperBound.y);
@@ -48,7 +50,8 @@ namespace Game {
 
 	Fixed Collider::DEBUG_BORDER_WIDTH = 1;
 
-	Collider::Collider(Actor& actor, std::string name) : Component(actor, name), world(actor.GetActiveLevel().GetWorld()) {
+	Collider::Collider(Actor& actor, const std::string& name) : Component(actor, name) {
+		this->world = &actor.GetActiveLevel().GetWorld();
 	}
 
 	AABBCollider::AABBCollider(Actor& actor) : Collider(actor, "AABBCollider") {
@@ -75,20 +78,16 @@ namespace Game {
 		debugRect->SetSize(size);
 	}
 
-	void AABBCollider::DrawDebugShape(bool show, Fixed thickness) {
+	void AABBCollider::DrawDebugShape(bool show, const Fixed& thickness) {
 		debugShape->SetEnabled(show);
 		debugShape->SetBorder(thickness, Colour::Green);
 		std::string prefix = show ? "Drawing " : "Hiding ";
 		Logger::Log(*this, prefix + "debug collision rect on " + GetActor().GetName(), Logger::Severity::Debug);
 	}
 
-	void AABBCollider::Render(RenderParams & params) {
+	void AABBCollider::Render(RenderParams params) {
 		if (debugShape->IsEnabled()) {
-			AABBData worldRect = GetWorldAABB();
-			Fixed w = worldRect.upperBound.x - worldRect.lowerBound.x;
-			Fixed h = worldRect.upperBound.y - worldRect.lowerBound.y;
-			Vector2 delta(w * Fixed::Half, h * Fixed::Half);
-			params.screenPosition = world.WorldToScreenPoint(worldRect.lowerBound + delta);
+			// Undo Actor's rotation (align with axes)
 			params.screenRotation = 0;
 			debugShape->Render(params);
 		}
@@ -127,7 +126,7 @@ namespace Game {
 		circleShape->SetRadius(radius);
 	}
 
-	void CircleCollider::DrawDebugShape(bool show, Fixed thickness) {
+	void CircleCollider::DrawDebugShape(bool show, const Fixed& thickness) {
 		debugShape->SetEnabled(show);
 		debugShape->SetBorder(thickness, Colour::Green);
 		std::string prefix = show ? "Drawing " : "Hiding ";
@@ -144,10 +143,9 @@ namespace Game {
 		return lhsCircle.IsIntersecting(rhsCircle);
 	}
 
-	void CircleCollider::Render(RenderParams& params) {
+	void CircleCollider::Render(RenderParams params) {
 		if (debugShape->IsEnabled()) {
-			CircleData c = GetWorldCircle();
-			params.screenPosition = world.WorldToScreenPoint(c.centre);
+			// Undo Actor's rotation (be pedantic)
 			params.screenRotation = 0;
 			debugShape->Render(params);
 		}

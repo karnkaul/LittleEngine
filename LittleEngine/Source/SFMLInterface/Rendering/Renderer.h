@@ -6,7 +6,7 @@
 #include "SFML/Graphics.hpp"
 
 namespace Game {
-	// Wrapper class for SFML Color
+	// \brief Wrapper struct for SFML Color
 	struct Colour {
 	public:
 		Fixed r;
@@ -27,13 +27,14 @@ namespace Game {
 		const static Colour Transparent;
 	};
 
-	// Base class for all SFML Rendering
+	// \brief Base class for all SFML Rendering
 	class Renderer : public Object {
 	public:
 		LayerInfo layer;
 
 		Renderer(std::string name);
 		virtual ~Renderer();
+
 		// Call this to render the entity using the passed RenderParams
 		void Render(struct RenderParams& params);
 		// Subclass will return its max Bounds in screen space
@@ -44,8 +45,9 @@ namespace Game {
 	
 	protected:
 		virtual void RenderInternal(struct RenderParams& params) = 0;
-		virtual void SetPosition(const Vector2 screenPosition) = 0;
-		virtual void SetRotation(const Fixed screenRotation) = 0;
+		virtual void SetPosition(const Vector2& screenPosition) = 0;
+		virtual void SetRotation(const Fixed& screenRotation) = 0;
+
 		sf::Vector2f Convert(const Vector2& vector);
 		sf::Color Convert(const Colour& colour);
 		Colour Convert(const sf::Color& colour);

@@ -7,12 +7,11 @@
 class Transform;
 
 namespace Game {
-	// Forward declarations
 	struct RenderParams;
 	class Level;
 	class Component;
 
-	// Base class representing an entity in the world
+	// \brief Base class representing a renderable entity in the world
 	class Actor : public Object, public std::enable_shared_from_this<Actor> {
 	public:
 		using Ptr = std::shared_ptr<Actor>;
@@ -91,7 +90,7 @@ namespace Game {
 		std::vector<std::shared_ptr<Component>> components;
 		Collider::Ptr collider;
 		Transform::Ptr transform;
-		Level& level;
+		Level* level;
 		bool _destroyed = false;
 		
 		virtual void FixedTick();

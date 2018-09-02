@@ -3,6 +3,7 @@
 #include "Utils/Rect2.h"
 
 namespace Game {
+	// \brief Wrapper for Screen Size
 	class World : public Object {
 	public:
 		World(const Vector2& screenSize);

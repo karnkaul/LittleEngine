@@ -15,7 +15,8 @@
 #include "Utils/Utils.h"
 
 namespace Game {
-	Actor::Actor(Level& level, std::string name) : Object(name), level(level) {
+	Actor::Actor(Level& level, std::string name) : Object(name) {
+		this->level = &level;
 		transform = Transform::Create();
 		Logger::Log(*this, "Actor Spawned at " + transform->Position().ToString());
 	}
@@ -33,7 +34,7 @@ namespace Game {
 		localNPosition.x = Maths::Clamp_11(localNPosition.x);
 		localNPosition.y = Maths::Clamp_11(localNPosition.y);
 		// r` = r * screen.r
-		Vector2 screenSize = level.GetWorld().GetScreenBounds().upper;
+		Vector2 screenSize = level->GetWorld().GetScreenBounds().upper;
 		Vector2 newPos(localNPosition.x * screenSize.x, localNPosition.y * screenSize.y);
 		transform->localPosition = newPos;
 	}
@@ -86,6 +87,10 @@ namespace Game {
 		if (_destroyed) {
 			return;
 		}
+		// Convert Transform::Position to sscreen position
+		params.screenPosition = level->GetWorld().WorldToScreenPoint(transform->Position());
+		// Convert Transform::Rotation to SFML orientation (+ is counter-clockwise)
+		params.screenRotation = -transform->Rotation();
 		// Render each component
 		for (auto& component : components) {
 			component->Render(params);
@@ -97,6 +102,6 @@ namespace Game {
 	}
 
 	Level & Actor::GetActiveLevel() const {
-		return level;
+		return *level;
 	}
 }
