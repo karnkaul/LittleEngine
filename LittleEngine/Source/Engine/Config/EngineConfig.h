@@ -1,14 +1,13 @@
 #pragma once
 #include "stdafx.h"
 
-#include "Utils/PropRW.h"	// PropRW
+#include "Utils/Property.h"	// PropRW
 #include "Engine/Logger/Logger.h"	// Logger::Severity
 #include "Utils/Vector2.h"	// Vector2
 
 namespace LittleEngine {
 	using Fixed = Utils::Fixed;
 	using Vector2 = Utils::Vector2;
-	using PropRW = Utils::PropRW;
 	using Property = Utils::Property;
 	
 	// \brief Wrapper to maintain properties saved to / loaded from config.ini
@@ -16,7 +15,9 @@ namespace LittleEngine {
 	public:
 		EngineConfig();
 
+		// Load config file from path and replace cache values if valid
 		bool Load(const std::string& path);
+		// Save cache to config file at path; loadFirst will call Load() before saving
 		bool Save(const std::string& path, bool loadFirst = true);
 
 		std::string GetWindowTitle() const;
@@ -25,25 +26,25 @@ namespace LittleEngine {
 		const Vector2 GetScreenSize() const;
 
 		void SetWindowTitle(const std::string& windowTitle);
-		void SetLogLevel(Logger::Severity level);
+		void SetLogLevel(const Logger::Severity& level);
 		void SetScreenSize(const Vector2& screenSize);
 		void SetColliderBorderWidth(const Fixed& shapeWidth);
 
 	private:
-		const static std::string WINDOW_TITLE_KEY;
-		const static std::string LOG_LEVEL_KEY;
-		const static std::string SCREEN_WIDTH_KEY;
-		const static std::string SCREEN_HEIGHT_KEY;
-		const static std::string COLLIDER_SHAPE_WIDTH_KEY;
+		struct Data {
+			const static std::string WINDOW_TITLE_KEY;
+			const static std::string LOG_LEVEL_KEY;
+			const static std::string SCREEN_WIDTH_KEY;
+			const static std::string SCREEN_HEIGHT_KEY;
+			const static std::string COLLIDER_SHAPE_WIDTH_KEY;
 
-		Property windowTitle;
-		Property logLevel;
-		Property screenWidth;
-		Property screenHeight;
-		Property colliderBorderWidth;
-		std::unique_ptr<PropRW> persistor;
+			Property windowTitle;
+			Property logLevel;
+			Property screenWidth;
+			Property screenHeight;
+			Property colliderBorderWidth;
+		};
 
-		static Logger::Severity ParseLogLevel(std::string str);
-		static std::string ParseLogLevel(Logger::Severity severity);
+		Data cache;
 	};
 }

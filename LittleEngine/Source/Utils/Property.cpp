@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <vector>
-#include "PropRW.h"
+#include "Property.h"
 #include "FileRW.h"
 
 namespace Utils {
@@ -35,7 +35,7 @@ namespace Utils {
 	}
 
 
-	bool PropRW::Load(const std::string& filePath) {
+	bool Property::Persistor::Load(const std::string& filePath) {
 		FileRW fileRW(filePath);
 		if (!fileRW.Exists()) {
 			return false;
@@ -54,12 +54,12 @@ namespace Utils {
 		return true;
 	}
 
-	bool PropRW::Save(const std::string& filePath) const {
+	bool Property::Persistor::Save(const std::string& filePath) const {
 		FileRW file(filePath);
 		return file.Write(PropertiesToString(properties));
 	}
 
-	Property PropRW::GetProp(const std::string& key) const {
+	Property Property::Persistor::GetProp(const std::string& key) const {
 		for (auto& prop : properties) {
 			if (prop.key == key) {
 				return prop;
@@ -68,7 +68,7 @@ namespace Utils {
 		return Property();
 	}
 
-	void PropRW::SetProp(const Property& property) {
+	void Property::Persistor::SetProp(const Property& property) {
 		for (auto& prop : properties) {
 			if (prop.key == property.key) {
 				prop.stringValue = property.stringValue;

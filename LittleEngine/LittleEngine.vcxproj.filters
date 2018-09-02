@@ -81,9 +81,6 @@
     <ClInclude Include="Source\Utils\Fixed.h">
       <Filter>Source\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Utils\PropRW.h">
-      <Filter>Source\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Utils\Transform.h">
       <Filter>Source\Utils</Filter>
     </ClInclude>
@@ -171,6 +168,12 @@
     <ClInclude Include="Source\Utils\Utils.h">
       <Filter>Source\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Utils\Property.h">
+      <Filter>Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Player.h">
+      <Filter>Source\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -195,9 +198,6 @@
       <Filter>Source\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utils\Fixed.cpp">
-      <Filter>Source\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\PropRW.cpp">
       <Filter>Source\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utils\Transform.cpp">
@@ -284,6 +284,12 @@
     </ClCompile>
     <ClCompile Include="Source\Utils\Utils.cpp">
       <Filter>Source\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\Property.cpp">
+      <Filter>Source\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Player.cpp">
+      <Filter>Source\Entities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

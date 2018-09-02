@@ -18,13 +18,11 @@ namespace LittleEngine {
 		LoadAssets();
 		
 		Vector2 lowerBound = this->engine->GetWorld().GetScreenBounds().lower;
-		Fixed logoY = lowerBound.y + 200;
 		_logo = SpawnActor("Logo");
 		std::shared_ptr<Actor> logo = nullptr;
 		if ((logo = _logo.lock()) != nullptr) {
 			auto renderer = logo->AddComponent<RenderComponent>();
 			logoRenderer = &renderer->SetTextRenderer("... Press Enter to Start ...");
-			//logo->GetTransform().localPosition = Vector2(0, logoY);
 			logo->SetNormalisedPosition(Vector2(0, Fixed(-0.66f)));
 		}
 

@@ -6,6 +6,19 @@ namespace Utils {
 	// \brief Maps a string Key to string Value; capable of parsing Value 
 	// as int/float. Intention: simple serialisation.
 	struct Property {
+		// \brief Property persistor; implementation uses a file reader/writer
+		class Persistor {
+		public:
+			bool Load(const std::string& filePath);
+			bool Save(const std::string& filePath) const;
+			Property GetProp(const std::string& key) const;
+			void SetProp(const Property& property);
+
+		private:
+			// Vector instead of sets/maps to preserve order of insertion
+			std::vector<Property> properties;
+		};
+
 		std::string key;
 		std::string stringValue;
 
@@ -38,16 +51,5 @@ namespace Utils {
 		}
 	};
 
-	// \brief Property persistor; implementation uses a file reader/writer
-	class PropRW {
-	public:
-		bool Load(const std::string& filePath);
-		bool Save(const std::string& filePath) const;
-		Property GetProp(const std::string& key) const;
-		void SetProp(const Property& property);
 
-	private:
-		// Vector instead of sets/maps to preserve order of insertion
-		std::vector<Property> properties;
-	};
 }

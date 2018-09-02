@@ -177,6 +177,7 @@
     <ClInclude Include="Source\Engine\Physics\CollisionManager.h" />
     <ClInclude Include="Source\Engine\World.h" />
     <ClInclude Include="Source\Entities\Actor.h" />
+    <ClInclude Include="Source\Entities\Player.h" />
     <ClInclude Include="Source\Levels\BootLevel.h" />
     <ClInclude Include="Source\Levels\Level.h" />
     <ClInclude Include="Source\Levels\LevelManager.h" />
@@ -195,7 +196,7 @@
     <ClInclude Include="Source\Utils\FileRW.h" />
     <ClInclude Include="Source\Utils\Fixed.h" />
     <ClInclude Include="Source\Utils\Utils.h" />
-    <ClInclude Include="Source\Utils\PropRW.h" />
+    <ClInclude Include="Source\Utils\Property.h" />
     <ClInclude Include="Source\Utils\Rect2.h" />
     <ClInclude Include="Source\Utils\Transform.h" />
     <ClInclude Include="Source\Utils\Vector2.h" />
@@ -219,6 +220,7 @@
     <ClCompile Include="Source\Engine\Physics\CollisionManager.cpp" />
     <ClCompile Include="Source\Engine\World.cpp" />
     <ClCompile Include="Source\Entities\Actor.cpp" />
+    <ClCompile Include="Source\Entities\Player.cpp" />
     <ClCompile Include="Source\Levels\BootLevel.cpp" />
     <ClCompile Include="Source\Levels\Level.cpp" />
     <ClCompile Include="Source\Levels\LevelManager.cpp" />
@@ -237,7 +239,7 @@
     <ClCompile Include="Source\Utils\FileRW.cpp" />
     <ClCompile Include="Source\Utils\Fixed.cpp" />
     <ClCompile Include="Source\Utils\Utils.cpp" />
-    <ClCompile Include="Source\Utils\PropRW.cpp" />
+    <ClCompile Include="Source\Utils\Property.cpp" />
     <ClCompile Include="Source\Utils\Transform.cpp" />
     <ClCompile Include="Source\Utils\Vector2.cpp" />
     <ClCompile Include="stdafx.cpp">

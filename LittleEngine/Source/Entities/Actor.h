@@ -19,7 +19,7 @@ namespace LittleEngine {
 
 		// Each Actor must be owned by an active Level, 
 		// and be passed a reference to it in the constructor
-		Actor(Level& level, std::string name);
+		Actor(Level& level, const std::string& name, const Vector2& position, const Fixed& rotation);
 		// For subclassing Actor, if required
 		virtual ~Actor();
 
