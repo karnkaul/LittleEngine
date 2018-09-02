@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Gamepad.h"
+#include "Utils/Utils.h"
 
 namespace Game {
 	Gamepad::RawInput::RawInput(KeyCode keyCode)
@@ -28,7 +29,7 @@ namespace Game {
 
 	bool Gamepad::InputMapping::IsMapped(KeyCode keyCode) const {
 		RawInput toFind(keyCode);
-		auto iter = std::find(rawInputs.begin(), rawInputs.end(), toFind);
+		auto iter = Utils::Find(rawInputs, toFind);
 		return iter != rawInputs.end();
 	}
 

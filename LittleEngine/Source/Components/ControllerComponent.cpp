@@ -38,6 +38,8 @@ void ClampPosition(Vector2& position, const Rect2& worldBounds, const Vector2& p
 }
 
 namespace Game {
+	bool _deletedToken = false;
+
 	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent") {
 		this->inputHandler = &actor.GetActiveLevel().GetInputHandler();
 		tokens.push_back(inputHandler->Register(GameInput::Left, std::bind(&ControllerComponent::OnLeft, this), OnKey::Held));
@@ -47,6 +49,7 @@ namespace Game {
 		renderer = actor.GetComponent<RenderComponent>();
 		
 		// Tests
+		_deletedToken = false;
 		tokens.push_back(inputHandler->Register(GameInput::Left, &_ControllerComponent::Test, OnKey::Released));
 		tokens.push_back(inputHandler->Register(GameInput::Left, &_ControllerComponent::Test2, OnKey::Released, true));
 	}
@@ -54,8 +57,6 @@ namespace Game {
 	ControllerComponent::~ControllerComponent() {
 		tokens.clear();
 	}
-	
-	bool _deletedToken = false;
 
 	void ControllerComponent::Tick(Fixed deltaTime) {
 		prevDeltaTime = deltaTime;

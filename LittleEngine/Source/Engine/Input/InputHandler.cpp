@@ -43,7 +43,7 @@ namespace Game {
 	}
 
 	bool InputHandler::IsKeyPressed(const GameInput& keyCode) const {
-		auto iter = std::find(currentSnapshot.begin(), currentSnapshot.end(), keyCode);
+		auto iter = Utils::Find(currentSnapshot, keyCode);
 		return iter != currentSnapshot.end();
 	}
 
@@ -73,7 +73,7 @@ namespace Game {
 		for (const auto& key : pressedKeys) {
 			GameInput input = gamepad.ToGameInput(key);
 			if (input != GameInput::Invalid) {
-				auto duplicate = std::find(currentSnapshot.begin(), currentSnapshot.end(), input);
+				auto duplicate = Utils::Find(currentSnapshot, input);
 				if (duplicate == currentSnapshot.end()) {
 					currentSnapshot.push_back(input);
 				}
@@ -134,7 +134,7 @@ namespace Game {
 		
 		// Build OnPressed and OnHeld vectors
 		for (auto input : currentSnapshot) {
-			auto search = std::find(previousSnapshot.begin(), previousSnapshot.end(), input);
+			auto search = Utils::Find(previousSnapshot, input);
 			if (search != previousSnapshot.end()) {
 				onHeld.push_back(input);
 				previousSnapshot.erase(search);

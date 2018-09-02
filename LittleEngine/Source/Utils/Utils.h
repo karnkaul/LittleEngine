@@ -17,6 +17,12 @@ namespace Utils {
 	void EraseNullWeakPtrs(std::vector<std::weak_ptr<T>>& vec) {
 		CleanVector<std::weak_ptr<T>>(vec, [](std::weak_ptr<T>& ptr) { return ptr.lock() == nullptr; });
 	}
+
+	template<typename T>
+	typename std::vector<T>::const_iterator Find(const std::vector<T>& vec, const T& value) {
+		typename std::vector<T>::const_iterator iter = std::find(vec.begin(), vec.end(), value);
+		return iter;
+	}
 }
 
 namespace Maths {

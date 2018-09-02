@@ -32,8 +32,8 @@ namespace Game {
 		// Every Actor must always be owned by a Level
 		Level& GetActiveLevel() const;
 		
-		Transform& GetTransform() const {
-			return *transform;
+		Transform& GetTransform() {
+			return transform;
 		}
 
 		virtual std::string ToString() const override;
@@ -89,7 +89,7 @@ namespace Game {
 	protected:
 		std::vector<std::shared_ptr<Component>> components;
 		Collider::Ptr collider;
-		Transform::Ptr transform;
+		Transform transform;
 		Level* level;
 		bool _destroyed = false;
 		
