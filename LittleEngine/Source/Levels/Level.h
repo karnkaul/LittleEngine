@@ -5,6 +5,7 @@
 #include "Entities/Actor.h"
 #include "Entities/Player.h"
 #include "Engine/Physics/CollisionManager.h"
+#include "Engine/Audio/AudioManager.h"
 
 namespace LittleEngine {
 	class Engine;
@@ -33,6 +34,7 @@ namespace LittleEngine {
 		InputHandler& GetInputHandler() const;
 		const World& GetWorld() const;
 		AssetManager& GetAssetManager() const;
+		AudioManager& GetAudioManager();
 		CollisionManager& GetCollisionManager();
 		int64_t LevelTimeMicroSeconds() const;
 		int LevelTimeMilliSeconds() const;

@@ -9,6 +9,7 @@
 #include "Config/EngineConfig.h"
 #include "GameClock.h"
 #include "Input/InputHandler.h"
+#include "Audio/AudioManager.h"
 
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Input.h"
@@ -42,7 +43,8 @@ namespace LittleEngine {
 			
 			/* Instantiate entities */ {
 				world = std::make_unique<World>(config->GetScreenSize());
-				assetManager = std::make_unique<AssetManager>();
+				assetManager = std::make_unique<AssetManager>("Assets");
+				audioManager = std::make_unique<AudioManager>(*this);
 				levelManager = std::make_unique<LevelManager>(*this);
 				inputHandler = std::make_unique<InputHandler>();
 				Logger::Log(*this, "Engine constructed and ready to Run()", Logger::Severity::Debug);
@@ -59,6 +61,7 @@ namespace LittleEngine {
 	Engine::~Engine() {
 		levelManager = nullptr;
 		assetManager = nullptr;
+		audioManager = nullptr;
 		world = nullptr;
 		inputHandler = nullptr;
 		windowController = nullptr;
@@ -127,6 +130,7 @@ namespace LittleEngine {
 						/* Tick */ {
 							GameClock::Tick(deltaTime);
 							inputHandler->FireInput();
+							audioManager->Tick(deltaTime);
 							levelManager->GetActiveLevel().Tick(deltaTime);
 						}
 
@@ -170,8 +174,12 @@ namespace LittleEngine {
 		return *assetManager;
 	}
 
+	AudioManager & Engine::GetAudioManager() const {
+		return *audioManager;
+	}
+
 	void Engine::LoadLevel(const LevelID& levelID) {
-		commands.emplace_back(std::make_unique<LoadLevelCommand>(*levelManager, levelID));
+		commands.emplace_back(std::make_unique<LoadLevelCommand>(*levelManager, *audioManager, levelID));
 	}
 
 	void Engine::Quit() {

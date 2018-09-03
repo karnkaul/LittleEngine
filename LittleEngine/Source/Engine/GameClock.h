@@ -11,6 +11,7 @@ namespace LittleEngine {
 	public:
 		GameClock();
 
+		void Restart();
 		int64_t GetElapsedMicroSeconds() const;
 		int GetElapsedMilliSeconds() const;
 		

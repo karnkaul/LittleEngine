@@ -8,7 +8,7 @@ namespace LittleEngine {
 		using wPtr = std::weak_ptr<Player>;
 		using Ptr = std::shared_ptr<Player>;
 
-		// texturePath must be relative to executable
+		// texturePath must be relative to root Asset directory
 		Player(Level& level, const std::string & texturePath, const AABBData & colliderBounds, const Vector2 & position, const Fixed & rotation);
 	};
 }

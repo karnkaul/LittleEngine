@@ -21,7 +21,8 @@ namespace LittleEngine {
 		Level* level;
 		Actor::wPtr _actor0, _player;
 		bool parented = false;
-		
+		bool soundPlayed = false, musicPlayed = false, musicStopped = false;
+
 		void OnXPressed() {
 			auto actor0 = _actor0.lock();
 			auto player = _player.lock();
@@ -125,7 +126,7 @@ namespace LittleEngine {
 			rc0->SetRectangleRenderer(ShapeData(Vector2(300, 100), Colour::Magenta));
 		}
 
-		GetOrSpawnPlayer("Assets/Ship.png", AABBData(40, 40), Vector2(-200, -300));
+		GetOrSpawnPlayer("Ship.png", AABBData(40, 40), Vector2(-200, -300));
 		
 		auto actor1 = SpawnActor("Actor1-TextRenderer").lock();
 		if (actor1 != nullptr) {
@@ -146,6 +147,7 @@ namespace LittleEngine {
 		_TestLevel::level = this;
 		_TestLevel::token2 = GetInputHandler().Register(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
 		_TestLevel::token3 = GetInputHandler().Register(GameInput::RB, &_TestLevel::OnLBPressed, OnKey::Released);
+		_TestLevel::soundPlayed = _TestLevel::musicPlayed = false;
 	}
 
 	void RenderTests(Level* level, std::vector<Actor::Ptr>& actors, RenderParams& params) {
@@ -155,6 +157,21 @@ namespace LittleEngine {
 	}
 
 	void TestLevel::Render(RenderParams & params) {
+		if (clock.GetElapsedMilliSeconds() > 2000 && !_TestLevel::soundPlayed) {
+			_TestLevel::soundPlayed = true;
+			GetAudioManager().PlaySFX("TestSound.wav", Fixed(0.2f));
+		}	
+		if (clock.GetElapsedMilliSeconds() > 2100 && !_TestLevel::musicPlayed) {
+			_TestLevel::musicPlayed = true;
+			if (!GetAudioManager().PlaySFX("TestSound_b.wav", Fixed(0.5f))) {
+				Logger::Log(*this, "Could not play SFX!", Logger::Severity::Error);
+			}
+			GetAudioManager().PlayMusic("TestMusic.ogg", Fixed(0.5f));
+		}
+		/*if (clock.GetElapsedMilliSeconds() > 5000 && !_TestLevel::musicStopped) {
+			_TestLevel::musicStopped = true;
+			GetAudioManager().StopMusic();
+		}*/
 		RenderTests(this, actors, params);
  		Level::Render(params);
 	}

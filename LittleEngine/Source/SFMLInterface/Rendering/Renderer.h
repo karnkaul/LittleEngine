@@ -8,27 +8,6 @@
 namespace LittleEngine {
 	using Rect2 = Utils::Rect2;
 
-	// \brief Wrapper struct for SFML Color
-	struct Colour {
-	public:
-		Fixed r;
-		Fixed g;
-		Fixed b;
-		Fixed a;
-
-		Colour(Fixed r = 255, Fixed g = 255, Fixed b = 255, Fixed a = 255) : r(r), g(g), b(b), a(a) {}
-		
-		const static Colour Black;
-		const static Colour White;
-		const static Colour Red;
-		const static Colour Green;
-		const static Colour Blue;
-		const static Colour Yellow;
-		const static Colour Magenta;
-		const static Colour Cyan;
-		const static Colour Transparent;
-	};
-
 	// \brief Base class for all SFML Rendering
 	class Renderer : public Object {
 	public:

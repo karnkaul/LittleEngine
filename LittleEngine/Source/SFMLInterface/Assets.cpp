@@ -25,15 +25,10 @@ namespace LittleEngine {
 		}
 	}
 
-	AssetManager::AssetManager() : Object("AssetManager") {
+	AssetManager::AssetManager(const std::string& rootDir) : Object("AssetManager") {
+		this->rootDir = rootDir;
+		defaultFont = Load<FontAsset>("main.ttf");
 		Logger::Log("AssetManager created");
-		defaultFont = LoadAsset<FontAsset>("Assets/main.ttf");
-	}
-
-	void AssetManager::LoadAllTextures(std::initializer_list<std::string> texturePaths) {
-		for (const auto& path : texturePaths) {
-			LoadAsset<TextureAsset>(path);
-		}
 	}
 
 	FontAsset::Ptr AssetManager::GetDefaultFont() const {
@@ -45,9 +40,27 @@ namespace LittleEngine {
 		Logger::Log(*this, "AssetManager cleared");
 	}
 
+	std::string AssetManager::GetPath(const std::string & path) {
+		return rootDir.empty() ? path : rootDir + "/" + path;
+	}
+
 	AssetManager::~AssetManager() {
 		UnloadAll();
 		defaultFont = nullptr;
 		Logger::Log(*this, "AssetManager destroyed");
+	}
+	
+	SoundAsset::SoundAsset(const std::string & path, const Fixed& volumeScale) : Asset(path) {
+		sfSoundBuffer.loadFromFile(path);
+		this->volumeScale = Maths::Clamp01(volumeScale);
+	}
+
+	MusicAsset::MusicAsset(const std::string & path, const Fixed& volumeScale) : Asset(path) {
+		valid = music.openFromFile(path);
+		this->volumeScale = Maths::Clamp01(volumeScale);
+	}
+	
+	Fixed MusicAsset::GetDurationSeconds() const {
+		return Fixed(music.getDuration().asSeconds());
 	}
 }

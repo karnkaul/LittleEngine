@@ -3,6 +3,7 @@
 
 namespace LittleEngine {
 	class LevelManager;
+	class AudioManager;
 
 	// \brief Commands as Functors
 	class EngineCommand {
@@ -17,11 +18,12 @@ namespace LittleEngine {
 	// \brief Will invoke LevelManager::LoadLevel(levelID) when called
 	class LoadLevelCommand : public EngineCommand {
 	public:
-		LoadLevelCommand(LevelManager& levelManager, const LevelID& levelID);
+		LoadLevelCommand(LevelManager& levelManager, AudioManager& audioManager, const LevelID& levelID);
 		virtual bool operator()() override;
 	
 	private:
 		LevelManager* levelManager;
+		AudioManager* audioManager;
 		LevelID levelID;
 	};
 }

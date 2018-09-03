@@ -163,6 +163,7 @@
     <ClInclude Include="Source\Components\Component.h" />
     <ClInclude Include="Source\Components\ControllerComponent.h" />
     <ClInclude Include="Source\Components\RenderComponent.h" />
+    <ClInclude Include="Source\Engine\Audio\AudioManager.h" />
     <ClInclude Include="Source\Engine\Config\EngineConfig.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\EngineCommands.h" />
@@ -183,6 +184,7 @@
     <ClInclude Include="Source\Levels\LevelManager.h" />
     <ClInclude Include="Source\Levels\TestLevel.h" />
     <ClInclude Include="Source\SFMLInterface\Assets.h" />
+    <ClInclude Include="Source\SFMLInterface\Audio\AudioPlayer.h" />
     <ClInclude Include="Source\SFMLInterface\SystemClock.h" />
     <ClInclude Include="Source\SFMLInterface\Input.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\Renderer.h" />
@@ -207,6 +209,7 @@
     <ClCompile Include="Source\Components\Component.cpp" />
     <ClCompile Include="Source\Components\ControllerComponent.cpp" />
     <ClCompile Include="Source\Components\RenderComponent.cpp" />
+    <ClCompile Include="Source\Engine\Audio\AudioManager.cpp" />
     <ClCompile Include="Source\Engine\Config\EngineConfig.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\EngineCommands.cpp" />
@@ -227,6 +230,7 @@
     <ClCompile Include="Source\Levels\TestLevel.cpp" />
     <ClCompile Include="Source\LittleEngine.cpp" />
     <ClCompile Include="Source\SFMLInterface\Assets.cpp" />
+    <ClCompile Include="Source\SFMLInterface\Audio\AudioPlayer.cpp" />
     <ClCompile Include="Source\SFMLInterface\Rendering\RenderFactory.cpp" />
     <ClCompile Include="Source\SFMLInterface\SystemClock.cpp" />
     <ClCompile Include="Source\SFMLInterface\Input.cpp" />

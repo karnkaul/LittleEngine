@@ -15,7 +15,11 @@
 namespace LittleEngine {
 	BootLevel::BootLevel(Engine& engine) : Level("BootLevel", engine) {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
-		LoadAssets();
+		static bool _assetsLoaded = false;
+		if (!_assetsLoaded) {
+			LoadAssets();
+			_assetsLoaded = true;
+		}
 		
 		Vector2 lowerBound = this->engine->GetWorld().GetScreenBounds().lower;
 		_logo = SpawnActor("Logo");
@@ -44,7 +48,10 @@ namespace LittleEngine {
 
 	void BootLevel::LoadAssets() {
 		Logger::Log(*this, "Loading Assets...", Logger::Severity::Debug);
-		engine->GetAssetManager().LoadAllTextures({ "Assets/Ship.png" });
+		AssetManager& assetManager = engine->GetAssetManager();
+		assetManager.Load<TextureAsset>({ "Ship.png" });
+		assetManager.Load<SoundAsset>({ "TestSound.wav", "TestSound_b.wav" });
+		assetManager.Load<MusicAsset>({ "TestMusic.ogg" });
 	}
 
 	void BootLevel::OnLoadNextLevel() {

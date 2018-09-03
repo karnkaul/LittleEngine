@@ -109,6 +109,10 @@ namespace LittleEngine {
 		return engine->GetAssetManager();
 	}
 
+	AudioManager & Level::GetAudioManager() {
+		return engine->GetAudioManager();
+	}
+
 	CollisionManager & Level::GetCollisionManager() {
 		return collisionManager;
 	}

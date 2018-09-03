@@ -8,6 +8,10 @@ namespace LittleEngine {
 		startTime = gameTime;
 	}
 
+	void GameClock::Restart() {
+		startTime = gameTime;
+	}
+
 	int64_t GameClock::GetElapsedMicroSeconds() const {
 		double elapsedMS = gameTime - startTime;
 		return static_cast<int64_t>(elapsedMS * 1000);
