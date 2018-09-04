@@ -10,11 +10,12 @@ namespace Consts {
 	constexpr int MAX_FPS = 125;
 }
 
-namespace Game {
+namespace LittleEngine {
 	class Actor;
 	class World;
 	class EngineConfig;
 	class AssetManager;
+	class AudioManager;
 	class Level;
 	class LevelManager;
 	class WindowController;
@@ -51,12 +52,14 @@ namespace Game {
 		InputHandler& GetInputHandler() const;
 		const World& GetWorld() const;
 		AssetManager& GetAssetManager() const;
+		AudioManager& GetAudioManager() const;
 		void LoadLevel(const LevelID& levelID);
 		void Quit();
 
 	private:
 		std::unique_ptr<AssetManager> assetManager;
 		std::unique_ptr<LevelManager> levelManager;
+		std::unique_ptr<AudioManager> audioManager;
 		std::unique_ptr<EngineConfig> config;
 		std::unique_ptr<World> world;
 		std::unique_ptr<WindowController> windowController;

@@ -1,7 +1,7 @@
 #pragma once
 #include "SFMLInterface/SystemClock.h"
 
-namespace Game {
+namespace LittleEngine {
 	class Object;
 	class FileLogger;
 

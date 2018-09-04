@@ -4,7 +4,7 @@
 #include "WindowController.h"
 #include "Utils/Utils.h"
 
-namespace Game {
+namespace LittleEngine {
 	LayerInfo::LayerInfo(int layerID) {
 		SetLayerID(layerID);
 	}

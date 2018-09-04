@@ -4,7 +4,7 @@
 #include "Utils/Vector2.h"
 #include "SFMLInterface/Assets.h"
 
-namespace Game { 
+namespace LittleEngine { 
 	struct Colour;
 	class CircleRenderer;
 	class RectangleRenderer;
@@ -12,6 +12,9 @@ namespace Game {
 	class TextRenderer;
 	struct TextData;
 	struct SpriteData;
+
+	using Fixed = Utils::Fixed;
+	using Vector2 = Utils::Vector2;
 
 	namespace RenderFactory {
 	std::unique_ptr<CircleRenderer> NewCircle(const Fixed& radius);

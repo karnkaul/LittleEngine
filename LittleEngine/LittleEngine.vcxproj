@@ -163,6 +163,7 @@
     <ClInclude Include="Source\Components\Component.h" />
     <ClInclude Include="Source\Components\ControllerComponent.h" />
     <ClInclude Include="Source\Components\RenderComponent.h" />
+    <ClInclude Include="Source\Engine\Audio\AudioManager.h" />
     <ClInclude Include="Source\Engine\Config\EngineConfig.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\EngineCommands.h" />
@@ -177,11 +178,13 @@
     <ClInclude Include="Source\Engine\Physics\CollisionManager.h" />
     <ClInclude Include="Source\Engine\World.h" />
     <ClInclude Include="Source\Entities\Actor.h" />
+    <ClInclude Include="Source\Entities\Player.h" />
     <ClInclude Include="Source\Levels\BootLevel.h" />
     <ClInclude Include="Source\Levels\Level.h" />
     <ClInclude Include="Source\Levels\LevelManager.h" />
     <ClInclude Include="Source\Levels\TestLevel.h" />
     <ClInclude Include="Source\SFMLInterface\Assets.h" />
+    <ClInclude Include="Source\SFMLInterface\Audio\AudioPlayer.h" />
     <ClInclude Include="Source\SFMLInterface\SystemClock.h" />
     <ClInclude Include="Source\SFMLInterface\Input.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\Renderer.h" />
@@ -195,7 +198,7 @@
     <ClInclude Include="Source\Utils\FileRW.h" />
     <ClInclude Include="Source\Utils\Fixed.h" />
     <ClInclude Include="Source\Utils\Utils.h" />
-    <ClInclude Include="Source\Utils\PropRW.h" />
+    <ClInclude Include="Source\Utils\Property.h" />
     <ClInclude Include="Source\Utils\Rect2.h" />
     <ClInclude Include="Source\Utils\Transform.h" />
     <ClInclude Include="Source\Utils\Vector2.h" />
@@ -206,6 +209,7 @@
     <ClCompile Include="Source\Components\Component.cpp" />
     <ClCompile Include="Source\Components\ControllerComponent.cpp" />
     <ClCompile Include="Source\Components\RenderComponent.cpp" />
+    <ClCompile Include="Source\Engine\Audio\AudioManager.cpp" />
     <ClCompile Include="Source\Engine\Config\EngineConfig.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\EngineCommands.cpp" />
@@ -219,12 +223,14 @@
     <ClCompile Include="Source\Engine\Physics\CollisionManager.cpp" />
     <ClCompile Include="Source\Engine\World.cpp" />
     <ClCompile Include="Source\Entities\Actor.cpp" />
+    <ClCompile Include="Source\Entities\Player.cpp" />
     <ClCompile Include="Source\Levels\BootLevel.cpp" />
     <ClCompile Include="Source\Levels\Level.cpp" />
     <ClCompile Include="Source\Levels\LevelManager.cpp" />
     <ClCompile Include="Source\Levels\TestLevel.cpp" />
     <ClCompile Include="Source\LittleEngine.cpp" />
     <ClCompile Include="Source\SFMLInterface\Assets.cpp" />
+    <ClCompile Include="Source\SFMLInterface\Audio\AudioPlayer.cpp" />
     <ClCompile Include="Source\SFMLInterface\Rendering\RenderFactory.cpp" />
     <ClCompile Include="Source\SFMLInterface\SystemClock.cpp" />
     <ClCompile Include="Source\SFMLInterface\Input.cpp" />
@@ -237,7 +243,7 @@
     <ClCompile Include="Source\Utils\FileRW.cpp" />
     <ClCompile Include="Source\Utils\Fixed.cpp" />
     <ClCompile Include="Source\Utils\Utils.cpp" />
-    <ClCompile Include="Source\Utils\PropRW.cpp" />
+    <ClCompile Include="Source\Utils\Property.cpp" />
     <ClCompile Include="Source\Utils\Transform.cpp" />
     <ClCompile Include="Source\Utils\Vector2.cpp" />
     <ClCompile Include="stdafx.cpp">

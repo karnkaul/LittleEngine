@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Input.h"
 
-namespace Game {
+namespace LittleEngine {
 	const KeyMod KeyMod::Default = KeyMod();
 
 	KeyCode Convert(const sf::Keyboard::Key& code) {

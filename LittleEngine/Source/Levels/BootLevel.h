@@ -2,7 +2,7 @@
 #include "Level.h"
 #include "Engine/Input/InputHandler.h"
 
-namespace Game {
+namespace LittleEngine {
 	class Engine;
 	class TextRenderer;
 

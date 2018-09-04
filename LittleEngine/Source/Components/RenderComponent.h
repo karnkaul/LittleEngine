@@ -3,7 +3,7 @@
 #include "Utils/Rect2.h"
 #include "SFMLInterface/Rendering/Renderer.h"
 
-namespace Game {
+namespace LittleEngine {
 	class Actor;
 	struct RenderParams;
 	class Renderer;

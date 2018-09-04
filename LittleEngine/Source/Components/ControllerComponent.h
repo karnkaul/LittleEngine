@@ -5,9 +5,11 @@
 #include "Utils/Vector2.h"
 #include "Engine/Input/InputHandler.h"
 
-namespace Game {
+namespace LittleEngine {
 	class Actor;
 	struct KeyState;
+
+	using Vector2 = Utils::Vector2;
 	
 	// \brief Player Controller Component
 	class ControllerComponent : public Component {

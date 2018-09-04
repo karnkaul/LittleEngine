@@ -4,7 +4,7 @@
 #include "Entities/Actor.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 
-namespace Game {
+namespace LittleEngine {
 	Component::Component(Actor& actor, const std::string& name) : Object(name) {
 		this->actor = &actor;
 		Logger::Log(*this, ToString() + " created");
@@ -28,6 +28,6 @@ namespace Game {
 	}
 
 	std::string Component::ToString() const {
-		return Object::GetName() + ":" + actor->GetName();
+		return "[" + actor->GetName() + ":" + GetName() + "]";
 	}
 }

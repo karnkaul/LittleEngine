@@ -2,7 +2,7 @@
 #include "Components/Component.h"
 #include "ColliderData.h"
 
-namespace Game {
+namespace LittleEngine {
 	class Actor;
 	class CollisionManager;
 	class World;
@@ -18,6 +18,8 @@ namespace Game {
 		// Abstract Visitor
 		virtual bool IsIntersecting(const Collider& rhs) const = 0;
 		virtual void DrawDebugShape(bool show, const Fixed& thickness = DEBUG_BORDER_WIDTH) = 0;
+
+		void OnHit(Collider& other);
 
 	protected:
 		const World* world;

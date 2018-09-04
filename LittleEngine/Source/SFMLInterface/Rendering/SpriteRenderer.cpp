@@ -4,7 +4,7 @@
 #include "RenderParams.h"
 #include "SFMLInterface/WindowController.h"
 
-namespace Game {
+namespace LittleEngine {
 	SpriteRenderer::SpriteRenderer(const SpriteData& data) : Renderer("SpriteRenderer"), data(data) {
 		ApplyData();
 		SetPosition(Vector2::Zero);

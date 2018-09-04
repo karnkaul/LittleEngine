@@ -2,7 +2,7 @@
 #include "Gamepad.h"
 #include "Utils/Utils.h"
 
-namespace Game {
+namespace LittleEngine {
 	Gamepad::RawInput::RawInput(KeyCode keyCode)
 		: keyCode(keyCode) {
 	}

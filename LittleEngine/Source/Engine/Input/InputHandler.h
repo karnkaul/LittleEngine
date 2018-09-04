@@ -5,10 +5,10 @@
 #include "Utils/Delegate.hpp"
 #include "Gamepad.h"
 
-namespace Game {
+namespace LittleEngine {
 	struct KeyState;
 	enum class KeyCode;
-	using OnInput = Action;
+	using OnInput = Utils::Action;
 
 	enum class OnKey { Pressed, Held, Released };
 

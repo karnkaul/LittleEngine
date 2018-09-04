@@ -18,14 +18,28 @@ namespace Utils {
 		CleanVector<std::weak_ptr<T>>(vec, [](std::weak_ptr<T>& ptr) { return ptr.lock() == nullptr; });
 	}
 
+	// Given a vector<T> and T& value, returns an iterator using std::find
 	template<typename T>
 	typename std::vector<T>::const_iterator VectorSearch(const std::vector<T>& vec, const T& value) {
 		typename std::vector<T>::const_iterator iter = std::find(vec.begin(), vec.end(), value);
 		return iter;
 	}
+
+	// Returns true if val is found, and erases it from vec
+	template<typename T>
+	bool VectorErase(std::vector<T>& vec, const T& val) {
+		auto iter = VectorSearch(vec, val);
+		if (iter != vec.end()) {
+			vec.erase(iter);
+			return true;
+		}
+		return false;
+	}
 }
 
 namespace Maths {
+	using Fixed = Utils::Fixed;
+
 	// Returns val E [min, max]
 	template<typename T>
 	T Clamp(T val, T min, T max) {

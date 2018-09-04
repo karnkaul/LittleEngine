@@ -14,10 +14,12 @@
 #include "Components/Component.h"
 #include "Utils/Utils.h"
 
-namespace Game {
-	Actor::Actor(Level& level, std::string name) : Object(name) {
+namespace LittleEngine {
+	Actor::Actor(Level& level, const std::string& name, const Vector2& position, const Fixed& rotation) : Object(name) {
 		this->level = &level;
-		Logger::Log(*this, "Actor Spawned at " + transform.Position().ToString());
+		transform.localPosition = position;
+		transform.localRotation = rotation;
+		Logger::Log(*this, GetNameInBrackets() + " (Actor) Spawned at " + transform.Position().ToString());
 	}
 
 	Actor::~Actor() {
@@ -25,7 +27,7 @@ namespace Game {
 			collider = nullptr;
 		}
 		components.clear();
-		Logger::Log(*this, "Actor Destroyed");
+		Logger::Log(*this, GetNameInBrackets() + " (Actor) Destroyed");
 	}
 
 	void Actor::SetNormalisedPosition(Vector2 localNPosition) {

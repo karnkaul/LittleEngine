@@ -2,13 +2,16 @@
 #include "Utils/Fixed.h"
 #include "SFMLInterface/SystemClock.h"
 
-namespace Game {
+namespace LittleEngine {
+	using Fixed = Utils::Fixed;
+
 	// \brief Use to measure game time
 	// Note: This DOES NOT run on its own, requires Engine to call Tick(deltaTime)!
 	class GameClock {
 	public:
 		GameClock();
 
+		void Restart();
 		int64_t GetElapsedMicroSeconds() const;
 		int GetElapsedMilliSeconds() const;
 		

@@ -12,24 +12,27 @@
 #include "SFMLInterface/Rendering/TextRenderer.h"
 #include "SFMLInterface/Assets.h"
 
-namespace Game {
+namespace LittleEngine {
 	BootLevel::BootLevel(Engine& engine) : Level("BootLevel", engine) {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
-		LoadAssets();
+		static bool _assetsLoaded = false;
+		if (!_assetsLoaded) {
+			LoadAssets();
+			_assetsLoaded = true;
+		}
 		
 		Vector2 lowerBound = this->engine->GetWorld().GetScreenBounds().lower;
-		Fixed logoY = lowerBound.y + 200;
 		_logo = SpawnActor("Logo");
 		std::shared_ptr<Actor> logo = nullptr;
 		if ((logo = _logo.lock()) != nullptr) {
 			auto renderer = logo->AddComponent<RenderComponent>();
 			logoRenderer = &renderer->SetTextRenderer("... Press Enter to Start ...");
-			//logo->GetTransform().localPosition = Vector2(0, logoY);
 			logo->SetNormalisedPosition(Vector2(0, Fixed(-0.66f)));
 		}
 
 		inputTokens.push_back(GetInputHandler().Register(GameInput::Enter, std::bind(&BootLevel::OnLoadNextLevel, this), OnKey::Released));
 		inputTokens.push_back(GetInputHandler().Register(GameInput::Return, std::bind(&BootLevel::OnQuit, this), OnKey::Released));
+		this->engine->GetAudioManager().PlayMusic("TestMusic_0.ogg");
 	}
 
 	void BootLevel::Tick(Fixed deltaTime) {
@@ -46,7 +49,10 @@ namespace Game {
 
 	void BootLevel::LoadAssets() {
 		Logger::Log(*this, "Loading Assets...", Logger::Severity::Debug);
-		engine->GetAssetManager().LoadAllTextures({ "Assets/Ship.png" });
+		AssetManager& assetManager = engine->GetAssetManager();
+		assetManager.Load<TextureAsset>({ "Ship.png" });
+		assetManager.Load<SoundAsset>({ "TestSound.wav", "TestSound_b.wav" });
+		assetManager.Load<MusicAsset>({ "TestMusic.ogg", "TestMusic_0.ogg" });
 	}
 
 	void BootLevel::OnLoadNextLevel() {

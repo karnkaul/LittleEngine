@@ -3,7 +3,7 @@
 #include "Engine/Object.h"
 #include "Engine/Physics/Collider.h"
 
-namespace Game {
+namespace LittleEngine {
 	// \brief Handles Collider registrations and collision notifications
 	class CollisionManager final : public Object {
 	public:

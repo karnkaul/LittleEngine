@@ -7,7 +7,7 @@
 #include "BootLevel.h"
 #include "TestLevel.h"
 
-namespace Game {
+namespace LittleEngine {
 	LevelManager::LevelManager(Engine& engine) : Object("LevelManager") {
 		this->engine = &engine;
 		Logger::Log(*this, "LevelManager created");

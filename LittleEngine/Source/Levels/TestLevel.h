@@ -2,9 +2,11 @@
 #include "Level.h"
 #include "Utils/Delegate.hpp"
 
-namespace Game {
+namespace LittleEngine {
 	class Engine;
 	struct RenderParams;
+
+	using Action = Utils::Action;
 
 	class TestLevel : public Level {
 	public:

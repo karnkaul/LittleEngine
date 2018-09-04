@@ -4,7 +4,7 @@
 #include "Engine/World.h"
 #include "SFML/Graphics.hpp"
 
-namespace Game {
+namespace LittleEngine {
 	const Colour Colour::Black(0, 0, 0);
 	const Colour Colour::White;
 	const Colour Colour::Red(255, 0, 0);
@@ -16,11 +16,11 @@ namespace Game {
 	const Colour Colour::Transparent(0, 0, 0, 0);
 
 	Renderer::Renderer(std::string name) : Object(name) {
-		Logger::Log(*this, name + " created");
+		Logger::Log(*this, name + " created", Logger::Severity::Debug);
 	}
 
 	Renderer::~Renderer() {
-		Logger::Log(*this, name + " destroyed");
+		Logger::Log(*this, name + " destroyed", Logger::Severity::Debug);
 	}
 
 	void Renderer::Render(RenderParams & params) {

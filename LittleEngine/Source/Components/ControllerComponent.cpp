@@ -13,16 +13,17 @@
 #include "Levels/Level.h"
 
 namespace _ControllerComponent {
+	LittleEngine::Logger::Severity s = LittleEngine::Logger::Severity::Debug;
 	void Test() {
-		Game::Logger::Log("Another left detected!");
+		LittleEngine::Logger::Log("Another left detected!", s);
 	}
 
 	void Test2() {
-		Game::Logger::Log("Consuming left detected! (no other Lefts should be triggered)");
+		LittleEngine::Logger::Log("Consuming left detected! (no other Lefts should be triggered)", s);
 	}
 }
 
-void ClampPosition(Vector2& position, const Rect2& worldBounds, const Vector2& padding) {
+void ClampPosition(Utils::Vector2& position, const Utils::Rect2& worldBounds, const Utils::Vector2& padding) {
 	if ((position.x - padding.x) < worldBounds.lower.x) {
 		position.x = worldBounds.lower.x + padding.x;
 	}
@@ -37,7 +38,7 @@ void ClampPosition(Vector2& position, const Rect2& worldBounds, const Vector2& p
 	}
 }
 
-namespace Game {
+namespace LittleEngine {
 	bool _deletedToken = false;
 
 	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent") {

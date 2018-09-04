@@ -3,7 +3,7 @@
 #include "Utils/Vector2.h"
 #include "Renderer.h"
 
-namespace Game {
+namespace LittleEngine {
 	// \brief Abstract class for drawing SFML Shapes
 	class ShapeRenderer : public Renderer {
 	public:

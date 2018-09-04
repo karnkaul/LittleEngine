@@ -2,7 +2,7 @@
 #include <vector>
 #include "SFML/Window.hpp"
 
-namespace Game {
+namespace LittleEngine {
 	// \brief Wrapper enum for sf::KeyBoard::Key
 	enum class KeyCode {
 		Invalid,

@@ -3,10 +3,9 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include "Utils/FileRW.h"
 
-class FileRW;
-
-namespace Game {
+namespace LittleEngine {
 	// \brief RAII Asynchronous file logger; sleeps thread for a millisecond 1000 times
 	class FileLogger {
 	public:
@@ -17,7 +16,7 @@ namespace Game {
 		bool pauseWriting = false;
 	private:
 		std::vector<std::string> buffer;
-		std::unique_ptr<FileRW> file;
+		std::unique_ptr<Utils::FileRW> file;
 		std::mutex mutex;
 		bool writing = true;
 

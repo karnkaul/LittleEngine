@@ -5,7 +5,7 @@
 #include "Engine/Object.h"
 #include "Engine/GameClock.h"
 
-namespace Game {
+namespace LittleEngine {
 	Logger::Severity Logger::logLevel = Logger::Severity::Info;
 	std::unique_ptr<FileLogger> Logger::fileLogger = nullptr;
 

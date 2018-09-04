@@ -11,7 +11,7 @@
 #include "SFMLInterface/Rendering/TextRenderer.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 
-namespace Game {
+namespace LittleEngine {
 	RenderComponent::RenderComponent(Actor& actor) 
 		: Component(actor, "RenderComponent") {
 	}
@@ -48,7 +48,7 @@ namespace Game {
 	}
 	
 	SpriteRenderer& RenderComponent::SetSpriteRenderer(const std::string & texturePath) {
-		TextureAsset::Ptr texture = GetActor().GetActiveLevel().GetAssetManager().LoadAsset<TextureAsset>(texturePath);
+		TextureAsset::Ptr texture = GetActor().GetActiveLevel().GetAssetManager().Load<TextureAsset>(texturePath);
 		SpriteData spriteData(texture);
 		SetRenderer(RenderFactory::NewSprite(spriteData));
 		return *dynamic_cast<SpriteRenderer*>(renderer.get());

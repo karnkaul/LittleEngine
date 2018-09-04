@@ -46,6 +46,12 @@
     <Filter Include="Source\Engine\Physics">
       <UniqueIdentifier>{054812d5-7519-4308-a14e-870cebf4634e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\SFMLInterface\Audio">
+      <UniqueIdentifier>{d7d94888-e5ff-4114-b93b-14db67006e80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Audio">
+      <UniqueIdentifier>{c4bde70d-0f38-48ca-92cf-26728d2c0bdc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -79,9 +85,6 @@
       <Filter>Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source\Utils\Fixed.h">
-      <Filter>Source\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Utils\PropRW.h">
       <Filter>Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source\Utils\Transform.h">
@@ -171,6 +174,18 @@
     <ClInclude Include="Source\Utils\Utils.h">
       <Filter>Source\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Utils\Property.h">
+      <Filter>Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\Player.h">
+      <Filter>Source\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Audio\AudioPlayer.h">
+      <Filter>Source\SFMLInterface\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Audio\AudioManager.h">
+      <Filter>Source\Engine\Audio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -195,9 +210,6 @@
       <Filter>Source\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utils\Fixed.cpp">
-      <Filter>Source\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\PropRW.cpp">
       <Filter>Source\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utils\Transform.cpp">
@@ -284,6 +296,18 @@
     </ClCompile>
     <ClCompile Include="Source\Utils\Utils.cpp">
       <Filter>Source\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\Property.cpp">
+      <Filter>Source\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Player.cpp">
+      <Filter>Source\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Audio\AudioPlayer.cpp">
+      <Filter>Source\SFMLInterface\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Audio\AudioManager.cpp">
+      <Filter>Source\Engine\Audio</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
