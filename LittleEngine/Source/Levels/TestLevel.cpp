@@ -148,6 +148,8 @@ namespace LittleEngine {
 		_TestLevel::token2 = GetInputHandler().Register(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
 		_TestLevel::token3 = GetInputHandler().Register(GameInput::RB, &_TestLevel::OnLBPressed, OnKey::Released);
 		_TestLevel::soundPlayed = _TestLevel::musicPlayed = false;
+
+		GetAudioManager().PlayMusic("TestMusic.ogg", Fixed::Half);
 	}
 
 	void RenderTests(Level* level, std::vector<Actor::Ptr>& actors, RenderParams& params) {
@@ -159,19 +161,20 @@ namespace LittleEngine {
 	void TestLevel::Render(RenderParams & params) {
 		if (clock.GetElapsedMilliSeconds() > 2000 && !_TestLevel::soundPlayed) {
 			_TestLevel::soundPlayed = true;
-			GetAudioManager().PlaySFX("TestSound.wav", Fixed(0.2f));
+			GetAudioManager().PlaySFX("TestSound.wav", Fixed(2, 10));
 		}	
 		if (clock.GetElapsedMilliSeconds() > 2100 && !_TestLevel::musicPlayed) {
 			_TestLevel::musicPlayed = true;
-			if (!GetAudioManager().PlaySFX("TestSound_b.wav", Fixed(0.5f))) {
+			if (!GetAudioManager().PlaySFX("TestSound_b.wav", Fixed::Half)) {
 				Logger::Log(*this, "Could not play SFX!", Logger::Severity::Error);
 			}
-			GetAudioManager().PlayMusic("TestMusic.ogg", Fixed(0.5f));
+			GetAudioManager().SetMusicVolume(Fixed::One);
+			//GetAudioManager().SwitchTrack("TestMusic_0.ogg", Fixed::Half);
 		}
-		/*if (clock.GetElapsedMilliSeconds() > 5000 && !_TestLevel::musicStopped) {
+		if (clock.GetElapsedMilliSeconds() > 5000 && !_TestLevel::musicStopped) {
 			_TestLevel::musicStopped = true;
-			GetAudioManager().StopMusic();
-		}*/
+			//GetAudioManager().SwitchTrack("TestMusic.ogg", Fixed::Half, Fixed(3));
+		}
 		RenderTests(this, actors, params);
  		Level::Render(params);
 	}

@@ -32,6 +32,7 @@ namespace LittleEngine {
 
 		inputTokens.push_back(GetInputHandler().Register(GameInput::Enter, std::bind(&BootLevel::OnLoadNextLevel, this), OnKey::Released));
 		inputTokens.push_back(GetInputHandler().Register(GameInput::Return, std::bind(&BootLevel::OnQuit, this), OnKey::Released));
+		this->engine->GetAudioManager().PlayMusic("TestMusic_0.ogg");
 	}
 
 	void BootLevel::Tick(Fixed deltaTime) {
@@ -51,7 +52,7 @@ namespace LittleEngine {
 		AssetManager& assetManager = engine->GetAssetManager();
 		assetManager.Load<TextureAsset>({ "Ship.png" });
 		assetManager.Load<SoundAsset>({ "TestSound.wav", "TestSound_b.wav" });
-		assetManager.Load<MusicAsset>({ "TestMusic.ogg" });
+		assetManager.Load<MusicAsset>({ "TestMusic.ogg", "TestMusic_0.ogg" });
 	}
 
 	void BootLevel::OnLoadNextLevel() {

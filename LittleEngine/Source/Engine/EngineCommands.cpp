@@ -13,7 +13,7 @@ namespace LittleEngine {
 	}
 
 	bool LoadLevelCommand::operator()() {
-		audioManager->Clear();
+		audioManager->Clear(false);
 		return levelManager->LoadLevel(levelID);
 	}
 }

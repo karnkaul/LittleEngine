@@ -49,7 +49,7 @@ namespace LittleEngine {
 		MusicPlayer(MusicAsset::Ptr musicAsset);
 		~MusicPlayer();
 		
-		bool SetMusicAsset(MusicAsset::Ptr musicAsset);
+		bool SetTrack(MusicAsset::Ptr track);
 		Fixed GetDurationSeconds() const;
 		Fixed GetElapsedSeconds() const;
 		
@@ -61,8 +61,9 @@ namespace LittleEngine {
 
 	private:
 		friend class AudioManager;
-		bool ApplyParams(bool replaceMusic);
 		GameClock clock;
-		MusicAsset::Ptr musicAsset;
+		MusicAsset::Ptr mainTrack = nullptr;
+
+		bool ApplyParams(bool replaceMusic);
 	};
 }

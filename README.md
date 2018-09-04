@@ -12,7 +12,7 @@ In the very least, it is desired for the engine to be capable of the following:
 1. Add user created components to game objects at run time [Complete]
 1. Have a collision detection system [Complete]
 1. Play sounds [Complete]
-1. Play seamless music [Pending]
+1. Play seamless music [Complete]
 1. Have animated sprites [Pending]
 1. Have a collision resolution system [Pending]
 

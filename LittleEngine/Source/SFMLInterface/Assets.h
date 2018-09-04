@@ -78,6 +78,7 @@ namespace LittleEngine {
 	private:
 		friend class AssetManager;
 		friend class MusicPlayer;
+		friend class AudioManager;
 
 		sf::Music music;
 		Fixed volumeScale = Fixed::One;

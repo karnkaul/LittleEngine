@@ -71,27 +71,27 @@ namespace LittleEngine {
 	}
 
 	MusicPlayer::MusicPlayer(MusicAsset::Ptr musicAsset) : AudioPlayer("MusicPlayer") {
-		SetMusicAsset(musicAsset);
+		SetTrack(musicAsset);
 	}
 
 	MusicPlayer::~MusicPlayer() {
 		if (IsPlaying()) {
-			musicAsset->music.stop();
+			mainTrack->music.stop();
 		}
 	}
 
-	bool MusicPlayer::SetMusicAsset(MusicAsset::Ptr musicAsset) {
+	bool MusicPlayer::SetTrack(MusicAsset::Ptr musicAsset) {
 		if (musicAsset) {
-			this->musicAsset = musicAsset;
+			this->mainTrack = musicAsset;
 			return true;
 		}
 		return false;
 	}
 
 	Fixed MusicPlayer::GetDurationSeconds() const {
-		if (musicAsset && musicAsset->valid) {
+		if (mainTrack && mainTrack->valid) {
 			if (!looping) {
-				return musicAsset->GetDurationSeconds();
+				return mainTrack->GetDurationSeconds();
 			}
 			else {
 				return -Fixed::One;
@@ -108,28 +108,28 @@ namespace LittleEngine {
 	}
 
 	void MusicPlayer::Play() {
-		if (musicAsset && musicAsset->valid) {
+		if (mainTrack && mainTrack->valid) {
 			clock.Restart();
 			ApplyParams(false);
-			musicAsset->music.play();
+			mainTrack->music.play();
 		}
 	}
 
 	void MusicPlayer::Stop() {
-		if (musicAsset) {
-			musicAsset->music.stop();
+		if (mainTrack) {
+			mainTrack->music.stop();
 		}
 	}
 
 	void MusicPlayer::Reset(Fixed seconds) {
-		if (musicAsset) {
+		if (mainTrack) {
 			clock.Restart();
-			musicAsset->music.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.GetDouble() * 1000)));
+			mainTrack->music.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.GetDouble() * 1000)));
 		}
 	}
 
 	bool MusicPlayer::IsPlaying() const {
-		return musicAsset &&  musicAsset->music.getStatus() == sf::SoundSource::Status::Playing;
+		return mainTrack &&  mainTrack->music.getStatus() == sf::SoundSource::Status::Playing;
 	}
 
 	void MusicPlayer::Tick(Fixed deltaSeconds) {
@@ -137,11 +137,11 @@ namespace LittleEngine {
 	}
 
 	bool MusicPlayer::ApplyParams(bool replaceMusic) {
-		if (musicAsset) {
-			musicAsset->music.setVolume(Maths::Clamp01(volume * musicAsset->volumeScale).GetFloat() * 100);
-			musicAsset->music.setLoop(looping);
+		if (mainTrack) {
+			mainTrack->music.setVolume(Maths::Clamp01(volume * mainTrack->volumeScale).GetFloat() * 100);
+			mainTrack->music.setLoop(looping);
 			if (replaceMusic) {
-				return musicAsset->music.openFromFile(musicAsset->resourcePath);
+				return mainTrack->music.openFromFile(mainTrack->resourcePath);
 			}
 			return true;
 		}
