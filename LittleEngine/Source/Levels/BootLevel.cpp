@@ -22,7 +22,7 @@ namespace LittleEngine {
 		}
 		
 		Vector2 lowerBound = this->engine->GetWorld().GetScreenBounds().lower;
-		_logo = SpawnActor("Logo");
+		_logo = SpawnActor<Actor>("Logo");
 		std::shared_ptr<Actor> logo = nullptr;
 		if ((logo = _logo.lock()) != nullptr) {
 			auto renderer = logo->AddComponent<RenderComponent>();

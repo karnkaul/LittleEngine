@@ -186,6 +186,12 @@
     <ClInclude Include="Source\Engine\Audio\AudioManager.h">
       <Filter>Source\Engine\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Components\SpriteAnimator.h">
+      <Filter>Source\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\VFX.h">
+      <Filter>Source\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -308,6 +314,12 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\Audio\AudioManager.cpp">
       <Filter>Source\Engine\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\SpriteAnimator.cpp">
+      <Filter>Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\VFX.cpp">
+      <Filter>Source\Entities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -36,7 +36,7 @@ namespace LittleEngine {
 	}
 
 	void SpriteRenderer::SetTexture(TextureAsset::Ptr texture) {
-		Logger::Log(*this, "Setting texture to [" + texture->GetResourcePath() + "]", Logger::Severity::Debug);
+		//Logger::Log(*this, "Setting texture to [" + texture->GetResourcePath() + "]", Logger::Severity::Debug);
 		data.texture = texture;
 	}
 

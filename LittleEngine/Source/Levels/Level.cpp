@@ -76,12 +76,6 @@ namespace LittleEngine {
 		}
 	}
 
-	Actor::wPtr Level::SpawnActor(const std::string& name, const Vector2& position, const Fixed& rotation) {
-		auto actor = std::make_shared<Actor>(*this, name, position, rotation);
-		actors.push_back(actor);
-		return actor;
-	}
-
 	Player::wPtr Level::GetOrSpawnPlayer(const std::string & texturePath, const AABBData & colliderBounds, const Vector2 & position, const Fixed & rotation) {
 		Player::Ptr _player = nullptr;
 		if ((_player = player.lock()) == nullptr) {

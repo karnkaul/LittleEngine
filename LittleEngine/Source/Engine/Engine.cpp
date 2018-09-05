@@ -60,8 +60,8 @@ namespace LittleEngine {
 
 	Engine::~Engine() {
 		levelManager = nullptr;
-		assetManager = nullptr;
 		audioManager = nullptr;
+		assetManager = nullptr;
 		world = nullptr;
 		inputHandler = nullptr;
 		windowController = nullptr;

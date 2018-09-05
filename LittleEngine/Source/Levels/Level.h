@@ -42,7 +42,14 @@ namespace LittleEngine {
 
 		// \brief Safe API to spawn new Actors. All spawned Actors 
 		// will be destroyed along with the Level, hence returns weak_ptr.
-		Actor::wPtr SpawnActor(const std::string& name, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero);
+		template<typename T>
+		std::weak_ptr<T> SpawnActor(const std::string& name, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero) {
+			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
+			auto _actor = std::make_shared<T>(*this, name, position, rotation);
+			auto actor = std::dynamic_pointer_cast<Actor>(_actor);
+			actors.push_back(actor);
+			return _actor;
+		}
 		// \brief Safe API to destroy existing Actors
 		void DestroyActor(Actor::Ptr actor);
 		// \brief Safe API to spawn Player.

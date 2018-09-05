@@ -88,6 +88,17 @@ namespace LittleEngine {
 		MusicAsset(const std::string& path, const Fixed& volumeScale = Fixed::One);
 	};
 
+	struct AssetPaths {
+		std::vector<std::string> assetPaths;
+
+		AssetPaths(const std::string& assetPath);
+		AssetPaths(std::initializer_list<std::string> assetPaths);
+		AssetPaths(const std::string& pathPrefix, std::initializer_list<std::string> assetPaths);
+		AssetPaths(const std::string& pathPrefix, int count, const std::string& assetPrefix, const std::string& assetSuffix);
+
+		std::string GetRandom() const;
+	};
+
 	// \brief Class that handles all Asset Loading. (Maintains a clearable cache)
 	class AssetManager final : public Object {
 	public:
@@ -118,12 +129,26 @@ namespace LittleEngine {
 		FontAsset::Ptr GetDefaultFont() const;
 		// Note: Not meant to be used in hot code!
 		template<typename T>
-		void Load(std::initializer_list<std::string> assetPaths) {
+		std::vector<std::shared_ptr<T>> Load(std::initializer_list<std::string> assetPaths) {
 			static_assert(std::is_base_of<Asset, T>::value, "T must derive from Asset: check Output window for erroneous call");
+			std::vector<std::shared_ptr<T>> vec;
 			for (const auto& path : assetPaths) {
-				Load<T>(path);
+				vec.push_back(Load<T>(path));
 			}
+			return vec;
 		}
+
+		// Note: Not meant to be used in hot code!
+		template<typename T>
+		std::vector<std::shared_ptr<T>> Load(const std::vector<std::string>& assetPaths) {
+			static_assert(std::is_base_of<Asset, T>::value, "T must derive from Asset: check Output window for erroneous call");
+			std::vector<std::shared_ptr<T>> vec;
+			for (const auto& path : assetPaths) {
+				vec.push_back(Load<T>(path));
+			}
+			return vec;
+		}
+
 		// Unload all assets
 		void UnloadAll();
 

@@ -11,8 +11,8 @@ namespace LittleEngine {
 		AudioManager(Engine& engine);
 		~AudioManager();
 
-		// Returns true if asset is loaded successfully
-		bool PlaySFX(const std::string& path, const Fixed& volume = Fixed::One, bool loop = false);
+		// Returns nullptr if asset could not be loaded 
+		SoundPlayer* PlaySFX(const std::string& path, const Fixed& volume = Fixed::One, bool loop = false);
 		bool IsSFXPlaying() const;
 
 		// Returns true if asset is loaded successfully
