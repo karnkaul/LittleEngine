@@ -32,7 +32,7 @@ namespace LittleEngine {
 	void SoundPlayer::Play() {
 		if (soundAsset) {
 			soundAsset->sfSound.setBuffer(soundAsset->sfSoundBuffer);
-			ApplyParams(false);
+			ApplyParams();
 			soundAsset->sfSound.play();
 		}
 	}
@@ -54,17 +54,13 @@ namespace LittleEngine {
 	}
 
 	void SoundPlayer::Tick(Fixed deltaSeconds) {
-		ApplyParams(false);
+		ApplyParams();
 	}
 
-	bool SoundPlayer::ApplyParams(bool replaceSound) {
+	bool SoundPlayer::ApplyParams() {
 		if (soundAsset) {
 			soundAsset->sfSound.setVolume(Maths::Clamp01(volume * soundAsset->volumeScale).GetFloat() * 100);
 			soundAsset->sfSound.setLoop(looping);
-			if (replaceSound) {
-				soundAsset->sfSound.setBuffer(soundAsset->sfSoundBuffer);
-				return false;
-			}
 			return true;
 		}
 		return false;
@@ -110,7 +106,7 @@ namespace LittleEngine {
 	void MusicPlayer::Play() {
 		if (mainTrack && mainTrack->valid) {
 			clock.Restart();
-			ApplyParams(false);
+			ApplyParams();
 			mainTrack->music.play();
 		}
 	}
@@ -133,16 +129,13 @@ namespace LittleEngine {
 	}
 
 	void MusicPlayer::Tick(Fixed deltaSeconds) {
-		ApplyParams(false);
+		ApplyParams();
 	}
 
-	bool MusicPlayer::ApplyParams(bool replaceMusic) {
+	bool MusicPlayer::ApplyParams() {
 		if (mainTrack) {
 			mainTrack->music.setVolume(Maths::Clamp01(volume * mainTrack->volumeScale).GetFloat() * 100);
 			mainTrack->music.setLoop(looping);
-			if (replaceMusic) {
-				return mainTrack->music.openFromFile(mainTrack->resourcePath);
-			}
 			return true;
 		}
 		return false;

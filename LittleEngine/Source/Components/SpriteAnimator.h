@@ -15,6 +15,7 @@ namespace LittleEngine {
 		void Stop();
 		void Reset();
 		bool IsAnimating() const { return animating; }
+		void SetLayer(LayerInfo layer);
 
 		virtual void Tick(Fixed deltaTime) override;
 		virtual void Render(RenderParams params) override;

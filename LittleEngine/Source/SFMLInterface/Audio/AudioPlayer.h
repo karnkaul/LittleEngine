@@ -23,6 +23,7 @@ namespace LittleEngine {
 
 	protected:
 		AudioPlayer(const std::string& name);
+		virtual bool ApplyParams() = 0;
 	};
 
 	// \brief Concrete class for Sound playback (uses pre-loaded SoundAsset)
@@ -40,7 +41,7 @@ namespace LittleEngine {
 
 	private:
 		SoundAsset::Ptr soundAsset;
-		bool ApplyParams(bool replaceSound);
+		virtual bool ApplyParams() override;
 	};
 
 	// \brief Concrete class for Music playback (uses streamed MusicAsset)
@@ -64,6 +65,6 @@ namespace LittleEngine {
 		GameClock clock;
 		MusicAsset::Ptr mainTrack = nullptr;
 
-		bool ApplyParams(bool replaceMusic);
+		virtual bool ApplyParams() override;
 	};
 }

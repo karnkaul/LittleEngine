@@ -15,14 +15,33 @@ namespace LittleEngine {
 
 	TextureAsset::TextureAsset(const std::string& path) : Asset(path) {
 		if (!sfTexture.loadFromFile(resourcePath)) {
-			Logger::Log("Could not load texture from " + resourcePath + "!", Logger::Severity::Error);
+			Logger::Log("Could not load texture from [" + resourcePath + "]!", Logger::Severity::Error);
 		}
 	}
 
 	FontAsset::FontAsset(const std::string & path) : Asset(path) {
 		if (!sfFont.loadFromFile(resourcePath)) {
-			Logger::Log("Could not load font from " + resourcePath + "!", Logger::Severity::Error);
+			Logger::Log("Could not load font from [" + resourcePath + "]!", Logger::Severity::Error);
 		}
+	}
+
+	SoundAsset::SoundAsset(const std::string & path, const Fixed& volumeScale) : Asset(path) {
+		if (!sfSoundBuffer.loadFromFile(path)) {
+			Logger::Log("Could not load sound from [" + resourcePath + "]!", Logger::Severity::Error);
+		}
+		this->volumeScale = Maths::Clamp01(volumeScale);
+	}
+
+	MusicAsset::MusicAsset(const std::string & path, const Fixed& volumeScale) : Asset(path) {
+		valid = music.openFromFile(path);
+		this->volumeScale = Maths::Clamp01(volumeScale);
+		if (!valid) {
+			Logger::Log("Could not load music from [" + resourcePath + "]!", Logger::Severity::Error);
+		}
+	}
+
+	Fixed MusicAsset::GetDurationSeconds() const {
+		return Fixed(music.getDuration().asSeconds());
 	}
 
 	AssetPaths::AssetPaths(const std::string & assetPath) {
@@ -85,19 +104,5 @@ namespace LittleEngine {
 		}
 		UnloadAll();
 		Logger::Log(*this, "AssetManager destroyed");
-	}
-	
-	SoundAsset::SoundAsset(const std::string & path, const Fixed& volumeScale) : Asset(path) {
-		sfSoundBuffer.loadFromFile(path);
-		this->volumeScale = Maths::Clamp01(volumeScale);
-	}
-
-	MusicAsset::MusicAsset(const std::string & path, const Fixed& volumeScale) : Asset(path) {
-		valid = music.openFromFile(path);
-		this->volumeScale = Maths::Clamp01(volumeScale);
-	}
-	
-	Fixed MusicAsset::GetDurationSeconds() const {
-		return Fixed(music.getDuration().asSeconds());
 	}
 }

@@ -16,6 +16,7 @@ namespace LittleEngine {
 		Vector2 GetScreenSize() const { return screenSize; }
 		Rect2 GetScreenBounds() const { return screenBounds; }
 		Vector2 WorldToScreenPoint(const Vector2& worldPoint) const;
+		Vector2 NormalisedToScreenPoint(const Vector2& normalisedPoint) const;
 		
 	private:
 		Rect2 screenBounds;

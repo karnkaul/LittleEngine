@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "World.h"
 #include "Engine/Logger/Logger.h"
+#include "Utils/Utils.h"
 
 namespace LittleEngine {
 	World::World(const Vector2& screenSize) : Object("World") {
@@ -22,5 +23,13 @@ namespace LittleEngine {
 		Vector2 screenPoint(worldPoint.x, -worldPoint.y);
 		screenPoint += screenCentre;
 		return screenPoint;
+	}
+	
+	Vector2 World::NormalisedToScreenPoint(const Vector2 & normalisedPoint) const {
+		// -1 <= x, y <= 1
+		Vector2 p(Maths::Clamp_11(normalisedPoint.x), Maths::Clamp_11(normalisedPoint.y));
+		// r` = r * screen.r
+		Vector2 s = screenBounds.upper;
+		return Vector2(p.x * s.x, p.y * s.y);
 	}
 }

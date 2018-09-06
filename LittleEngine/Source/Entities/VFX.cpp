@@ -16,6 +16,7 @@ namespace LittleEngine {
 			animator = AddComponent<SpriteAnimator>();
 		}
 		animator->SetSpriteSheet(spriteSheet, animTime);
+		animator->SetLayer(LayerID::UI);
 		animator->enabled = false;
 		this->sfxPath = sfxPaths.GetRandom();
 		this->sfxVol = sfxVol;

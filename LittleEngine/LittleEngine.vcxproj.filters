@@ -192,6 +192,9 @@
     <ClInclude Include="Source\Entities\VFX.h">
       <Filter>Source\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Levels\Spawner.h">
+      <Filter>Source\Levels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -320,6 +323,9 @@
     </ClCompile>
     <ClCompile Include="Source\Entities\VFX.cpp">
       <Filter>Source\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Levels\Spawner.cpp">
+      <Filter>Source\Levels</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

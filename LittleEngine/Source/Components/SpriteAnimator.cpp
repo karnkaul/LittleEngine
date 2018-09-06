@@ -35,12 +35,26 @@ namespace LittleEngine {
 
 	void SpriteAnimator::Stop() {
 		animating = false;
-		spriteRenderer->SetEnabled(false);
+		if (spriteRenderer) {
+			spriteRenderer->SetEnabled(false);
+		}
+		else {
+			Logger::Log(*this, "Stop() called before spritesheet set!", Logger::Severity::Warning);
+		}
 	}
 
 	void SpriteAnimator::Reset() {
 		index = 0;
 		elapsed = Fixed::Zero;
+	}
+
+	void SpriteAnimator::SetLayer(LayerInfo layer) {
+		if (spriteRenderer) {
+			spriteRenderer->layer = layer;
+		}
+		else {
+			Logger::Log(*this, "SetLayer() called before spritesheet set!", Logger::Severity::Warning);
+		}
 	}
 
 	void SpriteAnimator::Tick(Fixed deltaTime) {

@@ -184,6 +184,7 @@
     <ClInclude Include="Source\Levels\BootLevel.h" />
     <ClInclude Include="Source\Levels\Level.h" />
     <ClInclude Include="Source\Levels\LevelManager.h" />
+    <ClInclude Include="Source\Levels\Spawner.h" />
     <ClInclude Include="Source\Levels\TestLevel.h" />
     <ClInclude Include="Source\SFMLInterface\Assets.h" />
     <ClInclude Include="Source\SFMLInterface\Audio\AudioPlayer.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="Source\Levels\BootLevel.cpp" />
     <ClCompile Include="Source\Levels\Level.cpp" />
     <ClCompile Include="Source\Levels\LevelManager.cpp" />
+    <ClCompile Include="Source\Levels\Spawner.cpp" />
     <ClCompile Include="Source\Levels\TestLevel.cpp" />
     <ClCompile Include="Source\LittleEngine.cpp" />
     <ClCompile Include="Source\SFMLInterface\Assets.cpp" />

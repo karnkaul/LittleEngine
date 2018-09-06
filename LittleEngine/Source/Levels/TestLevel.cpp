@@ -18,6 +18,7 @@
 #include "Components/SpriteAnimator.h"
 #include "SFMLInterface/Rendering/SpriteRenderer.h"
 #include "SFMLInterface/Rendering/TextRenderer.h"
+#include "Levels/Spawner.h"
 
 namespace LittleEngine {
 	// Tests
@@ -115,14 +116,9 @@ namespace LittleEngine {
 
 		Action::Token token4;
 		void OnSelectPressed() {
-			std::weak_ptr<VFX> v = level->SpawnActor<VFX>("VFX");
-			if (auto vfx = v.lock()) {
-				Vector2 pos = Vector2(Maths::Random::Range(Fixed(-1), Fixed(1)), Maths::Random::Range(Fixed(-1), Fixed(1)));
-				vfx->SetNormalisedPosition(pos);
-				AssetPaths spriteSheet("VFX/Explode", 14, "", ".png");
-				AssetPaths sfx("VFX/Explode", 1, "", ".wav");
-				vfx->Init(spriteSheet, sfx, Fixed(1000), Fixed(3, 10));
-			}
+			Vector2 normalisedPosition = Vector2(Maths::Random::Range(Fixed(-1), Fixed(1)), Maths::Random::Range(Fixed(-1), Fixed(1)));
+			Vector2 position = level->GetWorld().NormalisedToScreenPoint(normalisedPosition);
+			auto v = Spawner::VFXExplode(*level, position);
 		}
 
 		void CleanupTests() {
