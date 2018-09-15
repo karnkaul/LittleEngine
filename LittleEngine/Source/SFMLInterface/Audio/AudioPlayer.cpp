@@ -103,6 +103,35 @@ namespace LittleEngine {
 		return Fixed::Zero;
 	}
 
+	bool MusicPlayer::IsFading() const {
+		return fadingIn || fadingOut;
+	}
+
+	void MusicPlayer::FadeIn(const Fixed & timeSeconds, const Fixed & targetVolume) {
+		fadingOut = false;
+		fadingIn = true;
+		fadeSeconds = timeSeconds;
+		this->targetVolume = Maths::Clamp01(targetVolume);
+		BeginFade();
+	}
+
+	void MusicPlayer::FadeOut(const Fixed & timeSeconds, const Fixed & targetVolume) {
+		fadingIn = false;
+		fadingOut = true;
+		fadeSeconds = timeSeconds;
+		this->targetVolume = Maths::Clamp01(targetVolume);
+		BeginFade();
+	}
+
+	void MusicPlayer::EndFade() {
+		volume = targetVolume;
+		if (fadingOut) {
+			Stop();
+			mainTrack = nullptr;
+		}
+		fadingIn = fadingOut = false;
+	}
+
 	void MusicPlayer::Play() {
 		if (mainTrack && mainTrack->valid) {
 			clock.Restart();
@@ -129,7 +158,35 @@ namespace LittleEngine {
 	}
 
 	void MusicPlayer::Tick(Fixed deltaSeconds) {
+		// Process Fade
+		if (IsFading()) {
+			this->elapsedSeconds += deltaSeconds;
+
+			if (this->elapsedSeconds >= fadeSeconds) {
+				EndFade();
+			}
+
+			else {
+				Fixed ratio = Maths::Clamp01(elapsedSeconds / fadeSeconds);
+				if (fadingIn) {
+					volume = (targetVolume - startVolume) * ratio;
+				}
+				else {
+					volume = startVolume * (Fixed::One - ratio);
+				}
+				Logger::Log(*this, "Fading! Volume: " + volume.ToString(), Logger::Severity::Debug);
+			}
+		}
 		ApplyParams();
+	}
+
+	void MusicPlayer::BeginFade() {
+		if (!IsPlaying()) {
+			volume = Fixed(1, 100);
+			Play();
+		}
+		startVolume = volume;
+		elapsedSeconds = Fixed::Zero;
 	}
 
 	bool MusicPlayer::ApplyParams() {

@@ -28,28 +28,6 @@ namespace LittleEngine {
 	private:
 		friend class Engine;
 
-		// \brief Helper to fade music over time
-		struct MusicFader {
-			Fixed fadeSeconds = Fixed::Zero;
-			Fixed elapsedSeconds = Fixed::Zero;
-			Fixed targetVolume = Fixed::One;
-			Fixed startVolume = Fixed::One;
-			bool fadingIn = false;
-			bool fadingOut = false;
-
-			MusicFader(MusicPlayer& player);
-
-			bool IsFading() const;
-			void FadeIn(const Fixed& timeSeconds, const Fixed& targetVolume = Fixed::One);
-			void FadeOut(const Fixed& timeSeconds, const Fixed& targetVolume = Fixed::Zero);
-			void EndFade();
-			void Tick(const Fixed& deltaTime);
-
-		private:
-			void BeginFade();
-			MusicPlayer* player;
-		};
-
 		// \brief Helper to store next track until current has faded out
 		struct SwitchTrackRequest {
 			MusicAsset::Ptr newTrack = nullptr;
@@ -63,12 +41,17 @@ namespace LittleEngine {
 
 		std::vector<std::unique_ptr<SoundPlayer>> sfxPlayers;
 		std::unique_ptr<SwitchTrackRequest> switchTrackRequest = nullptr;
-		MusicPlayer musicPlayer;
-		MusicFader musicFader;
+		MusicPlayer musicPlayerA;
+		MusicPlayer musicPlayerB;
+		bool sideA = true;
 		Engine* engine;
 
 		AssetManager& GetAssetManager();
 		SoundPlayer& GetOrCreateSFXPlayer();
+		MusicPlayer& GetActivePlayer();
+		MusicPlayer& GetStandbyPlayer();
+		const MusicPlayer& GetActivePlayer() const;
+		const MusicPlayer& GetStandbyPlayer() const;
 
 		// Engine to call
 		void Tick(Fixed deltaTime);

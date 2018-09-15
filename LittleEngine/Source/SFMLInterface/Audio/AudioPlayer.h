@@ -47,12 +47,16 @@ namespace LittleEngine {
 	// \brief Concrete class for Music playback (uses streamed MusicAsset)
 	class MusicPlayer : public AudioPlayer {
 	public:
-		MusicPlayer(MusicAsset::Ptr musicAsset);
+		MusicPlayer(MusicAsset::Ptr musicAsset = nullptr);
 		~MusicPlayer();
 		
 		bool SetTrack(MusicAsset::Ptr track);
 		Fixed GetDurationSeconds() const;
 		Fixed GetElapsedSeconds() const;
+		bool IsFading() const;
+		void FadeIn(const Fixed& timeSeconds, const Fixed& targetVolume = Fixed::One);
+		void FadeOut(const Fixed& timeSeconds, const Fixed& targetVolume = Fixed::Zero);
+		void EndFade();
 		
 		virtual void Play() override;
 		virtual void Stop() override;
@@ -64,6 +68,14 @@ namespace LittleEngine {
 		friend class AudioManager;
 		GameClock clock;
 		MusicAsset::Ptr mainTrack = nullptr;
+		Fixed fadeSeconds = Fixed::Zero;
+		Fixed elapsedSeconds = Fixed::Zero;
+		Fixed targetVolume = Fixed::One;
+		Fixed startVolume = Fixed::One;
+		bool fadingIn = false;
+		bool fadingOut = false;
+
+		void BeginFade();
 
 		virtual bool ApplyParams() override;
 	};
