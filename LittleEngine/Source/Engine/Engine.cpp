@@ -60,8 +60,8 @@ namespace LittleEngine {
 
 	Engine::~Engine() {
 		levelManager = nullptr;
-		assetManager = nullptr;
 		audioManager = nullptr;
+		assetManager = nullptr;
 		world = nullptr;
 		inputHandler = nullptr;
 		windowController = nullptr;
@@ -179,7 +179,7 @@ namespace LittleEngine {
 	}
 
 	void Engine::LoadLevel(const LevelID& levelID) {
-		commands.emplace_back(std::make_unique<LoadLevelCommand>(*levelManager, *audioManager, levelID));
+		commands.emplace_back(std::make_unique<LoadLevelCommand>(*levelManager, levelID));
 	}
 
 	void Engine::Quit() {

@@ -4,6 +4,7 @@
 #include "Engine/World.h"
 #include "Engine/Logger/Logger.h"
 #include "Entities/Actor.h"
+#include "Entities/VFX.h"
 #include "Components/RenderComponent.h"
 #include "Components/ControllerComponent.h"
 #include "SFMLInterface/Input.h"
@@ -13,6 +14,11 @@
 #include "SFMLInterface/Rendering/ShapeRenderer.h"
 #include "SFMLInterface/Assets.h"
 #include "Engine/Physics/Collider.h"
+#include "SFMLInterface/Assets.h"
+#include "Components/SpriteAnimator.h"
+#include "SFMLInterface/Rendering/SpriteRenderer.h"
+#include "SFMLInterface/Rendering/TextRenderer.h"
+#include "Levels/Spawner.h"
 
 namespace LittleEngine {
 	// Tests
@@ -22,6 +28,8 @@ namespace LittleEngine {
 		Actor::wPtr _actor0, _player;
 		bool parented = false;
 		bool soundPlayed = false, musicPlayed = false, musicStopped = false;
+		std::unique_ptr<SpriteRenderer> spriteRenderer = nullptr;
+		std::unique_ptr<TextRenderer> textRenderer = nullptr;
 
 		void OnXPressed() {
 			auto actor0 = _actor0.lock();
@@ -58,7 +66,7 @@ namespace LittleEngine {
 			auto actor2 = _actor2.lock();
 			auto actor3 = _actor3.lock();
 			if (actor2 == nullptr && actor3 == nullptr) {
-				_actor2 = level->SpawnActor("Yellow Circle", Vector2(-300, 300));
+				_actor2 = level->SpawnActor<Actor>("Yellow Circle", Vector2(-300, 300));
 				auto actor2 = _actor2.lock();
 				if (actor2 != nullptr) {
 					auto rc0 = actor2->AddComponent<RenderComponent>();
@@ -67,7 +75,7 @@ namespace LittleEngine {
 					t0->SetCircle(100);
 				}
 				
-				_actor3 = level->SpawnActor("Blue Rectangle");
+				_actor3 = level->SpawnActor<Actor>("Blue Rectangle");
 				auto actor3 = _actor3.lock();
 				if (actor3 != nullptr) {
 					auto rc1 = actor3->AddComponent<RenderComponent>();
@@ -106,6 +114,13 @@ namespace LittleEngine {
 			}
 		}
 
+		Action::Token token4;
+		void OnSelectPressed() {
+			Vector2 normalisedPosition = Vector2(Maths::Random::Range(Fixed(-1), Fixed(1)), Maths::Random::Range(Fixed(-1), Fixed(1)));
+			Vector2 position = level->GetWorld().NormalisedToScreenPoint(normalisedPosition);
+			auto v = Spawner::VFXExplode(*level, position);
+		}
+
 		void CleanupTests() {
 			token0 = token1 = token2 = token3 = nullptr;
 			if (auto actor2 = _actor2.lock()) {
@@ -114,13 +129,15 @@ namespace LittleEngine {
 			if (auto actor3 = _actor3.lock()) {
 				actor3->Destruct();
 			}
+			spriteRenderer = nullptr;
+			textRenderer = nullptr;
 		}
 	}
 
 	TestLevel::TestLevel(Engine& engine) : Level("TestLevel", engine) {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 
-		auto actor0 = SpawnActor("Actor0-RectangleRenderer", Vector2(300, 200)).lock();
+		auto actor0 = SpawnActor<Actor>("Actor0-RectangleRenderer", Vector2(300, 200)).lock();
 		if (actor0 != nullptr) {
 			auto rc0 = actor0->AddComponent<RenderComponent>();
 			rc0->SetRectangleRenderer(ShapeData(Vector2(300, 100), Colour::Magenta));
@@ -128,7 +145,7 @@ namespace LittleEngine {
 
 		GetOrSpawnPlayer("Ship.png", AABBData(40, 40), Vector2(-200, -300));
 		
-		auto actor1 = SpawnActor("Actor1-TextRenderer").lock();
+		auto actor1 = SpawnActor<Actor>("Actor1-TextRenderer").lock();
 		if (actor1 != nullptr) {
 			actor1->SetNormalisedPosition(Vector2(0, Fixed(0.9f)));
 			auto rc = actor1->AddComponent<RenderComponent>();
@@ -148,7 +165,8 @@ namespace LittleEngine {
 		_TestLevel::token2 = GetInputHandler().Register(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
 		_TestLevel::token3 = GetInputHandler().Register(GameInput::RB, &_TestLevel::OnLBPressed, OnKey::Released);
 		_TestLevel::soundPlayed = _TestLevel::musicPlayed = false;
-
+		_TestLevel::token4 = GetInputHandler().Register(GameInput::Select, &_TestLevel::OnSelectPressed, OnKey::Released);
+		
 		GetAudioManager().PlayMusic("TestMusic.ogg", Fixed::Half);
 	}
 
@@ -169,11 +187,19 @@ namespace LittleEngine {
 				Logger::Log(*this, "Could not play SFX!", Logger::Severity::Error);
 			}
 			GetAudioManager().SetMusicVolume(Fixed::One);
-			//GetAudioManager().SwitchTrack("TestMusic_0.ogg", Fixed::Half);
+			GetAudioManager().SwitchTrack("TestMusic_0.ogg", Fixed::Half);
 		}
 		if (clock.GetElapsedMilliSeconds() > 5000 && !_TestLevel::musicStopped) {
 			_TestLevel::musicStopped = true;
-			//GetAudioManager().SwitchTrack("TestMusic.ogg", Fixed::Half, Fixed(3));
+			GetAudioManager().SwitchTrack("TestMusic.ogg", Fixed::Half, Fixed(3));
+		}
+		if (_TestLevel::spriteRenderer != nullptr) {
+			params.screenPosition = GetWorld().WorldToScreenPoint(Vector2(600, -200));
+			_TestLevel::spriteRenderer->Render(params);
+		}
+		if (_TestLevel::textRenderer != nullptr) {
+			params.screenPosition = GetWorld().WorldToScreenPoint(Vector2(200, -100));
+			_TestLevel::textRenderer->Render(params);
 		}
 		RenderTests(this, actors, params);
  		Level::Render(params);

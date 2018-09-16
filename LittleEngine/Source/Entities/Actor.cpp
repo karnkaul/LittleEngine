@@ -31,13 +31,7 @@ namespace LittleEngine {
 	}
 
 	void Actor::SetNormalisedPosition(Vector2 localNPosition) {
-		// -1 <= x, y <= 1
-		localNPosition.x = Maths::Clamp_11(localNPosition.x);
-		localNPosition.y = Maths::Clamp_11(localNPosition.y);
-		// r` = r * screen.r
-		Vector2 screenSize = level->GetWorld().GetScreenBounds().upper;
-		Vector2 newPos(localNPosition.x * screenSize.x, localNPosition.y * screenSize.y);
-		transform.localPosition = newPos;
+		transform.localPosition = GetActiveLevel().GetWorld().NormalisedToScreenPoint(localNPosition);
 	}
 
 	std::string Actor::ToString() const {
