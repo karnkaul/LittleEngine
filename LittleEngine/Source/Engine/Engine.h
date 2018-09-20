@@ -3,6 +3,8 @@
 #include "Object.h"
 #include "Utils/Fixed.h"
 #include "SFMLInterface/SystemClock.h"
+#include "Utils/Delegate.hpp"
+#include "Events/EventManager.h"
 
 namespace Consts {
 	constexpr int MAX_FIXED_TICKS = 20;

@@ -11,6 +11,18 @@ namespace LittleEngine {
 		Logger::Log(*this, name + " created", Logger::Severity::Debug);
 	}
 
+	AudioPlayer::Status AudioPlayer::Convert(sf::Sound::Status status) {
+		switch (status) {
+		case sf::Sound::Status::Paused:
+			return Status::Paused;
+		case sf::Sound::Status::Playing:
+			return Status::Playing;
+		default:
+		case sf::Sound::Status::Stopped:
+			return Status::Stopped;
+		}
+	}
+
 	SoundPlayer::SoundPlayer(SoundAsset::Ptr soundAsset) : AudioPlayer("SFXPlayer") {
 		SetSoundAsset(soundAsset);
 	}
@@ -54,6 +66,7 @@ namespace LittleEngine {
 	}
 
 	void SoundPlayer::Tick(Fixed deltaSeconds) {
+		status = soundAsset ? Convert(soundAsset->sfSound.getStatus()) : Status::NoMedia;
 		ApplyParams();
 	}
 
@@ -158,6 +171,8 @@ namespace LittleEngine {
 	}
 
 	void MusicPlayer::Tick(Fixed deltaSeconds) {
+		status = mainTrack ? Convert(mainTrack->music.getStatus()) : Status::NoMedia;
+		
 		// Process Fade
 		if (IsFading()) {
 			this->elapsedSeconds += deltaSeconds;

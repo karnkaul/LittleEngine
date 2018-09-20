@@ -24,7 +24,11 @@ namespace LittleEngine {
 		Tab,
 		Control,
 		Shift,
-		Alt
+		Alt,
+		Backtick,
+		Backspace,
+		Insert,
+		Delete,
 	};
 
 	// \brief Wrapper struct that holds key state modifiers

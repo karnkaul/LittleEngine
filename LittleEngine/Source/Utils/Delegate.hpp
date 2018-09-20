@@ -20,15 +20,17 @@ namespace Utils {
 			return ptr;
 		}
 
-		// Execute the callback (if it is still alive)
-		void operator()() {
+		// Execute alive callbacks; returns live count
+		int operator()() {
 			Cleanup();
+			int count = 0;
 			for (const auto& c : callbacks) {
-				auto call = c.lock();
-				if (call != nullptr) {
+				if (auto call = c.lock()) {
 					(*call)();
+					++count;
 				}
 			}
+			return count;
 		}
 
 		// Returns true if any previously distributed Token is still alive
@@ -41,9 +43,9 @@ namespace Utils {
 		// Remove expired weak_ptrs
 		void Cleanup() {
 			callbacks.erase(std::remove_if(callbacks.begin(), callbacks.end(),
-										   [](std::weak_ptr<Callback> ptr) {
-				return ptr.lock() == nullptr;
-			}
+				[](std::weak_ptr<Callback> ptr) {
+					return ptr.lock() == nullptr;
+				}
 			), callbacks.end());
 		}
 	};
@@ -66,15 +68,17 @@ namespace Utils {
 			return ptr;
 		}
 
-		// Execute the callback (if it is still alive)
-		void operator()(T t) {
+		// Execute alive callbacks; returns live count
+		int operator()(T t) {
 			Cleanup();
+			int count = 0;
 			for (const auto& c : callbacks) {
-				auto call = c.lock();
-				if (call != nullptr) {
+				if (auto call = c.lock()) {
 					(*call)(t);
+					++count;
 				}
 			}
+			return count;
 		}
 
 		// Returns true if any previously distributed Token is still alive
@@ -87,9 +91,9 @@ namespace Utils {
 		// Remove expired weak_ptrs
 		void Cleanup() {
 			callbacks.erase(std::remove_if(callbacks.begin(), callbacks.end(),
-										   [](std::weak_ptr<Callback> ptr) {
-				return ptr.lock() == nullptr;
-			}
+				[](std::weak_ptr<Callback> ptr) {
+					return ptr.lock() == nullptr;
+				}
 			), callbacks.end());
 		}
 	};

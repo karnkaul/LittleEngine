@@ -23,6 +23,14 @@
 namespace LittleEngine {
 	using Fixed = Utils::Fixed;
 
+	Utils::Action::Token debugToken;
+	bool showDebug = false;
+	void OnDebugReleased() {
+		showDebug = !showDebug;
+		GameEvent eventType = showDebug ? GameEvent::DEBUG_ON : GameEvent::DEBUG_OFF;
+		EventManager::Instance().Notify(eventType);
+	}
+
 	Engine::Ptr Engine::Create() {
 		// std::make_unique requires public constructor and destructor access
 		// So using a temporary struct
@@ -87,6 +95,9 @@ namespace LittleEngine {
 					exitCode = ExitCode::ExecutionError;
 					return (int)exitCode;
 				}
+
+				/* Debugging */
+				debugToken = inputHandler->Register(GameInput::Debug0, &OnDebugReleased, OnKey::Released, true);
 
 				/* Core Game Loop */
 				double previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;

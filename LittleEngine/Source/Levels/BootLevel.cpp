@@ -32,7 +32,7 @@ namespace LittleEngine {
 
 		inputTokens.push_back(GetInputHandler().Register(GameInput::Enter, std::bind(&BootLevel::OnLoadNextLevel, this), OnKey::Released));
 		inputTokens.push_back(GetInputHandler().Register(GameInput::Return, std::bind(&BootLevel::OnQuit, this), OnKey::Released));
-		this->engine->GetAudioManager().PlayMusic("TestMusic_0.ogg");
+		this->engine->GetAudioManager().PlayMusic("TestMusic.ogg");
 	}
 
 	void BootLevel::Tick(Fixed deltaTime) {

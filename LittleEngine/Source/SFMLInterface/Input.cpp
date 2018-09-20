@@ -45,6 +45,10 @@ namespace LittleEngine {
 		case sf::Keyboard::LAlt:
 		case sf::Keyboard::RAlt:
 			return KeyCode::Alt;
+		case sf::Keyboard::Tilde:
+			return KeyCode::Backtick;
+		case sf::Keyboard::Backspace:
+			return KeyCode::Backspace;
 		}
 		return KeyCode::Invalid;
 	}
@@ -73,6 +77,8 @@ namespace LittleEngine {
 		keyStates.emplace_back(KeyCode::Enter, "Enter");
 		keyStates.emplace_back(KeyCode::Escape, "Escape");
 		keyStates.emplace_back(KeyCode::Tab, "Tab");
+		keyStates.emplace_back(KeyCode::Backtick, "Backtick");
+		keyStates.emplace_back(KeyCode::Backspace, "Backspace");
 	}
 
 	bool Input::IsKeyPressed(KeyCode code) const {

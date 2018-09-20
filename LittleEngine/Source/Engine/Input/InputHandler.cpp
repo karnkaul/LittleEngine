@@ -34,6 +34,8 @@ namespace LittleEngine {
 			gamepad.Bind(KeyCode::E, GameInput::Y);
 			gamepad.Bind(KeyCode::Control, GameInput::LB);
 			gamepad.Bind(KeyCode::Shift, GameInput::RB);
+
+			gamepad.Bind(KeyCode::Backtick, GameInput::Debug0);
 		}
 		Logger::Log(*this, "InputHandler constructed");
 	}

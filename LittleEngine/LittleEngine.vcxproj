@@ -168,6 +168,7 @@
     <ClInclude Include="Source\Engine\Config\EngineConfig.h" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\EngineCommands.h" />
+    <ClInclude Include="Source\Engine\Events\EventManager.h" />
     <ClInclude Include="Source\Engine\GameClock.h" />
     <ClInclude Include="Source\Engine\Input\Gamepad.h" />
     <ClInclude Include="Source\Engine\Input\InputHandler.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="Source\Engine\Config\EngineConfig.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\EngineCommands.cpp" />
+    <ClCompile Include="Source\Engine\Events\EventManager.cpp" />
     <ClCompile Include="Source\Engine\GameClock.cpp" />
     <ClCompile Include="Source\Engine\Input\Gamepad.cpp" />
     <ClCompile Include="Source\Engine\Input\InputHandler.cpp" />

@@ -90,30 +90,6 @@ namespace LittleEngine {
 			}
 		}
 
-		bool drawn = false;
-		Action::Token token3;
-		void OnLBPressed() {
-			drawn = !drawn;
-			if (auto player = _player.lock()) {
-				std::shared_ptr<AABBCollider> ac = player->GetCollider<AABBCollider>();
-				if (ac != nullptr) {
-					ac->DrawDebugShape(drawn);
-				}
-			}
-			if (auto actor2 = _actor2.lock()) {
-				if (auto actor3 = _actor3.lock()) {
-					std::shared_ptr<CircleCollider> cc = actor2->GetCollider<CircleCollider>();
-					if (cc != nullptr) {
-						cc->DrawDebugShape(drawn);
-					}
-					std::shared_ptr<AABBCollider> ac = actor3->GetCollider<AABBCollider>();
-					if (ac != nullptr) {
-						ac->DrawDebugShape(drawn);
-					}
-				}
-			}
-		}
-
 		Action::Token token4;
 		void OnSelectPressed() {
 			Vector2 normalisedPosition = Vector2(Maths::Random::Range(Fixed(-1), Fixed(1)), Maths::Random::Range(Fixed(-1), Fixed(1)));
@@ -122,7 +98,7 @@ namespace LittleEngine {
 		}
 
 		void CleanupTests() {
-			token0 = token1 = token2 = token3 = nullptr;
+			token0 = token1 = token2 = nullptr;
 			if (auto actor2 = _actor2.lock()) {
 				actor2->Destruct();
 			}
@@ -131,6 +107,14 @@ namespace LittleEngine {
 			}
 			spriteRenderer = nullptr;
 			textRenderer = nullptr;
+		}
+
+		Action::Token debugToken0, debugToken1;
+		void OnDebugOn() {
+
+		}
+		void OnDebugOff() {
+
 		}
 	}
 
@@ -156,16 +140,16 @@ namespace LittleEngine {
 
 		quitLevelToken = GetInputHandler().Register(GameInput::Return, std::bind(&TestLevel::OnQuitPressed, this), OnKey::Released);
 		// Tests
-		_TestLevel::drawn = false;
 		_TestLevel::_actor0 = actor0;
 		_TestLevel::_player = player;
 		_TestLevel::token0 = GetInputHandler().Register(GameInput::X, &_TestLevel::OnXPressed, OnKey::Released);
 		_TestLevel::token1 = GetInputHandler().Register(GameInput::Y, &_TestLevel::OnYPressed, OnKey::Released);
 		_TestLevel::level = this;
 		_TestLevel::token2 = GetInputHandler().Register(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
-		_TestLevel::token3 = GetInputHandler().Register(GameInput::RB, &_TestLevel::OnLBPressed, OnKey::Released);
 		_TestLevel::soundPlayed = _TestLevel::musicPlayed = false;
 		_TestLevel::token4 = GetInputHandler().Register(GameInput::Select, &_TestLevel::OnSelectPressed, OnKey::Released);
+		_TestLevel::debugToken0 = EventManager::Instance().Register(GameEvent::DEBUG_OFF, &_TestLevel::OnDebugOff);
+		_TestLevel::debugToken1 = EventManager::Instance().Register(GameEvent::DEBUG_ON, &_TestLevel::OnDebugOn);
 		
 		GetAudioManager().PlayMusic("TestMusic.ogg", Fixed::Half);
 	}
@@ -181,7 +165,7 @@ namespace LittleEngine {
 			_TestLevel::soundPlayed = true;
 			GetAudioManager().PlaySFX("TestSound.wav", Fixed(2, 10));
 		}	
-		if (clock.GetElapsedMilliSeconds() > 2100 && !_TestLevel::musicPlayed) {
+		/*if (clock.GetElapsedMilliSeconds() > 2100 && !_TestLevel::musicPlayed) {
 			_TestLevel::musicPlayed = true;
 			if (!GetAudioManager().PlaySFX("TestSound_b.wav", Fixed::Half)) {
 				Logger::Log(*this, "Could not play SFX!", Logger::Severity::Error);
@@ -192,7 +176,7 @@ namespace LittleEngine {
 		if (clock.GetElapsedMilliSeconds() > 5000 && !_TestLevel::musicStopped) {
 			_TestLevel::musicStopped = true;
 			GetAudioManager().SwitchTrack("TestMusic.ogg", Fixed::Half, Fixed(3));
-		}
+		}*/
 		if (_TestLevel::spriteRenderer != nullptr) {
 			params.screenPosition = GetWorld().WorldToScreenPoint(Vector2(600, -200));
 			_TestLevel::spriteRenderer->Render(params);

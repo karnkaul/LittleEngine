@@ -16,7 +16,13 @@ namespace LittleEngine {
 		X,
 		Y,
 		LB,
-		RB
+		RB,
+
+		// Debug
+		Debug0,
+		Debug1,
+		Debug2,
+		Debug3,
 	};
 
 	// \brief Virtual gamepad: binds KeyCodes to GameInput

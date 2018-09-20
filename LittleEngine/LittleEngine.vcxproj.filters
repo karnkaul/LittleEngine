@@ -52,6 +52,9 @@
     <Filter Include="Source\Engine\Audio">
       <UniqueIdentifier>{c4bde70d-0f38-48ca-92cf-26728d2c0bdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\Events">
+      <UniqueIdentifier>{c8f91322-fbf6-467d-904f-3660c60f2073}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -195,6 +198,9 @@
     <ClInclude Include="Source\Levels\Spawner.h">
       <Filter>Source\Levels</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Events\EventManager.h">
+      <Filter>Source\Engine\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -326,6 +332,9 @@
     </ClCompile>
     <ClCompile Include="Source\Levels\Spawner.cpp">
       <Filter>Source\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Events\EventManager.cpp">
+      <Filter>Source\Engine\Events</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
