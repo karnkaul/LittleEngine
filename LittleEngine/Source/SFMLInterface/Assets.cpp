@@ -72,7 +72,7 @@ namespace LittleEngine {
 	}
 
 	std::string AssetPaths::GetRandom() const {
-		size_t index = Maths::Random::Range(0, assetPaths.size());
+		size_t index = Maths::Random::Range(0, static_cast<int>(assetPaths.size()));
 		return assetPaths[index];
 	}
 

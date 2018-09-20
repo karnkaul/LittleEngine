@@ -61,7 +61,7 @@ namespace LittleEngine {
 		if (animating) {
 			elapsed += deltaTime;
 			Fixed ratio = Maths::Clamp01(elapsed / animTime);
-			Fixed size = sprites.size();
+			Fixed size = static_cast<int>(sprites.size());
 			index = static_cast<size_t>((ratio * size).GetInt());
 			if (index >= sprites.size()) {
 				if (looping) {

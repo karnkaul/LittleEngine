@@ -82,9 +82,9 @@ namespace LittleEngine {
 	}
 
 	void InputHandler::Cleanup(std::vector<InputObserver>& vec) {
-		int before = vec.size();
+		int before = static_cast<int>(vec.size());
 		Utils::CleanVector<InputObserver>(vec, [](InputObserver& observer) { return !observer.callback.IsAlive(); });
-		int deleted = before - vec.size();
+		int deleted = before - static_cast<int>(vec.size());
 		if (deleted > 0) {
 			Logger::Log(*this, std::to_string(deleted) + " expired Observers deleted", Logger::Severity::Debug);
 		}

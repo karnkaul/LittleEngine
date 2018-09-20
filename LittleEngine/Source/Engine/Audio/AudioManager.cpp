@@ -91,7 +91,7 @@ namespace LittleEngine {
 	}
 
 	void AudioManager::Clear(bool immediate) {
-		int sfxCount = sfxPlayers.size();
+		int sfxCount = static_cast<int>(sfxPlayers.size());
 		for (auto& sfxPlayer : sfxPlayers) {
 			sfxPlayer->Stop();
 		}
