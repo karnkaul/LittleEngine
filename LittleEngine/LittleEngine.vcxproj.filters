@@ -55,6 +55,9 @@
     <Filter Include="Source\Engine\Events">
       <UniqueIdentifier>{c8f91322-fbf6-467d-904f-3660c60f2073}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\Console">
+      <UniqueIdentifier>{c7ca3447-dc15-4102-bf0c-aac779634556}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -201,6 +204,9 @@
     <ClInclude Include="Source\Engine\Events\EventManager.h">
       <Filter>Source\Engine\Events</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Console\DebugConsole.h">
+      <Filter>Source\Engine\Console</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -335,6 +341,9 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\Events\EventManager.cpp">
       <Filter>Source\Engine\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Console\DebugConsole.cpp">
+      <Filter>Source\Engine\Console</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

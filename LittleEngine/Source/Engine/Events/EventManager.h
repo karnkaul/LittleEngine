@@ -9,7 +9,7 @@ namespace LittleEngine {
 		DEBUG_OFF = 101,
 	};
 	
-	using OnEvent = Utils::Action;
+	using OnEvent = Utils::Delegate<>;
 	
 	// \brief: Central point of all GameEvent dispatching
 	class EventManager : public Object {

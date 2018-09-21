@@ -6,14 +6,12 @@ namespace LittleEngine {
 	class Engine;
 	struct RenderParams;
 
-	using Action = Utils::Action;
-
 	class TestLevel : public Level {
 	public:
 		TestLevel(Engine& engine);
 		virtual void Render(RenderParams& params) override;
 	private:
-		Action::Token quitLevelToken;
+		Utils::Delegate<>::Token quitLevelToken;
 		void OnQuitPressed();
 	};
 }

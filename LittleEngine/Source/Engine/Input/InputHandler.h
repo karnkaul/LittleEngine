@@ -8,7 +8,7 @@
 namespace LittleEngine {
 	struct KeyState;
 	enum class KeyCode;
-	using OnInput = Utils::Action;
+	using OnInput = Utils::Delegate<>;
 
 	enum class OnKey { Pressed, Held, Released };
 

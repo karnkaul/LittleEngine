@@ -10,6 +10,7 @@
 #include "GameClock.h"
 #include "Input/InputHandler.h"
 #include "Audio/AudioManager.h"
+#include "Console/DebugConsole.h"
 
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Input.h"
@@ -23,12 +24,13 @@
 namespace LittleEngine {
 	using Fixed = Utils::Fixed;
 
-	Utils::Action::Token debugToken;
+	OnInput::Token debugToken;
 	bool showDebug = false;
 	void OnDebugReleased() {
 		showDebug = !showDebug;
 		GameEvent eventType = showDebug ? GameEvent::DEBUG_ON : GameEvent::DEBUG_OFF;
 		EventManager::Instance().Notify(eventType);
+		DebugConsole::Activate(showDebug);
 	}
 
 	Engine::Ptr Engine::Create() {
@@ -46,7 +48,7 @@ namespace LittleEngine {
 				if (config->Load("config.ini")) {
 					Logger::Log(*this, "Loaded config.ini successfully", Logger::Severity::Debug);
 				}
-				Logger::SetLogLevel(config->GetLogLevel());
+				Logger::g_logLevel = config->GetLogLevel();
 			}
 			
 			/* Instantiate entities */ {
@@ -67,6 +69,7 @@ namespace LittleEngine {
 	}
 
 	Engine::~Engine() {
+		DebugConsole::Cleanup();
 		levelManager = nullptr;
 		audioManager = nullptr;
 		assetManager = nullptr;
@@ -116,7 +119,10 @@ namespace LittleEngine {
 							previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
 							Logger::Log(*this, "Game unpaused");
 						}
-						inputHandler->CaptureState(windowController->GetInputHandler().GetPressed());
+						inputHandler->CaptureState(windowController->GetInput().GetPressed());
+						if (DebugConsole::IsActive()) {
+							DebugConsole::UpdateInput(*windowController);
+						}
 					}
 
 					/* Process Frame */
@@ -148,6 +154,7 @@ namespace LittleEngine {
 						/* Render */ {
 							RenderParams params(*windowController);
 							levelManager->GetActiveLevel().Render(params);
+							DebugConsole::RenderConsole(*this, params);
 							windowController->Draw();
 						}
 						
