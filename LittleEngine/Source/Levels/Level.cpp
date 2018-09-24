@@ -16,8 +16,7 @@
 #include "Components/RenderComponent.h"
 
 namespace LittleEngine {
-	Level::Level(const std::string& name, LittleEngine::Engine& engine) : Object(name) {
-		this->engine = &engine;
+	Level::Level(const std::string& name, LittleEngine::Engine& engine) : Object(name), engine(&engine) {
 		Logger::Log(*this, GetNameInBrackets() + " (Level) created [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
 	}
 
@@ -68,7 +67,7 @@ namespace LittleEngine {
 	}
 
 	void Level::DestroyActor(Actor::Ptr actor) {
-		if (actor != nullptr) {
+		if (actor) {
 			actor->_destroyed = true;
 		}
 		else {
@@ -77,8 +76,8 @@ namespace LittleEngine {
 	}
 
 	Player::wPtr Level::GetOrSpawnPlayer(const std::string & texturePath, const AABBData & colliderBounds, const Vector2 & position, const Fixed & rotation) {
-		Player::Ptr _player = nullptr;
-		if ((_player = player.lock()) == nullptr) {
+		Player::Ptr _player;
+		if (!(_player = player.lock())) {
 			_player = std::make_shared<Player>(*this, texturePath, colliderBounds, position, rotation);
 			player = _player;
 			auto _p = std::dynamic_pointer_cast<Actor>(_player);

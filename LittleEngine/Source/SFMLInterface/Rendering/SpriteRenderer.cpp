@@ -30,8 +30,8 @@ namespace LittleEngine {
 		Fixed width(bounds.width);
 		Fixed height(bounds.height);
 		return Rect2(
-			Vector2(-width * Fixed::Half, -height * Fixed::Half),
-			Vector2(width * Fixed::Half, height * Fixed::Half)
+			Vector2(-width * Fixed::OneHalf, -height * Fixed::OneHalf),
+			Vector2(width * Fixed::OneHalf, height * Fixed::OneHalf)
 		);
 	}
 

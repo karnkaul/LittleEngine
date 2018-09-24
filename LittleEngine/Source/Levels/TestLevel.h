@@ -10,6 +10,7 @@ namespace LittleEngine {
 	public:
 		TestLevel(Engine& engine);
 		virtual void Render(RenderParams& params) override;
+
 	private:
 		Utils::Delegate<>::Token quitLevelToken;
 		void OnQuitPressed();

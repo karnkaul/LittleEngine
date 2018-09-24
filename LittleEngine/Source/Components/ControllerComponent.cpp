@@ -84,7 +84,7 @@ namespace LittleEngine {
 			Logger::Log(*this, "ControllerComponent's owning Actor does not have a RenderComponent", Logger::Severity::Warning);
 			return Vector2::Zero;
 		}
-		return renderer->GetBounds().upper;
+		return std::move(renderer->GetBounds().upper);
 	}
 
 	void ControllerComponent::OnLeft() {

@@ -6,34 +6,35 @@
 namespace Utils {
 	const Fixed Fixed::Zero = Fixed(0);
 	const Fixed Fixed::One = Fixed(1);
-	const Fixed Fixed::Half = Fixed(1, 2);
+	const Fixed Fixed::Two = Fixed(2);
+	const Fixed Fixed::Three = Fixed(3);
+	const Fixed Fixed::Ten = Fixed(10);
+	const Fixed Fixed::OneHalf = Fixed(1, 2);
+	const Fixed Fixed::OneThird = Fixed(1, 3);
+	const Fixed Fixed::OneTenth = Fixed(1, 10);
 
-	Fixed::Fixed(double value) {
-		m_value = static_cast<int>(value * SCALE_FACTOR);
+	Fixed::Fixed(double value) : m_value(static_cast<int>(value * SCALE_FACTOR)) {
 		if ((value * static_cast<double>(SCALE_FACTOR)) - static_cast<double>(m_value) >= 0.5f) {
 			m_value += 1;
 		}
 	}
 
-	Fixed::Fixed(float value) {
-		m_value = static_cast<int>(value * SCALE_FACTOR);
+	Fixed::Fixed(float value) : m_value(static_cast<int>(value * SCALE_FACTOR)) {
 		if ((value * static_cast<double>(SCALE_FACTOR)) - static_cast<double>(m_value) >= 0.5f) {
 			m_value += 1;
 		}
 	}
 
-	Fixed::Fixed(const Fixed& other) {
-		m_value = other.m_value;
-	}
+	Fixed::Fixed(const Fixed& other) : m_value(other.m_value) {}
 
 	Fixed& Fixed::operator=(const Fixed& other) {
 		m_value = other.m_value;
 		return *this;
 	}
 
-	Fixed::Fixed(int numerator, int denominator) {
-		m_value = (static_cast<int64_t>(numerator) * static_cast<int64_t>(SCALE_FACTOR) / static_cast<int64_t>(denominator));
-	}
+	Fixed::Fixed(int numerator, int denominator) :
+		m_value(static_cast<int64_t>(numerator) * static_cast<int64_t>(SCALE_FACTOR) / static_cast<int64_t>(denominator))
+	{}
 
 	int Fixed::GetInt() const {
 		int floor = static_cast<int>(GetDouble());
@@ -91,7 +92,7 @@ namespace Utils {
 	Fixed Fixed::operator++(int) {
 		Fixed temporary(*this);
 		++*this;
-		return temporary;
+		return std::move(temporary);
 	}
 
 
@@ -103,7 +104,7 @@ namespace Utils {
 	Fixed Fixed::operator--(int) {
 		Fixed temporary(*this);
 		--*this;
-		return temporary;
+		return std::move(temporary);
 	}
 
 	Fixed Fixed::Abs() const {

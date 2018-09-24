@@ -5,8 +5,8 @@
 
 namespace LittleEngine {
 	enum class GameEvent {
-		DEBUG_ON = 100,
-		DEBUG_OFF = 101,
+		DEBUG_SHOW_COLLIDERS = 100,
+		DEBUG_HIDE_COLLIDERS = 101,
 	};
 	
 	using OnEvent = Utils::Delegate<>;

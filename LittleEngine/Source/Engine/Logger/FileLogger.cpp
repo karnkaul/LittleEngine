@@ -40,7 +40,7 @@ namespace LittleEngine {
 				for (const auto& str : buffer) {
 					flush += str;
 				}
-				file->Append(flush);
+				file->Append(std::move(flush));
 				buffer.clear();
 			}
 			for (int ms = 0; ms++ < 1000 && writing; ++ms) {

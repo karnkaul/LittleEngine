@@ -25,19 +25,6 @@ namespace LittleEngine {
 		sf::Drawable& drawable;
 	};
 
-	enum class RawTextInputType {
-		None,
-		Tab,
-		Enter,
-		Backspace,
-		Escape,
-	};
-
-	struct RawTextInput {
-		std::string text;
-		RawTextInputType special;
-	};
-
 	// \brief Conrete class that can create an SFML RenderWindow,
 	// and draw a buffer of Drawables to it.
 	// Provides an InputHandler to poll inputs every frame
@@ -76,13 +63,11 @@ namespace LittleEngine {
 		// Destroy SFML RenderWindow
 		void CloseWindow();
 		const Input& GetInput() const;
-		const RawTextInput& GetRawSFMLInput() const;
 
 	private:
 		Buffer buffer;
 		Input input;
 		std::unique_ptr<sf::RenderWindow> window;
-		RawTextInput rawTextInput;
 		bool _focus = false;
 
 		WindowController(const WindowController&) = delete;

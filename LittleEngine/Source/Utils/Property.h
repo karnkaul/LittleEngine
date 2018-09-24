@@ -22,7 +22,7 @@ namespace Utils {
 		std::string key;
 		std::string stringValue;
 
-		Property() { key = stringValue = ""; }
+		Property() : key(""), stringValue("") {}
 		Property(const std::string& key, const std::string& value) {
 			this->key = key;
 			this->stringValue = value;

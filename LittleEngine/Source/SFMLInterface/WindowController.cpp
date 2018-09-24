@@ -63,36 +63,9 @@ namespace LittleEngine {
 		return _focus;
 	}
 
-	void HandleRawInput(RawTextInput& rawTextInput, int unicode) {
-		if (unicode < 5 || unicode >= 128) {
-			return;
-		}
-
-		switch (unicode) {
-		case 8:
-			rawTextInput.special = RawTextInputType::Backspace;
-			return;
-
-		case 9:
-			rawTextInput.special = RawTextInputType::Tab;
-			return;
-
-		case 13:
-			rawTextInput.special = RawTextInputType::Enter;
-			return;
-
-		case 27:
-			rawTextInput.special = RawTextInputType::Escape;
-			return;
-		}
-
-		rawTextInput.text += static_cast<char>(unicode);
-	}
-
 	void WindowController::PollInput() {
 		sf::Event event;
-		rawTextInput.text.clear();
-		rawTextInput.special = RawTextInputType::None;
+		input.ClearRawInput();
 		while (window->isOpen() && window->pollEvent(event)) {
 			switch (event.type) {
 			case sf::Event::Closed:
@@ -109,6 +82,7 @@ namespace LittleEngine {
 				break;
 
 			case sf::Event::KeyPressed:
+				input.OnRawSpecialInput(event.key.code);
 				input.OnKeyDown(event.key);
 				break;
 
@@ -117,7 +91,7 @@ namespace LittleEngine {
 				break;
 
 			case sf::Event::TextEntered:
-				HandleRawInput(rawTextInput, static_cast<int>(event.text.unicode));
+				input.OnRawInput(static_cast<int>(event.text.unicode));
 				break;
 			}
 		}
@@ -148,9 +122,5 @@ namespace LittleEngine {
 
 	const Input& WindowController::GetInput() const {
 		return input;
-	}
-
-	const RawTextInput& WindowController::GetRawSFMLInput() const {
-		return rawTextInput;
 	}
 }

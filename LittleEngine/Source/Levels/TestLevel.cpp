@@ -93,7 +93,7 @@ namespace LittleEngine {
 		OnInput::Token token4;
 		void OnSelectPressed() {
 			Vector2 normalisedPosition = Vector2(Maths::Random::Range(Fixed(-1), Fixed(1)), Maths::Random::Range(Fixed(-1), Fixed(1)));
-			Vector2 position = level->GetWorld().NormalisedToScreenPoint(normalisedPosition);
+			Vector2 position = level->GetWorld().NormalisedToWorldPoint(normalisedPosition);
 			auto v = Spawner::VFXExplode(*level, position);
 		}
 
@@ -141,7 +141,7 @@ namespace LittleEngine {
 		_TestLevel::soundPlayed = _TestLevel::musicPlayed = false;
 		_TestLevel::token4 = GetInputHandler().Register(GameInput::Select, &_TestLevel::OnSelectPressed, OnKey::Released);
 		
-		GetAudioManager().PlayMusic("TestMusic.ogg", Fixed::Half);
+		GetAudioManager().PlayMusic("TestMusic.ogg", Fixed::OneHalf);
 	}
 
 	void RenderTests(Level* level, std::vector<Actor::Ptr>& actors, RenderParams& params) {

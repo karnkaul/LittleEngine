@@ -15,8 +15,7 @@
 #include "Utils/Utils.h"
 
 namespace LittleEngine {
-	Actor::Actor(Level& level, const std::string& name, const Vector2& position, const Fixed& rotation) : Object(name) {
-		this->level = &level;
+	Actor::Actor(Level& level, const std::string& name, const Vector2& position, const Fixed& rotation) : Object(name), level(&level) {
 		transform.localPosition = position;
 		transform.localRotation = rotation;
 		Logger::Log(*this, GetNameInBrackets() + " (Actor) Spawned at " + transform.Position().ToString());
@@ -31,7 +30,7 @@ namespace LittleEngine {
 	}
 
 	void Actor::SetNormalisedPosition(Vector2 localNPosition) {
-		transform.localPosition = GetActiveLevel().GetWorld().NormalisedToScreenPoint(localNPosition);
+		transform.localPosition = GetActiveLevel().GetWorld().NormalisedToWorldPoint(localNPosition);
 	}
 
 	std::string Actor::ToString() const {

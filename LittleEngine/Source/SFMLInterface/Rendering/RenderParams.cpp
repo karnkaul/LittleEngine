@@ -3,9 +3,8 @@
 #include "SFMLInterface/WindowController.h"
 
 namespace LittleEngine {
-	RenderParams::RenderParams(WindowController& controller) {
-		this->windowController = &controller;
-	}
+	RenderParams::RenderParams(WindowController& controller) : windowController(&controller) 
+	{}
 
 	WindowController& RenderParams::GetWindowController() {
 		return *windowController;

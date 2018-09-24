@@ -5,8 +5,7 @@
 #include "SFMLInterface/Rendering/RenderParams.h"
 
 namespace LittleEngine {
-	Component::Component(Actor& actor, const std::string& name) : Object(name) {
-		this->actor = &actor;
+	Component::Component(Actor& actor, const std::string& name) : Object(name), actor(&actor) {
 		Logger::Log(*this, ToString() + " created");
 	}
 

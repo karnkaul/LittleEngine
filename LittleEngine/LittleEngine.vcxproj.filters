@@ -207,6 +207,12 @@
     <ClInclude Include="Source\Engine\Console\DebugConsole.h">
       <Filter>Source\Engine\Console</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Console\ConsoleCommands.h">
+      <Filter>Source\Engine\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Console\LogLine.hpp">
+      <Filter>Source\Engine\Console</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -343,6 +349,9 @@
       <Filter>Source\Engine\Events</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Console\DebugConsole.cpp">
+      <Filter>Source\Engine\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Console\ConsoleCommands.cpp">
       <Filter>Source\Engine\Console</Filter>
     </ClCompile>
   </ItemGroup>

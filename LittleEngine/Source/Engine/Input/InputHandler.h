@@ -43,6 +43,8 @@ namespace LittleEngine {
 		std::unordered_map<GameInput, std::vector<InputObserver>> inputObservers;
 		std::vector<GameInput> currentSnapshot;
 		std::vector<GameInput> previousSnapshot;
+		std::string rawTextInput;
+		
 		Gamepad gamepad;
 		
 		void Cleanup(std::vector<InputObserver>& vec);
@@ -50,6 +52,8 @@ namespace LittleEngine {
 		void FireCallbacks(const std::vector<GameInput>& inputs, std::unordered_map<GameInput, std::vector<InputObserver>>& map, OnKey type);
 		// Engine to call 
 		void CaptureState(const std::vector<KeyState>& pressedKeys);
+		// Engine to call
+		void CaptureRawText(const std::string& rawTextInput);
 		// Engine to call
 		void FireInput();
 	};

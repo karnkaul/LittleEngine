@@ -12,7 +12,7 @@ namespace LittleEngine {
 #pragma endregion
 
 #pragma region Definitions
-		static std::unique_ptr<FileLogger> fileLogger = std::make_unique<FileLogger>("debug.log");
+		static std::unique_ptr<FileLogger> s_fileLogger = std::make_unique<FileLogger>("debug.log");
 		static std::unique_ptr<SystemClock> clock = std::make_unique<SystemClock>();
 		struct sudo {};
 #pragma endregion
@@ -22,7 +22,9 @@ namespace LittleEngine {
 			std::string suffix = (caller.length() > 0) ? " [" + caller + "]" : "";
 			suffix += (" [" + GameClock::ToString(clock->GetCurrentMilliseconds()) + "]");
 			std::string log = severity + " " + message + suffix;
-			if (fileLogger != nullptr) fileLogger->AddToBuffer(log);
+			if (s_fileLogger) {
+				s_fileLogger->AddToBuffer(log);
+			}
 			std::cout << log << std::endl;
 		}
 
@@ -71,6 +73,10 @@ namespace LittleEngine {
 			if (severity <= g_logLevel) {
 				Cout(SeverityString(severity), caller, message);
 			}
+		}
+
+		void Cleanup() {
+			s_fileLogger = nullptr;
 		}
 	}
 #pragma endregion

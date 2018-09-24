@@ -30,3 +30,16 @@ namespace Maths {
 		return ((rand() * (max - min)) / RAND_MAX) + min;
 	}
 }
+
+namespace Strings {
+	int ToInt(const std::string& input, int defaultValue) {
+		int ret;
+		try {
+			ret = std::stoi(input);
+		}
+		catch (std::exception e) {
+			ret = defaultValue;
+		}
+		return ret;
+	}
+}

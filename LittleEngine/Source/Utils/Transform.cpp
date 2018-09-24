@@ -32,7 +32,7 @@ namespace Utils {
 		if (m_parent != nullptr) {
 			position += m_parent->Position();
 		}
-		return position;
+		return std::move(position);
 	}
 
 	Fixed Transform::Rotation() {
@@ -41,7 +41,7 @@ namespace Utils {
 		if (m_parent != nullptr) {
 			rotation += m_parent->Rotation();
 		}
-		return rotation;
+		return std::move(rotation);
 	}
 
 	void Transform::Rotate(Fixed angle) {
