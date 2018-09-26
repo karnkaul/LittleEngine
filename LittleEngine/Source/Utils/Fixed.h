@@ -41,14 +41,8 @@ namespace Utils {
 		Fixed Sin() const;
 		Fixed Cos() const;
 		Fixed Tan() const;
-		Fixed operator+(const Fixed& rhs) const;
-		Fixed operator-(const Fixed& rhs) const;
-		Fixed operator*(const Fixed& rhs) const;
-		Fixed operator/(const Fixed& rhs) const;
-		Fixed operator%(const Fixed& rhs) const;
 
 		bool operator==(const Fixed& rhs) const;
-		bool operator!=(const Fixed& rhs) const;
 		bool operator>(const Fixed& rhs) const;
 		bool operator<(const Fixed& rhs) const;
 		bool operator<=(const Fixed& rhs) const;
@@ -65,4 +59,11 @@ namespace Utils {
 
 		Fixed(RawInit, int rawFixedValue) : m_value(rawFixedValue) {}
 	};
+
+	Fixed operator+(const Fixed& lhs, const Fixed& rhs);
+	Fixed operator-(const Fixed& lhs, const Fixed& rhs);
+	Fixed operator*(const Fixed& lhs, const Fixed& rhs);
+	Fixed operator/(const Fixed& lhs, const Fixed& rhs);
+	Fixed operator%(const Fixed& lhs, const Fixed& rhs);
+	bool operator!=(const Fixed& lhs, const Fixed& rhs);
 }

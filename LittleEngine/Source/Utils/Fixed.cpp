@@ -139,32 +139,8 @@ namespace Utils {
 		return Fixed(std::tan(GetDouble()));
 	}
 
-	Fixed Fixed::operator+(const Fixed& rhs) const {
-		return Fixed(*this) += rhs;
-	}
-
-	Fixed Fixed::operator-(const Fixed& rhs) const {
-		return Fixed(*this) -= rhs;
-	}
-
-	Fixed Fixed::operator*(const Fixed& rhs) const {
-		return Fixed(*this) *= rhs;
-	}
-
-	Fixed Fixed::operator/(const Fixed& rhs) const {
-		return Fixed(*this) /= rhs;
-	}
-
-	Fixed Fixed::operator%(const Fixed & rhs) const {
-		return Fixed(*this) %= rhs;
-	}
-
 	bool Fixed::operator==(const Fixed & rhs) const {
 		return m_value == rhs.m_value;
-	}
-
-	bool Fixed::operator!=(const Fixed & rhs) const {
-		return !(*this == rhs);
 	}
 
 	bool Fixed::operator>(const Fixed & rhs) const {
@@ -193,5 +169,29 @@ namespace Utils {
 
 	std::ostream& operator<<(std::ostream& lhs, Fixed rhs) {
 		return lhs << rhs.GetDouble();
+	}
+
+	Fixed operator+(const Fixed& lhs, const Fixed& rhs) {
+		return Fixed(lhs) += rhs;
+	}
+
+	Fixed operator-(const Fixed& lhs, const Fixed& rhs) {
+		return Fixed(lhs) -= rhs;
+	}
+
+	Fixed operator*(const Fixed& lhs, const Fixed& rhs) {
+		return Fixed(lhs) *= rhs;
+	}
+
+	Fixed operator/(const Fixed& lhs, const Fixed& rhs) {
+		return Fixed(lhs) /= rhs;
+	}
+
+	Fixed operator%(const Fixed& lhs, const Fixed & rhs) {
+		return Fixed(lhs) %= rhs;
+	}
+
+	bool operator!=(const Fixed& lhs, const Fixed & rhs) {
+		return !(lhs == rhs);
 	}
 }

@@ -23,15 +23,7 @@ namespace Utils {
 		Vector2& operator*=(const Fixed& fixed);
 		Vector2& operator/=(const Fixed& fixed);
 
-		Vector2 operator-() const;
-		Vector2 operator+(const Vector2& rhs) const;
-		Vector2 operator-(const Vector2& rhs) const;
-		Vector2 operator*(const Fixed& rhs) const;
-		Vector2 operator/(const Fixed& rhs) const;
 		Fixed Dot(const Vector2& rhs) const;
-
-		bool operator==(const Vector2& rhs) const;
-		bool operator!=(const Vector2& rhs) const;
 
 		Vector2 Normalised() const;
 		void Normalise();
@@ -44,4 +36,11 @@ namespace Utils {
 	};
 
 	std::ostream& operator<<(std::ostream& out, Vector2& vector2);
+	Vector2 operator-(const Vector2& lhs);
+	Vector2 operator+(const Vector2& lhs, const Vector2& rhs);
+	Vector2 operator-(const Vector2& lhs, const Vector2& rhs);
+	Vector2 operator*(const Vector2& lhs, const Fixed& rhs);
+	Vector2 operator/(const Vector2& lhs, const Fixed& rhs);
+	bool operator==(const Vector2& lhs, const Vector2& rhs);
+	bool operator!=(const Vector2& lhs, const Vector2& rhs);
 }

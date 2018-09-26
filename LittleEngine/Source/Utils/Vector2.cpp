@@ -7,14 +7,6 @@ namespace Utils {
 	const Vector2 Vector2::Zero = Vector2(0, 0);
 	const Vector2 Vector2::One = Vector2(1, 1);
 
-	Vector2 Vector2::operator+(const Vector2& rhs) const {
-		return Vector2(*this) += rhs;
-	}
-
-	Vector2 Vector2::operator-(const Vector2& rhs) const {
-		return Vector2(*this) -= rhs;
-	}
-
 	Vector2& Vector2::operator+=(const Vector2& rhs) {
 		x += rhs.x;
 		y += rhs.y;
@@ -39,28 +31,8 @@ namespace Utils {
 		return *this;
 	}
 
-	Vector2 Vector2::operator-() const {
-		return Vector2(-x, -y);
-	}
-
-	Vector2 Vector2::operator*(const Fixed& rhs) const {
-		return Vector2(*this) *= rhs;
-	}
-
-	Vector2 Vector2::operator/(const Fixed & rhs) const {
-		return Vector2(*this) /= rhs;
-	}
-
 	Fixed Vector2::Dot(const Vector2 & rhs) const {
 		return Fixed((x * rhs.x) + (y * rhs.y));
-	}
-
-	bool Vector2::operator==(const Vector2& rhs) const {
-		return x == rhs.x && y == rhs.y;
-	}
-
-	bool Vector2::operator!=(const Vector2& rhs) const {
-		return !(*this == rhs);
 	}
 
 	Vector2 Vector2::Normalised() const {
@@ -86,7 +58,35 @@ namespace Utils {
 		return "[" + x.ToString() + ", " + y.ToString() + "]";
 	}
 
+	Vector2 operator-(const Vector2& lhs) {
+		return Vector2(-lhs.x, -lhs.y);
+	}
+
+	Vector2 operator+(const Vector2& lhs, const Vector2& rhs) {
+		return Vector2(lhs) += rhs;
+	}
+
+	Vector2 operator-(const Vector2& lhs, const Vector2& rhs) {
+		return Vector2(lhs) -= rhs;
+	}
+
+	Vector2 operator*(const Vector2& lhs, const Fixed& rhs) {
+		return Vector2(lhs) *= rhs;
+	}
+
+	Vector2 operator/(const Vector2& lhs, const Fixed & rhs) {
+		return Vector2(lhs) /= rhs;
+	}
+
 	std::ostream& operator<<(std::ostream& out, Vector2& vector2) {
 		return out << "[" << vector2.x << ", " << vector2.y << "]";
+	}
+
+	bool operator==(const Vector2& lhs, const Vector2& rhs) {
+		return lhs.x == rhs.x && lhs.y == rhs.y;
+	}
+
+	bool operator!=(const Vector2& lhs, const Vector2& rhs) {
+		return !(lhs == rhs);
 	}
 }
