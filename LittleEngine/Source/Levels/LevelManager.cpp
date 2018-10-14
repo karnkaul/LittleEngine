@@ -8,8 +8,7 @@
 #include "TestLevel.h"
 
 namespace LittleEngine {
-	LevelManager::LevelManager(Engine& engine) : Object("LevelManager") {
-		this->engine = &engine;
+	LevelManager::LevelManager(Engine& engine) : Object("LevelManager"), engine(&engine) {
 		Logger::Log(*this, "LevelManager created");
 	}
 
@@ -23,10 +22,8 @@ namespace LittleEngine {
 	}
 
 	bool LevelManager::LoadLevel(const LevelID& levelID) {
-		activeLevel = nullptr;
 		switch (levelID) {
 		case LevelID::BootLevel:
-		default:
 			activeLevel = std::make_unique<BootLevel>(*engine);
 			return true;
 			

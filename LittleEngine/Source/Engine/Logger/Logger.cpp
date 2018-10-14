@@ -6,74 +6,78 @@
 #include "Engine/GameClock.h"
 
 namespace LittleEngine {
-	Logger::Severity Logger::logLevel = Logger::Severity::Info;
-	std::unique_ptr<FileLogger> Logger::fileLogger = nullptr;
+	namespace Logger {
+#pragma region Globals
+		Severity g_logLevel = Severity::Info;
+#pragma endregion
 
-	std::string SeverityString(Logger::Severity severity) {
-		char prefix = '[';
-		char suffix = ']';
-		std::string value = "I";
-		switch (severity) {
-		case Logger::Severity::Error:
-			value = "E";
-			break;
-		case Logger::Severity::Warning:
-			value = "W";
-			break;
-		case Logger::Severity::Info:
-			value = "I";
-			break;
-		case Logger::Severity::Debug:
-			value = "D";
-			break;
-		case Logger::Severity::HOT:
-			value = "H";
-			break;
+#pragma region Definitions
+		static std::unique_ptr<FileLogger> s_fileLogger = std::make_unique<FileLogger>("debug.log");
+		static std::unique_ptr<SystemClock> clock = std::make_unique<SystemClock>();
+		struct sudo {};
+#pragma endregion
+
+#pragma region Internal
+		static void Cout(const std::string& severity, const std::string& caller, const std::string& message) {
+			std::string suffix = (caller.length() > 0) ? " [" + caller + "]" : "";
+			suffix += (" [" + GameClock::ToString(clock->GetCurrentMilliseconds()) + "]");
+			std::string log = severity + " " + message + suffix;
+			if (s_fileLogger) {
+				s_fileLogger->AddToBuffer(log);
+			}
+			std::cout << log << std::endl;
 		}
-		return prefix + value + suffix;
-	}
 
-	void Logger::SetLogLevel(Severity logLevel) {
-		Logger::logLevel = logLevel;
-		Log(sudo(), "Log Level set to " + SeverityString(logLevel));
-	}
+		static std::string SeverityString(Logger::Severity severity) {
+			char prefix = '[';
+			char suffix = ']';
+			std::string value = "I";
+			switch (severity) {
+			case Logger::Severity::Error:
+				value = "E";
+				break;
+			case Logger::Severity::Warning:
+				value = "W";
+				break;
+			case Logger::Severity::Info:
+				value = "I";
+				break;
+			case Logger::Severity::Debug:
+				value = "D";
+				break;
+			case Logger::Severity::HOT:
+				value = "H";
+				break;
+			}
+			return prefix + value + suffix;
+		}
 
-	void Logger::Log(const Object& context, const std::string & message, Severity severity) {
-		Log(context.GetName(), message, severity);
-	}
+		static void LoggerLog(const std::string& message, Logger::Severity severity = Logger::Severity::Info) {
+			Cout(SeverityString(severity), "Logger", message);
+		}
+#pragma endregion
 
-	void Logger::Log(const std::string& message, Severity severity) {
-		Log("", message, severity);
-	}
+#pragma region Implmementation
+		void Log(const Object& context, const std::string & message, Severity severity) {
+			Log(context.GetName(), message, severity);
+		}
 
-	void Logger::Cout(const std::string& severity, const std::string& caller, const std::string& message) {
-		std::string suffix = (caller.length() > 0) ? " [" + caller + "]" : "";
-		suffix += (" [" + GameClock::ToString(clock->GetCurrentMilliseconds()) + "]");
-		std::string log = severity + " " + message + suffix;
-		if (fileLogger != nullptr) fileLogger->AddToBuffer(log);
-		std::cout << log << std::endl;
-	}
+		void Log(const std::string& message, Severity severity) {
+			Log("", message, severity);
+		}
 
-	void Logger::Log(const std::string& caller, const std::string& message, Severity severity) {
+		void Log(const std::string& caller, const std::string& message, Severity severity) {
 #if !DEBUG
-		return;
+			return;
 #endif
-		if (severity <= Logger::logLevel) {
-			Instance().Cout(SeverityString(severity), caller, message);
+			if (severity <= g_logLevel) {
+				Cout(SeverityString(severity), caller, message);
+			}
+		}
+
+		void Cleanup() {
+			s_fileLogger = nullptr;
 		}
 	}
-
-	Logger::Logger() {
-		fileLogger = std::make_unique<FileLogger>("debug.log");
-		clock = std::make_unique<SystemClock>();
-	}
-
-	Logger& Logger::Instance() {
-		static Logger logger;
-		return logger;
-	}
-
-	void Logger::Log(const sudo& sudo, const std::string& message, Severity severity /* = Severity::Info */) {
-		Instance().Cout(SeverityString(severity), "Logger", message);
-	}
+#pragma endregion
 }

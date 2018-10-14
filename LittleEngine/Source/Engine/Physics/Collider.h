@@ -39,8 +39,8 @@ namespace LittleEngine {
 		virtual bool IsIntersectCircle(const class CircleCollider& rhs) const = 0;
 
 	private:
-		Utils::Action::Token debugOnToken;
-		Utils::Action::Token debugOffToken;
+		Utils::Delegate<>::Token debugOnToken;
+		Utils::Delegate<>::Token debugOffToken;
 	};
 
 	// \brief Concrete class for 2D Circle collider

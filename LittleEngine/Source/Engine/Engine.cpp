@@ -5,11 +5,11 @@
 #include "EngineCommands.h"
 #include "World.h"
 #include "Logger/Logger.h"
-#include "Logger/FileLogger.h"
 #include "Config/EngineConfig.h"
 #include "GameClock.h"
 #include "Input/InputHandler.h"
 #include "Audio/AudioManager.h"
+#include "Console/DebugConsole.h"
 
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Input.h"
@@ -22,14 +22,6 @@
 
 namespace LittleEngine {
 	using Fixed = Utils::Fixed;
-
-	Utils::Action::Token debugToken;
-	bool showDebug = false;
-	void OnDebugReleased() {
-		showDebug = !showDebug;
-		GameEvent eventType = showDebug ? GameEvent::DEBUG_ON : GameEvent::DEBUG_OFF;
-		EventManager::Instance().Notify(eventType);
-	}
 
 	Engine::Ptr Engine::Create() {
 		// std::make_unique requires public constructor and destructor access
@@ -46,7 +38,7 @@ namespace LittleEngine {
 				if (config->Load("config.ini")) {
 					Logger::Log(*this, "Loaded config.ini successfully", Logger::Severity::Debug);
 				}
-				Logger::SetLogLevel(config->GetLogLevel());
+				Logger::g_logLevel = config->GetLogLevel();
 			}
 			
 			/* Instantiate entities */ {
@@ -67,6 +59,7 @@ namespace LittleEngine {
 	}
 
 	Engine::~Engine() {
+		DebugConsole::Cleanup();
 		levelManager = nullptr;
 		audioManager = nullptr;
 		assetManager = nullptr;
@@ -82,6 +75,7 @@ namespace LittleEngine {
 		config = nullptr;
 		
 		Logger::Log(*this, "Engine destroyed");
+		Logger::Cleanup();
 	}
 
 	int Engine::Run() {
@@ -97,10 +91,11 @@ namespace LittleEngine {
 				}
 
 				/* Debugging */
-				debugToken = inputHandler->Register(GameInput::Debug0, &OnDebugReleased, OnKey::Released, true);
+				DebugConsole::Init(*this);
 
 				/* Core Game Loop */
 				double previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
+				double debugToggleTime = 0;
 				Fixed deltaTime = 0;
 				Fixed lag = 0;
 				while (windowController->IsWindowOpen() && !isQuitting) {
@@ -116,7 +111,25 @@ namespace LittleEngine {
 							previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
 							Logger::Log(*this, "Game unpaused");
 						}
-						inputHandler->CaptureState(windowController->GetInputHandler().GetPressed());
+						
+						// Debug Console and Input
+						{
+							// Ignore consecutive Backticks for 200 ms
+							if ((previous - debugToggleTime) > 200.0f) {
+								if (windowController->GetInput().IsKeyPressed(KeyCode::Backtick)) {
+									DebugConsole::Activate(!DebugConsole::IsActive());
+									debugToggleTime = previous;
+								}
+							}
+							const Input& sfmlInput = windowController->GetInput();
+							if (DebugConsole::IsActive()) {
+								DebugConsole::UpdateInput(sfmlInput.GetRawSFMLInput());
+							}
+							else {
+								inputHandler->CaptureState(sfmlInput.GetPressed());
+								inputHandler->CaptureRawText(sfmlInput.GetRawSFMLInput().text);
+							}
+						}
 					}
 
 					/* Process Frame */
@@ -148,6 +161,7 @@ namespace LittleEngine {
 						/* Render */ {
 							RenderParams params(*windowController);
 							levelManager->GetActiveLevel().Render(params);
+							DebugConsole::RenderConsole(*this, params, deltaTime);
 							windowController->Draw();
 						}
 						

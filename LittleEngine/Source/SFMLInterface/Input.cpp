@@ -49,6 +49,18 @@ namespace LittleEngine {
 			return KeyCode::Backtick;
 		case sf::Keyboard::Backspace:
 			return KeyCode::Backspace;
+		case sf::Keyboard::F1:
+			return KeyCode::F1;
+		case sf::Keyboard::F5:
+			return KeyCode::F5;
+		case sf::Keyboard::F8:
+			return KeyCode::F8;
+		case sf::Keyboard::F9:
+			return KeyCode::F9;
+		case sf::Keyboard::F10:
+			return KeyCode::F10;
+		case sf::Keyboard::F12:
+			return KeyCode::F12;
 		}
 		return KeyCode::Invalid;
 	}
@@ -61,6 +73,32 @@ namespace LittleEngine {
 		}
 		keyStates.emplace_back(code);
 		return keyStates[keyStates.size() - 1];
+	}
+
+	static void HandleRawInput(RawTextInput& rawTextInput, int unicode) {
+		if (unicode < 5 || unicode >= 128) {
+			return;
+		}
+
+		switch (unicode) {
+		case 8:
+			rawTextInput.special = RawTextInputType::Backspace;
+			return;
+
+		case 9:
+			rawTextInput.special = RawTextInputType::Tab;
+			return;
+
+		case 13:
+			rawTextInput.special = RawTextInputType::Enter;
+			return;
+
+		case 27:
+			rawTextInput.special = RawTextInputType::Escape;
+			return;
+		}
+
+		rawTextInput.text += static_cast<char>(unicode);
 	}
 
 	Input::Input() {
@@ -109,6 +147,10 @@ namespace LittleEngine {
 		return pressed;
 	}
 
+	const RawTextInput & Input::GetRawSFMLInput() const {
+		return rawTextInput;
+	}
+
 	void Input::OnKeyDown(const sf::Event::KeyEvent& key) {
 		bool newKeyCode = true;
 		KeyState& toModify = GetOrCreateKeyState(Convert(key.code));
@@ -124,6 +166,38 @@ namespace LittleEngine {
 	void Input::ResetKeyStates() {
 		for (auto& keyState : keyStates) {
 			keyState.pressed = false;
+		}
+	}
+
+	void Input::ClearRawInput() {
+		rawTextInput.text.clear();
+		rawTextInput.special = RawTextInputType::None;
+	}
+
+	void Input::OnRawInput(int unicode) {
+		HandleRawInput(rawTextInput, unicode);
+	}
+
+	void Input::OnRawSpecialInput(sf::Keyboard::Key key) {
+		switch (key) {
+		case sf::Keyboard::Up:
+			rawTextInput.special = RawTextInputType::Up;
+			break;
+
+		case sf::Keyboard::Down:
+			rawTextInput.special = RawTextInputType::Down;
+			break;
+
+		case sf::Keyboard::Left:
+			rawTextInput.special = RawTextInputType::Left;
+			break;
+
+		case sf::Keyboard::Right:
+			rawTextInput.special = RawTextInputType::Right;
+			break;
+
+		default:
+			rawTextInput.special = RawTextInputType::None;
 		}
 	}
 }

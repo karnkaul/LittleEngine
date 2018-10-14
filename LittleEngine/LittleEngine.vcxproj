@@ -166,6 +166,9 @@
     <ClInclude Include="Source\Components\RenderComponent.h" />
     <ClInclude Include="Source\Engine\Audio\AudioManager.h" />
     <ClInclude Include="Source\Engine\Config\EngineConfig.h" />
+    <ClInclude Include="Source\Engine\Console\ConsoleCommands.h" />
+    <ClInclude Include="Source\Engine\Console\DebugConsole.h" />
+    <ClInclude Include="Source\Engine\Console\LogLine.hpp" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\EngineCommands.h" />
     <ClInclude Include="Source\Engine\Events\EventManager.h" />
@@ -216,6 +219,8 @@
     <ClCompile Include="Source\Components\RenderComponent.cpp" />
     <ClCompile Include="Source\Engine\Audio\AudioManager.cpp" />
     <ClCompile Include="Source\Engine\Config\EngineConfig.cpp" />
+    <ClCompile Include="Source\Engine\Console\ConsoleCommands.cpp" />
+    <ClCompile Include="Source\Engine\Console\DebugConsole.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\EngineCommands.cpp" />
     <ClCompile Include="Source\Engine\Events\EventManager.cpp" />

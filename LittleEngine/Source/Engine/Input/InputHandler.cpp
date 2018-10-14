@@ -35,7 +35,7 @@ namespace LittleEngine {
 			gamepad.Bind(KeyCode::Control, GameInput::LB);
 			gamepad.Bind(KeyCode::Shift, GameInput::RB);
 
-			gamepad.Bind(KeyCode::Backtick, GameInput::Debug0);
+			gamepad.Bind(KeyCode::F12, GameInput::Debug0);
 		}
 		Logger::Log(*this, "InputHandler constructed");
 	}
@@ -81,6 +81,11 @@ namespace LittleEngine {
 				}
 			}
 		}
+		rawTextInput.clear();
+	}
+
+	void InputHandler::CaptureRawText(const std::string & rawTextInput) {
+		this->rawTextInput = rawTextInput;
 	}
 
 	void InputHandler::Cleanup(std::vector<InputObserver>& vec) {

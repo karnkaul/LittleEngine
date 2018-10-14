@@ -83,3 +83,7 @@ namespace Maths {
 		int Range(int min, int max);
 	};
 }
+
+namespace Strings {
+	int ToInt(const std::string& input, int defaultValue = -1);
+}

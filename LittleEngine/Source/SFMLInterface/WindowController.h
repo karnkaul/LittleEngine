@@ -62,7 +62,7 @@ namespace LittleEngine {
 		void Draw();
 		// Destroy SFML RenderWindow
 		void CloseWindow();
-		const Input& GetInputHandler() const;
+		const Input& GetInput() const;
 
 	private:
 		Buffer buffer;

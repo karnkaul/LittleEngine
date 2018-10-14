@@ -23,7 +23,7 @@
 namespace LittleEngine {
 	// Tests
 	namespace _TestLevel {
-		Action::Token token0, token1;
+		OnInput::Token token0, token1;
 		Level* level;
 		Actor::wPtr _actor0, _player;
 		bool parented = false;
@@ -60,7 +60,7 @@ namespace LittleEngine {
 			}
 		}
 
-		Action::Token token2;
+		OnInput::Token token2;
 		Actor::wPtr _actor2, _actor3;
 		void OnEnterPressed() {
 			auto actor2 = _actor2.lock();
@@ -90,10 +90,10 @@ namespace LittleEngine {
 			}
 		}
 
-		Action::Token token4;
+		OnInput::Token token4;
 		void OnSelectPressed() {
 			Vector2 normalisedPosition = Vector2(Maths::Random::Range(Fixed(-1), Fixed(1)), Maths::Random::Range(Fixed(-1), Fixed(1)));
-			Vector2 position = level->GetWorld().NormalisedToScreenPoint(normalisedPosition);
+			Vector2 position = level->GetWorld().NormalisedToWorldPoint(normalisedPosition);
 			auto v = Spawner::VFXExplode(*level, position);
 		}
 
@@ -107,14 +107,6 @@ namespace LittleEngine {
 			}
 			spriteRenderer = nullptr;
 			textRenderer = nullptr;
-		}
-
-		Action::Token debugToken0, debugToken1;
-		void OnDebugOn() {
-
-		}
-		void OnDebugOff() {
-
 		}
 	}
 
@@ -148,10 +140,8 @@ namespace LittleEngine {
 		_TestLevel::token2 = GetInputHandler().Register(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
 		_TestLevel::soundPlayed = _TestLevel::musicPlayed = false;
 		_TestLevel::token4 = GetInputHandler().Register(GameInput::Select, &_TestLevel::OnSelectPressed, OnKey::Released);
-		_TestLevel::debugToken0 = EventManager::Instance().Register(GameEvent::DEBUG_OFF, &_TestLevel::OnDebugOff);
-		_TestLevel::debugToken1 = EventManager::Instance().Register(GameEvent::DEBUG_ON, &_TestLevel::OnDebugOn);
 		
-		GetAudioManager().PlayMusic("TestMusic.ogg", Fixed::Half);
+		GetAudioManager().PlayMusic("TestMusic.ogg", Fixed::OneHalf);
 	}
 
 	void RenderTests(Level* level, std::vector<Actor::Ptr>& actors, RenderParams& params) {

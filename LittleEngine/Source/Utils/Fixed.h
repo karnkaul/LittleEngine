@@ -8,7 +8,12 @@ namespace Utils {
 		static const int SCALE_FACTOR = 100000;
 		static const Fixed Zero;
 		static const Fixed One;
-		static const Fixed Half;
+		static const Fixed Two;
+		static const Fixed Three;
+		static const Fixed Ten;
+		static const Fixed OneHalf;
+		static const Fixed OneThird;
+		static const Fixed OneTenth;
 
 		Fixed() = default;
 		explicit Fixed(double);

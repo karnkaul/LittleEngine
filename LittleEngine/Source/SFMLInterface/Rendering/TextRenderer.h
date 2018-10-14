@@ -4,8 +4,16 @@
 #include "SFMLInterface/Assets.h"
 
 namespace LittleEngine {
-	enum Style {
+	enum class HAlign {
+		Centre,
+		Left,
+		Right
+	};
 
+	enum class VAlign {
+		Centre,
+		Top,
+		Bottom
 	};
 
 	// \brief Container for text rendering metadata
@@ -16,6 +24,8 @@ namespace LittleEngine {
 		std::string text;
 		Colour fillColour;
 		Colour outlineColour;
+		HAlign hAlign = HAlign::Centre;
+		VAlign vAlign = VAlign::Bottom;
 
 		TextData(FontAsset::Ptr font, const std::string& text);
 		TextData(FontAsset::Ptr font, const std::string& text, Fixed pixelSize, Colour fillColour);
@@ -26,6 +36,9 @@ namespace LittleEngine {
 	private:
 		friend class TextRenderer;
 		FontAsset::Ptr font;
+
+		float GetNAlignmentHorz() const;
+		float GetNAlignmentVert() const;
 	};
 
 	// \brief Concrete wrapper for SFML text shape

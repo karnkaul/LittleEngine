@@ -113,12 +113,12 @@ namespace LittleEngine {
 			std::string fullPath = GetPath(path);
 			auto search = loaded.find(fullPath);
 			if (search != loaded.end()) {
-				Logger::Log("AssetManager", "Found Asset [" + fullPath + "] in cache", Logger::Severity::Debug);
+				Logger::Log(*this, "Found Asset [" + fullPath + "] in cache", Logger::Severity::Debug);
 				std::shared_ptr<Asset> asset = search->second;
 				return std::dynamic_pointer_cast<T>(asset);
 			}
 
-			Logger::Log("AssetManager", "Loading Asset [" + fullPath + "]", Logger::Severity::Debug);
+			Logger::Log(*this, "Loading Asset [" + fullPath + "]", Logger::Severity::Debug);
 			struct enable_shared : public T { enable_shared(const std::string& path) : T(path) {} };
 			std::shared_ptr<T> t_ptr = std::make_shared<enable_shared>(fullPath);
 			std::shared_ptr<Asset> t_asset = std::dynamic_pointer_cast<Asset>(t_ptr);

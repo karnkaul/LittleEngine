@@ -14,13 +14,37 @@ namespace LittleEngine {
 	TextData::TextData(FontAsset::Ptr font, const std::string & text, Fixed pixelSize, Colour fillColour, Fixed outlineSize, Colour outlineColour)
 		: font(font), text(text), pixelSize(pixelSize), fillColour(fillColour), outlineSize(outlineSize), outlineColour(outlineColour) {
 	}
+
 	void TextData::SetFont(FontAsset::Ptr font) {
 		this->font = font;
 	}
 
-	TextRenderer::TextRenderer(const TextData & data) :
-		Renderer("TextRenderer"), data(data) {
+	float TextData::GetNAlignmentHorz() const {
+		switch (hAlign) {
+		default:
+		case HAlign::Centre:
+			return 0.5f;
+		case HAlign::Left:
+			return 0.0f;
+		case HAlign::Right:
+			return 1.0f;
+		}
 	}
+
+	float TextData::GetNAlignmentVert() const {
+		switch (vAlign) {
+		default:
+		case VAlign::Centre:
+			return 0.5f;
+		case VAlign::Bottom:
+			return 0.0f;
+		case VAlign::Top:
+			return 1.0f;
+		}
+	}
+
+	TextRenderer::TextRenderer(const TextData & data) : Renderer("TextRenderer"), data(data) 
+	{}
 
 	void TextRenderer::ApplyData() {
 		text.setString(data.text);
@@ -29,9 +53,10 @@ namespace LittleEngine {
 		text.setOutlineColor(Convert(data.outlineColour));
 		text.setOutlineThickness(data.outlineSize.Abs().GetFloat());
 		text.setCharacterSize(data.pixelSize.Abs().GetInt());
+		sf::FloatRect textRect = text.getLocalBounds();
 		text.setOrigin(sf::Vector2f(
-			text.getLocalBounds().width * 0.5f,
-			text.getLocalBounds().height * 0.5f)
+			textRect.width * data.GetNAlignmentHorz(),
+			textRect.height * data.GetNAlignmentVert())
 		);
 	}
 
@@ -55,8 +80,8 @@ namespace LittleEngine {
 		Fixed width(bounds.width);
 		Fixed height(bounds.height);
 		return Rect2(
-			Vector2(-width * Fixed::Half, -height * Fixed::Half),
-			Vector2(width * Fixed::Half, height * Fixed::Half)
+			Vector2(-width * Fixed::OneHalf, -height * Fixed::OneHalf),
+			Vector2(width * Fixed::OneHalf, height * Fixed::OneHalf)
 		);
 	}
 

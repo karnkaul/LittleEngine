@@ -26,6 +26,8 @@ namespace LittleEngine {
 	// World, and Game Time
 	class Level : public Object {
 	public:
+		const static int MAX_LEVEL_IDX = 1;
+
 		virtual ~Level();
 		virtual void FixedTick();
 		virtual void Tick(Fixed deltaTime);
