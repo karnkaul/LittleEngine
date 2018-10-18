@@ -91,7 +91,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DEBUG;SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>include;$(SolutionPath)\..\$(ProjectName);$(SolutionPath)\..\$(ProjectName)\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;$(SolutionPath)\..\$(ProjectName);$(SolutionPath)\..\$(ProjectName)\Source;$(SolutionPath)\..\GameUtils</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -108,7 +109,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DEBUG;SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>include;$(SolutionPath)\..\$(ProjectName);$(SolutionPath)\..\$(ProjectName)\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;$(SolutionPath)\..\$(ProjectName);$(SolutionPath)\..\$(ProjectName)\Source;$(SolutionPath)\..\GameUtils</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,7 +129,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>include;$(SolutionPath)\..\$(ProjectName);$(SolutionPath)\..\$(ProjectName)\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;$(SolutionPath)\..\$(ProjectName);$(SolutionPath)\..\$(ProjectName)\Source;$(SolutionPath)\..\GameUtils</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -148,7 +151,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>include;$(SolutionPath)\..\$(ProjectName);$(SolutionPath)\..\$(ProjectName)\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;$(SolutionPath)\..\$(ProjectName);$(SolutionPath)\..\$(ProjectName)\Source;$(SolutionPath)\..\GameUtils</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -201,15 +205,7 @@
     <ClInclude Include="Source\SFMLInterface\Rendering\SpriteRenderer.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\TextRenderer.h" />
     <ClInclude Include="Source\SFMLInterface\WindowController.h" />
-    <ClInclude Include="Source\Utils\Delegate.hpp" />
-    <ClInclude Include="Source\Utils\FileRW.h" />
-    <ClInclude Include="Source\Utils\Fixed.h" />
-    <ClInclude Include="Source\Utils\Utils.h" />
-    <ClInclude Include="Source\Utils\Property.h" />
-    <ClInclude Include="Source\Utils\Rect2.h" />
-    <ClInclude Include="Source\Utils\Transform.h" />
-    <ClInclude Include="Source\Utils\Vector2.h" />
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="le_stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
@@ -253,18 +249,17 @@
     <ClCompile Include="Source\SFMLInterface\Rendering\SpriteRenderer.cpp" />
     <ClCompile Include="Source\SFMLInterface\Rendering\TextRenderer.cpp" />
     <ClCompile Include="Source\SFMLInterface\WindowController.cpp" />
-    <ClCompile Include="Source\Utils\FileRW.cpp" />
-    <ClCompile Include="Source\Utils\Fixed.cpp" />
-    <ClCompile Include="Source\Utils\Utils.cpp" />
-    <ClCompile Include="Source\Utils\Property.cpp" />
-    <ClCompile Include="Source\Utils\Transform.cpp" />
-    <ClCompile Include="Source\Utils\Vector2.cpp" />
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="le_stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GameUtils\GameUtils.vcxproj">
+      <Project>{807fe730-588c-4a7b-9d9a-09fd2790c4b4}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

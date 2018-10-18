@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "TestLevel.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
@@ -110,7 +110,8 @@ namespace LittleEngine {
 		}
 	}
 
-	TestLevel::TestLevel(Engine& engine) : Level("TestLevel", engine) {
+	void TestLevel::Activate() {
+	//TestLevel::TestLevel(Engine& engine) : Level("TestLevel", engine) {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 
 		auto actor0 = SpawnActor<Actor>("Actor0-RectangleRenderer", Vector2(300, 200)).lock();
@@ -130,7 +131,7 @@ namespace LittleEngine {
 			tr.SetColour(Colour(200, 150, 50)).SetSize(50);
 		}
 
-		quitLevelToken = GetInputHandler().Register(GameInput::Return, std::bind(&TestLevel::OnQuitPressed, this), OnKey::Released);
+		RegisterScopedInput(GameInput::Return, std::bind(&TestLevel::OnQuitPressed, this), OnKey::Released);
 		// Tests
 		_TestLevel::_actor0 = actor0;
 		_TestLevel::_player = player;
@@ -144,13 +145,17 @@ namespace LittleEngine {
 		GetAudioManager().PlayMusic("TestMusic.ogg", Fixed::OneHalf);
 	}
 
+	void TestLevel::OnClearing() {
+		_TestLevel::CleanupTests();
+	}
+
 	void RenderTests(Level* level, std::vector<Actor::Ptr>& actors, RenderParams& params) {
 		if (!actors.empty()) {
 			actors[0]->GetTransform().Rotate(2);
 		}
 	}
 
-	void TestLevel::Render(RenderParams & params) {
+	void TestLevel::PostRender(const RenderParams& params) {
 		if (clock.GetElapsedMilliSeconds() > 2000 && !_TestLevel::soundPlayed) {
 			_TestLevel::soundPlayed = true;
 			GetAudioManager().PlaySFX("TestSound.wav", Fixed(2, 10));
@@ -167,20 +172,19 @@ namespace LittleEngine {
 			_TestLevel::musicStopped = true;
 			GetAudioManager().SwitchTrack("TestMusic.ogg", Fixed::Half, Fixed(3));
 		}*/
+		RenderParams _params = params;
 		if (_TestLevel::spriteRenderer != nullptr) {
-			params.screenPosition = GetWorld().WorldToScreenPoint(Vector2(600, -200));
-			_TestLevel::spriteRenderer->Render(params);
+			_params.screenPosition = GetWorld().WorldToScreenPoint(Vector2(600, -200));
+			_TestLevel::spriteRenderer->Render(_params);
 		}
 		if (_TestLevel::textRenderer != nullptr) {
-			params.screenPosition = GetWorld().WorldToScreenPoint(Vector2(200, -100));
-			_TestLevel::textRenderer->Render(params);
+			_params.screenPosition = GetWorld().WorldToScreenPoint(Vector2(200, -100));
+			_TestLevel::textRenderer->Render(_params);
 		}
-		RenderTests(this, actors, params);
- 		Level::Render(params);
+		RenderTests(this, actors, _params);
 	}
 
 	void TestLevel::OnQuitPressed() {
-		_TestLevel::CleanupTests();
-		engine->LoadLevel(LevelID::BootLevel);
+		engine->LoadLevel(engine->GetActiveLevelID() - 1);
 	}
 }

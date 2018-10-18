@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include <list>
 #include "DebugConsole.h"
 #include "SFMLInterface/Rendering/RenderFactory.h"
@@ -9,10 +9,10 @@
 #include "Engine/World.h"
 #include "Engine/Logger/Logger.h"
 #include "SFML/Window/Event.hpp"
-#include "Utils/Transform.h"
+#include "Transform.h"
 #include "LogLine.hpp"
 #include "ConsoleCommands.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 
 namespace LittleEngine { namespace DebugConsole {
 	static bool s_isActive = false;
@@ -105,7 +105,7 @@ namespace LittleEngine { namespace DebugConsole {
 	};
 
 	struct DebugConsoleLog {
-		using Transform = Utils::Transform;
+		using Transform = GameUtils::Transform;
 
 		const static int NUM_LOG_LINES = 10;
 		Transform logT[NUM_LOG_LINES];
@@ -143,7 +143,7 @@ namespace LittleEngine { namespace DebugConsole {
 	};
 
 	struct DebugConsoleRenderer {
-		using Transform = Utils::Transform;
+		using Transform = GameUtils::Transform;
 		const Engine* engine = nullptr;
 
 		void Log(const std::string& message, const Colour& colour) {

@@ -1,9 +1,8 @@
-#include "stdafx.h"
 #include <iostream>
 #include "Transform.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 
-namespace Utils {
+namespace GameUtils {
 	void Transform::SetParent(Transform& parent, bool modifyWorldSpace) {
 		m_parent = &parent;
 		if (!modifyWorldSpace) {
@@ -46,7 +45,7 @@ namespace Utils {
 
 	void Transform::Rotate(Fixed angle) {
 		localRotation += angle;
-		Utils::CleanVector<Transform*>(m_children, [](Transform* child) { return child == nullptr; });
+		GameUtils::CleanVector<Transform*>(m_children, [](Transform* child) { return child == nullptr; });
 		// Children need to be repositioned
 		if (!m_children.empty()) {
 			Fixed rad = angle * Consts::DEG_TO_RAD;
@@ -89,7 +88,7 @@ namespace Utils {
 
 	void Transform::RemoveChild(Transform* child) {
 		if (child != nullptr) {
-			Utils::VectorErase(m_children, child);
+			GameUtils::VectorErase(m_children, child);
 		}
 	}
 }

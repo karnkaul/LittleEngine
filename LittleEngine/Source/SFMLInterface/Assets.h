@@ -5,10 +5,10 @@
 #include "Engine/Logger/Logger.h"
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
-#include "Utils/Utils.h"
+#include "Utils.h"
 
 namespace LittleEngine {
-	using Fixed = Utils::Fixed;
+	using Fixed = GameUtils::Fixed;
 
 	// \brief Abstract Wrapper class for all files that can be read as SFML assets
 	class Asset {

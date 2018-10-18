@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include <chrono>
 #include <thread>
 #include "Engine.h"
@@ -21,7 +21,7 @@
 #include "Levels/LevelManager.h"
 
 namespace LittleEngine {
-	using Fixed = Utils::Fixed;
+	using Fixed = GameUtils::Fixed;
 
 	Engine::Ptr Engine::Create() {
 		// std::make_unique requires public constructor and destructor access
@@ -78,16 +78,16 @@ namespace LittleEngine {
 		Logger::Cleanup();
 	}
 
-	int Engine::Run() {
+	ExitCode Engine::Run() {
 		Logger::Log(*this, "Execution started");
 
 		if (exitCode == ExitCode::OK) {
 			if (CreateWindow()) {
 				/* Load Level 0 */
-				if (!levelManager->LoadLevel(LevelID::BootLevel)) {
+				if (!levelManager->LoadLevel(BOOTLEVEL)) {
 					Logger::Log(*this, "Could not load level 0!", Logger::Severity::Error);
 					exitCode = ExitCode::ExecutionError;
-					return (int)exitCode;
+					return exitCode;
 				}
 
 				/* Debugging */
@@ -142,7 +142,7 @@ namespace LittleEngine {
 						/* Fixed Tick */ {
 							int fixedTicks = 0;
 							while (lag >= Consts::MS_PER_FIXED_TICK) {
-								levelManager->GetActiveLevel().FixedTick();
+								levelManager->GetActiveLevel()->FixedTick();
 								lag -= Consts::MS_PER_FIXED_TICK;
 								if (++fixedTicks > Consts::MAX_FIXED_TICKS) {
 									Logger::Log(*this, "Timeout during FixedTick(). Ignore if pausing rendering", Logger::Severity::Warning);
@@ -155,12 +155,12 @@ namespace LittleEngine {
 							GameClock::Tick(deltaTime);
 							inputHandler->FireInput();
 							audioManager->Tick(deltaTime);
-							levelManager->GetActiveLevel().Tick(deltaTime);
+							levelManager->GetActiveLevel()->Tick(deltaTime);
 						}
 
 						/* Render */ {
 							RenderParams params(*windowController);
-							levelManager->GetActiveLevel().Render(params);
+							levelManager->GetActiveLevel()->Render(params);
 							DebugConsole::RenderConsole(*this, params, deltaTime);
 							windowController->Draw();
 						}
@@ -184,7 +184,11 @@ namespace LittleEngine {
 			}
 		}
 
-		return (int)exitCode;
+		return exitCode;
+	}
+
+	const LevelID Engine::GetActiveLevelID() const {
+		return levelManager->GetActiveLevelID();
 	}
 
 	InputHandler & Engine::GetInputHandler() const {

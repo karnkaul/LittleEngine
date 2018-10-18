@@ -1,8 +1,8 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "SpriteAnimator.h"
 #include "Levels/Level.h"
 #include "Entities/Actor.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 #include "SFMLInterface/Rendering/SpriteRenderer.h"
 #include "SFMLInterface/Rendering/RenderFactory.h"
 

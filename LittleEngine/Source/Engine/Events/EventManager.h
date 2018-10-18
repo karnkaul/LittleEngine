@@ -1,7 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include "Engine/Object.h"
-#include "Utils/Delegate.hpp"
+#include "Delegate.hpp"
 
 namespace LittleEngine {
 	enum class GameEvent {
@@ -9,7 +9,7 @@ namespace LittleEngine {
 		DEBUG_HIDE_COLLIDERS = 101,
 	};
 	
-	using OnEvent = Utils::Delegate<>;
+	using OnEvent = GameUtils::Delegate<>;
 	
 	// \brief: Central point of all GameEvent dispatching
 	class EventManager : public Object {

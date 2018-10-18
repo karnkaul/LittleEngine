@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 
-namespace Utils {
+namespace GameUtils {
 	// \brief Maps a string Key to string Value; capable of parsing Value 
 	// as int/float. Intention: simple serialisation.
 	struct Property {

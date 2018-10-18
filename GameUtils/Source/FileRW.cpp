@@ -1,9 +1,8 @@
-#include "stdafx.h"
 #include <fstream>
 #include <iostream>
 #include "FileRW.h"
 
-namespace Utils {
+namespace GameUtils {
 	bool FileRW::Exists() const {
 		std::ifstream f(path.c_str());
 		return f.good();

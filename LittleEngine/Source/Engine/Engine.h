@@ -1,10 +1,11 @@
 #pragma once
 #include <vector>
 #include "Object.h"
-#include "Utils/Fixed.h"
+#include "Fixed.h"
+#include "Delegate.hpp"
 #include "SFMLInterface/SystemClock.h"
-#include "Utils/Delegate.hpp"
 #include "Events/EventManager.h"
+#include "Levels/LevelManager.h"
 
 namespace Consts {
 	constexpr int MAX_FIXED_TICKS = 20;
@@ -19,11 +20,10 @@ namespace LittleEngine {
 	class AssetManager;
 	class AudioManager;
 	class Level;
-	class LevelManager;
 	class WindowController;
 	class EngineCommand;
 	class InputHandler;
-	enum class LevelID;
+	using LevelID = int;
 
 	enum class ExitCode { 
 		OK,
@@ -47,10 +47,18 @@ namespace LittleEngine {
 		
 		// (Only) Factory for unique_ptr<Engine>
 		static Ptr Create();
+		
+		template<typename T>
+		LevelID CreateLevel() {
+			LevelID id = levelManager->template CreateLevel<T>();
+			return id;
+		}
 
-		// Returns exit code
-		int Run();
+		// \brief Creates window and attempts to load Level 0
+		// \returns exit code
+		ExitCode Run();
 
+		const LevelID GetActiveLevelID() const;
 		InputHandler& GetInputHandler() const;
 		const World& GetWorld() const;
 		AssetManager& GetAssetManager() const;

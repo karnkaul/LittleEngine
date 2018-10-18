@@ -1,11 +1,11 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "FileLogger.h"
 #include <iostream>
 #include <chrono>
 
 namespace LittleEngine {
 	FileLogger::FileLogger(const std::string & logFilePath, bool clearFile) {
-		file = std::make_unique<Utils::FileRW>(logFilePath);
+		file = std::make_unique<GameUtils::FileRW>(logFilePath);
 		if (clearFile) file->Write("");
 		std::cout << "FileLogger created and writing to [ " << logFilePath << "] (console only)" << std::endl;
 		// std::thread does not work directly with class methods, so using a lambda that calls it

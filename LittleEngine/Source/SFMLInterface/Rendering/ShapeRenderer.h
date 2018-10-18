@@ -1,6 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "Utils/Vector2.h"
+#include "Vector2.h"
 #include "Renderer.h"
 
 namespace LittleEngine {

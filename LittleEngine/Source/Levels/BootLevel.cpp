@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "BootLevel.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
@@ -13,13 +13,8 @@
 #include "SFMLInterface/Assets.h"
 
 namespace LittleEngine {
-	BootLevel::BootLevel(Engine& engine) : Level("BootLevel", engine) {
+	void BootLevel::Activate() {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
-		static bool _assetsLoaded = false;
-		if (!_assetsLoaded) {
-			LoadAssets();
-			_assetsLoaded = true;
-		}
 		
 		Vector2 lowerBound = this->engine->GetWorld().GetScreenBounds().lower;
 		_logo = SpawnActor<Actor>("Logo");
@@ -57,7 +52,7 @@ namespace LittleEngine {
 
 	void BootLevel::OnLoadNextLevel() {
 		inputTokens.clear();
-		engine->LoadLevel(LevelID::TestLevel);
+		engine->LoadLevel(1);
 	}
 
 	void BootLevel::OnQuit() {

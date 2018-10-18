@@ -1,12 +1,12 @@
 #pragma once
 #include "SFML/Audio.hpp"
 #include "Engine/Object.h"
-#include "Utils/Fixed.h"
+#include "Fixed.h"
 #include "SFMLInterface/Assets.h"
 #include "Engine/GameClock.h"
 
 namespace LittleEngine {
-	using Fixed = Utils::Fixed;
+	using Fixed = GameUtils::Fixed;
 
 	// \brief Base class for audio Asset playback
 	class AudioPlayer : public Object {

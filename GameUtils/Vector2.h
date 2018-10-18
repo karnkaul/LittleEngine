@@ -1,7 +1,7 @@
 #pragma once
-#include "Utils/Fixed.h"
+#include "Fixed.h"
 
-namespace Utils {
+namespace GameUtils {
 	// \brief 2D geometric vector using Fixed
 	struct Vector2 {
 	public:

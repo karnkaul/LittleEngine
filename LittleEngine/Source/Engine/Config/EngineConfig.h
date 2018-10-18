@@ -1,14 +1,14 @@
 #pragma once
-#include "stdafx.h"
+#include "le_stdafx.h"
 
-#include "Utils/Property.h"	// PropRW
+#include "Property.h"	// PropRW
+#include "Vector2.h"	// Vector2
 #include "Engine/Logger/Logger.h"	// Logger::Severity
-#include "Utils/Vector2.h"	// Vector2
 
 namespace LittleEngine {
-	using Fixed = Utils::Fixed;
-	using Vector2 = Utils::Vector2;
-	using Property = Utils::Property;
+	using Fixed = GameUtils::Fixed;
+	using Vector2 = GameUtils::Vector2;
+	using Property = GameUtils::Property;
 	
 	// \brief Wrapper to maintain properties saved to / loaded from config.ini
 	class EngineConfig {

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "SpriteRenderer.h"
 #include "ShapeRenderer.h"
 #include "RenderParams.h"

@@ -1,6 +1,6 @@
 #pragma once
 #include "Level.h"
-#include "Utils/Delegate.hpp"
+#include "Delegate.hpp"
 
 namespace LittleEngine {
 	class Engine;
@@ -8,11 +8,15 @@ namespace LittleEngine {
 
 	class TestLevel : public Level {
 	public:
-		TestLevel(Engine& engine);
-		virtual void Render(RenderParams& params) override;
+		TestLevel() : Level("TestLevel") {}
+
+		virtual void PostRender(const RenderParams& params) override;
+
+	protected:
+		virtual void Activate() override;
+		virtual void OnClearing() override;
 
 	private:
-		Utils::Delegate<>::Token quitLevelToken;
 		void OnQuitPressed();
 	};
 }

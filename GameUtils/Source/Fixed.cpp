@@ -1,9 +1,8 @@
-#include "stdafx.h"
 #include <iostream>
 #include <string>
-#include "Utils/Fixed.h"
+#include "Fixed.h"
 
-namespace Utils {
+namespace GameUtils {
 	const Fixed Fixed::Zero = Fixed(0);
 	const Fixed Fixed::One = Fixed(1);
 	const Fixed Fixed::Two = Fixed(2);

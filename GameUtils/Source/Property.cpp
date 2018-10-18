@@ -1,9 +1,8 @@
-#include "stdafx.h"
 #include <vector>
 #include "Property.h"
 #include "FileRW.h"
 
-namespace Utils {
+namespace GameUtils {
 	std::vector<std::string> Tokenize(const std::string& s, char c) {
 		auto end = s.cend();
 		auto start = end;

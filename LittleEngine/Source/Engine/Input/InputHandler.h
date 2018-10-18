@@ -2,13 +2,13 @@
 #include <vector>
 #include <unordered_map>
 #include "Engine/Object.h"
-#include "Utils/Delegate.hpp"
+#include "Delegate.hpp"
 #include "Gamepad.h"
 
 namespace LittleEngine {
 	struct KeyState;
 	enum class KeyCode;
-	using OnInput = Utils::Delegate<>;
+	using OnInput = GameUtils::Delegate<>;
 
 	enum class OnKey { Pressed, Held, Released };
 
