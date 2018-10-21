@@ -1,8 +1,8 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include <string>
 #include "Engine/Logger/Logger.h"
 #include "WindowController.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 
 namespace LittleEngine {
 	LayerInfo::LayerInfo(int layerID) {

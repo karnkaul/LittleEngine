@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "RenderComponent.h"
-#include "Utils/Transform.h"
+#include "Transform.h"
 #include "Entities/Actor.h"
 #include "Levels/Level.h"
 #include "Engine/World.h"

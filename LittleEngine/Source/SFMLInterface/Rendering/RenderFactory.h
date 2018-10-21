@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include "SFML/Graphics.hpp"
-#include "Utils/Vector2.h"
+#include "Vector2.h"
 #include "SFMLInterface/Assets.h"
 
 namespace LittleEngine { 
@@ -13,8 +13,8 @@ namespace LittleEngine {
 	struct TextData;
 	struct SpriteData;
 
-	using Fixed = Utils::Fixed;
-	using Vector2 = Utils::Vector2;
+	using Fixed = GameUtils::Fixed;
+	using Vector2 = GameUtils::Vector2;
 
 	namespace RenderFactory {
 	std::unique_ptr<CircleRenderer> NewCircle(const Fixed& radius);

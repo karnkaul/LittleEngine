@@ -1,15 +1,15 @@
 #pragma once
 #include <vector>
 #include "Component.h"
-#include "Utils/Delegate.hpp"
-#include "Utils/Vector2.h"
+#include "Delegate.hpp"
+#include "Vector2.h"
 #include "Engine/Input/InputHandler.h"
 
 namespace LittleEngine {
 	class Actor;
 	struct KeyState;
 
-	using Vector2 = Utils::Vector2;
+	using Vector2 = GameUtils::Vector2;
 	
 	// \brief Player Controller Component
 	class ControllerComponent : public Component {

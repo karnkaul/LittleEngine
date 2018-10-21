@@ -1,11 +1,11 @@
 #pragma once
 #include "Object.h"
-#include "Utils/Rect2.h"
+#include "Rect2.h"
 
 namespace LittleEngine {
-	using Fixed = Utils::Fixed;
-	using Vector2 = Utils::Vector2;
-	using Rect2 = Utils::Rect2;
+	using Fixed = GameUtils::Fixed;
+	using Vector2 = GameUtils::Vector2;
+	using Rect2 = GameUtils::Rect2;
 
 	// \brief Wrapper for Screen Size
 	class World : public Object {

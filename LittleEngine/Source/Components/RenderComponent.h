@@ -1,6 +1,6 @@
 #pragma once
 #include "Component.h"
-#include "Utils/Rect2.h"
+#include "Rect2.h"
 #include "SFMLInterface/Rendering/Renderer.h"
 
 namespace LittleEngine {

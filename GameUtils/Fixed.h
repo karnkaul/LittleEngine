@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-namespace Utils {
+namespace GameUtils {
 	// \brief Fixed point POD using constant scale factor
 	struct Fixed final {
 	public:

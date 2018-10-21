@@ -2,8 +2,9 @@
 #include "Fixed.h"
 #include <vector>
 #include <functional>
+#include <algorithm>
 
-namespace Utils {
+namespace GameUtils {
 	// Erase all elements of a vector that qualify provided Predicate
 	// Vector and T are passed by reference
 	template<typename T>
@@ -38,7 +39,7 @@ namespace Utils {
 }
 
 namespace Maths {
-	using Fixed = Utils::Fixed;
+	using Fixed = GameUtils::Fixed;
 
 	// Returns val E [min, max]
 	template<typename T>

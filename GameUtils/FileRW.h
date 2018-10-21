@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-namespace Utils {
+namespace GameUtils {
 	// \brief File persistor; implementation uses fstream
 	class FileRW {
 	public:

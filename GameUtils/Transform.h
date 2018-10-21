@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
-#include "Utils/Vector2.h"
+#include "Vector2.h"
 
-namespace Utils {
+namespace GameUtils {
 	namespace Consts {
 		const Fixed PI = Fixed(3.14159265359);
 		const Fixed DEG_TO_RAD = Fixed(PI / 180);

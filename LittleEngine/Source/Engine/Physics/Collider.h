@@ -1,7 +1,7 @@
 #pragma once
 #include "Components/Component.h"
 #include "ColliderData.h"
-#include "Utils/Delegate.hpp"
+#include "Delegate.hpp"
 
 namespace LittleEngine {
 	class Actor;
@@ -39,8 +39,8 @@ namespace LittleEngine {
 		virtual bool IsIntersectCircle(const class CircleCollider& rhs) const = 0;
 
 	private:
-		Utils::Delegate<>::Token debugOnToken;
-		Utils::Delegate<>::Token debugOffToken;
+		GameUtils::Delegate<>::Token debugOnToken;
+		GameUtils::Delegate<>::Token debugOffToken;
 	};
 
 	// \brief Concrete class for 2D Circle collider

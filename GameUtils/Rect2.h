@@ -1,7 +1,7 @@
 #pragma once
 #include "Vector2.h"
 
-namespace Utils {
+namespace GameUtils {
 	// \brief Specifies an axis-aligned rectangle via bottom-left and top-right points
 	struct Rect2 {
 	public:

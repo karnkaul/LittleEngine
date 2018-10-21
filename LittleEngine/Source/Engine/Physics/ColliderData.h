@@ -1,9 +1,9 @@
 #pragma once
-#include "Utils/Vector2.h"
+#include "Vector2.h"
 
 namespace LittleEngine {
-	using Fixed = Utils::Fixed;
-	using Vector2 = Utils::Vector2;
+	using Fixed = GameUtils::Fixed;
+	using Vector2 = GameUtils::Vector2;
 
 	// \brief Wrapper for Axis Aligned Bounding Box Collider data.
 	// Provides APIs to test intersection and point presence

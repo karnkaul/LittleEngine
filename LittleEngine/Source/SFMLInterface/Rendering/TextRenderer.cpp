@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "SFMLInterface/WindowController.h"
 #include "RenderParams.h"
 #include "TextRenderer.h"

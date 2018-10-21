@@ -1,7 +1,7 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "World.h"
 #include "Engine/Logger/Logger.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 
 namespace LittleEngine {
 	World::World(const Vector2& screenSize) : Object("World"), screenSize(screenSize) {

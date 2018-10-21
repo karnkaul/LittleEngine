@@ -1,6 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "Utils/Fixed.h"
+#include "Fixed.h"
 #include "Input.h"
 #include "SystemClock.h"
 #include "Rendering/RenderParams.h"

@@ -1,5 +1,5 @@
 #pragma once
-#include "Level.h"
+#include "Levels/Level.h"
 #include "Engine/Input/InputHandler.h"
 
 namespace LittleEngine {
@@ -9,14 +9,19 @@ namespace LittleEngine {
 	// \brief First level that Engine will load
 	class BootLevel : public Level {
 	public:
-		BootLevel(Engine& engine);
+		BootLevel() : Level("BootLevel") {};
+
+		virtual void LoadAssets() override;
 		virtual void Tick(Fixed deltaTime) override;
+
+	protected:
+		virtual void Activate() override;
+
 	private:
 		TextRenderer* logoRenderer;
 		Actor::wPtr _logo;
 		std::vector<OnInput::Token> inputTokens;
 
-		void LoadAssets();
 		void OnLoadNextLevel();
 		void OnQuit();
 	};

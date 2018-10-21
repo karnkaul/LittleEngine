@@ -1,7 +1,8 @@
 #pragma once
 #include "Engine/Object.h"
-#include "Utils/Transform.h"
-
+#include "TokenHandler.hpp"
+#include "Engine/Input/InputHandler.h"
+#include "Transform.h"
 #include "Engine/Physics/Collider.h"
 
 namespace LittleEngine {
@@ -9,7 +10,7 @@ namespace LittleEngine {
 	class Level;
 	class Component;
 
-	using Transform = Utils::Transform;
+	using Transform = GameUtils::Transform;
 
 	// \brief Base class representing a renderable entity in the world
 	class Actor : public Object, public std::enable_shared_from_this<Actor> {
@@ -97,10 +98,15 @@ namespace LittleEngine {
 		virtual void Tick(Fixed deltaTime);
 		virtual void Render(RenderParams& params);
 
-		friend class Level;
+		// \brief Registers corresponding input scoped to Actor's lifetime
+		void RegisterScopedInput(const GameInput& gameInput, OnInput::Callback callback, const OnKey& type, bool consume = false);
 
 	private:
+		GameUtils::TokenHandler<OnInput::Token> tokenHandler;
+
 		Actor(const Actor&) = delete;
 		Actor& operator=(const Actor&) = delete;
+
+		friend class Level;
 	};
 }

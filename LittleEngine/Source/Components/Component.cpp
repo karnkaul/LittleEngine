@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "Component.h"
 #include "Engine/Logger/Logger.h"
 #include "Entities/Actor.h"

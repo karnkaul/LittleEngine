@@ -1,7 +1,7 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "AudioManager.h"
 #include "Engine/Engine.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 
 namespace LittleEngine {
 	AudioManager::AudioManager(Engine& engine) : Object("AudioManager"), engine(&engine) {

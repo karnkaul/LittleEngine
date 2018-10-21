@@ -2,7 +2,7 @@
 #include <vector>
 #include <functional>
 
-namespace Utils {
+namespace GameUtils {
 	// \brief Tokenised callback with a parameter
 	// Usage: Declare a Delegate using the type that will be passed in 
 	// as a parameter when triggering the delegate (operator()).

@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "AudioPlayer.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 
 namespace LittleEngine {
 	AudioPlayer::~AudioPlayer() {

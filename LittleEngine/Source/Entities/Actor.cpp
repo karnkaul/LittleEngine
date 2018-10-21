@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include <iostream>
 
 #include "Actor.h"
@@ -12,7 +12,7 @@
 #include "SFMLInterface/Rendering/RenderFactory.h"
 #include "SFMLInterface/Rendering/SpriteRenderer.h"
 #include "Components/Component.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 
 namespace LittleEngine {
 	Actor::Actor(Level& level, const std::string& name, const Vector2& position, const Fixed& rotation) : Object(name), level(&level) {
@@ -25,6 +25,7 @@ namespace LittleEngine {
 		if (collider != nullptr && GetActiveLevel().GetCollisionManager().Unregister(collider)) {
 			collider = nullptr;
 		}
+		tokenHandler.Clear();
 		components.clear();
 		Logger::Log(*this, GetNameInBrackets() + " (Actor) Destroyed");
 	}
@@ -93,6 +94,11 @@ namespace LittleEngine {
 		if (collider != nullptr) {
 			collider->Render(params);
 		}
+	}
+
+	void Actor::RegisterScopedInput(const GameInput & gameInput, OnInput::Callback callback, const OnKey & type, bool consume) {
+		OnInput::Token token = level->GetInputHandler().Register(gameInput, callback, type, consume);
+		tokenHandler.AddToken(std::move(token));
 	}
 
 	Level & Actor::GetActiveLevel() const {
