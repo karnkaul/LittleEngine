@@ -3,9 +3,6 @@
 #include "Engine/Input/InputHandler.h"
 
 namespace LittleEngine {
-	class Engine;
-	class TextRenderer;
-
 	// \brief First level that Engine will load
 	class BootLevel : public Level {
 	public:
@@ -18,11 +15,9 @@ namespace LittleEngine {
 		virtual void Activate() override;
 
 	private:
-		TextRenderer* logoRenderer;
+		class TextRenderer* logoRenderer;
 		Actor::wPtr _logo;
-		std::vector<OnInput::Token> inputTokens;
 
 		void OnLoadNextLevel();
-		void OnQuit();
 	};
 }

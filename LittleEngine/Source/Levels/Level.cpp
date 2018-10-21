@@ -100,8 +100,7 @@ namespace LittleEngine {
 		if (!(_player = player.lock())) {
 			_player = std::make_shared<Player>(*this, texturePath, colliderBounds, position, rotation);
 			player = _player;
-			auto _p = std::dynamic_pointer_cast<Actor>(_player);
-			actors.push_back(_p);
+			actors.push_back(_player);
 		}
 		return player;
 	}
@@ -140,5 +139,17 @@ namespace LittleEngine {
 
 	int Level::GameTimeMilliSeconds() const {
 		return clock.GetGameTimeMilliSeconds();
+	}
+
+	void Level::LoadLevel(LevelID levelID) {
+		engine->LoadLevel(levelID);
+	}
+
+	void Level::Quit() {
+		engine->Quit();
+	}
+
+	LevelID Level::GetActiveLevelID() const {
+		return engine->GetActiveLevelID();
 	}
 }

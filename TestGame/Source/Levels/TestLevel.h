@@ -3,9 +3,6 @@
 #include "Delegate.hpp"
 
 namespace LittleEngine {
-	class Engine;
-	struct RenderParams;
-
 	class TestLevel : public Level {
 	public:
 		TestLevel() : Level("TestLevel") {}
