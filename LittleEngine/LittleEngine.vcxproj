@@ -172,6 +172,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="le_stdafx.h" />
     <ClInclude Include="Source\Components\All.h" />
     <ClInclude Include="Source\Components\SpriteAnimator.h" />
     <ClInclude Include="Source\Components\Component.h" />
@@ -215,7 +216,6 @@
     <ClInclude Include="Source\SFMLInterface\Rendering\SpriteRenderer.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\TextRenderer.h" />
     <ClInclude Include="Source\SFMLInterface\WindowController.h" />
-    <ClInclude Include="le_stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Components\SpriteAnimator.cpp" />

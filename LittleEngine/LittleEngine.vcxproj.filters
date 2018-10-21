@@ -174,9 +174,6 @@
     <ClInclude Include="Source\Engine\Console\LogLine.hpp">
       <Filter>Source\Engine\Console</Filter>
     </ClInclude>
-    <ClInclude Include="le_stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SFMLInterface\All.h">
       <Filter>Source\SFMLInterface</Filter>
     </ClInclude>
@@ -188,6 +185,9 @@
     </ClInclude>
     <ClInclude Include="Source\Entities\All.h">
       <Filter>Source\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="le_stdafx.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
