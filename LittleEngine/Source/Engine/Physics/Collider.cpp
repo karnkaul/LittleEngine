@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include <string>
 #include "Collider.h"
 #include "Entities/Actor.h"
@@ -8,6 +8,7 @@
 #include "SFMLInterface/Rendering/RenderParams.h"
 #include "SFMLInterface/Rendering/ShapeRenderer.h"
 #include "Engine/Logger/Logger.h"
+#include "Engine/Events/EventManager.h"
 
 namespace LittleEngine {
 	// \brief Wrapper to calculate locus of intersection of Circle with an AABB:
@@ -50,6 +51,11 @@ namespace LittleEngine {
 
 	Fixed Collider::DEBUG_BORDER_WIDTH = 1;
 
+	Collider::~Collider() {
+		debugOffToken = nullptr;
+		debugOnToken = nullptr;
+	}
+
 	void Collider::OnHit(Collider & other) {
 		static int DEBUG_skip = 0;
 		if (++DEBUG_skip > 20) {
@@ -60,6 +66,8 @@ namespace LittleEngine {
 
 	Collider::Collider(Actor& actor, const std::string& name) : Component(actor, name) {
 		this->world = &actor.GetActiveLevel().GetWorld();
+		debugOffToken = EventManager::Instance().Register(GameEvent::DEBUG_HIDE_COLLIDERS, [this]() { DrawDebugShape(false); });
+		debugOnToken = EventManager::Instance().Register(GameEvent::DEBUG_SHOW_COLLIDERS, [this]() { DrawDebugShape(true); });
 	}
 
 	AABBCollider::AABBCollider(Actor& actor) : Collider(actor, "AABBCollider") {

@@ -1,12 +1,12 @@
 #pragma once
-#include "Utils/Vector2.h"
+#include "Vector2.h"
+#include "Rect2.h"
 #include "Engine/Object.h"
-#include "Utils/Rect2.h"
 #include "RenderParams.h"
 #include "SFML/Graphics.hpp"
 
 namespace LittleEngine {
-	using Rect2 = Utils::Rect2;
+	using Rect2 = GameUtils::Rect2;
 
 	// \brief Base class for all SFML Rendering
 	class Renderer : public Object {

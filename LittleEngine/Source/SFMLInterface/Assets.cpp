@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "Assets.h"
 #include "Engine/Logger/Logger.h"
 
@@ -25,16 +25,14 @@ namespace LittleEngine {
 		}
 	}
 
-	SoundAsset::SoundAsset(const std::string & path, const Fixed& volumeScale) : Asset(path) {
+	SoundAsset::SoundAsset(const std::string & path, const Fixed& volumeScale) : Asset(path), volumeScale(Maths::Clamp01(volumeScale)) {
 		if (!sfSoundBuffer.loadFromFile(path)) {
 			Logger::Log("Could not load sound from [" + resourcePath + "]!", Logger::Severity::Error);
 		}
-		this->volumeScale = Maths::Clamp01(volumeScale);
 	}
 
-	MusicAsset::MusicAsset(const std::string & path, const Fixed& volumeScale) : Asset(path) {
+	MusicAsset::MusicAsset(const std::string & path, const Fixed& volumeScale) : Asset(path), volumeScale(Maths::Clamp01(volumeScale)) {
 		valid = music.openFromFile(path);
-		this->volumeScale = Maths::Clamp01(volumeScale);
 		if (!valid) {
 			Logger::Log("Could not load music from [" + resourcePath + "]!", Logger::Severity::Error);
 		}
@@ -57,7 +55,7 @@ namespace LittleEngine {
 	AssetPaths::AssetPaths(const std::string & pathPrefix, std::initializer_list<std::string> assetPaths) {
 		std::string prefix = pathPrefix.empty() ? "" : pathPrefix + "/";
 		for (const auto& path : assetPaths) {
-			this->assetPaths.push_back(prefix + path);
+			this->assetPaths.emplace_back(prefix + path);
 		}
 	}
 
@@ -66,18 +64,16 @@ namespace LittleEngine {
 		for (int i = 0; i < count; ++i) {
 			std::string suffix = (i < 10) ? "0" + std::to_string(i) : std::to_string(i);
 			suffix += assetSuffix;
-			std::string fullPath = prefix + assetPrefix + suffix;
-			this->assetPaths.push_back(fullPath);
+			this->assetPaths.push_back(prefix + assetPrefix + suffix);
 		}
 	}
 
 	std::string AssetPaths::GetRandom() const {
-		size_t index = Maths::Random::Range(0, assetPaths.size());
+		size_t index = Maths::Random::Range(0, static_cast<int>(assetPaths.size()));
 		return assetPaths[index];
 	}
 
-	AssetManager::AssetManager(const std::string& rootDir) : Object("AssetManager") {
-		this->rootDir = rootDir;
+	AssetManager::AssetManager(const std::string& rootDir) : Object("AssetManager"), rootDir(rootDir) {
 		defaultFont = Load<FontAsset>("main.ttf");
 		Logger::Log("AssetManager created");
 	}

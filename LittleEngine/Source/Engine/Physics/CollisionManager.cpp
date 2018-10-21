@@ -1,9 +1,9 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "CollisionManager.h"
 #include "Collider.h"
 #include "Engine/Logger/Logger.h"
 #include "Entities/Actor.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 
 namespace LittleEngine {
 	struct ColliderComparer {
@@ -56,9 +56,9 @@ namespace LittleEngine {
 	}
 
 	void CollisionManager::Cleanup() {
-		int count = colliders.size();
-		Utils::EraseNullWeakPtrs<Collider>(colliders);
-		int diff = count - colliders.size();
+		int count = static_cast<int>(colliders.size());
+		GameUtils::EraseNullWeakPtrs<Collider>(colliders);
+		int diff = count - static_cast<int>(colliders.size());
 		if (diff > 0) {
 			Logger::Log(*this, "Removed " + std::to_string(diff) + " stale Colliders ", Logger::Severity::Debug);
 		}

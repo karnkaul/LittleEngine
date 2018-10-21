@@ -1,11 +1,11 @@
 #pragma once
-#include "Utils/Vector2.h"
+#include "Vector2.h"
 
 namespace LittleEngine {
 	class WindowController;
 
-	using Vector2 = Utils::Vector2;
-	using Fixed = Utils::Fixed;
+	using Vector2 = GameUtils::Vector2;
+	using Fixed = GameUtils::Fixed;
 
 	// \brief Wrapper struct for SFML Color
 	struct Colour {

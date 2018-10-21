@@ -1,10 +1,10 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include <memory>
 #include "Level.h"
 #include "Engine/Engine.h"
 #include "Engine/Logger/Logger.h"
-#include "Utils/Vector2.h"
-#include "Utils/Utils.h"
+#include "Vector2.h"
+#include "Utils.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
 #include "Engine/Input/InputHandler.h"
@@ -16,22 +16,24 @@
 #include "Components/RenderComponent.h"
 
 namespace LittleEngine {
-	Level::Level(const std::string& name, LittleEngine::Engine& engine) : Object(name) {
-		this->engine = &engine;
-		Logger::Log(*this, GetNameInBrackets() + " (Level) created [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
-	}
-
-	bool Level::IsActorDestroyed(Actor::Ptr actor) {
-		return actor == nullptr || actor->_destroyed;
-	}
-
-	void Level::Cleanup() {
-		Utils::CleanVector<Actor::Ptr>(actors, &Level::IsActorDestroyed);
+	Level::Level(const std::string& name) : Object(name) {
+		Logger::Log(*this, GetNameInBrackets() + " (Level) created. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
 	}
 
 	Level::~Level() {
 		actors.clear();
 		Logger::Log(*this, GetNameInBrackets() + " (Level) destroyed");
+	}
+
+	void Level::SetEngine(Engine & engine) {
+		this->engine = &engine;
+	}
+
+	void Level::LoadAssets() {}
+
+	void Level::Activate() {
+		clock.Restart();
+		Logger::Log(*this, GetNameInBrackets() + " (Level) activated. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
 	}
 
 	void Level::FixedTick() {
@@ -61,14 +63,31 @@ namespace LittleEngine {
 	}
 
 	void Level::Render(RenderParams& params) {
-		Cleanup();
+		GameUtils::CleanVector<Actor::Ptr>(actors, [](Actor::Ptr actor) { return !actor || actor->_destroyed; });
 		for (const auto& actor : actors) {
 			actor->Render(params);
 		}
+		PostRender(params);
+	}
+
+	void Level::PostRender(const RenderParams& params) {}
+
+	void Level::Clear() {
+		actors.clear();
+		tokenHandler.Clear();
+		OnClearing();
+		Logger::Log(*this, GetNameInBrackets() + " (Level) deactivated. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
+	}
+
+	void Level::OnClearing() {}
+
+	void Level::RegisterScopedInput(const GameInput& gameInput, OnInput::Callback callback, const OnKey& type, bool consume) {
+		OnInput::Token token = GetInputHandler().Register(gameInput, callback, type, consume);
+		tokenHandler.AddToken(std::move(token));
 	}
 
 	void Level::DestroyActor(Actor::Ptr actor) {
-		if (actor != nullptr) {
+		if (actor) {
 			actor->_destroyed = true;
 		}
 		else {
@@ -77,8 +96,8 @@ namespace LittleEngine {
 	}
 
 	Player::wPtr Level::GetOrSpawnPlayer(const std::string & texturePath, const AABBData & colliderBounds, const Vector2 & position, const Fixed & rotation) {
-		Player::Ptr _player = nullptr;
-		if ((_player = player.lock()) == nullptr) {
+		Player::Ptr _player;
+		if (!(_player = player.lock())) {
 			_player = std::make_shared<Player>(*this, texturePath, colliderBounds, position, rotation);
 			player = _player;
 			auto _p = std::dynamic_pointer_cast<Actor>(_player);

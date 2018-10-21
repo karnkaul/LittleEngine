@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "SpriteRenderer.h"
 #include "ShapeRenderer.h"
 #include "RenderParams.h"
@@ -30,8 +30,8 @@ namespace LittleEngine {
 		Fixed width(bounds.width);
 		Fixed height(bounds.height);
 		return Rect2(
-			Vector2(-width * Fixed::Half, -height * Fixed::Half),
-			Vector2(width * Fixed::Half, height * Fixed::Half)
+			Vector2(-width * Fixed::OneHalf, -height * Fixed::OneHalf),
+			Vector2(width * Fixed::OneHalf, height * Fixed::OneHalf)
 		);
 	}
 

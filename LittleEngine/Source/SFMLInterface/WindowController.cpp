@@ -1,8 +1,8 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include <string>
 #include "Engine/Logger/Logger.h"
 #include "WindowController.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 
 namespace LittleEngine {
 	LayerInfo::LayerInfo(int layerID) {
@@ -65,6 +65,7 @@ namespace LittleEngine {
 
 	void WindowController::PollInput() {
 		sf::Event event;
+		input.ClearRawInput();
 		while (window->isOpen() && window->pollEvent(event)) {
 			switch (event.type) {
 			case sf::Event::Closed:
@@ -81,11 +82,17 @@ namespace LittleEngine {
 				break;
 
 			case sf::Event::KeyPressed:
+				input.OnRawSpecialInput(event.key.code);
 				input.OnKeyDown(event.key);
 				break;
 
 			case sf::Event::KeyReleased:
 				input.OnKeyUp(event.key);
+				break;
+
+			case sf::Event::TextEntered:
+				input.OnRawInput(static_cast<int>(event.text.unicode));
+				break;
 			}
 		}
 	}
@@ -113,7 +120,7 @@ namespace LittleEngine {
 		window->close();
 	}
 
-	const Input& WindowController::GetInputHandler() const {
+	const Input& WindowController::GetInput() const {
 		return input;
 	}
 }

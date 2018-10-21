@@ -1,37 +1,35 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "LevelManager.h"
 #include "Engine/Logger/Logger.h"
 #include "Engine/Engine.h"
-
 #include "Level.h"
-#include "BootLevel.h"
-#include "TestLevel.h"
 
 namespace LittleEngine {
-	LevelManager::LevelManager(Engine& engine) : Object("LevelManager") {
-		this->engine = &engine;
+	LevelManager::LevelManager(Engine& engine) : Object("LevelManager"), engine(&engine) {
 		Logger::Log(*this, "LevelManager created");
 	}
 
 	LevelManager::~LevelManager() {
-		activeLevel = nullptr;
+		createdLevels.clear();
 		Logger::Log(*this, "LevelManager destroyed");
 	}
 
-	Level& LevelManager::GetActiveLevel() const {
-		return *activeLevel;
+	Level* LevelManager::GetActiveLevel() const {
+		return activeLevel;
+	}
+
+	LevelID LevelManager::GetActiveLevelID() const {
+		return activeLevelID;
 	}
 
 	bool LevelManager::LoadLevel(const LevelID& levelID) {
-		activeLevel = nullptr;
-		switch (levelID) {
-		case LevelID::BootLevel:
-		default:
-			activeLevel = std::make_unique<BootLevel>(*engine);
-			return true;
-			
-		case LevelID::TestLevel:
-			activeLevel = std::make_unique<TestLevel>(*engine);
+		if (levelID >= 0 && levelID < createdLevels.size()) {
+			if (activeLevel) {
+				activeLevel->Clear();
+			}
+			activeLevelID = levelID;
+			activeLevel = &(*createdLevels[activeLevelID]);
+			activeLevel->Activate();
 			return true;
 		}
 		return false;

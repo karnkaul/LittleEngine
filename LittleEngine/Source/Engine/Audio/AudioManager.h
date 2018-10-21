@@ -16,7 +16,7 @@ namespace LittleEngine {
 		bool IsSFXPlaying() const;
 
 		// Returns true if asset is loaded successfully
-		bool PlayMusic(const std::string& path, const Fixed& volume = Fixed::One, const Fixed& fadeSeconds = Fixed::Half, bool loop = true);
+		bool PlayMusic(const std::string& path, const Fixed& volume = Fixed::One, const Fixed& fadeSeconds = Fixed::OneHalf, bool loop = true);
 		bool IsMusicPlaying() const;
 		void StopMusic(const Fixed& fadeSeconds = Fixed::Zero);
 		void SwitchTrack(const std::string& path, const Fixed& volume = Fixed::One, const Fixed& fadeSeconds = Fixed::One);

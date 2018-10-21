@@ -1,6 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "Utils/Fixed.h"
+#include "Fixed.h"
 #include "Input.h"
 #include "SystemClock.h"
 #include "Rendering/RenderParams.h"
@@ -62,7 +62,7 @@ namespace LittleEngine {
 		void Draw();
 		// Destroy SFML RenderWindow
 		void CloseWindow();
-		const Input& GetInputHandler() const;
+		const Input& GetInput() const;
 
 	private:
 		Buffer buffer;

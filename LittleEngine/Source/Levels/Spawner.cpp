@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "Spawner.h"
-#include "Utils/Vector2.h"
+#include "Vector2.h"
 #include "Entities/VFX.h"
 #include "Levels/Level.h"
 

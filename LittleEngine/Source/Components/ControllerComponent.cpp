@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "ControllerComponent.h"
 #include <functional>
 #include "Component.h"
@@ -8,7 +8,7 @@
 #include "Engine/World.h"
 #include "SFMLInterface/Rendering/Renderer.h"
 #include "Components/RenderComponent.h"
-#include "Utils/Transform.h"
+#include "Transform.h"
 #include "SFMLInterface/Input.h"
 #include "Levels/Level.h"
 
@@ -23,7 +23,7 @@ namespace _ControllerComponent {
 	}
 }
 
-void ClampPosition(Utils::Vector2& position, const Utils::Rect2& worldBounds, const Utils::Vector2& padding) {
+void ClampPosition(GameUtils::Vector2& position, const GameUtils::Rect2& worldBounds, const GameUtils::Vector2& padding) {
 	if ((position.x - padding.x) < worldBounds.lower.x) {
 		position.x = worldBounds.lower.x + padding.x;
 	}
@@ -84,7 +84,7 @@ namespace LittleEngine {
 			Logger::Log(*this, "ControllerComponent's owning Actor does not have a RenderComponent", Logger::Severity::Warning);
 			return Vector2::Zero;
 		}
-		return renderer->GetBounds().upper;
+		return std::move(renderer->GetBounds().upper);
 	}
 
 	void ControllerComponent::OnLeft() {

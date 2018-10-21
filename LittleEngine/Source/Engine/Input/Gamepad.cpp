@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "Gamepad.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 
 namespace LittleEngine {
 	Gamepad::RawInput::RawInput(KeyCode keyCode)
@@ -29,7 +29,7 @@ namespace LittleEngine {
 
 	bool Gamepad::InputMapping::IsMapped(KeyCode keyCode) const {
 		RawInput toFind(keyCode);
-		auto iter = Utils::VectorSearch(rawInputs, toFind);
+		auto iter = GameUtils::VectorSearch(rawInputs, toFind);
 		return iter != rawInputs.end();
 	}
 

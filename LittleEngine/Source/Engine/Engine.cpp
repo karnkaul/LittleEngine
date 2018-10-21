@@ -1,15 +1,15 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include <chrono>
 #include <thread>
 #include "Engine.h"
 #include "EngineCommands.h"
 #include "World.h"
 #include "Logger/Logger.h"
-#include "Logger/FileLogger.h"
 #include "Config/EngineConfig.h"
 #include "GameClock.h"
 #include "Input/InputHandler.h"
 #include "Audio/AudioManager.h"
+#include "Console/DebugConsole.h"
 
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Input.h"
@@ -21,7 +21,7 @@
 #include "Levels/LevelManager.h"
 
 namespace LittleEngine {
-	using Fixed = Utils::Fixed;
+	using Fixed = GameUtils::Fixed;
 
 	Engine::Ptr Engine::Create() {
 		// std::make_unique requires public constructor and destructor access
@@ -38,7 +38,7 @@ namespace LittleEngine {
 				if (config->Load("config.ini")) {
 					Logger::Log(*this, "Loaded config.ini successfully", Logger::Severity::Debug);
 				}
-				Logger::SetLogLevel(config->GetLogLevel());
+				Logger::g_logLevel = config->GetLogLevel();
 			}
 			
 			/* Instantiate entities */ {
@@ -59,6 +59,7 @@ namespace LittleEngine {
 	}
 
 	Engine::~Engine() {
+		DebugConsole::Cleanup();
 		levelManager = nullptr;
 		audioManager = nullptr;
 		assetManager = nullptr;
@@ -74,22 +75,27 @@ namespace LittleEngine {
 		config = nullptr;
 		
 		Logger::Log(*this, "Engine destroyed");
+		Logger::Cleanup();
 	}
 
-	int Engine::Run() {
+	ExitCode Engine::Run() {
 		Logger::Log(*this, "Execution started");
 
 		if (exitCode == ExitCode::OK) {
 			if (CreateWindow()) {
 				/* Load Level 0 */
-				if (!levelManager->LoadLevel(LevelID::BootLevel)) {
+				if (!levelManager->LoadLevel(BOOTLEVEL)) {
 					Logger::Log(*this, "Could not load level 0!", Logger::Severity::Error);
 					exitCode = ExitCode::ExecutionError;
-					return (int)exitCode;
+					return exitCode;
 				}
+
+				/* Debugging */
+				DebugConsole::Init(*this);
 
 				/* Core Game Loop */
 				double previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
+				double debugToggleTime = 0;
 				Fixed deltaTime = 0;
 				Fixed lag = 0;
 				while (windowController->IsWindowOpen() && !isQuitting) {
@@ -105,7 +111,25 @@ namespace LittleEngine {
 							previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
 							Logger::Log(*this, "Game unpaused");
 						}
-						inputHandler->CaptureState(windowController->GetInputHandler().GetPressed());
+						
+						// Debug Console and Input
+						{
+							// Ignore consecutive Backticks for 200 ms
+							if ((previous - debugToggleTime) > 200.0f) {
+								if (windowController->GetInput().IsKeyPressed(KeyCode::Backtick)) {
+									DebugConsole::Activate(!DebugConsole::IsActive());
+									debugToggleTime = previous;
+								}
+							}
+							const Input& sfmlInput = windowController->GetInput();
+							if (DebugConsole::IsActive()) {
+								DebugConsole::UpdateInput(sfmlInput.GetRawSFMLInput());
+							}
+							else {
+								inputHandler->CaptureState(sfmlInput.GetPressed());
+								inputHandler->CaptureRawText(sfmlInput.GetRawSFMLInput().text);
+							}
+						}
 					}
 
 					/* Process Frame */
@@ -118,7 +142,7 @@ namespace LittleEngine {
 						/* Fixed Tick */ {
 							int fixedTicks = 0;
 							while (lag >= Consts::MS_PER_FIXED_TICK) {
-								levelManager->GetActiveLevel().FixedTick();
+								levelManager->GetActiveLevel()->FixedTick();
 								lag -= Consts::MS_PER_FIXED_TICK;
 								if (++fixedTicks > Consts::MAX_FIXED_TICKS) {
 									Logger::Log(*this, "Timeout during FixedTick(). Ignore if pausing rendering", Logger::Severity::Warning);
@@ -131,12 +155,13 @@ namespace LittleEngine {
 							GameClock::Tick(deltaTime);
 							inputHandler->FireInput();
 							audioManager->Tick(deltaTime);
-							levelManager->GetActiveLevel().Tick(deltaTime);
+							levelManager->GetActiveLevel()->Tick(deltaTime);
 						}
 
 						/* Render */ {
 							RenderParams params(*windowController);
-							levelManager->GetActiveLevel().Render(params);
+							levelManager->GetActiveLevel()->Render(params);
+							DebugConsole::RenderConsole(*this, params, deltaTime);
 							windowController->Draw();
 						}
 						
@@ -159,7 +184,11 @@ namespace LittleEngine {
 			}
 		}
 
-		return (int)exitCode;
+		return exitCode;
+	}
+
+	const LevelID Engine::GetActiveLevelID() const {
+		return levelManager->GetActiveLevelID();
 	}
 
 	InputHandler & Engine::GetInputHandler() const {

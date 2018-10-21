@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "EngineConfig.h"
 
 namespace LittleEngine {
@@ -43,7 +43,7 @@ namespace LittleEngine {
 	}
 
 	bool EngineConfig::Load(const std::string& path) {
-		Utils::Property::Persistor persistor;
+		GameUtils::Property::Persistor persistor;
 		bool loaded = persistor.Load(path);
 
 		int width = persistor.GetProp(Data::SCREEN_WIDTH_KEY).intValue();
@@ -74,7 +74,7 @@ namespace LittleEngine {
 		if (loadFirst) {
 			Load(path);
 		}
-		Utils::Property::Persistor persistor;
+		GameUtils::Property::Persistor persistor;
 		persistor.SetProp(cache.windowTitle);
 		persistor.SetProp(cache.logLevel);
 		persistor.SetProp(cache.screenWidth);

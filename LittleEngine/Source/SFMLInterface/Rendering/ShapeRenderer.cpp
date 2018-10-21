@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "ShapeRenderer.h"
 #include "Engine/Logger/Logger.h"
 #include "SFMLInterface/WindowController.h"
@@ -73,8 +73,8 @@ namespace LittleEngine {
 
 	Rect2 RectangleRenderer::GetBounds() const {
 		sf::Vector2f size = rectangle->getSize();
-		Fixed width = Fixed(size.x) * Fixed::Half;
-		Fixed height = Fixed(size.y) * Fixed::Half;
+		Fixed width = Fixed(size.x) * Fixed::OneHalf;
+		Fixed height = Fixed(size.y) * Fixed::OneHalf;
 		return Rect2(
 			Vector2(-width, -height),
 			Vector2(width, height)

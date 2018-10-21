@@ -1,8 +1,8 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "InputHandler.h"
 #include "Engine/Logger/Logger.h"
 #include "SFMLInterface/Input.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 
 namespace LittleEngine {
 	InputHandler::InputObserver::InputObserver(OnInput&& callback, bool consume, const OnKey& type)
@@ -34,6 +34,8 @@ namespace LittleEngine {
 			gamepad.Bind(KeyCode::E, GameInput::Y);
 			gamepad.Bind(KeyCode::Control, GameInput::LB);
 			gamepad.Bind(KeyCode::Shift, GameInput::RB);
+
+			gamepad.Bind(KeyCode::F12, GameInput::Debug0);
 		}
 		Logger::Log(*this, "InputHandler constructed");
 	}
@@ -43,7 +45,7 @@ namespace LittleEngine {
 	}
 
 	bool InputHandler::IsKeyPressed(const GameInput& keyCode) const {
-		auto iter = Utils::VectorSearch(currentSnapshot, keyCode);
+		auto iter = GameUtils::VectorSearch(currentSnapshot, keyCode);
 		return iter != currentSnapshot.end();
 	}
 
@@ -73,18 +75,23 @@ namespace LittleEngine {
 		for (const auto& key : pressedKeys) {
 			GameInput input = gamepad.ToGameInput(key);
 			if (input != GameInput::Invalid) {
-				auto duplicate = Utils::VectorSearch(currentSnapshot, input);
+				auto duplicate = GameUtils::VectorSearch(currentSnapshot, input);
 				if (duplicate == currentSnapshot.end()) {
 					currentSnapshot.push_back(input);
 				}
 			}
 		}
+		rawTextInput.clear();
+	}
+
+	void InputHandler::CaptureRawText(const std::string & rawTextInput) {
+		this->rawTextInput = rawTextInput;
 	}
 
 	void InputHandler::Cleanup(std::vector<InputObserver>& vec) {
-		int before = vec.size();
-		Utils::CleanVector<InputObserver>(vec, [](InputObserver& observer) { return !observer.callback.IsAlive(); });
-		int deleted = before - vec.size();
+		int before = static_cast<int>(vec.size());
+		GameUtils::CleanVector<InputObserver>(vec, [](InputObserver& observer) { return !observer.callback.IsAlive(); });
+		int deleted = before - static_cast<int>(vec.size());
 		if (deleted > 0) {
 			Logger::Log(*this, std::to_string(deleted) + " expired Observers deleted", Logger::Severity::Debug);
 		}
@@ -134,7 +141,7 @@ namespace LittleEngine {
 		
 		// Build OnPressed and OnHeld vectors
 		for (auto input : currentSnapshot) {
-			auto search = Utils::VectorSearch(previousSnapshot, input);
+			auto search = GameUtils::VectorSearch(previousSnapshot, input);
 			if (search != previousSnapshot.end()) {
 				onHeld.push_back(input);
 				previousSnapshot.erase(search);

@@ -1,8 +1,8 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "SpriteAnimator.h"
 #include "Levels/Level.h"
 #include "Entities/Actor.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 #include "SFMLInterface/Rendering/SpriteRenderer.h"
 #include "SFMLInterface/Rendering/RenderFactory.h"
 
@@ -61,7 +61,7 @@ namespace LittleEngine {
 		if (animating) {
 			elapsed += deltaTime;
 			Fixed ratio = Maths::Clamp01(elapsed / animTime);
-			Fixed size = sprites.size();
+			Fixed size = static_cast<int>(sprites.size());
 			index = static_cast<size_t>((ratio * size).GetInt());
 			if (index >= sprites.size()) {
 				if (looping) {

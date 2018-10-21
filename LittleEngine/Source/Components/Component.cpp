@@ -1,12 +1,11 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "Component.h"
 #include "Engine/Logger/Logger.h"
 #include "Entities/Actor.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 
 namespace LittleEngine {
-	Component::Component(Actor& actor, const std::string& name) : Object(name) {
-		this->actor = &actor;
+	Component::Component(Actor& actor, const std::string& name) : Object(name), actor(&actor) {
 		Logger::Log(*this, ToString() + " created");
 	}
 

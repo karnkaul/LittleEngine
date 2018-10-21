@@ -1,6 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "Utils/Vector2.h"
+#include "Vector2.h"
 #include "Renderer.h"
 
 namespace LittleEngine {
@@ -13,9 +13,8 @@ namespace LittleEngine {
 	protected:
 		std::unique_ptr<sf::Shape> shape;	// sf::Shape cannot be a direct member
 
-		ShapeRenderer(std::string name, std::unique_ptr<sf::Shape> shape) : Renderer(name) {
-			this->shape = std::move(shape);
-		}
+		ShapeRenderer(std::string name, std::unique_ptr<sf::Shape> shape) : Renderer(name), shape(std::move(shape)) 
+		{}
 
 		virtual void RenderInternal(RenderParams& params) override; 
 		virtual void SetPosition(const Vector2& screenPosition) override;

@@ -1,16 +1,19 @@
 #pragma once
 #include "SFML/Audio.hpp"
 #include "Engine/Object.h"
-#include "Utils/Fixed.h"
+#include "Fixed.h"
 #include "SFMLInterface/Assets.h"
 #include "Engine/GameClock.h"
 
 namespace LittleEngine {
-	using Fixed = Utils::Fixed;
+	using Fixed = GameUtils::Fixed;
 
 	// \brief Base class for audio Asset playback
 	class AudioPlayer : public Object {
 	public:
+		enum class Status { NoMedia, Stopped, Playing, Paused };
+		Status status;
+
 		Fixed volume = Fixed(80, 100);
 		bool looping;
 
@@ -24,6 +27,7 @@ namespace LittleEngine {
 	protected:
 		AudioPlayer(const std::string& name);
 		virtual bool ApplyParams() = 0;
+		Status Convert(sf::Sound::Status status);
 	};
 
 	// \brief Concrete class for Sound playback (uses pre-loaded SoundAsset)

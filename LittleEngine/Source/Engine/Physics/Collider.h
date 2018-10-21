@@ -1,6 +1,7 @@
 #pragma once
 #include "Components/Component.h"
 #include "ColliderData.h"
+#include "Delegate.hpp"
 
 namespace LittleEngine {
 	class Actor;
@@ -14,6 +15,8 @@ namespace LittleEngine {
 		static Fixed DEBUG_BORDER_WIDTH;
 		using Ptr = std::shared_ptr<Collider>;
 		using wPtr = std::weak_ptr<Collider>;
+
+		virtual ~Collider();
 
 		// Abstract Visitor
 		virtual bool IsIntersecting(const Collider& rhs) const = 0;
@@ -34,6 +37,10 @@ namespace LittleEngine {
 		friend class CircleCollider;
 		// Circle Visitor
 		virtual bool IsIntersectCircle(const class CircleCollider& rhs) const = 0;
+
+	private:
+		GameUtils::Delegate<>::Token debugOnToken;
+		GameUtils::Delegate<>::Token debugOffToken;
 	};
 
 	// \brief Concrete class for 2D Circle collider

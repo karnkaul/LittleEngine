@@ -28,9 +28,6 @@
     <Filter Include="Source\SFMLInterface\Rendering">
       <UniqueIdentifier>{ca83ac04-101b-47ef-a66c-886f9299e5a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Utils">
-      <UniqueIdentifier>{8ea3e943-97e5-49b1-ae8d-d3c8359d79d7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Levels">
       <UniqueIdentifier>{78895023-a746-4450-8fe4-26abedf8bd7c}</UniqueIdentifier>
     </Filter>
@@ -52,14 +49,14 @@
     <Filter Include="Source\Engine\Audio">
       <UniqueIdentifier>{c4bde70d-0f38-48ca-92cf-26728d2c0bdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\Events">
+      <UniqueIdentifier>{c8f91322-fbf6-467d-904f-3660c60f2073}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Console">
+      <UniqueIdentifier>{c7ca3447-dc15-4102-bf0c-aac779634556}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Entities\Actor.h">
       <Filter>Source\Entities</Filter>
     </ClInclude>
@@ -80,18 +77,6 @@
     </ClInclude>
     <ClInclude Include="Source\SFMLInterface\Rendering\SpriteRenderer.h">
       <Filter>Source\SFMLInterface\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Utils\FileRW.h">
-      <Filter>Source\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Utils\Fixed.h">
-      <Filter>Source\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Utils\Transform.h">
-      <Filter>Source\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Utils\Vector2.h">
-      <Filter>Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source\SFMLInterface\Assets.h">
       <Filter>Source\SFMLInterface</Filter>
@@ -123,12 +108,6 @@
     <ClInclude Include="Source\Engine\Logger\Logger.h">
       <Filter>Source\Engine\Logger</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Levels\BootLevel.h">
-      <Filter>Source\Levels</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Levels\TestLevel.h">
-      <Filter>Source\Levels</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\GameClock.h">
       <Filter>Source\Engine</Filter>
     </ClInclude>
@@ -150,9 +129,6 @@
     <ClInclude Include="Source\SFMLInterface\Input.h">
       <Filter>Source\SFMLInterface</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Utils\Delegate.hpp">
-      <Filter>Source\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\Input\InputHandler.h">
       <Filter>Source\Engine\Input</Filter>
     </ClInclude>
@@ -167,15 +143,6 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Physics\ColliderData.h">
       <Filter>Source\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Utils\Rect2.h">
-      <Filter>Source\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Utils\Utils.h">
-      <Filter>Source\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Utils\Property.h">
-      <Filter>Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source\Entities\Player.h">
       <Filter>Source\Entities</Filter>
@@ -194,6 +161,33 @@
     </ClInclude>
     <ClInclude Include="Source\Levels\Spawner.h">
       <Filter>Source\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Events\EventManager.h">
+      <Filter>Source\Engine\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Console\DebugConsole.h">
+      <Filter>Source\Engine\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Console\ConsoleCommands.h">
+      <Filter>Source\Engine\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Console\LogLine.hpp">
+      <Filter>Source\Engine\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\All.h">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\All.h">
+      <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Components\All.h">
+      <Filter>Source\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\All.h">
+      <Filter>Source\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="le_stdafx.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -215,18 +209,6 @@
     <ClCompile Include="Source\SFMLInterface\Rendering\SpriteRenderer.cpp">
       <Filter>Source\SFMLInterface\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Utils\FileRW.cpp">
-      <Filter>Source\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\Fixed.cpp">
-      <Filter>Source\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\Transform.cpp">
-      <Filter>Source\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\Vector2.cpp">
-      <Filter>Source\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Source\SFMLInterface\Assets.cpp">
       <Filter>Source\SFMLInterface</Filter>
     </ClCompile>
@@ -235,9 +217,6 @@
     </ClCompile>
     <ClCompile Include="Source\Levels\Level.cpp">
       <Filter>Source\Levels</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\LittleEngine.cpp">
-      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Engine.cpp">
       <Filter>Source\Engine</Filter>
@@ -251,18 +230,11 @@
     <ClCompile Include="Source\Engine\Config\EngineConfig.cpp">
       <Filter>Source\Engine\Config</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Source\Levels\LevelManager.cpp">
       <Filter>Source\Levels</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Logger\Logger.cpp">
       <Filter>Source\Engine\Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Levels\BootLevel.cpp">
-      <Filter>Source\Levels</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Levels\TestLevel.cpp">
-      <Filter>Source\Levels</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\GameClock.cpp">
       <Filter>Source\Engine</Filter>
@@ -303,12 +275,6 @@
     <ClCompile Include="Source\Engine\Physics\ColliderData.cpp">
       <Filter>Source\Engine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Utils\Utils.cpp">
-      <Filter>Source\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\Property.cpp">
-      <Filter>Source\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Entities\Player.cpp">
       <Filter>Source\Entities</Filter>
     </ClCompile>
@@ -327,5 +293,15 @@
     <ClCompile Include="Source\Levels\Spawner.cpp">
       <Filter>Source\Levels</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Events\EventManager.cpp">
+      <Filter>Source\Engine\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Console\DebugConsole.cpp">
+      <Filter>Source\Engine\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Console\ConsoleCommands.cpp">
+      <Filter>Source\Engine\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="le_stdafx.cpp" />
   </ItemGroup>
 </Project>

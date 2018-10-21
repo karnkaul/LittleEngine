@@ -24,7 +24,17 @@ namespace LittleEngine {
 		Tab,
 		Control,
 		Shift,
-		Alt
+		Alt,
+		Backtick,
+		Backspace,
+		Insert,
+		Delete,
+		F1,
+		F5,
+		F8,
+		F9,
+		F10,
+		F12
 	};
 
 	// \brief Wrapper struct that holds key state modifiers
@@ -56,6 +66,25 @@ namespace LittleEngine {
 		std::string name;
 	};
 
+	// \brief Enum to detect special keyboard input (mainly for Console etc)
+	enum class RawTextInputType {
+		None,
+		Tab,
+		Enter,
+		Backspace,
+		Escape,
+		Up,
+		Down,
+		Left,
+		Right
+	};
+
+	// \brief Struct to hold synchronous input text as a string
+	struct RawTextInput {
+		std::string text;
+		RawTextInputType special;
+	};
+
 	// \brief Concrete class that a WindowController can update KeyStates to every frame
 	class Input {
 	public:
@@ -67,9 +96,12 @@ namespace LittleEngine {
 		const KeyState GetKeyState(KeyCode code) const;
 		// Get all KeyStates pressed in this frame
 		const std::vector<KeyState> GetPressed() const;
+		// Get synchronised text input (as string)
+		const RawTextInput& GetRawSFMLInput() const;
 		
 	private:
 		std::vector<KeyState> keyStates;
+		RawTextInput rawTextInput;
 
 		Input(const Input&) = delete;
 		Input& operator=(const Input&) = delete;
@@ -82,6 +114,12 @@ namespace LittleEngine {
 		void OnKeyUp(const sf::Event::KeyEvent& key);
 		// For WindowController
 		void ResetKeyStates();
+		// For WindowController
+		void ClearRawInput();
+		// For WindowController
+		void OnRawInput(int unicode);
+		// For WindowController (to capture non-ASCII keycodes, like cursor keys)
+		void OnRawSpecialInput(sf::Keyboard::Key key);
 
 		friend class WindowController;
 	};

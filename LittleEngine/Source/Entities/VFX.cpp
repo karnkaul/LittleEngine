@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "VFX.h"
 #include "Components/SpriteAnimator.h"
 #include "SFMLInterface/Assets.h"

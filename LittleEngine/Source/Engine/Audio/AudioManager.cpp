@@ -1,11 +1,10 @@
-#include "stdafx.h"
+#include "le_stdafx.h"
 #include "AudioManager.h"
 #include "Engine/Engine.h"
-#include "Utils/Utils.h"
+#include "Utils.h"
 
 namespace LittleEngine {
-	AudioManager::AudioManager(Engine& engine) : Object("AudioManager") {
-		this->engine = &engine;
+	AudioManager::AudioManager(Engine& engine) : Object("AudioManager"), engine(&engine) {
 		Logger::Log(*this, GetNameInBrackets() + " created");
 	}
 
@@ -71,9 +70,9 @@ namespace LittleEngine {
 		if (newTrack != nullptr) {
 			switchTrackRequest = std::make_unique<SwitchTrackRequest>(newTrack, fadeSeconds, volume);
 			if (IsMusicPlaying()) {
-				GetActivePlayer().FadeOut(fadeSeconds * Fixed::Half);
+				GetActivePlayer().FadeOut(fadeSeconds * Fixed::OneHalf);
 				switchTrackRequest->fadingOldTrack = true;
-				switchTrackRequest->fadeSeconds *= Fixed::Half;
+				switchTrackRequest->fadeSeconds *= Fixed::OneHalf;
 			}
 		}
 	}
@@ -91,7 +90,7 @@ namespace LittleEngine {
 	}
 
 	void AudioManager::Clear(bool immediate) {
-		int sfxCount = sfxPlayers.size();
+		int sfxCount = static_cast<int>(sfxPlayers.size());
 		for (auto& sfxPlayer : sfxPlayers) {
 			sfxPlayer->Stop();
 		}
@@ -102,7 +101,7 @@ namespace LittleEngine {
 			active.Stop();
 		}
 		else if (active.IsPlaying()) {
-			active.FadeOut(Fixed::Half);
+			active.FadeOut(Fixed::OneHalf);
 		}
 		GetStandbyPlayer().Stop();
 		switchTrackRequest = nullptr;
