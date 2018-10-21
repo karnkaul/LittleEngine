@@ -1,16 +1,5 @@
-#include "le_stdafx.h"
+#include "stdafx.h"
 #include "BootLevel.h"
-#include "Engine/Engine.h"
-#include "Engine/World.h"
-#include "Engine/Logger/Logger.h"
-#include "Entities/Actor.h"
-#include "Components/RenderComponent.h"
-#include "SFMLInterface/Rendering/Renderer.h"
-#include "SFMLInterface/Rendering/RenderParams.h"
-#include "SFMLInterface/Rendering/RenderFactory.h"
-#include "SFMLInterface/Rendering/ShapeRenderer.h"
-#include "SFMLInterface/Rendering/TextRenderer.h"
-#include "SFMLInterface/Assets.h"
 
 namespace LittleEngine {
 	void BootLevel::Activate() {

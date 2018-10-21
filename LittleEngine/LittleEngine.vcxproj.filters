@@ -57,9 +57,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Entities\Actor.h">
       <Filter>Source\Entities</Filter>
     </ClInclude>
@@ -110,12 +107,6 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Logger\Logger.h">
       <Filter>Source\Engine\Logger</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Levels\BootLevel.h">
-      <Filter>Source\Levels</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Levels\TestLevel.h">
-      <Filter>Source\Levels</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\GameClock.h">
       <Filter>Source\Engine</Filter>
@@ -186,6 +177,18 @@
     <ClInclude Include="le_stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\All.h">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\All.h">
+      <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Components\All.h">
+      <Filter>Source\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\All.h">
+      <Filter>Source\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -215,9 +218,6 @@
     <ClCompile Include="Source\Levels\Level.cpp">
       <Filter>Source\Levels</Filter>
     </ClCompile>
-    <ClCompile Include="Source\LittleEngine.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\Engine.cpp">
       <Filter>Source\Engine</Filter>
     </ClCompile>
@@ -235,12 +235,6 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\Logger\Logger.cpp">
       <Filter>Source\Engine\Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Levels\BootLevel.cpp">
-      <Filter>Source\Levels</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Levels\TestLevel.cpp">
-      <Filter>Source\Levels</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\GameClock.cpp">
       <Filter>Source\Engine</Filter>

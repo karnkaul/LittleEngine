@@ -28,7 +28,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -41,7 +41,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -91,8 +91,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DEBUG;SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>include;$(SolutionPath)\..\$(ProjectName);$(SolutionPath)\..\$(ProjectName)\Source;$(SolutionPath)\..\GameUtils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;include;Source;../GameUtils</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,8 +111,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DEBUG;SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>include;$(SolutionPath)\..\$(ProjectName);$(SolutionPath)\..\$(ProjectName)\Source;$(SolutionPath)\..\GameUtils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;include;Source;../GameUtils</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,8 +133,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>include;$(SolutionPath)\..\$(ProjectName);$(SolutionPath)\..\$(ProjectName)\Source;$(SolutionPath)\..\GameUtils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;include;Source;../GameUtils</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,8 +157,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>include;$(SolutionPath)\..\$(ProjectName);$(SolutionPath)\..\$(ProjectName)\Source;$(SolutionPath)\..\GameUtils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;include;Source;../GameUtils</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -164,10 +172,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Components\All.h" />
     <ClInclude Include="Source\Components\SpriteAnimator.h" />
     <ClInclude Include="Source\Components\Component.h" />
     <ClInclude Include="Source\Components\ControllerComponent.h" />
     <ClInclude Include="Source\Components\RenderComponent.h" />
+    <ClInclude Include="Source\Engine\All.h" />
     <ClInclude Include="Source\Engine\Audio\AudioManager.h" />
     <ClInclude Include="Source\Engine\Config\EngineConfig.h" />
     <ClInclude Include="Source\Engine\Console\ConsoleCommands.h" />
@@ -187,13 +197,13 @@
     <ClInclude Include="Source\Engine\Physics\CollisionManager.h" />
     <ClInclude Include="Source\Engine\World.h" />
     <ClInclude Include="Source\Entities\Actor.h" />
+    <ClInclude Include="Source\Entities\All.h" />
     <ClInclude Include="Source\Entities\Player.h" />
     <ClInclude Include="Source\Entities\VFX.h" />
-    <ClInclude Include="Source\Levels\BootLevel.h" />
     <ClInclude Include="Source\Levels\Level.h" />
     <ClInclude Include="Source\Levels\LevelManager.h" />
     <ClInclude Include="Source\Levels\Spawner.h" />
-    <ClInclude Include="Source\Levels\TestLevel.h" />
+    <ClInclude Include="Source\SFMLInterface\All.h" />
     <ClInclude Include="Source\SFMLInterface\Assets.h" />
     <ClInclude Include="Source\SFMLInterface\Audio\AudioPlayer.h" />
     <ClInclude Include="Source\SFMLInterface\SystemClock.h" />
@@ -206,7 +216,6 @@
     <ClInclude Include="Source\SFMLInterface\Rendering\TextRenderer.h" />
     <ClInclude Include="Source\SFMLInterface\WindowController.h" />
     <ClInclude Include="le_stdafx.h" />
-    <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Components\SpriteAnimator.cpp" />
@@ -232,12 +241,9 @@
     <ClCompile Include="Source\Entities\Actor.cpp" />
     <ClCompile Include="Source\Entities\Player.cpp" />
     <ClCompile Include="Source\Entities\VFX.cpp" />
-    <ClCompile Include="Source\Levels\BootLevel.cpp" />
     <ClCompile Include="Source\Levels\Level.cpp" />
     <ClCompile Include="Source\Levels\LevelManager.cpp" />
     <ClCompile Include="Source\Levels\Spawner.cpp" />
-    <ClCompile Include="Source\Levels\TestLevel.cpp" />
-    <ClCompile Include="Source\LittleEngine.cpp" />
     <ClCompile Include="Source\SFMLInterface\Assets.cpp" />
     <ClCompile Include="Source\SFMLInterface\Audio\AudioPlayer.cpp" />
     <ClCompile Include="Source\SFMLInterface\Rendering\RenderFactory.cpp" />

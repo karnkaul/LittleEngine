@@ -2,10 +2,7 @@
 #include "LevelManager.h"
 #include "Engine/Logger/Logger.h"
 #include "Engine/Engine.h"
-
 #include "Level.h"
-#include "BootLevel.h"
-#include "TestLevel.h"
 
 namespace LittleEngine {
 	LevelManager::LevelManager(Engine& engine) : Object("LevelManager"), engine(&engine) {

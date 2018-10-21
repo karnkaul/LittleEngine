@@ -8,6 +8,7 @@
 #include "Engine/Physics/CollisionManager.h"
 #include "Engine/Audio/AudioManager.h"
 #include "Engine/Input/InputHandler.h"
+#include "Spawner.h"
 
 namespace LittleEngine {
 	class Engine;
