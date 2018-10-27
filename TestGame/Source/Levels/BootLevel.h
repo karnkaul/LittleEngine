@@ -8,7 +8,6 @@ namespace LittleEngine {
 	public:
 		BootLevel() : Level("BootLevel") {};
 
-		virtual void LoadAssets() override;
 		virtual void Tick(Fixed deltaTime) override;
 
 	protected:

@@ -7,6 +7,7 @@ namespace LittleEngine {
 	public:
 		TestLevel() : Level("TestLevel") {}
 
+		virtual void LoadAssets() override;
 		virtual void PostRender(const RenderParams& params) override;
 
 	protected:

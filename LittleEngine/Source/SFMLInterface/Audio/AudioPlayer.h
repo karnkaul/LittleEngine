@@ -37,6 +37,7 @@ namespace LittleEngine {
 		~SoundPlayer();
 		bool SetSoundAsset(SoundAsset::Ptr soundAsset);
 
+		void SetDirection(const Fixed& direction);
 		virtual void Play() override;
 		virtual void Stop() override;
 		virtual void Reset(Fixed seconds = Fixed::Zero) override;

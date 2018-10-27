@@ -31,14 +31,6 @@ namespace LittleEngine {
 		Level::Tick(deltaTime);
 	}
 
-	void BootLevel::LoadAssets() {
-		Logger::Log(*this, "Loading Assets...", Logger::Severity::Debug);
-		AssetManager& assetManager = engine->GetAssetManager();
-		assetManager.Load<TextureAsset>({ "Ship.png" });
-		assetManager.Load<SoundAsset>({ "TestSound.wav", "TestSound_b.wav" });
-		assetManager.Load<MusicAsset>({ "TestMusic.ogg", "TestMusic_0.ogg" });
-	}
-
 	void BootLevel::OnLoadNextLevel() {
 		LoadLevel(GetActiveLevelID() + 1);
 	}
