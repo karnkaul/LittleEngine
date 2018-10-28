@@ -41,6 +41,10 @@ namespace LittleEngine {
 		return false;
 	}
 
+	void SoundPlayer::SetDirection(const Fixed& direction) {
+		soundAsset->sfSound.setPosition(Maths::Clamp_11(-direction).GetFloat(), 0, 0);
+	}
+
 	void SoundPlayer::Play() {
 		if (soundAsset) {
 			soundAsset->sfSound.setBuffer(soundAsset->sfSoundBuffer);

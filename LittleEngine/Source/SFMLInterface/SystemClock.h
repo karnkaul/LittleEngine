@@ -5,12 +5,9 @@
 namespace LittleEngine {
 	// \brief Real Time clock using sf::Clock
 	// Note: this clock cannot be paused, only restarted
-	class SystemClock {
-	public:
-		int GetCurrentMilliseconds() const;
-		int64_t GetCurrentMicroseconds() const;
+	namespace SystemClock {
+		int GetCurrentMilliseconds();
+		int64_t GetCurrentMicroseconds();
 		void Restart();
-	private:
-		sf::Clock clock;
 	};
 }

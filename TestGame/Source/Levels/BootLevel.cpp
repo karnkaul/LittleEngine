@@ -7,15 +7,15 @@ namespace LittleEngine {
 		
 		Vector2 lowerBound = this->engine->GetWorld().GetScreenBounds().lower;
 		_logo = SpawnActor<Actor>("Logo");
-		std::shared_ptr<Actor> logo = nullptr;
-		if ((logo = _logo.lock()) != nullptr) {
+		if (Actor::Ptr logo = _logo.lock()) {
 			auto renderer = logo->AddComponent<RenderComponent>();
 			logoRenderer = &renderer->SetTextRenderer("... Press Enter to Start ...");
 			logo->SetNormalisedPosition(Vector2(0, Fixed(-0.66f)));
 		}
 
-		inputTokens.push_back(GetInputHandler().Register(GameInput::Enter, std::bind(&BootLevel::OnLoadNextLevel, this), OnKey::Released));
-		inputTokens.push_back(GetInputHandler().Register(GameInput::Return, std::bind(&BootLevel::OnQuit, this), OnKey::Released));
+		RegisterScopedInput(GameInput::Enter, std::bind(&BootLevel::OnLoadNextLevel, this), OnKey::Released);
+		RegisterScopedInput(GameInput::Return, std::bind(&Level::Quit, this), OnKey::Released);
+
 		//this->engine->GetAudioManager().PlayMusic("TestMusic.ogg");
 	}
 
@@ -31,21 +31,7 @@ namespace LittleEngine {
 		Level::Tick(deltaTime);
 	}
 
-	void BootLevel::LoadAssets() {
-		Logger::Log(*this, "Loading Assets...", Logger::Severity::Debug);
-		AssetManager& assetManager = engine->GetAssetManager();
-		assetManager.Load<TextureAsset>({ "Ship.png" });
-		assetManager.Load<SoundAsset>({ "TestSound.wav", "TestSound_b.wav" });
-		assetManager.Load<MusicAsset>({ "TestMusic.ogg", "TestMusic_0.ogg" });
-	}
-
 	void BootLevel::OnLoadNextLevel() {
-		inputTokens.clear();
-		engine->LoadLevel(1);
-	}
-
-	void BootLevel::OnQuit() {
-		inputTokens.clear();
-		engine->Quit();
+		LoadLevel(GetActiveLevelID() + 1);
 	}
 }

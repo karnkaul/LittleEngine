@@ -26,7 +26,8 @@ namespace LittleEngine {
 	}
 
 	void VFX::Play() {
-		sfxPlayer = level->GetAudioManager().PlaySFX(sfxPath, sfxVol);
+		Fixed direction = GetTransform().Position().x;
+		sfxPlayer = level->GetAudioManager().PlaySFX(sfxPath, sfxVol, direction);
 		animator->enabled = true;
 		animator->Start();
 		playing = true;

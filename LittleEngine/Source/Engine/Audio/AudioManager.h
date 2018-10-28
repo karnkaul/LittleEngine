@@ -8,11 +8,13 @@ namespace LittleEngine {
 	// \brief Handler for all SFX and Music playback
 	class AudioManager final : public Object {
 	public:
+		using Fixed = GameUtils::Fixed;
+
 		AudioManager(Engine& engine);
 		~AudioManager();
 
 		// Returns nullptr if asset could not be loaded 
-		SoundPlayer* PlaySFX(const std::string& path, const Fixed& volume = Fixed::One, bool loop = false);
+		SoundPlayer* PlaySFX(const std::string& path, const Fixed& volume = Fixed::One, const Fixed& direction = Fixed::Zero);
 		bool IsSFXPlaying() const;
 
 		// Returns true if asset is loaded successfully

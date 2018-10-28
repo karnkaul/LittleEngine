@@ -13,12 +13,12 @@ namespace LittleEngine {
 		Logger::Log(*this, GetNameInBrackets() + " destroyed");
 	}
 
-	SoundPlayer* AudioManager::PlaySFX(const std::string & path, const Fixed& volume, bool loop) {
+	SoundPlayer* AudioManager::PlaySFX(const std::string& path, const Fixed& volume, const Fixed& direction) {
 		SoundPlayer& sfxPlayer = GetOrCreateSFXPlayer();
 		bool valid = sfxPlayer.SetSoundAsset(GetAssetManager().Load<SoundAsset>(path));
 		if (valid) {
 			sfxPlayer.volume = volume;
-			sfxPlayer.looping = loop;
+			sfxPlayer.SetDirection(direction);
 			sfxPlayer.Play();
 			return &sfxPlayer;
 		}

@@ -14,8 +14,15 @@
 #include "Entities/Player.h"
 #include "Components/ControllerComponent.h"
 #include "Components/RenderComponent.h"
+#if defined(LOG_PROFILING)
+#include "Misc/Stopwatch.hpp"
+#endif
 
 namespace LittleEngine {
+#if defined(LOG_PROFILING)
+	static Stopwatch s_stopwatch("Level.cpp");
+#endif
+
 	Level::Level(const std::string& name) : Object(name) {
 		Logger::Log(*this, GetNameInBrackets() + " (Level) created. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
 	}
@@ -63,11 +70,21 @@ namespace LittleEngine {
 	}
 
 	void Level::Render(RenderParams& params) {
+#if defined(LOG_PROFILING)
+		s_stopwatch.Start("Render");
+#endif
 		GameUtils::CleanVector<Actor::Ptr>(actors, [](Actor::Ptr actor) { return !actor || actor->_destroyed; });
 		for (const auto& actor : actors) {
 			actor->Render(params);
 		}
+#if defined(LOG_PROFILING)
+		s_stopwatch.Stop();
+		s_stopwatch.Start("virtual Post Render");
+#endif
 		PostRender(params);
+#if defined(LOG_PROFILING)
+		s_stopwatch.Stop();
+#endif
 	}
 
 	void Level::PostRender(const RenderParams& params) {}
@@ -100,8 +117,7 @@ namespace LittleEngine {
 		if (!(_player = player.lock())) {
 			_player = std::make_shared<Player>(*this, texturePath, colliderBounds, position, rotation);
 			player = _player;
-			auto _p = std::dynamic_pointer_cast<Actor>(_player);
-			actors.push_back(_p);
+			actors.push_back(_player);
 		}
 		return player;
 	}
@@ -140,5 +156,17 @@ namespace LittleEngine {
 
 	int Level::GameTimeMilliSeconds() const {
 		return clock.GetGameTimeMilliSeconds();
+	}
+
+	void Level::LoadLevel(LevelID levelID) {
+		engine->LoadLevel(levelID);
+	}
+
+	void Level::Quit() {
+		engine->Quit();
+	}
+
+	LevelID Level::GetActiveLevelID() const {
+		return engine->GetActiveLevelID();
 	}
 }

@@ -160,9 +160,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GameUtils\GameUtils.vcxproj">
-      <Project>{807fe730-588c-4a7b-9d9a-09fd2790c4b4}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\LittleEngine\LittleEngine.vcxproj">
       <Project>{610e7089-f863-40ce-99aa-ddabaf1a12d7}</Project>
     </ProjectReference>
