@@ -86,5 +86,18 @@ namespace Maths {
 }
 
 namespace Strings {
+	using Fixed = GameUtils::Fixed;
+	std::string ToLower(const std::string& lhs);
+
+	bool ToBool(const std::string& input, bool defaultValue = false);
 	int ToInt(const std::string& input, int defaultValue = -1);
+	double ToDouble(const std::string& input, double defaultValue = -1.0f);
+
+	std::string ToString(int input);
+	std::string ToString(bool input);
+	std::pair<std::string, std::string> Slice(const std::string& outInput, char delimiter);
+	void RemoveChars(std::string& outInput, std::initializer_list<char> toRemove);
+	void RemoveWhitespace(std::string& outInput);
+	std::vector<std::string> Tokenise(const std::string& input, const char delimiter = ' ', std::initializer_list<char> escape = { '[', ']', '\"' });
+	void SubstituteChars(std::string & outInput, char replacement, std::initializer_list<char> toReplace);
 }

@@ -89,7 +89,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DEBUG;SFML_STATIC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;SFML_STATIC;LOG_PROFILING</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>./;include;Source;../GameUtils</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
@@ -109,7 +109,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DEBUG;SFML_STATIC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;SFML_STATIC;LOG_PROFILING</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>./;include;Source;../GameUtils</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
@@ -131,7 +131,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SFML_STATIC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SFML_STATIC;LOG_PROFILING</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>./;include;Source;../GameUtils</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
@@ -155,7 +155,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SFML_STATIC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SFML_STATIC;LOG_PROFILING</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>./;include;Source;../GameUtils</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
@@ -204,6 +204,7 @@
     <ClInclude Include="Source\Levels\Level.h" />
     <ClInclude Include="Source\Levels\LevelManager.h" />
     <ClInclude Include="Source\Levels\Spawner.h" />
+    <ClInclude Include="Source\Misc\Stopwatch.hpp" />
     <ClInclude Include="Source\SFMLInterface\All.h" />
     <ClInclude Include="Source\SFMLInterface\Assets.h" />
     <ClInclude Include="Source\SFMLInterface\Audio\AudioPlayer.h" />

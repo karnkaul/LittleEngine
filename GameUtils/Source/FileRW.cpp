@@ -8,7 +8,27 @@ namespace GameUtils {
 		return f.good();
 	}
 
-	const std::vector<std::string>& FileRW::Read() {
+	std::string FileRW::ReadAll(bool discardNewLines) {
+		m_lines.clear();
+		std::ifstream file(path);
+		if (!file.good()) {
+			return std::string();
+		}
+
+		std::string line;
+		std::string ret;
+		while (std::getline(file, line)) {
+			m_lines.emplace_back(line);
+			ret += line;
+			if (!discardNewLines) {
+				ret += '\n';
+			}
+		}
+		file.close();
+		return ret;
+	}
+
+	const std::vector<std::string>& FileRW::ReadLines() {
 		m_lines.clear();
 		std::ifstream file(path);
 		if (!file.good()) {

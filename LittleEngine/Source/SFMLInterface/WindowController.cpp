@@ -3,8 +3,15 @@
 #include "Engine/Logger/Logger.h"
 #include "WindowController.h"
 #include "Utils.h"
+#if defined(LOG_PROFILING)
+#include "Misc/Stopwatch.hpp"
+#endif
 
 namespace LittleEngine {
+#if defined(LOG_PROFILING)
+	static Stopwatch s_stopwatch("WindowController.cpp");
+#endif
+
 	LayerInfo::LayerInfo(int layerID) {
 		SetLayerID(layerID);
 	}
@@ -104,7 +111,14 @@ namespace LittleEngine {
 	}
 
 	void WindowController::Draw() {
+#if defined(LOG_PROFILING)
+		s_stopwatch.Start("window->clear()");
+#endif
 		window->clear();
+#if defined(LOG_PROFILING)
+		s_stopwatch.Stop();
+		s_stopwatch.Start("ForEach().draw()");
+#endif
 		buffer.ForEach(
 			[&w = this->window](std::vector<Drawable> drawables) {
 				for (Drawable& drawable : drawables) {
@@ -112,8 +126,20 @@ namespace LittleEngine {
 				}
 			}
 		);
+#if defined(LOG_PROFILING)
+		s_stopwatch.Stop();
+		s_stopwatch.Start("buffer.Clear()");
+#endif
 		buffer.Clear();
+#if defined(LOG_PROFILING)
+		s_stopwatch.Stop();
+		s_stopwatch.Start("window->display()");
+#endif
 		window->display();
+#if defined(LOG_PROFILING)
+		s_stopwatch.Stop();
+#endif
+
 	}
 
 	void WindowController::CloseWindow() {

@@ -84,16 +84,10 @@ namespace LittleEngine {
 
 	void TestLevel::LoadAssets() {
 		Logger::Log(*this, "Loading Assets...", Logger::Severity::Debug);
-		AssetManifest manifest;
-		manifest.AddDefinition(AssetType::Texture, { "Ship.png" });
-		manifest.AddDefinition(AssetType::Sound, { "TestSound.wav", "TestSound_b.wav" });
-		manifest.AddDefinition(AssetType::Music, { "TestMusic.ogg", "TestMusic_0.ogg" });
-		engine->GetAssetManager().LoadAll(manifest);
-		Spawner::VFXExplode_Warm(*this);
+		engine->GetAssetManager().LoadAll(AssetManifestData("AssetManifests/TestLevel.amf").GetManifest());
 	}
 
 	void TestLevel::Activate() {
-	//TestLevel::TestLevel(Engine& engine) : Level("TestLevel", engine) {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 
 		_TestLevel::_actor0 = SpawnActor<Actor>("Actor0-RectangleRenderer", Vector2(300, 200));

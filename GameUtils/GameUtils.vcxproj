@@ -22,6 +22,7 @@
     <ClInclude Include="Delegate.hpp" />
     <ClInclude Include="FileRW.h" />
     <ClInclude Include="Fixed.h" />
+    <ClInclude Include="GData.h" />
     <ClInclude Include="Property.h" />
     <ClInclude Include="Rect2.h" />
     <ClInclude Include="TokenHandler.hpp" />
@@ -32,6 +33,7 @@
   <ItemGroup>
     <ClCompile Include="Source\FileRW.cpp" />
     <ClCompile Include="Source\Fixed.cpp" />
+    <ClCompile Include="Source\GData.cpp" />
     <ClCompile Include="Source\Property.cpp" />
     <ClCompile Include="Source\Transform.cpp" />
     <ClCompile Include="Source\Utils.cpp" />

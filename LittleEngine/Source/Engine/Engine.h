@@ -75,7 +75,6 @@ namespace LittleEngine {
 		std::unique_ptr<WindowController> windowController;
 		std::unique_ptr<InputHandler> inputHandler;
 		std::vector<std::unique_ptr<EngineCommand>> commands;
-		SystemClock clock;
 		ExitCode exitCode = ExitCode::OK;
 		bool isPaused = false;
 		bool isQuitting = false;

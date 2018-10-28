@@ -55,6 +55,9 @@
     <Filter Include="Source\Engine\Console">
       <UniqueIdentifier>{c7ca3447-dc15-4102-bf0c-aac779634556}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Misc">
+      <UniqueIdentifier>{b2209378-e023-4eee-a64d-669b36b65e52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Entities\Actor.h">
@@ -188,6 +191,9 @@
     </ClInclude>
     <ClInclude Include="le_stdafx.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Misc\Stopwatch.hpp">
+      <Filter>Source\Misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

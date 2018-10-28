@@ -9,7 +9,8 @@ namespace GameUtils {
 		FileRW(std::string path) : path(path) {}
 
 		bool Exists() const;
-		const std::vector<std::string>& Read();
+		std::string ReadAll(bool discardNewLines = true);
+		const std::vector<std::string>& ReadLines();
 		bool Write(const std::string& contents, bool append = false);
 		bool Append(const std::string& contents);
 

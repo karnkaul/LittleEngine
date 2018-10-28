@@ -6,9 +6,11 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
 #include "Utils.h"
+#include "GData.h"
 
 namespace LittleEngine {
 	using Fixed = GameUtils::Fixed;
+	using GData = GameUtils::GData;
 
 	enum class AssetType {
 		Texture,
@@ -37,7 +39,7 @@ namespace LittleEngine {
 		AssetDefinition(const AssetDefinition&) = delete;
 		AssetDefinition(const AssetType& type, AssetPaths&& resourcePaths) : type(type), resourcePaths(std::move(resourcePaths)) {}
 	};
-
+	
 	struct AssetManifest {
 		AssetManifest() = default;
 		AssetManifest(std::vector<AssetDefinition>&& assetDefinitions) : definitions(std::move(assetDefinitions)) {}
@@ -49,6 +51,19 @@ namespace LittleEngine {
 
 	private:
 		std::vector<AssetDefinition> definitions;
+	};
+
+	struct AssetManifestData {
+		AssetManifestData() = default;
+		AssetManifestData(AssetManifestData&&) = default;
+		AssetManifestData& operator=(AssetManifestData&&) = default;
+		AssetManifestData(const std::string& amfPath);
+
+		AssetManifest& GetManifest();
+		void Load(const std::string& amfPath);
+
+	private:
+		AssetManifest manifest;
 	};
 
 	// \brief Abstract Wrapper class for all files that can be read as SFML assets
