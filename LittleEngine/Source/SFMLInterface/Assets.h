@@ -167,7 +167,7 @@ namespace LittleEngine {
 		~AssetManager();
 
 		// Loads Asset at path. T must derive from Asset!
-		// Note: Not meant to be used in hot code!
+		// Note: Not meant to be used in hot code unless Asset is already cached!
 		template<typename T>
 		std::shared_ptr<T> Load(const std::string& path) {
 			static_assert(std::is_base_of<Asset, T>::value, "T must derive from Asset: check Output window for erroneous call");
@@ -184,35 +184,35 @@ namespace LittleEngine {
 			Logger::Log(*this, "Loading Asset [" + fullPath + "]", Logger::Severity::Info);
 			struct enable_shared : public T { enable_shared(const std::string& path) : T(path) {} };
 			std::shared_ptr<T> t_ptr = std::make_shared<enable_shared>(fullPath);
-			std::shared_ptr<Asset> t_asset = std::dynamic_pointer_cast<Asset>(t_ptr);
-			loaded.insert(std::pair<std::string, std::shared_ptr<Asset>>(fullPath, t_asset));
+			loaded.emplace(fullPath, t_ptr);
 			return t_ptr;
 		}
 		
-		FontAsset::Ptr GetDefaultFont() const;
-		// Note: Not meant to be used in hot code!
+		// Note: Not meant to be used in hot code unless Asset is already cached!
 		template<typename T>
 		std::vector<std::shared_ptr<T>> Load(std::initializer_list<std::string> assetPaths) {
 			static_assert(std::is_base_of<Asset, T>::value, "T must derive from Asset: check Output window for erroneous call");
 			std::vector<std::shared_ptr<T>> vec;
 			for (const auto& path : assetPaths) {
-				vec.push_back(Load<T>(path));
+				vec.emplace_back(Load<T>(path));
 			}
 			return vec;
 		}
 
-		// Note: Not meant to be used in hot code!
+		// Note: Not meant to be used in hot code unless Asset is already cached!
 		template<typename T>
 		std::vector<std::shared_ptr<T>> Load(const std::vector<std::string>& assetPaths) {
 			static_assert(std::is_base_of<Asset, T>::value, "T must derive from Asset: check Output window for erroneous call");
 			std::vector<std::shared_ptr<T>> vec;
 			for (const auto& path : assetPaths) {
-				vec.push_back(Load<T>(path));
+				vec.emplace_back(Load<T>(path));
 			}
 			return vec;
 		}
 
 		void LoadAll(AssetManifest& manifest);
+		
+		FontAsset::Ptr GetDefaultFont() const;
 
 		// Unload all assets
 		void UnloadAll();
