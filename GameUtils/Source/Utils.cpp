@@ -75,10 +75,10 @@ namespace Strings {
 		return input ? "true" : "false";
 	}
 
-	std::pair<std::string, std::string> Slice(const std::string & outInput, char delimiter) {
-		size_t idx = outInput.find(delimiter);
-		std::string rhs = idx < outInput.size() ? outInput.substr(idx + 1) : "";
-		return std::pair<std::string, std::string>(outInput.substr(0, idx), std::move(rhs));
+	std::pair<std::string, std::string> Slice(const std::string & input, char delimiter) {
+		size_t idx = input.find(delimiter);
+		std::string rhs = idx < input.size() ? input.substr(idx + 1) : "";
+		return std::pair<std::string, std::string>(input.substr(0, idx), std::move(rhs));
 	}
 
 	void RemoveChars(std::string & outInput, std::initializer_list<char> toRemove) {

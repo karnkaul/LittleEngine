@@ -3,19 +3,22 @@
 #include "Fixed.h"
 
 namespace GameUtils {
-	using hashTable = std::unordered_map<std::string, std::string>;
-	
+	// \brief Pseudo-JSON serialisable data container
 	class GData {
 	public:
 		GData() = default;
-		GData(const std::string serialised);
+		// Pass serialised data to marhshall and load fields
+		GData(const std::string& serialised);
 		GData(const GData& rhs) = default;
 		GData(GData&&) = default;
 		GData& operator=(const GData&) = default;
 		GData& operator=(GData&&) = default;
 
+		// Marhshalls and load fields from serialised data
 		bool Marshall(const std::string& serialised);
-		std::string Unmarshall();
+		// Returns original raw data, without whitespaces and enclosing braces
+		const std::string& Unmarshall() const;
+		// Clears raw data and fields
 		void Clear();
 
 		std::string GetString(const std::string& key, const std::string& defaultValue = "");
@@ -28,7 +31,7 @@ namespace GameUtils {
 		std::vector<std::string> GetVector(const std::string& key);
 
 	private:
-		std::string _json;
-		hashTable _values;
+		std::string _rawText;
+		std::unordered_map<std::string, std::string> fieldMap;
 	};
 }

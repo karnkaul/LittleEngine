@@ -249,7 +249,7 @@ namespace LittleEngine {
 	bool Engine::CreateWindow() {
 		Vector2 screenSize = config->GetScreenSize();
 		std::string windowTitle = config->GetWindowTitle();
-		Logger::Log(*this, "Initialising window to (" + screenSize.ToString() + ")");
+		Logger::Log(*this, "Initialising window to " + screenSize.ToString());
 		try {
 			windowController = std::make_unique<WindowController>(screenSize.x.GetInt(), screenSize.y.GetInt(), windowTitle);
 		}

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <functional>
 
 namespace GameUtils {
 	// \brief File persistor; implementation uses fstream
@@ -17,5 +18,7 @@ namespace GameUtils {
 	private:
 		std::string path;
 		std::vector<std::string> m_lines;
+
+		void Read(std::function<void(std::string&& line)> Procedure);
 	};
 }

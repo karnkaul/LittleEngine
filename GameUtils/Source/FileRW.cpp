@@ -10,36 +10,26 @@ namespace GameUtils {
 
 	std::string FileRW::ReadAll(bool discardNewLines) {
 		m_lines.clear();
-		std::ifstream file(path);
-		if (!file.good()) {
-			return std::string();
-		}
-
-		std::string line;
 		std::string ret;
-		while (std::getline(file, line)) {
-			m_lines.emplace_back(line);
-			ret += line;
-			if (!discardNewLines) {
-				ret += '\n';
+		Read(
+			[&](std::string&& line) {
+				ret += line;
+				if (!discardNewLines) {
+					ret += '\n';
+				}
+				m_lines.push_back(std::move(line));
 			}
-		}
-		file.close();
+		);
 		return ret;
 	}
 
 	const std::vector<std::string>& FileRW::ReadLines() {
 		m_lines.clear();
-		std::ifstream file(path);
-		if (!file.good()) {
-			return m_lines;
-		}
-
-		std::string line;
-		while (std::getline(file, line)) {
-			m_lines.emplace_back(line);
-		}
-		file.close();
+		Read(
+			[&](std::string&& line) {
+				m_lines.push_back(std::move(line));
+			}
+		);
 		return m_lines;
 	}
 
@@ -60,5 +50,18 @@ namespace GameUtils {
 
 	bool FileRW::Append(const std::string & contents) {
 		return Write(contents, true);
+	}
+
+	void FileRW::Read(std::function<void(std::string&& line)> Procedure) {
+		std::ifstream file(path);
+		if (!file.good()) {
+			return;
+		}
+
+		std::string line;
+		while (std::getline(file, line)) {
+			Procedure(std::move(line));
+		}
+		file.close();
 	}
 }

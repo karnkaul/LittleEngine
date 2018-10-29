@@ -2,7 +2,7 @@
 #include "Utils.h"
 
 namespace GameUtils {
-	GData::GData(const std::string serialised) {
+	GData::GData(const std::string& serialised) {
 		if (!serialised.empty()) {
 			Marshall(serialised);
 		}
@@ -14,12 +14,12 @@ namespace GameUtils {
 		Strings::RemoveChars(temp, { '"' });
 		if (temp[0] == '{' && temp[temp.size() - 1] == '}') {
 			Clear();
-			_json = temp.substr(1, temp.size() - 2);
-			std::vector<std::string> tokens = Strings::Tokenise(_json, ',');
+			_rawText = temp.substr(1, temp.size() - 2);
+			std::vector<std::string> tokens = Strings::Tokenise(_rawText, ',');
 			for (const auto& token : tokens) {
 				std::pair<std::string, std::string> kvp = Strings::Slice(token, ':');
 				if (!kvp.second.empty() && !kvp.first.empty()) {
-					_values.insert(std::move(kvp));
+					fieldMap.insert(std::move(kvp));
 				}
 			}
 			return true;
@@ -28,17 +28,17 @@ namespace GameUtils {
 		return false;
 	}
 	
-	std::string GData::Unmarshall() {
-		return _json;
+	const std::string& GData::Unmarshall() const {
+		return _rawText;
 	}
 
 	void GData::Clear() {
-		_values.clear();
-		_json = "";
+		fieldMap.clear();
+		_rawText = "";
 	}
 
 	template<typename T>
-	T Get(const hashTable& table, const std::string& key, T (*Adaptor)(const std::string&, T), const T& defaultValue) {
+	T Get(const std::unordered_map<std::string, std::string>& table, const std::string& key, T (*Adaptor)(const std::string&, T), const T& defaultValue) {
 		auto search = table.find(key);
 		if (search != table.end()) {
 			return Adaptor(search->second, defaultValue);
@@ -47,28 +47,28 @@ namespace GameUtils {
 	}
 
 	std::string GData::GetString(const std::string & key, const std::string & defaultValue) {
-		auto search = _values.find(key);
-		if (search != _values.end()) {
+		auto search = fieldMap.find(key);
+		if (search != fieldMap.end()) {
 			return search->second;
 		}
 		return defaultValue;
 	}
 
 	bool GData::GetBool(const std::string & key, bool defaultValue) {
-		return Get<bool>(_values, key, &Strings::ToBool, defaultValue);
+		return Get<bool>(fieldMap, key, &Strings::ToBool, defaultValue);
 	}
 
 	int GData::GetInt(const std::string & key, int defaultValue) {
-		return Get<int>(_values, key, &Strings::ToInt, defaultValue);
+		return Get<int>(fieldMap, key, &Strings::ToInt, defaultValue);
 	}
 
 	double GData::GetDouble(const std::string & key, double defaultValue) {
-		return Get<double>(_values, key, &Strings::ToDouble, defaultValue);
+		return Get<double>(fieldMap, key, &Strings::ToDouble, defaultValue);
 	}
 
 	GData GData::GetGData(const std::string & key) {
-		auto search = _values.find(key);
-		if (search != _values.end()) {
+		auto search = fieldMap.find(key);
+		if (search != fieldMap.end()) {
 			return GData(search->second);
 		}
 		return GData();
@@ -76,8 +76,8 @@ namespace GameUtils {
 
 	std::vector<GData> GData::GetVectorGData(const std::string& key) {
 		std::vector<GData> ret;
-		auto search = _values.find(key);
-		if (search != _values.end()) {
+		auto search = fieldMap.find(key);
+		if (search != fieldMap.end()) {
 			std::string value = search->second;
 			if (value.size() > 2) {
 				if (value[0] = '[' && value[value.size() - 1] == ']') {
@@ -93,8 +93,8 @@ namespace GameUtils {
 	}
 
 	std::vector<std::string> GData::GetVector(const std::string& key) {
-		auto search = _values.find(key);
-		if (search != _values.end()) {
+		auto search = fieldMap.find(key);
+		if (search != fieldMap.end()) {
 			std::string value = search->second;
 			if (value.size() > 2) {
 				if (value[0] = '[' && value[value.size() - 1] == ']') {
