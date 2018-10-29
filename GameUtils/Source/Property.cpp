@@ -40,7 +40,7 @@ namespace GameUtils {
 			return false;
 		}
 
-		const std::vector<std::string>& lines = fileRW.Read();
+		const std::vector<std::string>& lines = fileRW.ReadLines();
 		for (const auto& line : lines) {
 			if (line.length() <= 0) continue;
 			if (line.c_str()[0] == '#') continue;	// Ignore comments

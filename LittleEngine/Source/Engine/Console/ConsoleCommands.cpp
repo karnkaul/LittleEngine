@@ -15,6 +15,11 @@ namespace LittleEngine { namespace DebugConsole {
 		public:
 			std::string name;
 
+			Command() {
+				if (!Commands::pEngine) {
+					Logger::Log("DebugConsole Engine* not set!", Logger::Severity::Error);
+				}
+			}
 			virtual ~Command() {}
 			
 			std::vector<LogLine> Execute(const std::string& params) {

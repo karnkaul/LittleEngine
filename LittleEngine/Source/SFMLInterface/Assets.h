@@ -6,9 +6,81 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
 #include "Utils.h"
+#include "GData.h"
 
 namespace LittleEngine {
 	using Fixed = GameUtils::Fixed;
+	using GData = GameUtils::GData;
+
+	enum class AssetType {
+		Texture,
+		Font,
+		Sound,
+		Music,
+	};
+
+	// \brief Auto-constructs a set of generateable asset paths based on input parameters
+	struct AssetPaths {
+		std::vector<std::string> assetPaths;
+
+		AssetPaths(AssetPaths&&) = default;
+		// Single asset's path
+		AssetPaths(const std::string& assetPath);
+		// Multiple assets' paths
+		AssetPaths(std::initializer_list<std::string> assetPaths);
+		// Multiple assets' paths with a prefix for each
+		AssetPaths(const std::string& pathPrefix, std::initializer_list<std::string> assetPaths);
+		// Multiple assets's paths with a prefix for each path, prefix and suffix for each asset
+		AssetPaths(const std::string& pathPrefix, int count, const std::string& assetPrefix, const std::string& assetSuffix);
+
+		// Get a random path from vector of paths
+		std::string GetRandom() const;
+	};
+
+	// \brief Complete data specifying particular set of identical-type Assets
+	struct AssetDefinition {
+		AssetType type;
+		AssetPaths resourcePaths;
+
+		AssetDefinition(AssetDefinition&&) = default;
+		AssetDefinition(const AssetDefinition&) = delete;
+		// Create an AssetDefinition given a resource type and its AssetPaths
+		AssetDefinition(const AssetType& type, AssetPaths&& resourcePaths) : type(type), resourcePaths(std::move(resourcePaths)) {}
+	};
+	
+	// \brief Collection of AssetDefinitions
+	struct AssetManifest {
+		AssetManifest() = default;
+		AssetManifest(std::vector<AssetDefinition>&& assetDefinitions) : definitions(std::move(assetDefinitions)) {}
+
+		// Add definition to the manifest
+		void AddDefinition(AssetDefinition&& definition);
+		// Create and add an AssetDefinition to the manifest
+		void AddDefinition(const AssetType& type, AssetPaths&& resourcePaths);
+		void Clear();
+		// Convenience callback that iterates through each AssetDefinition
+		void ForEach(std::function<void(const AssetDefinition& definition)> Callback) const;
+
+	private:
+		std::vector<AssetDefinition> definitions;
+	};
+
+	// \brief Generates AssetManifest from serialised data loaded from a file, given its path
+	struct AssetManifestData {
+		AssetManifestData() = default;
+		AssetManifestData(AssetManifestData&&) = default;
+		AssetManifestData& operator=(AssetManifestData&&) = default;
+		// \brief Pass the path to the asset manifest file (.amf)
+		AssetManifestData(const std::string& amfPath);
+
+		// \brief Note: this is not a const function! Manifests are designed to move their data
+		AssetManifest& GetManifest();
+		// \brief Pass the path to the asset manifest file (.amf)
+		void Load(const std::string& amfPath);
+
+	private:
+		AssetManifest manifest;
+	};
 
 	// \brief Abstract Wrapper class for all files that can be read as SFML assets
 	class Asset {
@@ -88,17 +160,6 @@ namespace LittleEngine {
 		MusicAsset(const std::string& path, const Fixed& volumeScale = Fixed::One);
 	};
 
-	struct AssetPaths {
-		std::vector<std::string> assetPaths;
-
-		AssetPaths(const std::string& assetPath);
-		AssetPaths(std::initializer_list<std::string> assetPaths);
-		AssetPaths(const std::string& pathPrefix, std::initializer_list<std::string> assetPaths);
-		AssetPaths(const std::string& pathPrefix, int count, const std::string& assetPrefix, const std::string& assetSuffix);
-
-		std::string GetRandom() const;
-	};
-
 	// \brief Class that handles all Asset Loading. (Maintains a clearable cache)
 	class AssetManager final : public Object {
 	public:
@@ -113,12 +174,14 @@ namespace LittleEngine {
 			std::string fullPath = GetPath(path);
 			auto search = loaded.find(fullPath);
 			if (search != loaded.end()) {
+#if defined(LOG_CACHED_ASSET_LOADS)
 				Logger::Log(*this, "Found Asset [" + fullPath + "] in cache", Logger::Severity::Debug);
+#endif
 				std::shared_ptr<Asset> asset = search->second;
 				return std::dynamic_pointer_cast<T>(asset);
 			}
 
-			Logger::Log(*this, "Loading Asset [" + fullPath + "]", Logger::Severity::Debug);
+			Logger::Log(*this, "Loading Asset [" + fullPath + "]", Logger::Severity::Info);
 			struct enable_shared : public T { enable_shared(const std::string& path) : T(path) {} };
 			std::shared_ptr<T> t_ptr = std::make_shared<enable_shared>(fullPath);
 			std::shared_ptr<Asset> t_asset = std::dynamic_pointer_cast<Asset>(t_ptr);
@@ -148,6 +211,8 @@ namespace LittleEngine {
 			}
 			return vec;
 		}
+
+		void LoadAll(AssetManifest& manifest);
 
 		// Unload all assets
 		void UnloadAll();

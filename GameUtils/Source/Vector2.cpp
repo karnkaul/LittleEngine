@@ -36,6 +36,7 @@ namespace GameUtils {
 
 	Vector2 Vector2::Normalised() const {
 		double sq = SqrMagnitude();
+		if (sq == 0) return Vector2::Zero;
 		Fixed coeff = Fixed(std::sqrt(sq));
 		coeff = coeff.Inverse();
 		return Vector2(x * coeff, y * coeff);

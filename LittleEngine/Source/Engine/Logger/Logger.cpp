@@ -13,14 +13,13 @@ namespace LittleEngine {
 
 #pragma region Definitions
 		static std::unique_ptr<FileLogger> s_fileLogger = std::make_unique<FileLogger>("debug.log");
-		static std::unique_ptr<SystemClock> clock = std::make_unique<SystemClock>();
 		struct sudo {};
 #pragma endregion
 
 #pragma region Internal
 		static void Cout(const std::string& severity, const std::string& caller, const std::string& message) {
 			std::string suffix = (caller.length() > 0) ? " [" + caller + "]" : "";
-			suffix += (" [" + GameClock::ToString(clock->GetCurrentMilliseconds()) + "]");
+			suffix += (" [" + GameClock::ToString(SystemClock::GetCurrentMilliseconds()) + "]");
 			std::string log = severity + " " + message + suffix;
 			if (s_fileLogger) {
 				s_fileLogger->AddToBuffer(log);

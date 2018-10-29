@@ -8,18 +8,28 @@ namespace GameUtils {
 		return f.good();
 	}
 
-	const std::vector<std::string>& FileRW::Read() {
+	std::string FileRW::ReadAll(bool discardNewLines) {
 		m_lines.clear();
-		std::ifstream file(path);
-		if (!file.good()) {
-			return m_lines;
-		}
+		std::string ret;
+		Read(
+			[&](std::string&& line) {
+				ret += line;
+				if (!discardNewLines) {
+					ret += '\n';
+				}
+				m_lines.push_back(std::move(line));
+			}
+		);
+		return ret;
+	}
 
-		std::string line;
-		while (std::getline(file, line)) {
-			m_lines.emplace_back(line);
-		}
-		file.close();
+	const std::vector<std::string>& FileRW::ReadLines() {
+		m_lines.clear();
+		Read(
+			[&](std::string&& line) {
+				m_lines.push_back(std::move(line));
+			}
+		);
 		return m_lines;
 	}
 
@@ -40,5 +50,18 @@ namespace GameUtils {
 
 	bool FileRW::Append(const std::string & contents) {
 		return Write(contents, true);
+	}
+
+	void FileRW::Read(std::function<void(std::string&& line)> Procedure) {
+		std::ifstream file(path);
+		if (!file.good()) {
+			return;
+		}
+
+		std::string line;
+		while (std::getline(file, line)) {
+			Procedure(std::move(line));
+		}
+		file.close();
 	}
 }

@@ -4,3 +4,4 @@
 **/*.lib
 **/*.pdb
 debug.log
+**/vc-fileutils.settings

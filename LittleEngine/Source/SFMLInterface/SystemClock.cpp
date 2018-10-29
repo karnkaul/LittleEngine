@@ -2,15 +2,19 @@
 #include "SystemClock.h"
 
 namespace LittleEngine {
-	int SystemClock::GetCurrentMilliseconds() const {
-		return clock.getElapsedTime().asMilliseconds();
-	}
+	namespace SystemClock {
+		static sf::Clock s_clock;
 
-	int64_t SystemClock::GetCurrentMicroseconds() const {
-		return static_cast<int64_t>(clock.getElapsedTime().asMicroseconds());
-	}
+		int GetCurrentMilliseconds() {
+			return s_clock.getElapsedTime().asMilliseconds();
+		}
 
-	void SystemClock::Restart() {
-		clock.restart();
+		int64_t GetCurrentMicroseconds() {
+			return static_cast<int64_t>(s_clock.getElapsedTime().asMicroseconds());
+		}
+
+		void Restart() {
+			s_clock.restart();
+		}
 	}
 }

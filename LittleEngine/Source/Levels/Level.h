@@ -42,15 +42,21 @@ namespace LittleEngine {
 		int LevelTimeMilliSeconds() const;
 		int GameTimeMilliSeconds() const;
 
+		// \brief Instructs Engine to load LevelID next frame
+		void LoadLevel(LevelID levelID);
+		// \brief Instructs Engine to Quit next frame
+		void Quit();
+		// \brief Returns active level's ID
+		LevelID GetActiveLevelID() const;
+
 		// \brief Safe API to spawn new Actors. All spawned Actors 
 		// will be destroyed along with the Level, hence returns weak_ptr.
 		template<typename T>
 		std::weak_ptr<T> SpawnActor(const std::string& name, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero) {
 			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
-			auto _actor = std::make_shared<T>(*this, name, position, rotation);
-			auto actor = std::dynamic_pointer_cast<Actor>(_actor);
+			auto actor = std::make_shared<T>(*this, name, position, rotation);
 			actors.push_back(actor);
-			return _actor;
+			return actor;
 		}
 		// \brief Safe API to destroy existing Actors
 		void DestroyActor(Actor::Ptr actor);

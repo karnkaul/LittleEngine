@@ -16,12 +16,19 @@
 #include "SFMLInterface/WindowController.h"
 #include "SFMLInterface/Rendering/Renderer.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
+#if defined(LOG_PROFILING)
+#include "Misc/Stopwatch.hpp"
+#endif
 
 #include "Levels/Level.h"
 #include "Levels/LevelManager.h"
 
 namespace LittleEngine {
 	using Fixed = GameUtils::Fixed;
+
+#if defined(LOG_PROFILING)
+	static Stopwatch s_stopwatch("Engine.cpp");
+#endif
 
 	Engine::Ptr Engine::Create() {
 		// std::make_unique requires public constructor and destructor access
@@ -80,7 +87,7 @@ namespace LittleEngine {
 
 	ExitCode Engine::Run() {
 		Logger::Log(*this, "Execution started");
-
+		
 		if (exitCode == ExitCode::OK) {
 			if (CreateWindow()) {
 				/* Load Level 0 */
@@ -94,7 +101,7 @@ namespace LittleEngine {
 				DebugConsole::Init(*this);
 
 				/* Core Game Loop */
-				double previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
+				double previous = static_cast<double>(SystemClock::GetCurrentMicroseconds()) * 0.001f;
 				double debugToggleTime = 0;
 				Fixed deltaTime = 0;
 				Fixed lag = 0;
@@ -108,7 +115,7 @@ namespace LittleEngine {
 						if (isPaused && windowController->IsWindowFocussed()) {
 							isPaused = false;
 							// Reset FixedTick time lag (account for clock not pausing)
-							previous = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
+							previous = static_cast<double>(SystemClock::GetCurrentMicroseconds()) * 0.001f;
 							Logger::Log(*this, "Game unpaused");
 						}
 						
@@ -134,7 +141,7 @@ namespace LittleEngine {
 
 					/* Process Frame */
 					if (!isPaused) {
-						double current = static_cast<double>(clock.GetCurrentMicroseconds()) * 0.001f;
+						double current = static_cast<double>(SystemClock::GetCurrentMicroseconds()) * 0.001f;
 						deltaTime = Fixed(current - previous);
 						previous = current;
 						lag += deltaTime;
@@ -152,33 +159,57 @@ namespace LittleEngine {
 						}
 
 						/* Tick */ {
+#if defined (LOG_PROFILING)
+							s_stopwatch.Start("Tick");
+#endif
 							GameClock::Tick(deltaTime);
 							inputHandler->FireInput();
 							audioManager->Tick(deltaTime);
 							levelManager->GetActiveLevel()->Tick(deltaTime);
+#if defined (LOG_PROFILING)
+							s_stopwatch.Stop();
+#endif
 						}
 
 						/* Render */ {
+#if defined (LOG_PROFILING)
+							s_stopwatch.Start("Render");
+#endif
 							RenderParams params(*windowController);
 							levelManager->GetActiveLevel()->Render(params);
 							DebugConsole::RenderConsole(*this, params, deltaTime);
 							windowController->Draw();
+#if defined (LOG_PROFILING)
+							s_stopwatch.Stop();
+#endif
 						}
 						
 						/* Post Render: Commands */
+#if defined (LOG_PROFILING)
+						s_stopwatch.Start("Post Render");
+#endif
 						for (const auto& command : commands) {
 							(*command)();
 						}
 						commands.clear();
+#if defined (LOG_PROFILING)
+						s_stopwatch.Stop();
+#endif
 
+#if defined (LOG_PROFILING)
+						s_stopwatch.Start("Sleep");
+#endif
 						/* Post Render: Sleep */
-						double sinceStartMS = (static_cast<double>(clock.GetCurrentMicroseconds()) / 1000.0f) - current;
+						double sinceStartMS = (static_cast<double>(SystemClock::GetCurrentMicroseconds()) / 1000.0f) - current;
 						Fixed minFrameTimeMS = Fixed(1000, Consts::MAX_FPS);
 						Fixed residue = Fixed(minFrameTimeMS.GetDouble() - sinceStartMS);
 						if (residue > 0) {
 							Logger::Log(*this, "Sleeping game loop for: " + residue.ToString() + "ms", Logger::Severity::HOT);
 							std::this_thread::sleep_for(std::chrono::milliseconds(residue.GetInt()));
 						}
+#if defined (LOG_PROFILING)
+						s_stopwatch.Stop();
+#endif
 					}
 				}
 			}
@@ -218,7 +249,7 @@ namespace LittleEngine {
 	bool Engine::CreateWindow() {
 		Vector2 screenSize = config->GetScreenSize();
 		std::string windowTitle = config->GetWindowTitle();
-		Logger::Log(*this, "Initialising window to (" + screenSize.ToString() + ")");
+		Logger::Log(*this, "Initialising window to " + screenSize.ToString());
 		try {
 			windowController = std::make_unique<WindowController>(screenSize.x.GetInt(), screenSize.y.GetInt(), windowTitle);
 		}
@@ -227,7 +258,7 @@ namespace LittleEngine {
 			exitCode = ExitCode::AllocationError;
 			return false;
 		}
-		clock.Restart();
+		SystemClock::Restart();
 		return true;
 	}
 }
