@@ -16,19 +16,12 @@
 #include "SFMLInterface/WindowController.h"
 #include "SFMLInterface/Rendering/Renderer.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
-#if defined(LOG_PROFILING)
-#include "Misc/Stopwatch.hpp"
-#endif
-
+#include "Misc/Stopwatch.h"
 #include "Levels/Level.h"
 #include "Levels/LevelManager.h"
 
 namespace LittleEngine {
 	using Fixed = GameUtils::Fixed;
-
-#if defined(LOG_PROFILING)
-	static Stopwatch s_stopwatch("Engine.cpp");
-#endif
 
 	Engine::Ptr Engine::Create() {
 		// std::make_unique requires public constructor and destructor access
@@ -159,46 +152,32 @@ namespace LittleEngine {
 						}
 
 						/* Tick */ {
-#if defined (LOG_PROFILING)
-							s_stopwatch.Start("Tick");
-#endif
+							STOPWATCH_START("Tick");
 							GameClock::Tick(deltaTime);
 							inputHandler->FireInput();
 							audioManager->Tick(deltaTime);
 							levelManager->GetActiveLevel()->Tick(deltaTime);
-#if defined (LOG_PROFILING)
-							s_stopwatch.Stop();
-#endif
+							STOPWATCH_STOP();
 						}
 
 						/* Render */ {
-#if defined (LOG_PROFILING)
-							s_stopwatch.Start("Render");
-#endif
+							STOPWATCH_START("Render");
 							RenderParams params(*windowController);
 							levelManager->GetActiveLevel()->Render(params);
 							DebugConsole::RenderConsole(*this, params, deltaTime);
 							windowController->Draw();
-#if defined (LOG_PROFILING)
-							s_stopwatch.Stop();
-#endif
+							STOPWATCH_STOP();
 						}
 						
 						/* Post Render: Commands */
-#if defined (LOG_PROFILING)
-						s_stopwatch.Start("Post Render");
-#endif
+						STOPWATCH_START("Post Render");
 						for (const auto& command : commands) {
 							(*command)();
 						}
 						commands.clear();
-#if defined (LOG_PROFILING)
-						s_stopwatch.Stop();
-#endif
+						STOPWATCH_STOP();
 
-#if defined (LOG_PROFILING)
-						s_stopwatch.Start("Sleep");
-#endif
+						STOPWATCH_START("Sleep");
 						/* Post Render: Sleep */
 						double sinceStartMS = (static_cast<double>(SystemClock::GetCurrentMicroseconds()) / 1000.0f) - current;
 						Fixed minFrameTimeMS = Fixed(1000, Consts::MAX_FPS);
@@ -207,9 +186,7 @@ namespace LittleEngine {
 							Logger::Log(*this, "Sleeping game loop for: " + residue.ToString() + "ms", Logger::Severity::HOT);
 							std::this_thread::sleep_for(std::chrono::milliseconds(residue.GetInt()));
 						}
-#if defined (LOG_PROFILING)
-						s_stopwatch.Stop();
-#endif
+						STOPWATCH_STOP();
 					}
 				}
 			}

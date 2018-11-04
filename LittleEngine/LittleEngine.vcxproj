@@ -204,7 +204,7 @@
     <ClInclude Include="Source\Levels\Level.h" />
     <ClInclude Include="Source\Levels\LevelManager.h" />
     <ClInclude Include="Source\Levels\Spawner.h" />
-    <ClInclude Include="Source\Misc\Stopwatch.hpp" />
+    <ClInclude Include="Source\Misc\Stopwatch.h" />
     <ClInclude Include="Source\SFMLInterface\All.h" />
     <ClInclude Include="Source\SFMLInterface\Assets.h" />
     <ClInclude Include="Source\SFMLInterface\Audio\AudioPlayer.h" />
@@ -245,6 +245,7 @@
     <ClCompile Include="Source\Levels\Level.cpp" />
     <ClCompile Include="Source\Levels\LevelManager.cpp" />
     <ClCompile Include="Source\Levels\Spawner.cpp" />
+    <ClCompile Include="Source\Misc\Stopwatch.cpp" />
     <ClCompile Include="Source\SFMLInterface\Assets.cpp" />
     <ClCompile Include="Source\SFMLInterface\Audio\AudioPlayer.cpp" />
     <ClCompile Include="Source\SFMLInterface\Rendering\RenderFactory.cpp" />

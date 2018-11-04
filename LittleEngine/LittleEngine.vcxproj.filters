@@ -192,7 +192,7 @@
     <ClInclude Include="le_stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Misc\Stopwatch.hpp">
+    <ClInclude Include="Source\Misc\Stopwatch.h">
       <Filter>Source\Misc</Filter>
     </ClInclude>
   </ItemGroup>
@@ -309,5 +309,8 @@
       <Filter>Source\Engine\Console</Filter>
     </ClCompile>
     <ClCompile Include="le_stdafx.cpp" />
+    <ClCompile Include="Source\Misc\Stopwatch.cpp">
+      <Filter>Source\Misc</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
