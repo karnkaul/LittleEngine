@@ -32,11 +32,14 @@ namespace LittleEngine {
 	public:
 		CircleRenderer(const Fixed& radius);
 		CircleRenderer(const Fixed& radius, const Colour& colour);
+		CircleRenderer(const CircleRenderer& prototype);
 
 		void SetRadius(const Fixed& radius);
 
 		// Returns outer rect of CircleShape (|any point| = radius)
 		virtual Rect2 GetBounds() const override;
+		virtual std::unique_ptr<Renderer> UClone() const override;
+
 	private:
 		sf::CircleShape* circle;
 	};
@@ -46,12 +49,16 @@ namespace LittleEngine {
 	public:
 		RectangleRenderer(const Vector2& size);
 		RectangleRenderer(const Vector2& size, const Colour& colour);
+		RectangleRenderer(const RectangleRenderer& prototype);
 
 		void SetSize(const Vector2& size);
 
 		// Returns bounds of RectangleShape
 		virtual Rect2 GetBounds() const override;
+		virtual std::unique_ptr<Renderer> UClone() const override;
+
 	private:
 		sf::RectangleShape* rectangle;
 	};
 }
+

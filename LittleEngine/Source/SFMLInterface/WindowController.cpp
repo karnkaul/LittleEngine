@@ -49,7 +49,7 @@ namespace LittleEngine {
 
 	WindowController::WindowController(int screenWidth, int screenHeight, const std::string& windowTitle) {
 		window = std::make_unique<sf::RenderWindow>(sf::VideoMode(screenWidth, screenHeight), windowTitle);
-		_focus = true;
+		_bFocus = true;
 	}
 
 	WindowController::~WindowController() {
@@ -61,7 +61,7 @@ namespace LittleEngine {
 	}
 
 	bool WindowController::IsWindowFocussed() const {
-		return _focus;
+		return _bFocus;
 	}
 
 	void WindowController::PollInput() {
@@ -74,11 +74,11 @@ namespace LittleEngine {
 				break;
 
 			case sf::Event::LostFocus:
-				_focus = false;
+				_bFocus = false;
 				break;
 
 			case sf::Event::GainedFocus:
-				_focus = true;
+				_bFocus = true;
 				input.ResetKeyStates();
 				break;
 

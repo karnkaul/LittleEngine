@@ -98,15 +98,15 @@ namespace LittleEngine {
 				double debugToggleTime = 0;
 				Fixed deltaTime = 0;
 				Fixed lag = 0;
-				while (windowController->IsWindowOpen() && !isQuitting) {
+				while (windowController->IsWindowOpen() && !bIsQuitting) {
 					/* Poll Input */ {
 						windowController->PollInput();
-						if (!isPaused && !windowController->IsWindowFocussed()) {
-							isPaused = true;
+						if (!bIsPaused && !windowController->IsWindowFocussed()) {
+							bIsPaused = true;
 							Logger::Log(*this, "Game paused");
 						}
-						if (isPaused && windowController->IsWindowFocussed()) {
-							isPaused = false;
+						if (bIsPaused && windowController->IsWindowFocussed()) {
+							bIsPaused = false;
 							// Reset FixedTick time lag (account for clock not pausing)
 							previous = static_cast<double>(SystemClock::GetCurrentMicroseconds()) * 0.001f;
 							Logger::Log(*this, "Game unpaused");
@@ -133,7 +133,7 @@ namespace LittleEngine {
 					}
 
 					/* Process Frame */
-					if (!isPaused) {
+					if (!bIsPaused) {
 						double current = static_cast<double>(SystemClock::GetCurrentMicroseconds()) * 0.001f;
 						deltaTime = Fixed(current - previous);
 						previous = current;
@@ -220,7 +220,7 @@ namespace LittleEngine {
 	}
 
 	void Engine::Quit() {
-		isQuitting = true;
+		bIsQuitting = true;
 	}
 
 	bool Engine::CreateWindow() {

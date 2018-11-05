@@ -12,8 +12,11 @@
 #include "SFMLInterface/Rendering/RenderParams.h"
 
 namespace LittleEngine {
-	RenderComponent::RenderComponent(Actor& actor) 
-		: Component(actor, "RenderComponent") {
+	RenderComponent::RenderComponent(Actor& actor) : Component(actor, "RenderComponent") {
+	}
+
+	RenderComponent::RenderComponent(Actor& owner, const RenderComponent & prototype) : Component(owner, prototype) {
+		renderer = prototype.renderer->UClone();
 	}
 
 	LayerInfo RenderComponent::GetLayer() const {
@@ -48,20 +51,23 @@ namespace LittleEngine {
 	}
 	
 	SpriteRenderer& RenderComponent::SetSpriteRenderer(const std::string & texturePath) {
-		TextureAsset::Ptr texture = GetActor().GetActiveLevel().GetAssetManager().Load<TextureAsset>(texturePath);
-		SpriteData spriteData(texture);
+		TextureAsset* texture = GetActor().GetActiveLevel().GetAssetManager().Load<TextureAsset>(texturePath);
+		SpriteData spriteData(*texture);
 		SetRenderer(RenderFactory::NewSprite(spriteData));
 		return *dynamic_cast<SpriteRenderer*>(renderer.get());
 	}
 
 	TextRenderer& RenderComponent::SetTextRenderer(const std::string & text) {
-		FontAsset::Ptr font = GetActor().GetActiveLevel().GetAssetManager().GetDefaultFont();
-		TextData textData(font, text);
+		FontAsset* font = GetActor().GetActiveLevel().GetAssetManager().GetDefaultFont();
+		TextData textData(*font, text);
 		SetRenderer(RenderFactory::NewText(textData));
 		return *dynamic_cast<TextRenderer*>(renderer.get());
 	}
 
 	void RenderComponent::Render(RenderParams params) {
 		renderer->Render(params);
+	}
+	std::shared_ptr<Component> RenderComponent::SClone(Actor& owner) const {
+		return std::make_shared<RenderComponent>(owner, *this);
 	}
 }

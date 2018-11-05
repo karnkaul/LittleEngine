@@ -76,8 +76,8 @@ namespace LittleEngine {
 		std::unique_ptr<InputHandler> inputHandler;
 		std::vector<std::unique_ptr<EngineCommand>> commands;
 		ExitCode exitCode = ExitCode::OK;
-		bool isPaused = false;
-		bool isQuitting = false;
+		bool bIsPaused = false;
+		bool bIsQuitting = false;
 
 		Engine();
 

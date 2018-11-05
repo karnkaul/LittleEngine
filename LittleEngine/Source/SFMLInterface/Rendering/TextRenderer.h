@@ -27,15 +27,15 @@ namespace LittleEngine {
 		HAlign hAlign = HAlign::Centre;
 		VAlign vAlign = VAlign::Bottom;
 
-		TextData(FontAsset::Ptr font, const std::string& text);
-		TextData(FontAsset::Ptr font, const std::string& text, Fixed pixelSize, Colour fillColour);
-		TextData(FontAsset::Ptr font, const std::string& text, Fixed pixelSize, Colour fillColour, Fixed outlineSize, Colour outlineColour);
+		TextData(FontAsset& font, const std::string& text);
+		TextData(FontAsset& font, const std::string& text, Fixed pixelSize, Colour fillColour);
+		TextData(FontAsset& font, const std::string& text, Fixed pixelSize, Colour fillColour, Fixed outlineSize, Colour outlineColour);
 
-		void SetFont(FontAsset::Ptr font);
+		void SetFont(FontAsset& font);
 
 	private:
 		friend class TextRenderer;
-		FontAsset::Ptr font;
+		FontAsset* font;
 
 		float GetNAlignmentHorz() const;
 		float GetNAlignmentVert() const;
@@ -45,6 +45,8 @@ namespace LittleEngine {
 	class TextRenderer : public Renderer {
 	public:
 		TextRenderer(const TextData& data);
+		TextRenderer(const TextRenderer& prototype);
+		virtual std::unique_ptr<Renderer> UClone() const override;
 
 		TextData& GetTextData();
 		TextRenderer& SetSize(const Fixed& pixelSize);

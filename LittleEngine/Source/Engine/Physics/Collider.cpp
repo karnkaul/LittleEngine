@@ -78,6 +78,14 @@ namespace LittleEngine {
 		debugShape->SetEnabled(false);
 	}
 
+	AABBCollider::AABBCollider(Actor& owner, const AABBCollider & prototype) : Collider(owner, prototype.name), bounds(prototype.bounds) {
+		Vector2 size(prototype.bounds.lowerBound.x * 2, prototype.bounds.upperBound.y * 2);
+		debugShape = std::make_shared<RectangleRenderer>(size, Colour::Transparent);
+		debugShape->SetBorder(DEBUG_BORDER_WIDTH, Colour::Green);
+		debugShape->layer = LayerID::Collider;
+		debugShape->SetEnabled(false);
+	}
+
 	bool AABBCollider::IsIntersecting(const Collider & rhs) const {
 		return rhs.IsIntersectAABB(*this);
 	}
@@ -94,10 +102,10 @@ namespace LittleEngine {
 		debugRect->SetSize(size);
 	}
 
-	void AABBCollider::DrawDebugShape(bool show, const Fixed& thickness) {
-		debugShape->SetEnabled(show);
+	void AABBCollider::DrawDebugShape(bool bShow, const Fixed& thickness) {
+		debugShape->SetEnabled(bShow);
 		debugShape->SetBorder(thickness, Colour::Green);
-		std::string prefix = show ? "Drawing " : "Hiding ";
+		std::string prefix = bShow ? "Drawing " : "Hiding ";
 		Logger::Log(*this, prefix + "debug collision rect on " + GetActor().GetName(), Logger::Severity::Debug);
 	}
 
@@ -107,6 +115,10 @@ namespace LittleEngine {
 			params.screenRotation = 0;
 			debugShape->Render(params);
 		}
+	}
+
+	std::shared_ptr<Collider> AABBCollider::SCloneCollider(Actor& owner) const {
+		return std::make_shared<AABBCollider>(owner, *this);
 	}
 
 	bool AABBCollider::IsIntersectAABB(const AABBCollider & rhs) const {
@@ -128,6 +140,17 @@ namespace LittleEngine {
 		debugShape->SetEnabled(false);
 	}
 
+	CircleCollider::CircleCollider(Actor& owner, const CircleCollider & prototype) : Collider(owner, prototype.name), circle(prototype.circle) {
+		/*std::unique_ptr<Renderer> temp = prototype.debugShape->UClone();
+		debugShape = std::make_unique<CircleRenderer>(*(dynamic_cast<CircleRenderer*>(temp.get())));*/
+
+		//debugShape = std::dynamic_pointer_cast<CircleRenderer>(prototype.SClone());
+		debugShape = std::make_shared<CircleRenderer>(prototype.circle.radius, Colour::Transparent);
+		debugShape->SetBorder(DEBUG_BORDER_WIDTH, Colour::Green);
+		debugShape->layer = LayerID::Collider;
+		debugShape->SetEnabled(false);
+	}
+
 	bool CircleCollider::IsIntersecting(const Collider & rhs) const {
 		return rhs.IsIntersectCircle(*this);
 	}
@@ -142,10 +165,10 @@ namespace LittleEngine {
 		circleShape->SetRadius(radius);
 	}
 
-	void CircleCollider::DrawDebugShape(bool show, const Fixed& thickness) {
-		debugShape->SetEnabled(show);
+	void CircleCollider::DrawDebugShape(bool bShow, const Fixed& thickness) {
+		debugShape->SetEnabled(bShow);
 		debugShape->SetBorder(thickness, Colour::Green);
-		std::string prefix = show ? "Drawing " : "Hiding ";
+		std::string prefix = bShow ? "Drawing " : "Hiding ";
 		Logger::Log(*this, prefix + "debug collision circle on " + GetActor().GetName(), Logger::Severity::Debug);
 	}
 
@@ -165,5 +188,9 @@ namespace LittleEngine {
 			params.screenRotation = 0;
 			debugShape->Render(params);
 		}
+	}
+
+	std::shared_ptr<Collider> CircleCollider::SCloneCollider(Actor& owner) const {
+		return std::make_shared<CircleCollider>(owner, *this);
 	}
 }

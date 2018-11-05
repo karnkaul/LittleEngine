@@ -5,18 +5,15 @@
 #include "SFMLInterface/Assets.h"
 
 namespace LittleEngine {
-	TextData::TextData(FontAsset::Ptr font, const std::string & text)
-		: TextData(font, text, 25, Colour::White, 0, Colour::Black) {
+	TextData::TextData(FontAsset& font, const std::string & text) : TextData(font, text, 25, Colour::White, 0, Colour::Black) {
 	}
-	TextData::TextData(FontAsset::Ptr font, const std::string & text, Fixed pixelSize, Colour fillColour)
-		: TextData(font, text, pixelSize, fillColour, 0, Colour::Black) {
+	TextData::TextData(FontAsset& font, const std::string & text, Fixed pixelSize, Colour fillColour) : TextData(font, text, pixelSize, fillColour, 0, Colour::Black) {
 	}
-	TextData::TextData(FontAsset::Ptr font, const std::string & text, Fixed pixelSize, Colour fillColour, Fixed outlineSize, Colour outlineColour)
-		: font(font), text(text), pixelSize(pixelSize), fillColour(fillColour), outlineSize(outlineSize), outlineColour(outlineColour) {
+	TextData::TextData(FontAsset& font, const std::string & text, Fixed pixelSize, Colour fillColour, Fixed outlineSize, Colour outlineColour) : font(&font), text(text), pixelSize(pixelSize), fillColour(fillColour), outlineSize(outlineSize), outlineColour(outlineColour) {
 	}
 
-	void TextData::SetFont(FontAsset::Ptr font) {
-		this->font = font;
+	void TextData::SetFont(FontAsset& font) {
+		this->font = &font;
 	}
 
 	float TextData::GetNAlignmentHorz() const {
@@ -45,6 +42,13 @@ namespace LittleEngine {
 
 	TextRenderer::TextRenderer(const TextData & data) : Renderer("TextRenderer"), data(data) 
 	{}
+
+	TextRenderer::TextRenderer(const TextRenderer & prototype) : Renderer(prototype.name), data(prototype.data) {
+	}
+
+	std::unique_ptr<Renderer> TextRenderer::UClone() const {
+		return std::make_unique<TextRenderer>(*this);
+	}
 
 	void TextRenderer::ApplyData() {
 		text.setString(data.text);

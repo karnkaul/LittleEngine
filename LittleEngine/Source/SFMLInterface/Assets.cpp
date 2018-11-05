@@ -144,7 +144,7 @@ namespace LittleEngine {
 	}
 
 	std::string AssetPaths::GetRandom() const {
-		size_t index = Maths::Random::Range(0, static_cast<int>(assetPaths.size()));
+		size_t index = Maths::Random::Range((size_t)0, assetPaths.size());
 		return assetPaths[index];
 	}
 
@@ -153,7 +153,7 @@ namespace LittleEngine {
 		Logger::Log("AssetManager created");
 	}
 
-	FontAsset::Ptr AssetManager::GetDefaultFont() const {
+	FontAsset* AssetManager::GetDefaultFont() const {
 		return defaultFont;
 	}
 

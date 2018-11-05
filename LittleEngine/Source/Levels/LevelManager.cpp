@@ -28,7 +28,7 @@ namespace LittleEngine {
 				activeLevel->Clear();
 			}
 			activeLevelID = levelID;
-			activeLevel = &(*createdLevels[activeLevelID]);
+			activeLevel = createdLevels[activeLevelID].get();
 			activeLevel->Activate();
 			return true;
 		}

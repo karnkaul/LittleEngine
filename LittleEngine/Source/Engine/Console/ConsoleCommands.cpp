@@ -206,7 +206,7 @@ namespace LittleEngine { namespace DebugConsole {
 			for (auto & s_command : s_commands) {
 				std::string name = s_command.second->name;
 				if (name.find(incompleteCommand) != std::string::npos) {
-					results.push_back(&(*s_command.second));
+					results.push_back(s_command.second.get());
 				}
 			}
 			return std::move(results);

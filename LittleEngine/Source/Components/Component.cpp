@@ -9,6 +9,10 @@ namespace LittleEngine {
 		Logger::Log(*this, ToString() + " created");
 	}
 
+	Component::Component(Actor& owner, const Component& prototype) : Object(prototype.name + "_clone"), actor(&owner) {
+		Logger::Log(*this, ToString() + " cloned");
+	}
+
 	Component::~Component() {
 		Logger::Log(*this, ToString() + " destroyed");
 	}
@@ -24,6 +28,10 @@ namespace LittleEngine {
 
 	Actor& Component::GetActor() const {
 		return *actor;
+	}
+
+	std::shared_ptr<Component> Component::SClone(Actor& owner) const {
+		return nullptr;
 	}
 
 	std::string Component::ToString() const {

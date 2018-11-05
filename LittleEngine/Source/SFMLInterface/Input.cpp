@@ -122,7 +122,7 @@ namespace LittleEngine {
 	bool Input::IsKeyPressed(KeyCode code) const {
 		for (const auto& iter : keyStates) {
 			if (iter.GetKeyCode() == code) {
-				return iter.pressed;
+				return iter.bPressed;
 			}
 		}
 		return false;
@@ -140,7 +140,7 @@ namespace LittleEngine {
 	const std::vector<KeyState> Input::GetPressed() const {
 		std::vector<KeyState> pressed;
 		for (const auto& iter : keyStates) {
-			if (iter.pressed) {
+			if (iter.bPressed) {
 				pressed.emplace_back(iter);
 			}
 		}
@@ -152,20 +152,20 @@ namespace LittleEngine {
 	}
 
 	void Input::OnKeyDown(const sf::Event::KeyEvent& key) {
-		bool newKeyCode = true;
+		bool bNewKeyCode = true;
 		KeyState& toModify = GetOrCreateKeyState(Convert(key.code));
-		toModify.pressed = true;
+		toModify.bPressed = true;
 	}
 
 	void Input::OnKeyUp(const sf::Event::KeyEvent& key) {
-		bool newKeyCode = true;
+		bool bNewKeyCode = true;
 		KeyState& toModify = GetOrCreateKeyState(Convert(key.code));
-		toModify.pressed = false;
+		toModify.bPressed = false;
 	}
 
 	void Input::ResetKeyStates() {
 		for (auto& keyState : keyStates) {
-			keyState.pressed = false;
+			keyState.bPressed = false;
 		}
 	}
 

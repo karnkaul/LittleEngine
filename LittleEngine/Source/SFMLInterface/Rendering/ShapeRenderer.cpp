@@ -40,6 +40,13 @@ namespace LittleEngine {
 		SetFillColour(colour);
 	}
 
+	CircleRenderer::CircleRenderer(const CircleRenderer & prototype) : ShapeRenderer(prototype.name, std::make_unique<sf::CircleShape>()) {
+		circle = &CastShape<sf::CircleShape>();
+		circle->setOrigin(prototype.circle->getOrigin());
+		circle->setRadius(prototype.circle->getRadius());
+		circle->setFillColor(prototype.circle->getFillColor());
+	}
+
 	void CircleRenderer::SetRadius(const Fixed& radius) {
 		circle->setRadius(radius.GetFloat());
 		// Reposition local centre
@@ -54,6 +61,10 @@ namespace LittleEngine {
 		);
 	}
 
+	std::unique_ptr<Renderer> CircleRenderer::UClone() const {
+		return std::make_unique<CircleRenderer>(*this);
+	}
+
 	RectangleRenderer::RectangleRenderer(const Vector2& size) : ShapeRenderer("RectangleRenderer", std::make_unique<sf::RectangleShape>(sf::Vector2f(size.x.GetFloat(), size.y.GetFloat()))) {
 		rectangle = &CastShape<sf::RectangleShape>();
 		rectangle->setOrigin(rectangle->getSize().x * 0.5f, rectangle->getSize().y * 0.5f);
@@ -63,6 +74,13 @@ namespace LittleEngine {
 		rectangle = &CastShape<sf::RectangleShape>();
 		rectangle->setOrigin(rectangle->getSize().x * 0.5f, rectangle->getSize().y * 0.5f);
 		SetFillColour(colour);
+	}
+
+	RectangleRenderer::RectangleRenderer(const RectangleRenderer & prototype) : ShapeRenderer(prototype.name, std::make_unique<sf::RectangleShape>()) {
+		rectangle = &CastShape<sf::RectangleShape>();
+		rectangle->setOrigin(prototype.rectangle->getOrigin());
+		rectangle->setSize(prototype.rectangle->getSize());
+		rectangle->setFillColor(prototype.rectangle->getFillColor());
 	}
 
 	void RectangleRenderer::SetSize(const Vector2& size) {
@@ -79,5 +97,8 @@ namespace LittleEngine {
 			Vector2(-width, -height),
 			Vector2(width, height)
 		);
+	}
+	std::unique_ptr<Renderer> RectangleRenderer::UClone() const {
+		return std::make_unique<RectangleRenderer>(*this);
 	}
 }

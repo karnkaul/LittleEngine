@@ -6,12 +6,13 @@ namespace LittleEngine {
 	class VFX;
 
 	namespace Spawner {
-		
+		void Init(Level& activeLevel);
+		void Cleanup();
 #pragma region VFX
 		// \brief: Loads Asset dependencies
-		void VFXExplode_Warm(Level& level);
+		void VFXExplode_Warm();
 		// \brief Dependencies: Assets/VFX/: 00-14.png, 00.wav
-		std::shared_ptr<VFX> VFXExplode(Level& level, const Vector2& position);
+		std::shared_ptr<VFX> VFXExplode(const Vector2& position);
 
 #pragma endregion
 	}

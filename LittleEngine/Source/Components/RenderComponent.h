@@ -24,6 +24,7 @@ namespace LittleEngine {
 	class RenderComponent : public Component {
 	public:
 		RenderComponent(Actor& actor);
+		RenderComponent(Actor& owner, const RenderComponent& prototype);
 
 		LayerInfo GetLayer() const;
 		void SetLayer(const LayerInfo& layer);
@@ -35,6 +36,7 @@ namespace LittleEngine {
 		TextRenderer& SetTextRenderer(const std::string& text);
 
 		virtual void Render(RenderParams params) override;
+		virtual std::shared_ptr<Component> SClone(Actor& owner) const override;
 		
 	protected:
 		void SetRenderer(std::unique_ptr<Renderer> renderer);

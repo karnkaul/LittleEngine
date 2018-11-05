@@ -14,11 +14,11 @@ namespace LittleEngine {
 		static int s_startMS = 0;
 		static int s_endMS = 0;
 
-		static void Stop(bool interrupted) {
+		static void Stop(bool bInterrupted) {
 			s_endMS = SystemClock::GetCurrentMilliseconds();
 			int elapsed = s_endMS - s_startMS;
 			if (elapsed >= g_logThresholdMS) {
-				std::string prefix = interrupted ? "INTERRUPTED: " : "STOPWATCH: ";
+				std::string prefix = bInterrupted ? "INTERRUPTED: " : "STOPWATCH: ";
 				Logger::Log(prefix + s_lapName + " took (" + std::to_string(elapsed) + " ms)", g_logSeverity);
 			}
 		}

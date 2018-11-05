@@ -9,20 +9,21 @@ namespace LittleEngine {
 	public:
 		Colour colour;
 
-		SpriteData(TextureAsset::Ptr texture) : SpriteData(texture, Colour::White) {}
-		SpriteData(TextureAsset::Ptr texture, const Colour& colour) : texture(texture), colour(colour) {}
+		SpriteData(TextureAsset& texture) : SpriteData(texture, Colour::White) {}
+		SpriteData(TextureAsset& texture, const Colour& colour) : texture(&texture), colour(colour) {}
 
 	private:
 		friend class SpriteRenderer;
-		TextureAsset::Ptr texture;
+		TextureAsset* texture;
 	};
 
 	// \brief Conrete wrapper for SFML sprite 
 	class SpriteRenderer : public Renderer {
 	public:
 		SpriteRenderer(const SpriteData& data);
+		SpriteRenderer(const SpriteRenderer& prototype);
 
-		void SetTexture(TextureAsset::Ptr texture);
+		void SetTexture(TextureAsset& texture);
 		
 		virtual Rect2 GetBounds() const override;
 
@@ -32,6 +33,7 @@ namespace LittleEngine {
 		virtual void RenderInternal(RenderParams& params) override;
 		virtual void SetPosition(const Vector2& screenPosition) override;
 		virtual void SetRotation(const Fixed& screenRotation) override;
+		virtual std::unique_ptr<Renderer> UClone() const override;
 
 	private:
 		sf::Sprite sprite;

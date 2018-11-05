@@ -44,7 +44,7 @@ namespace LittleEngine {
 
 	bool EngineConfig::Load(const std::string& path) {
 		GameUtils::Property::Persistor persistor;
-		bool loaded = persistor.Load(path);
+		bool bLoaded = persistor.Load(path);
 
 		int width = persistor.GetProp(Data::SCREEN_WIDTH_KEY).intValue();
 		int height = persistor.GetProp(Data::SCREEN_HEIGHT_KEY).intValue();
@@ -67,11 +67,11 @@ namespace LittleEngine {
 		if (colliderWidth > 0) {
 			cache.colliderBorderWidth.stringValue = std::to_string(colliderWidth);
 		}
-		return loaded;
+		return bLoaded;
 	}
 
-	bool EngineConfig::Save(const std::string& path, bool loadFirst) {
-		if (loadFirst) {
+	bool EngineConfig::Save(const std::string& path, bool bLoadFirst) {
+		if (bLoadFirst) {
 			Load(path);
 		}
 		GameUtils::Property::Persistor persistor;

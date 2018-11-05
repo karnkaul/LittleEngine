@@ -68,7 +68,7 @@ namespace LittleEngine {
 		Buffer buffer;
 		Input input;
 		std::unique_ptr<sf::RenderWindow> window;
-		bool _focus = false;
+		bool _bFocus = false;
 
 		WindowController(const WindowController&) = delete;
 		WindowController& operator=(const WindowController&) = delete;	

@@ -22,16 +22,16 @@ namespace GameUtils {
 		~Transform();
 
 		// Attaches this to another transform as its parent
-		void SetParent(Transform& parent, bool modifyWorldSpace = true);
+		void SetParent(Transform& parent, bool bModifyWorldSpace = true);
 		// Unsets parent, if any
-		void UnsetParent(bool modifyWorldPosition = true);
+		void UnsetParent(bool bModifyWorldPosition = true);
 
 		// Note: Might return nullptr
 		Transform* GetParent() const;
 		// Returns position from parent's origin as position in world space
 		Vector2 Position() const;
 		// Returns rotation in world orientation (+ is clockwise)
-		Fixed Rotation();
+		Fixed Rotation() const;
 		// Call this to Rotate this and all children
 		void Rotate(Fixed angle);
 

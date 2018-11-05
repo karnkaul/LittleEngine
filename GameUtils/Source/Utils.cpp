@@ -3,7 +3,7 @@
 #include "Utils.h"
 
 namespace Maths {
-	bool _init = false;
+	bool _bInit = false;
 	void InitRand(bool useTime = true) {
 		if (useTime) {
 			srand(static_cast<unsigned int>(time(nullptr)));
@@ -11,11 +11,11 @@ namespace Maths {
 		else {
 			srand(0);
 		}
-		_init = true;
+		_bInit = true;
 	}
 
 	Fixed Random::Range(Fixed min, Fixed max) {
-		if (!_init) {
+		if (!_bInit) {
 			InitRand();
 		}
 		int random = rand();
@@ -24,7 +24,14 @@ namespace Maths {
 	}
 
 	int Random::Range(int min, int max) {
-		if (!_init) {
+		if (!_bInit) {
+			InitRand();
+		}
+		return ((rand() * (max - min)) / RAND_MAX) + min;
+	}
+
+	size_t Random::Range(size_t min, size_t max) {
+		if (!_bInit) {
 			InitRand();
 		}
 		return ((rand() * (max - min)) / RAND_MAX) + min;
@@ -36,13 +43,13 @@ namespace Strings {
 		std::transform(lhs.begin(), lhs.end(), lhs.begin(), ::tolower);
 	}
 
-	bool ToBool(const std::string& input, bool defaultValue) {
+	bool ToBool(const std::string& input, bool bDefaultValue) {
 		std::string inputLower(input);
 		ToLower(inputLower);
 		if (inputLower == "true") {
 			return true;
 		}
-		return defaultValue;
+		return bDefaultValue;
 	}
 
 	int ToInt(const std::string& input, int defaultValue) {
@@ -71,8 +78,8 @@ namespace Strings {
 		return std::to_string(input);
 	}
 
-	std::string ToString(bool input) {
-		return input ? "true" : "false";
+	std::string ToString(bool bInput) {
+		return bInput ? "true" : "false";
 	}
 
 	std::pair<std::string, std::string> Slice(const std::string & input, char delimiter) {

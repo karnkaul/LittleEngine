@@ -5,13 +5,13 @@
 #include "Utils.h"
 
 namespace LittleEngine {
-	InputHandler::InputObserver::InputObserver(OnInput&& callback, bool consume, const OnKey& type)
-		: callback(std::move(callback)), consume(consume), type(type) {
+	InputHandler::InputObserver::InputObserver(OnInput&& callback, bool bConsume, const OnKey& type)
+		: callback(std::move(callback)), bConsume(bConsume), type(type) {
 	}
 
 	InputHandler::InputObserver & InputHandler::InputObserver::operator=(InputObserver && move) {
 		callback = std::move(move.callback);
-		consume = move.consume;
+		bConsume = move.bConsume;
 		type = move.type;
 		return *this;
 	}
@@ -49,19 +49,19 @@ namespace LittleEngine {
 		return iter != currentSnapshot.end();
 	}
 
-	OnInput::Token InputHandler::Register(const GameInput& input, OnInput::Callback callback, const OnKey& type, bool consume) {
+	OnInput::Token InputHandler::Register(const GameInput& input, OnInput::Callback callback, const OnKey& type, bool bConsume) {
 		OnInput newDelegate;
 		OnInput::Token token = newDelegate.Register(callback);
 		auto iter = inputObservers.find(input);
 		size_t size = 0;
 		if (iter != inputObservers.end()) {
 			auto& vec = iter->second;
-			vec.emplace_back(std::move(newDelegate), consume, type);
+			vec.emplace_back(std::move(newDelegate), bConsume, type);
 			size = vec.size();
 		}
 		else {
 			std::vector<InputObserver> newVec {
-				InputObserver(std::move(newDelegate), consume, type)
+				InputObserver(std::move(newDelegate), bConsume, type)
 			};
 			size = newVec.size();
 			inputObservers.insert(std::pair<GameInput, std::vector<InputObserver>>(input, std::move(newVec)));
@@ -128,7 +128,7 @@ namespace LittleEngine {
 					if (observer.type == type) {
 						observer.callback();
 					}
-					if (observer.consume) {
+					if (observer.bConsume) {
 						break;
 					}
 				}

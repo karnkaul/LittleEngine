@@ -3,18 +3,18 @@
 #include "Utils.h"
 
 namespace GameUtils {
-	void Transform::SetParent(Transform& parent, bool modifyWorldSpace) {
+	void Transform::SetParent(Transform& parent, bool bModifyWorldSpace) {
 		m_parent = &parent;
-		if (!modifyWorldSpace) {
+		if (!bModifyWorldSpace) {
 			localPosition -= parent.localPosition;
 			localRotation -= parent.localRotation;
 		}
 		parent.AddChild(this);
 	}
 
-	void Transform::UnsetParent(bool modifyWorldPosition) {
+	void Transform::UnsetParent(bool bModifyWorldPosition) {
 		if (m_parent != nullptr) {
-			if (!modifyWorldPosition) {
+			if (!bModifyWorldPosition) {
 				localPosition = Position();
 			}
 			m_parent->RemoveChild(this);
@@ -34,9 +34,8 @@ namespace GameUtils {
 		return std::move(position);
 	}
 
-	Fixed Transform::Rotation() {
-		localRotation %= 360;
-		Fixed rotation = localRotation;
+	Fixed Transform::Rotation() const {
+		Fixed rotation = localRotation % Fixed(360);
 		if (m_parent != nullptr) {
 			rotation += m_parent->Rotation();
 		}

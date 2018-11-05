@@ -15,7 +15,7 @@ namespace LittleEngine {
 		Status status;
 
 		Fixed volume = Fixed(80, 100);
-		bool looping;
+		bool bLooping;
 
 		virtual ~AudioPlayer();
 		virtual void Play() = 0;
@@ -33,9 +33,9 @@ namespace LittleEngine {
 	// \brief Concrete class for Sound playback (uses pre-loaded SoundAsset)
 	class SoundPlayer : public AudioPlayer {
 	public:
-		SoundPlayer(SoundAsset::Ptr soundAsset);
+		SoundPlayer(SoundAsset* soundAsset);
 		~SoundPlayer();
-		bool SetSoundAsset(SoundAsset::Ptr soundAsset);
+		bool SetSoundAsset(SoundAsset& soundAsset);
 
 		void SetDirection(const Fixed& direction);
 		virtual void Play() override;
@@ -45,17 +45,17 @@ namespace LittleEngine {
 		virtual void Tick(Fixed deltaSeconds) override;
 
 	private:
-		SoundAsset::Ptr soundAsset;
+		SoundAsset* soundAsset;
 		virtual bool ApplyParams() override;
 	};
 
 	// \brief Concrete class for Music playback (uses streamed MusicAsset)
 	class MusicPlayer : public AudioPlayer {
 	public:
-		MusicPlayer(MusicAsset::Ptr musicAsset = nullptr);
+		MusicPlayer(MusicAsset* musicAsset = nullptr);
 		~MusicPlayer();
 		
-		bool SetTrack(MusicAsset::Ptr track);
+		bool SetTrack(MusicAsset& track);
 		Fixed GetDurationSeconds() const;
 		Fixed GetElapsedSeconds() const;
 		bool IsFading() const;
@@ -72,13 +72,13 @@ namespace LittleEngine {
 	private:
 		friend class AudioManager;
 		GameClock clock;
-		MusicAsset::Ptr mainTrack = nullptr;
+		MusicAsset* mainTrack = nullptr;
 		Fixed fadeSeconds = Fixed::Zero;
 		Fixed elapsedSeconds = Fixed::Zero;
 		Fixed targetVolume = Fixed::One;
 		Fixed startVolume = Fixed::One;
-		bool fadingIn = false;
-		bool fadingOut = false;
+		bool bFadingIn = false;
+		bool bFadingOut = false;
 
 		void BeginFade();
 

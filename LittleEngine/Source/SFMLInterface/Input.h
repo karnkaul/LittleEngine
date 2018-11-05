@@ -39,26 +39,26 @@ namespace LittleEngine {
 
 	// \brief Wrapper struct that holds key state modifiers
 	struct KeyMod {
-		bool control;
-		bool alt;
-		bool shift;
+		bool bControl;
+		bool bAlt;
+		bool bShift;
 		
 		const static KeyMod Default;
 		
-		KeyMod() : control(false), alt(false), shift(false) {}
-		KeyMod(bool control, bool alt, bool shift) : control(control), alt(alt), shift(shift) {}
+		KeyMod() : bControl(false), bAlt(false), bShift(false) {}
+		KeyMod(bool bControl, bool bAlt, bool bShift) : bControl(bControl), bAlt(bAlt), bShift(bShift) {}
 		
 	private:
-		KeyMod(const sf::Event::KeyEvent& event) : control(event.control), alt(event.alt), shift(event.shift) {}
+		KeyMod(const sf::Event::KeyEvent& event) : bControl(event.control), bAlt(event.alt), bShift(event.shift) {}
 		friend class Input;
 	};
 
 	// \brief Wrapper struct to store state of sf::Event::KeyEvent
 	struct KeyState {
-		bool pressed;
+		bool bPressed;
 
-		KeyState(KeyCode keyCode) : keyCode(keyCode), pressed(false), name("Unknown") {}
-		KeyState(KeyCode keyCode, const std::string& name) : keyCode(keyCode), pressed(false), name(name) {}
+		KeyState(KeyCode keyCode) : keyCode(keyCode), bPressed(false), name("Unknown") {}
+		KeyState(KeyCode keyCode, const std::string& name) : keyCode(keyCode), bPressed(false), name(name) {}
 		KeyCode GetKeyCode() const { return keyCode; }
 		const std::string& GetName() const { return name; }
 	private:
