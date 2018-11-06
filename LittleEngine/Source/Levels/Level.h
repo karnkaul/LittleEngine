@@ -50,7 +50,9 @@ namespace LittleEngine {
 		LevelID GetActiveLevelID() const;
 
 		// \brief Safe API to spawn new Actors. All spawned Actors 
-		// will be destroyed along with the Level, hence returns weak_ptr.
+		// will be destroyed along with the Level, and Actors may be 
+		// destroyed by other means. The weak pointer will indicate 
+		// whether its associated Actor is still alive.
 		template<typename T>
 		std::weak_ptr<T> SpawnActor(const std::string& name, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero) {
 			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
@@ -58,6 +60,17 @@ namespace LittleEngine {
 			actors.push_back(actor);
 			return actor;
 		}
+
+		// \brief Fast API to create copies of Actors. Create prototypes once 
+		// and then duplicate using Clone. 
+		template<typename T>
+		std::weak_ptr<T> CloneActor(const T& prototype) {
+			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
+			auto actor = std::make_shared<T>(*this, prototype);
+			actors.push_back(actor);
+			return actor;
+		}
+
 		// \brief Safe API to destroy existing Actors
 		void DestroyActor(Actor::Ptr actor);
 		// \brief Safe API to spawn Player.

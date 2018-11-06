@@ -85,6 +85,7 @@ namespace LittleEngine {
 	// \brief Abstract Wrapper class for all files that can be read as SFML assets
 	class Asset {
 	public:
+		using Ptr = std::shared_ptr<Asset>;
 		Asset() = delete;
 		// Path must be relative to the root Asset directory
 		Asset(const std::string& path);
@@ -99,8 +100,6 @@ namespace LittleEngine {
 
 	// \brief Concrete wrapper class for SFML Textures
 	class TextureAsset : public Asset {
-	public:
-		using Ptr = std::shared_ptr<TextureAsset>;
 	private:
 		// Prevents having to expose texture to code outside SFMLInterface
 		friend class AssetManager;
@@ -113,8 +112,6 @@ namespace LittleEngine {
 
 	// \brief Concrete wrapper for SFML Fonts
 	class FontAsset : public Asset {
-	public:
-		using Ptr = std::shared_ptr<FontAsset>;
 	private:
 		friend class AssetManager;
 		friend class TextRenderer;
@@ -126,9 +123,6 @@ namespace LittleEngine {
 
 	// \brief Concrete wrapper for SFML Sounds
 	class SoundAsset : public Asset {
-	public:
-		using Ptr = std::shared_ptr<SoundAsset>;
-		
 	private:
 		friend class AssetManager;
 		friend class SoundPlayer;
@@ -144,7 +138,6 @@ namespace LittleEngine {
 	// \brief Concrete wrapper for SFML Music
 	class MusicAsset : public Asset {
 	public:
-		using Ptr = std::shared_ptr<MusicAsset>;
 		Fixed GetDurationSeconds() const;
 
 	private:
@@ -169,7 +162,7 @@ namespace LittleEngine {
 		// Loads Asset at path. T must derive from Asset!
 		// Note: Not meant to be used in hot code!
 		template<typename T>
-		std::shared_ptr<T> Load(const std::string& path) {
+		T* Load(const std::string& path) {
 			static_assert(std::is_base_of<Asset, T>::value, "T must derive from Asset: check Output window for erroneous call");
 			std::string fullPath = GetPath(path);
 			auto search = loaded.find(fullPath);
@@ -177,42 +170,47 @@ namespace LittleEngine {
 #if defined(LOG_CACHED_ASSET_LOADS)
 				Logger::Log(*this, "Found Asset [" + fullPath + "] in cache", Logger::Severity::Debug);
 #endif
-				std::shared_ptr<Asset> asset = search->second;
-				return std::dynamic_pointer_cast<T>(asset);
+				Asset& asset = *search->second;
+				return dynamic_cast<T*>(&asset);
 			}
 
 			Logger::Log(*this, "Loading Asset [" + fullPath + "]", Logger::Severity::Info);
 			struct enable_shared : public T { enable_shared(const std::string& path) : T(path) {} };
 			std::shared_ptr<T> t_ptr = std::make_shared<enable_shared>(fullPath);
-			std::shared_ptr<Asset> t_asset = std::dynamic_pointer_cast<Asset>(t_ptr);
-			loaded.insert(std::pair<std::string, std::shared_ptr<Asset>>(fullPath, t_asset));
-			return t_ptr;
+			loaded.emplace(fullPath, t_ptr);
+			return t_ptr.get();
 		}
 		
-		FontAsset::Ptr GetDefaultFont() const;
 		// Note: Not meant to be used in hot code!
 		template<typename T>
-		std::vector<std::shared_ptr<T>> Load(std::initializer_list<std::string> assetPaths) {
+		std::vector<T*> Load(std::initializer_list<std::string> assetPaths) {
 			static_assert(std::is_base_of<Asset, T>::value, "T must derive from Asset: check Output window for erroneous call");
-			std::vector<std::shared_ptr<T>> vec;
+			std::vector<T*> vec;
 			for (const auto& path : assetPaths) {
-				vec.push_back(Load<T>(path));
+				if (T* asset = Load<T>(path)) {
+					vec.emplace_back(asset);
+				}
 			}
 			return vec;
 		}
 
 		// Note: Not meant to be used in hot code!
 		template<typename T>
-		std::vector<std::shared_ptr<T>> Load(const std::vector<std::string>& assetPaths) {
+		std::vector<T*> Load(const std::vector<std::string>& assetPaths) {
 			static_assert(std::is_base_of<Asset, T>::value, "T must derive from Asset: check Output window for erroneous call");
-			std::vector<std::shared_ptr<T>> vec;
+			std::vector<T*> vec;
 			for (const auto& path : assetPaths) {
-				vec.push_back(Load<T>(path));
+				if (T* asset = Load<T>(path)) {
+					vec.emplace_back(asset);
+				}
 			}
 			return vec;
 		}
 
+		// Note: Not meant to be used in hot code!
 		void LoadAll(AssetManifest& manifest);
+		
+		FontAsset* GetDefaultFont() const;
 
 		// Unload all assets
 		void UnloadAll();
@@ -220,8 +218,8 @@ namespace LittleEngine {
 	private:
 		std::string rootDir;
 		std::string GetPath(const std::string& path);
-		std::unordered_map<std::string, std::shared_ptr<Asset>> loaded;
-		FontAsset::Ptr defaultFont;
+		std::unordered_map<std::string, Asset::Ptr> loaded;
+		FontAsset* defaultFont;
 
 		AssetManager(const AssetManager&) = delete;
 		AssetManager& operator=(const AssetManager&) = delete;

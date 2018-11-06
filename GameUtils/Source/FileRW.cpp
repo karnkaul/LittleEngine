@@ -8,13 +8,13 @@ namespace GameUtils {
 		return f.good();
 	}
 
-	std::string FileRW::ReadAll(bool discardNewLines) {
+	std::string FileRW::ReadAll(bool bDiscardNewLines) {
 		m_lines.clear();
 		std::string ret;
 		Read(
 			[&](std::string&& line) {
 				ret += line;
-				if (!discardNewLines) {
+				if (!bDiscardNewLines) {
 					ret += '\n';
 				}
 				m_lines.push_back(std::move(line));

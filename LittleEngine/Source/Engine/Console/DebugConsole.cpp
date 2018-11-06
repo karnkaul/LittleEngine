@@ -35,22 +35,22 @@ namespace LittleEngine { namespace DebugConsole {
 			iter = items.begin();
 		}
 
-		void PushBack(const T& value, bool resetIter = true) {
+		void PushBack(const T& value, bool bResetIter = true) {
 			items.emplace_back(value);
 			if (maxElements > 0 && items.size() > maxElements) {
 				items.pop_front();
 			}
-			if (resetIter) {
+			if (bResetIter) {
 				iter = items.begin();
 			}
 		}
 
-		void PushFront(const T& value, bool resetIter = true) {
+		void PushFront(const T& value, bool bResetIter = true) {
 			items.emplace_front(value);
 			if (maxElements > 0 && items.size() > maxElements) {
 				items.pop_back();
 			}
-			if (resetIter) {
+			if (bResetIter) {
 				iter = items.begin();
 			}
 		}
@@ -81,13 +81,13 @@ namespace LittleEngine { namespace DebugConsole {
 			if (items.empty()) {
 				return false;
 			}
-			bool overflown = false;
+			bool bOverflown = false;
 			if (iter == items.begin()) {
 				iter = items.end();
-				overflown = true;
+				bOverflown = true;
 			}
 			--iter;
-			return overflown;
+			return bOverflown;
 		}
 
 		void Clear() {
@@ -150,7 +150,7 @@ namespace LittleEngine { namespace DebugConsole {
 			log->UpdateLog(message, colour);
 		}
 
-		void Render(RenderParams& params, Fixed yOffset, bool drawCursor) {
+		void Render(RenderParams& params, Fixed yOffset, bool bDrawCursor) {
 			if (!engine) {
 				return;
 			}
@@ -165,7 +165,7 @@ namespace LittleEngine { namespace DebugConsole {
 			
 			params.screenPosition = inputT.Position();
 			std::string liveText(">" + s_liveString);
-			if (drawCursor) {
+			if (bDrawCursor) {
 				liveText += "_";
 			}
 			inputText->GetTextData().text = liveText;
@@ -192,7 +192,7 @@ namespace LittleEngine { namespace DebugConsole {
 			Vector2 bgSize(engine->GetWorld().GetScreenSize());
 			bgSize.y *= Fixed::OneThird;
 			if (log == nullptr) {
-				TextData textData(engine->GetAssetManager().GetDefaultFont(), "");
+				TextData textData(*engine->GetAssetManager().GetDefaultFont(), "");
 				textData.hAlign = HAlign::Left;
 				log = std::make_unique<DebugConsoleLog>(textData);
 
@@ -265,8 +265,8 @@ namespace LittleEngine { namespace DebugConsole {
 		return s_isActive;
 	}
 
-	void Activate(bool setActive) {
-		s_isActive = setActive;
+	void Activate(bool bSetActive) {
+		s_isActive = bSetActive;
 	}
 
 	void UpdateInput(const RawTextInput& rawTextInput) {

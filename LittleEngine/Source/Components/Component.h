@@ -11,9 +11,10 @@ namespace LittleEngine {
 	// \brief Base class for any Component attached to Actor
 	class Component : public Object {
 	public:
-		bool enabled = true;
+		bool bEnabled = true;
 
 		Component() = delete;
+		Component(Actor& owner, const Component& prototype);
 		virtual ~Component();
 
 		virtual void Tick(Fixed deltaTime);
@@ -22,15 +23,16 @@ namespace LittleEngine {
 
 		Actor& GetActor() const;
 
+		// Copiable sub-classes must override and return a copy for the new owner
+		virtual std::shared_ptr<Component> SClone(Actor& owner) const;
 		virtual std::string ToString() const override;
 
 	protected:
 		Component(Actor& actor, const std::string& name);
-	
+		
 	private:
 		Actor* actor;
 
-		Component(const Component&) = delete;
 		Component& operator=(Component&) = delete;
 	};
 }

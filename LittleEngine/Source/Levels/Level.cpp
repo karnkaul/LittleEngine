@@ -14,15 +14,10 @@
 #include "Entities/Player.h"
 #include "Components/ControllerComponent.h"
 #include "Components/RenderComponent.h"
-#if defined(LOG_PROFILING)
-#include "Misc/Stopwatch.hpp"
-#endif
+#include "Misc/Stopwatch.h"
+#include "Spawner.h"
 
 namespace LittleEngine {
-#if defined(LOG_PROFILING)
-	static Stopwatch s_stopwatch("Level.cpp");
-#endif
-
 	Level::Level(const std::string& name) : Object(name) {
 		Logger::Log(*this, GetNameInBrackets() + " (Level) created. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
 	}
@@ -48,7 +43,7 @@ namespace LittleEngine {
 		collisionManager.FixedTick();
 		size_t countThisTurn = actors.size();
 		for (size_t i = 0; i < countThisTurn; ++i) {
-			if (!actors[i]->_destroyed) {
+			if (!actors[i]->_bDestroyed && actors[i]->_bEnabled) {
 				actors[i]->FixedTick();
 			}
 		}
@@ -63,28 +58,24 @@ namespace LittleEngine {
 		Logger::Log(*this, "Executing Tick [" + std::to_string(actors.size()) + " actors]", Logger::Severity::HOT);
 		size_t countThisTurn = actors.size();
 		for (size_t i = 0; i < countThisTurn; ++i) {
-			if (!actors[i]->_destroyed) {
+			if (!actors[i]->_bDestroyed && actors[i]->_bEnabled) {
 				actors[i]->Tick(deltaTime);
 			}
 		}
 	}
 
 	void Level::Render(RenderParams& params) {
-#if defined(LOG_PROFILING)
-		s_stopwatch.Start("Render");
-#endif
-		GameUtils::CleanVector<Actor::Ptr>(actors, [](Actor::Ptr actor) { return !actor || actor->_destroyed; });
+		STOPWATCH_START("Render");
+		GameUtils::CleanVector<Actor::Ptr>(actors, [](Actor::Ptr actor) { return !actor || actor->_bDestroyed; });
 		for (const auto& actor : actors) {
-			actor->Render(params);
+			if (actor->_bEnabled) {
+				actor->Render(params);
+			}
 		}
-#if defined(LOG_PROFILING)
-		s_stopwatch.Stop();
-		s_stopwatch.Start("virtual Post Render");
-#endif
+		STOPWATCH_STOP();
+		STOPWATCH_START("Post Render");
 		PostRender(params);
-#if defined(LOG_PROFILING)
-		s_stopwatch.Stop();
-#endif
+		STOPWATCH_STOP();
 	}
 
 	void Level::PostRender(const RenderParams& params) {}
@@ -92,11 +83,13 @@ namespace LittleEngine {
 	void Level::Clear() {
 		actors.clear();
 		tokenHandler.Clear();
+		Spawner::Cleanup();
 		OnClearing();
 		Logger::Log(*this, GetNameInBrackets() + " (Level) deactivated. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
 	}
 
-	void Level::OnClearing() {}
+	void Level::OnClearing() {
+	}
 
 	void Level::RegisterScopedInput(const GameInput& gameInput, OnInput::Callback callback, const OnKey& type, bool consume) {
 		OnInput::Token token = GetInputHandler().Register(gameInput, callback, type, consume);
@@ -105,7 +98,7 @@ namespace LittleEngine {
 
 	void Level::DestroyActor(Actor::Ptr actor) {
 		if (actor) {
-			actor->_destroyed = true;
+			actor->_bDestroyed = true;
 		}
 		else {
 			Logger::Log(*this, "Call to DestroyActor(nullptr)", Logger::Severity::Warning);

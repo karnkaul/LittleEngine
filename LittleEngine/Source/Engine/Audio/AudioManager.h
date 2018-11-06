@@ -15,37 +15,38 @@ namespace LittleEngine {
 
 		// Returns nullptr if asset could not be loaded 
 		SoundPlayer* PlaySFX(const std::string& path, const Fixed& volume = Fixed::One, const Fixed& direction = Fixed::Zero);
+		SoundPlayer* PlaySFX(SoundAsset& sound, const Fixed& volume = Fixed::One, const Fixed& direction = Fixed::Zero);
 		bool IsSFXPlaying() const;
 
 		// Returns true if asset is loaded successfully
-		bool PlayMusic(const std::string& path, const Fixed& volume = Fixed::One, const Fixed& fadeSeconds = Fixed::OneHalf, bool loop = true);
+		bool PlayMusic(const std::string& path, const Fixed& volume = Fixed::One, const Fixed& fadeSeconds = Fixed::OneHalf, bool bLoop = true);
 		bool IsMusicPlaying() const;
 		void StopMusic(const Fixed& fadeSeconds = Fixed::Zero);
 		void SwitchTrack(const std::string& path, const Fixed& volume = Fixed::One, const Fixed& fadeSeconds = Fixed::One);
 		void SetMusicVolume(const Fixed& volume);
 		
 		// Stop all audio and flush all SFX players
-		void Clear(bool immediate = true);
+		void Clear(bool bImmediate = true);
 
 	private:
 		friend class Engine;
 
 		// \brief Helper to store next track until current has faded out
 		struct SwitchTrackRequest {
-			MusicAsset::Ptr newTrack = nullptr;
+			MusicAsset* newTrack = nullptr;
 			Fixed fadeSeconds = Fixed::Zero;
 			Fixed targetVolume = Fixed::Zero;
-			bool fadingOldTrack = false;
-			bool fadingNewTrack = false;
+			bool bFadingOldTrack = false;
+			bool bFadingNewTrack = false;
 
-			SwitchTrackRequest(MusicAsset::Ptr newTrack, const Fixed& fadeSeconds, const Fixed& targetVolume);
+			SwitchTrackRequest(MusicAsset& newTrack, const Fixed& fadeSeconds, const Fixed& targetVolume);
 		};
 
 		std::vector<std::unique_ptr<SoundPlayer>> sfxPlayers;
 		std::unique_ptr<SwitchTrackRequest> switchTrackRequest = nullptr;
 		MusicPlayer musicPlayerA;
 		MusicPlayer musicPlayerB;
-		bool sideA = true;
+		bool bSideA = true;
 		Engine* engine;
 
 		AssetManager& GetAssetManager();

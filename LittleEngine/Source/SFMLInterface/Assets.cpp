@@ -144,7 +144,7 @@ namespace LittleEngine {
 	}
 
 	std::string AssetPaths::GetRandom() const {
-		size_t index = Maths::Random::Range(0, static_cast<int>(assetPaths.size()));
+		size_t index = Maths::Random::Range((size_t)0, assetPaths.size());
 		return assetPaths[index];
 	}
 
@@ -153,35 +153,36 @@ namespace LittleEngine {
 		Logger::Log("AssetManager created");
 	}
 
-	FontAsset::Ptr AssetManager::GetDefaultFont() const {
+	FontAsset* AssetManager::GetDefaultFont() const {
 		return defaultFont;
 	}
 
 	void AssetManager::LoadAll(AssetManifest& manifest) {
 		manifest.ForEach(
-		[this](const AssetDefinition& definition) {
-			switch (definition.type) {
-			case AssetType::Texture:
-				Load<TextureAsset>(definition.resourcePaths.assetPaths);
-				break;
+			[this](const AssetDefinition& definition) {
+				switch (definition.type) {
+				case AssetType::Texture:
+					Load<TextureAsset>(definition.resourcePaths.assetPaths);
+					break;
 
-			case AssetType::Font:
-				Load<FontAsset>(definition.resourcePaths.assetPaths);
-				break;
+				case AssetType::Font:
+					Load<FontAsset>(definition.resourcePaths.assetPaths);
+					break;
 
-			case AssetType::Sound:
-				Load<SoundAsset>(definition.resourcePaths.assetPaths);
-				break;
+				case AssetType::Sound:
+					Load<SoundAsset>(definition.resourcePaths.assetPaths);
+					break;
 
-			case AssetType::Music:
-				Load<MusicAsset>(definition.resourcePaths.assetPaths);
-				break;
+				case AssetType::Music:
+					Load<MusicAsset>(definition.resourcePaths.assetPaths);
+					break;
 
-			default:
-				Logger::Log(*this, "Unrecognised asset type!", Logger::Severity::Error);
-				break;
+				default:
+					Logger::Log(*this, "Unrecognised asset type!", Logger::Severity::Error);
+					break;
+				}
 			}
-		});
+		);
 	}
 
 	void AssetManager::UnloadAll() {

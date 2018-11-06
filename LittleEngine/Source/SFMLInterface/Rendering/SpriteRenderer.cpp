@@ -10,12 +10,21 @@ namespace LittleEngine {
 		SetPosition(Vector2::Zero);
 	}
 
+	SpriteRenderer::SpriteRenderer(const SpriteRenderer & prototype) : Renderer(prototype.name), data(prototype.data) {
+		ApplyData();
+		SetPosition(Vector2::Zero);
+	}
+
 	void SpriteRenderer::SetPosition(const Vector2& screenPosition) {
 		sprite.setPosition(Convert(screenPosition));
 	}
 
 	void SpriteRenderer::SetRotation(const Fixed& screenRotation) {
 		sprite.setRotation(screenRotation.GetFloat());
+	}
+
+	std::unique_ptr<Renderer> SpriteRenderer::UClone() const {
+		return std::make_unique<SpriteRenderer>(*this);
 	}
 
 	void SpriteRenderer::RenderInternal(RenderParams & params) {
@@ -35,9 +44,9 @@ namespace LittleEngine {
 		);
 	}
 
-	void SpriteRenderer::SetTexture(TextureAsset::Ptr texture) {
+	void SpriteRenderer::SetTexture(TextureAsset& texture) {
 		//Logger::Log(*this, "Setting texture to [" + texture->GetResourcePath() + "]", Logger::Severity::Debug);
-		data.texture = texture;
+		data.texture = &texture;
 	}
 
 	void SpriteRenderer::ApplyData() {

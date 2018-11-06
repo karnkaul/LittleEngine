@@ -18,11 +18,24 @@ namespace LittleEngine {
 	Actor::Actor(Level& level, const std::string& name, const Vector2& position, const Fixed& rotation) : Object(name), level(&level) {
 		transform.localPosition = position;
 		transform.localRotation = rotation;
-		Logger::Log(*this, GetNameInBrackets() + " (Actor) Spawned at " + transform.Position().ToString());
+		Logger::Log(*this, GetNameInBrackets() + " (Actor) spawned at " + transform.Position().ToString());
+	}
+
+	Actor::Actor(Level& owner, const Actor& prototype) : Object(prototype.name + "_clone"), level(&owner), transform(prototype.transform) {
+		transform.localPosition = prototype.transform.localPosition;
+		transform.localRotation = prototype.transform.localRotation;
+		for (const auto& toImport : prototype.components) {
+			components.emplace_back(toImport->SClone(*this));
+		}
+		if (prototype.collider) {
+			collider = prototype.collider->SCloneCollider(*this);
+			GetActiveLevel().GetCollisionManager().Register(collider);
+		}
+		Logger::Log(*this, GetNameInBrackets() + " (Actor) cloned at " + transform.Position().ToString());
 	}
 
 	Actor::~Actor() {
-		if (collider != nullptr && GetActiveLevel().GetCollisionManager().Unregister(collider)) {
+		if (collider && GetActiveLevel().GetCollisionManager().Unregister(collider)) {
 			collider = nullptr;
 		}
 		tokenHandler.Clear();
@@ -40,58 +53,64 @@ namespace LittleEngine {
 
 	void Actor::Destruct() {
 		// Allow ActiveLevel to collect this Actor
-		_destroyed = true;
+		_bDestroyed = true;
+	}
+
+	void Actor::ToggleActive(bool enable) {
+		this->_bEnabled = enable;
 	}
 
 	void Actor::FixedTick() {
 		// Don't do anything if about to be destroyed
-		if (_destroyed) {
+		if (_bDestroyed) {
 			return;
 		}
 		// FixedTick each component
 		for (const auto& component : components) {
-			if (component != nullptr && component->enabled) {
+			if (component && component->bEnabled) {
 				component->FixedTick();
 			}
 		}
 		// FixedTick collider if any
-		if (collider != nullptr) {
+		if (collider) {
 			collider->FixedTick();
 		}
 	}
 
 	void Actor::Tick(Fixed deltaTime) {
 		// Don't do anything if about to be destroyed
-		if (_destroyed) {
+		if (_bDestroyed) {
 			return;
 		}
 		// Tick each enabled component
 		for (const auto& component : components) {
-			if (component->enabled) {
+			if (component && component->bEnabled) {
 				component->Tick(deltaTime);
 			}
 		}
 		// Tick collider if any
-		if (collider != nullptr) {
+		if (collider) {
 			collider->Tick(deltaTime);
 		}
 	}
 
 	void Actor::Render(RenderParams& params) {
 		// Don't add to render buffer if about to be destroyed
-		if (_destroyed) {
+		if (_bDestroyed) {
 			return;
 		}
 		// Convert Transform::Position to Screen position
 		params.screenPosition = level->GetWorld().WorldToScreenPoint(transform.Position());
 		// Convert Transform::Rotation to SFML orientation (+ is counter-clockwise)
-		params.screenRotation = -transform.Rotation();
+		params.screenRotation = -Fixed(transform.Rotation());
 		// Render each component
 		for (auto& component : components) {
-			component->Render(params);
+			if (component && component->bEnabled) {
+				component->Render(params);
+			}
 		}
 		// Render collider if any
-		if (collider != nullptr) {
+		if (collider) {
 			collider->Render(params);
 		}
 	}

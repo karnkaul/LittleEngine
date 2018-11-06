@@ -31,9 +31,9 @@ namespace LittleEngine {
 		struct InputObserver {
 			OnInput callback;
 			OnKey type;
-			bool consume;
+			bool bConsume;
 
-			InputObserver(OnInput&& callback, bool consume, const OnKey& type);
+			InputObserver(OnInput&& callback, bool bConsume, const OnKey& type);
 			InputObserver& operator=(InputObserver&& move);
 			InputObserver(InputObserver&&) = default;
 			InputObserver(const InputObserver&) = default;
@@ -48,7 +48,7 @@ namespace LittleEngine {
 		Gamepad gamepad;
 		
 		void Cleanup(std::vector<InputObserver>& vec);
-		OnInput::Token Register(std::unordered_map<GameInput, std::vector<InputObserver>>& map, OnInput::Callback callback, GameInput keyCode, bool consume);
+		OnInput::Token Register(std::unordered_map<GameInput, std::vector<InputObserver>>& map, OnInput::Callback callback, GameInput keyCode, bool bConsume);
 		void FireCallbacks(const std::vector<GameInput>& inputs, std::unordered_map<GameInput, std::vector<InputObserver>>& map, OnKey type);
 		// Engine to call 
 		void CaptureState(const std::vector<KeyState>& pressedKeys);

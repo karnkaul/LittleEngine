@@ -4,9 +4,9 @@
 #include <chrono>
 
 namespace LittleEngine {
-	FileLogger::FileLogger(const std::string & logFilePath, bool clearFile) {
+	FileLogger::FileLogger(const std::string & logFilePath, bool bClearFile) {
 		file = std::make_unique<GameUtils::FileRW>(logFilePath);
-		if (clearFile) file->Write("");
+		if (bClearFile) file->Write("");
 		std::cout << "FileLogger created and writing to [ " << logFilePath << "] (console only)" << std::endl;
 		// std::thread does not work directly with class methods, so using a lambda that calls it
 		worker = std::thread(
@@ -21,7 +21,7 @@ namespace LittleEngine {
 		}
 		file->Append(flush);
 		buffer.clear();
-		writing = false;
+		bWriting = false;
 		worker.join();
 		std::cout << "FileLogger destroyed (console only)" << std::endl;		
 	}
@@ -33,8 +33,8 @@ namespace LittleEngine {
 	}
 
 	void FileLogger::AsyncWrite() {
-		while (writing) {
-			if (!pauseWriting) {
+		while (bWriting) {
+			if (!bPauseWriting) {
 				std::lock_guard<std::mutex> lock(mutex);
 				std::string flush;
 				for (const auto& str : buffer) {
@@ -43,7 +43,7 @@ namespace LittleEngine {
 				file->Append(std::move(flush));
 				buffer.clear();
 			}
-			for (int ms = 0; ms++ < 1000 && writing; ++ms) {
+			for (int ms = 0; ms++ < 1000 && bWriting; ++ms) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			}
 		}

@@ -39,7 +39,7 @@ void ClampPosition(GameUtils::Vector2& position, const GameUtils::Rect2& worldBo
 }
 
 namespace LittleEngine {
-	bool _deletedToken = false;
+	bool _bDeletedToken = false;
 
 	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent") {
 		this->inputHandler = &actor.GetActiveLevel().GetInputHandler();
@@ -50,9 +50,12 @@ namespace LittleEngine {
 		renderer = actor.GetComponent<RenderComponent>();
 		
 		// Tests
-		_deletedToken = false;
+		_bDeletedToken = false;
 		tokens.push_back(inputHandler->Register(GameInput::Left, &_ControllerComponent::Test, OnKey::Released));
 		tokens.push_back(inputHandler->Register(GameInput::Left, &_ControllerComponent::Test2, OnKey::Released, true));
+	}
+
+	ControllerComponent::ControllerComponent(Actor& owner, const ControllerComponent & prototype) : Component(owner, prototype), renderer(prototype.renderer), inputHandler(prototype.inputHandler) {
 	}
 
 	ControllerComponent::~ControllerComponent() {
@@ -70,17 +73,21 @@ namespace LittleEngine {
 		ClampPosition(actor.GetTransform().localPosition, worldBounds, padding);
 
 		// TESTS
-		if (actor.GetActiveLevel().LevelTimeMilliSeconds() > 2000 && !_deletedToken) {
-			_deletedToken = true;
+		if (actor.GetActiveLevel().LevelTimeMilliSeconds() > 2000 && !_bDeletedToken) {
+			_bDeletedToken = true;
 			tokens.pop_back();
 		}
 	}
 
+	std::shared_ptr<Component> ControllerComponent::SClone(Actor& owner) const {
+		return std::make_shared<ControllerComponent>(owner, *this);
+	}
+
 	Vector2 ControllerComponent::GetRenderPadding() {
-		if (renderer == nullptr) {
+		if (!renderer) {
 			renderer = GetActor().GetComponent<RenderComponent>();
 		}
-		if (renderer == nullptr) {
+		if (!renderer) {
 			Logger::Log(*this, "ControllerComponent's owning Actor does not have a RenderComponent", Logger::Severity::Warning);
 			return Vector2::Zero;
 		}

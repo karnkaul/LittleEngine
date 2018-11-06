@@ -6,7 +6,7 @@
 namespace LittleEngine { namespace DebugConsole {
 	void Init(Engine& engine);
 	bool IsActive();
-	void Activate(bool setActive);
+	void Activate(bool bSetActive);
 	void UpdateInput(const RawTextInput& windowController);
 	void RenderConsole(const Engine& engine, RenderParams& params, Fixed deltaTime);
 	void Cleanup();

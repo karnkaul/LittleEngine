@@ -38,7 +38,7 @@ namespace GameUtils {
 	}
 
 	template<typename T>
-	T Get(const std::unordered_map<std::string, std::string>& table, const std::string& key, T (*Adaptor)(const std::string&, T), const T& defaultValue) {
+	static T Get(const std::unordered_map<std::string, std::string>& table, const std::string& key, T (*Adaptor)(const std::string&, T), const T& defaultValue) {
 		auto search = table.find(key);
 		if (search != table.end()) {
 			return Adaptor(search->second, defaultValue);

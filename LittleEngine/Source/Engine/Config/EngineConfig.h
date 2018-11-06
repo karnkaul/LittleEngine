@@ -18,7 +18,7 @@ namespace LittleEngine {
 		// Load config file from path and replace cache values if valid
 		bool Load(const std::string& path);
 		// Save cache to config file at path; loadFirst will call Load() before saving
-		bool Save(const std::string& path, bool loadFirst = true);
+		bool Save(const std::string& path, bool bLoadFirst = true);
 
 		std::string GetWindowTitle() const;
 		Fixed GetColliderBorderWidth() const;

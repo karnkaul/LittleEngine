@@ -15,11 +15,14 @@ namespace LittleEngine {
 	class ControllerComponent : public Component {
 	public:
 		ControllerComponent(Actor& actor);
+		ControllerComponent(Actor& owner, const ControllerComponent& prototype);
 		virtual ~ControllerComponent();
+		
 		virtual void Tick(Fixed deltaTime) override;
+		virtual std::shared_ptr<Component> SClone(Actor& owner) const override;
 
 	private:
-		std::shared_ptr<class RenderComponent> renderer;
+		class RenderComponent* renderer = nullptr;
 		std::vector<OnInput::Token> tokens;
 		Fixed prevDeltaTime = 0;
 		InputHandler* inputHandler;

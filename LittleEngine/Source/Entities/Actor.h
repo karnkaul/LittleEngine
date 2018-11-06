@@ -21,7 +21,10 @@ namespace LittleEngine {
 		// Each Actor must be owned by an active Level, 
 		// and be passed a reference to it in the constructor
 		Actor(Level& level, const std::string& name, const Vector2& position, const Fixed& rotation);
-		// For subclassing Actor, if required
+		// Level's CloneActor uses copy constructors of this signature (required for Actor derived classes)
+		Actor(Level& owner, const Actor& prototype);
+
+		// For subclassing Actor
 		virtual ~Actor();
 
 		// x, y E [-1, 1] where -1/+1: edge of screen, 0: centre
@@ -29,38 +32,38 @@ namespace LittleEngine {
 		void SetNormalisedPosition(Vector2 localNPosition);
 		// Call this to Destroy this Actor
 		void Destruct();
+		// Call this to enable/disable Actor in the Level (useful for prototypes)
+		void ToggleActive(bool enable);
 
 		// Every Actor must always be owned by a Level
 		Level& GetActiveLevel() const;
 		
-		Transform& GetTransform() {
-			return transform;
-		}
+		Transform& GetTransform() { return transform; }
+		const Transform& GetTransform() const { return transform; }
 
 		virtual std::string ToString() const override;
 		
 		// Add object of T : Component to this Actor; except T : Collider
 		// An actor can contain N components
 		template<typename T>
-		std::shared_ptr<T> AddComponent() {
+		T* AddComponent() {
 			static_assert(std::is_base_of<Component, T>::value, "T must derive from Component: check Output window for erroneous call");
 			static_assert(!std::is_base_of<Collider, T>::value, "Colliders must be added via AddCollider<T>(): check Output window for erroneous call");
 			std::shared_ptr<T> component = std::make_shared<T>(*this);
-			std::shared_ptr<Component> _component = std::static_pointer_cast<Component>(component);
-			components.push_back(_component);
-			return component;
+			components.push_back(component);
+			return component.get();
 		}
 
 		// Warning: Will return nullptr if not found!
 		// Note: Heavyweight function
 		template<typename T>
-		std::shared_ptr<T> GetComponent() {
+		T* GetComponent() {
 			static_assert(std::is_base_of<Component, T>::value, "T must derive from Component: check Output window for erroneous call");
 			static_assert(!std::is_base_of<Collider, T>::value, "Colliders must be obtained via GetCollider<T>(): check Output window for erroneous call");
 			for (auto& component : components) {
 				std::shared_ptr<T> c = std::dynamic_pointer_cast<T>(component);
-				if (c != nullptr) {
-					return c;
+				if (c) {
+					return c.get();
 				}
 			}
 			return nullptr;
@@ -68,21 +71,20 @@ namespace LittleEngine {
 
 		// Add object of T : Collider to this Actor; only one Collider supported
 		template<typename T>
-		std::shared_ptr<T> AddCollider() {
+		T* AddCollider() {
 			static_assert(std::is_base_of<Collider, T>::value, "T must derive from Collider: check Output window for erroneous call");
-			std::shared_ptr<T> collider = std::make_shared<T>(*this);
-			this->collider = std::static_pointer_cast<Collider>(collider);
-			GetActiveLevel().GetCollisionManager().Register(this->collider);
-			return collider;
+			collider = std::make_shared<T>(*this);
+			GetActiveLevel().GetCollisionManager().Register(collider);
+			return static_cast<T*>(collider.get());
 		}
 
 		// Note: Incurs runtime cast
 		template<typename T>
-		std::shared_ptr<T> GetCollider() {
+		T* GetCollider() {
 			static_assert(std::is_base_of<Collider, T>::value, "T must derive from Collider: check Output window for erroneous call");
 			if (collider != nullptr) {
 				std::shared_ptr<T> ret = std::dynamic_pointer_cast<T>(collider);
-				return ret;
+				return ret.get();
 			}
 			return nullptr;
 		}
@@ -92,7 +94,8 @@ namespace LittleEngine {
 		Collider::Ptr collider;
 		Transform transform;
 		Level* level;
-		bool _destroyed = false;
+		bool _bDestroyed = false;
+		bool _bEnabled = true;
 		
 		virtual void FixedTick();
 		virtual void Tick(Fixed deltaTime);
@@ -104,7 +107,6 @@ namespace LittleEngine {
 	private:
 		GameUtils::TokenHandler<OnInput::Token> tokenHandler;
 
-		Actor(const Actor&) = delete;
 		Actor& operator=(const Actor&) = delete;
 
 		friend class Level;

@@ -23,8 +23,8 @@ namespace LittleEngine {
 		}
 	}
 
-	SoundPlayer::SoundPlayer(SoundAsset::Ptr soundAsset) : AudioPlayer("SFXPlayer") {
-		SetSoundAsset(soundAsset);
+	SoundPlayer::SoundPlayer(SoundAsset* soundAsset) : AudioPlayer("SFXPlayer") {
+		if (soundAsset) SetSoundAsset(*soundAsset);
 	}
 
 	SoundPlayer::~SoundPlayer() {
@@ -33,12 +33,9 @@ namespace LittleEngine {
 		}
 	}
 
-	bool SoundPlayer::SetSoundAsset(SoundAsset::Ptr soundAsset) {
-		if (soundAsset) {
-			this->soundAsset = soundAsset;
-			return true;
-		}
-		return false;
+	bool SoundPlayer::SetSoundAsset(SoundAsset& soundAsset) {
+		this->soundAsset = &soundAsset;
+		return true;
 	}
 
 	void SoundPlayer::SetDirection(const Fixed& direction) {
@@ -77,14 +74,16 @@ namespace LittleEngine {
 	bool SoundPlayer::ApplyParams() {
 		if (soundAsset) {
 			soundAsset->sfSound.setVolume(Maths::Clamp01(volume * soundAsset->volumeScale).GetFloat() * 100);
-			soundAsset->sfSound.setLoop(looping);
+			soundAsset->sfSound.setLoop(bLooping);
 			return true;
 		}
 		return false;
 	}
 
-	MusicPlayer::MusicPlayer(MusicAsset::Ptr musicAsset) : AudioPlayer("MusicPlayer") {
-		SetTrack(musicAsset);
+	MusicPlayer::MusicPlayer(MusicAsset* musicAsset) : AudioPlayer("MusicPlayer") {
+		if (musicAsset) {
+			SetTrack(*musicAsset);
+		}
 	}
 
 	MusicPlayer::~MusicPlayer() {
@@ -93,17 +92,14 @@ namespace LittleEngine {
 		}
 	}
 
-	bool MusicPlayer::SetTrack(MusicAsset::Ptr musicAsset) {
-		if (musicAsset) {
-			this->mainTrack = musicAsset;
-			return true;
-		}
-		return false;
+	bool MusicPlayer::SetTrack(MusicAsset& musicAsset) {
+		this->mainTrack = &musicAsset;
+		return true;
 	}
 
 	Fixed MusicPlayer::GetDurationSeconds() const {
 		if (mainTrack && mainTrack->valid) {
-			if (!looping) {
+			if (!bLooping) {
 				return mainTrack->GetDurationSeconds();
 			}
 			else {
@@ -121,20 +117,20 @@ namespace LittleEngine {
 	}
 
 	bool MusicPlayer::IsFading() const {
-		return fadingIn || fadingOut;
+		return bFadingIn || bFadingOut;
 	}
 
 	void MusicPlayer::FadeIn(const Fixed & timeSeconds, const Fixed & targetVolume) {
-		fadingOut = false;
-		fadingIn = true;
+		bFadingOut = false;
+		bFadingIn = true;
 		fadeSeconds = timeSeconds;
 		this->targetVolume = Maths::Clamp01(targetVolume);
 		BeginFade();
 	}
 
 	void MusicPlayer::FadeOut(const Fixed & timeSeconds, const Fixed & targetVolume) {
-		fadingIn = false;
-		fadingOut = true;
+		bFadingIn = false;
+		bFadingOut = true;
 		fadeSeconds = timeSeconds;
 		this->targetVolume = Maths::Clamp01(targetVolume);
 		BeginFade();
@@ -142,11 +138,11 @@ namespace LittleEngine {
 
 	void MusicPlayer::EndFade() {
 		volume = targetVolume;
-		if (fadingOut) {
+		if (bFadingOut) {
 			Stop();
 			mainTrack = nullptr;
 		}
-		fadingIn = fadingOut = false;
+		bFadingIn = bFadingOut = false;
 	}
 
 	void MusicPlayer::Play() {
@@ -187,7 +183,7 @@ namespace LittleEngine {
 
 			else {
 				Fixed ratio = Maths::Clamp01(elapsedSeconds / fadeSeconds);
-				if (fadingIn) {
+				if (bFadingIn) {
 					volume = (targetVolume - startVolume) * ratio;
 				}
 				else {
@@ -211,7 +207,7 @@ namespace LittleEngine {
 	bool MusicPlayer::ApplyParams() {
 		if (mainTrack) {
 			mainTrack->music.setVolume(Maths::Clamp01(volume * mainTrack->volumeScale).GetFloat() * 100);
-			mainTrack->music.setLoop(looping);
+			mainTrack->music.setLoop(bLooping);
 			return true;
 		}
 		return false;

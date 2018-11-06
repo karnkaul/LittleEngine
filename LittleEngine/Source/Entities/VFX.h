@@ -1,5 +1,6 @@
 #pragma once
 #include "Actor.h"
+#include "SFMLInterface/Assets.h"
 
 namespace LittleEngine {
 	struct AssetPaths;
@@ -9,6 +10,7 @@ namespace LittleEngine {
 	class VFX : public Actor {
 	public:
 		VFX(Level& level, const std::string& prefix, const Vector2& position, const Fixed& rotation);
+		VFX(Level& owner, const VFX& prototytpe);
 
 		void Init(const AssetPaths& spriteSheet, const AssetPaths& sfxPaths, const Fixed& animTime, const Fixed& sfxVol, bool autoplay = true);
 		void Play();
@@ -16,11 +18,11 @@ namespace LittleEngine {
 		virtual void Tick(Fixed deltaTime) override;
 
 	private:
-		std::shared_ptr<SpriteAnimator> animator = nullptr;
-		std::string sfxPath;
+		SpriteAnimator* animator = nullptr;
+		std::vector<SoundAsset*> soundAssets;
 		Fixed sfxVol = Fixed(8, 10);
 		SoundPlayer* sfxPlayer = nullptr;
-		bool init = false;
-		bool playing = false;
+		bool bInit = false;
+		bool bPlaying = false;
 	};
 }

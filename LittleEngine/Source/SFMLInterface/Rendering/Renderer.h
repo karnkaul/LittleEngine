@@ -20,9 +20,11 @@ namespace LittleEngine {
 		void Render(struct RenderParams& params);
 		// Subclass will return its max Bounds in screen space
 		virtual Rect2 GetBounds() const = 0;
+		// Subclass will return an UNOWNED copy of itself
+		virtual std::unique_ptr<Renderer> UClone() const = 0;
 		
 		bool IsEnabled() const;
-		void SetEnabled(bool enabled);
+		void SetEnabled(bool bEnabled);
 	
 	protected:
 		virtual void RenderInternal(struct RenderParams& params) = 0;
@@ -34,9 +36,8 @@ namespace LittleEngine {
 		Colour Convert(const sf::Color& colour);
 
 	private:
-		bool isEnabled = true;
+		bool bIsEnabled = true;
 
-		Renderer(const Renderer&) = delete;
 		Renderer& operator=(const Renderer&) = delete;
 	};
 }

@@ -82,6 +82,8 @@ namespace Maths {
 		Fixed Range(Fixed min = 0, Fixed max = 1);
 		// Returns [min, max)
 		int Range(int min, int max);
+		// Returns [min, max)
+		size_t Range(size_t min, size_t max);
 	};
 }
 
@@ -94,8 +96,8 @@ namespace Strings {
 	int ToInt(const std::string& input, int defaultValue = -1);
 	double ToDouble(const std::string& input, double defaultValue = -1.0f);
 
-	std::string ToString(int input);
-	std::string ToString(bool input);
+	std::string ToString(int bInput);
+	std::string ToString(bool bInput);
 
 	// Slices a string into a pair via the first occurence of a delimiter
 	std::pair<std::string, std::string> Slice(const std::string& input, char delimiter);

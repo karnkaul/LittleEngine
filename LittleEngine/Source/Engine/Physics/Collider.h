@@ -21,6 +21,8 @@ namespace LittleEngine {
 		// Abstract Visitor
 		virtual bool IsIntersecting(const Collider& rhs) const = 0;
 		virtual void DrawDebugShape(bool show, const Fixed& thickness = DEBUG_BORDER_WIDTH) = 0;
+		// Covariant override for Component::SClone()
+		virtual std::shared_ptr<Collider> SCloneCollider(Actor& owner) const = 0;
 
 		void OnHit(Collider& other);
 
@@ -47,13 +49,15 @@ namespace LittleEngine {
 	class CircleCollider : public Collider {
 	public:
 		CircleCollider(Actor& actor);
+		CircleCollider(Actor& owner, const CircleCollider& prototype);
 		
 		CircleData GetWorldCircle() const;
 		void SetCircle(Fixed radius);
 
 		virtual bool IsIntersecting(const Collider& rhs) const override;
-		virtual void DrawDebugShape(bool show, const Fixed& thickness = DEBUG_BORDER_WIDTH) override;
+		virtual void DrawDebugShape(bool bShow, const Fixed& thickness = DEBUG_BORDER_WIDTH) override;
 		virtual void Render(RenderParams params) override;
+		virtual std::shared_ptr<Collider> SCloneCollider(Actor& owner) const override;
 
 	protected:
 		friend class AABBCollider;
@@ -68,13 +72,15 @@ namespace LittleEngine {
 	class AABBCollider : public Collider {
 	public:
 		AABBCollider(Actor& actor);
+		AABBCollider(Actor& owner, const AABBCollider& prototype);
 
 		AABBData GetWorldAABB() const;
 		void SetBounds(AABBData bounds);
 		
 		virtual bool IsIntersecting(const Collider& rhs) const override;
-		virtual void DrawDebugShape(bool show, const Fixed& thickness = DEBUG_BORDER_WIDTH) override;
+		virtual void DrawDebugShape(bool bShow, const Fixed& thickness = DEBUG_BORDER_WIDTH) override;
 		virtual void Render(RenderParams params) override;
+		virtual std::shared_ptr<Collider> SCloneCollider(Actor& owner) const override;
 
 	protected:
 		friend class CircleCollider;
