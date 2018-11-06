@@ -115,7 +115,7 @@ namespace LittleEngine {
 		}
 		GetStandbyPlayer().Stop();
 		switchTrackRequest = nullptr;
-		Logger::Log(*this, GetNameInBrackets() + " cleared [" + std::to_string(sfxCount) + " SFXPlayers, 1 MusicPlayer]");
+		Logger::Log(*this, GetNameInBrackets() + " cleared [" + Strings::ToString(sfxCount) + " SFXPlayers, 1 MusicPlayer]");
 	}
 
 	void AudioManager::Tick(Fixed deltaTime) {

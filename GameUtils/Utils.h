@@ -96,9 +96,12 @@ namespace Strings {
 	int ToInt(const std::string& input, int defaultValue = -1);
 	double ToDouble(const std::string& input, double defaultValue = -1.0f);
 
-	std::string ToString(int bInput);
+	template<typename T>
+	std::string ToString(T input) {
+		return std::to_string(input);
+	}
 	std::string ToString(bool bInput);
-
+	
 	// Slices a string into a pair via the first occurence of a delimiter
 	std::pair<std::string, std::string> Slice(const std::string& input, char delimiter);
 	// Removes all occurrences of toRemove from outInput

@@ -1,6 +1,7 @@
 #include "le_stdafx.h"
 #include "EventManager.h"
 #include "Engine/Logger/Logger.h"
+#include "Utils.h"
 
 namespace LittleEngine {
 	EventManager& EventManager::Instance() {
@@ -23,7 +24,7 @@ namespace LittleEngine {
 		auto search = subscribers.find(eventType);
 		if (search != subscribers.end()) {
 			int count = (*search->second)();
-			Logger::Log(*this, "[GameEvent " + std::to_string(static_cast<int>(eventType)) + "] fired [" + std::to_string(count) + " observers]", Logger::Severity::Debug);
+			Logger::Log(*this, "[GameEvent " + Strings::ToString(static_cast<int>(eventType)) + "] fired [" + Strings::ToString(count) + " observers]", Logger::Severity::Debug);
 		}
 		return 0;
 	}

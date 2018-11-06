@@ -11,7 +11,7 @@ namespace LittleEngine {
 		virtual void PostRender(const RenderParams& params) override;
 
 	protected:
-		virtual void Activate() override;
+		virtual void OnActivated() override;
 		virtual void OnClearing() override;
 
 	private:

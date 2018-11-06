@@ -142,7 +142,7 @@ namespace LittleEngine { namespace DebugConsole {
 
 				int levelID = Strings::ToInt(params);
 				if (levelID >= 0 && levelID <= Level::MAX_LEVEL_IDX) {
-					executeResult.emplace_back("Loading Level ID: " + std::to_string(levelID), LOG_TEXT_COLOUR);
+					executeResult.emplace_back("Loading Level ID: " + Strings::ToString(levelID), LOG_TEXT_COLOUR);
 					Commands::pEngine->LoadLevel(static_cast<LevelID>(levelID));
 				}
 				else {

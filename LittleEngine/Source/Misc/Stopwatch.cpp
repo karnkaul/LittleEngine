@@ -2,10 +2,11 @@
 #include "Stopwatch.h"
 #include <string>
 #include "SFMLInterface/SystemClock.h"
+#include "Utils.h"
 
 namespace LittleEngine {
 	namespace Stopwatch {
-		int g_logThresholdMS = 30;
+		int g_logThresholdMS = 50;
 		Logger::Severity g_logSeverity = Logger::Severity::Warning;
 
 		static bool s_bRunning = false;
@@ -19,7 +20,7 @@ namespace LittleEngine {
 			int elapsed = s_endMS - s_startMS;
 			if (elapsed >= g_logThresholdMS) {
 				std::string prefix = bInterrupted ? "INTERRUPTED: " : "STOPWATCH: ";
-				Logger::Log(prefix + s_lapName + " took (" + std::to_string(elapsed) + " ms)", g_logSeverity);
+				Logger::Log(prefix + s_lapName + " took (" + Strings::ToString(elapsed) + " ms)", g_logSeverity);
 			}
 		}
 

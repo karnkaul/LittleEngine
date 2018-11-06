@@ -2,12 +2,11 @@
 #include "BootLevel.h"
 
 namespace LittleEngine {
-	void BootLevel::Activate() {
+	void BootLevel::OnActivated() {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 		
 		Vector2 lowerBound = this->engine->GetWorld().GetScreenBounds().lower;
-		_logo = SpawnActor<Actor>("Logo");
-		if (Actor::Ptr logo = _logo.lock()) {
+		if (logo = SpawnActor<Actor>("Logo", true)) {
 			auto renderer = logo->AddComponent<RenderComponent>();
 			logoRenderer = &renderer->SetTextRenderer("... Press Enter to Start ...");
 			logo->SetNormalisedPosition(Vector2(0, Fixed(-0.66f)));

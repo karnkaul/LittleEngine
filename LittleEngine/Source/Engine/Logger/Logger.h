@@ -4,6 +4,12 @@
 namespace LittleEngine {
 	class Object;
 
+#if DEBUG
+	#define DEBUG_ASSERT(expr, errLog)		if (!(expr)) { Log(errLog, Logger::Severity::Error); }
+#else
+	#define DEBUG_ASSERT(x, y)
+#endif
+
 	// \brief Simple runtime stdout logger; 
 	// Writes to debug.log using FileLogger
 	namespace Logger {

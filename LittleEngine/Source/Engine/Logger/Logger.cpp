@@ -66,9 +66,6 @@ namespace LittleEngine {
 		}
 
 		void Log(const std::string& caller, const std::string& message, Severity severity) {
-#if !DEBUG
-			return;
-#endif
 			if (severity <= g_logLevel) {
 				Cout(SeverityString(severity), caller, message);
 			}

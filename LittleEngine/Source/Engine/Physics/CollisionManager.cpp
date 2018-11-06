@@ -23,7 +23,7 @@ namespace LittleEngine {
 
 	void CollisionManager::Register(Collider::Ptr collider) {
 		colliders.push_back(collider);
-		Logger::Log(*this, "Registered new collider", Logger::Severity::Debug);
+		Logger::Log(*this, "Registered 1 new collider", Logger::Severity::Debug);
 	}
 	
 
@@ -33,16 +33,18 @@ namespace LittleEngine {
 			auto search = std::find_if(colliders.begin(), colliders.end(), comparer);
 			if (search != colliders.end()) {
 				colliders.erase(search);
+				Logger::Log(*this, "Unregistered 1 existing collider", Logger::Severity::Debug);
 				return true;
 			}
 		}
+		Logger::Log(*this, "Attempt to unregistered untracked collider ignored", Logger::Severity::Info);
 		return false;
 	}
 
 	void CollisionManager::FixedTick() {
 		Cleanup();
 		if (colliders.size() < 2) return;
-		Logger::Log(*this, "Processing " + std::to_string(colliders.size()) + " Colliders", Logger::Severity::HOT);
+		Logger::Log(*this, "Processing " + Strings::ToString(colliders.size()) + " Colliders", Logger::Severity::HOT);
 		for (size_t i = 0; i < colliders.size(); ++i) {
 			auto lhs = colliders[i].lock();
 			if (lhs != nullptr) {
@@ -60,7 +62,7 @@ namespace LittleEngine {
 		GameUtils::EraseNullWeakPtrs<Collider>(colliders);
 		int diff = count - static_cast<int>(colliders.size());
 		if (diff > 0) {
-			Logger::Log(*this, "Removed " + std::to_string(diff) + " stale Colliders ", Logger::Severity::Debug);
+			Logger::Log(*this, "Removed " + Strings::ToString(diff) + " stale Colliders ", Logger::Severity::Debug);
 		}
 	}
 

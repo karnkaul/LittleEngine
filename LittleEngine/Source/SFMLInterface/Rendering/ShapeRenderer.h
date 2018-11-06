@@ -13,8 +13,8 @@ namespace LittleEngine {
 	protected:
 		std::unique_ptr<sf::Shape> shape;	// sf::Shape cannot be a direct member
 
-		ShapeRenderer(std::string name, std::unique_ptr<sf::Shape> shape) : Renderer(name), shape(std::move(shape)) 
-		{}
+		ShapeRenderer(std::string name, std::unique_ptr<sf::Shape> shape);
+		ShapeRenderer(const ShapeRenderer& prototype, std::unique_ptr<sf::Shape> shape);
 
 		virtual void RenderInternal(RenderParams& params) override; 
 		virtual void SetPosition(const Vector2& screenPosition) override;

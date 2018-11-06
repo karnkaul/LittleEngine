@@ -19,6 +19,10 @@ namespace LittleEngine {
 		Logger::Log(*this, name + " created", Logger::Severity::Debug);
 	}
 
+	Renderer::Renderer(const Renderer& prototype) : Object(prototype.name + "_clone"), layer(prototype.layer) {
+		Logger::Log(*this, name + " cloned", Logger::Severity::Debug);
+	}
+
 	Renderer::~Renderer() {
 		Logger::Log(*this, name + " destroyed", Logger::Severity::Debug);
 	}

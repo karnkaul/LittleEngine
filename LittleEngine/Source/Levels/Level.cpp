@@ -29,14 +29,19 @@ namespace LittleEngine {
 
 	void Level::SetEngine(Engine & engine) {
 		this->engine = &engine;
+		state = State::IDLE;
 	}
 
 	void Level::LoadAssets() {}
 
 	void Level::Activate() {
+		OnActivated();
+		state = State::ACTIVE;
 		clock.Restart();
 		Logger::Log(*this, GetNameInBrackets() + " (Level) activated. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
 	}
+
+	void Level::OnActivated() {}
 
 	void Level::FixedTick() {
 		Logger::Log(*this, "Executing Fixed Tick", Logger::Severity::HOT);
@@ -52,10 +57,10 @@ namespace LittleEngine {
 	void Level::Tick(Fixed deltaTime) {
 		// TEST
 		if (clock.GetElapsedMilliSeconds() > 1000 && clock.GetElapsedMilliSeconds() < 1015) {
-			Logger::Log(*this, "Player exists: " + std::to_string(player.lock() != nullptr));
+			Logger::Log(*this, "Player exists: " + Strings::ToString(player.lock() != nullptr));
 		}
 
-		Logger::Log(*this, "Executing Tick [" + std::to_string(actors.size()) + " actors]", Logger::Severity::HOT);
+		Logger::Log(*this, "Executing Tick [" + Strings::ToString(actors.size()) + " actors]", Logger::Severity::HOT);
 		size_t countThisTurn = actors.size();
 		for (size_t i = 0; i < countThisTurn; ++i) {
 			if (!actors[i]->_bDestroyed && actors[i]->_bEnabled) {
@@ -81,11 +86,12 @@ namespace LittleEngine {
 	void Level::PostRender(const RenderParams& params) {}
 
 	void Level::Clear() {
-		actors.clear();
-		tokenHandler.Clear();
-		Spawner::Cleanup();
 		OnClearing();
+		actors.clear();
+		Spawner::Cleanup();
+		tokenHandler.Clear();
 		Logger::Log(*this, GetNameInBrackets() + " (Level) deactivated. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
+		state = State::IDLE;
 	}
 
 	void Level::OnClearing() {
@@ -105,14 +111,14 @@ namespace LittleEngine {
 		}
 	}
 
-	Player::wPtr Level::GetOrSpawnPlayer(const std::string & texturePath, const AABBData & colliderBounds, const Vector2 & position, const Fixed & rotation) {
+	Player::Ptr Level::GetOrSpawnPlayer(const std::string & texturePath, const AABBData & colliderBounds, const Vector2 & position, const Fixed & rotation) {
 		Player::Ptr _player;
 		if (!(_player = player.lock())) {
 			_player = std::make_shared<Player>(*this, texturePath, colliderBounds, position, rotation);
 			player = _player;
 			actors.push_back(_player);
 		}
-		return player;
+		return _player;
 	}
 
 	Player::wPtr Level::GetPlayer() {

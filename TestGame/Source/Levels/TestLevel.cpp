@@ -43,7 +43,7 @@ namespace LittleEngine {
 			auto actor2 = _actor2.lock();
 			auto actor3 = _actor3.lock();
 			if (actor2 == nullptr && actor3 == nullptr) {
-				_actor2 = level->SpawnActor<Actor>("Yellow Circle", Vector2(-300, 300));
+				_actor2 = level->SpawnActor<Actor>("Yellow Circle", true, Vector2(-300, 300));
 				if (actor2 = _actor2.lock()) {
 					auto rc0 = actor2->AddComponent<RenderComponent>();
 					auto& r0 = rc0->SetCircleRenderer(ShapeData(Vector2(100, 0), Colour::Yellow));
@@ -51,7 +51,7 @@ namespace LittleEngine {
 					t0->SetCircle(100);
 				}
 				
-				_actor3 = level->SpawnActor<Actor>("Blue Rectangle");
+				_actor3 = level->SpawnActor<Actor>("Blue Rectangle", true);
 				if (actor3 = _actor3.lock()) {
 					auto rc1 = actor3->AddComponent<RenderComponent>();
 					rc1->SetRectangleRenderer(ShapeData(Vector2(600, 100), Colour::Blue));
@@ -72,20 +72,18 @@ namespace LittleEngine {
 			Vector2 position = level->GetWorld().NormalisedToWorldPoint(normalisedPosition);
 			auto v = Spawner::VFXExplode(position);
 			v->Play();
-			//if (_textActor) {
-			//	if (!_cloneTest.lock()) {
-			//		/*std::unique_ptr<Renderer> r = pTextRenderer->UClone();
-			//		uTextRenderer = std::unique_ptr<TextRenderer>(dynamic_cast<TextRenderer*>(r.release()));*/
-			//		_cloneTest = level->CloneActor<Actor>(*_textActor);
-			//		auto clone = _cloneTest.lock();
-			//		if (clone) {
-			//			clone->GetTransform().localPosition = Vector2::Zero;
-			//		}
-			//	}
-			//	else {
-			//		_cloneTest.lock()->Destruct();
-			//	}
-			//}
+			if (_textActor) {
+				if (!_cloneTest.lock()) {
+					_cloneTest = level->CloneActor<Actor>(*_textActor);
+					auto clone = _cloneTest.lock();
+					if (clone) {
+						clone->GetTransform().localPosition = Vector2::Zero;
+					}
+				}
+				else {
+					_cloneTest.lock()->Destruct();
+				}
+			}
 		}
 
 		void RenderTests(RenderParams& params) {
@@ -109,17 +107,17 @@ namespace LittleEngine {
 		engine->GetAssetManager().LoadAll(AssetManifestData("AssetManifests/TestLevel.amf").GetManifest());
 	}
 
-	void TestLevel::Activate() {
+	void TestLevel::OnActivated() {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 
-		_TestLevel::_actor0 = SpawnActor<Actor>("Actor0-RectangleRenderer", Vector2(300, 200));
+		_TestLevel::_actor0 = SpawnActor<Actor>("Actor0-RectangleRenderer", true, Vector2(300, 200));
 		if (auto actor0 = _TestLevel::_actor0.lock()) {
 			auto rc0 = actor0->AddComponent<RenderComponent>();
 			rc0->SetRectangleRenderer(ShapeData(Vector2(300, 100), Colour::Magenta));
 			_TestLevel::_textActor = actor0;
 		}
 		
-		if (auto actor1 = SpawnActor<Actor>("Actor1-TextRenderer").lock()) {
+		if (auto actor1 = SpawnActor<Actor>("Actor1-TextRenderer", true)) {
 			actor1->SetNormalisedPosition(Vector2(0, Fixed(0.9f)));
 			auto rc = actor1->AddComponent<RenderComponent>();
 			auto& tr = rc->SetTextRenderer("Hello World!");
@@ -129,7 +127,7 @@ namespace LittleEngine {
 		}
 
 		player = GetOrSpawnPlayer("Ship.png", AABBData(40, 40), Vector2(-200, -300));
-		//_TestLevel::_textActor = player.lock();
+		_TestLevel::_textActor = player.lock();
 
 		RegisterScopedInput(GameInput::Return, std::bind(&TestLevel::OnQuitPressed, this), OnKey::Released);
 		RegisterScopedInput(GameInput::X, &_TestLevel::OnXPressed, OnKey::Released);

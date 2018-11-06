@@ -9,7 +9,6 @@
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 #include "SFMLInterface/Rendering/Renderer.h"
-#include "SFMLInterface/Rendering/RenderFactory.h"
 #include "SFMLInterface/Rendering/SpriteRenderer.h"
 #include "Components/Component.h"
 #include "Utils.h"
@@ -28,7 +27,7 @@ namespace LittleEngine {
 			components.emplace_back(toImport->SClone(*this));
 		}
 		if (prototype.collider) {
-			collider = prototype.collider->SCloneCollider(*this);
+			collider = std::dynamic_pointer_cast<Collider>(prototype.collider->SClone(*this));
 			GetActiveLevel().GetCollisionManager().Register(collider);
 		}
 		Logger::Log(*this, GetNameInBrackets() + " (Actor) cloned at " + transform.Position().ToString());

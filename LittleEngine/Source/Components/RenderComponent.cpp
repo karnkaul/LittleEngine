@@ -5,7 +5,6 @@
 #include "Levels/Level.h"
 #include "Engine/World.h"
 #include "SFMLInterface/Assets.h"
-#include "SFMLInterface/Rendering/RenderFactory.h"
 #include "SFMLInterface/Rendering/ShapeRenderer.h"
 #include "SFMLInterface/Rendering/SpriteRenderer.h"
 #include "SFMLInterface/Rendering/TextRenderer.h"
@@ -37,14 +36,14 @@ namespace LittleEngine {
 
 	CircleRenderer & RenderComponent::SetCircleRenderer(const ShapeData & shapeData) {
 		Fixed radius = shapeData.size.x;
-		std::unique_ptr<CircleRenderer> renderer = RenderFactory::NewCircle(radius, shapeData.colour);
+		std::unique_ptr<CircleRenderer> renderer = std::make_unique<CircleRenderer>(radius, shapeData.colour);
 		CircleRenderer* c = renderer.get();
 		SetRenderer(std::move(renderer));
 		return *c;
 	}
 
 	RectangleRenderer & RenderComponent::SetRectangleRenderer(const ShapeData & shapeData) {
-		std::unique_ptr<RectangleRenderer> renderer = RenderFactory::NewRectangle(shapeData.size, shapeData.colour);
+		std::unique_ptr<RectangleRenderer> renderer = std::make_unique<RectangleRenderer>(shapeData.size, shapeData.colour);
 		RectangleRenderer* r = renderer.get();
 		SetRenderer(std::move(renderer));
 		return *r;
@@ -53,14 +52,14 @@ namespace LittleEngine {
 	SpriteRenderer& RenderComponent::SetSpriteRenderer(const std::string & texturePath) {
 		TextureAsset* texture = GetActor().GetActiveLevel().GetAssetManager().Load<TextureAsset>(texturePath);
 		SpriteData spriteData(*texture);
-		SetRenderer(RenderFactory::NewSprite(spriteData));
+		SetRenderer(std::make_unique<SpriteRenderer>(spriteData));
 		return *dynamic_cast<SpriteRenderer*>(renderer.get());
 	}
 
 	TextRenderer& RenderComponent::SetTextRenderer(const std::string & text) {
 		FontAsset* font = GetActor().GetActiveLevel().GetAssetManager().GetDefaultFont();
 		TextData textData(*font, text);
-		SetRenderer(RenderFactory::NewText(textData));
+		SetRenderer(std::make_unique<TextRenderer>(textData));
 		return *dynamic_cast<TextRenderer*>(renderer.get());
 	}
 

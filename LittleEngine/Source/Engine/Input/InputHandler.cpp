@@ -93,7 +93,7 @@ namespace LittleEngine {
 		GameUtils::CleanVector<InputObserver>(vec, [](InputObserver& observer) { return !observer.callback.IsAlive(); });
 		int deleted = before - static_cast<int>(vec.size());
 		if (deleted > 0) {
-			Logger::Log(*this, std::to_string(deleted) + " expired Observers deleted", Logger::Severity::Debug);
+			Logger::Log(*this, Strings::ToString(deleted) + " expired Observers deleted", Logger::Severity::Debug);
 		}
 	}
 

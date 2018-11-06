@@ -1,5 +1,6 @@
 #include "le_stdafx.h"
 #include "EngineConfig.h"
+#include "Utils.h"
 
 namespace LittleEngine {
 	const std::string EngineConfig::Data::WINDOW_TITLE_KEY = "WINDOW_TITLE";
@@ -49,8 +50,8 @@ namespace LittleEngine {
 		int width = persistor.GetProp(Data::SCREEN_WIDTH_KEY).intValue();
 		int height = persistor.GetProp(Data::SCREEN_HEIGHT_KEY).intValue();
 		if (width > 0 && height > 0) {
-			cache.screenWidth.stringValue = std::to_string(width);
-			cache.screenHeight.stringValue = std::to_string(height);
+			cache.screenWidth.stringValue = Strings::ToString(width);
+			cache.screenHeight.stringValue = Strings::ToString(height);
 		}
 
 		std::string logLevelValue = persistor.GetProp(Data::LOG_LEVEL_KEY);
@@ -65,7 +66,7 @@ namespace LittleEngine {
 
 		int colliderWidth = persistor.GetProp(Data::COLLIDER_SHAPE_WIDTH_KEY).intValue();
 		if (colliderWidth > 0) {
-			cache.colliderBorderWidth.stringValue = std::to_string(colliderWidth);
+			cache.colliderBorderWidth.stringValue = Strings::ToString(colliderWidth);
 		}
 		return bLoaded;
 	}
@@ -108,11 +109,11 @@ namespace LittleEngine {
 	}
 
 	void EngineConfig::SetScreenSize(const Vector2& screenSize) {
-		cache.screenWidth.stringValue = std::to_string(screenSize.x.GetInt());
-		cache.screenHeight.stringValue = std::to_string(screenSize.y.GetInt());
+		cache.screenWidth.stringValue = Strings::ToString(screenSize.x.GetInt());
+		cache.screenHeight.stringValue = Strings::ToString(screenSize.y.GetInt());
 	}
 
 	void EngineConfig::SetColliderBorderWidth(const Fixed& shapeWidth) {
-		cache.colliderBorderWidth.stringValue = std::to_string(shapeWidth.GetInt());
+		cache.colliderBorderWidth.stringValue = Strings::ToString(shapeWidth.GetInt());
 	}
 }

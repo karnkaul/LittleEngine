@@ -14,6 +14,7 @@ namespace LittleEngine {
 		LayerInfo layer;
 
 		Renderer(std::string name);
+		Renderer(const Renderer& prototype);
 		virtual ~Renderer();
 
 		// Call this to render the entity using the passed RenderParams

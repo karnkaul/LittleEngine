@@ -2,6 +2,7 @@
 #include "Assets.h"
 #include "Engine/Logger/Logger.h"
 #include "FileRW.h"
+#include "Utils.h"
 
 namespace LittleEngine {
 	using FileRW = GameUtils::FileRW;
@@ -137,7 +138,7 @@ namespace LittleEngine {
 	AssetPaths::AssetPaths(const std::string & pathPrefix, int count, const std::string & assetPrefix, const std::string& assetSuffix) {
 		std::string prefix = pathPrefix.empty() ? "" : pathPrefix + "/";
 		for (int i = 0; i < count; ++i) {
-			std::string suffix = (i < 10) ? "0" + std::to_string(i) : std::to_string(i);
+			std::string suffix = (i < 10) ? "0" + Strings::ToString(i) : Strings::ToString(i);
 			suffix += assetSuffix;
 			this->assetPaths.push_back(prefix + assetPrefix + suffix);
 		}

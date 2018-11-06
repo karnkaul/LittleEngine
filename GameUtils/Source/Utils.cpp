@@ -4,7 +4,7 @@
 
 namespace Maths {
 	bool _bInit = false;
-	void InitRand(bool useTime = true) {
+	static void InitRand(bool useTime = true) {
 		if (useTime) {
 			srand(static_cast<unsigned int>(time(nullptr)));
 		}
@@ -46,7 +46,7 @@ namespace Strings {
 	bool ToBool(const std::string& input, bool bDefaultValue) {
 		std::string inputLower(input);
 		ToLower(inputLower);
-		if (inputLower == "true") {
+		if (inputLower == "true" || inputLower == "1") {
 			return true;
 		}
 		return bDefaultValue;
@@ -72,10 +72,6 @@ namespace Strings {
 			ret = defaultValue;
 		}
 		return ret;
-	}
-
-	std::string ToString(int input) {
-		return std::to_string(input);
 	}
 
 	std::string ToString(bool bInput) {

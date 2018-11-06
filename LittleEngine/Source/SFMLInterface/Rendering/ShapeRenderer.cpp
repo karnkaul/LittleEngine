@@ -5,6 +5,12 @@
 #include "RenderParams.h"
 
 namespace LittleEngine {
+	ShapeRenderer::ShapeRenderer(std::string name, std::unique_ptr<sf::Shape> shape) : Renderer(name), shape(std::move(shape)) {
+	}
+
+	ShapeRenderer::ShapeRenderer(const ShapeRenderer & prototype, std::unique_ptr<sf::Shape> shape) : Renderer(prototype), shape(std::move(shape)) {
+	}
+
 	void ShapeRenderer::RenderInternal(RenderParams & params) {
 		SetPosition(params.screenPosition);
 		SetRotation(params.screenRotation);
@@ -40,11 +46,13 @@ namespace LittleEngine {
 		SetFillColour(colour);
 	}
 
-	CircleRenderer::CircleRenderer(const CircleRenderer & prototype) : ShapeRenderer(prototype.name, std::make_unique<sf::CircleShape>()) {
+	CircleRenderer::CircleRenderer(const CircleRenderer & prototype) : ShapeRenderer(prototype, std::make_unique<sf::CircleShape>()) {
 		circle = &CastShape<sf::CircleShape>();
 		circle->setOrigin(prototype.circle->getOrigin());
 		circle->setRadius(prototype.circle->getRadius());
 		circle->setFillColor(prototype.circle->getFillColor());
+		circle->setOutlineColor(prototype.circle->getOutlineColor());
+		circle->setOutlineThickness(prototype.circle->getOutlineThickness());
 	}
 
 	void CircleRenderer::SetRadius(const Fixed& radius) {
@@ -76,11 +84,13 @@ namespace LittleEngine {
 		SetFillColour(colour);
 	}
 
-	RectangleRenderer::RectangleRenderer(const RectangleRenderer & prototype) : ShapeRenderer(prototype.name, std::make_unique<sf::RectangleShape>()) {
+	RectangleRenderer::RectangleRenderer(const RectangleRenderer & prototype) : ShapeRenderer(prototype, std::make_unique<sf::RectangleShape>()) {
 		rectangle = &CastShape<sf::RectangleShape>();
 		rectangle->setOrigin(prototype.rectangle->getOrigin());
 		rectangle->setSize(prototype.rectangle->getSize());
 		rectangle->setFillColor(prototype.rectangle->getFillColor());
+		rectangle->setOutlineColor(prototype.rectangle->getOutlineColor());
+		rectangle->setOutlineThickness(prototype.rectangle->getOutlineThickness());
 	}
 
 	void RectangleRenderer::SetSize(const Vector2& size) {
@@ -98,6 +108,7 @@ namespace LittleEngine {
 			Vector2(width, height)
 		);
 	}
+
 	std::unique_ptr<Renderer> RectangleRenderer::UClone() const {
 		return std::make_unique<RectangleRenderer>(*this);
 	}

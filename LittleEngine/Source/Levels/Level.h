@@ -8,6 +8,7 @@
 #include "Engine/Physics/CollisionManager.h"
 #include "Engine/Audio/AudioManager.h"
 #include "Engine/Input/InputHandler.h"
+#include "Engine/Logger/Logger.h"
 #include "Spawner.h"
 
 namespace LittleEngine {
@@ -54,9 +55,11 @@ namespace LittleEngine {
 		// destroyed by other means. The weak pointer will indicate 
 		// whether its associated Actor is still alive.
 		template<typename T>
-		std::weak_ptr<T> SpawnActor(const std::string& name, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero) {
+		std::shared_ptr<T> SpawnActor(const std::string& name, bool bSetEnabled, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero) {
 			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
+			DEBUG_ASSERT(state != State::ACTIVE, "SpawnActor<T>() called in live game time! Use CloneActor<T>(prototype) instead");
 			auto actor = std::make_shared<T>(*this, name, position, rotation);
+			actor->ToggleActive(bSetEnabled);
 			actors.push_back(actor);
 			return actor;
 		}
@@ -64,7 +67,7 @@ namespace LittleEngine {
 		// \brief Fast API to create copies of Actors. Create prototypes once 
 		// and then duplicate using Clone. 
 		template<typename T>
-		std::weak_ptr<T> CloneActor(const T& prototype) {
+		std::shared_ptr<T> CloneActor(const T& prototype) {
 			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
 			auto actor = std::make_shared<T>(*this, prototype);
 			actors.push_back(actor);
@@ -74,10 +77,18 @@ namespace LittleEngine {
 		// \brief Safe API to destroy existing Actors
 		void DestroyActor(Actor::Ptr actor);
 		// \brief Safe API to spawn Player.
-		Player::wPtr GetOrSpawnPlayer(const std::string& texturePath, const AABBData& colliderBounds, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero);
+		Player::Ptr GetOrSpawnPlayer(const std::string& texturePath, const AABBData& colliderBounds, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero);
 		Player::wPtr GetPlayer();
 
 	protected:
+		enum class State {
+			INVALID		= 0,
+			IDLE		= 1,
+			LOADING		= 2,
+			ACTIVE		= 3,
+			ERROR		= 10
+		};
+
 		std::vector<Actor::Ptr> actors;
 		GameClock clock;
 		CollisionManager collisionManager;
@@ -86,27 +97,33 @@ namespace LittleEngine {
 		
 		Level(const std::string& name);
 
-		void SetEngine(Engine& engine);
+	public:
+		
+	protected:
 		// \brief Override to initiate level (spawn destroyed/first-time actors, etc)
-		virtual void Activate();
+		virtual void OnActivated();
 		// \brief Override for callback every fixed time slice
 		virtual void FixedTick();
 		// \brief Override for callback every frame
 		virtual void Tick(Fixed deltaTime);
-		void Render(RenderParams& params);
 		// \brief Override to obtain RenderParams for current frame (no need to call base class implementation)
 		virtual void PostRender(const RenderParams& params);
-		void Clear();
 		// \brief Override for callback before level is deactivated (no need to call base class implementation)
 		virtual void OnClearing();
 		
 		// \brief Registers corresponding input scoped to Level's activity; Token is destroyed on Clear()
 		void RegisterScopedInput(const GameInput& gameInput, OnInput::Callback callback, const OnKey& type, bool consume = false);
 
+	private:
 		friend class Engine;
 		friend class LevelManager;
 
-	private:
+		void Render(RenderParams& params);
+		void SetEngine(Engine& engine);
+		void Activate();
+		void Clear();
+
+		State state = State::INVALID;
 		GameUtils::TokenHandler<OnInput::Token> tokenHandler;
 	};
 }

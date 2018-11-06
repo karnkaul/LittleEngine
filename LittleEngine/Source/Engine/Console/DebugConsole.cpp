@@ -1,7 +1,6 @@
 #include "le_stdafx.h"
 #include <list>
 #include "DebugConsole.h"
-#include "SFMLInterface/Rendering/RenderFactory.h"
 #include "SFMLInterface/Rendering/ShapeRenderer.h"
 #include "SFMLInterface/Rendering/TextRenderer.h"
 #include "SFMLInterface/WindowController.h"
@@ -47,7 +46,7 @@ namespace LittleEngine { namespace DebugConsole {
 
 		void PushFront(const T& value, bool bResetIter = true) {
 			items.emplace_front(value);
-			if (maxElements > 0 && items.size() > maxElements) {
+			if (maxElements > 0 && items.size() > static_cast<size_t>(maxElements)) {
 				items.pop_back();
 			}
 			if (bResetIter) {
@@ -112,7 +111,7 @@ namespace LittleEngine { namespace DebugConsole {
 
 		DebugConsoleLog(TextData& baseData) {
 			for (auto& l : logText) {
-				l = RenderFactory::NewText(baseData);
+				l = std::make_unique<TextRenderer>(baseData);
 				l->SetSize(15);
 				l->layer = LayerID::TOP;
 			}
@@ -196,7 +195,7 @@ namespace LittleEngine { namespace DebugConsole {
 				textData.hAlign = HAlign::Left;
 				log = std::make_unique<DebugConsoleLog>(textData);
 
-				inputText = RenderFactory::NewText(textData);
+				inputText = std::make_unique<TextRenderer>(textData);
 				inputText->SetColour(Colour::White);
 				inputText->SetSize(16);
 				inputText->layer = LayerID::TOP;
@@ -219,13 +218,13 @@ namespace LittleEngine { namespace DebugConsole {
 				}
 			}
 			if (background == nullptr) {
-				background = RenderFactory::NewRectangle(bgSize);
+				background = std::make_unique<RectangleRenderer>(bgSize);
 				background->SetFillColour(LOG_BG_COLOUR);
 				background->layer = LayerID::TOP;
 			}
 			if (separator == nullptr) {
 				Vector2 separatorSize(bgSize.x, Fixed::One);
-				separator = RenderFactory::NewRectangle(separatorSize);
+				separator = std::make_unique<RectangleRenderer>(separatorSize);
 				separator->SetFillColour(LOG_TEXT_COLOUR);
 				separator->layer = LayerID::TOP;
 			}
@@ -266,7 +265,9 @@ namespace LittleEngine { namespace DebugConsole {
 	}
 
 	void Activate(bool bSetActive) {
+#if defined(DEBUG) || defined(_DEBUG)
 		s_isActive = bSetActive;
+#endif
 	}
 
 	void UpdateInput(const RawTextInput& rawTextInput) {
