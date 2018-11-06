@@ -15,7 +15,7 @@ namespace LittleEngine {
 
 	private:
 		class TextRenderer* logoRenderer;
-		Actor::Ptr logo;
+		int logoID = 0;
 
 		void OnLoadNextLevel();
 	};

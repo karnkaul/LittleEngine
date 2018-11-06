@@ -12,7 +12,7 @@ namespace LittleEngine {
 		// \brief: Loads Asset dependencies
 		void VFXExplode_Warm();
 		// \brief Dependencies: Assets/VFX/: 00-14.png, 00.wav
-		std::shared_ptr<VFX> VFXExplode(const Vector2& position);
+		VFX* VFXExplode(const Vector2& position);
 
 #pragma endregion
 	}

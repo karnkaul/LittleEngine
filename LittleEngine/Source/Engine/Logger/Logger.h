@@ -17,7 +17,7 @@ namespace LittleEngine {
 		
 		void Log(const Object& context, const std::string& message, Severity severity = Severity::Info);
 		void Log(const std::string& message, Severity severity = Severity::Info);
-		void Log(const std::string& caller, const std::string& message, Severity severity = Severity::Info);
+		void Log(std::string caller, const std::string& message, Severity severity = Severity::Info);
 		void Cleanup();
 
 		extern Severity g_logLevel;

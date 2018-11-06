@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "Rect2.h"
 #include "SFMLInterface/Rendering/Renderer.h"
+#include "SFMLInterface/Assets.h"
 
 namespace LittleEngine {
 	class Actor;
@@ -33,6 +34,7 @@ namespace LittleEngine {
 		CircleRenderer& SetCircleRenderer(const ShapeData& shapeData);
 		RectangleRenderer& SetRectangleRenderer(const ShapeData& shapeData);
 		SpriteRenderer& SetSpriteRenderer(const std::string& texturePath);
+		SpriteRenderer& SetSpriteRenderer(TextureAsset& texture);
 		TextRenderer& SetTextRenderer(const std::string& text);
 
 		virtual void Render(RenderParams params) override;

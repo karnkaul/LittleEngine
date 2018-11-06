@@ -56,6 +56,12 @@ namespace LittleEngine {
 		return *dynamic_cast<SpriteRenderer*>(renderer.get());
 	}
 
+	SpriteRenderer & RenderComponent::SetSpriteRenderer(TextureAsset & texture) {
+		SpriteData spriteData(texture);
+		SetRenderer(std::make_unique<SpriteRenderer>(spriteData));
+		return dynamic_cast<SpriteRenderer&>(*renderer);
+	}
+
 	TextRenderer& RenderComponent::SetTextRenderer(const std::string & text) {
 		FontAsset* font = GetActor().GetActiveLevel().GetAssetManager().GetDefaultFont();
 		TextData textData(*font, text);

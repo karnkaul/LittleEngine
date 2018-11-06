@@ -5,13 +5,13 @@ namespace LittleEngine {
 	// Tests
 	namespace _TestLevel {
 		Level* level;
-		Actor::wPtr _actor0, _player;
+		int actor0ID, playerID;
 		bool bParented = false;
 		bool bSoundPlayed = false, bMusicPlayed = false, bMusicStopped = false;
 		
 		void OnXPressed() {
-			auto actor0 = _actor0.lock();
-			auto player = _player.lock();
+			auto actor0 = level->FindActor(actor0ID);
+			auto player = level->FindActor(playerID);
 			if (actor0 != nullptr && player != nullptr) {
 				if (!bParented) {
 					actor0->GetTransform().SetParent(player->GetTransform());
@@ -24,8 +24,8 @@ namespace LittleEngine {
 			}
 		}
 		void OnYPressed() {
-			auto actor0 = _actor0.lock();
-			auto player = _player.lock();
+			auto actor0 = level->FindActor(actor0ID);
+			auto player = level->FindActor(playerID);
 			if (actor0 != nullptr && player != nullptr) {
 				if (!bParented) {
 					actor0->GetTransform().SetParent(player->GetTransform(), false);
@@ -38,21 +38,26 @@ namespace LittleEngine {
 			}
 		}
 
-		Actor::wPtr _actor2, _actor3;
+		//Actor::wPtr _actor2, _actor3;
+		int _actor2ID = 0, _actor3ID = 0;
 		void OnEnterPressed() {
-			auto actor2 = _actor2.lock();
-			auto actor3 = _actor3.lock();
+			Actor* actor2 = level->FindActor(_actor2ID);
+			Actor* actor3 = level->FindActor(_actor3ID);
+			/*auto actor2 = _actor2.lock();
+			auto actor3 = _actor3.lock();*/
 			if (actor2 == nullptr && actor3 == nullptr) {
-				_actor2 = level->SpawnActor<Actor>("Yellow Circle", true, Vector2(-300, 300));
-				if (actor2 = _actor2.lock()) {
+				actor2 = level->SpawnActor<Actor>("Yellow Circle", true, Vector2(-300, 300));
+				if (actor2) {
+					_actor2ID = actor2->GetActorID();
 					auto rc0 = actor2->AddComponent<RenderComponent>();
 					auto& r0 = rc0->SetCircleRenderer(ShapeData(Vector2(100, 0), Colour::Yellow));
 					auto t0 = actor2->AddCollider<CircleCollider>();
 					t0->SetCircle(100);
 				}
 				
-				_actor3 = level->SpawnActor<Actor>("Blue Rectangle", true);
-				if (actor3 = _actor3.lock()) {
+				actor3 = level->SpawnActor<Actor>("Blue Rectangle", true);
+				if (actor3) {
+					_actor3ID = actor3->GetActorID();
 					auto rc1 = actor3->AddComponent<RenderComponent>();
 					rc1->SetRectangleRenderer(ShapeData(Vector2(600, 100), Colour::Blue));
 					auto t1 = actor3->AddCollider<AABBCollider>();
@@ -65,23 +70,23 @@ namespace LittleEngine {
 			}
 		}
 
-		Actor::Ptr _textActor;
-		Actor::wPtr _cloneTest;
+		Actor* _textActor = nullptr;
+		Actor* _cloneTest = nullptr;
 		void OnSelectPressed() {
 			Vector2 normalisedPosition = Vector2(Maths::Random::Range(Fixed(-1), Fixed(1)), Maths::Random::Range(Fixed(-1), Fixed(1)));
 			Vector2 position = level->GetWorld().NormalisedToWorldPoint(normalisedPosition);
 			auto v = Spawner::VFXExplode(position);
 			v->Play();
 			if (_textActor) {
-				if (!_cloneTest.lock()) {
+				if (!_cloneTest) {
 					_cloneTest = level->CloneActor<Actor>(*_textActor);
-					auto clone = _cloneTest.lock();
-					if (clone) {
-						clone->GetTransform().localPosition = Vector2::Zero;
+					if (_cloneTest) {
+						_cloneTest->GetTransform().localPosition = Vector2::Zero;
 					}
 				}
 				else {
-					_cloneTest.lock()->Destruct();
+					_cloneTest->Destruct();
+					_cloneTest = nullptr;
 				}
 			}
 		}
@@ -91,14 +96,15 @@ namespace LittleEngine {
 		}
 
 		void CleanupTests() {
-			if (auto actor2 = _actor2.lock()) {
+			if (auto actor2 = level->FindActor(_actor2ID)) {
 				actor2->Destruct();
 			}
-			if (auto actor3 = _actor3.lock()) {
+			if (auto actor3 = level->FindActor(_actor3ID)) {
 				actor3->Destruct();
 			}
 			if (_textActor) _textActor = nullptr;
-			if (_cloneTest.lock()) _cloneTest.lock()->Destruct();
+			if (_cloneTest) _cloneTest->Destruct();
+			_cloneTest = nullptr;
 		}
 	}
 
@@ -110,8 +116,9 @@ namespace LittleEngine {
 	void TestLevel::OnActivated() {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 
-		_TestLevel::_actor0 = SpawnActor<Actor>("Actor0-RectangleRenderer", true, Vector2(300, 200));
-		if (auto actor0 = _TestLevel::_actor0.lock()) {
+		Actor* actor0 = SpawnActor<Actor>("Actor0-RectangleRenderer", true, Vector2(300, 200));
+		if (actor0) {
+			_TestLevel::actor0ID = actor0->GetActorID();
 			auto rc0 = actor0->AddComponent<RenderComponent>();
 			rc0->SetRectangleRenderer(ShapeData(Vector2(300, 100), Colour::Magenta));
 			_TestLevel::_textActor = actor0;
@@ -126,8 +133,15 @@ namespace LittleEngine {
 			//_TestLevel::_textActor = actor1;
 		}
 
-		player = GetOrSpawnPlayer("Ship.png", AABBData(40, 40), Vector2(-200, -300));
-		_TestLevel::_textActor = player.lock();
+		Player* player = SpawnActor<Player>("", true);
+		if (player) {
+			TextureAsset* texture = GetAssetManager().Load<TextureAsset>("Ship.png");
+			player->Init(*texture, AABBData(40, 40));
+			player->GetTransform().localPosition = Vector2(-200, -300);
+		}
+		//Player& player = GetOrSpawnPlayer("Ship.png", AABBData(40, 40), Vector2(-200, -300));
+		//Player* player = SpawnActor<Player>()
+		_TestLevel::_textActor = player;
 
 		RegisterScopedInput(GameInput::Return, std::bind(&TestLevel::OnQuitPressed, this), OnKey::Released);
 		RegisterScopedInput(GameInput::X, &_TestLevel::OnXPressed, OnKey::Released);
@@ -136,7 +150,7 @@ namespace LittleEngine {
 		RegisterScopedInput(GameInput::Select, &_TestLevel::OnSelectPressed, OnKey::Released);
 
 		// Tests
-		_TestLevel::_player = this->player;
+		_TestLevel::playerID = player->GetActorID();
 		_TestLevel::level = this;
 		_TestLevel::bSoundPlayed = _TestLevel::bMusicPlayed = false;
 		
@@ -149,10 +163,7 @@ namespace LittleEngine {
 		_TestLevel::CleanupTests();
 	}
 
-	void RenderTests(Level* level, std::vector<Actor::Ptr>& actors, RenderParams& params) {
-		if (!actors.empty()) {
-			actors[0]->GetTransform().Rotate(2);
-		}
+	void RenderTests(Level* level, RenderParams& params) {
 		_TestLevel::RenderTests(params);
 	}
 
@@ -174,7 +185,7 @@ namespace LittleEngine {
 			GetAudioManager().SwitchTrack("TestMusic.ogg", Fixed::Half, Fixed(3));
 		}*/
 		RenderParams _params(params);
-		RenderTests(this, actors, _params);
+		RenderTests(this, _params);
 	}
 
 	void TestLevel::OnQuitPressed() {

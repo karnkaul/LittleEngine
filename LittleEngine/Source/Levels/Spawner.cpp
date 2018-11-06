@@ -9,7 +9,7 @@ namespace LittleEngine {
 		static Level* s_activeLevel;
 
 		namespace VFXPrototypes {
-			static std::shared_ptr<VFX> s_explode;
+			static VFX* s_explode = nullptr;
 
 			static void Cleanup() {
 				if (s_explode) {
@@ -43,11 +43,11 @@ namespace LittleEngine {
 			}
 		}
 
-		std::shared_ptr<VFX> VFXExplode(const Vector2& position) {
+		VFX* VFXExplode(const Vector2& position) {
 			if (!s_activeLevel) return nullptr;
 
 			if (VFXPrototypes::s_explode) {
-				std::shared_ptr<VFX> explode = (s_activeLevel->CloneActor<VFX>(*VFXPrototypes::s_explode));
+				VFX* explode = (s_activeLevel->CloneActor<VFX>(*VFXPrototypes::s_explode));
 				explode->GetTransform().localPosition = position;
 				return explode;
 			}

@@ -1,6 +1,8 @@
 #pragma once
 #include "Fixed.h"
 #include <vector>
+#include <unordered_map>
+#include <map>
 #include <functional>
 #include <algorithm>
 
@@ -11,6 +13,30 @@ namespace GameUtils {
 	void CleanVector(std::vector<T>& vec, std::function<bool(T& t)> Predicate) {
 		auto iter = std::remove_if(vec.begin(), vec.end(), Predicate);
 		vec.erase(iter, vec.end());
+	}
+
+	template<typename K, typename V>
+	void CleanMap(std::unordered_map<K, V>& map, std::function<bool(V& v)> Predicate) {
+		for (auto iter = map.begin(); iter != map.end();) {
+			if (Predicate(iter->second)) {
+				iter = map.erase(iter);
+			}
+			else {
+				++iter;
+			}
+		}
+	}
+
+	template<typename K, typename V>
+	void CleanMap(std::map<K, V>& map, std::function<bool(V& v)> Predicate) {
+		for (auto iter = map.begin(); iter != map.end();) {
+			if (Predicate(iter->second)) {
+				iter = map.erase(iter);
+			}
+			else {
+				++iter;
+			}
+		}
 	}
 
 	// Given a vector<weak_ptr<T>>, erase all elements where t.lock() == nullptr

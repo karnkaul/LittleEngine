@@ -37,7 +37,7 @@ namespace LittleEngine {
 				return true;
 			}
 		}
-		Logger::Log(*this, "Attempt to unregistered untracked collider ignored", Logger::Severity::Info);
+		Logger::Log("Attempt to unregistered untracked collider ignored", Logger::Severity::Info);
 		return false;
 	}
 

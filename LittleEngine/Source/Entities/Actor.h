@@ -15,8 +15,7 @@ namespace LittleEngine {
 	// \brief Base class representing a renderable entity in the world
 	class Actor : public Object, public std::enable_shared_from_this<Actor> {
 	public:
-		using Ptr = std::shared_ptr<Actor>;
-		using wPtr = std::weak_ptr<Actor>;
+		using Ptr = std::unique_ptr<Actor>;
 
 		// Each Actor must be owned by an active Level, 
 		// and be passed a reference to it in the constructor
@@ -37,6 +36,7 @@ namespace LittleEngine {
 
 		// Every Actor must always be owned by a Level
 		Level& GetActiveLevel() const;
+		int GetActorID() const;
 		
 		Transform& GetTransform() { return transform; }
 		const Transform& GetTransform() const { return transform; }
@@ -105,6 +105,7 @@ namespace LittleEngine {
 		void RegisterScopedInput(const GameInput& gameInput, OnInput::Callback callback, const OnKey& type, bool consume = false);
 
 	private:
+		int actorID = 0;
 		GameUtils::TokenHandler<OnInput::Token> tokenHandler;
 
 		Actor& operator=(const Actor&) = delete;

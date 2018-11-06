@@ -1,4 +1,5 @@
 #pragma once
+#include <unordered_map>
 #include "Fixed.h"
 #include "TokenHandler.hpp"
 #include "Engine/Object.h"
@@ -50,56 +51,45 @@ namespace LittleEngine {
 		// \brief Returns active level's ID
 		LevelID GetActiveLevelID() const;
 
-		// \brief Safe API to spawn new Actors. All spawned Actors 
-		// will be destroyed along with the Level, and Actors may be 
-		// destroyed by other means. The weak pointer will indicate 
-		// whether its associated Actor is still alive.
+		// \brief Safe API to spawn new Actors. All spawned Actors will be destroyed along with the Level
+		// Actors may also be prematurely destroyed. Ensure to check Actor* validity via IsAlive(actorID)
 		template<typename T>
-		std::shared_ptr<T> SpawnActor(const std::string& name, bool bSetEnabled, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero) {
+		T* SpawnActor(const std::string& name, bool bSetEnabled, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero) {
 			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
 			DEBUG_ASSERT(state != State::ACTIVE, "SpawnActor<T>() called in live game time! Use CloneActor<T>(prototype) instead");
-			auto actor = std::make_shared<T>(*this, name, position, rotation);
+			auto actor = std::make_unique<T>(*this, name, position, rotation);
+			actor->actorID = nextActorID++;
 			actor->ToggleActive(bSetEnabled);
-			actors.push_back(actor);
-			return actor;
+			T* ret = actor.get();
+			actorMap.emplace(actor->actorID, std::move(actor));
+			return ret;
 		}
 
 		// \brief Fast API to create copies of Actors. Create prototypes once 
 		// and then duplicate using Clone. 
 		template<typename T>
-		std::shared_ptr<T> CloneActor(const T& prototype) {
+		T* CloneActor(const T& prototype) {
 			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
-			auto actor = std::make_shared<T>(*this, prototype);
-			actors.push_back(actor);
-			return actor;
+			auto actor = std::make_unique<T>(*this, prototype);
+			actor->actorID = nextActorID++;
+			T* ret = actor.get();
+			actorMap.emplace(actor->actorID, std::move(actor));
+			return ret;
 		}
 
+		// Returns nullptr if no Actor with corresponding actorID exists
+		Actor* FindActor(int actorID) const;
+		// Returns false if no Actor with corresponding actorID exists
+		bool IsAlive(int actorID) const;
 		// \brief Safe API to destroy existing Actors
-		void DestroyActor(Actor::Ptr actor);
-		// \brief Safe API to spawn Player.
-		Player::Ptr GetOrSpawnPlayer(const std::string& texturePath, const AABBData& colliderBounds, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero);
-		Player::wPtr GetPlayer();
+		bool DestroyActor(int actorID);
 
 	protected:
-		enum class State {
-			INVALID		= 0,
-			IDLE		= 1,
-			LOADING		= 2,
-			ACTIVE		= 3,
-			ERROR		= 10
-		};
-
-		std::vector<Actor::Ptr> actors;
 		GameClock clock;
-		CollisionManager collisionManager;
-		Player::wPtr player;
 		Engine* engine;
-		
+
 		Level(const std::string& name);
 
-	public:
-		
-	protected:
 		// \brief Override to initiate level (spawn destroyed/first-time actors, etc)
 		virtual void OnActivated();
 		// \brief Override for callback every fixed time slice
@@ -115,15 +105,29 @@ namespace LittleEngine {
 		void RegisterScopedInput(const GameInput& gameInput, OnInput::Callback callback, const OnKey& type, bool consume = false);
 
 	private:
+		enum class State {
+			INVALID = 0,
+			IDLE = 1,
+			LOADING = 2,
+			ACTIVE = 3,
+			ERROR = 10
+		};
+
 		friend class Engine;
 		friend class LevelManager;
+
+		static int nextActorID;
+
+		CollisionManager collisionManager;
+		GameUtils::TokenHandler<OnInput::Token> tokenHandler;
+
+	private:
+		std::unordered_map<int, Actor::Ptr> actorMap;
+		State state = State::INVALID;
 
 		void Render(RenderParams& params);
 		void SetEngine(Engine& engine);
 		void Activate();
 		void Clear();
-
-		State state = State::INVALID;
-		GameUtils::TokenHandler<OnInput::Token> tokenHandler;
 	};
 }

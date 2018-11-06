@@ -4,6 +4,9 @@
 #include "FileLogger.h"
 #include "Engine/Object.h"
 #include "Engine/GameClock.h"
+#if defined (_WIN32)
+#include <Windows.h>
+#endif
 
 namespace LittleEngine {
 	namespace Logger {
@@ -24,7 +27,12 @@ namespace LittleEngine {
 			if (s_fileLogger) {
 				s_fileLogger->AddToBuffer(log);
 			}
+#if DEBUG
 			std::cout << log << std::endl;
+#endif
+#if defined(_WIN32)
+			OutputDebugString((log + "\n").c_str());
+#endif
 		}
 
 		static std::string SeverityString(Logger::Severity severity) {
@@ -65,7 +73,7 @@ namespace LittleEngine {
 			Log("", message, severity);
 		}
 
-		void Log(const std::string& caller, const std::string& message, Severity severity) {
+		void Log(std::string caller, const std::string& message, Severity severity) {
 			if (severity <= g_logLevel) {
 				Cout(SeverityString(severity), caller, message);
 			}

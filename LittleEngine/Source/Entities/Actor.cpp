@@ -122,4 +122,8 @@ namespace LittleEngine {
 	Level & Actor::GetActiveLevel() const {
 		return *level;
 	}
+
+	int Actor::GetActorID() const {
+		return actorID;
+	}
 }
