@@ -12,18 +12,19 @@ namespace LittleEngine {
 	OnEvent::Token EventManager::Register(GameEvent eventType, OnEvent::Callback Callback) {
 		auto search = subscribers.find(eventType);
 		if (search != subscribers.end()) {
-			return search->second->Register(Callback);
+			return search->second.Register(Callback);
 		}
 		
-		std::shared_ptr<OnEvent> event = std::make_shared<OnEvent>();
-		subscribers.insert(std::pair<GameEvent, OnEventPtr>(eventType, event));
-		return event->Register(Callback);
+		OnEvent event;
+		OnEvent::Token token = event.Register(Callback);
+		subscribers.emplace(eventType, event);
+		return token;
 	}
 
 	int EventManager::Notify(GameEvent eventType) {
 		auto search = subscribers.find(eventType);
 		if (search != subscribers.end()) {
-			int count = (*search->second)();
+			int count = search->second();
 			Logger::Log(*this, "[GameEvent " + Strings::ToString(static_cast<int>(eventType)) + "] fired [" + Strings::ToString(count) + " observers]", Logger::Severity::Debug);
 			return count;
 		}

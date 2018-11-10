@@ -12,13 +12,13 @@ namespace GameUtils {
 	class Delegate {
 	public:
 		using Callback = std::function<void(T... t)>;
-		using Token = std::shared_ptr<Callback>;
+		using Token = std::shared_ptr<int>;
 
 		// Returns shared_ptr to be owned by caller
 		Token Register(Callback callback) {
-			Token ptr = std::make_shared<Callback>(callback);
-			this->callbacks.emplace_back(ptr);
-			return ptr;
+			Token token = std::make_shared<int>(static_cast<int>(callbacks.size()));
+			callbacks.emplace_back(callback, token);
+			return token;
 		}
 
 		// Execute alive callbacks; returns live count
@@ -26,8 +26,8 @@ namespace GameUtils {
 			Cleanup();
 			int count = 0;
 			for (const auto& c : callbacks) {
-				if (auto call = c.lock()) {
-					(*call)(t...);
+				if (!c.token.expired()) {
+					c.callback(t...);
 					++count;
 				}
 			}
@@ -40,12 +40,20 @@ namespace GameUtils {
 			return !callbacks.empty();
 		}
 	private:
-		std::vector<std::weak_ptr<Callback>> callbacks;
+		struct Wrapper {
+			Callback callback;
+			std::weak_ptr<int> token;
+
+			Wrapper(const Callback& callback, Token token) : callback(callback), token(token) {
+			}
+		};
+
+		std::vector<Wrapper> callbacks;
 		// Remove expired weak_ptrs
 		void Cleanup() {
 			callbacks.erase(std::remove_if(callbacks.begin(), callbacks.end(),
-				[](std::weak_ptr<Callback> ptr) {
-					return ptr.lock() == nullptr;
+				[](Wrapper& wrapper) -> bool {
+					return wrapper.token.expired();
 				}
 			), callbacks.end());
 		}

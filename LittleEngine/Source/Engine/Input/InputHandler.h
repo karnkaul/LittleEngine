@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <array>
 #include <unordered_map>
 #include "Engine/Object.h"
 #include "Delegate.hpp"
@@ -27,34 +28,27 @@ namespace LittleEngine {
 		InputHandler(const InputHandler&) = delete;
 		InputHandler & operator=(const InputHandler&) = delete;
 		
-		// Convenience struct
-		struct InputObserver {
-			OnInput callback;
-			OnKey type;
-			bool bConsume;
+		using InputVecMap = std::unordered_map<GameInput, std::vector<OnInput>>;
+		using InputMap = std::unordered_map<GameInput, OnInput>;
+		// All general observers receive callbacks
+		std::unordered_map<OnKey, InputMap> generalObservers;
+		// Only latest consuming observer receives callback
+		std::unordered_map<OnKey, InputVecMap> consumingObservers;
 
-			InputObserver(OnInput&& callback, bool bConsume, const OnKey& type);
-			InputObserver& operator=(InputObserver&& move);
-			InputObserver(InputObserver&&) = default;
-			InputObserver(const InputObserver&) = default;
-		};
-
-		friend class Engine;
-		std::unordered_map<GameInput, std::vector<InputObserver>> inputObservers;
 		std::vector<GameInput> currentSnapshot;
 		std::vector<GameInput> previousSnapshot;
 		std::string rawTextInput;
 		
 		Gamepad gamepad;
 		
-		void Cleanup(std::vector<InputObserver>& vec);
-		OnInput::Token Register(std::unordered_map<GameInput, std::vector<InputObserver>>& map, OnInput::Callback callback, GameInput keyCode, bool bConsume);
-		void FireCallbacks(const std::vector<GameInput>& inputs, std::unordered_map<GameInput, std::vector<InputObserver>>& map, OnKey type);
+		void FireCallbacks(const std::vector<GameInput>& inputs, OnKey type);
 		// Engine to call 
 		void CaptureState(const std::vector<KeyState>& pressedKeys);
 		// Engine to call
 		void CaptureRawText(const std::string& rawTextInput);
 		// Engine to call
 		void FireInput();
+
+		friend class Engine;
 	};
 }

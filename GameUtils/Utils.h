@@ -128,8 +128,9 @@ namespace Strings {
 	}
 	std::string ToString(bool bInput);
 	
+	using Pair = std::pair<std::string, std::string>;
 	// Slices a string into a pair via the first occurence of a delimiter
-	std::pair<std::string, std::string> Slice(const std::string& input, char delimiter);
+	Pair Slice(const std::string& input, char delimiter);
 	// Removes all occurrences of toRemove from outInput
 	void RemoveChars(std::string& outInput, std::initializer_list<char> toRemove);
 	// Removes all tabs and spaces
