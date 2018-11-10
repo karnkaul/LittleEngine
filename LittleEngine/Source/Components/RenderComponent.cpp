@@ -72,7 +72,8 @@ namespace LittleEngine {
 	void RenderComponent::Render(RenderParams params) {
 		renderer->Render(params);
 	}
-	Component::Ptr RenderComponent::SClone(Actor& owner) const {
-		return std::make_shared<RenderComponent>(owner, *this);
+
+	Component::Ptr RenderComponent::UClone(Actor& owner) const {
+		return std::make_unique<RenderComponent>(owner, *this);
 	}
 }

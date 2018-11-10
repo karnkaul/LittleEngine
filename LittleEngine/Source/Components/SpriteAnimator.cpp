@@ -92,8 +92,8 @@ namespace LittleEngine {
 		}
 	}
 
-	Component::Ptr SpriteAnimator::SClone(Actor& owner) const {
-		return std::make_shared<SpriteAnimator>(owner, *this);
+	Component::Ptr SpriteAnimator::UClone(Actor& owner) const {
+		return std::make_unique<SpriteAnimator>(owner, *this);
 	}
 
 	void SpriteAnimator::SetSprite(TextureAsset& sprite) {

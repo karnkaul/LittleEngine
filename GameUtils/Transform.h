@@ -10,7 +10,6 @@ namespace GameUtils {
 
 	// \brief Class maintains a position and orientation in 2D space, 
 	// and provides an API for parenting to other Transforms.
-	// Must be created using shared_ptr<Transform>
 	struct Transform {
 	public:
 		// Position world space

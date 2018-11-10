@@ -15,9 +15,9 @@ namespace LittleEngine {
 			return search->second->Register(Callback);
 		}
 		
-		std::shared_ptr<OnEvent> _event = std::make_shared<OnEvent>();
-		subscribers.insert(std::pair<GameEvent, OnEventPtr>(eventType, _event));
-		return _event->Register(Callback);
+		std::shared_ptr<OnEvent> event = std::make_shared<OnEvent>();
+		subscribers.insert(std::pair<GameEvent, OnEventPtr>(eventType, event));
+		return event->Register(Callback);
 	}
 
 	int EventManager::Notify(GameEvent eventType) {
@@ -25,6 +25,7 @@ namespace LittleEngine {
 		if (search != subscribers.end()) {
 			int count = (*search->second)();
 			Logger::Log(*this, "[GameEvent " + Strings::ToString(static_cast<int>(eventType)) + "] fired [" + Strings::ToString(count) + " observers]", Logger::Severity::Debug);
+			return count;
 		}
 		return 0;
 	}

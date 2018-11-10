@@ -11,7 +11,7 @@ namespace LittleEngine {
 	// \brief Base class for any Component attached to Actor
 	class Component : public Object {
 	public:
-		using Ptr = std::shared_ptr<Component>;
+		using Ptr = std::unique_ptr<Component>;
 
 		bool bEnabled = true;
 
@@ -26,7 +26,7 @@ namespace LittleEngine {
 		Actor& GetActor() const;
 
 		// Copiable sub-classes must override and return a copy for the new owner
-		virtual Component::Ptr SClone(Actor& owner) const;
+		virtual Component::Ptr UClone(Actor& owner) const;
 		virtual std::string ToString() const override;
 
 	protected:

@@ -49,9 +49,10 @@ namespace LittleEngine {
 		T* AddComponent() {
 			static_assert(std::is_base_of<Component, T>::value, "T must derive from Component: check Output window for erroneous call");
 			static_assert(!std::is_base_of<Collider, T>::value, "Colliders must be added via AddCollider<T>(): check Output window for erroneous call");
-			std::shared_ptr<T> component = std::make_shared<T>(*this);
-			components.push_back(component);
-			return component.get();
+			std::unique_ptr<T> component = std::make_unique<T>(*this);
+			T* pComponent = component.get();
+			components.push_back(std::move(component));
+			return pComponent;
 		}
 
 		// Warning: Will return nullptr if not found!
@@ -61,9 +62,9 @@ namespace LittleEngine {
 			static_assert(std::is_base_of<Component, T>::value, "T must derive from Component: check Output window for erroneous call");
 			static_assert(!std::is_base_of<Collider, T>::value, "Colliders must be obtained via GetCollider<T>(): check Output window for erroneous call");
 			for (auto& component : components) {
-				std::shared_ptr<T> c = std::dynamic_pointer_cast<T>(component);
+				T* c = dynamic_cast<T*>(component.get());
 				if (c) {
-					return c.get();
+					return c;
 				}
 			}
 			return nullptr;
@@ -73,20 +74,15 @@ namespace LittleEngine {
 		template<typename T>
 		T* AddCollider() {
 			static_assert(std::is_base_of<Collider, T>::value, "T must derive from Collider: check Output window for erroneous call");
-			collider = std::make_shared<T>(*this);
-			GetActiveLevel().GetCollisionManager().Register(collider);
-			return static_cast<T*>(collider.get());
+			collider = GetActiveLevel().GetCollisionManager().CreateCollider<T>(*this);
+			return dynamic_cast<T*>(collider.get());
 		}
 
 		// Note: Incurs runtime cast
 		template<typename T>
 		T* GetCollider() {
 			static_assert(std::is_base_of<Collider, T>::value, "T must derive from Collider: check Output window for erroneous call");
-			if (collider != nullptr) {
-				std::shared_ptr<T> ret = std::dynamic_pointer_cast<T>(collider);
-				return ret.get();
-			}
-			return nullptr;
+			return dynamic_cast<T*>(collider.get());
 		}
 
 	protected:

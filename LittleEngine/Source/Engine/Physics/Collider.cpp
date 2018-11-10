@@ -129,8 +129,8 @@ namespace LittleEngine {
 		}
 	}
 
-	Component::Ptr AABBCollider::SClone(Actor& owner) const {
-		return std::make_shared<AABBCollider>(owner, *this);
+	Component::Ptr AABBCollider::UClone(Actor& owner) const {
+		return std::make_unique<AABBCollider>(owner, *this);
 	}
 
 	bool AABBCollider::IsIntersectAABB(const AABBCollider & rhs) const {
@@ -197,7 +197,7 @@ namespace LittleEngine {
 		}
 	}
 
-	Component::Ptr CircleCollider::SClone(Actor& owner) const {
-		return std::make_shared<CircleCollider>(owner, *this);
+	Component::Ptr CircleCollider::UClone(Actor& owner) const {
+		return std::make_unique<CircleCollider>(owner, *this);
 	}
 }
