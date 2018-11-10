@@ -8,15 +8,18 @@
 
 namespace LittleEngine { namespace DebugConsole {
 	namespace Commands {
-		static std::vector<LogLine> GetAllCommands();
-		static LittleEngine::Engine* pEngine;
+		namespace Local {
+			std::vector<LogLine> GetAllCommands();
+			LittleEngine::Engine* pEngine;
+		}
 
+#pragma region Commands
 		class Command {
 		public:
 			std::string name;
 
 			Command() {
-				if (!Commands::pEngine) {
+				if (!Commands::Local::pEngine) {
 					Logger::Log("DebugConsole Engine* not set!", Logger::Severity::Error);
 				}
 			}
@@ -45,7 +48,7 @@ namespace LittleEngine { namespace DebugConsole {
 			HelpCommand() : Command("help") {}
 
 			virtual void FillExecuteResult(const std::string& params) override {
-				executeResult = GetAllCommands();
+				executeResult = Local::GetAllCommands();
 			}
 		};
 
@@ -126,7 +129,7 @@ namespace LittleEngine { namespace DebugConsole {
 
 			virtual void FillExecuteResult(const std::string& params) override {
 				executeResult.emplace_back("Quitting instantly", LOG_WARNING_COLOUR);
-				Commands::pEngine->Quit();
+				Commands::Local::pEngine->Quit();
 			}
 		};
 
@@ -143,82 +146,89 @@ namespace LittleEngine { namespace DebugConsole {
 				int levelID = Strings::ToInt(params);
 				if (levelID >= 0 && levelID <= Level::MAX_LEVEL_IDX) {
 					executeResult.emplace_back("Loading Level ID: " + Strings::ToString(levelID), LOG_TEXT_COLOUR);
-					Commands::pEngine->LoadLevel(static_cast<LevelID>(levelID));
+					Commands::Local::pEngine->LoadLevel(static_cast<LevelID>(levelID));
 				}
 				else {
 					executeResult.emplace_back("Invalid levelID " + params, LOG_WARNING_COLOUR);
 				}
 			}
 		};
+#pragma endregion
+#pragma region Local Namespace Impl
+		namespace Local {
+			std::map<std::string, std::unique_ptr<Command>> commands;
 
-		static std::map<std::string, std::unique_ptr<Command>> s_commands;
-
-		static std::vector<LogLine> GetAllCommands() {
-			std::vector<LogLine> result;
-			result.emplace_back("Registered commands:", LOG_TEXT_COLOUR);
-			for (auto & s_command : s_commands) {
-				result.emplace_back("\t" + s_command.second->name, LOG_TEXT_COLOUR);
-			}
-			return std::move(result);
-		}
-
-		static std::string StripPaddedSpaces(const std::string& input) {
-			size_t firstNonSpaceIdx = 0;
-			while (input[firstNonSpaceIdx] == ' ' && firstNonSpaceIdx < input.length()) {
-				++firstNonSpaceIdx;
-			}
-			size_t lastNonSpaceIdx = input.length() - 1;
-			while (input[lastNonSpaceIdx] == ' ' && lastNonSpaceIdx > firstNonSpaceIdx) {
-				--lastNonSpaceIdx;
-			}
-			return input.substr(firstNonSpaceIdx, lastNonSpaceIdx - firstNonSpaceIdx + 1);
-		}
-
-		static void SplitQuery(std::string& outQuery, std::string& outCommand, std::string& outParams) {
-			outQuery = StripPaddedSpaces(outQuery);
-			outParams = "";
-			if (outQuery.empty()) {
-				outCommand = "";
-				return;
+			std::vector<LogLine> GetAllCommands() {
+				std::vector<LogLine> result;
+				result.emplace_back("Registered commands:", LOG_TEXT_COLOUR);
+				for (auto & command : commands) {
+					result.emplace_back("\t" + command.second->name, LOG_TEXT_COLOUR);
+				}
+				return std::move(result);
 			}
 
-			size_t delimiterIdx = 0;
-			while (outQuery[delimiterIdx] != ' ' && delimiterIdx != outQuery.length()) {
-				++delimiterIdx;
+			std::string StripPaddedSpaces(const std::string& input) {
+				size_t firstNonSpaceIdx = 0;
+				while (input[firstNonSpaceIdx] == ' ' && firstNonSpaceIdx < input.length()) {
+					++firstNonSpaceIdx;
+				}
+				size_t lastNonSpaceIdx = input.length() - 1;
+				while (input[lastNonSpaceIdx] == ' ' && lastNonSpaceIdx > firstNonSpaceIdx) {
+					--lastNonSpaceIdx;
+				}
+				return input.substr(firstNonSpaceIdx, lastNonSpaceIdx - firstNonSpaceIdx + 1);
 			}
-			outCommand = outQuery.substr(0, delimiterIdx);
-			if (delimiterIdx + 1 < outQuery.length()) {
-				outParams = outQuery.substr(delimiterIdx + 1, outQuery.length() - delimiterIdx);
-			}
-		}
 
-		static std::vector<LogLine> ExecuteQuery(const std::string& command, const std::string& params) {
-			std::vector<LogLine> ret;
-			auto search = s_commands.find(command);
-			if (search != s_commands.end()) {
-				ret = search->second->Execute(params);
-			}
-			return std::move(ret);
-		}
+			void SplitQuery(std::string& outQuery, std::string& outCommand, std::string& outParams) {
+				outQuery = StripPaddedSpaces(outQuery);
+				outParams = "";
+				if (outQuery.empty()) {
+					outCommand = "";
+					return;
+				}
 
-		static std::vector<Command*> FindCommands(const std::string& incompleteCommand) {
-			std::vector<Command*> results;
-			for (auto & s_command : s_commands) {
-				std::string name = s_command.second->name;
-				if (name.find(incompleteCommand) != std::string::npos) {
-					results.push_back(s_command.second.get());
+				size_t delimiterIdx = 0;
+				while (outQuery[delimiterIdx] != ' ' && delimiterIdx != outQuery.length()) {
+					++delimiterIdx;
+				}
+				outCommand = outQuery.substr(0, delimiterIdx);
+				if (delimiterIdx + 1 < outQuery.length()) {
+					outParams = outQuery.substr(delimiterIdx + 1, outQuery.length() - delimiterIdx);
 				}
 			}
-			return std::move(results);
+
+			std::vector<LogLine> ExecuteQuery(const std::string& command, const std::string& params) {
+				std::vector<LogLine> ret;
+				auto search = commands.find(command);
+				if (search != commands.end()) {
+					ret = search->second->Execute(params);
+				}
+				return std::move(ret);
+			}
+
+			std::vector<Command*> FindCommands(const std::string& incompleteCommand) {
+				std::vector<Command*> results;
+				for (auto & command : commands) {
+					std::string name = command.second->name;
+					if (name.find(incompleteCommand) != std::string::npos) {
+						results.push_back(command.second.get());
+					}
+				}
+				return std::move(results);
+			}
 		}
+#pragma endregion
+
+#pragma region Implementation
+		using namespace Local;
 
 		void Init(LittleEngine::Engine& engine) {
 			pEngine = &engine;
-			s_commands.emplace("help", std::make_unique<HelpCommand>());
-			s_commands.emplace("show", std::make_unique<ShowCommand>());
-			s_commands.emplace("hide", std::make_unique<HideCommand>());
-			s_commands.emplace("quit", std::make_unique<QuitCommand>());
-			s_commands.emplace("loadlevel", std::make_unique<LoadLevelCommand>());
+			commands.emplace("help", std::make_unique<HelpCommand>());
+			commands.emplace("show", std::make_unique<ShowCommand>());
+			commands.emplace("hide", std::make_unique<HideCommand>());
+			commands.emplace("quit", std::make_unique<QuitCommand>());
+			commands.emplace("loadlevel", std::make_unique<LoadLevelCommand>());
 		}
 
 		std::vector<LogLine> Execute(const std::string & query) {
@@ -264,4 +274,5 @@ namespace LittleEngine { namespace DebugConsole {
 			return std::move(results);
 		}
 	}
+#pragma endregion
 } }

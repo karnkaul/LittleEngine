@@ -4,6 +4,11 @@
 #include "SFMLInterface/Rendering/RenderParams.h"
 
 namespace LittleEngine { namespace DebugConsole {
+	extern const Colour LOG_BG_COLOUR;
+	extern const Colour LOG_TEXT_COLOUR;
+	extern const Colour LOG_QUERY_COLOUR;
+	extern const Colour LOG_WARNING_COLOUR;
+
 	void Init(Engine& engine);
 	bool IsActive();
 	void Activate(bool bSetActive);

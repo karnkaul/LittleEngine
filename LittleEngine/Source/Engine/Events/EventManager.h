@@ -22,7 +22,6 @@ namespace LittleEngine {
 		int Notify(GameEvent eventType);
 	
 	private:
-		//using OnEventPtr = std::shared_ptr<OnEvent>;
 		using Subscribers = std::unordered_map<GameEvent, OnEvent>;
 		
 		Subscribers subscribers;

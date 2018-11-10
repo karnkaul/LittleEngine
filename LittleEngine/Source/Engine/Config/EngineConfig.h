@@ -14,6 +14,7 @@ namespace LittleEngine {
 	class EngineConfig {
 	public:
 		EngineConfig();
+		~EngineConfig();	// default destructor won't compile with unique_ptr member to incomplete type
 
 		// Load config file from path and replace cache values if valid
 		bool Load(const std::string& path);
@@ -31,20 +32,6 @@ namespace LittleEngine {
 		void SetColliderBorderWidth(const Fixed& shapeWidth);
 
 	private:
-		struct Data {
-			const static std::string WINDOW_TITLE_KEY;
-			const static std::string LOG_LEVEL_KEY;
-			const static std::string SCREEN_WIDTH_KEY;
-			const static std::string SCREEN_HEIGHT_KEY;
-			const static std::string COLLIDER_SHAPE_WIDTH_KEY;
-
-			Property windowTitle;
-			Property logLevel;
-			Property screenWidth;
-			Property screenHeight;
-			Property colliderBorderWidth;
-		};
-
-		Data cache;
+		std::unique_ptr<struct Data> cache;		// PIMPL
 	};
 }

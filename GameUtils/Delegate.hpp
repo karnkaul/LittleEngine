@@ -4,10 +4,10 @@
 
 namespace GameUtils {
 	// \brief Tokenised callback with a parameter
-	// Usage: Declare a Delegate using the type that will be passed in 
-	// as a parameter when triggering the delegate (operator()).
-	// Registering object to keep received Token alive to maintain registration
-	// Discard received Token to unregister associated callback
+	// Usage: Declare a Delegate using the types that will be passed in 
+	// as parameters (if any) when triggering the delegate (operator()).
+	// Keep received Token alive to maintain registration,
+	// discard Token to unregister associated callback
 	template<typename... T>
 	class Delegate {
 	public:
