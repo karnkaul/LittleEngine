@@ -11,7 +11,7 @@ namespace LittleEngine {
 	}
 
 	VFX::VFX(Level& owner, const VFX & prototype) : Actor(owner, prototype), soundAssets(prototype.soundAssets), sfxVol(prototype.sfxVol) {
-		std::shared_ptr<Component> animatorComponent = prototype.animator->SClone(*this);
+		Component::Ptr animatorComponent = prototype.animator->SClone(*this);
 		animator = dynamic_cast<SpriteAnimator*>(animatorComponent.get());
 		components.push_back(animatorComponent);
 		animator->Stop();

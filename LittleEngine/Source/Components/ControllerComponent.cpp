@@ -79,7 +79,7 @@ namespace LittleEngine {
 		}
 	}
 
-	std::shared_ptr<Component> ControllerComponent::SClone(Actor& owner) const {
+	Component::Ptr ControllerComponent::SClone(Actor& owner) const {
 		return std::make_shared<ControllerComponent>(owner, *this);
 	}
 

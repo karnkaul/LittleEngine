@@ -129,7 +129,7 @@ namespace LittleEngine {
 		}
 	}
 
-	std::shared_ptr<Component> AABBCollider::SClone(Actor& owner) const {
+	Component::Ptr AABBCollider::SClone(Actor& owner) const {
 		return std::make_shared<AABBCollider>(owner, *this);
 	}
 
@@ -197,7 +197,7 @@ namespace LittleEngine {
 		}
 	}
 
-	std::shared_ptr<Component> CircleCollider::SClone(Actor& owner) const {
+	Component::Ptr CircleCollider::SClone(Actor& owner) const {
 		return std::make_shared<CircleCollider>(owner, *this);
 	}
 }

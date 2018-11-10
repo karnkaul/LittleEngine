@@ -21,7 +21,7 @@ namespace LittleEngine {
 
 		virtual void Tick(Fixed deltaTime) override;
 		virtual void Render(RenderParams params) override;
-		virtual std::shared_ptr<Component> SClone(Actor& owner) const override;
+		virtual Component::Ptr SClone(Actor& owner) const override;
 
 	private:
 		std::unique_ptr<SpriteRenderer> spriteRenderer = nullptr;

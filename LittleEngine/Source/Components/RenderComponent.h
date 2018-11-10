@@ -38,7 +38,7 @@ namespace LittleEngine {
 		TextRenderer& SetTextRenderer(const std::string& text);
 
 		virtual void Render(RenderParams params) override;
-		virtual std::shared_ptr<Component> SClone(Actor& owner) const override;
+		virtual Component::Ptr SClone(Actor& owner) const override;
 		
 	protected:
 		void SetRenderer(std::unique_ptr<Renderer> renderer);

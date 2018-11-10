@@ -92,7 +92,7 @@ namespace LittleEngine {
 		}
 	}
 
-	std::shared_ptr<Component> SpriteAnimator::SClone(Actor& owner) const {
+	Component::Ptr SpriteAnimator::SClone(Actor& owner) const {
 		return std::make_shared<SpriteAnimator>(owner, *this);
 	}
 

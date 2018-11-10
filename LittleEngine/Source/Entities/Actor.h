@@ -13,7 +13,7 @@ namespace LittleEngine {
 	using Transform = GameUtils::Transform;
 
 	// \brief Base class representing a renderable entity in the world
-	class Actor : public Object, public std::enable_shared_from_this<Actor> {
+	class Actor : public Object {
 	public:
 		using Ptr = std::unique_ptr<Actor>;
 
@@ -90,7 +90,7 @@ namespace LittleEngine {
 		}
 
 	protected:
-		std::vector<std::shared_ptr<Component>> components;
+		std::vector<Component::Ptr> components;
 		Collider::Ptr collider;
 		Transform transform;
 		Level* level;

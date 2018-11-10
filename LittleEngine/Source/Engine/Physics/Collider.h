@@ -62,7 +62,7 @@ namespace LittleEngine {
 		virtual bool IsIntersecting(const Collider& rhs) const override;
 		virtual void DrawDebugShape(bool bShow, const Fixed& thickness = DEBUG_BORDER_WIDTH) override;
 		virtual void Render(RenderParams params) override;
-		virtual std::shared_ptr<Component> SClone(Actor& owner) const override;
+		virtual Component::Ptr SClone(Actor& owner) const override;
 
 	protected:
 		friend class AABBCollider;
@@ -85,7 +85,7 @@ namespace LittleEngine {
 		virtual bool IsIntersecting(const Collider& rhs) const override;
 		virtual void DrawDebugShape(bool bShow, const Fixed& thickness = DEBUG_BORDER_WIDTH) override;
 		virtual void Render(RenderParams params) override;
-		virtual std::shared_ptr<Component> SClone(Actor& owner) const override;
+		virtual Component::Ptr SClone(Actor& owner) const override;
 
 	protected:
 		friend class CircleCollider;

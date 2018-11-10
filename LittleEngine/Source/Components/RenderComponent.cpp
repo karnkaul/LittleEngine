@@ -72,7 +72,7 @@ namespace LittleEngine {
 	void RenderComponent::Render(RenderParams params) {
 		renderer->Render(params);
 	}
-	std::shared_ptr<Component> RenderComponent::SClone(Actor& owner) const {
+	Component::Ptr RenderComponent::SClone(Actor& owner) const {
 		return std::make_shared<RenderComponent>(owner, *this);
 	}
 }

@@ -11,9 +11,7 @@ namespace LittleEngine {
 		Collider::Ptr lhs;
 		bool operator()(Collider::wPtr rhs) {
 			Collider::Ptr _c = rhs.lock();
-			if (_c != nullptr) {
-				return _c.get() == lhs.get();
-			}
+			if (_c) return _c.get() == lhs.get();
 			return false;
 		}
 	};
