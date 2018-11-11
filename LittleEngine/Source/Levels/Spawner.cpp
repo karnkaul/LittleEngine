@@ -6,50 +6,48 @@
 
 namespace LittleEngine {
 	namespace Spawner {
-		static Level* s_activeLevel;
+		static Level* activeLevel;
 
 		namespace VFXPrototypes {
-			static std::shared_ptr<VFX> s_explode;
+			VFX* explode = nullptr;
 
-			static void Cleanup() {
-				if (s_explode) {
-					s_explode->Destruct();
+			void Cleanup() {
+				if (explode) {
+					explode->Destruct();
 				}
-				s_explode = nullptr;
+				explode = nullptr;
 			}
 		}
 
 		void Init(Level& activeLevel) {
-			s_activeLevel = &activeLevel;
+			Spawner::activeLevel = &activeLevel;
 		}
 
 		void Cleanup() {
 			VFXPrototypes::Cleanup();
-			s_activeLevel = nullptr;
+			activeLevel = nullptr;
 		}
 
 		void VFXExplode_Warm() {
-			if (s_activeLevel) {
+			if (activeLevel) {
 				AssetManifest manifest;
 				manifest.AddDefinition(AssetType::Texture, AssetPaths("VFX/Explode", 14, "", ".png"));
 				manifest.AddDefinition(AssetType::Sound, AssetPaths("VFX/Explode", 1, "", ".wav"));
-				s_activeLevel->GetAssetManager().LoadAll(manifest);
+				activeLevel->GetAssetManager().LoadAll(manifest);
 
-				auto explode = s_activeLevel->SpawnActor<VFX>("Explode");
-				if (VFXPrototypes::s_explode = explode.lock()) {
-					VFXPrototypes::s_explode->ToggleActive(false);
+				if (VFXPrototypes::explode = activeLevel->SpawnActor<VFX>("Explode", false)) {
 					AssetPaths spriteSheet("VFX/Explode", 14, "", ".png");
 					AssetPaths sfx("VFX/Explode", 1, "", ".wav");
-					VFXPrototypes::s_explode->Init(spriteSheet, sfx, Fixed(1000), Fixed(3, 10), false);
+					VFXPrototypes::explode->Init(spriteSheet, sfx, Fixed(1000), Fixed(3, 10), false);
 				}
 			}
 		}
 
-		std::shared_ptr<VFX> VFXExplode(const Vector2& position) {
-			if (!s_activeLevel) return nullptr;
+		VFX* VFXExplode(const Vector2& position) {
+			if (!activeLevel) return nullptr;
 
-			if (VFXPrototypes::s_explode) {
-				std::shared_ptr<VFX> explode = (s_activeLevel->CloneActor<VFX>(*VFXPrototypes::s_explode).lock());
+			if (VFXPrototypes::explode) {
+				VFX* explode = (activeLevel->CloneActor<VFX>(*VFXPrototypes::explode));
 				explode->GetTransform().localPosition = position;
 				return explode;
 			}

@@ -7,7 +7,6 @@
 #include "SFMLInterface/SystemClock.h"
 #include "SFMLInterface/WindowController.h"
 #include "SFMLInterface/Audio/AudioPlayer.h"
-#include "SFMLInterface/Rendering/RenderFactory.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 #include "SFMLInterface/Rendering/Renderer.h"
 #include "SFMLInterface/Rendering/ShapeRenderer.h"

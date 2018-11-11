@@ -7,6 +7,7 @@ namespace LittleEngine {
 	class Actor;
 	class CollisionManager;
 	class World;
+	class ShapeRenderer;
 
 	// \brief Base class for Collision detection on an Actor.
 	// Note: Registration with CollisionManager must be handled by owner
@@ -21,16 +22,17 @@ namespace LittleEngine {
 		// Abstract Visitor
 		virtual bool IsIntersecting(const Collider& rhs) const = 0;
 		virtual void DrawDebugShape(bool show, const Fixed& thickness = DEBUG_BORDER_WIDTH) = 0;
-		// Covariant override for Component::SClone()
-		virtual std::shared_ptr<Collider> SCloneCollider(Actor& owner) const = 0;
 
 		void OnHit(Collider& other);
 
 	protected:
 		const World* world;
-		std::shared_ptr<class ShapeRenderer> debugShape;
+		std::unique_ptr<ShapeRenderer> debugShape;
 
 		Collider(Actor& actor, const std::string& name);
+		Collider(Actor& owner, const Collider& prototype);
+
+		bool IsShowingDebugShape() const;
 		
 		friend class AABBCollider;
 		// AABB Visitor 
@@ -43,6 +45,9 @@ namespace LittleEngine {
 	private:
 		GameUtils::Delegate<>::Token debugOnToken;
 		GameUtils::Delegate<>::Token debugOffToken;
+		static bool bShowingDebugShapes;
+
+		void RegisterSubscribers();
 	};
 
 	// \brief Concrete class for 2D Circle collider
@@ -57,7 +62,7 @@ namespace LittleEngine {
 		virtual bool IsIntersecting(const Collider& rhs) const override;
 		virtual void DrawDebugShape(bool bShow, const Fixed& thickness = DEBUG_BORDER_WIDTH) override;
 		virtual void Render(RenderParams params) override;
-		virtual std::shared_ptr<Collider> SCloneCollider(Actor& owner) const override;
+		virtual Component::Ptr UClone(Actor& owner) const override;
 
 	protected:
 		friend class AABBCollider;
@@ -80,7 +85,7 @@ namespace LittleEngine {
 		virtual bool IsIntersecting(const Collider& rhs) const override;
 		virtual void DrawDebugShape(bool bShow, const Fixed& thickness = DEBUG_BORDER_WIDTH) override;
 		virtual void Render(RenderParams params) override;
-		virtual std::shared_ptr<Collider> SCloneCollider(Actor& owner) const override;
+		virtual Component::Ptr UClone(Actor& owner) const override;
 
 	protected:
 		friend class CircleCollider;

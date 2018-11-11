@@ -19,7 +19,7 @@ namespace LittleEngine {
 		virtual ~ControllerComponent();
 		
 		virtual void Tick(Fixed deltaTime) override;
-		virtual std::shared_ptr<Component> SClone(Actor& owner) const override;
+		virtual Component::Ptr UClone(Actor& owner) const override;
 
 	private:
 		class RenderComponent* renderer = nullptr;

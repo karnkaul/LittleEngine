@@ -1,48 +1,36 @@
 #include "le_stdafx.h"
 #include "CollisionManager.h"
 #include "Collider.h"
-#include "Engine/Logger/Logger.h"
 #include "Entities/Actor.h"
 #include "Utils.h"
 
 namespace LittleEngine {
-	struct ColliderComparer {
-		ColliderComparer(Collider::Ptr lhs) : lhs(lhs) {}
-		Collider::Ptr lhs;
-		bool operator()(Collider::wPtr rhs) {
-			Collider::Ptr _c = rhs.lock();
-			if (_c != nullptr) {
-				return _c.get() == lhs.get();
-			}
-			return false;
-		}
-	};
-
 	CollisionManager::CollisionManager() : Object("CollisionManager") {
 	}
 
-	void CollisionManager::Register(Collider::Ptr collider) {
-		colliders.push_back(collider);
-		Logger::Log(*this, "Registered new collider", Logger::Severity::Debug);
-	}
-	
-
-	bool CollisionManager::Unregister(Collider::Ptr collider) {
+	bool CollisionManager::Unregister(Collider & collider) {
 		if (!colliders.empty()) {
-			ColliderComparer comparer(collider);
-			auto search = std::find_if(colliders.begin(), colliders.end(), comparer);
+			auto search = std::find_if(colliders.begin(), colliders.end(),
+			[&collider](Collider::wPtr toCompare) {
+				if (auto rhs = toCompare.lock()) {
+					return rhs.get() == &collider;
+				}
+				return false;
+			}
+			);
 			if (search != colliders.end()) {
 				colliders.erase(search);
+				Logger::Log(*this, "Unregistered 1 existing " + collider.GetNameInBrackets() + " collider", Logger::Severity::Debug);
 				return true;
 			}
 		}
+		Logger::Log("Ignored attempt to unregistered untracked collider: " + collider.GetNameInBrackets(), Logger::Severity::Info);
 		return false;
 	}
 
 	void CollisionManager::FixedTick() {
 		Cleanup();
 		if (colliders.size() < 2) return;
-		Logger::Log(*this, "Processing " + std::to_string(colliders.size()) + " Colliders", Logger::Severity::HOT);
 		for (size_t i = 0; i < colliders.size(); ++i) {
 			auto lhs = colliders[i].lock();
 			if (lhs != nullptr) {
@@ -60,7 +48,7 @@ namespace LittleEngine {
 		GameUtils::EraseNullWeakPtrs<Collider>(colliders);
 		int diff = count - static_cast<int>(colliders.size());
 		if (diff > 0) {
-			Logger::Log(*this, "Removed " + std::to_string(diff) + " stale Colliders ", Logger::Severity::Debug);
+			Logger::Log(*this, "Removed " + Strings::ToString(diff) + " stale Colliders ", Logger::Severity::Debug);
 		}
 	}
 

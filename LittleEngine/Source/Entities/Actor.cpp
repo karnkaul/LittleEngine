@@ -9,7 +9,6 @@
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 #include "SFMLInterface/Rendering/Renderer.h"
-#include "SFMLInterface/Rendering/RenderFactory.h"
 #include "SFMLInterface/Rendering/SpriteRenderer.h"
 #include "Components/Component.h"
 #include "Utils.h"
@@ -25,17 +24,16 @@ namespace LittleEngine {
 		transform.localPosition = prototype.transform.localPosition;
 		transform.localRotation = prototype.transform.localRotation;
 		for (const auto& toImport : prototype.components) {
-			components.emplace_back(toImport->SClone(*this));
+			components.emplace_back(toImport->UClone(*this));
 		}
 		if (prototype.collider) {
-			collider = prototype.collider->SCloneCollider(*this);
-			GetActiveLevel().GetCollisionManager().Register(collider);
+			collider = GetActiveLevel().GetCollisionManager().CreateCollider(*this, *prototype.collider);
 		}
 		Logger::Log(*this, GetNameInBrackets() + " (Actor) cloned at " + transform.Position().ToString());
 	}
 
 	Actor::~Actor() {
-		if (collider && GetActiveLevel().GetCollisionManager().Unregister(collider)) {
+		if (collider && GetActiveLevel().GetCollisionManager().Unregister(*collider)) {
 			collider = nullptr;
 		}
 		tokenHandler.Clear();
@@ -122,5 +120,9 @@ namespace LittleEngine {
 
 	Level & Actor::GetActiveLevel() const {
 		return *level;
+	}
+
+	int Actor::GetActorID() const {
+		return actorID;
 	}
 }

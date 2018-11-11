@@ -11,11 +11,11 @@ namespace LittleEngine {
 		virtual void Tick(Fixed deltaTime) override;
 
 	protected:
-		virtual void Activate() override;
+		virtual void OnActivated() override;
 
 	private:
 		class TextRenderer* logoRenderer;
-		Actor::wPtr _logo;
+		int logoID = 0;
 
 		void OnLoadNextLevel();
 	};

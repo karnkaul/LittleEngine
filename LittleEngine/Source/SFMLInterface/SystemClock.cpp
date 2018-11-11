@@ -3,18 +3,22 @@
 
 namespace LittleEngine {
 	namespace SystemClock {
-		static sf::Clock s_clock;
+		namespace Local {
+			sf::Clock clock;
+		}
+
+		using namespace Local;
 
 		int GetCurrentMilliseconds() {
-			return s_clock.getElapsedTime().asMilliseconds();
+			return clock.getElapsedTime().asMilliseconds();
 		}
 
 		int64_t GetCurrentMicroseconds() {
-			return static_cast<int64_t>(s_clock.getElapsedTime().asMicroseconds());
+			return static_cast<int64_t>(clock.getElapsedTime().asMicroseconds());
 		}
 
 		void Restart() {
-			s_clock.restart();
+			clock.restart();
 		}
 	}
 }

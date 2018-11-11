@@ -5,17 +5,6 @@
 #include "Utils.h"
 
 namespace LittleEngine {
-	InputHandler::InputObserver::InputObserver(OnInput&& callback, bool bConsume, const OnKey& type)
-		: callback(std::move(callback)), bConsume(bConsume), type(type) {
-	}
-
-	InputHandler::InputObserver & InputHandler::InputObserver::operator=(InputObserver && move) {
-		callback = std::move(move.callback);
-		bConsume = move.bConsume;
-		type = move.type;
-		return *this;
-	}
-
 	InputHandler::InputHandler() : Object("InputHandler") {
 		/* Setup Input Bindings */ {
 			gamepad.Bind(KeyCode::Up, GameInput::Up);
@@ -37,6 +26,18 @@ namespace LittleEngine {
 
 			gamepad.Bind(KeyCode::F12, GameInput::Debug0);
 		}
+
+		generalObservers = {
+			{ OnKey::Pressed, InputMap() },
+			{ OnKey::Held, InputMap() },
+			{ OnKey::Released, InputMap() }
+		};
+
+		consumingObservers = {
+			{ OnKey::Pressed, InputVecMap() },
+			{ OnKey::Held, InputVecMap() },
+			{ OnKey::Released, InputVecMap() }
+		};
 		Logger::Log(*this, "InputHandler constructed");
 	}
 
@@ -50,23 +51,36 @@ namespace LittleEngine {
 	}
 
 	OnInput::Token InputHandler::Register(const GameInput& input, OnInput::Callback callback, const OnKey& type, bool bConsume) {
-		OnInput newDelegate;
-		OnInput::Token token = newDelegate.Register(callback);
-		auto iter = inputObservers.find(input);
-		size_t size = 0;
-		if (iter != inputObservers.end()) {
-			auto& vec = iter->second;
-			vec.emplace_back(std::move(newDelegate), bConsume, type);
-			size = vec.size();
+		// Consumers get a Delegate<> each, and go into a vector in consumingObservers
+		if (bConsume) {
+			// Prepare new delegate and token
+			OnInput newDelegate;
+			OnInput::Token token = newDelegate.Register(callback);
+			InputVecMap& toModify = consumingObservers[type];
+			auto iter = toModify.find(input);
+			// Vector exists, add new delegate
+			if (iter != toModify.end()) {
+				iter->second.emplace_back(std::move(newDelegate));
+			}
+			// Create vector and add to map
+			else {
+				std::vector<OnInput> vec = { std::move(newDelegate) };
+				toModify.emplace(input, std::move(vec));
+			}
+			return token;
 		}
+		// General observers are registered to the same delegate, go into generalObservers
 		else {
-			std::vector<InputObserver> newVec {
-				InputObserver(std::move(newDelegate), bConsume, type)
-			};
-			size = newVec.size();
-			inputObservers.insert(std::pair<GameInput, std::vector<InputObserver>>(input, std::move(newVec)));
+			InputMap& toModify = generalObservers[type];
+			auto iter = toModify.find(input);
+			// Delegate doesn't exist, create new and add to map
+			if (iter == toModify.end()) {
+				toModify.emplace(input, OnInput());
+				return toModify[input].Register(callback);
+			}
+			// Delegate exists, register directly
+			return iter->second.Register(callback);
 		}
-		return token;
 	}
 
 	void InputHandler::CaptureState(const std::vector<KeyState>& pressedKeys) {
@@ -88,72 +102,62 @@ namespace LittleEngine {
 		this->rawTextInput = rawTextInput;
 	}
 
-	void InputHandler::Cleanup(std::vector<InputObserver>& vec) {
-		int before = static_cast<int>(vec.size());
-		GameUtils::CleanVector<InputObserver>(vec, [](InputObserver& observer) { return !observer.callback.IsAlive(); });
-		int deleted = before - static_cast<int>(vec.size());
-		if (deleted > 0) {
-			Logger::Log(*this, std::to_string(deleted) + " expired Observers deleted", Logger::Severity::Debug);
-		}
-	}
-
-	OnInput::Token InputHandler::Register(std::unordered_map<GameInput, std::vector<InputObserver>>& map, OnInput::Callback callback, GameInput keyCode, bool consume) {
-		OnInput newDelegate;
-		OnInput::Token token = newDelegate.Register(callback);
-		auto iter = map.find(keyCode);
-		size_t size = 0;
-		if (iter != map.end()) {
-			auto& vec = iter->second;
-			vec.emplace_back(std::move(newDelegate), consume, OnKey::Held);
-			size = vec.size();
-		}
-		else {
-			std::vector<InputObserver> newVec{
-				InputObserver(std::move(newDelegate), consume, OnKey::Held)
-			};
-			size = newVec.size();
-			map.insert(std::pair<GameInput, std::vector<InputObserver>>(keyCode, std::move(newVec)));
-		}
-		return token;
-	}
-
-	void InputHandler::FireCallbacks(const std::vector<GameInput>& inputs, std::unordered_map<GameInput, std::vector<InputObserver>>& map, OnKey type) {
+	void InputHandler::FireCallbacks(const std::vector<GameInput>& inputs, OnKey type) {
+		InputVecMap& consumers = consumingObservers[type];
 		for (const auto& input : inputs) {
-			auto iter = map.find(input);
-			if (iter != map.end()) {
-				auto& vec = iter->second;
-				Cleanup(vec);
-				for (auto iter = vec.rbegin(); iter != vec.rend(); ++iter) {
-					auto& observer = *iter;
-					if (observer.type == type) {
-						observer.callback();
+			// If any consuming callbacks exist, general ones will not be fired
+			bool fireGeneral = true;
+			auto vecIter = consumers.find(input);
+			if (vecIter != consumers.end()) {
+				auto& vector = vecIter->second;
+				GameUtils::CleanVector<OnInput>(vector, [](OnInput& Callback) { return !Callback.IsAlive(); });
+				// Consuming callbacks exist; fire last/latest one
+				if (!vector.empty()) {
+					fireGeneral = false;
+					auto iter = vector.rbegin();
+					if (iter != vector.rend()) {
+						(*iter)();
 					}
-					if (observer.bConsume) {
-						break;
-					}
+				}
+			}
+			// No consumers exist. Fire all general callbacks
+			if (fireGeneral) {
+				InputMap& general = generalObservers[type];
+				auto iter = general.find(input);
+				if (iter != general.end()) {
+					iter->second();
 				}
 			}
 		}
 	}
 
 	void InputHandler::FireInput() {
-		std::vector<GameInput> onPressed, onHeld;
+		std::vector<GameInput> onPressed, onHeld, onReleased;
 		
 		// Build OnPressed and OnHeld vectors
 		for (auto input : currentSnapshot) {
 			auto search = GameUtils::VectorSearch(previousSnapshot, input);
 			if (search != previousSnapshot.end()) {
 				onHeld.push_back(input);
-				previousSnapshot.erase(search);
 			}
 			else {
 				onPressed.push_back(input);
 			}
 		}
+		
+		// Build OnReleased => all GameInputs in previousSnapshot that aren't in onHeld
+		onReleased = previousSnapshot;
+		onReleased.erase(std::remove_if(onReleased.begin(), onReleased.end(),
+			[&onHeld](GameInput input) -> bool {
+				for (auto compare : onHeld) {
+					if (compare == input) return true;
+				}
+				return false;
+			}
+		), onReleased.end());
 
-		// Fire callbacks
-		FireCallbacks(onPressed, inputObservers, OnKey::Pressed);
-		FireCallbacks(onHeld, inputObservers, OnKey::Held);
-		FireCallbacks(previousSnapshot, inputObservers, OnKey::Released);
+		if (!onPressed.empty()) FireCallbacks(onPressed, OnKey::Pressed);
+		if (!onHeld.empty()) FireCallbacks(onHeld, OnKey::Held);
+		if (!onReleased.empty()) FireCallbacks(onReleased, OnKey::Released);
 	}
 }

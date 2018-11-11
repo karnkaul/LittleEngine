@@ -4,6 +4,12 @@
 namespace LittleEngine {
 	class Object;
 
+#if DEBUG
+	#define DEBUG_ASSERT(expr, errLog)		if (!(expr)) { Log(errLog, Logger::Severity::Error); }
+#else
+	#define DEBUG_ASSERT(x, y)
+#endif
+
 	// \brief Simple runtime stdout logger; 
 	// Writes to debug.log using FileLogger
 	namespace Logger {
@@ -11,7 +17,7 @@ namespace LittleEngine {
 		
 		void Log(const Object& context, const std::string& message, Severity severity = Severity::Info);
 		void Log(const std::string& message, Severity severity = Severity::Info);
-		void Log(const std::string& caller, const std::string& message, Severity severity = Severity::Info);
+		void Log(std::string caller, const std::string& message, Severity severity = Severity::Info);
 		void Cleanup();
 
 		extern Severity g_logLevel;

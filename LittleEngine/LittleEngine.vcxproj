@@ -34,7 +34,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -47,7 +47,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -211,7 +211,6 @@
     <ClInclude Include="Source\SFMLInterface\SystemClock.h" />
     <ClInclude Include="Source\SFMLInterface\Input.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\Renderer.h" />
-    <ClInclude Include="Source\SFMLInterface\Rendering\RenderFactory.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\RenderParams.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\ShapeRenderer.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\SpriteRenderer.h" />
@@ -248,7 +247,6 @@
     <ClCompile Include="Source\Misc\Stopwatch.cpp" />
     <ClCompile Include="Source\SFMLInterface\Assets.cpp" />
     <ClCompile Include="Source\SFMLInterface\Audio\AudioPlayer.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Rendering\RenderFactory.cpp" />
     <ClCompile Include="Source\SFMLInterface\SystemClock.cpp" />
     <ClCompile Include="Source\SFMLInterface\Input.cpp" />
     <ClCompile Include="Source\SFMLInterface\Rendering\Renderer.cpp" />

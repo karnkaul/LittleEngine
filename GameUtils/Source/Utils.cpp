@@ -4,7 +4,7 @@
 
 namespace Maths {
 	bool _bInit = false;
-	void InitRand(bool useTime = true) {
+	static void InitRand(bool useTime = true) {
 		if (useTime) {
 			srand(static_cast<unsigned int>(time(nullptr)));
 		}
@@ -46,7 +46,7 @@ namespace Strings {
 	bool ToBool(const std::string& input, bool bDefaultValue) {
 		std::string inputLower(input);
 		ToLower(inputLower);
-		if (inputLower == "true") {
+		if (inputLower == "true" || inputLower == "1") {
 			return true;
 		}
 		return bDefaultValue;
@@ -74,27 +74,21 @@ namespace Strings {
 		return ret;
 	}
 
-	std::string ToString(int input) {
-		return std::to_string(input);
-	}
-
 	std::string ToString(bool bInput) {
 		return bInput ? "true" : "false";
 	}
 
-	std::pair<std::string, std::string> Slice(const std::string & input, char delimiter) {
+	Pair Slice(const std::string & input, char delimiter) {
 		size_t idx = input.find(delimiter);
 		std::string rhs = idx < input.size() ? input.substr(idx + 1) : "";
-		return std::pair<std::string, std::string>(input.substr(0, idx), std::move(rhs));
+		return Pair(input.substr(0, idx), std::move(rhs));
 	}
 
 	void RemoveChars(std::string & outInput, std::initializer_list<char> toRemove) {
 		std::string::iterator iter = std::remove_if(outInput.begin(), outInput.end(), 
-		[&toRemove](char c) {
+		[&toRemove](char c) -> bool {
 			for (const auto& x : toRemove) {
-					if (c == x) {
-						return true;
-					}
+					if (c == x) return true;
 				}
 				return false;
 			}

@@ -4,7 +4,6 @@
 #include "Entities/Actor.h"
 #include "Utils.h"
 #include "SFMLInterface/Rendering/SpriteRenderer.h"
-#include "SFMLInterface/Rendering/RenderFactory.h"
 
 namespace LittleEngine {
 	SpriteAnimator::SpriteAnimator(Actor& actor) : Component(actor, "AnimatedSprite") {	
@@ -27,7 +26,7 @@ namespace LittleEngine {
 				sprites.push_back(sprite);
 				if (!spriteRenderer) {
 					SpriteData spriteData(*sprite);
-					spriteRenderer = RenderFactory::NewSprite(spriteData);
+					spriteRenderer = std::make_unique<SpriteRenderer>(spriteData);
 				}
 			}
 		}
@@ -93,14 +92,14 @@ namespace LittleEngine {
 		}
 	}
 
-	std::shared_ptr<Component> SpriteAnimator::SClone(Actor& owner) const {
-		return std::make_shared<SpriteAnimator>(owner, *this);
+	Component::Ptr SpriteAnimator::UClone(Actor& owner) const {
+		return std::make_unique<SpriteAnimator>(owner, *this);
 	}
 
 	void SpriteAnimator::SetSprite(TextureAsset& sprite) {
 		if (!spriteRenderer) {
 			SpriteData spriteData(sprite);
-			spriteRenderer = RenderFactory::NewSprite(spriteData);
+			spriteRenderer = std::make_unique<SpriteRenderer>(spriteData);
 			spriteRenderer->layer = LayerID::Default;
 		}
 		spriteRenderer->SetEnabled(true);

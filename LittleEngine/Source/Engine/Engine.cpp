@@ -114,13 +114,16 @@ namespace LittleEngine {
 						
 						// Debug Console and Input
 						{
+#if defined(DEBUG) || defined(_DEBUG)
 							// Ignore consecutive Backticks for 200 ms
-							if ((previous - debugToggleTime) > 200.0f) {
+							const static double KEYPRESS_DELAY_MS = 200.0f;
+							if ((previous - debugToggleTime) > KEYPRESS_DELAY_MS) {
 								if (windowController->GetInput().IsKeyPressed(KeyCode::Backtick)) {
 									DebugConsole::Activate(!DebugConsole::IsActive());
 									debugToggleTime = previous;
 								}
 							}
+#endif
 							const Input& sfmlInput = windowController->GetInput();
 							if (DebugConsole::IsActive()) {
 								DebugConsole::UpdateInput(sfmlInput.GetRawSFMLInput());

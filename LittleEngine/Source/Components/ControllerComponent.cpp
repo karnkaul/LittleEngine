@@ -79,8 +79,8 @@ namespace LittleEngine {
 		}
 	}
 
-	std::shared_ptr<Component> ControllerComponent::SClone(Actor& owner) const {
-		return std::make_shared<ControllerComponent>(owner, *this);
+	Component::Ptr ControllerComponent::UClone(Actor& owner) const {
+		return std::make_unique<ControllerComponent>(owner, *this);
 	}
 
 	Vector2 ControllerComponent::GetRenderPadding() {

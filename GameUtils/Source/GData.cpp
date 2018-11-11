@@ -17,7 +17,7 @@ namespace GameUtils {
 			_rawText = temp.substr(1, temp.size() - 2);
 			std::vector<std::string> tokens = Strings::Tokenise(_rawText, ',');
 			for (const auto& token : tokens) {
-				std::pair<std::string, std::string> kvp = Strings::Slice(token, ':');
+				Strings::Pair kvp = Strings::Slice(token, ':');
 				if (!kvp.second.empty() && !kvp.first.empty()) {
 					fieldMap.insert(std::move(kvp));
 				}

@@ -18,56 +18,63 @@
 #include "Spawner.h"
 
 namespace LittleEngine {
+	int Level::nextActorID = 1000;
+	constexpr int RESERVE_HASH_BUCKETS = 2048;
+
 	Level::Level(const std::string& name) : Object(name) {
+		actorMap.reserve(RESERVE_HASH_BUCKETS);
 		Logger::Log(*this, GetNameInBrackets() + " (Level) created. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
 	}
 
 	Level::~Level() {
-		actors.clear();
+		actorMap.clear();
 		Logger::Log(*this, GetNameInBrackets() + " (Level) destroyed");
 	}
 
 	void Level::SetEngine(Engine & engine) {
 		this->engine = &engine;
+		state = State::IDLE;
 	}
 
 	void Level::LoadAssets() {}
 
 	void Level::Activate() {
+		OnActivated();
+		state = State::ACTIVE;
 		clock.Restart();
 		Logger::Log(*this, GetNameInBrackets() + " (Level) activated. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
 	}
 
+	void Level::OnActivated() {}
+
 	void Level::FixedTick() {
 		Logger::Log(*this, "Executing Fixed Tick", Logger::Severity::HOT);
 		collisionManager.FixedTick();
-		size_t countThisTurn = actors.size();
-		for (size_t i = 0; i < countThisTurn; ++i) {
-			if (!actors[i]->_bDestroyed && actors[i]->_bEnabled) {
-				actors[i]->FixedTick();
+
+		for (auto & iter : actorMap) {
+			Actor::Ptr& actor = iter.second;
+			if (!actor->_bDestroyed && actor->_bEnabled) {
+				actor->FixedTick();
 			}
 		}
 	}
 
 	void Level::Tick(Fixed deltaTime) {
-		// TEST
-		if (clock.GetElapsedMilliSeconds() > 1000 && clock.GetElapsedMilliSeconds() < 1015) {
-			Logger::Log(*this, "Player exists: " + std::to_string(player.lock() != nullptr));
-		}
+		Logger::Log(*this, "Executing Tick [" + Strings::ToString(actorMap.size()) + " actors]", Logger::Severity::HOT);
 
-		Logger::Log(*this, "Executing Tick [" + std::to_string(actors.size()) + " actors]", Logger::Severity::HOT);
-		size_t countThisTurn = actors.size();
-		for (size_t i = 0; i < countThisTurn; ++i) {
-			if (!actors[i]->_bDestroyed && actors[i]->_bEnabled) {
-				actors[i]->Tick(deltaTime);
+		for (auto & iter : actorMap) {
+			Actor::Ptr& actor = iter.second;
+			if (!actor->_bDestroyed && actor->_bEnabled) {
+				actor->Tick(deltaTime);
 			}
 		}
 	}
 
 	void Level::Render(RenderParams& params) {
 		STOPWATCH_START("Render");
-		GameUtils::CleanVector<Actor::Ptr>(actors, [](Actor::Ptr actor) { return !actor || actor->_bDestroyed; });
-		for (const auto& actor : actors) {
+		GameUtils::CleanMap<int, Actor::Ptr>(actorMap, [](Actor::Ptr& actor) { return !actor || actor->_bDestroyed; });
+		for (auto & iter : actorMap) {
+			Actor::Ptr& actor = iter.second;
 			if (actor->_bEnabled) {
 				actor->Render(params);
 			}
@@ -81,11 +88,12 @@ namespace LittleEngine {
 	void Level::PostRender(const RenderParams& params) {}
 
 	void Level::Clear() {
-		actors.clear();
-		tokenHandler.Clear();
-		Spawner::Cleanup();
 		OnClearing();
+		actorMap.clear();
+		Spawner::Cleanup();
+		tokenHandler.Clear();
 		Logger::Log(*this, GetNameInBrackets() + " (Level) deactivated. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
+		state = State::IDLE;
 	}
 
 	void Level::OnClearing() {
@@ -96,27 +104,26 @@ namespace LittleEngine {
 		tokenHandler.AddToken(std::move(token));
 	}
 
-	void Level::DestroyActor(Actor::Ptr actor) {
-		if (actor) {
-			actor->_bDestroyed = true;
+	Actor* Level::FindActor(int actorID) const {
+		auto search = actorMap.find(actorID);
+		if (search != actorMap.end()) {
+			return search->second.get();
 		}
-		else {
-			Logger::Log(*this, "Call to DestroyActor(nullptr)", Logger::Severity::Warning);
-		}
+		return nullptr;
 	}
 
-	Player::wPtr Level::GetOrSpawnPlayer(const std::string & texturePath, const AABBData & colliderBounds, const Vector2 & position, const Fixed & rotation) {
-		Player::Ptr _player;
-		if (!(_player = player.lock())) {
-			_player = std::make_shared<Player>(*this, texturePath, colliderBounds, position, rotation);
-			player = _player;
-			actors.push_back(_player);
-		}
-		return player;
+	bool Level::IsAlive(int actorID) const {
+		return actorMap.find(actorID) != actorMap.end();
 	}
 
-	Player::wPtr Level::GetPlayer() {
-		return player;
+	bool Level::DestroyActor(int actorID) {
+		Actor* search = FindActor(actorID);
+		if (search) {
+			search->Destruct();
+			return true;
+		}
+		Logger::Log(*this, "DestroyActor(): ActorID [" + Strings::ToString(actorID) + "] does not exist", Logger::Severity::Warning);
+		return false;
 	}
 
 	InputHandler & Level::GetInputHandler() const {

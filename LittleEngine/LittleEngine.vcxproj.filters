@@ -69,9 +69,6 @@
     <ClInclude Include="Source\SFMLInterface\Rendering\Renderer.h">
       <Filter>Source\SFMLInterface\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SFMLInterface\Rendering\RenderFactory.h">
-      <Filter>Source\SFMLInterface\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SFMLInterface\Rendering\RenderParams.h">
       <Filter>Source\SFMLInterface\Rendering</Filter>
     </ClInclude>
@@ -259,9 +256,6 @@
     </ClCompile>
     <ClCompile Include="Source\Components\ControllerComponent.cpp">
       <Filter>Source\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SFMLInterface\Rendering\RenderFactory.cpp">
-      <Filter>Source\SFMLInterface\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Source\SFMLInterface\Input.cpp">
       <Filter>Source\SFMLInterface</Filter>

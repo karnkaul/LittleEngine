@@ -23,7 +23,7 @@ namespace LittleEngine {
 	}
 
 	bool LevelManager::LoadLevel(const LevelID& levelID) {
-		if (levelID >= 0 && levelID < createdLevels.size()) {
+		if (levelID >= 0 && static_cast<size_t>(levelID) < createdLevels.size()) {
 			if (activeLevel) {
 				activeLevel->Clear();
 			}

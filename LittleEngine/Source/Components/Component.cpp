@@ -30,7 +30,7 @@ namespace LittleEngine {
 		return *actor;
 	}
 
-	std::shared_ptr<Component> Component::SClone(Actor& owner) const {
+	Component::Ptr Component::UClone(Actor& owner) const {
 		return nullptr;
 	}
 

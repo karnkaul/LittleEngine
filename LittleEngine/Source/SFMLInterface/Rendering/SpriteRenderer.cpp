@@ -10,7 +10,7 @@ namespace LittleEngine {
 		SetPosition(Vector2::Zero);
 	}
 
-	SpriteRenderer::SpriteRenderer(const SpriteRenderer & prototype) : Renderer(prototype.name), data(prototype.data) {
+	SpriteRenderer::SpriteRenderer(const SpriteRenderer & prototype) : Renderer(prototype), data(prototype.data) {
 		ApplyData();
 		SetPosition(Vector2::Zero);
 	}
