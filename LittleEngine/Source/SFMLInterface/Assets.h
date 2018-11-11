@@ -82,10 +82,10 @@ namespace LittleEngine {
 		AssetManifest manifest;
 	};
 
-	// \brief Abstract Wrapper class for all files that can be read as SFML assets
+	// \brief An Asset represents live data in memory that's ready to be used
 	class Asset {
 	public:
-		using Ptr = std::shared_ptr<Asset>;
+		using Ptr = std::unique_ptr<Asset>;
 		Asset() = delete;
 		// Path must be relative to the root Asset directory
 		Asset(const std::string& path);
@@ -98,7 +98,7 @@ namespace LittleEngine {
 		Asset& operator=(const Asset&) = delete;
 	};
 
-	// \brief Concrete wrapper class for SFML Textures
+	// \brief TextureAsset is an image texture copied to VRAM
 	class TextureAsset : public Asset {
 	private:
 		// Prevents having to expose texture to code outside SFMLInterface
@@ -110,7 +110,7 @@ namespace LittleEngine {
 		sf::Texture sfTexture;
 	};
 
-	// \brief Concrete wrapper for SFML Fonts
+	// \brief FontAsset is a font type loaded in RAM
 	class FontAsset : public Asset {
 	private:
 		friend class AssetManager;
@@ -121,7 +121,7 @@ namespace LittleEngine {
 		sf::Font sfFont;
 	};
 
-	// \brief Concrete wrapper for SFML Sounds
+	// \brief SoundAsset is an audio asset fully loaded in RAM
 	class SoundAsset : public Asset {
 	private:
 		friend class AssetManager;
@@ -135,7 +135,7 @@ namespace LittleEngine {
 		SoundAsset(const std::string& path, const Fixed& volumeScale = Fixed::One);
 	};
 
-	// \brief Concrete wrapper for SFML Music
+	// \brief MusicAsset points to a streamed music file on storage
 	class MusicAsset : public Asset {
 	public:
 		Fixed GetDurationSeconds() const;
@@ -175,10 +175,11 @@ namespace LittleEngine {
 			}
 
 			Logger::Log(*this, "Loading Asset [" + fullPath + "]", Logger::Severity::Info);
-			struct enable_shared : public T { enable_shared(const std::string& path) : T(path) {} };
-			std::shared_ptr<T> t_ptr = std::make_shared<enable_shared>(fullPath);
-			loaded.emplace(fullPath, t_ptr);
-			return t_ptr.get();
+			struct enable_smart : public T { enable_smart(const std::string& path) : T(path) {} };
+			std::unique_ptr<T> t = std::make_unique<enable_smart>(fullPath);
+			T* pT = t.get();
+			loaded.emplace(fullPath, std::move(t));
+			return pT;
 		}
 		
 		// Note: Not meant to be used in hot code!
