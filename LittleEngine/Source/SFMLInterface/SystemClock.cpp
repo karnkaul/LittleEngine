@@ -3,11 +3,9 @@
 
 namespace LittleEngine {
 	namespace SystemClock {
-		namespace Local {
+		namespace {
 			sf::Clock clock;
 		}
-
-		using namespace Local;
 
 		int GetCurrentMilliseconds() {
 			return clock.getElapsedTime().asMilliseconds();

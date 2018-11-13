@@ -96,7 +96,7 @@ namespace LittleEngine { namespace DebugConsole {
 		std::list<T> items;
 	};
 
-	namespace Local {
+	namespace {
 		bool bIsActive = false;
 		std::string liveString;
 		Fixed yOffsetMin = Fixed(-200);
@@ -253,8 +253,6 @@ namespace LittleEngine { namespace DebugConsole {
 			liveString.clear();
 		}
 	}
-
-	using namespace Local;
 
 	void Init(Engine& engine) {
 		Commands::Init(engine);

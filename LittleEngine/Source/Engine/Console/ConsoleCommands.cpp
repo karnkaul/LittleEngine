@@ -8,7 +8,7 @@
 
 namespace LittleEngine { namespace DebugConsole {
 	namespace Commands {
-		namespace Local {
+		namespace {
 			std::vector<LogLine> GetAllCommands();
 			LittleEngine::Engine* pEngine;
 		}
@@ -19,7 +19,7 @@ namespace LittleEngine { namespace DebugConsole {
 			std::string name;
 
 			Command() {
-				if (!Commands::Local::pEngine) {
+				if (!pEngine) {
 					Logger::Log("DebugConsole Engine* not set!", Logger::Severity::Error);
 				}
 			}
@@ -48,7 +48,7 @@ namespace LittleEngine { namespace DebugConsole {
 			HelpCommand() : Command("help") {}
 
 			virtual void FillExecuteResult(const std::string& params) override {
-				executeResult = Local::GetAllCommands();
+				executeResult = GetAllCommands();
 			}
 		};
 
@@ -129,7 +129,7 @@ namespace LittleEngine { namespace DebugConsole {
 
 			virtual void FillExecuteResult(const std::string& params) override {
 				executeResult.emplace_back("Quitting instantly", LOG_WARNING_COLOUR);
-				Commands::Local::pEngine->Quit();
+				pEngine->Quit();
 			}
 		};
 
@@ -146,7 +146,7 @@ namespace LittleEngine { namespace DebugConsole {
 				int levelID = Strings::ToInt(params);
 				if (levelID >= 0 && levelID <= Level::MAX_LEVEL_IDX) {
 					executeResult.emplace_back("Loading Level ID: " + Strings::ToString(levelID), LOG_TEXT_COLOUR);
-					Commands::Local::pEngine->LoadLevel(static_cast<LevelID>(levelID));
+					pEngine->LoadLevel(static_cast<LevelID>(levelID));
 				}
 				else {
 					executeResult.emplace_back("Invalid levelID " + params, LOG_WARNING_COLOUR);
@@ -155,7 +155,7 @@ namespace LittleEngine { namespace DebugConsole {
 		};
 #pragma endregion
 #pragma region Local Namespace Impl
-		namespace Local {
+		namespace {
 			std::map<std::string, std::unique_ptr<Command>> commands;
 
 			std::vector<LogLine> GetAllCommands() {
@@ -220,8 +220,6 @@ namespace LittleEngine { namespace DebugConsole {
 #pragma endregion
 
 #pragma region Implementation
-		using namespace Local;
-
 		void Init(LittleEngine::Engine& engine) {
 			pEngine = &engine;
 			commands.emplace("help", std::make_unique<HelpCommand>());

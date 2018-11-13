@@ -13,7 +13,7 @@ namespace LittleEngine {
 #pragma region Globals
 		Severity g_logLevel = Severity::Info;
 #pragma endregion
-		namespace Local {
+		namespace {
 #pragma region Definitions
 			std::unique_ptr<FileLogger> fileLogger = std::make_unique<FileLogger>("debug.log");
 			struct sudo {};
@@ -66,8 +66,6 @@ namespace LittleEngine {
 #pragma endregion
 
 #pragma region Implmementation
-		using namespace Local;
-
 		void Log(const Object& context, const std::string & message, Severity severity) {
 			Log(context.GetName(), message, severity);
 		}

@@ -9,7 +9,7 @@ namespace LittleEngine {
 		int g_logThresholdMS = 50;
 		Logger::Severity g_logSeverity = Logger::Severity::Warning;
 
-		namespace Local {
+		namespace {
 			bool bRunning = false;
 			std::string name;
 			std::string lapName;
@@ -26,13 +26,11 @@ namespace LittleEngine {
 			}
 		}
 
-		using namespace Local;
-
-		void Start(const std::string& lapName) {
+		void Start(const std::string& _lapName) {
 			if (bRunning) {
 				Stop(true);
 			}
-			Local::lapName = lapName;
+			lapName = _lapName;
 			startMS = SystemClock::GetCurrentMilliseconds();
 		}
 
