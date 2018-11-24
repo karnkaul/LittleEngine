@@ -3,11 +3,13 @@
 #include "Utils.h"
 
 namespace GameUtils {
+	const Transform Transform::IDENTITY = Transform();
+
 	void Transform::SetParent(Transform& parent, bool bModifyWorldSpace) {
 		m_parent = &parent;
 		if (!bModifyWorldSpace) {
 			localPosition -= parent.localPosition;
-			localRotation -= parent.localRotation;
+			localOrientation -= parent.localOrientation;
 		}
 		parent.AddChild(this);
 	}
@@ -34,20 +36,28 @@ namespace GameUtils {
 		return std::move(position);
 	}
 
-	Fixed Transform::Rotation() const {
-		Fixed rotation = localRotation % Fixed(360);
+	Fixed Transform::Orientation() const {
+		Fixed rotation = localOrientation % Fixed(360);
 		if (m_parent != nullptr) {
-			rotation += m_parent->Rotation();
+			rotation += m_parent->Orientation();
 		}
 		return std::move(rotation);
 	}
 
+	Vector2 Transform::Scale() const {
+		Vector2 ret = localScale;
+		if (m_parent) {
+			ret += m_parent->Scale();
+		}
+		return ret;
+	}
+
 	void Transform::Rotate(Fixed angle) {
-		localRotation += angle;
+		localOrientation += angle;
 		GameUtils::CleanVector<Transform*>(m_children, [](Transform* child) { return child == nullptr; });
 		// Children need to be repositioned
 		if (!m_children.empty()) {
-			Fixed rad = angle * Consts::DEG_TO_RAD;
+			Fixed rad = angle * Maths::DEG_TO_RAD;
 			Fixed s = rad.Sin(), c = rad.Cos();
 			for (const auto& child : m_children) {
 				//if (Ptr transform = child.lock()) {
@@ -63,10 +73,10 @@ namespace GameUtils {
 	}
 
 	std::string Transform::ToString() const {
-		return localPosition.ToString() + " , " + localRotation.ToString();
+		return localPosition.ToString() + " , " + localOrientation.ToString();
 	}
 
-	Transform::Transform() : localPosition(Vector2::Zero), localRotation(Fixed::Zero) {}
+	Transform::Transform() : localPosition(Vector2::Zero), localOrientation(Fixed::Zero) {}
 
 	Transform::~Transform() {
 		if (m_parent != nullptr) {

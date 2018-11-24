@@ -126,11 +126,11 @@ namespace LittleEngine {
 	}
 
 	void EngineConfig::SetScreenSize(const Vector2& screenSize) {
-		cache->screenWidth.stringValue = Strings::ToString(screenSize.x.GetInt());
-		cache->screenHeight.stringValue = Strings::ToString(screenSize.y.GetInt());
+		cache->screenWidth.stringValue = Strings::ToString(screenSize.x.ToInt());
+		cache->screenHeight.stringValue = Strings::ToString(screenSize.y.ToInt());
 	}
 
 	void EngineConfig::SetColliderBorderWidth(const Fixed& shapeWidth) {
-		cache->colliderBorderWidth.stringValue = Strings::ToString(shapeWidth.GetInt());
+		cache->colliderBorderWidth.stringValue = Strings::ToString(shapeWidth.ToInt());
 	}
 }

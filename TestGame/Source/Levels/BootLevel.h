@@ -14,7 +14,7 @@ namespace LittleEngine {
 		virtual void OnActivated() override;
 
 	private:
-		class TextRenderer* logoRenderer;
+		class TextRenderable* logoRenderer;
 		int logoID = 0;
 
 		void OnLoadNextLevel();

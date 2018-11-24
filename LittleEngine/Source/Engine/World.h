@@ -17,6 +17,7 @@ namespace LittleEngine {
 		Rect2 GetScreenBounds() const { return screenBounds; }
 		Vector2 WorldToScreenPoint(const Vector2& worldPoint) const;
 		Vector2 NormalisedToWorldPoint(const Vector2& normalisedPoint, bool autoClamp = true) const;
+		Fixed WorldToScreenRotation(const Fixed& worldRot) const;
 		
 	private:
 		Rect2 screenBounds;

@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TRange.hpp" />
+    <ClInclude Include="UByte.h" />
     <ClInclude Include="Delegate.hpp" />
     <ClInclude Include="FileRW.h" />
     <ClInclude Include="Fixed.h" />
@@ -31,6 +33,7 @@
     <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\UByte.cpp" />
     <ClCompile Include="Source\FileRW.cpp" />
     <ClCompile Include="Source\Fixed.cpp" />
     <ClCompile Include="Source\GData.cpp" />
@@ -101,6 +104,7 @@
       <PreprocessorDefinitions>DEBUG</PreprocessorDefinitions>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -113,6 +117,7 @@
       <PreprocessorDefinitions>DEBUG</PreprocessorDefinitions>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

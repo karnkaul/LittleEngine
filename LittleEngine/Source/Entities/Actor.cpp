@@ -8,21 +8,21 @@
 #include "Levels/LevelManager.h"
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
-#include "SFMLInterface/Rendering/Renderer.h"
-#include "SFMLInterface/Rendering/SpriteRenderer.h"
+#include "SFMLInterface/Rendering/Renderable.h"
+#include "SFMLInterface/Rendering/SpriteRenderable.h"
 #include "Components/Component.h"
 #include "Utils.h"
 
 namespace LittleEngine {
 	Actor::Actor(Level& level, const std::string& name, const Vector2& position, const Fixed& rotation) : Object(name), level(&level) {
 		transform.localPosition = position;
-		transform.localRotation = rotation;
+		transform.localOrientation = rotation;
 		Logger::Log(*this, GetNameInBrackets() + " (Actor) spawned at " + transform.Position().ToString());
 	}
 
 	Actor::Actor(Level& owner, const Actor& prototype) : Object(prototype.name + "_clone"), level(&owner), transform(prototype.transform) {
 		transform.localPosition = prototype.transform.localPosition;
-		transform.localRotation = prototype.transform.localRotation;
+		transform.localOrientation = prototype.transform.localOrientation;
 		for (const auto& toImport : prototype.components) {
 			components.emplace_back(toImport->UClone(*this));
 		}
@@ -75,7 +75,7 @@ namespace LittleEngine {
 		}
 	}
 
-	void Actor::Tick(Fixed deltaTime) {
+	void Actor::Tick(const Fixed& deltaTime) {
 		// Don't do anything if about to be destroyed
 		if (_bDestroyed) {
 			return;
@@ -100,7 +100,8 @@ namespace LittleEngine {
 		// Convert Transform::Position to Screen position
 		params.screenPosition = level->GetWorld().WorldToScreenPoint(transform.Position());
 		// Convert Transform::Rotation to SFML orientation (+ is counter-clockwise)
-		params.screenRotation = -Fixed(transform.Rotation());
+		params.screenRotation = level->GetWorld().WorldToScreenRotation(transform.Orientation());
+		params.screenScale = transform.Scale();
 		// Render each component
 		for (auto& component : components) {
 			if (component && component->bEnabled) {

@@ -17,7 +17,7 @@ namespace LittleEngine {
 	public:
 		using Ptr = std::unique_ptr<Actor>;
 
-		// Each Actor must be owned by an active Level, 
+		// Each Actor must be owned by an active Level,
 		// and be passed a reference to it in the constructor
 		Actor(Level& level, const std::string& name, const Vector2& position, const Fixed& rotation);
 		// Level's CloneActor uses copy constructors of this signature (required for Actor derived classes)
@@ -94,7 +94,7 @@ namespace LittleEngine {
 		bool _bEnabled = true;
 		
 		virtual void FixedTick();
-		virtual void Tick(Fixed deltaTime);
+		virtual void Tick(const Fixed& deltaTime);
 		virtual void Render(RenderParams& params);
 
 		// \brief Registers corresponding input scoped to Actor's lifetime

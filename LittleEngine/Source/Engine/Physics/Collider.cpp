@@ -6,7 +6,7 @@
 #include "Levels/Level.h"
 #include "CollisionManager.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
-#include "SFMLInterface/Rendering/ShapeRenderer.h"
+#include "SFMLInterface/Rendering/ShapeRenderable.h"
 #include "Engine/Logger/Logger.h"
 #include "Engine/Events/EventManager.h"
 
@@ -86,15 +86,15 @@ namespace LittleEngine {
 
 	AABBCollider::AABBCollider(Actor& actor) : Collider(actor, "AABBCollider") {
 		Vector2 size(bounds.lowerBound.x * 2, bounds.upperBound.y * 2);
-		debugShape = std::make_unique<RectangleRenderer>(size, Colour::Transparent);
+		debugShape = std::make_unique<RectangleRenderable>(size, Colour::Transparent);
 		debugShape->SetBorder(DEBUG_BORDER_WIDTH, Colour::Green);
 		debugShape->layer = LayerID::Collider;
 		debugShape->SetEnabled(IsShowingDebugShape());
 	}
 
 	AABBCollider::AABBCollider(Actor& owner, const AABBCollider & prototype) : Collider(owner, prototype), bounds(prototype.bounds) {
-		ShapeRenderer* toCopy = prototype.debugShape.get();
-		debugShape = std::make_unique<RectangleRenderer>(*(dynamic_cast<RectangleRenderer*>(toCopy)));
+		ShapeRenderable* toCopy = prototype.debugShape.get();
+		debugShape = std::make_unique<RectangleRenderable>(*(dynamic_cast<RectangleRenderable*>(toCopy)));
 		debugShape->SetEnabled(IsShowingDebugShape());
 	}
 
@@ -110,7 +110,7 @@ namespace LittleEngine {
 	void AABBCollider::SetBounds(AABBData bounds) {
 		this->bounds = bounds;
 		Vector2 size(bounds.lowerBound.x * 2, bounds.upperBound.y * 2);
-		auto debugRect = dynamic_cast<RectangleRenderer*>(debugShape.get());
+		auto debugRect = dynamic_cast<RectangleRenderable*>(debugShape.get());
 		debugRect->SetSize(size);
 	}
 
@@ -146,15 +146,15 @@ namespace LittleEngine {
 	}
 
 	CircleCollider::CircleCollider(Actor& actor) : Collider(actor, "CircleCollider") {
-		debugShape = std::make_unique<CircleRenderer>(circle.radius, Colour::Transparent);
+		debugShape = std::make_unique<CircleRenderable>(circle.radius, Colour::Transparent);
 		debugShape->SetBorder(DEBUG_BORDER_WIDTH, Colour::Green);
 		debugShape->layer = LayerID::Collider;
 		debugShape->SetEnabled(IsShowingDebugShape());
 	}
 
 	CircleCollider::CircleCollider(Actor& owner, const CircleCollider & prototype) : Collider(owner, prototype.name), circle(prototype.circle) {
-		ShapeRenderer* toCopy = prototype.debugShape.get();
-		debugShape = std::make_unique<CircleRenderer>(*(dynamic_cast<CircleRenderer*>(toCopy)));
+		ShapeRenderable* toCopy = prototype.debugShape.get();
+		debugShape = std::make_unique<CircleRenderable>(*(dynamic_cast<CircleRenderable*>(toCopy)));
 		debugShape->SetEnabled(IsShowingDebugShape());
 	}
 
@@ -168,7 +168,7 @@ namespace LittleEngine {
 
 	void CircleCollider::SetCircle(Fixed radius) {
 		circle.radius = radius;
-		auto circleShape = dynamic_cast<CircleRenderer*>(debugShape.get());
+		auto circleShape = dynamic_cast<CircleRenderable*>(debugShape.get());
 		circleShape->SetRadius(radius);
 	}
 

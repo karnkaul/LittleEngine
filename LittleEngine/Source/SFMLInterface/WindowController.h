@@ -13,16 +13,16 @@ namespace LittleEngine {
 	public:
 		LayerInfo layer;
 
-		Drawable(sf::Drawable& drawable) : drawable(drawable) { }
-		Drawable(sf::Drawable& drawable, LayerInfo layer) : drawable(drawable), layer(layer) {}
+		Drawable(sf::Drawable& drawable) : drawable(&drawable) { }
+		Drawable(sf::Drawable& drawable, LayerInfo layer) : drawable(&drawable), layer(layer) {}
 		Drawable(Drawable&&) = default;
 		Drawable& operator=(Drawable&&) = default;
 		Drawable(const Drawable&) = default;
 
-		const sf::Drawable& GetSFMLDrawable() { return drawable; }
+		const sf::Drawable& GetSFMLDrawable() { return *drawable; }
 
 	private:
-		sf::Drawable& drawable;
+		sf::Drawable* drawable;
 	};
 
 	// \brief Conrete class that can create an SFML RenderWindow,

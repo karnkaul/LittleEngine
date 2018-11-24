@@ -45,6 +45,12 @@
     <ClInclude Include="GData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UByte.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TRange.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\FileRW.cpp">
@@ -66,6 +72,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\GData.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UByte.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

@@ -67,6 +67,9 @@ namespace GameUtils {
 namespace Maths {
 	using Fixed = GameUtils::Fixed;
 
+	const Fixed PI = Fixed(3.14159265359);
+	const Fixed DEG_TO_RAD = Fixed(PI / 180);
+
 	// Returns val E [min, max]
 	template<typename T>
 	T Clamp(T val, T min, T max) {
@@ -103,14 +106,22 @@ namespace Maths {
 		return val;
 	}
 
+	template<typename T>
+	T Abs(T val) {
+		if (val < 0) return -val;
+		return val;
+	}
+
 	namespace Random {
 		// Returns [min, max]
-		Fixed Range(Fixed min = 0, Fixed max = 1);
+		Fixed Range(const Fixed& min = 0, const Fixed& max = 1);
 		// Returns [min, max)
 		int Range(int min, int max);
 		// Returns [min, max)
 		size_t Range(size_t min, size_t max);
 	};
+
+	Fixed Lerp(const Fixed& min, const Fixed& max, Fixed t);
 }
 
 namespace Strings {

@@ -1,21 +1,24 @@
 #pragma once
 #include "Vector2.h"
+#include "UByte.h"
 
 namespace LittleEngine {
 	class WindowController;
 
 	using Vector2 = GameUtils::Vector2;
 	using Fixed = GameUtils::Fixed;
+	using UByte = GameUtils::UByte;
 
-	// \brief Wrapper struct for SFML Color
+	// \brief Compressed wrapper struct for SFML Color
 	struct Colour {
 	public:
-		Fixed r;
-		Fixed g;
-		Fixed b;
-		Fixed a;
+		UByte r;
+		UByte g;
+		UByte b;
+		UByte a;
 
-		Colour(Fixed r = 255, Fixed g = 255, Fixed b = 255, Fixed a = 255) : r(r), g(g), b(b), a(a) {}
+		// Warning: All inputs must be unsigned ints!
+		Colour(UByte r = 255, UByte g = 255, UByte b = 255, UByte a = 255) : r(r), g(g), b(b), a(a) {}
 
 		const static Colour Black;
 		const static Colour White;
@@ -35,6 +38,7 @@ namespace LittleEngine {
 		Default = 10,
 		Enemy = 30,
 		Player = 50,
+		FX = 60,
 		UI = 70,
 		Collider = 80,
 		TOP = 90
@@ -57,8 +61,9 @@ namespace LittleEngine {
 
 	// \brief Final parameters passed to SFML RenderWindow
 	struct RenderParams {
-		Vector2 screenPosition;
-		Fixed screenRotation;
+		Vector2 screenPosition = Vector2::Zero;
+		Fixed screenRotation = Fixed::Zero;
+		Vector2 screenScale = Vector2::One;
 
 		RenderParams(WindowController& controller);
 

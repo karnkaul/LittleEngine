@@ -7,7 +7,7 @@ namespace LittleEngine {
 	class Actor;
 	class CollisionManager;
 	class World;
-	class ShapeRenderer;
+	class ShapeRenderable;
 
 	// \brief Base class for Collision detection on an Actor.
 	// Note: Registration with CollisionManager must be handled by owner
@@ -27,7 +27,7 @@ namespace LittleEngine {
 
 	protected:
 		const World* world;
-		std::unique_ptr<ShapeRenderer> debugShape;
+		std::unique_ptr<ShapeRenderable> debugShape;
 
 		Collider(Actor& actor, const std::string& name);
 		Collider(Actor& owner, const Collider& prototype);

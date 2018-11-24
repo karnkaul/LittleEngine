@@ -1,7 +1,7 @@
 #include "le_stdafx.h"
 #include "VFX.h"
 #include "Components/SpriteAnimator.h"
-#include "SFMLInterface/Rendering/SpriteRenderer.h"
+#include "SFMLInterface/Rendering/SpriteRenderable.h"
 #include "Levels/Level.h"
 #include "Engine/Audio/AudioManager.h"
 #include "Utils.h"
@@ -45,7 +45,7 @@ namespace LittleEngine {
 		bPlaying = true;
 	}
 
-	void VFX::Tick(Fixed deltaTime) {
+	void VFX::Tick(const Fixed& deltaTime) {
 		Actor::Tick(deltaTime);
 		if (bPlaying) {
 			bool sfxPlaying = sfxPlayer && sfxPlayer->IsPlaying();

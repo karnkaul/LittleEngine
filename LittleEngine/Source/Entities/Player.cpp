@@ -19,7 +19,7 @@ namespace LittleEngine {
 		AddComponent<ControllerComponent>();
 
 		auto renderer = AddComponent<RenderComponent>();
-		renderer->SetSpriteRenderer(mainTexture);
+		renderer->SetSpriteRenderable(mainTexture);
 		renderer->SetLayer(LayerID::Player);
 		
 		auto collider = AddCollider<AABBCollider>();

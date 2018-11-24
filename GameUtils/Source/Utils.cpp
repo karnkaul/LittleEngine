@@ -14,7 +14,7 @@ namespace Maths {
 		_bInit = true;
 	}
 
-	Fixed Random::Range(Fixed min, Fixed max) {
+	Fixed Random::Range(const Fixed& min, const Fixed& max) {
 		if (!_bInit) {
 			InitRand();
 		}
@@ -35,6 +35,11 @@ namespace Maths {
 			InitRand();
 		}
 		return ((rand() * (max - min)) / RAND_MAX) + min;
+	}
+
+	Fixed Lerp(const Fixed& a, const Fixed& b, Fixed t) {
+		t = Clamp01(t);
+		return ((Fixed::One - t) * a) + (t * b);
 	}
 }
 

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "TestLevel.h"
+#include "Entities/ParticleSystem.h"
 
 namespace LittleEngine {
 	// Tests
@@ -50,7 +51,7 @@ namespace LittleEngine {
 				if (actor2) {
 					_actor2ID = actor2->GetActorID();
 					auto rc0 = actor2->AddComponent<RenderComponent>();
-					auto& r0 = rc0->SetCircleRenderer(ShapeData(Vector2(100, 0), Colour::Yellow));
+					auto& r0 = rc0->SetCircleRenderable(ShapeData(Vector2(100, 0), Colour::Yellow));
 					auto t0 = actor2->AddCollider<CircleCollider>();
 					t0->SetCircle(100);
 				}
@@ -59,7 +60,7 @@ namespace LittleEngine {
 				if (actor3) {
 					_actor3ID = actor3->GetActorID();
 					auto rc1 = actor3->AddComponent<RenderComponent>();
-					rc1->SetRectangleRenderer(ShapeData(Vector2(600, 100), Colour::Blue));
+					rc1->SetRectangleRenderable(ShapeData(Vector2(600, 100), Colour::Blue));
 					auto t1 = actor3->AddCollider<AABBCollider>();
 					t1->SetBounds(AABBData(300, 50));
 				}
@@ -72,23 +73,79 @@ namespace LittleEngine {
 
 		Actor* _textActor = nullptr;
 		Actor* _cloneTest = nullptr;
+		ParticleSystem* _particlesTest = nullptr;
+		bool bContinuous = true;
 		void OnSelectPressed() {
-			Vector2 normalisedPosition = Vector2(Maths::Random::Range(Fixed(-1), Fixed(1)), Maths::Random::Range(Fixed(-1), Fixed(1)));
-			Vector2 position = level->GetWorld().NormalisedToWorldPoint(normalisedPosition);
-			auto v = Spawner::VFXExplode(position);
-			v->Play();
-			if (_textActor) {
-				if (!_cloneTest) {
-					_cloneTest = level->CloneActor<Actor>(*_textActor);
-					if (_cloneTest) {
-						_cloneTest->GetTransform().localPosition = Vector2::Zero;
-					}
-				}
-				else {
-					_cloneTest->Destruct();
-					_cloneTest = nullptr;
-				}
+			//Vector2 normalisedPosition = Vector2(Maths::Random::Range(Fixed(-1), Fixed(1)), Maths::Random::Range(Fixed(-1), Fixed(1)));
+			//Vector2 position = level->GetWorld().NormalisedToWorldPoint(normalisedPosition);
+			//auto v = Spawner::VFXExplode(position);
+			//v->Play();
+			//if (_textActor) {
+			//	if (!_cloneTest) {
+			//		_cloneTest = level->CloneActor<Actor>(*_textActor);
+			//		if (_cloneTest) {
+			//			_cloneTest->GetTransform().localPosition = Vector2::Zero;
+			//		}
+			//	}
+			//	else {
+			//		_cloneTest->Destruct();
+			//		_cloneTest = nullptr;
+			//	}
+			//}
+
+			if (!_particlesTest) {
+				TextureAsset* t0 = level->GetAssetManager().Load<TextureAsset>("VFX/Fire0/02.png");
+				TextureAsset* t1 = level->GetAssetManager().Load<TextureAsset>("VFX/Fire0/01.png");
+				TextureAsset* t2 = level->GetAssetManager().Load<TextureAsset>("VFX/Fire0/00.png");
+				unsigned int numUpdates = 300;
+				
+				EmitterData data(level->GetWorld(), *t0, 30);
+				data.lifetimeData.timeToLive = { Fixed(1.5f), Fixed(0.5f) };
+				data.spawnData.preWarmNumTicks = 50;
+				data.spawnData.bPreWarm = bContinuous;
+				data.spawnData.bFireOnce = !bContinuous;
+				data.spawnData.spawnSpeed = Fixed(0.25f);
+				data.spawnData.spawnAngularSpeed = { -Fixed::OneThird, Fixed::OneThird };
+				data.lifetimeData.scaleOverTime = { Fixed::One, Fixed::OneHalf };
+				data.startDelay = bContinuous ? Fixed::Zero : Fixed(1000, 5);
+
+				EmitterData data1 = EmitterData(level->GetWorld(), *t1, 30);
+				data1.spawnData.preWarmNumTicks = numUpdates;
+				data1.spawnData.bPreWarm = bContinuous;
+				data1.spawnData.bFireOnce = !bContinuous;
+				data1.lifetimeData.timeToLive = { Fixed(0.50f), Fixed(0.25f) };
+				data1.spawnData.spawnSpeed = Fixed(0.20f);
+				data1.spawnData.spawnAngularSpeed = { -Fixed(0.5f), Fixed(0.5f) };
+				data1.lifetimeData.scaleOverTime = { Fixed::One, Fixed::OneHalf };
+
+				EmitterData data2 = EmitterData(level->GetWorld(), *t2, 10);
+				data2.spawnData.preWarmNumTicks = numUpdates;
+				data2.spawnData.bPreWarm = bContinuous;
+				data2.spawnData.bFireOnce = !bContinuous;
+				data2.lifetimeData.timeToLive = { Fixed(0.5f), Fixed(0.25f) };
+				data2.spawnData.spawnSpeed = Fixed(0.1f);
+				data2.spawnData.spawnAngularSpeed = { -Fixed(0.5f), Fixed(0.5f) };
+				data2.lifetimeData.scaleOverTime = { Fixed(0.8f), Fixed(0.3f) };
+				
+				_particlesTest = level->SpawnActor<ParticleSystem>("ExplodePS", true);
+				_particlesTest->Init({ data, data1, data2 });
 			}
+			else if (_particlesTest->IsPlaying()) _particlesTest->Stop();
+			else _particlesTest->Restart();
+
+			/*if (ParticleSystemTests::EmitterExists()) {
+				ParticleSystemTests::Destroy();
+			}
+			else {
+				TextureAsset* t0 = level->GetAssetManager().Load<TextureAsset>("VFX/Fire0/02.png");
+				TextureAsset* t1 = level->GetAssetManager().Load<TextureAsset>("VFX/Fire0/01.png");
+				TextureAsset* t2 = level->GetAssetManager().Load<TextureAsset>("VFX/Fire0/00.png");
+				ParticleSystemTests::Create(level->GetWorld(), *t0, t1, t2);
+			}*/
+		}
+
+		void UpdateTests(const Fixed& deltaTime) {
+			
 		}
 
 		void RenderTests(RenderParams& params) {
@@ -113,6 +170,11 @@ namespace LittleEngine {
 		engine->GetAssetManager().LoadAll(AssetManifestData("AssetManifests/TestLevel.amf").GetManifest());
 	}
 
+	void TestLevel::Tick(Fixed deltaTime) {
+		_TestLevel::UpdateTests(deltaTime);
+		Level::Tick(deltaTime);
+	}
+
 	void TestLevel::OnActivated() {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 
@@ -120,14 +182,14 @@ namespace LittleEngine {
 		if (actor0) {
 			_TestLevel::actor0ID = actor0->GetActorID();
 			auto rc0 = actor0->AddComponent<RenderComponent>();
-			rc0->SetRectangleRenderer(ShapeData(Vector2(300, 100), Colour::Magenta));
+			rc0->SetRectangleRenderable(ShapeData(Vector2(300, 100), Colour::Magenta));
 			_TestLevel::_textActor = actor0;
 		}
 		
 		if (auto actor1 = SpawnActor<Actor>("Actor1-TextRenderer", true)) {
 			actor1->SetNormalisedPosition(Vector2(0, Fixed(0.9f)));
 			auto rc = actor1->AddComponent<RenderComponent>();
-			auto& tr = rc->SetTextRenderer("Hello World!");
+			auto& tr = rc->SetTextRenderable("Hello World!");
 			tr.layer = LayerID::UI;
 			tr.SetColour(Colour(200, 150, 50)).SetSize(50);
 			//_TestLevel::_textActor = actor1;

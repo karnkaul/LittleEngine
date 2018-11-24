@@ -14,7 +14,7 @@
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Input.h"
 #include "SFMLInterface/WindowController.h"
-#include "SFMLInterface/Rendering/Renderer.h"
+#include "SFMLInterface/Rendering/Renderable.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 #include "Misc/Stopwatch.h"
 #include "Levels/Level.h"
@@ -184,10 +184,10 @@ namespace LittleEngine {
 						/* Post Render: Sleep */
 						double sinceStartMS = (static_cast<double>(SystemClock::GetCurrentMicroseconds()) / 1000.0f) - current;
 						Fixed minFrameTimeMS = Fixed(1000, Consts::MAX_FPS);
-						Fixed residue = Fixed(minFrameTimeMS.GetDouble() - sinceStartMS);
+						Fixed residue = Fixed(minFrameTimeMS.ToDouble() - sinceStartMS);
 						if (residue > 0) {
 							Logger::Log(*this, "Sleeping game loop for: " + residue.ToString() + "ms", Logger::Severity::HOT);
-							std::this_thread::sleep_for(std::chrono::milliseconds(residue.GetInt()));
+							std::this_thread::sleep_for(std::chrono::milliseconds(residue.ToInt()));
 						}
 						STOPWATCH_STOP();
 					}
@@ -231,7 +231,7 @@ namespace LittleEngine {
 		std::string windowTitle = config->GetWindowTitle();
 		Logger::Log(*this, "Initialising window to " + screenSize.ToString());
 		try {
-			windowController = std::make_unique<WindowController>(screenSize.x.GetInt(), screenSize.y.GetInt(), windowTitle);
+			windowController = std::make_unique<WindowController>(screenSize.x.ToInt(), screenSize.y.ToInt(), windowTitle);
 		}
 		catch (std::bad_alloc e) {
 			Logger::Log(*this, "Error allocating Window Controller!", Logger::Severity::Error);

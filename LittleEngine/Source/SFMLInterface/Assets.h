@@ -103,7 +103,7 @@ namespace LittleEngine {
 	private:
 		// Prevents having to expose texture to code outside SFMLInterface
 		friend class AssetManager;
-		friend class SpriteRenderer;
+		friend class SpriteRenderable;
 
 		// Path must be relative to the root Asset directory
 		TextureAsset(const std::string& path);
@@ -114,7 +114,7 @@ namespace LittleEngine {
 	class FontAsset : public Asset {
 	private:
 		friend class AssetManager;
-		friend class TextRenderer;
+		friend class TextRenderable;
 
 		// Path must be relative to the root Asset directory
 		FontAsset(const std::string& path);

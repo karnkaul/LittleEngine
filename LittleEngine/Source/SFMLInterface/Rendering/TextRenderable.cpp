@@ -1,7 +1,7 @@
 #include "le_stdafx.h"
 #include "SFMLInterface/WindowController.h"
 #include "RenderParams.h"
-#include "TextRenderer.h"
+#include "TextRenderable.h"
 #include "SFMLInterface/Assets.h"
 
 namespace LittleEngine {
@@ -40,23 +40,23 @@ namespace LittleEngine {
 		}
 	}
 
-	TextRenderer::TextRenderer(const TextData & data) : Renderer("TextRenderer"), data(data) 
+	TextRenderable::TextRenderable(const TextData & data) : Renderable("TextRenderable"), data(data) 
 	{}
 
-	TextRenderer::TextRenderer(const TextRenderer & prototype) : Renderer(prototype.name), data(prototype.data) {
+	TextRenderable::TextRenderable(const TextRenderable & prototype) : Renderable(prototype.name), data(prototype.data) {
 	}
 
-	std::unique_ptr<Renderer> TextRenderer::UClone() const {
-		return std::make_unique<TextRenderer>(*this);
+	std::unique_ptr<Renderable> TextRenderable::UClone() const {
+		return std::make_unique<TextRenderable>(*this);
 	}
 
-	void TextRenderer::ApplyData() {
+	void TextRenderable::ApplyData() {
 		text.setString(data.text);
 		text.setFont(data.font->sfFont);
 		text.setFillColor(Convert(data.fillColour));
 		text.setOutlineColor(Convert(data.outlineColour));
-		text.setOutlineThickness(data.outlineSize.Abs().GetFloat());
-		text.setCharacterSize(data.pixelSize.Abs().GetInt());
+		text.setOutlineThickness(data.outlineSize.Abs().ToFloat());
+		text.setCharacterSize(data.pixelSize.Abs().ToInt());
 		sf::FloatRect textRect = text.getLocalBounds();
 		text.setOrigin(sf::Vector2f(
 			textRect.width * data.GetNAlignmentHorz(),
@@ -64,22 +64,27 @@ namespace LittleEngine {
 		);
 	}
 
-	void TextRenderer::SetPosition(const Vector2& screenPosition) {
+	void TextRenderable::SetPosition(const Vector2& screenPosition) {
 		text.setPosition(Convert(screenPosition));
 	}
 
-	void TextRenderer::SetRotation(const Fixed& screenRotation) {
-		text.setRotation(screenRotation.GetFloat());
+	void TextRenderable::SetRotation(const Fixed& screenRotation) {
+		text.setRotation(screenRotation.ToFloat());
 	}
 
-	void TextRenderer::RenderInternal(RenderParams & params) {
+	void TextRenderable::SetScale(const Vector2 & screenScale) {
+		text.setScale(Convert(screenScale));
+	}
+
+	void TextRenderable::RenderInternal(RenderParams & params) {
 		ApplyData();
 		SetPosition(params.screenPosition);
 		SetRotation(params.screenRotation);
+		SetScale(params.screenScale);
 		params.GetWindowController().Push(Drawable(text, layer));
 	}
 
-	Rect2 TextRenderer::GetBounds() const {
+	Rect2 TextRenderable::GetBounds() const {
 		sf::FloatRect bounds = text.getLocalBounds();
 		Fixed width(bounds.width);
 		Fixed height(bounds.height);
@@ -89,16 +94,16 @@ namespace LittleEngine {
 		);
 	}
 
-	TextData& TextRenderer::GetTextData() {
+	TextData& TextRenderable::GetTextData() {
 		return data;
 	}
 
-	TextRenderer& TextRenderer::SetSize(const Fixed& pixelSize) {
+	TextRenderable& TextRenderable::SetSize(const Fixed& pixelSize) {
 		data.pixelSize = pixelSize;
 		return *this;
 	}
 
-	TextRenderer& TextRenderer::SetColour(const Colour& colour) {
+	TextRenderable& TextRenderable::SetColour(const Colour& colour) {
 		data.fillColour = colour;
 		return *this;
 	}
