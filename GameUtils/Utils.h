@@ -138,6 +138,14 @@ namespace Strings {
 		return std::to_string(input);
 	}
 	std::string ToString(bool bInput);
+
+	struct DiChar {
+		char open;
+		char close;
+
+		DiChar(char identical) : open(identical), close(identical) {}
+		DiChar(char open, char close) : open(open), close(close) {}
+	};
 	
 	using Pair = std::pair<std::string, std::string>;
 	// Slices a string into a pair via the first occurence of a delimiter
@@ -148,6 +156,8 @@ namespace Strings {
 	void RemoveWhitespace(std::string& outInput);
 	// Tokenises a string via a delimiter, skipping over any delimiters within escape characters
 	std::vector<std::string> Tokenise(const std::string& input, const char delimiter = ' ', std::initializer_list<char> escape = { '[', ']', '\"' });
+	
+	std::vector<std::string> Tokenise(const std::string& input, const char delimiter, std::initializer_list<DiChar> escape);
 	// Substitutes an input set of chars with a given replacement
 	void SubstituteChars(std::string & outInput, char replacement, std::initializer_list<char> toReplace);
 }

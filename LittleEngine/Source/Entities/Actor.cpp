@@ -14,15 +14,22 @@
 #include "Utils.h"
 
 namespace LittleEngine {
-	Actor::Actor(Level& level, const std::string& name, const Vector2& position, const Fixed& rotation) : Object(name), level(&level) {
+	const std::string Actor::UNNAMED_ACTOR = "Unnamed_Actor";
+
+	Actor::Actor() : Object(UNNAMED_ACTOR) {
+		Logger::Log(*this, "Actor default constructed", Logger::Severity::Debug);
+	}
+
+	void Actor::InitActor(Level& level, int actorID, const std::string& name, const Vector2& position, const Fixed& rotation) {
+		GeneralInit(level, actorID, name);
 		transform.localPosition = position;
 		transform.localOrientation = rotation;
 		Logger::Log(*this, GetNameInBrackets() + " (Actor) spawned at " + transform.Position().ToString());
 	}
 
-	Actor::Actor(Level& owner, const Actor& prototype) : Object(prototype.name + "_clone"), level(&owner), transform(prototype.transform) {
-		transform.localPosition = prototype.transform.localPosition;
-		transform.localOrientation = prototype.transform.localOrientation;
+	void Actor::InitActor(Level& owner, int actorID, const Actor& prototype) {
+		GeneralInit(owner, actorID, prototype.name + "_clone");
+		transform = prototype.transform;
 		for (const auto& toImport : prototype.components) {
 			components.emplace_back(toImport->UClone(*this));
 		}
@@ -30,6 +37,12 @@ namespace LittleEngine {
 			collider = GetActiveLevel().GetCollisionManager().CreateCollider(*this, *prototype.collider);
 		}
 		Logger::Log(*this, GetNameInBrackets() + " (Actor) cloned at " + transform.Position().ToString());
+	}
+
+	void Actor::GeneralInit(Level& level, int actorID, const std::string& name) {
+		this->level = &level;
+		this->name = name;
+		this->actorID = actorID;
 	}
 
 	Actor::~Actor() {

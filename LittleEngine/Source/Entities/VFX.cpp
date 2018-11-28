@@ -7,10 +7,14 @@
 #include "Utils.h"
 
 namespace LittleEngine {
-	VFX::VFX(Level & level, const std::string & prefix, const Vector2 & position, const Fixed & rotation) : Actor(level, prefix + "_VFX", position, rotation) {
+	VFX::VFX(Level & level, const std::string & prefix, const Vector2 & position, const Fixed & rotation) {
+		GeneralInit(level, GetActorID(), prefix + "_VFX");
 	}
 
-	VFX::VFX(Level& owner, const VFX & prototype) : Actor(owner, prototype), soundAssets(prototype.soundAssets), sfxVol(prototype.sfxVol) {
+	VFX::VFX(Level& owner, const VFX & prototype) {
+		GeneralInit(owner, GetActorID(), GetName());
+		this->soundAssets = prototype.soundAssets;
+		this->sfxVol = prototype.sfxVol;
 		Component::Ptr animatorComponent = prototype.animator->UClone(*this);
 		animator = dynamic_cast<SpriteAnimator*>(animatorComponent.get());
 		components.push_back(std::move(animatorComponent));

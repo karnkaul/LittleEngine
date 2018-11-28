@@ -10,6 +10,8 @@
 #include "SFMLInterface/Rendering/SpriteRenderable.h"
 #include "Engine/World.h"
 #include "Engine/Logger/Logger.h"
+#include "Engine/Audio/AudioManager.h"
+#include "Levels/Level.h"
 
 namespace LittleEngine {
 	using Transform = GameUtils::Transform;
@@ -29,9 +31,23 @@ namespace LittleEngine {
 		Fixed Lerp(TRange<Fixed> tRange, const Fixed& t) {
 			return Maths::Lerp(tRange.min, tRange.max, t);
 		}
-	}
 
-	EmitterData::EmitterData(const World& world, TextureAsset & texture, unsigned int numParticles) : world(&world), texture(&texture), spawnData(numParticles) {
+		TRange<Fixed> GetTRangeF(const GData& minMax, const Fixed& defaultMin, const Fixed& defaultMax) {
+			return TRange<Fixed>(Fixed(minMax.GetDouble("min", defaultMin.ToDouble())), Fixed(minMax.GetDouble("max", defaultMax.ToDouble())));
+		}
+
+		TRange<Vector2> GetTRangeV2(const GData& minMaxVec) {
+			GData min = minMaxVec.GetGData("min");
+			GData max = minMaxVec.GetGData("max");
+			return TRange<Vector2>(
+				Vector2(Fixed(min.GetDouble("x", 0.0f)), Fixed(min.GetDouble("y", 0.0f))),
+				Vector2(Fixed(max.GetDouble("x", 0.0f)), Fixed(max.GetDouble("y", 0.0f)))
+				);
+		}
+
+		TRange<UByte> GetTRangeUB(const GData& minMax) {
+			return TRange<UByte>(UByte(minMax.GetInt("min", 0)), UByte(minMax.GetInt("max", 0)));
+		}
 	}
 
 	struct Particle {
@@ -41,14 +57,14 @@ namespace LittleEngine {
 		Fixed w;
 		Fixed elapsed;
 		Fixed ttl;
+		LayerInfo layer;
 		bool bInUse = false;
 
 		void SetSprite(SpriteData&& sprite) {
 			renderable = std::make_unique<SpriteRenderable>(sprite, true);
-			renderable->layer = LayerID::FX;
 		}
 
-		void Init(Vector2 initVelocity, Fixed timeToLive, Transform initTransform = Transform::IDENTITY, Fixed initAngularVelocity = Fixed::Zero, Colour initColour = Colour::White) {
+		void Init(Vector2 initVelocity, Fixed timeToLive, Transform initTransform = Transform::IDENTITY, Fixed initAngularVelocity = Fixed::Zero, Colour initColour = Colour::White, int layerDelta = 0) {
 			id = nextID++;
 			bInUse = true;
 			ttl = timeToLive;
@@ -57,6 +73,7 @@ namespace LittleEngine {
 			v = initVelocity;
 			w = initAngularVelocity;
 			transform = initTransform;
+			layer = LayerInfo(static_cast<int>(LayerID::FX) + layerDelta);
 		}
 
 		unsigned int GetID() const {
@@ -81,6 +98,7 @@ namespace LittleEngine {
 				params.screenScale = transform.Scale();
 				SpriteData& data = renderable->GetData();
 				data.colour = colour;
+				renderable->layer = layer;
 				renderable->Render(params);
 			}
 		}
@@ -93,22 +111,59 @@ namespace LittleEngine {
 
 	unsigned int Particle::nextID = 0;
 
+#define DESERIALISE_TFLOAT(gData, m_x) m_x = GetTRangeF(gData.GetGData(#m_x), m_x.min, m_x.max)
+#define DESERIALISE_FIXED(gData, m_x) m_x = Fixed(gData.GetDouble(#m_x, m_x.ToDouble()))
+#define DESERIALISE_INT(gData, m_x) m_x = gData.GetInt(#m_x, m_x)
+#define DESERIALISE_BOOL(gData, m_x) m_x = gData.GetBool(#m_x, m_x)
+
+	void ParticleSpawnData::Deserialise(const GData & gData) {
+		spawnPosition = GetTRangeV2(gData.GetGData("spawnPosition"));
+		DESERIALISE_TFLOAT(gData, spreadAngle);
+		DESERIALISE_TFLOAT(gData, emitterAngle);
+		DESERIALISE_TFLOAT(gData, spawnSpeed);
+		DESERIALISE_TFLOAT(gData, spawnAngularSpeed);
+		DESERIALISE_INT(gData, preWarmNumTicks);
+		DESERIALISE_BOOL(gData, bPreWarm);
+		DESERIALISE_BOOL(gData, bFireOnce);
+	}
+
+	void ParticleLifetimeData::Deserialise(const GData & gData) {
+		alphaOverTime = GetTRangeUB(gData.GetGData("alphaOverTime"));
+		DESERIALISE_TFLOAT(gData, scaleOverTime);
+		DESERIALISE_TFLOAT(gData, timeToLive);
+	}
+
+	EmitterData::EmitterData(const World& world, TextureAsset & texture, unsigned int numParticles, SoundAsset* pSound) : pWorld(&world), pTexture(&texture), spawnData(numParticles), pSound(pSound), pParent(nullptr) {
+	}
+
+	void EmitterData::Deserialise(const GData & gData) {
+		spawnData.Deserialise(gData.GetGData("spawnData"));
+		lifetimeData.Deserialise(gData.GetGData("lifetimeData"));
+		DESERIALISE_INT(gData, layerDelta);
+		DESERIALISE_FIXED(gData, startDelay);
+		DESERIALISE_FIXED(gData, sfxVolume);
+	}
+
 	class Emitter {
 	public:
 		bool bEnabled = true;
 
-		Emitter(const EmitterData& data, bool bSetEnabled = true) : data(data), bEnabled(bSetEnabled) {
+		Emitter(AudioManager& audioManager, const EmitterData& data, bool bSetEnabled = true) : data(data), audioManager(&audioManager), bEnabled(bSetEnabled) {
 			if (!pWorld) pWorld = &data.GetWorld();
+			pParent = data.pParent;
 			for (size_t i = 0; i < MAX_PARTICLES; ++i) {
 				particles[i].SetSprite(SpriteData(this->data.GetTexture()));
 			}
 			Init();
 		}
 
+		~Emitter();
+
 		void Reset(bool bSetEnabled) {
 			for (size_t i = 0; i < MAX_PARTICLES; ++i) {
 				particles[i].bInUse = false;
 			}
+			if (bSoundPlayed && !bSetEnabled && pSoundPlayer) pSoundPlayer->Stop();
 			Init();
 			bEnabled = bSetEnabled;
 		}
@@ -130,6 +185,11 @@ namespace LittleEngine {
 				if (elapsed >= data.startDelay) bWaiting = false;
 				else return;
 			}
+			if (!bSoundPlayed && data.pSound) {
+				pSoundPlayer = audioManager->PlaySFX(*data.pSound, data.sfxVolume, Fixed::Zero, bSpawnNewParticles);
+				bSoundPlayed = true;
+			}
+
 			TickInternal(deltaTime);
 		}
 
@@ -144,15 +204,21 @@ namespace LittleEngine {
 	private:
 		const static size_t MAX_PARTICLES = 100;
 		std::array<Particle, MAX_PARTICLES> particles;
+
 		const EmitterData data;
 		Fixed elapsed;
+		Transform* pParent = nullptr;
+		AudioManager* audioManager;
+		SoundPlayer* pSoundPlayer = nullptr;
 		bool bSpawnNewParticles;
 		bool bWaiting;
+		bool bSoundPlayed;
 
 		void Init() {
 			bSpawnNewParticles = !data.spawnData.bFireOnce;
 			bWaiting = data.startDelay > Fixed::Zero;
 			elapsed = Fixed::Zero;
+			bSoundPlayed = false;
 			InitParticles();
 			if (data.spawnData.bPreWarm) {
 				PreWarm(data.spawnData.preWarmNumTicks);
@@ -194,8 +260,9 @@ namespace LittleEngine {
 			}
 			velocity *= GetRandom(data.spawnData.spawnSpeed);
 			Transform transform;
+			if (pParent) transform.SetParent(*pParent);
 			transform.localPosition = GetRandom(data.spawnData.spawnPosition);
-			p.Init(velocity, GetRandom(data.lifetimeData.timeToLive) * 1000, transform, GetRandom(data.spawnData.spawnAngularSpeed));
+			p.Init(velocity, GetRandom(data.lifetimeData.timeToLive) * 1000, transform, GetRandom(data.spawnData.spawnAngularSpeed), Colour::White, data.layerDelta);
 		}
 
 		void InitParticles() {
@@ -240,54 +307,72 @@ namespace LittleEngine {
 		}
 	};
 
-	ParticleSystem::ParticleSystem(Level & level, const std::string & name, const Vector2& position, const Fixed& rotation) : Actor(level, name, position, rotation) {
-		Logger::Log(*this, GetNameInBrackets() + " Particle System spawned");
-	}
+	Emitter::~Emitter() = default;
 
+	ParticleSystem::ParticleSystem() = default;
 
 	ParticleSystem::~ParticleSystem() {
 		Logger::Log(*this, GetNameInBrackets() + " Particle System destroyed");
 	}
 
-	void ParticleSystem::Init(const std::vector<EmitterData>& emitters) {
-		for (const EmitterData& data : emitters) {
-			this->emitters.emplace_back(data);
+	void ParticleSystem::InitParticleSystem(ParticleSystemData&& data) {
+		std::vector<EmitterData> emitters = data.GetEmitterDatas();
+		for (EmitterData& data : emitters) {
+			data.pParent = &transform;
+			std::unique_ptr<Emitter> emitter = std::make_unique<Emitter>(level->GetAudioManager(), data, false);
+			this->emitters.push_back(std::move(emitter));
 		}
-		bIsPlaying = true;
+		Logger::Log(*this, GetNameInBrackets() + " Particle System initialised", Logger::Severity::Debug);
 	}
 
-	void ParticleSystem::Init(std::initializer_list<EmitterData> emitters) {
-		for (const EmitterData& data : emitters) {
-			this->emitters.emplace_back(data);
+	void ParticleSystem::Start() {
+		for (std::unique_ptr<Emitter>& emitter : emitters) {
+			emitter->Reset(true);
 		}
 		bIsPlaying = true;
+		Logger::Log(*this, GetNameInBrackets() + " Particle System (re)started", Logger::Severity::Debug);
 	}
 
 	void ParticleSystem::Stop() {
-		for (Emitter& emitter : emitters) {
-			emitter.Reset(false);
+		for (std::unique_ptr<Emitter>& emitter : emitters) {
+			emitter->Reset(false);
 		}
 		bIsPlaying = false;
 		Logger::Log(*this, GetNameInBrackets() + " Particle System stopped", Logger::Severity::Debug);
 	}
 
-	void ParticleSystem::Restart() {
-		for (Emitter& emitter : emitters) {
-			emitter.Reset(true);
-		}
-		bIsPlaying = true;
-		Logger::Log(*this, GetNameInBrackets() + " Particle System restarted", Logger::Severity::Debug);
-	}
-
 	void ParticleSystem::Tick(const Fixed & deltaTime) {
-		for (Emitter& emitter : emitters) {
-			emitter.Tick(deltaTime);
+		for (std::unique_ptr<Emitter>& emitter : emitters) {
+			emitter->Tick(deltaTime);
+			bIsPlaying &= emitter->bEnabled;
 		}
 	}
 
 	void ParticleSystem::Render(RenderParams & params) {
-		for (Emitter& emitter : emitters) {
-			emitter.Render(params);
+		for (std::unique_ptr<Emitter>& emitter : emitters) {
+			emitter->Render(params);
+		}
+	}
+
+	ParticleSystemData::ParticleSystemData(Level& level, const GData & psGData) {
+		std::vector<GData> emitterGDatas = psGData.GetVectorGData("emitters");
+		if (!emitterGDatas.empty()) {
+			for (auto& emitterGData : emitterGDatas) {
+				std::string texturePath = emitterGData.GetString("texturePath");
+				TextureAsset* textureAsset = level.GetAssetManager().Load<TextureAsset>(texturePath);
+				if (!textureAsset) {
+					Logger::Log("Invalid texture path in ParticleSystemManifest [" + texturePath + "]! Ignoring creation of emitter", Logger::Severity::Warning);
+					continue;
+				}
+				SoundAsset* sound = nullptr;
+				std::string soundPath = emitterGData.GetString("soundPath");
+				if (!soundPath.empty()) sound = level.GetAssetManager().Load<SoundAsset>(soundPath);
+				
+				EmitterData emitterData(level.GetWorld(), *textureAsset, 10, sound);
+				emitterData.pSound = sound; 
+				emitterData.Deserialise(emitterGData);
+				emitterDatas.emplace_back(std::move(emitterData));
+			}
 		}
 	}
 }

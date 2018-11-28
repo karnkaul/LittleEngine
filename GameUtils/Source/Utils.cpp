@@ -1,5 +1,6 @@
 #include <ctime>
 #include <algorithm>
+#include <stack>
 #include "Utils.h"
 
 namespace Maths {
@@ -135,7 +136,45 @@ namespace Strings {
 		return v;
 	}
 
-	void SubstituteChars(std::string & outInput, char replacement,  std::initializer_list<char> toReplace) {
+	std::vector<std::string> Tokenise(const std::string& s, const char delimiter, std::initializer_list<DiChar> escape) {
+		auto end = s.cend();
+		auto start = end;
+
+		std::stack<DiChar> escapeStack;
+		std::vector<std::string> v;
+		bool escaping = false;
+		for (auto it = s.cbegin(); it != end; ++it) {
+			if (*it != delimiter || escaping) {
+				if (start == end)
+					start = it;
+				for (auto e : escape) {
+					if (*it == e.open) {
+						escaping = true;
+						escapeStack.push(e);
+						break;
+					}
+					else if (*it == e.close) {
+						if (e.open == escapeStack.top().open) {
+							escapeStack.pop();
+							escaping = !escapeStack.empty();
+							break;
+						}
+					}
+				}
+				continue;
+			}
+			if (start != end) {
+				v.emplace_back(start, it);
+				start = end;
+			}
+		}
+		if (start != end) {
+			v.emplace_back(start, end);
+		}
+		return v;
+	}
+
+	void SubstituteChars(std::string & outInput, char replacement, std::initializer_list<char> toReplace) {
 		std::string::iterator iter = outInput.begin();
 		while (iter != outInput.end()) {
 			for (const auto c : toReplace) {
