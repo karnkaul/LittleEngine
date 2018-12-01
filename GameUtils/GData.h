@@ -17,7 +17,7 @@ namespace GameUtils {
 		// Marhshalls and load fields from serialised data
 		bool Marshall(const std::string& serialised);
 		// Returns original raw data, without whitespaces and enclosing braces
-		const std::string& Unmarshall() const;
+		std::string Unmarshall() const;
 		// Clears raw data and fields
 		void Clear();
 
@@ -30,8 +30,14 @@ namespace GameUtils {
 		std::vector<GData> GetVectorGData(const std::string& key) const;
 		std::vector<std::string> GetVector(const std::string& key) const;
 
+		bool AddField(const std::string& key, GData& gData);
+		bool SetString(const std::string& key, const std::string& value);
+
+		const int NumFields() const;
+
 	private:
-		std::string _rawText;
 		std::unordered_map<std::string, std::string> fieldMap;
+
+		const std::string Unmarshall(const std::pair<std::string, std::string>& kvp) const;
 	};
 }

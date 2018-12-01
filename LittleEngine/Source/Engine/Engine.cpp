@@ -10,15 +10,13 @@
 #include "Input/InputHandler.h"
 #include "Audio/AudioManager.h"
 #include "Console/DebugConsole.h"
-
-#include "SFMLInterface/Assets.h"
-#include "SFMLInterface/Input.h"
-#include "SFMLInterface/WindowController.h"
-#include "SFMLInterface/Rendering/Renderable.h"
-#include "SFMLInterface/Rendering/RenderParams.h"
 #include "Misc/Stopwatch.h"
 #include "Levels/Level.h"
 #include "Levels/LevelManager.h"
+#include "SFMLInterface/Assets.h"
+#include "SFMLInterface/Input.h"
+#include "SFMLInterface/WindowController.h"
+#include "SFMLInterface/Rendering/RenderParams.h"
 
 namespace LittleEngine {
 	using Fixed = GameUtils::Fixed;
@@ -35,8 +33,8 @@ namespace LittleEngine {
 		try {
 			/* Load Config */ {
 				config = std::make_unique<EngineConfig>();
-				if (config->Load("config.ini")) {
-					Logger::Log(*this, "Loaded config.ini successfully", Logger::Severity::Debug);
+				if (config->Load("config.gdata")) {
+					Logger::Log(*this, "Loaded config->ini successfully", Logger::Severity::Debug);
 				}
 				Logger::g_logLevel = config->GetLogLevel();
 			}
@@ -66,13 +64,12 @@ namespace LittleEngine {
 		world = nullptr;
 		inputHandler = nullptr;
 		windowController = nullptr;
-		if (config->Save("config.ini")) {
-			Logger::Log(*this, "config.ini saved successfully");
+		if (config->Save("config.gdata")) {
+			Logger::Log(*this, "config->ini saved successfully");
 		}
 		else {
-			Logger::Log(*this, "Could not save config.ini!", Logger::Severity::Warning);
+			Logger::Log(*this, "Could not save config.gdata!", Logger::Severity::Warning);
 		}
-		config = nullptr;
 		
 		Logger::Log(*this, "Engine destroyed");
 		Logger::Cleanup();

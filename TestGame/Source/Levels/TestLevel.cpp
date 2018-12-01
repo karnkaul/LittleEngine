@@ -6,6 +6,8 @@
 #include "GData.h"
 
 namespace LittleEngine {
+	using FileRW = GameUtils::FileRW;
+
 	// Tests
 	namespace _TestLevel {
 		Level* pLevel;
@@ -191,8 +193,8 @@ namespace LittleEngine {
 		RegisterScopedInput(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
 		RegisterScopedInput(GameInput::Select, &_TestLevel::OnSelectPressed, OnKey::Released);
 
-		GameUtils::FileRW reader("Assets/VFX/Fire0/Fire0.psm");
-		GameUtils::GData psGData(reader.ReadAll(true));
+		FileRW reader("Assets/VFX/Fire0/Fire0.psdata");
+		GData psGData(reader.ReadAll(true));
 		ParticleSystemData psData(*this, psGData);
 
 		_TestLevel::_pParticlesTest = SpawnActor<ParticleSystem>("ExplodePS", false);

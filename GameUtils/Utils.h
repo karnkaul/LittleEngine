@@ -5,6 +5,7 @@
 #include <map>
 #include <functional>
 #include <algorithm>
+#include <tuple>
 
 namespace GameUtils {
 	// Erase all elements of a vector that qualify provided Predicate
@@ -139,25 +140,25 @@ namespace Strings {
 	}
 	std::string ToString(bool bInput);
 
-	struct DiChar {
-		char open;
-		char close;
+	template<typename T>
+	struct Pair {
+		T first;
+		T second;
 
-		DiChar(char identical) : open(identical), close(identical) {}
-		DiChar(char open, char close) : open(open), close(close) {}
+		Pair(typename std::pair<T, T>&& pair) : first(pair.first), second(pair.second) {}
+		Pair(T&& first, T&& second) : first(first), second(second) {}
+		Pair(T&& value) : first(value), second(value) {}
+		operator typename std::pair<T, T>() { return typename std::make_pair<T, T>(first, second); }
 	};
 	
-	using Pair = std::pair<std::string, std::string>;
 	// Slices a string into a pair via the first occurence of a delimiter
-	Pair Slice(const std::string& input, char delimiter);
+	Pair<std::string> Bisect(const std::string& input, char delimiter);
 	// Removes all occurrences of toRemove from outInput
 	void RemoveChars(std::string& outInput, std::initializer_list<char> toRemove);
 	// Removes all tabs and spaces
 	void RemoveWhitespace(std::string& outInput);
 	// Tokenises a string via a delimiter, skipping over any delimiters within escape characters
-	std::vector<std::string> Tokenise(const std::string& input, const char delimiter = ' ', std::initializer_list<char> escape = { '[', ']', '\"' });
-	
-	std::vector<std::string> Tokenise(const std::string& input, const char delimiter, std::initializer_list<DiChar> escape);
+	std::vector<std::string> Tokenise(const std::string& input, const char delimiter, std::initializer_list<Pair<char>> escape);
 	// Substitutes an input set of chars with a given replacement
-	void SubstituteChars(std::string & outInput, char replacement, std::initializer_list<char> toReplace);
+	void SubstituteChars(std::string & outInput, std::initializer_list<Pair<char>> replacements);
 }

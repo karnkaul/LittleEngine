@@ -1,6 +1,7 @@
 **/.vs/*
 **/Debug/*
 **/Release/*
+**/*.exe
 **/*.lib
 **/*.pdb
 debug.log

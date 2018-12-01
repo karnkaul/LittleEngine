@@ -3,7 +3,7 @@
 
 namespace GameUtils {
 	namespace {
-		std::initializer_list<Strings::DiChar> gDataEscapes = {
+		std::initializer_list<Strings::Pair<char>> gDataEscapes = {
 			{ '{', '}' },
 			{ '[', ']' },
 			'\"'
@@ -22,12 +22,12 @@ namespace GameUtils {
 		Strings::RemoveChars(temp, { '"' });
 		if (temp[0] == '{' && temp[temp.size() - 1] == '}') {
 			Clear();
-			_rawText = temp.substr(1, temp.size() - 2);
-			std::vector<std::string> tokens = Strings::Tokenise(_rawText, ',', gDataEscapes);
+			std::string rawText = temp.substr(1, temp.size() - 2);
+			std::vector<std::string> tokens = Strings::Tokenise(rawText, ',', gDataEscapes);
 			for (const auto& token : tokens) {
-				Strings::Pair kvp = Strings::Slice(token, ':');
+				Strings::Pair<std::string> kvp = Strings::Bisect(token, ':');
 				if (!kvp.second.empty() && !kvp.first.empty()) {
-					fieldMap.insert(std::move(kvp));
+					fieldMap.emplace(kvp.first, kvp.second);
 				}
 			}
 			return true;
@@ -36,13 +36,18 @@ namespace GameUtils {
 		return false;
 	}
 	
-	const std::string& GData::Unmarshall() const {
-		return _rawText;
+	std::string GData::Unmarshall() const {
+		std::string ret = "{";
+		size_t slice = 0;
+		for (const auto& kvp : fieldMap) {
+			ret += Unmarshall(kvp) + ',';
+			slice = 1;
+		}
+		return ret.substr(0, ret.size() - slice) + '}';
 	}
 
 	void GData::Clear() {
 		fieldMap.clear();
-		_rawText = "";
 	}
 
 	template<typename T>
@@ -112,5 +117,30 @@ namespace GameUtils {
 			}
 		}
 		return std::vector<std::string>();
+	}
+
+	bool GData::AddField(const std::string& key, GData & gData) {
+		std::string value = gData.Unmarshall();
+		Strings::RemoveChars(value, { '\"' });
+		if (!value.empty() && !key.empty() && fieldMap.find(key) == fieldMap.end()) {
+			return SetString(key, value);
+		}
+		return false;
+	}
+	
+	bool GData::SetString(const std::string & key, const std::string & value) {
+		if (!key.empty() && !value.empty()) {
+			fieldMap[key] = value;
+			return true;
+		}
+		return false;
+	}
+
+	const int GData::NumFields() const {
+		return static_cast<int>(fieldMap.size());
+	}
+
+	const std::string GData::Unmarshall(const std::pair<std::string, std::string>& kvp) const {
+		return "\"" + kvp.first + "\":\"" + kvp.second + "\"";
 	}
 }
