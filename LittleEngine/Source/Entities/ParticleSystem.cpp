@@ -111,17 +111,18 @@ namespace LittleEngine {
 
 	unsigned int Particle::nextID = 0;
 
-#define DESERIALISE_TFLOAT(gData, m_x) m_x = GetTRangeF(gData.GetGData(#m_x), m_x.min, m_x.max)
+#define DESERIALISE_TFIXED(gData, m_x) m_x = GetTRangeF(gData.GetGData(#m_x), m_x.min, m_x.max)
 #define DESERIALISE_FIXED(gData, m_x) m_x = Fixed(gData.GetDouble(#m_x, m_x.ToDouble()))
 #define DESERIALISE_INT(gData, m_x) m_x = gData.GetInt(#m_x, m_x)
 #define DESERIALISE_BOOL(gData, m_x) m_x = gData.GetBool(#m_x, m_x)
 
 	void ParticleSpawnData::Deserialise(const GData & gData) {
 		spawnPosition = GetTRangeV2(gData.GetGData("spawnPosition"));
-		DESERIALISE_TFLOAT(gData, spreadAngle);
-		DESERIALISE_TFLOAT(gData, emitterAngle);
-		DESERIALISE_TFLOAT(gData, spawnSpeed);
-		DESERIALISE_TFLOAT(gData, spawnAngularSpeed);
+		DESERIALISE_TFIXED(gData, spreadAngle);
+		DESERIALISE_TFIXED(gData, emitterAngle);
+		DESERIALISE_TFIXED(gData, spawnSpeed);
+		DESERIALISE_TFIXED(gData, spawnAngularSpeed);
+		DESERIALISE_INT(gData, numParticles);
 		DESERIALISE_INT(gData, preWarmNumTicks);
 		DESERIALISE_BOOL(gData, bPreWarm);
 		DESERIALISE_BOOL(gData, bFireOnce);
@@ -129,8 +130,8 @@ namespace LittleEngine {
 
 	void ParticleLifetimeData::Deserialise(const GData & gData) {
 		alphaOverTime = GetTRangeUB(gData.GetGData("alphaOverTime"));
-		DESERIALISE_TFLOAT(gData, scaleOverTime);
-		DESERIALISE_TFLOAT(gData, timeToLive);
+		DESERIALISE_TFIXED(gData, scaleOverTime);
+		DESERIALISE_TFIXED(gData, timeToLive);
 	}
 
 	EmitterData::EmitterData(const World& world, TextureAsset & texture, unsigned int numParticles, SoundAsset* pSound) : pWorld(&world), pTexture(&texture), spawnData(numParticles), pSound(pSound), pParent(nullptr) {
@@ -307,7 +308,9 @@ namespace LittleEngine {
 		}
 	};
 
-	Emitter::~Emitter() = default;
+	Emitter::~Emitter() {
+		if (pSoundPlayer) pSoundPlayer->Stop();
+	}
 
 	ParticleSystem::ParticleSystem() = default;
 
@@ -317,12 +320,19 @@ namespace LittleEngine {
 
 	void ParticleSystem::InitParticleSystem(ParticleSystemData&& data) {
 		std::vector<EmitterData> emitters = data.GetEmitterDatas();
+		std::string particles;
 		for (EmitterData& data : emitters) {
 			data.pParent = &transform;
 			std::unique_ptr<Emitter> emitter = std::make_unique<Emitter>(level->GetAudioManager(), data, false);
+			particles += (Strings::ToString(data.spawnData.numParticles) + ", ");
 			this->emitters.push_back(std::move(emitter));
 		}
-		Logger::Log(*this, GetNameInBrackets() + " Particle System initialised", Logger::Severity::Debug);
+		Logger::Severity logSeverity = particles.empty() || emitters.empty() ? Logger::Severity::Warning : Logger::Severity::Debug;
+		if (!particles.empty()) particles = particles.substr(0, particles.length() - 2);
+		else particles = "0";
+		particles = "[" + particles + "] particles";
+		
+		Logger::Log(*this, GetNameInBrackets() + " Particle System initialised: [" + Strings::ToString(emitters.size()) + "] emitters " + particles, logSeverity);
 	}
 
 	void ParticleSystem::Start() {

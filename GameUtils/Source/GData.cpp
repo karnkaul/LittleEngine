@@ -40,7 +40,10 @@ namespace GameUtils {
 		std::string ret = "{";
 		size_t slice = 0;
 		for (const auto& kvp : fieldMap) {
-			ret += Unmarshall(kvp) + ',';
+			std::string value = kvp.second;
+			auto space = kvp.second.find(' ');
+			if (space != std::string::npos) value = '\"' + value + '\"';
+			ret += (kvp.first + ':' + value + ',');
 			slice = 1;
 		}
 		return ret.substr(0, ret.size() - slice) + '}';
@@ -122,10 +125,7 @@ namespace GameUtils {
 	bool GData::AddField(const std::string& key, GData & gData) {
 		std::string value = gData.Unmarshall();
 		Strings::RemoveChars(value, { '\"' });
-		if (!value.empty() && !key.empty() && fieldMap.find(key) == fieldMap.end()) {
-			return SetString(key, value);
-		}
-		return false;
+		return SetString(key, value);
 	}
 	
 	bool GData::SetString(const std::string & key, const std::string & value) {
@@ -138,9 +138,5 @@ namespace GameUtils {
 
 	const int GData::NumFields() const {
 		return static_cast<int>(fieldMap.size());
-	}
-
-	const std::string GData::Unmarshall(const std::pair<std::string, std::string>& kvp) const {
-		return "\"" + kvp.first + "\":\"" + kvp.second + "\"";
 	}
 }

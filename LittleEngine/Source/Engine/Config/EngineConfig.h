@@ -32,6 +32,7 @@ namespace LittleEngine {
 
 	private:
 		GData data;
+		bool _dirty = false;
 
 		void Verify();
 	};

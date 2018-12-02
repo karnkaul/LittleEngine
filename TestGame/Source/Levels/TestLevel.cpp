@@ -193,7 +193,7 @@ namespace LittleEngine {
 		RegisterScopedInput(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
 		RegisterScopedInput(GameInput::Select, &_TestLevel::OnSelectPressed, OnKey::Released);
 
-		FileRW reader("Assets/VFX/Fire0/Fire0.psdata");
+		FileRW reader("Assets/VFX/Fire0/Fire0_loop.psdata");
 		GData psGData(reader.ReadAll(true));
 		ParticleSystemData psData(*this, psGData);
 
@@ -206,8 +206,8 @@ namespace LittleEngine {
 		_TestLevel::bSoundPlayed = _TestLevel::bMusicPlayed = false;
 		
 		GetAudioManager().PlayMusic("TestMusic.ogg", Fixed::OneHalf);
-		Spawner::Init(*this);
-		Spawner::VFXExplode_Warm();
+		/*Spawner::Init(*this);
+		Spawner::VFXExplode_Warm();*/
 	}
 
 	void TestLevel::OnClearing() {

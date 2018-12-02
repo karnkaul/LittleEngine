@@ -23,6 +23,6 @@
 	
 	"soundSets":
 	[
-		{ pathPrefix: "VFX/Fire0", count: 1, assetPrefix: "", assetSuffix: ".wav" }
+		{ pathPrefix: "VFX/Fire0", count: 2, assetPrefix: "", assetSuffix: ".wav" }
 	]
 }

@@ -189,7 +189,7 @@ namespace LittleEngine {
 				else {
 					volume = startVolume * (Fixed::One - ratio);
 				}
-				Logger::Log(*this, "Fading! Volume: " + volume.ToString(), Logger::Severity::Debug);
+				Logger::Log(*this, "Fading! Volume: " + volume.ToString(), Logger::Severity::HOT);
 			}
 		}
 		ApplyParams();

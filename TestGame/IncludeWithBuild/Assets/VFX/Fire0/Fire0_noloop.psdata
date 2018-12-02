@@ -8,9 +8,9 @@
 				"spawnSpeed": { "min": 0.10, "max": 0.10 },
 				"spawnAngularSpeed": { "min": -0.50, "max": 0.50 },
 				"preWarmNumTims": 50,
-				"numParticles": 10,
-				"bPreWarm": true,
-				"bFireOnce": false
+				"numParticles": 5,
+				"bPreWarm": false,
+				"bFireOnce": true
 			},
 			"lifetimeData": {
 				"timeToLive": { "min": 0.50, "max": 0.25 },
@@ -32,8 +32,8 @@
 				"spawnAngularSpeed": { "min": -0.50, "max": 0.50 },
 				"preWarmNumTims": 50,
 				"numParticles": 10,
-				"bPreWarm": true,
-				"bFireOnce": false
+				"bPreWarm": false,
+				"bFireOnce": true
 			},
 			"lifetimeData": {
 				"timeToLive": { "min": 0.50, "max": 0.25 },
@@ -54,9 +54,9 @@
 				"spawnSpeed": { "min": 0.25, "max": 0.25 },
 				"spawnAngularSpeed": { "min": -0.33, "max": 0.33 },
 				"preWarmNumTims": 50,
-				"numParticles": 10,
-				"bPreWarm": true,
-				"bFireOnce": false
+				"numParticles": 15,
+				"bPreWarm": false,
+				"bFireOnce": true
 			},
 			"lifetimeData": {
 				"timeToLive": { "min": 1.50, "max": 0.50 },
@@ -66,7 +66,7 @@
 			"texturePath": "VFX/Fire0/02.png",
 			"soundPath": "",
 			"sfxVolume": 0.00,
-			"startDelay": 0.00
+			"startDelay": 0.33
 		}
 	]
 }

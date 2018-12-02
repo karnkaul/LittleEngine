@@ -37,7 +37,5 @@ namespace GameUtils {
 
 	private:
 		std::unordered_map<std::string, std::string> fieldMap;
-
-		const std::string Unmarshall(const std::pair<std::string, std::string>& kvp) const;
 	};
 }
