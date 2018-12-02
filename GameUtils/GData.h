@@ -17,21 +17,27 @@ namespace GameUtils {
 		// Marhshalls and load fields from serialised data
 		bool Marshall(const std::string& serialised);
 		// Returns original raw data, without whitespaces and enclosing braces
-		const std::string& Unmarshall() const;
+		std::string Unmarshall() const;
 		// Clears raw data and fields
 		void Clear();
 
-		std::string GetString(const std::string& key, const std::string& defaultValue = "");
-		bool GetBool(const std::string& key, bool defaultValue = false);
-		int GetInt(const std::string& key, int defaultValue = -1);
-		double GetDouble(const std::string& key, double defaultValue = -1.0f);
-		GData GetGData(const std::string& key);
+		std::string GetString(const std::string& key, const std::string& defaultValue = "") const;
+		bool GetBool(const std::string& key, bool defaultValue = false) const;
+		int GetInt(const std::string& key, int defaultValue = -1) const;
+		double GetDouble(const std::string& key, double defaultValue = -1.0f) const;
+		GData GetGData(const std::string& key) const;
 
-		std::vector<GData> GetVectorGData(const std::string& key);
-		std::vector<std::string> GetVector(const std::string& key);
+		std::vector<GData> GetVectorGData(const std::string& key) const;
+		std::vector<std::string> GetVector(const std::string& key) const;
+
+		bool AddField(const std::string& key, GData& gData);
+		bool SetString(const std::string& key, const std::string& value);
+
+		const int NumFields() const;
 
 	private:
-		std::string _rawText;
 		std::unordered_map<std::string, std::string> fieldMap;
+
+		const std::string Unmarshall(const std::pair<std::string, std::string>& kvp) const;
 	};
 }

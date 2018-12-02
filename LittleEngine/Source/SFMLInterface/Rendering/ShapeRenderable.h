@@ -1,11 +1,11 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "Vector2.h"
-#include "Renderer.h"
+#include "Renderable.h"
 
 namespace LittleEngine {
 	// \brief Abstract class for drawing SFML Shapes
-	class ShapeRenderer : public Renderer {
+	class ShapeRenderable : public Renderable {
 	public:
 		void SetFillColour(const Colour& colour);
 		void SetBorder(const Fixed& width, const Colour& colour);
@@ -13,12 +13,13 @@ namespace LittleEngine {
 	protected:
 		std::unique_ptr<sf::Shape> shape;	// sf::Shape cannot be a direct member
 
-		ShapeRenderer(std::string name, std::unique_ptr<sf::Shape> shape);
-		ShapeRenderer(const ShapeRenderer& prototype, std::unique_ptr<sf::Shape> shape);
+		ShapeRenderable(std::string name, std::unique_ptr<sf::Shape> shape);
+		ShapeRenderable(const ShapeRenderable& prototype, std::unique_ptr<sf::Shape> shape);
 
 		virtual void RenderInternal(RenderParams& params) override; 
 		virtual void SetPosition(const Vector2& screenPosition) override;
 		virtual void SetRotation(const Fixed& screenRotation) override;
+		virtual void SetScale(const Vector2& screenScale) override;
 
 		template<typename T>
 		T& CastShape() const {
@@ -28,34 +29,34 @@ namespace LittleEngine {
 	};
 
 	// \brief Concrete class to draw a CircleShape
-	class CircleRenderer : public ShapeRenderer {
+	class CircleRenderable : public ShapeRenderable {
 	public:
-		CircleRenderer(const Fixed& radius);
-		CircleRenderer(const Fixed& radius, const Colour& colour);
-		CircleRenderer(const CircleRenderer& prototype);
+		CircleRenderable(const Fixed& radius);
+		CircleRenderable(const Fixed& radius, const Colour& colour);
+		CircleRenderable(const CircleRenderable& prototype);
 
 		void SetRadius(const Fixed& radius);
 
 		// Returns outer rect of CircleShape (|any point| = radius)
 		virtual Rect2 GetBounds() const override;
-		virtual std::unique_ptr<Renderer> UClone() const override;
+		virtual std::unique_ptr<Renderable> UClone() const override;
 
 	private:
 		sf::CircleShape* circle;
 	};
 
 	// \brief Concrete class to draw a RectangleShape
-	class RectangleRenderer : public ShapeRenderer {
+	class RectangleRenderable : public ShapeRenderable {
 	public:
-		RectangleRenderer(const Vector2& size);
-		RectangleRenderer(const Vector2& size, const Colour& colour);
-		RectangleRenderer(const RectangleRenderer& prototype);
+		RectangleRenderable(const Vector2& size);
+		RectangleRenderable(const Vector2& size, const Colour& colour);
+		RectangleRenderable(const RectangleRenderable& prototype);
 
 		void SetSize(const Vector2& size);
 
 		// Returns bounds of RectangleShape
 		virtual Rect2 GetBounds() const override;
-		virtual std::unique_ptr<Renderer> UClone() const override;
+		virtual std::unique_ptr<Renderable> UClone() const override;
 
 	private:
 		sf::RectangleShape* rectangle;

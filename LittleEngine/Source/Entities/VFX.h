@@ -15,7 +15,7 @@ namespace LittleEngine {
 		void Init(const AssetPaths& spriteSheet, const AssetPaths& sfxPaths, const Fixed& animTime, const Fixed& sfxVol, bool autoplay = true);
 		void Play();
 
-		virtual void Tick(Fixed deltaTime) override;
+		virtual void Tick(const Fixed& deltaTime) override;
 
 	private:
 		SpriteAnimator* animator = nullptr;

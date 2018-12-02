@@ -35,22 +35,22 @@ namespace LittleEngine {
 				manifest.AddDefinition(AssetType::Sound, AssetPaths("VFX/Explode", 1, "", ".wav"));
 				activeLevel->GetAssetManager().LoadAll(manifest);
 
-				if (VFXPrototypes::explode = activeLevel->SpawnActor<VFX>("Explode", false)) {
+				/*if (VFXPrototypes::explode = activeLevel->SpawnActor<VFX>("Explode", false)) {
 					AssetPaths spriteSheet("VFX/Explode", 14, "", ".png");
 					AssetPaths sfx("VFX/Explode", 1, "", ".wav");
 					VFXPrototypes::explode->Init(spriteSheet, sfx, Fixed(1000), Fixed(3, 10), false);
-				}
+				}*/
 			}
 		}
 
 		VFX* VFXExplode(const Vector2& position) {
 			if (!activeLevel) return nullptr;
 
-			if (VFXPrototypes::explode) {
+			/*if (VFXPrototypes::explode) {
 				VFX* explode = (activeLevel->CloneActor<VFX>(*VFXPrototypes::explode));
 				explode->GetTransform().localPosition = position;
 				return explode;
-			}
+			}*/
 			return nullptr;
 		}
 	}

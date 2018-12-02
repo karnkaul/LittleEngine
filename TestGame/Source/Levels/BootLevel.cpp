@@ -9,7 +9,7 @@ namespace LittleEngine {
 		if (Actor* logo = SpawnActor<Actor>("Logo", true)) {
 			logoID = logo->GetActorID();
 			auto renderer = logo->AddComponent<RenderComponent>();
-			logoRenderer = &renderer->SetTextRenderer("... Press Enter to Start ...");
+			logoRenderer = &renderer->SetTextRenderable("... Press Enter to Start ...");
 			logo->SetNormalisedPosition(Vector2(0, Fixed(-0.66f)));
 		}
 
@@ -26,7 +26,7 @@ namespace LittleEngine {
 			Fixed speed = 2;
 			Fixed alpha = (seconds * speed).Sin().Abs() * 255;
 			Colour c = logoRenderer->GetTextData().fillColour;
-			logoRenderer->GetTextData().fillColour = Colour(c.r, c.g, c.g, alpha);
+			logoRenderer->GetTextData().fillColour = Colour(c.r, c.g, c.g, UByte(alpha.ToInt()));
 		}
 
 		// Tick all actors etc

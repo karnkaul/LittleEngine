@@ -1,7 +1,9 @@
 **/.vs/*
 **/Debug/*
 **/Release/*
+**/*.exe
 **/*.lib
 **/*.pdb
 debug.log
 **/vc-fileutils.settings
+**/SourceArt/*

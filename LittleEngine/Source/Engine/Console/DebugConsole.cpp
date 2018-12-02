@@ -1,8 +1,8 @@
 #include "le_stdafx.h"
 #include <list>
 #include "DebugConsole.h"
-#include "SFMLInterface/Rendering/ShapeRenderer.h"
-#include "SFMLInterface/Rendering/TextRenderer.h"
+#include "SFMLInterface/Rendering/ShapeRenderable.h"
+#include "SFMLInterface/Rendering/TextRenderable.h"
 #include "SFMLInterface/WindowController.h"
 #include "SFMLInterface/Assets.h"
 #include "Engine/World.h"
@@ -111,7 +111,7 @@ namespace LittleEngine { namespace DebugConsole {
 
 			DebugConsoleLog(TextData& baseData) {
 				for (auto& l : logText) {
-					l = std::make_unique<TextRenderer>(baseData);
+					l = std::make_unique<TextRenderable>(baseData);
 					l->SetSize(15);
 					l->layer = LayerID::TOP;
 				}
@@ -137,7 +137,7 @@ namespace LittleEngine { namespace DebugConsole {
 				}
 			}
 
-			std::unique_ptr<TextRenderer> logText[NUM_LOG_LINES] = { nullptr };
+			std::unique_ptr<TextRenderable> logText[NUM_LOG_LINES] = { nullptr };
 			std::list<LogLine> logLines;
 		};
 
@@ -181,10 +181,10 @@ namespace LittleEngine { namespace DebugConsole {
 			Transform rootT;
 			Transform inputT;
 			Transform separatorT;
-			std::unique_ptr<RectangleRenderer> background = nullptr;
-			std::unique_ptr<RectangleRenderer> separator = nullptr;
+			std::unique_ptr<RectangleRenderable> background = nullptr;
+			std::unique_ptr<RectangleRenderable> separator = nullptr;
 			std::unique_ptr<DebugConsoleLog> log = nullptr;
-			std::unique_ptr<TextRenderer> inputText = nullptr;
+			std::unique_ptr<TextRenderable> inputText = nullptr;
 			Fixed ROOT_Y;
 
 			void InitialiseComponents() {
@@ -195,7 +195,7 @@ namespace LittleEngine { namespace DebugConsole {
 					textData.hAlign = HAlign::Left;
 					log = std::make_unique<DebugConsoleLog>(textData);
 
-					inputText = std::make_unique<TextRenderer>(textData);
+					inputText = std::make_unique<TextRenderable>(textData);
 					inputText->SetColour(Colour::White);
 					inputText->SetSize(16);
 					inputText->layer = LayerID::TOP;
@@ -218,13 +218,13 @@ namespace LittleEngine { namespace DebugConsole {
 					}
 				}
 				if (background == nullptr) {
-					background = std::make_unique<RectangleRenderer>(bgSize);
+					background = std::make_unique<RectangleRenderable>(bgSize);
 					background->SetFillColour(LOG_BG_COLOUR);
 					background->layer = LayerID::TOP;
 				}
 				if (separator == nullptr) {
 					Vector2 separatorSize(bgSize.x, Fixed::One);
-					separator = std::make_unique<RectangleRenderer>(separatorSize);
+					separator = std::make_unique<RectangleRenderable>(separatorSize);
 					separator->SetFillColour(LOG_TEXT_COLOUR);
 					separator->layer = LayerID::TOP;
 				}
@@ -350,7 +350,7 @@ namespace LittleEngine { namespace DebugConsole {
 		}
 		const Fixed ANIM_SCALE = Fixed::Two;
 		static double elapsed = 0.0f;
-		elapsed += deltaTime.GetDouble();
+		elapsed += deltaTime.ToDouble();
 		if (bIsActive) {
 			if (yOffset < yOffsetMax) {
 				yOffset += (deltaTime * ANIM_SCALE);

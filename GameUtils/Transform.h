@@ -3,19 +3,17 @@
 #include "Vector2.h"
 
 namespace GameUtils {
-	namespace Consts {
-		const Fixed PI = Fixed(3.14159265359);
-		const Fixed DEG_TO_RAD = Fixed(PI / 180);
-	}
-
 	// \brief Class maintains a position and orientation in 2D space, 
 	// and provides an API for parenting to other Transforms.
 	struct Transform {
 	public:
+		const static Transform IDENTITY;
+
 		// Position world space
-		Vector2 localPosition;
+		Vector2 localPosition = Vector2::Zero;
 		// Rotation in world orientation (+ is clockwise)
-		Fixed localRotation;
+		Fixed localOrientation = Fixed::Zero;
+		Vector2 localScale = Vector2::One;
 
 		Transform();
 		~Transform();
@@ -30,7 +28,9 @@ namespace GameUtils {
 		// Returns position from parent's origin as position in world space
 		Vector2 Position() const;
 		// Returns rotation in world orientation (+ is clockwise)
-		Fixed Rotation() const;
+		Fixed Orientation() const;
+		// Returns parent-aware scale
+		Vector2 Scale() const;
 		// Call this to Rotate this and all children
 		void Rotate(Fixed angle);
 

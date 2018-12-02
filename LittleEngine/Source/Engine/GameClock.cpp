@@ -44,7 +44,7 @@ namespace LittleEngine {
 	}
 
 	void GameClock::Tick(const Fixed& deltaTime) {
-		gameTime += deltaTime.GetDouble();
+		gameTime += deltaTime.ToDouble();
 	}
 
 	void GameClock::Reset() {

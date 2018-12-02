@@ -16,11 +16,11 @@ namespace Consts {
 namespace LittleEngine {
 	class Actor;
 	class World;
-	class EngineConfig;
 	class AssetManager;
 	class AudioManager;
 	class Level;
 	class WindowController;
+	class EngineConfig;
 	class EngineCommand;
 	class InputHandler;
 	using LevelID = int;
@@ -70,10 +70,10 @@ namespace LittleEngine {
 		std::unique_ptr<AssetManager> assetManager;
 		std::unique_ptr<LevelManager> levelManager;
 		std::unique_ptr<AudioManager> audioManager;
-		std::unique_ptr<EngineConfig> config;
 		std::unique_ptr<World> world;
 		std::unique_ptr<WindowController> windowController;
 		std::unique_ptr<InputHandler> inputHandler;
+		std::unique_ptr<EngineConfig> config;
 		std::vector<std::unique_ptr<EngineCommand>> commands;
 		ExitCode exitCode = ExitCode::OK;
 		bool bIsPaused = false;

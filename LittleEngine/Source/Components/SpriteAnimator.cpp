@@ -3,7 +3,7 @@
 #include "Levels/Level.h"
 #include "Entities/Actor.h"
 #include "Utils.h"
-#include "SFMLInterface/Rendering/SpriteRenderer.h"
+#include "SFMLInterface/Rendering/SpriteRenderable.h"
 
 namespace LittleEngine {
 	SpriteAnimator::SpriteAnimator(Actor& actor) : Component(actor, "AnimatedSprite") {	
@@ -11,7 +11,7 @@ namespace LittleEngine {
 
 	SpriteAnimator::SpriteAnimator(Actor& owner, const SpriteAnimator & prototype) : Component(owner, prototype), sprites(prototype.sprites), bAnimating(prototype.bAnimating), animTime(prototype.animTime) {
 		if (!sprites.empty() && sprites[0]) {
-			spriteRenderer = std::make_unique<SpriteRenderer>(SpriteData(*sprites[0]));
+			sprite = std::make_unique<SpriteRenderable>(SpriteData(*sprites[0]));
 		}
 		else {
 			Logger::Log(*this, "SpriteAnimator cloned with empty spritesheet!", Logger::Severity::Error);
@@ -21,12 +21,12 @@ namespace LittleEngine {
 	void SpriteAnimator::SetSpriteSheet(const AssetPaths& spriteSheet, const Fixed & animTime, bool bStartAnim) {
 		AssetManager& assetManager = GetActor().GetActiveLevel().GetAssetManager();
 		std::vector<TextureAsset*> sheetAssets = assetManager.Load<TextureAsset>(spriteSheet.assetPaths);
-		for (const auto& sprite : sheetAssets) {
-			if (sprite) {
-				sprites.push_back(sprite);
-				if (!spriteRenderer) {
-					SpriteData spriteData(*sprite);
-					spriteRenderer = std::make_unique<SpriteRenderer>(spriteData);
+		for (const auto& spriteAsset : sheetAssets) {
+			if (spriteAsset) {
+				sprites.push_back(spriteAsset);
+				if (!spriteAsset) {
+					SpriteData spriteData(*spriteAsset);
+					sprite = std::make_unique<SpriteRenderable>(spriteData);
 				}
 			}
 		}
@@ -43,8 +43,8 @@ namespace LittleEngine {
 
 	void SpriteAnimator::Stop() {
 		bAnimating = false;
-		if (spriteRenderer) {
-			spriteRenderer->SetEnabled(false);
+		if (sprite) {
+			sprite->SetEnabled(false);
 		}
 		else {
 			Logger::Log(*this, "Stop() called before spritesheet set!", Logger::Severity::Warning);
@@ -57,8 +57,8 @@ namespace LittleEngine {
 	}
 
 	void SpriteAnimator::SetLayer(LayerInfo layer) {
-		if (spriteRenderer) {
-			spriteRenderer->layer = layer;
+		if (sprite) {
+			sprite->layer = layer;
 		}
 		else {
 			Logger::Log(*this, "SetLayer() called before spritesheet set!", Logger::Severity::Warning);
@@ -70,7 +70,7 @@ namespace LittleEngine {
 			elapsed += deltaTime;
 			Fixed ratio = Maths::Clamp01(elapsed / animTime);
 			Fixed size = static_cast<int>(sprites.size());
-			index = static_cast<size_t>((ratio * size).GetInt());
+			index = static_cast<size_t>((ratio * size).ToInt());
 			if (index >= sprites.size()) {
 				if (bLooping) {
 					Reset();
@@ -86,9 +86,9 @@ namespace LittleEngine {
 	}
 
 	void SpriteAnimator::Render(RenderParams params) {
-		if (bAnimating && spriteRenderer) {
-			spriteRenderer->layer = LayerID::Player;
-			spriteRenderer->Render(params);
+		if (bAnimating && sprite) {
+			sprite->layer = LayerID::Player;
+			sprite->Render(params);
 		}
 	}
 
@@ -96,13 +96,13 @@ namespace LittleEngine {
 		return std::make_unique<SpriteAnimator>(owner, *this);
 	}
 
-	void SpriteAnimator::SetSprite(TextureAsset& sprite) {
-		if (!spriteRenderer) {
-			SpriteData spriteData(sprite);
-			spriteRenderer = std::make_unique<SpriteRenderer>(spriteData);
-			spriteRenderer->layer = LayerID::Default;
+	void SpriteAnimator::SetSprite(TextureAsset& texture) {
+		if (!sprite) {
+			SpriteData spriteData(texture);
+			sprite = std::make_unique<SpriteRenderable>(spriteData);
+			sprite->layer = LayerID::Default;
 		}
-		spriteRenderer->SetEnabled(true);
-		spriteRenderer->SetTexture(sprite);
+		sprite->SetEnabled(true);
+		sprite->SetTexture(texture);
 	}
 }

@@ -10,6 +10,8 @@ namespace GameUtils {
 
 		static const Vector2 Zero;
 		static const Vector2 One;
+		
+		static Vector2 ToOrientation(Fixed degrees);
 
 		Vector2() : x(0), y(0) {}
 		Vector2(Fixed x, Fixed y) : x(x), y(y) {}
@@ -39,6 +41,7 @@ namespace GameUtils {
 	Vector2 operator-(const Vector2& lhs);
 	Vector2 operator+(const Vector2& lhs, const Vector2& rhs);
 	Vector2 operator-(const Vector2& lhs, const Vector2& rhs);
+	Vector2 operator*(const Fixed& lhs, const Vector2& rhs);
 	Vector2 operator*(const Vector2& lhs, const Fixed& rhs);
 	Vector2 operator/(const Vector2& lhs, const Fixed& rhs);
 	bool operator==(const Vector2& lhs, const Vector2& rhs);

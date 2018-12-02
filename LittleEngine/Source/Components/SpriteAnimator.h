@@ -4,7 +4,7 @@
 #include "SFMLInterface/Assets.h"
 
 namespace LittleEngine {
-	// \brief Swaps textures on a SpriteRenderer over a set period of time
+	// \brief Swaps textures on a SpriteRenderable over a set period of time
 	class SpriteAnimator final : public Component {
 	public:
 		bool bLooping = false;
@@ -24,13 +24,13 @@ namespace LittleEngine {
 		virtual Component::Ptr UClone(Actor& owner) const override;
 
 	private:
-		std::unique_ptr<SpriteRenderer> spriteRenderer = nullptr;
+		std::unique_ptr<SpriteRenderable> sprite = nullptr;
 		std::vector<TextureAsset*> sprites;
 		size_t index = 0;
 		Fixed elapsed = Fixed::Zero;
 		Fixed animTime = Fixed::Zero;
 		bool bAnimating = false;
 
-		void SetSprite(TextureAsset& sprite);
+		void SetSprite(TextureAsset& texture);
 	};
 }

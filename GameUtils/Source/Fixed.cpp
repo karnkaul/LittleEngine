@@ -35,19 +35,19 @@ namespace GameUtils {
 		m_value(static_cast<int64_t>(numerator) * static_cast<int64_t>(SCALE_FACTOR) / static_cast<int64_t>(denominator))
 	{}
 
-	int Fixed::GetInt() const {
-		int floor = static_cast<int>(GetDouble());
+	int Fixed::ToInt() const {
+		int floor = static_cast<int>(ToDouble());
 		if ((floor * static_cast<double>(SCALE_FACTOR)) - static_cast<double>(m_value) >= 0.5f) {
 			return floor + 1;
 		}
 		return floor;
 	}
 
-	float Fixed::GetFloat() const {
+	float Fixed::ToFloat() const {
 		return static_cast<float>(m_value) / static_cast<float>(SCALE_FACTOR);
 	}
 
-	double Fixed::GetDouble() const {
+	double Fixed::ToDouble() const {
 		return static_cast<double>(m_value) / static_cast<double>(SCALE_FACTOR);
 	}
 
@@ -116,11 +116,11 @@ namespace GameUtils {
 			ret = Inverse();
 			exponent = -exponent;
 		}
-		return Fixed(std::pow(ret.GetDouble(), exponent));
+		return Fixed(std::pow(ret.ToDouble(), exponent));
 	}
 
 	Fixed Fixed::Sqrt() const {
-		return Fixed(std::sqrt(GetDouble()));
+		return Fixed(std::sqrt(ToDouble()));
 	}
 
 	Fixed Fixed::Inverse() const {
@@ -128,15 +128,15 @@ namespace GameUtils {
 	}
 
 	Fixed Fixed::Sin() const {
-		return Fixed(std::sin(GetDouble()));
+		return Fixed(std::sin(ToDouble()));
 	}
 
 	Fixed Fixed::Cos() const {
-		return Fixed(std::cos(GetDouble()));
+		return Fixed(std::cos(ToDouble()));
 	}
 
 	Fixed Fixed::Tan() const {
-		return Fixed(std::tan(GetDouble()));
+		return Fixed(std::tan(ToDouble()));
 	}
 
 	bool Fixed::operator==(const Fixed & rhs) const {
@@ -160,7 +160,7 @@ namespace GameUtils {
 	}
 
 	std::string Fixed::ToString() const {
-		return std::to_string(GetDouble());
+		return std::to_string(ToDouble());
 	}
 
 	Fixed operator-(const Fixed& rhs) {
@@ -168,7 +168,7 @@ namespace GameUtils {
 	}
 
 	std::ostream& operator<<(std::ostream& lhs, Fixed rhs) {
-		return lhs << rhs.GetDouble();
+		return lhs << rhs.ToDouble();
 	}
 
 	Fixed operator+(const Fixed& lhs, const Fixed& rhs) {

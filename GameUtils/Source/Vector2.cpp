@@ -1,10 +1,15 @@
 #include <string>
 #include <math.h>
 #include "Vector2.h"
+#include "Utils.h"
 
 namespace GameUtils {
 	const Vector2 Vector2::Zero = Vector2(0, 0);
 	const Vector2 Vector2::One = Vector2(1, 1);
+
+	Vector2 Vector2::ToOrientation(Fixed degrees) {
+		return Vector2((Maths::DEG_TO_RAD * degrees).Sin(), (Maths::DEG_TO_RAD * degrees).Cos());
+	}
 
 	Vector2& Vector2::operator+=(const Vector2& rhs) {
 		x += rhs.x;
@@ -51,7 +56,7 @@ namespace GameUtils {
 	}
 
 	double Vector2::SqrMagnitude() const {
-		return (x.GetDouble() * x.GetDouble()) + (y.GetDouble() * y.GetDouble());
+		return (x.ToDouble() * x.ToDouble()) + (y.ToDouble() * y.ToDouble());
 	}
 
 	std::string Vector2::ToString() const {
@@ -68,6 +73,10 @@ namespace GameUtils {
 
 	Vector2 operator-(const Vector2& lhs, const Vector2& rhs) {
 		return Vector2(lhs) -= rhs;
+	}
+
+	Vector2 operator*(const Fixed & lhs, const Vector2 & rhs) {
+		return Vector2(rhs) *= lhs;
 	}
 
 	Vector2 operator*(const Vector2& lhs, const Fixed& rhs) {
