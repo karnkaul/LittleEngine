@@ -1,136 +1,101 @@
 #include "le_stdafx.h"
+#include <unordered_map>
 #include "EngineConfig.h"
+#include "FileRW.h"
 #include "Utils.h"
 
 namespace LittleEngine {
-	struct Data {
-		const static std::string WINDOW_TITLE_KEY;
-		const static std::string LOG_LEVEL_KEY;
-		const static std::string SCREEN_WIDTH_KEY;
-		const static std::string SCREEN_HEIGHT_KEY;
-		const static std::string COLLIDER_SHAPE_WIDTH_KEY;
+	namespace {
+		const std::string WINDOW_TITLE_KEY = "windowTitle";
+		const std::string LOG_LEVEL_KEY = "logLevel";
+		const std::string SCREEN_SIZE_KEY = "screenSize";
+		const std::string COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
 
-		Property windowTitle;
-		Property logLevel;
-		Property screenWidth;
-		Property screenHeight;
-		Property colliderBorderWidth;
-	};
+		std::unordered_map<Logger::Severity, std::string> severityMap = {
+			{ Logger::Severity::Error, "Error" },
+			{ Logger::Severity::Warning, "Warning" },
+			{ Logger::Severity::Info, "Info" },
+			{ Logger::Severity::Debug, "Debug" },
+			{ Logger::Severity::HOT, "HOT" }
+		};
 
-	const std::string Data::WINDOW_TITLE_KEY = "WINDOW_TITLE";
-	const std::string Data::LOG_LEVEL_KEY = "LOG_LEVEL";
-	const std::string Data::SCREEN_WIDTH_KEY = "SCREEN_WIDTH";
-	const std::string Data::SCREEN_HEIGHT_KEY = "SCREEN_HEIGHT";
-	const std::string Data::COLLIDER_SHAPE_WIDTH_KEY = "COLLIDER_SHAPE_BORDER_WIDTH";
-
-	Logger::Severity ParseLogLevel(const std::string& str) {
-		Logger::Severity severity = Logger::Severity::Info;
-		if (str == "HOT") severity = Logger::Severity::HOT;
-		else if (str == "Debug") severity = Logger::Severity::Debug;
-		else if (str == "Info") severity = Logger::Severity::Info;
-		else if (str == "Warning") severity = Logger::Severity::Warning;
-		else if (str == "Error") severity = Logger::Severity::Error;
-		return severity;
-	}
-
-	std::string ParseLogLevel(Logger::Severity severity) {
-		switch (severity) {
-		case Logger::Severity::HOT:
-			return "HOT";
-		case Logger::Severity::Debug:
-			return "Debug";
-		case Logger::Severity::Info:
-			return "Info";
-		case Logger::Severity::Warning:
-			return "Warning";
-		case Logger::Severity::Error:
-			return "Error";
+		Logger::Severity ParseLogLevel(const std::string& str) {
+			for (const auto& severity : severityMap) {
+				if (severity.second == str) return severity.first;
+			}
+			return Logger::Severity::Info;
 		}
-		return "Info";
+
+		void SetStringIfEmpty(GData& data, const std::string& key, const std::string& value) {
+			if (data.GetString(key, "NULL") == "NULL") data.SetString(key, value);
+		}
 	}
 
 	EngineConfig::EngineConfig() {
-		cache = std::make_unique<Data>();
-		cache->windowTitle = Property(Data::WINDOW_TITLE_KEY, "Game Window");
-		cache->logLevel = Property(Data::LOG_LEVEL_KEY, "Info");
-		cache->screenWidth = Property(Data::SCREEN_WIDTH_KEY, "1280");
-		cache->screenHeight = Property(Data::SCREEN_HEIGHT_KEY, "720");
-		cache->colliderBorderWidth = Property(Data::COLLIDER_SHAPE_WIDTH_KEY, "1");
+		data.Clear();
+		Verify();
 	}
 
-	EngineConfig::~EngineConfig() = default;
+	using FileRW = GameUtils::FileRW;
 
-	bool EngineConfig::Load(const std::string& path) {
-		GameUtils::Property::Persistor persistor;
-		bool bLoaded = persistor.Load(path);
-
-		int width = persistor.GetProp(Data::SCREEN_WIDTH_KEY).intValue();
-		int height = persistor.GetProp(Data::SCREEN_HEIGHT_KEY).intValue();
-		if (width > 0 && height > 0) {
-			cache->screenWidth.stringValue = Strings::ToString(width);
-			cache->screenHeight.stringValue = Strings::ToString(height);
-		}
-
-		std::string logLevelValue = persistor.GetProp(Data::LOG_LEVEL_KEY);
-		if (!logLevelValue.empty()) {
-			cache->logLevel.stringValue = logLevelValue;
-		}
-
-		std::string windowTitleValue = persistor.GetProp(Data::WINDOW_TITLE_KEY);
-		if (!windowTitleValue.empty()) {
-			cache->windowTitle.stringValue = windowTitleValue;
-		}
-
-		int colliderWidth = persistor.GetProp(Data::COLLIDER_SHAPE_WIDTH_KEY).intValue();
-		if (colliderWidth > 0) {
-			cache->colliderBorderWidth.stringValue = Strings::ToString(colliderWidth);
-		}
-		return bLoaded;
+	bool EngineConfig::Load(const std::string & path) {
+		_dirty = true;
+		FileRW file(path);
+		data.Marshall(file.ReadAll(true));
+		bool success = data.NumFields() > 0;
+		Verify();
+		return success;
 	}
 
-	bool EngineConfig::Save(const std::string& path, bool bLoadFirst) {
-		if (bLoadFirst) {
-			Load(path);
+	bool EngineConfig::Save(const std::string & path) {
+		if (_dirty) {
+			FileRW file(path);
+			return file.Write(data.Unmarshall());
 		}
-		GameUtils::Property::Persistor persistor;
-		persistor.SetProp(cache->windowTitle);
-		persistor.SetProp(cache->logLevel);
-		persistor.SetProp(cache->screenWidth);
-		persistor.SetProp(cache->screenHeight);
-		persistor.SetProp(cache->colliderBorderWidth);
-		return persistor.Save(path);
+		return true;
 	}
 
 	std::string EngineConfig::GetWindowTitle() const {
-		return cache->windowTitle.stringValue;
+		return data.GetString(WINDOW_TITLE_KEY);
 	}
 
 	Fixed EngineConfig::GetColliderBorderWidth() const {
-		return cache->colliderBorderWidth.intValue();
+		return Fixed(data.GetDouble(COLLIDER_SHAPE_WIDTH_KEY));
 	}
 
 	Logger::Severity EngineConfig::GetLogLevel() const {
-		return ParseLogLevel(cache->logLevel.stringValue);
+		return ParseLogLevel(data.GetString(LOG_LEVEL_KEY));
 	}
 
 	const Vector2 EngineConfig::GetScreenSize() const {
-		return Vector2(cache->screenWidth.intValue(), cache->screenHeight.intValue());
+		GData vec2 = data.GetGData(SCREEN_SIZE_KEY);
+		return Vector2(Fixed(vec2.GetInt("x")), vec2.GetInt("y"));
 	}
 
-	void EngineConfig::SetWindowTitle(const std::string& windowTitle) {
-		this->cache->windowTitle.stringValue = windowTitle;
+	bool EngineConfig::SetWindowTitle(const std::string & windowTitle) {
+		return _dirty = data.SetString(WINDOW_TITLE_KEY, windowTitle);
 	}
 
-	void EngineConfig::SetLogLevel(const Logger::Severity& level) {
-		cache->logLevel.stringValue = ParseLogLevel(level);
+	bool EngineConfig::SetLogLevel(const Logger::Severity & level) {
+		return _dirty = data.SetString(LOG_LEVEL_KEY, severityMap[level]);
 	}
 
-	void EngineConfig::SetScreenSize(const Vector2& screenSize) {
-		cache->screenWidth.stringValue = Strings::ToString(screenSize.x.GetInt());
-		cache->screenHeight.stringValue = Strings::ToString(screenSize.y.GetInt());
+	bool EngineConfig::SetScreenSize(const Vector2 & screenSize) {
+		GData gData;
+		gData.SetString("x", "1280");
+		gData.SetString("y", "720");
+		return _dirty = data.AddField(SCREEN_SIZE_KEY, gData);
 	}
 
-	void EngineConfig::SetColliderBorderWidth(const Fixed& shapeWidth) {
-		cache->colliderBorderWidth.stringValue = Strings::ToString(shapeWidth.GetInt());
+	bool EngineConfig::SetColliderBorderWidth(const Fixed & shapeWidth) {
+		return _dirty = data.SetString(COLLIDER_SHAPE_WIDTH_KEY, shapeWidth.ToString());
+	}
+	
+	void EngineConfig::Verify() {
+		SetStringIfEmpty(data, WINDOW_TITLE_KEY, "Game Window");
+		SetStringIfEmpty(data, LOG_LEVEL_KEY, "Info");
+		SetStringIfEmpty(data, COLLIDER_SHAPE_WIDTH_KEY, "1.0");
+		if (data.GetString(SCREEN_SIZE_KEY).empty()) SetScreenSize(Vector2(1280, 720));
+		_dirty = false;
 	}
 }

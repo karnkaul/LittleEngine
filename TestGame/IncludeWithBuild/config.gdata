@@ -1,0 +1,9 @@
+{
+	logLevel: Debug,
+	windowTitle: GameWindow,
+	screenSize: {
+		x: 1280,
+		y: 720
+	},
+	colliderShapeBorderWidth: 1.0
+}

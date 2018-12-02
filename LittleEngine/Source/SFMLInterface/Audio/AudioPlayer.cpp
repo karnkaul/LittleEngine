@@ -39,7 +39,7 @@ namespace LittleEngine {
 	}
 
 	void SoundPlayer::SetDirection(const Fixed& direction) {
-		soundAsset->sfSound.setPosition(Maths::Clamp_11(-direction).GetFloat(), 0, 0);
+		soundAsset->sfSound.setPosition(Maths::Clamp_11(-direction).ToFloat(), 0, 0);
 	}
 
 	void SoundPlayer::Play() {
@@ -58,7 +58,7 @@ namespace LittleEngine {
 
 	void SoundPlayer::Reset(Fixed seconds) {
 		if (soundAsset) {
-			soundAsset->sfSound.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.GetDouble() * 1000)));
+			soundAsset->sfSound.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.ToDouble() * 1000)));
 		}
 	}
 
@@ -73,7 +73,7 @@ namespace LittleEngine {
 
 	bool SoundPlayer::ApplyParams() {
 		if (soundAsset) {
-			soundAsset->sfSound.setVolume(Maths::Clamp01(volume * soundAsset->volumeScale).GetFloat() * 100);
+			soundAsset->sfSound.setVolume(Maths::Clamp01(volume * soundAsset->volumeScale).ToFloat() * 100);
 			soundAsset->sfSound.setLoop(bLooping);
 			return true;
 		}
@@ -162,7 +162,7 @@ namespace LittleEngine {
 	void MusicPlayer::Reset(Fixed seconds) {
 		if (mainTrack) {
 			clock.Restart();
-			mainTrack->music.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.GetDouble() * 1000)));
+			mainTrack->music.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.ToDouble() * 1000)));
 		}
 	}
 
@@ -189,7 +189,7 @@ namespace LittleEngine {
 				else {
 					volume = startVolume * (Fixed::One - ratio);
 				}
-				Logger::Log(*this, "Fading! Volume: " + volume.ToString(), Logger::Severity::Debug);
+				Logger::Log(*this, "Fading! Volume: " + volume.ToString(), Logger::Severity::HOT);
 			}
 		}
 		ApplyParams();
@@ -206,7 +206,7 @@ namespace LittleEngine {
 
 	bool MusicPlayer::ApplyParams() {
 		if (mainTrack) {
-			mainTrack->music.setVolume(Maths::Clamp01(volume * mainTrack->volumeScale).GetFloat() * 100);
+			mainTrack->music.setVolume(Maths::Clamp01(volume * mainTrack->volumeScale).ToFloat() * 100);
 			mainTrack->music.setLoop(bLooping);
 			return true;
 		}

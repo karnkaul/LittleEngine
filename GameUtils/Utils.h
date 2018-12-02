@@ -5,6 +5,7 @@
 #include <map>
 #include <functional>
 #include <algorithm>
+#include <tuple>
 
 namespace GameUtils {
 	// Erase all elements of a vector that qualify provided Predicate
@@ -67,6 +68,9 @@ namespace GameUtils {
 namespace Maths {
 	using Fixed = GameUtils::Fixed;
 
+	const Fixed PI = Fixed(3.14159265359);
+	const Fixed DEG_TO_RAD = Fixed(PI / 180);
+
 	// Returns val E [min, max]
 	template<typename T>
 	T Clamp(T val, T min, T max) {
@@ -103,14 +107,22 @@ namespace Maths {
 		return val;
 	}
 
+	template<typename T>
+	T Abs(T val) {
+		if (val < 0) return -val;
+		return val;
+	}
+
 	namespace Random {
 		// Returns [min, max]
-		Fixed Range(Fixed min = 0, Fixed max = 1);
+		Fixed Range(const Fixed& min = 0, const Fixed& max = 1);
 		// Returns [min, max)
 		int Range(int min, int max);
 		// Returns [min, max)
 		size_t Range(size_t min, size_t max);
 	};
+
+	Fixed Lerp(const Fixed& min, const Fixed& max, Fixed t);
 }
 
 namespace Strings {
@@ -127,16 +139,26 @@ namespace Strings {
 		return std::to_string(input);
 	}
 	std::string ToString(bool bInput);
+
+	template<typename T>
+	struct Pair {
+		T first;
+		T second;
+
+		Pair(typename std::pair<T, T>&& pair) : first(pair.first), second(pair.second) {}
+		Pair(T&& first, T&& second) : first(first), second(second) {}
+		Pair(T&& value) : first(value), second(value) {}
+		operator typename std::pair<T, T>() { return typename std::make_pair<T, T>(first, second); }
+	};
 	
-	using Pair = std::pair<std::string, std::string>;
 	// Slices a string into a pair via the first occurence of a delimiter
-	Pair Slice(const std::string& input, char delimiter);
+	Pair<std::string> Bisect(const std::string& input, char delimiter);
 	// Removes all occurrences of toRemove from outInput
 	void RemoveChars(std::string& outInput, std::initializer_list<char> toRemove);
 	// Removes all tabs and spaces
 	void RemoveWhitespace(std::string& outInput);
 	// Tokenises a string via a delimiter, skipping over any delimiters within escape characters
-	std::vector<std::string> Tokenise(const std::string& input, const char delimiter = ' ', std::initializer_list<char> escape = { '[', ']', '\"' });
+	std::vector<std::string> Tokenise(const std::string& input, const char delimiter, std::initializer_list<Pair<char>> escape);
 	// Substitutes an input set of chars with a given replacement
-	void SubstituteChars(std::string & outInput, char replacement, std::initializer_list<char> toReplace);
+	void SubstituteChars(std::string & outInput, std::initializer_list<Pair<char>> replacements);
 }

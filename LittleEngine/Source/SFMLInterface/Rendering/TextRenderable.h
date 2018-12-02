@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "Renderer.h"
+#include "Renderable.h"
 #include "SFMLInterface/Assets.h"
 
 namespace LittleEngine {
@@ -34,7 +34,7 @@ namespace LittleEngine {
 		void SetFont(FontAsset& font);
 
 	private:
-		friend class TextRenderer;
+		friend class TextRenderable;
 		FontAsset* font;
 
 		float GetNAlignmentHorz() const;
@@ -42,15 +42,15 @@ namespace LittleEngine {
 	};
 
 	// \brief Concrete wrapper for SFML text shape
-	class TextRenderer : public Renderer {
+	class TextRenderable : public Renderable {
 	public:
-		TextRenderer(const TextData& data);
-		TextRenderer(const TextRenderer& prototype);
-		virtual std::unique_ptr<Renderer> UClone() const override;
+		TextRenderable(const TextData& data);
+		TextRenderable(const TextRenderable& prototype);
+		virtual std::unique_ptr<Renderable> UClone() const override;
 
 		TextData& GetTextData();
-		TextRenderer& SetSize(const Fixed& pixelSize);
-		TextRenderer& SetColour(const Colour& colour);
+		TextRenderable& SetSize(const Fixed& pixelSize);
+		TextRenderable& SetColour(const Colour& colour);
 
 		virtual Rect2 GetBounds() const override;
 
@@ -60,6 +60,7 @@ namespace LittleEngine {
 		virtual void RenderInternal(struct RenderParams& params) override;
 		virtual void SetPosition(const Vector2& screenPosition) override;
 		virtual void SetRotation(const Fixed& screenRotation) override;
+		virtual void SetScale(const Vector2& screenScale) override;
 
 	private:
 		TextData data;

@@ -1,17 +1,17 @@
 #pragma once
 #include "Component.h"
 #include "Rect2.h"
-#include "SFMLInterface/Rendering/Renderer.h"
+#include "SFMLInterface/Rendering/Renderable.h"
 #include "SFMLInterface/Assets.h"
 
 namespace LittleEngine {
 	class Actor;
 	struct RenderParams;
-	class Renderer;
-	class CircleRenderer;
-	class RectangleRenderer;
-	class TextRenderer;
-	class SpriteRenderer;
+	class Renderable;
+	class CircleRenderable;
+	class RectangleRenderable;
+	class TextRenderable;
+	class SpriteRenderable;
 
 	// \brief Structure loosely describing a shape to be constructed
 	struct ShapeData {
@@ -31,19 +31,19 @@ namespace LittleEngine {
 		void SetLayer(const LayerInfo& layer);
 		Rect2 GetBounds() const;
 
-		CircleRenderer& SetCircleRenderer(const ShapeData& shapeData);
-		RectangleRenderer& SetRectangleRenderer(const ShapeData& shapeData);
-		SpriteRenderer& SetSpriteRenderer(const std::string& texturePath);
-		SpriteRenderer& SetSpriteRenderer(TextureAsset& texture);
-		TextRenderer& SetTextRenderer(const std::string& text);
+		CircleRenderable& SetCircleRenderable(const ShapeData& shapeData);
+		RectangleRenderable& SetRectangleRenderable(const ShapeData& shapeData);
+		SpriteRenderable& SetSpriteRenderable(const std::string& texturePath);
+		SpriteRenderable& SetSpriteRenderable(TextureAsset& texture);
+		TextRenderable& SetTextRenderable(const std::string& text);
 
 		virtual void Render(RenderParams params) override;
 		virtual Component::Ptr UClone(Actor& owner) const override;
 		
 	protected:
-		void SetRenderer(std::unique_ptr<Renderer> renderer);
+		void SetRenderable(std::unique_ptr<Renderable> renderable);
 
 	private:
-		std::unique_ptr<Renderer> renderer = nullptr;
+		std::unique_ptr<Renderable> uRenderable = nullptr;
 	};
 }

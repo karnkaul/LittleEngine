@@ -35,4 +35,8 @@ namespace LittleEngine {
 		Vector2 s = screenBounds.upper;
 		return Vector2(p.x * s.x, p.y * s.y);
 	}
+
+	Fixed World::WorldToScreenRotation(const Fixed & worldRot) const {
+		return -worldRot;
+	}
 }

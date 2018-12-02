@@ -95,6 +95,7 @@
       <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -115,6 +116,7 @@
       <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -199,6 +201,7 @@
     <ClInclude Include="Source\Engine\World.h" />
     <ClInclude Include="Source\Entities\Actor.h" />
     <ClInclude Include="Source\Entities\All.h" />
+    <ClInclude Include="Source\Entities\ParticleSystem.h" />
     <ClInclude Include="Source\Entities\Player.h" />
     <ClInclude Include="Source\Entities\VFX.h" />
     <ClInclude Include="Source\Levels\Level.h" />
@@ -210,11 +213,11 @@
     <ClInclude Include="Source\SFMLInterface\Audio\AudioPlayer.h" />
     <ClInclude Include="Source\SFMLInterface\SystemClock.h" />
     <ClInclude Include="Source\SFMLInterface\Input.h" />
-    <ClInclude Include="Source\SFMLInterface\Rendering\Renderer.h" />
+    <ClInclude Include="Source\SFMLInterface\Rendering\Renderable.h" />
     <ClInclude Include="Source\SFMLInterface\Rendering\RenderParams.h" />
-    <ClInclude Include="Source\SFMLInterface\Rendering\ShapeRenderer.h" />
-    <ClInclude Include="Source\SFMLInterface\Rendering\SpriteRenderer.h" />
-    <ClInclude Include="Source\SFMLInterface\Rendering\TextRenderer.h" />
+    <ClInclude Include="Source\SFMLInterface\Rendering\ShapeRenderable.h" />
+    <ClInclude Include="Source\SFMLInterface\Rendering\SpriteRenderable.h" />
+    <ClInclude Include="Source\SFMLInterface\Rendering\TextRenderable.h" />
     <ClInclude Include="Source\SFMLInterface\WindowController.h" />
   </ItemGroup>
   <ItemGroup>
@@ -239,6 +242,7 @@
     <ClCompile Include="Source\Engine\Physics\CollisionManager.cpp" />
     <ClCompile Include="Source\Engine\World.cpp" />
     <ClCompile Include="Source\Entities\Actor.cpp" />
+    <ClCompile Include="Source\Entities\ParticleSystem.cpp" />
     <ClCompile Include="Source\Entities\Player.cpp" />
     <ClCompile Include="Source\Entities\VFX.cpp" />
     <ClCompile Include="Source\Levels\Level.cpp" />
@@ -249,11 +253,11 @@
     <ClCompile Include="Source\SFMLInterface\Audio\AudioPlayer.cpp" />
     <ClCompile Include="Source\SFMLInterface\SystemClock.cpp" />
     <ClCompile Include="Source\SFMLInterface\Input.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Rendering\Renderer.cpp" />
+    <ClCompile Include="Source\SFMLInterface\Rendering\Renderable.cpp" />
     <ClCompile Include="Source\SFMLInterface\Rendering\RenderParams.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Rendering\ShapeRenderer.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Rendering\SpriteRenderer.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Rendering\TextRenderer.cpp" />
+    <ClCompile Include="Source\SFMLInterface\Rendering\ShapeRenderable.cpp" />
+    <ClCompile Include="Source\SFMLInterface\Rendering\SpriteRenderable.cpp" />
+    <ClCompile Include="Source\SFMLInterface\Rendering\TextRenderable.cpp" />
     <ClCompile Include="Source\SFMLInterface\WindowController.cpp" />
     <ClCompile Include="le_stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

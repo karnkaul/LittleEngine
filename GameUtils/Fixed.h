@@ -24,9 +24,9 @@ namespace GameUtils {
 		Fixed& operator=(Fixed&&) = default;
 
 		Fixed(int numerator, int denominator = 1);
-		int GetInt() const;
-		float GetFloat() const;
-		double GetDouble() const;
+		int ToInt() const;
+		float ToFloat() const;
+		double ToDouble() const;
 
 		Fixed& operator+=(const Fixed& rhs);
 		Fixed& operator-=(const Fixed& rhs);

@@ -66,23 +66,11 @@
     <ClInclude Include="Source\SFMLInterface\WindowController.h">
       <Filter>Source\SFMLInterface</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SFMLInterface\Rendering\Renderer.h">
-      <Filter>Source\SFMLInterface\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SFMLInterface\Rendering\RenderParams.h">
-      <Filter>Source\SFMLInterface\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SFMLInterface\Rendering\ShapeRenderer.h">
-      <Filter>Source\SFMLInterface\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SFMLInterface\Rendering\SpriteRenderer.h">
       <Filter>Source\SFMLInterface\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Source\SFMLInterface\Assets.h">
       <Filter>Source\SFMLInterface</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SFMLInterface\Rendering\TextRenderer.h">
-      <Filter>Source\SFMLInterface\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Source\Levels\Level.h">
       <Filter>Source\Levels</Filter>
@@ -192,6 +180,21 @@
     <ClInclude Include="Source\Misc\Stopwatch.h">
       <Filter>Source\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Entities\ParticleSystem.h">
+      <Filter>Source\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Rendering\Renderable.h">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Rendering\ShapeRenderable.h">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Rendering\SpriteRenderable.h">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Rendering\TextRenderable.h">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -200,23 +203,11 @@
     <ClCompile Include="Source\SFMLInterface\WindowController.cpp">
       <Filter>Source\SFMLInterface</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SFMLInterface\Rendering\Renderer.cpp">
-      <Filter>Source\SFMLInterface\Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="Source\SFMLInterface\Rendering\RenderParams.cpp">
-      <Filter>Source\SFMLInterface\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SFMLInterface\Rendering\ShapeRenderer.cpp">
-      <Filter>Source\SFMLInterface\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SFMLInterface\Rendering\SpriteRenderer.cpp">
       <Filter>Source\SFMLInterface\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Source\SFMLInterface\Assets.cpp">
       <Filter>Source\SFMLInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SFMLInterface\Rendering\TextRenderer.cpp">
-      <Filter>Source\SFMLInterface\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Source\Levels\Level.cpp">
       <Filter>Source\Levels</Filter>
@@ -305,6 +296,21 @@
     <ClCompile Include="le_stdafx.cpp" />
     <ClCompile Include="Source\Misc\Stopwatch.cpp">
       <Filter>Source\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\ParticleSystem.cpp">
+      <Filter>Source\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Rendering\Renderable.cpp">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Rendering\ShapeRenderable.cpp">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Rendering\SpriteRenderable.cpp">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Rendering\TextRenderable.cpp">
+      <Filter>Source\SFMLInterface\Rendering</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -22,7 +22,7 @@ namespace LittleEngine {
 		virtual Component::Ptr UClone(Actor& owner) const override;
 
 	private:
-		class RenderComponent* renderer = nullptr;
+		class RenderComponent* pRenderer = nullptr;
 		std::vector<OnInput::Token> tokens;
 		Fixed prevDeltaTime = 0;
 		InputHandler* inputHandler;

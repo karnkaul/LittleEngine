@@ -6,7 +6,7 @@
 #include "Engine/Logger/Logger.h"
 #include "Engine/Input/inputHandler.h"
 #include "Engine/World.h"
-#include "SFMLInterface/Rendering/Renderer.h"
+#include "SFMLInterface/Rendering/Renderable.h"
 #include "Components/RenderComponent.h"
 #include "Transform.h"
 #include "SFMLInterface/Input.h"
@@ -47,7 +47,7 @@ namespace LittleEngine {
 		tokens.push_back(inputHandler->Register(GameInput::Right, std::bind(&ControllerComponent::OnRight, this), OnKey::Held));
 		tokens.push_back(inputHandler->Register(GameInput::Up, std::bind(&ControllerComponent::OnUp, this), OnKey::Held));
 		tokens.push_back(inputHandler->Register(GameInput::Down, std::bind(&ControllerComponent::OnDown, this), OnKey::Held));
-		renderer = actor.GetComponent<RenderComponent>();
+		pRenderer = actor.GetComponent<RenderComponent>();
 		
 		// Tests
 		_bDeletedToken = false;
@@ -55,7 +55,7 @@ namespace LittleEngine {
 		tokens.push_back(inputHandler->Register(GameInput::Left, &_ControllerComponent::Test2, OnKey::Released, true));
 	}
 
-	ControllerComponent::ControllerComponent(Actor& owner, const ControllerComponent & prototype) : Component(owner, prototype), renderer(prototype.renderer), inputHandler(prototype.inputHandler) {
+	ControllerComponent::ControllerComponent(Actor& owner, const ControllerComponent & prototype) : Component(owner, prototype), pRenderer(prototype.pRenderer), inputHandler(prototype.inputHandler) {
 	}
 
 	ControllerComponent::~ControllerComponent() {
@@ -84,14 +84,14 @@ namespace LittleEngine {
 	}
 
 	Vector2 ControllerComponent::GetRenderPadding() {
-		if (!renderer) {
-			renderer = GetActor().GetComponent<RenderComponent>();
+		if (!pRenderer) {
+			pRenderer = GetActor().GetComponent<RenderComponent>();
 		}
-		if (!renderer) {
+		if (!pRenderer) {
 			Logger::Log(*this, "ControllerComponent's owning Actor does not have a RenderComponent", Logger::Severity::Warning);
 			return Vector2::Zero;
 		}
-		return std::move(renderer->GetBounds().upper);
+		return std::move(pRenderer->GetBounds().upper);
 	}
 
 	void ControllerComponent::OnLeft() {

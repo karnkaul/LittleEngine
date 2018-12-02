@@ -33,7 +33,7 @@ namespace GameUtils {
 			try {
 				value = std::stoi(stringValue);
 			}
-			catch (std::exception e) {}
+			catch (std::exception&) {}
 			return value;
 		}
 
@@ -42,7 +42,7 @@ namespace GameUtils {
 			try {
 				value = std::stof(stringValue);
 			}
-			catch (std::exception e) {}
+			catch (std::exception&) {}
 			return value;
 		}
 

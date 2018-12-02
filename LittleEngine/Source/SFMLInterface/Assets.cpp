@@ -197,11 +197,6 @@ namespace LittleEngine {
 
 	AssetManager::~AssetManager() {
 		defaultFont = nullptr;
-		for (const auto& iter : loaded) {
-			if (iter.second.use_count() > 1) {
-				Logger::Log(*this, "Unreleased asset! [" + iter.second->GetResourcePath() + "]", Logger::Severity::Warning);
-			}
-		}
 		UnloadAll();
 		Logger::Log(*this, "AssetManager destroyed");
 	}

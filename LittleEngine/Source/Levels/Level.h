@@ -57,8 +57,9 @@ namespace LittleEngine {
 		T* SpawnActor(const std::string& name, bool bSetEnabled, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero) {
 			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
 			DEBUG_ASSERT(state != State::ACTIVE, "SpawnActor<T>() called in live game time! Use CloneActor<T>(prototype) instead");
-			auto actor = std::make_unique<T>(*this, name, position, rotation);
-			actor->actorID = nextActorID++;
+			//auto actor = std::make_unique<T>(*this, name, position, rotation);
+			auto actor = std::make_unique<T>();
+			actor->InitActor(*this, nextActorID++, name, position, rotation);
 			actor->ToggleActive(bSetEnabled);
 			T* ret = actor.get();
 			actorMap.emplace(actor->actorID, std::move(actor));
@@ -70,8 +71,9 @@ namespace LittleEngine {
 		template<typename T>
 		T* CloneActor(const T& prototype) {
 			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
-			auto actor = std::make_unique<T>(*this, prototype);
-			actor->actorID = nextActorID++;
+			//auto actor = std::make_unique<T>(*this, prototype);
+			auto actor = std::make_unique<T>();
+			actor->InitActor(*this, nextActorID++, prototype);
 			T* ret = actor.get();
 			actorMap.emplace(actor->actorID, std::move(actor));
 			return ret;
