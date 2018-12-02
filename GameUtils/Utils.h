@@ -161,4 +161,6 @@ namespace Strings {
 	std::vector<std::string> Tokenise(const std::string& input, const char delimiter, std::initializer_list<Pair<char>> escape);
 	// Substitutes an input set of chars with a given replacement
 	void SubstituteChars(std::string & outInput, std::initializer_list<Pair<char>> replacements);
+	// Returns true if str[idx - 1] = wrapper.first && str[idx + 1] == wrapper.second
+	bool IsCharEnclosedIn(const std::string& str, size_t idx, Strings::Pair<char> wrapper);
 }

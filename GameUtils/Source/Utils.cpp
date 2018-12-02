@@ -157,4 +157,12 @@ namespace Strings {
 			++iter;
 		}
 	}
+
+	bool IsCharEnclosedIn(const std::string& str, size_t idx, Strings::Pair<char> wrapper) {
+		size_t idx_1 = idx - 1;
+		size_t idx1 = idx + 1;
+		return idx < str.length() && idx_1 < str.length() && idx1 < str.length()
+			&& idx > 0 && idx_1 > 0 && idx1 > 0
+			&& str[idx_1] == wrapper.first && str[idx1] == wrapper.second;
+	}
 }

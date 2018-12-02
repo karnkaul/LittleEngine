@@ -41,8 +41,8 @@ namespace GameUtils {
 		size_t slice = 0;
 		for (const auto& kvp : fieldMap) {
 			std::string value = kvp.second;
-			auto space = kvp.second.find(' ');
-			if (space != std::string::npos) value = '\"' + value + '\"';
+			auto space = value.find(' ');
+			if (Strings::IsCharEnclosedIn(value, space, '\"')) value = '\"' + value + '\"';
 			ret += (kvp.first + ':' + value + ',');
 			slice = 1;
 		}

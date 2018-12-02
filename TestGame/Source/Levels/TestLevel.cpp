@@ -81,47 +81,12 @@ namespace LittleEngine {
 		ParticleSystem* _pParticlesTest = nullptr;
 		bool bContinuous = true;
 		void OnSelectPressed() {
-			//Vector2 normalisedPosition = Vector2(Maths::Random::Range(Fixed(-1), Fixed(1)), Maths::Random::Range(Fixed(-1), Fixed(1)));
-			//Vector2 position = level->GetWorld().NormalisedToWorldPoint(normalisedPosition);
-			//auto v = Spawner::VFXExplode(position);
-			//v->Play();
-			//if (_textActor) {
-			//	if (!_cloneTest) {
-			//		_cloneTest = level->CloneActor<Actor>(*_textActor);
-			//		if (_cloneTest) {
-			//			_cloneTest->GetTransform().localPosition = Vector2::Zero;
-			//		}
-			//	}
-			//	else {
-			//		_cloneTest->Destruct();
-			//		_cloneTest = nullptr;
-			//	}
-			//}
-
-			if (!_pParticlesTest) {
-				GameUtils::FileRW reader("Assets/VFX/Fire0/Fire0.psm");
-				GameUtils::GData psGData(reader.ReadAll(true));
-				ParticleSystemData psData(*pLevel, psGData);
-
-				_pParticlesTest = pLevel->SpawnActor<ParticleSystem>("ExplodePS", true);
-				_pParticlesTest->InitParticleSystem(std::move(psData));
-			}
 			if (_pParticlesTest->IsPlaying()) _pParticlesTest->Stop();
 			else {
 				_pParticlesTest->ToggleActive(true);
 				_pParticlesTest->SetNormalisedPosition(GameUtils::Vector2(Maths::Random::Range(-Fixed::One, Fixed::One), Maths::Random::Range(-Fixed::One, Fixed::One)));
 				_pParticlesTest->Start();
 			}
-
-			/*if (ParticleSystemTests::EmitterExists()) {
-				ParticleSystemTests::Destroy();
-			}
-			else {
-				TextureAsset* t0 = level->GetAssetManager().Load<TextureAsset>("VFX/Fire0/02.png");
-				TextureAsset* t1 = level->GetAssetManager().Load<TextureAsset>("VFX/Fire0/01.png");
-				TextureAsset* t2 = level->GetAssetManager().Load<TextureAsset>("VFX/Fire0/00.png");
-				ParticleSystemTests::Create(level->GetWorld(), *t0, t1, t2);
-			}*/
 		}
 
 		void UpdateTests(const Fixed& deltaTime) {
@@ -183,8 +148,6 @@ namespace LittleEngine {
 			player->InitPlayer(*this, *texture, AABBData(40, 40));
 			player->GetTransform().localPosition = Vector2(-200, -300);
 		}
-		//Player& player = GetOrSpawnPlayer("Ship.png", AABBData(40, 40), Vector2(-200, -300));
-		//Player* player = SpawnActor<Player>()
 		_TestLevel::_pTextActor = player;
 
 		RegisterScopedInput(GameInput::Return, std::bind(&TestLevel::OnQuitPressed, this), OnKey::Released);
@@ -193,7 +156,7 @@ namespace LittleEngine {
 		RegisterScopedInput(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
 		RegisterScopedInput(GameInput::Select, &_TestLevel::OnSelectPressed, OnKey::Released);
 
-		FileRW reader("Assets/VFX/Fire0/Fire0_loop.psdata");
+		FileRW reader("Assets/VFX/Fire0/Fire0_noloop.psdata");
 		GData psGData(reader.ReadAll(true));
 		ParticleSystemData psData(*this, psGData);
 
