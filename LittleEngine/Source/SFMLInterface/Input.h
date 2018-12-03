@@ -55,15 +55,17 @@ namespace LittleEngine {
 
 	// \brief Wrapper struct to store state of sf::Event::KeyEvent
 	struct KeyState {
+	private:
+		std::string name;
+		KeyCode keyCode;
+
+	public:
 		bool bPressed;
 
-		KeyState(KeyCode keyCode) : keyCode(keyCode), bPressed(false), name("Unknown") {}
-		KeyState(KeyCode keyCode, const std::string& name) : keyCode(keyCode), bPressed(false), name(name) {}
+		KeyState(KeyCode keyCode) : name("Unknown"), keyCode(keyCode), bPressed(false) {}
+		KeyState(KeyCode keyCode, const std::string& name) : name(name), keyCode(keyCode), bPressed(false) {}
 		KeyCode GetKeyCode() const { return keyCode; }
 		const std::string& GetName() const { return name; }
-	private:
-		KeyCode keyCode;
-		std::string name;
 	};
 
 	// \brief Enum to detect special keyboard input (mainly for Console etc)

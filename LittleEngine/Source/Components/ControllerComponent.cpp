@@ -4,7 +4,7 @@
 #include "Component.h"
 #include "Entities/Actor.h"
 #include "Engine/Logger/Logger.h"
-#include "Engine/Input/inputHandler.h"
+#include "Engine/Input/InputHandler.h"
 #include "Engine/World.h"
 #include "SFMLInterface/Rendering/Renderable.h"
 #include "Components/RenderComponent.h"
@@ -67,7 +67,6 @@ namespace LittleEngine {
 		Actor& actor = GetActor();
 
 		const World& world = actor.GetActiveLevel().GetWorld();
-		const Level& level = actor.GetActiveLevel();
 		Rect2 worldBounds = world.GetScreenBounds();
 		Vector2 padding = GetRenderPadding();
 		ClampPosition(actor.GetTransform().localPosition, worldBounds, padding);

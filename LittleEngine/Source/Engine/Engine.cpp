@@ -92,7 +92,9 @@ namespace LittleEngine {
 
 				/* Core Game Loop */
 				double previous = static_cast<double>(SystemClock::GetCurrentMicroseconds()) * 0.001f;
+#if ENABLED(DEBUG_CONSOLE)
 				double debugToggleTime = 0;
+#endif
 				Fixed deltaTime = 0;
 				Fixed lag = 0;
 				while (windowController->IsWindowOpen() && !bIsQuitting) {
@@ -111,7 +113,7 @@ namespace LittleEngine {
 						
 						// Debug Console and Input
 						{
-#if defined(DEBUG) || defined(_DEBUG)
+#if ENABLED(DEBUG_CONSOLE)
 							// Ignore consecutive Backticks for 200 ms
 							const static double KEYPRESS_DELAY_MS = 200.0f;
 							if ((previous - debugToggleTime) > KEYPRESS_DELAY_MS) {

@@ -91,7 +91,7 @@ namespace GameUtils {
 	Fixed Fixed::operator++(int) {
 		Fixed temporary(*this);
 		++*this;
-		return std::move(temporary);
+		return temporary;
 	}
 
 
@@ -103,7 +103,7 @@ namespace GameUtils {
 	Fixed Fixed::operator--(int) {
 		Fixed temporary(*this);
 		--*this;
-		return std::move(temporary);
+		return temporary;
 	}
 
 	Fixed Fixed::Abs() const {

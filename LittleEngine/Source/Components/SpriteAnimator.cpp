@@ -9,7 +9,7 @@ namespace LittleEngine {
 	SpriteAnimator::SpriteAnimator(Actor& actor) : Component(actor, "AnimatedSprite") {	
 	}
 
-	SpriteAnimator::SpriteAnimator(Actor& owner, const SpriteAnimator & prototype) : Component(owner, prototype), sprites(prototype.sprites), bAnimating(prototype.bAnimating), animTime(prototype.animTime) {
+	SpriteAnimator::SpriteAnimator(Actor& owner, const SpriteAnimator & prototype) : Component(owner, prototype), sprites(prototype.sprites), animTime(prototype.animTime), bAnimating(prototype.bAnimating) {
 		if (!sprites.empty() && sprites[0]) {
 			sprite = std::make_unique<SpriteRenderable>(SpriteData(*sprites[0]));
 		}

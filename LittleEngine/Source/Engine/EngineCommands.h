@@ -22,7 +22,7 @@ namespace LittleEngine {
 		virtual bool operator()() override;
 	
 	private:
-		LevelManager* levelManager;
 		LevelID levelID;
+		LevelManager* levelManager;
 	};
 }

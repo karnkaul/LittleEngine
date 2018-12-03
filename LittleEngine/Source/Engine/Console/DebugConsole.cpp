@@ -245,12 +245,14 @@ namespace LittleEngine { namespace DebugConsole {
 		bool bCyclingQueries = false;
 
 		void ProcessCommand() {
-			std::vector<LogLine> logOutput = Commands::Execute(liveString);
-			for (const auto& l : logOutput) {
-				consoleRenderer->Log(l.text, l.colour);
+			if (!liveString.empty()) {
+				std::vector<LogLine> logOutput = Commands::Execute(liveString);
+				for (const auto& l : logOutput) {
+					consoleRenderer->Log(l.text, l.colour);
+				}
+				queryCache.PushFront(liveString);
+				liveString.clear();
 			}
-			queryCache.PushFront(liveString);
-			liveString.clear();
 		}
 	}
 
@@ -337,10 +339,12 @@ namespace LittleEngine { namespace DebugConsole {
 		case RawTextInputType::Escape:
 			liveString.clear();
 			return;
+		
+		default:
+			break;
 		}
-		if (rawTextInput.text == "`") {
-			return;
-		}
+		if (rawTextInput.text == "`") return;
+		if (!rawTextInput.text.empty()) Logger::Log("rawText: " + rawTextInput.text);
 		liveString += rawTextInput.text;
 	}
 

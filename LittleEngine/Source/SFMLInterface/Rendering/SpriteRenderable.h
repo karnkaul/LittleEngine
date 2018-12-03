@@ -10,7 +10,7 @@ namespace LittleEngine {
 		Colour colour;
 
 		SpriteData(TextureAsset& texture) : SpriteData(texture, Colour::White) {}
-		SpriteData(TextureAsset& texture, const Colour& colour) : texture(&texture), colour(colour) {}
+		SpriteData(TextureAsset& texture, const Colour& colour) : colour(colour), texture(&texture) {}
 
 	private:
 		friend class SpriteRenderable;

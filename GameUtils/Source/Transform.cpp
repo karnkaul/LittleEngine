@@ -33,7 +33,7 @@ namespace GameUtils {
 		if (m_parent != nullptr) {
 			position += m_parent->Position();
 		}
-		return std::move(position);
+		return position;
 	}
 
 	Fixed Transform::Orientation() const {
@@ -41,7 +41,7 @@ namespace GameUtils {
 		if (m_parent != nullptr) {
 			rotation += m_parent->Orientation();
 		}
-		return std::move(rotation);
+		return rotation;
 	}
 
 	Vector2 Transform::Scale() const {

@@ -56,7 +56,7 @@ namespace LittleEngine {
 				if (pActor2) {
 					_actor2ID = pActor2->GetActorID();
 					auto rc0 = pActor2->AddComponent<RenderComponent>();
-					auto& r0 = rc0->SetCircleRenderable(ShapeData(Vector2(100, 0), Colour::Yellow));
+					rc0->SetCircleRenderable(ShapeData(Vector2(100, 0), Colour::Yellow));
 					auto t0 = pActor2->AddCollider<CircleCollider>();
 					t0->SetCircle(100);
 				}

@@ -93,7 +93,7 @@ namespace LittleEngine {
 
 	protected:
 		std::vector<std::unique_ptr<class Emitter>> emitters;
-		bool bIsPlaying;
+		bool bIsPlaying = false;
 
 		virtual void Tick(const Fixed& deltaTime) override;
 		virtual void Render(RenderParams& params) override;

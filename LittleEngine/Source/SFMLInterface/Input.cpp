@@ -61,8 +61,9 @@ namespace LittleEngine {
 			return KeyCode::F10;
 		case sf::Keyboard::F12:
 			return KeyCode::F12;
+		default:
+			return KeyCode::Invalid;
 		}
-		return KeyCode::Invalid;
 	}
 
 	KeyState& Input::GetOrCreateKeyState(KeyCode code) {
@@ -76,9 +77,7 @@ namespace LittleEngine {
 	}
 
 	static void HandleRawInput(RawTextInput& rawTextInput, int unicode) {
-		if (unicode < 5 || unicode >= 128) {
-			return;
-		}
+		if (unicode < 5 || unicode >= 128) return;
 
 		switch (unicode) {
 		case 8:
@@ -152,13 +151,11 @@ namespace LittleEngine {
 	}
 
 	void Input::OnKeyDown(const sf::Event::KeyEvent& key) {
-		bool bNewKeyCode = true;
 		KeyState& toModify = GetOrCreateKeyState(Convert(key.code));
 		toModify.bPressed = true;
 	}
 
 	void Input::OnKeyUp(const sf::Event::KeyEvent& key) {
-		bool bNewKeyCode = true;
 		KeyState& toModify = GetOrCreateKeyState(Convert(key.code));
 		toModify.bPressed = false;
 	}

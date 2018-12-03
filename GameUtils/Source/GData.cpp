@@ -96,7 +96,7 @@ namespace GameUtils {
 		if (search != fieldMap.end()) {
 			std::string value = search->second;
 			if (value.size() > 2) {
-				if (value[0] = '[' && value[value.size() - 1] == ']') {
+				if (value[0] == '[' && value[value.size() - 1] == ']') {
 					value = value.substr(1, value.size() - 2);
 					std::vector<std::string> gDatas = Strings::Tokenise(value, ',', gDataEscapes);
 					for (const auto& gData : gDatas) {
@@ -113,7 +113,7 @@ namespace GameUtils {
 		if (search != fieldMap.end()) {
 			std::string value = search->second;
 			if (value.size() > 2) {
-				if (value[0] = '[' && value[value.size() - 1] == ']') {
+				if (value[0] == '[' && value[value.size() - 1] == ']') {
 					value = value.substr(1, value.size() - 2);
 					return Strings::Tokenise(value, ',', { '\"' });
 				}

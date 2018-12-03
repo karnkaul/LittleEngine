@@ -7,8 +7,6 @@ namespace LittleEngine {
 	// \brief Swaps textures on a SpriteRenderable over a set period of time
 	class SpriteAnimator final : public Component {
 	public:
-		bool bLooping = false;
-
 		SpriteAnimator(Actor& actor);
 		SpriteAnimator(Actor& owner, const SpriteAnimator& prototype);
 
@@ -30,6 +28,9 @@ namespace LittleEngine {
 		Fixed elapsed = Fixed::Zero;
 		Fixed animTime = Fixed::Zero;
 		bool bAnimating = false;
+
+	public:
+		bool bLooping = false;
 
 		void SetSprite(TextureAsset& texture);
 	};

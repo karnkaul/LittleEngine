@@ -134,7 +134,7 @@ namespace LittleEngine {
 		DESERIALISE_TFIXED(gData, timeToLive);
 	}
 
-	EmitterData::EmitterData(const World& world, TextureAsset & texture, unsigned int numParticles, SoundAsset* pSound) : pWorld(&world), pTexture(&texture), spawnData(numParticles), pSound(pSound), pParent(nullptr) {
+	EmitterData::EmitterData(const World& world, TextureAsset & texture, unsigned int numParticles, SoundAsset* pSound) : spawnData(numParticles), pParent(nullptr), pSound(pSound), pWorld(&world), pTexture(&texture) {
 	}
 
 	void EmitterData::Deserialise(const GData & gData) {
@@ -147,8 +147,6 @@ namespace LittleEngine {
 
 	class Emitter {
 	public:
-		bool bEnabled = true;
-
 		Emitter(AudioManager& audioManager, const EmitterData& data, bool bSetEnabled = true) : data(data), audioManager(&audioManager), bEnabled(bSetEnabled) {
 			if (!pWorld) pWorld = &data.GetWorld();
 			pParent = data.pParent;
@@ -215,6 +213,10 @@ namespace LittleEngine {
 		bool bWaiting;
 		bool bSoundPlayed;
 
+	public:
+		bool bEnabled = true;
+
+	private:
 		void Init() {
 			bSpawnNewParticles = !data.spawnData.bFireOnce;
 			bWaiting = data.startDelay > Fixed::Zero;

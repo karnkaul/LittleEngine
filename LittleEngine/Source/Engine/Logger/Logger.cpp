@@ -58,10 +58,6 @@ namespace LittleEngine {
 				}
 				return prefix + value + suffix;
 			}
-
-			void LoggerLog(const std::string& message, Logger::Severity severity = Logger::Severity::Info) {
-				Cout(SeverityString(severity), "Logger", message);
-			}
 		}
 #pragma endregion
 

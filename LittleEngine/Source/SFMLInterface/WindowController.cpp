@@ -94,6 +94,9 @@ namespace LittleEngine {
 			case sf::Event::TextEntered:
 				input.OnRawInput(static_cast<int>(event.text.unicode));
 				break;
+
+			default:
+				break;
 			}
 		}
 	}

@@ -14,7 +14,7 @@ namespace LittleEngine {
 		LayerInfo layer;
 
 		Drawable(sf::Drawable& drawable) : drawable(&drawable) { }
-		Drawable(sf::Drawable& drawable, LayerInfo layer) : drawable(&drawable), layer(layer) {}
+		Drawable(sf::Drawable& drawable, LayerInfo layer) : layer(layer), drawable(&drawable) {}
 		Drawable(Drawable&&) = default;
 		Drawable& operator=(Drawable&&) = default;
 		Drawable(const Drawable&) = default;

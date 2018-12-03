@@ -5,7 +5,7 @@ namespace LittleEngine {
 	void BootLevel::OnActivated() {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 		
-		Vector2 lowerBound = this->engine->GetWorld().GetScreenBounds().lower;
+		//Vector2 lowerBound = this->engine->GetWorld().GetScreenBounds().lower;
 		if (Actor* logo = SpawnActor<Actor>("Logo", true)) {
 			logoID = logo->GetActorID();
 			auto renderer = logo->AddComponent<RenderComponent>();

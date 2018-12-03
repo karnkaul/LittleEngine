@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
+#include "Engine/CoreGame.hpp"
 #include "Engine/Logger/Logger.h"
 
-#if LOG_PROFILING
+#if ENABLED(LOG_PROFILING)
 #define STOPWATCH_START(x) LittleEngine::Stopwatch::Start(x)
 #define STOPWATCH_STOP() LittleEngine::Stopwatch::Stop()
 #else

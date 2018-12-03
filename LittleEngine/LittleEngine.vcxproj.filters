@@ -195,6 +195,9 @@
     <ClInclude Include="Source\SFMLInterface\Rendering\TextRenderable.h">
       <Filter>Source\SFMLInterface\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\CoreGame.hpp">
+      <Filter>Source\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">

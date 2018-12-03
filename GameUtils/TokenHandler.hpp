@@ -15,6 +15,6 @@ namespace GameUtils {
 		}
 
 	private:
-		std::vector<typename T> tokens;
+		std::vector<T> tokens;
 	};
 }

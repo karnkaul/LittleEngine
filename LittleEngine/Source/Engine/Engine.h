@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "Fixed.h"
 #include "Delegate.hpp"
+#include "CoreGame.hpp"
 #include "SFMLInterface/SystemClock.h"
 #include "Events/EventManager.h"
 #include "Levels/LevelManager.h"

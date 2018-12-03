@@ -87,7 +87,7 @@ namespace Strings {
 	Pair<std::string> Bisect(const std::string & input, char delimiter) {
 		size_t idx = input.find(delimiter);
 		std::string rhs = idx < input.size() ? input.substr(idx + 1) : "";
-		return Pair(input.substr(0, idx), std::move(rhs));
+		return Pair<std::string>(input.substr(0, idx), std::move(rhs));
 	}
 
 	void RemoveChars(std::string & outInput, std::initializer_list<char> toRemove) {
@@ -103,7 +103,7 @@ namespace Strings {
 	}
 
 	void RemoveWhitespace(std::string& outInput) {
-		SubstituteChars(outInput, { Pair('\t', ' '), Pair('\n', ' ') });
+		SubstituteChars(outInput, { Pair<char>('\t', ' '), Pair<char>('\n', ' ') });
 		RemoveChars(outInput, { ' ' });
 	}
 

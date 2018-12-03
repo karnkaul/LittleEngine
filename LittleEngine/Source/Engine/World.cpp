@@ -21,7 +21,7 @@ namespace LittleEngine {
 	Vector2 World::WorldToScreenPoint(const Vector2 & worldPoint) const {
 		Vector2 screenPoint(worldPoint.x, -worldPoint.y);
 		screenPoint += screenCentre;
-		return std::move(screenPoint);
+		return screenPoint;
 	}
 	
 	Vector2 World::NormalisedToWorldPoint(const Vector2 & normalisedPoint, bool autoClamp) const {
