@@ -9,8 +9,6 @@
 #include "Levels/LevelManager.h"
 
 namespace Consts {
-	constexpr int MAX_FIXED_TICKS = 20;
-	constexpr int MS_PER_FIXED_TICK = 6;
 	constexpr int MAX_FPS = 200;
 }
 

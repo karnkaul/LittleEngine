@@ -5,6 +5,7 @@
 #include "Engine/Object.h"
 #include "Delegate.hpp"
 #include "Gamepad.h"
+#include "SFMLInterface/Input.h"
 
 namespace LittleEngine {
 	struct KeyState;
@@ -37,15 +38,13 @@ namespace LittleEngine {
 
 		std::vector<GameInput> currentSnapshot;
 		std::vector<GameInput> previousSnapshot;
-		std::string rawTextInput;
+		RawTextInput rawTextInput;
 		
 		Gamepad gamepad;
+
+		void ProcessInput(const Input& sfmlInput);
 		
 		void FireCallbacks(const std::vector<GameInput>& inputs, OnKey type);
-		// Engine to call 
-		void CaptureState(const std::vector<KeyState>& pressedKeys);
-		// Engine to call
-		void CaptureRawText(const std::string& rawTextInput);
 		// Engine to call
 		void FireInput();
 

@@ -21,7 +21,7 @@ namespace LittleEngine {
 
 		virtual void Tick(Fixed deltaTime);
 		virtual void FixedTick();
-		virtual void Render(RenderParams params);
+		virtual void Render(RenderParams& params);
 
 		Actor& GetActor() const;
 

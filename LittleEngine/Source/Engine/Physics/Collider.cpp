@@ -121,10 +121,11 @@ namespace LittleEngine {
 		Logger::Log(*this, prefix + "debug collision rect on " + GetActor().GetName(), Logger::Severity::Debug);
 	}
 
-	void AABBCollider::Render(RenderParams params) {
+	void AABBCollider::Render(RenderParams& params) {
 		if (debugShape->IsEnabled()) {
-			// Undo Actor's rotation (align with axes)
-			params.screenRotation = 0;
+			// Reset rotation (align with axes) and scale
+			params.screenRotation = Fixed::Zero;
+			params.screenScale = Vector2::One;
 			debugShape->Render(params);
 		}
 	}
@@ -189,7 +190,7 @@ namespace LittleEngine {
 		return lhsCircle.IsIntersecting(rhsCircle);
 	}
 
-	void CircleCollider::Render(RenderParams params) {
+	void CircleCollider::Render(RenderParams& params) {
 		if (debugShape->IsEnabled()) {
 			// Undo Actor's rotation (be pedantic)
 			params.screenRotation = 0;

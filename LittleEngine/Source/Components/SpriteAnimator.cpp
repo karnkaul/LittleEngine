@@ -85,7 +85,7 @@ namespace LittleEngine {
 		}
 	}
 
-	void SpriteAnimator::Render(RenderParams params) {
+	void SpriteAnimator::Render(RenderParams& params) {
 		if (bAnimating && sprite) {
 			sprite->layer = LayerID::Player;
 			sprite->Render(params);

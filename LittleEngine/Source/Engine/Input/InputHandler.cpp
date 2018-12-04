@@ -3,6 +3,7 @@
 #include "Engine/Logger/Logger.h"
 #include "SFMLInterface/Input.h"
 #include "Utils.h"
+#include "../Console/DebugConsole.h"
 
 namespace LittleEngine {
 	InputHandler::InputHandler() : Object("InputHandler") {
@@ -83,23 +84,25 @@ namespace LittleEngine {
 		}
 	}
 
-	void InputHandler::CaptureState(const std::vector<KeyState>& pressedKeys) {
-		previousSnapshot = currentSnapshot;
-		currentSnapshot.clear();
-		for (const auto& key : pressedKeys) {
-			GameInput input = gamepad.ToGameInput(key);
-			if (input != GameInput::Invalid) {
-				auto duplicate = GameUtils::VectorSearch(currentSnapshot, input);
-				if (duplicate == currentSnapshot.end()) {
-					currentSnapshot.push_back(input);
+	void InputHandler::ProcessInput(const Input & sfmlInput) {
+		rawTextInput = sfmlInput.GetRawSFMLInput();
+#if ENABLED(DEBUG_CONSOLE)
+		if (rawTextInput.Contains('`')) DebugConsole::Activate(!DebugConsole::IsActive());
+		if (DebugConsole::IsActive()) DebugConsole::UpdateInput(rawTextInput);
+		else
+#endif
+		{
+			previousSnapshot = currentSnapshot;
+			currentSnapshot.clear();
+			const std::vector<KeyState> keyStates = sfmlInput.GetPressed();
+			for (const auto& key : keyStates) {
+				GameInput input = gamepad.ToGameInput(key);
+				if (input != GameInput::Invalid) {
+					auto duplicate = GameUtils::VectorSearch(currentSnapshot, input);
+					if (duplicate == currentSnapshot.end()) currentSnapshot.push_back(input);
 				}
 			}
 		}
-		rawTextInput.clear();
-	}
-
-	void InputHandler::CaptureRawText(const std::string & rawTextInput) {
-		this->rawTextInput = rawTextInput;
 	}
 
 	void InputHandler::FireCallbacks(const std::vector<GameInput>& inputs, OnKey type) {

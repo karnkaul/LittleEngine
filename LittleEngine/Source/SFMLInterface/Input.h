@@ -85,6 +85,9 @@ namespace LittleEngine {
 	struct RawTextInput {
 		std::string text;
 		RawTextInputType special;
+
+		bool Contains(char c) const;
+		void Reset();
 	};
 
 	// \brief Concrete class that a WindowController can update KeyStates to every frame
@@ -119,7 +122,7 @@ namespace LittleEngine {
 		// For WindowController
 		void ClearRawInput();
 		// For WindowController
-		void OnRawInput(int unicode);
+		void OnRawInput(unsigned int unicode);
 		// For WindowController (to capture non-ASCII keycodes, like cursor keys)
 		void OnRawSpecialInput(sf::Keyboard::Key key);
 

@@ -69,7 +69,7 @@ namespace LittleEngine {
 		return *dynamic_cast<TextRenderable*>(uRenderable.get());
 	}
 
-	void RenderComponent::Render(RenderParams params) {
+	void RenderComponent::Render(RenderParams& params) {
 		uRenderable->Render(params);
 	}
 

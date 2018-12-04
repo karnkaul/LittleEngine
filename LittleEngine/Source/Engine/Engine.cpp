@@ -21,6 +21,16 @@
 namespace LittleEngine {
 	using Fixed = GameUtils::Fixed;
 
+	namespace {
+		constexpr int MAX_FIXED_TICK_MS = 200;
+		constexpr int MS_PER_FIXED_TICK = 6;
+		constexpr float MIN_FRAME_TIME_MS = 1000 / Consts::MAX_FPS;
+
+		inline double GetCurrentMicroseconds() {
+			return static_cast<double>(SystemClock::GetCurrentMicroseconds()) * 0.001f;
+		}
+	}
+
 	Engine::Ptr Engine::Create() {
 		// std::make_unique requires public constructor and destructor access
 		// So using a temporary struct
@@ -57,7 +67,9 @@ namespace LittleEngine {
 	}
 
 	Engine::~Engine() {
+#if ENABLED(DEBUG_CONSOLE)
 		DebugConsole::Cleanup();
+#endif
 		levelManager = nullptr;
 		audioManager = nullptr;
 		assetManager = nullptr;
@@ -88,18 +100,17 @@ namespace LittleEngine {
 				}
 
 				/* Debugging */
+#if ENABLED(DEBUG_CONSOLE)
 				DebugConsole::Init(*this);
+#endif
 
 				/* Core Game Loop */
-				double previous = static_cast<double>(SystemClock::GetCurrentMicroseconds()) * 0.001f;
-#if ENABLED(DEBUG_CONSOLE)
-				double debugToggleTime = 0;
-#endif
+				double previous = GetCurrentMicroseconds();
 				Fixed deltaTime = 0;
 				Fixed lag = 0;
 				while (windowController->IsWindowOpen() && !bIsQuitting) {
-					/* Poll Input */ {
-						windowController->PollInput();
+					/* Poll Window Events */ {
+						windowController->PollEvents();
 						if (!bIsPaused && !windowController->IsWindowFocussed()) {
 							bIsPaused = true;
 							Logger::Log(*this, "Game paused");
@@ -107,46 +118,26 @@ namespace LittleEngine {
 						if (bIsPaused && windowController->IsWindowFocussed()) {
 							bIsPaused = false;
 							// Reset FixedTick time lag (account for clock not pausing)
-							previous = static_cast<double>(SystemClock::GetCurrentMicroseconds()) * 0.001f;
+							previous = GetCurrentMicroseconds();
 							Logger::Log(*this, "Game unpaused");
-						}
-						
-						// Debug Console and Input
-						{
-#if ENABLED(DEBUG_CONSOLE)
-							// Ignore consecutive Backticks for 200 ms
-							const static double KEYPRESS_DELAY_MS = 200.0f;
-							if ((previous - debugToggleTime) > KEYPRESS_DELAY_MS) {
-								if (windowController->GetInput().IsKeyPressed(KeyCode::Backtick)) {
-									DebugConsole::Activate(!DebugConsole::IsActive());
-									debugToggleTime = previous;
-								}
-							}
-#endif
-							const Input& sfmlInput = windowController->GetInput();
-							if (DebugConsole::IsActive()) {
-								DebugConsole::UpdateInput(sfmlInput.GetRawSFMLInput());
-							}
-							else {
-								inputHandler->CaptureState(sfmlInput.GetPressed());
-								inputHandler->CaptureRawText(sfmlInput.GetRawSFMLInput().text);
-							}
 						}
 					}
 
 					/* Process Frame */
 					if (!bIsPaused) {
-						double current = static_cast<double>(SystemClock::GetCurrentMicroseconds()) * 0.001f;
+						inputHandler->ProcessInput(windowController->GetInput());
+
+						double current = GetCurrentMicroseconds();
 						deltaTime = Fixed(current - previous);
 						previous = current;
 						lag += deltaTime;
 
 						/* Fixed Tick */ {
-							int fixedTicks = 0;
-							while (lag >= Consts::MS_PER_FIXED_TICK) {
+							int start = SystemClock::GetCurrentMilliseconds();
+							while (lag >= MS_PER_FIXED_TICK) {
 								levelManager->GetActiveLevel()->FixedTick();
-								lag -= Consts::MS_PER_FIXED_TICK;
-								if (++fixedTicks > Consts::MAX_FIXED_TICKS) {
+								lag -= MS_PER_FIXED_TICK;
+								if (SystemClock::GetCurrentMilliseconds() - start > MAX_FIXED_TICK_MS) {
 									Logger::Log(*this, "Timeout during FixedTick(). Ignore if pausing rendering", Logger::Severity::Warning);
 									break;
 								}
@@ -166,29 +157,32 @@ namespace LittleEngine {
 							STOPWATCH_START("Render");
 							RenderParams params(*windowController);
 							levelManager->GetActiveLevel()->Render(params);
+#if ENABLED(DEBUG_CONSOLE)
 							DebugConsole::RenderConsole(*this, params, deltaTime);
+#endif
 							windowController->Draw();
 							STOPWATCH_STOP();
 						}
 						
-						/* Post Render: Commands */
-						STOPWATCH_START("Post Render");
-						for (const auto& command : commands) {
-							(*command)();
+						/* Post Render: Commands */ {
+							STOPWATCH_START("Post Render");
+							for (const auto& command : commands) {
+								(*command)();
+							}
+							commands.clear();
+							STOPWATCH_STOP();
 						}
-						commands.clear();
-						STOPWATCH_STOP();
 
-						STOPWATCH_START("Sleep");
-						/* Post Render: Sleep */
-						double sinceStartMS = (static_cast<double>(SystemClock::GetCurrentMicroseconds()) / 1000.0f) - current;
-						Fixed minFrameTimeMS = Fixed(1000, Consts::MAX_FPS);
-						Fixed residue = Fixed(minFrameTimeMS.ToDouble() - sinceStartMS);
-						if (residue > 0) {
-							Logger::Log(*this, "Sleeping game loop for: " + residue.ToString() + "ms", Logger::Severity::HOT);
-							std::this_thread::sleep_for(std::chrono::milliseconds(residue.ToInt()));
+						/* Post Render: Sleep */ {
+							STOPWATCH_START("Sleep");
+							float sinceStartMS = (static_cast<float>(SystemClock::GetCurrentMicroseconds()) * 0.001f) - current;
+							auto residue = Fixed(MIN_FRAME_TIME_MS - sinceStartMS);
+							if (residue > Fixed::Zero) {
+								Logger::Log(*this, "Sleeping game loop for: " + residue.ToString() + "ms", Logger::Severity::HOT);
+								std::this_thread::sleep_for(std::chrono::milliseconds(residue.ToInt()));
+							}
+							STOPWATCH_STOP();
 						}
-						STOPWATCH_STOP();
 					}
 				}
 			}

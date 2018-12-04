@@ -32,9 +32,9 @@ namespace LittleEngine {
 		vec.push_back(drawable);
 	}
 
-	void WindowController::Buffer::ForEach(std::function<void(std::vector<Drawable>)> Callback) const {
+	void WindowController::Buffer::ForEach(std::function<void(std::vector<Drawable>&)> Callback) {
 		for (int i = 0; i <= MAX_LAYERID; ++i) {
-			std::vector<Drawable> vec = buffer[i];
+			std::vector<Drawable>& vec = buffer[i];
 			if (!vec.empty()) {
 				Callback(vec);
 			}
@@ -64,7 +64,7 @@ namespace LittleEngine {
 		return _bFocus;
 	}
 
-	void WindowController::PollInput() {
+	void WindowController::PollEvents() {
 		sf::Event event;
 		input.ClearRawInput();
 		while (window->isOpen() && window->pollEvent(event)) {
@@ -92,7 +92,7 @@ namespace LittleEngine {
 				break;
 
 			case sf::Event::TextEntered:
-				input.OnRawInput(static_cast<int>(event.text.unicode));
+				input.OnRawInput(static_cast<unsigned int>(event.text.unicode));
 				break;
 
 			default:
@@ -111,9 +111,9 @@ namespace LittleEngine {
 		STOPWATCH_START("window->clear()");
 		window->clear();
 		STOPWATCH_STOP();
-		STOPWATCH_START("ForEach().draw()");
+		STOPWATCH_START("window->draw()");
 		buffer.ForEach(
-			[&w = this->window](std::vector<Drawable> drawables) {
+			[&w = this->window](std::vector<Drawable>& drawables) {
 				for (Drawable& drawable : drawables) {
 					w->draw(drawable.GetSFMLDrawable());
 				}

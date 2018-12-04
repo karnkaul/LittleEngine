@@ -1,70 +1,61 @@
 #include "le_stdafx.h"
 #include "Input.h"
+#include <unordered_map>
 
 namespace LittleEngine {
-	const KeyMod KeyMod::Default = KeyMod();
+	namespace {
+		std::unordered_map<unsigned int, RawTextInputType> asciiMap = {
+			{ 8, RawTextInputType::Backspace },
+			{ 9, RawTextInputType::Tab },
+			{ 13, RawTextInputType::Enter },
+			{ 27, RawTextInputType::Escape }
+		};
 
-	KeyCode Convert(const sf::Keyboard::Key& code) {
-		switch (code) {
-		case sf::Keyboard::Left:
-			return KeyCode::Left;
-		case sf::Keyboard::Right:
-			return KeyCode::Right;
-		case sf::Keyboard::Up:
-			return KeyCode::Up;
-		case sf::Keyboard::Down:
-			return KeyCode::Down;
-		case sf::Keyboard::W:
-			return KeyCode::W;
-		case sf::Keyboard::A:
-			return KeyCode::A;
-		case sf::Keyboard::S:
-			return KeyCode::S;
-		case sf::Keyboard::D:
-			return KeyCode::D;
-		case sf::Keyboard::E:
-			return KeyCode::E;
-		case sf::Keyboard::R:
-			return KeyCode::R;
-		case sf::Keyboard::F:
-			return KeyCode::F;
-		case sf::Keyboard::Space:
-			return KeyCode::Space;
-		case sf::Keyboard::Enter:
-			return KeyCode::Enter;
-		case sf::Keyboard::Escape:
-			return KeyCode::Escape;
-		case sf::Keyboard::Tab:
-			return KeyCode::Tab;
-		case sf::Keyboard::LControl:
-		case sf::Keyboard::RControl:
-			return KeyCode::Control;
-		case sf::Keyboard::LShift:
-		case sf::Keyboard::RShift:
-			return KeyCode::Shift;
-		case sf::Keyboard::LAlt:
-		case sf::Keyboard::RAlt:
-			return KeyCode::Alt;
-		case sf::Keyboard::Tilde:
-			return KeyCode::Backtick;
-		case sf::Keyboard::Backspace:
-			return KeyCode::Backspace;
-		case sf::Keyboard::F1:
-			return KeyCode::F1;
-		case sf::Keyboard::F5:
-			return KeyCode::F5;
-		case sf::Keyboard::F8:
-			return KeyCode::F8;
-		case sf::Keyboard::F9:
-			return KeyCode::F9;
-		case sf::Keyboard::F10:
-			return KeyCode::F10;
-		case sf::Keyboard::F12:
-			return KeyCode::F12;
-		default:
-			return KeyCode::Invalid;
+		KeyCode Convert(const sf::Keyboard::Key& code) {
+			switch (code) {
+			case sf::Keyboard::Left:		return KeyCode::Left;
+			case sf::Keyboard::Right:		return KeyCode::Right;
+			case sf::Keyboard::Up:			return KeyCode::Up;
+			case sf::Keyboard::Down:		return KeyCode::Down;
+			case sf::Keyboard::W:			return KeyCode::W;
+			case sf::Keyboard::A:			return KeyCode::A;
+			case sf::Keyboard::S:			return KeyCode::S;
+			case sf::Keyboard::D:			return KeyCode::D;
+			case sf::Keyboard::E:			return KeyCode::E;
+			case sf::Keyboard::R:			return KeyCode::R;
+			case sf::Keyboard::F:			return KeyCode::F;
+			case sf::Keyboard::Space:		return KeyCode::Space;
+			case sf::Keyboard::Enter:		return KeyCode::Enter;
+			case sf::Keyboard::Escape:		return KeyCode::Escape;
+			case sf::Keyboard::Tab:			return KeyCode::Tab;
+			case sf::Keyboard::LControl:
+			case sf::Keyboard::RControl:	return KeyCode::Control;
+			case sf::Keyboard::LShift:
+			case sf::Keyboard::RShift:		return KeyCode::Shift;
+			case sf::Keyboard::LAlt:
+			case sf::Keyboard::RAlt:		return KeyCode::Alt;
+			case sf::Keyboard::Tilde:		return KeyCode::Backtick;
+			case sf::Keyboard::Backspace:	return KeyCode::Backspace;
+			case sf::Keyboard::F1:			return KeyCode::F1;
+			case sf::Keyboard::F5:			return KeyCode::F5;
+			case sf::Keyboard::F8:			return KeyCode::F8;
+			case sf::Keyboard::F9:			return KeyCode::F9;
+			case sf::Keyboard::F10:			return KeyCode::F10;
+			case sf::Keyboard::F12:			return KeyCode::F12;
+			default:						return KeyCode::Invalid;
+			}
+		}
+
+		void HandleRawInput(RawTextInput& rawTextInput, unsigned int unicode) {
+			if (unicode < 5 || unicode >= 128) return;
+
+			auto iter = asciiMap.find(unicode);
+			if (iter != asciiMap.end()) rawTextInput.special = iter->second;
+			else rawTextInput.text += static_cast<char>(unicode);
 		}
 	}
+
+	const KeyMod KeyMod::Default = KeyMod();
 
 	KeyState& Input::GetOrCreateKeyState(KeyCode code) {
 		for (auto & keyState : keyStates) {
@@ -74,30 +65,6 @@ namespace LittleEngine {
 		}
 		keyStates.emplace_back(code);
 		return keyStates[keyStates.size() - 1];
-	}
-
-	static void HandleRawInput(RawTextInput& rawTextInput, int unicode) {
-		if (unicode < 5 || unicode >= 128) return;
-
-		switch (unicode) {
-		case 8:
-			rawTextInput.special = RawTextInputType::Backspace;
-			return;
-
-		case 9:
-			rawTextInput.special = RawTextInputType::Tab;
-			return;
-
-		case 13:
-			rawTextInput.special = RawTextInputType::Enter;
-			return;
-
-		case 27:
-			rawTextInput.special = RawTextInputType::Escape;
-			return;
-		}
-
-		rawTextInput.text += static_cast<char>(unicode);
 	}
 
 	Input::Input() {
@@ -167,11 +134,10 @@ namespace LittleEngine {
 	}
 
 	void Input::ClearRawInput() {
-		rawTextInput.text.clear();
-		rawTextInput.special = RawTextInputType::None;
+		rawTextInput.Reset();
 	}
 
-	void Input::OnRawInput(int unicode) {
+	void Input::OnRawInput(unsigned int unicode) {
 		HandleRawInput(rawTextInput, unicode);
 	}
 
@@ -196,5 +162,15 @@ namespace LittleEngine {
 		default:
 			rawTextInput.special = RawTextInputType::None;
 		}
+	}
+
+	bool RawTextInput::Contains(char c) const {
+		size_t idx = text.find(c);
+		return idx != std::string::npos;
+	}
+
+	void RawTextInput::Reset() {
+		text.clear();
+		special = RawTextInputType::None;
 	}
 }

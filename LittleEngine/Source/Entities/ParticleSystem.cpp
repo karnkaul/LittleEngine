@@ -93,6 +93,7 @@ namespace LittleEngine {
 
 		void Render(RenderParams& params) {
 			if (bInUse && pWorld && renderable) {
+				params.Reset();
 				params.screenPosition = pWorld->WorldToScreenPoint(transform.Position());
 				params.screenRotation = pWorld->WorldToScreenRotation(transform.Orientation());
 				params.screenScale = transform.Scale();

@@ -1,4 +1,6 @@
 #pragma once
+#include "Engine/CoreGame.hpp"
+#if ENABLED(DEBUG_CONSOLE)
 #include "Engine/Engine.h"
 #include "SFMLInterface/Input.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
@@ -16,3 +18,4 @@ namespace LittleEngine { namespace DebugConsole {
 	void RenderConsole(const Engine& engine, RenderParams& params, Fixed deltaTime);
 	void Cleanup();
 } }
+#endif

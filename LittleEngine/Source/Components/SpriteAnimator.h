@@ -18,7 +18,7 @@ namespace LittleEngine {
 		void SetLayer(LayerInfo layer);
 
 		virtual void Tick(Fixed deltaTime) override;
-		virtual void Render(RenderParams params) override;
+		virtual void Render(RenderParams& params) override;
 		virtual Component::Ptr UClone(Actor& owner) const override;
 
 	private:

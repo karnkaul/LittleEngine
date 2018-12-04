@@ -36,7 +36,7 @@ namespace LittleEngine {
 			static constexpr int MAX_LAYERS = 100;
 
 			void Push(Drawable&& drawable, int index);
-			void ForEach(std::function<void(std::vector<Drawable>)> Callback) const;
+			void ForEach(std::function<void(std::vector<Drawable>&)> Callback);
 			void Clear();
 
 		private:
@@ -55,7 +55,7 @@ namespace LittleEngine {
 		bool IsWindowFocussed() const;
 
 		// Call this to update InputHandler's state for this frame
-		void PollInput();
+		void PollEvents();
 		// Add drawable to buffer
 		void Push(Drawable&& drawable);
 		// Clear screen and draw current buffer

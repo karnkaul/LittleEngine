@@ -61,13 +61,14 @@ namespace LittleEngine {
 
 	// \brief Final parameters passed to SFML RenderWindow
 	struct RenderParams {
-		Vector2 screenPosition = Vector2::Zero;
-		Fixed screenRotation = Fixed::Zero;
-		Vector2 screenScale = Vector2::One;
+		Vector2 screenPosition;
+		Fixed screenRotation;
+		Vector2 screenScale;
 
 		RenderParams(WindowController& controller);
 
 		WindowController& GetWindowController();
+		void Reset();
 
 	private:
 		WindowController* windowController;

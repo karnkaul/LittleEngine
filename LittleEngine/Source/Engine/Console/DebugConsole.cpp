@@ -1,6 +1,7 @@
 #include "le_stdafx.h"
-#include <list>
 #include "DebugConsole.h"
+#if ENABLED(DEBUG_CONSOLE)
+#include <list>
 #include "SFMLInterface/Rendering/ShapeRenderable.h"
 #include "SFMLInterface/Rendering/TextRenderable.h"
 #include "SFMLInterface/WindowController.h"
@@ -150,12 +151,11 @@ namespace LittleEngine { namespace DebugConsole {
 			}
 
 			void Render(RenderParams& params, Fixed yOffset, bool bDrawCursor) {
-				if (!engine) {
-					return;
-				}
+				if (!engine) return;
 
 				InitialiseComponents();
 				rootT.localPosition.y = ROOT_Y + yOffset;
+				params.Reset();
 
 				params.screenPosition = rootT.Position();
 				background->Render(params);
@@ -245,14 +245,12 @@ namespace LittleEngine { namespace DebugConsole {
 		bool bCyclingQueries = false;
 
 		void ProcessCommand() {
-			if (!liveString.empty()) {
-				std::vector<LogLine> logOutput = Commands::Execute(liveString);
-				for (const auto& l : logOutput) {
-					consoleRenderer->Log(l.text, l.colour);
-				}
-				queryCache.PushFront(liveString);
-				liveString.clear();
+			std::vector<LogLine> logOutput = Commands::Execute(liveString);
+			for (const auto& l : logOutput) {
+				consoleRenderer->Log(l.text, l.colour);
 			}
+			queryCache.PushFront(liveString);
+			liveString.clear();
 		}
 	}
 
@@ -308,10 +306,11 @@ namespace LittleEngine { namespace DebugConsole {
 			return;
 		
 		case RawTextInputType::Enter:
-			ProcessCommand();
+			if (!liveString.empty()) ProcessCommand();
 			return;
 
 		case RawTextInputType::Up:
+			if (queryCache.IsEmpty()) return;
 			if (!bCyclingQueries) {
 				if (!liveString.empty()) {
 					queryCache.PushFront(liveString);
@@ -326,6 +325,7 @@ namespace LittleEngine { namespace DebugConsole {
 			return;
 
 		case RawTextInputType::Down:
+			if (queryCache.IsEmpty()) return;
 			if (!bCyclingQueries) {
 				if (!liveString.empty()) {
 					queryCache.PushFront(liveString);
@@ -343,9 +343,7 @@ namespace LittleEngine { namespace DebugConsole {
 		default:
 			break;
 		}
-		if (rawTextInput.text == "`") return;
-		if (!rawTextInput.text.empty()) Logger::Log("rawText: " + rawTextInput.text);
-		liveString += rawTextInput.text;
+		if (rawTextInput.text != "`") liveString += rawTextInput.text;
 	}
 
 	void RenderConsole(const Engine& engine, RenderParams& params, Fixed deltaTime) {
@@ -377,3 +375,4 @@ namespace LittleEngine { namespace DebugConsole {
 		bIsActive = false;
 	}
 } }
+#endif
