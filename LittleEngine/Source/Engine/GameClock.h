@@ -8,6 +8,12 @@ namespace LittleEngine {
 	// \brief Use to measure game time
 	// Note: This DOES NOT run on its own, requires Engine to call Tick(deltaTime)!
 	class GameClock {
+	private:
+		// Base game time maintained by Engine
+		static double gameTime;
+		// An instance will use this offset to calculate its current time
+		double m_startTime;
+
 	public:
 		GameClock();
 
@@ -19,15 +25,11 @@ namespace LittleEngine {
 		static std::string ToString(int milliseconds);
 
 	private:
-		friend class Engine;
 		// Global Ticks to be provided by Engine
 		static void Tick(const Fixed& deltaTime);
 		// On App Reload etc
 		static void Reset();
 
-		// Base game time maintained by Engine
-		static double gameTime;
-		// An instance will use this offset to calculate its current time
-		double startTime;
+		friend class Engine;
 	};
 }

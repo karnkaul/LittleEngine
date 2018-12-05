@@ -4,7 +4,7 @@
 #include "Component.h"
 #include "Entities/Actor.h"
 #include "Engine/Logger/Logger.h"
-#include "Engine/Input/inputHandler.h"
+#include "Engine/Input/InputHandler.h"
 #include "Engine/World.h"
 #include "SFMLInterface/Rendering/Renderable.h"
 #include "Components/RenderComponent.h"
@@ -42,24 +42,24 @@ namespace LittleEngine {
 	bool _bDeletedToken = false;
 
 	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent") {
-		this->inputHandler = &actor.GetActiveLevel().GetInputHandler();
-		tokens.push_back(inputHandler->Register(GameInput::Left, std::bind(&ControllerComponent::OnLeft, this), OnKey::Held));
-		tokens.push_back(inputHandler->Register(GameInput::Right, std::bind(&ControllerComponent::OnRight, this), OnKey::Held));
-		tokens.push_back(inputHandler->Register(GameInput::Up, std::bind(&ControllerComponent::OnUp, this), OnKey::Held));
-		tokens.push_back(inputHandler->Register(GameInput::Down, std::bind(&ControllerComponent::OnDown, this), OnKey::Held));
-		pRenderer = actor.GetComponent<RenderComponent>();
+		this->m_pInputHandler = &actor.GetActiveLevel().GetInputHandler();
+		m_tokens.push_back(m_pInputHandler->Register(GameInput::Left, std::bind(&ControllerComponent::OnLeft, this), OnKey::Held));
+		m_tokens.push_back(m_pInputHandler->Register(GameInput::Right, std::bind(&ControllerComponent::OnRight, this), OnKey::Held));
+		m_tokens.push_back(m_pInputHandler->Register(GameInput::Up, std::bind(&ControllerComponent::OnUp, this), OnKey::Held));
+		m_tokens.push_back(m_pInputHandler->Register(GameInput::Down, std::bind(&ControllerComponent::OnDown, this), OnKey::Held));
+		m_pRenderer = actor.GetComponent<RenderComponent>();
 		
 		// Tests
 		_bDeletedToken = false;
-		tokens.push_back(inputHandler->Register(GameInput::Left, &_ControllerComponent::Test, OnKey::Released));
-		tokens.push_back(inputHandler->Register(GameInput::Left, &_ControllerComponent::Test2, OnKey::Released, true));
+		m_tokens.push_back(m_pInputHandler->Register(GameInput::Left, &_ControllerComponent::Test, OnKey::Released));
+		m_tokens.push_back(m_pInputHandler->Register(GameInput::Left, &_ControllerComponent::Test2, OnKey::Released, true));
 	}
 
-	ControllerComponent::ControllerComponent(Actor& owner, const ControllerComponent & prototype) : Component(owner, prototype), pRenderer(prototype.pRenderer), inputHandler(prototype.inputHandler) {
+	ControllerComponent::ControllerComponent(Actor& owner, const ControllerComponent & prototype) : Component(owner, prototype), m_pRenderer(prototype.m_pRenderer), m_pInputHandler(prototype.m_pInputHandler) {
 	}
 
 	ControllerComponent::~ControllerComponent() {
-		tokens.clear();
+		m_tokens.clear();
 	}
 
 	void ControllerComponent::Tick(Fixed deltaTime) {
@@ -67,7 +67,6 @@ namespace LittleEngine {
 		Actor& actor = GetActor();
 
 		const World& world = actor.GetActiveLevel().GetWorld();
-		const Level& level = actor.GetActiveLevel();
 		Rect2 worldBounds = world.GetScreenBounds();
 		Vector2 padding = GetRenderPadding();
 		ClampPosition(actor.GetTransform().localPosition, worldBounds, padding);
@@ -75,7 +74,7 @@ namespace LittleEngine {
 		// TESTS
 		if (actor.GetActiveLevel().LevelTimeMilliSeconds() > 2000 && !_bDeletedToken) {
 			_bDeletedToken = true;
-			tokens.pop_back();
+			m_tokens.pop_back();
 		}
 	}
 
@@ -84,18 +83,18 @@ namespace LittleEngine {
 	}
 
 	Vector2 ControllerComponent::GetRenderPadding() {
-		if (!pRenderer) {
-			pRenderer = GetActor().GetComponent<RenderComponent>();
+		if (!m_pRenderer) {
+			m_pRenderer = GetActor().GetComponent<RenderComponent>();
 		}
-		if (!pRenderer) {
+		if (!m_pRenderer) {
 			Logger::Log(*this, "ControllerComponent's owning Actor does not have a RenderComponent", Logger::Severity::Warning);
 			return Vector2::Zero;
 		}
-		return std::move(pRenderer->GetBounds().upper);
+		return m_pRenderer->GetBounds().upper;
 	}
 
 	void ControllerComponent::OnLeft() {
-		if (inputHandler->IsKeyPressed(GameInput::LB)) {
+		if (m_pInputHandler->IsKeyPressed(GameInput::LB)) {
 			GetActor().GetTransform().Rotate(prevDeltaTime / 3);
 		}
 		else {
@@ -104,7 +103,7 @@ namespace LittleEngine {
 	}
 
 	void ControllerComponent::OnRight() {
-		if (inputHandler->IsKeyPressed(GameInput::LB)) {
+		if (m_pInputHandler->IsKeyPressed(GameInput::LB)) {
 			GetActor().GetTransform().Rotate(-prevDeltaTime / 3);
 		}
 		else {

@@ -23,6 +23,9 @@ namespace LittleEngine {
 	};
 
 	class RenderComponent : public Component {
+	private:
+		std::unique_ptr<Renderable> m_uRenderable;
+
 	public:
 		RenderComponent(Actor& actor);
 		RenderComponent(Actor& owner, const RenderComponent& prototype);
@@ -37,13 +40,10 @@ namespace LittleEngine {
 		SpriteRenderable& SetSpriteRenderable(TextureAsset& texture);
 		TextRenderable& SetTextRenderable(const std::string& text);
 
-		virtual void Render(RenderParams params) override;
+		virtual void Render(RenderParams& params) override;
 		virtual Component::Ptr UClone(Actor& owner) const override;
 		
 	protected:
-		void SetRenderable(std::unique_ptr<Renderable> renderable);
-
-	private:
-		std::unique_ptr<Renderable> uRenderable = nullptr;
+		void SetRenderable(std::unique_ptr<Renderable> uRenderable);
 	};
 }

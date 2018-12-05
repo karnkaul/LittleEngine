@@ -32,7 +32,7 @@ namespace LittleEngine { namespace DebugConsole {
 			}
 			virtual std::vector<std::string> AutoCompleteParams(const std::string& incompleteParams) {
 				std::vector<std::string> ret = { "" };
-				return std::move(ret);
+				return ret;
 			}
 
 		protected:
@@ -164,7 +164,7 @@ namespace LittleEngine { namespace DebugConsole {
 				for (auto & command : commands) {
 					result.emplace_back("\t" + command.second->name, LOG_TEXT_COLOUR);
 				}
-				return std::move(result);
+				return result;
 			}
 
 			std::string StripPaddedSpaces(const std::string& input) {
@@ -203,7 +203,7 @@ namespace LittleEngine { namespace DebugConsole {
 				if (search != commands.end()) {
 					ret = search->second->Execute(params);
 				}
-				return std::move(ret);
+				return ret;
 			}
 
 			std::vector<Command*> FindCommands(const std::string& incompleteCommand) {
@@ -214,7 +214,7 @@ namespace LittleEngine { namespace DebugConsole {
 						results.push_back(command.second.get());
 					}
 				}
-				return std::move(results);
+				return results;
 			}
 		}
 #pragma endregion
@@ -241,7 +241,7 @@ namespace LittleEngine { namespace DebugConsole {
 					ret.emplace_back("Unrecognised command: " + command, LOG_WARNING_COLOUR);
 				}
 			}
-			return std::move(ret);
+			return ret;
 		}
 
 		std::vector<std::string> AutoComplete(const std::string& incompleteQuery) {
@@ -269,7 +269,7 @@ namespace LittleEngine { namespace DebugConsole {
 					}
 				}
 			}
-			return std::move(results);
+			return results;
 		}
 	}
 #pragma endregion

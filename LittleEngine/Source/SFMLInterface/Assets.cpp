@@ -79,43 +79,43 @@ namespace LittleEngine {
 		}
 	}
 
-	Asset::Asset(const std::string& path) : resourcePath(path) {}
+	Asset::Asset(const std::string& path) : m_resourcePath(path) {}
 
 	Asset::~Asset() {
-		Logger::Log("[" + resourcePath + "] (Asset) destroyed", Logger::Severity::Debug);
+		Logger::Log("[" + m_resourcePath + "] (Asset) destroyed", Logger::Severity::Debug);
 	}
 
 	const std::string & Asset::GetResourcePath() const {
-		return resourcePath;
+		return m_resourcePath;
 	}
 
 	TextureAsset::TextureAsset(const std::string& path) : Asset(path) {
-		if (!sfTexture.loadFromFile(resourcePath)) {
-			Logger::Log("Could not load texture from [" + resourcePath + "]!", Logger::Severity::Error);
+		if (!m_sfTexture.loadFromFile(m_resourcePath)) {
+			Logger::Log("Could not load texture from [" + m_resourcePath + "]!", Logger::Severity::Error);
 		}
 	}
 
 	FontAsset::FontAsset(const std::string & path) : Asset(path) {
-		if (!sfFont.loadFromFile(resourcePath)) {
-			Logger::Log("Could not load font from [" + resourcePath + "]!", Logger::Severity::Error);
+		if (!m_sfFont.loadFromFile(m_resourcePath)) {
+			Logger::Log("Could not load font from [" + m_resourcePath + "]!", Logger::Severity::Error);
 		}
 	}
 
-	SoundAsset::SoundAsset(const std::string & path, const Fixed& volumeScale) : Asset(path), volumeScale(Maths::Clamp01(volumeScale)) {
-		if (!sfSoundBuffer.loadFromFile(path)) {
-			Logger::Log("Could not load sound from [" + resourcePath + "]!", Logger::Severity::Error);
+	SoundAsset::SoundAsset(const std::string & path, const Fixed& volumeScale) : Asset(path), m_volumeScale(Maths::Clamp01(volumeScale)) {
+		if (!m_sfSoundBuffer.loadFromFile(path)) {
+			Logger::Log("Could not load sound from [" + m_resourcePath + "]!", Logger::Severity::Error);
 		}
 	}
 
-	MusicAsset::MusicAsset(const std::string & path, const Fixed& volumeScale) : Asset(path), volumeScale(Maths::Clamp01(volumeScale)) {
-		valid = music.openFromFile(path);
-		if (!valid) {
-			Logger::Log("Could not load music from [" + resourcePath + "]!", Logger::Severity::Error);
+	MusicAsset::MusicAsset(const std::string & path, const Fixed& volumeScale) : Asset(path), m_volumeScale(Maths::Clamp01(volumeScale)) {
+		m_bValid = m_sfMusic.openFromFile(path);
+		if (!m_bValid) {
+			Logger::Log("Could not load music from [" + m_resourcePath + "]!", Logger::Severity::Error);
 		}
 	}
 
 	Fixed MusicAsset::GetDurationSeconds() const {
-		return Fixed(music.getDuration().asSeconds());
+		return Fixed(m_sfMusic.getDuration().asSeconds());
 	}
 
 	AssetPaths::AssetPaths(const std::string & assetPath) {
@@ -149,13 +149,13 @@ namespace LittleEngine {
 		return assetPaths[index];
 	}
 
-	AssetManager::AssetManager(const std::string& rootDir) : Object("AssetManager"), rootDir(rootDir) {
-		defaultFont = Load<FontAsset>("main.ttf");
+	AssetManager::AssetManager(const std::string& rootDir) : Object("AssetManager"), m_rootDir(rootDir) {
+		m_pDefaultFont = Load<FontAsset>("main.ttf");
 		Logger::Log("AssetManager created");
 	}
 
 	FontAsset* AssetManager::GetDefaultFont() const {
-		return defaultFont;
+		return m_pDefaultFont;
 	}
 
 	void AssetManager::LoadAll(AssetManifest& manifest) {
@@ -187,16 +187,16 @@ namespace LittleEngine {
 	}
 
 	void AssetManager::UnloadAll() {
-		loaded.clear();
+		m_loaded.clear();
 		Logger::Log(*this, "AssetManager cleared");
 	}
 
-	std::string AssetManager::GetPath(const std::string & path) {
-		return rootDir.empty() ? path : rootDir + "/" + path;
+	std::string AssetManager::GetPath(const std::string & path) const {
+		return m_rootDir.empty() ? path : m_rootDir + "/" + path;
 	}
 
 	AssetManager::~AssetManager() {
-		defaultFont = nullptr;
+		m_pDefaultFont = nullptr;
 		UnloadAll();
 		Logger::Log(*this, "AssetManager destroyed");
 	}

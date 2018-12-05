@@ -4,7 +4,7 @@
 #include "Utils.h"
 
 namespace LittleEngine {
-	AudioManager::AudioManager(Engine& engine) : Object("AudioManager"), engine(&engine) {
+	AudioManager::AudioManager(Engine& engine) : Object("AudioManager"), m_pEngine(&engine) {
 		Logger::Log(*this, GetNameInBrackets() + " created");
 	}
 
@@ -18,8 +18,8 @@ namespace LittleEngine {
 		SoundAsset* asset = GetAssetManager().Load<SoundAsset>(path);
 		if (asset) {
 			sfxPlayer.SetSoundAsset(*asset);
-			sfxPlayer.volume = volume;
-			sfxPlayer.bLooping = bLoop;
+			sfxPlayer.m_volume = volume;
+			sfxPlayer.m_bLooping = bLoop;
 			sfxPlayer.SetDirection(direction);
 			sfxPlayer.Play();
 			return &sfxPlayer;
@@ -30,15 +30,15 @@ namespace LittleEngine {
 	SoundPlayer * AudioManager::PlaySFX(SoundAsset& sound, const Fixed & volume, const Fixed & direction, bool bLoop) {
 		SoundPlayer& sfxPlayer = GetOrCreateSFXPlayer();
 		sfxPlayer.SetSoundAsset(sound);
-		sfxPlayer.volume = volume;
-		sfxPlayer.bLooping = bLoop;
+		sfxPlayer.m_volume = volume;
+		sfxPlayer.m_bLooping = bLoop;
 		sfxPlayer.SetDirection(direction);
 		sfxPlayer.Play();
 		return &sfxPlayer;
 	}
 
 	bool AudioManager::IsSFXPlaying() const {
-		for (const auto& sfxPlayer : sfxPlayers) {
+		for (const auto& sfxPlayer : m_sfxPlayers) {
 			if (sfxPlayer->IsPlaying()) {
 				return true;
 			}
@@ -48,11 +48,11 @@ namespace LittleEngine {
 
 	bool AudioManager::PlayMusic(const std::string & path, const Fixed& volume, const Fixed& fadeSeconds, bool bLoop) {
 		MusicAsset* asset = GetAssetManager().Load<MusicAsset>(path);
-		bool bValid = asset->valid;
+		bool bValid = asset->m_bValid;
 		if (bValid) {
-			switchTrackRequest = nullptr;
+			m_uSwitchTrackRequest = nullptr;
 			MusicPlayer& active = GetActivePlayer();
-			active.bLooping = bLoop;
+			active.m_bLooping = bLoop;
 			if (active.IsPlaying()) {
 				active.Stop();
 			}
@@ -61,7 +61,7 @@ namespace LittleEngine {
 				active.FadeIn(fadeSeconds, volume);
 			}
 			else {
-				active.volume = volume;
+				active.m_volume = volume;
 				active.Play();
 			}
 		}
@@ -80,33 +80,33 @@ namespace LittleEngine {
 	void AudioManager::SwitchTrack(const std::string& path, const Fixed& volume, const Fixed & fadeSeconds) {
 		MusicAsset* newTrack = GetAssetManager().Load<MusicAsset>(path);
 		if (newTrack != nullptr) {
-			switchTrackRequest = std::make_unique<SwitchTrackRequest>(*newTrack, fadeSeconds, volume);
+			m_uSwitchTrackRequest = std::make_unique<SwitchTrackRequest>(*newTrack, fadeSeconds, volume);
 			if (IsMusicPlaying()) {
 				GetActivePlayer().FadeOut(fadeSeconds * Fixed::OneHalf);
-				switchTrackRequest->bFadingOldTrack = true;
-				switchTrackRequest->fadeSeconds *= Fixed::OneHalf;
+				m_uSwitchTrackRequest->bFadingOldTrack = true;
+				m_uSwitchTrackRequest->fadeSeconds *= Fixed::OneHalf;
 			}
 		}
 	}
 
 	void AudioManager::SetMusicVolume(const Fixed & volume) {
-		if (switchTrackRequest != nullptr) {
-			switchTrackRequest->targetVolume = volume;
+		if (m_uSwitchTrackRequest != nullptr) {
+			m_uSwitchTrackRequest->targetVolume = volume;
 		}
-		else if (musicPlayerA.IsFading()) {
-			musicPlayerA.targetVolume = volume;
+		else if (m_musicPlayerA.IsFading()) {
+			m_musicPlayerA.m_targetVolume = volume;
 		}
 		else {
-			musicPlayerA.volume = volume;
+			m_musicPlayerA.m_volume = volume;
 		}
 	}
 
 	void AudioManager::Clear(bool immediate) {
-		int sfxCount = static_cast<int>(sfxPlayers.size());
-		for (auto& sfxPlayer : sfxPlayers) {
+		int sfxCount = static_cast<int>(m_sfxPlayers.size());
+		for (auto& sfxPlayer : m_sfxPlayers) {
 			sfxPlayer->Stop();
 		}
-		sfxPlayers.clear();
+		m_sfxPlayers.clear();
 		MusicPlayer& active = GetActivePlayer();
 		if (immediate) {
 			active.EndFade();
@@ -116,59 +116,53 @@ namespace LittleEngine {
 			active.FadeOut(Fixed::OneHalf);
 		}
 		GetStandbyPlayer().Stop();
-		switchTrackRequest = nullptr;
+		m_uSwitchTrackRequest = nullptr;
 		Logger::Log(*this, GetNameInBrackets() + " cleared [" + Strings::ToString(sfxCount) + " SFXPlayers, 1 MusicPlayer]");
 	}
 
 	void AudioManager::Tick(Fixed deltaTime) {
 		MusicPlayer& active = GetActivePlayer();
-		if (switchTrackRequest != nullptr && !active.IsFading()) {
+		if (m_uSwitchTrackRequest != nullptr && !active.IsFading()) {
 			if (active.IsPlaying()) active.Stop();
-			active.SetTrack(*switchTrackRequest->newTrack);
-			active.FadeIn(switchTrackRequest->fadeSeconds, switchTrackRequest->targetVolume);
-			switchTrackRequest = nullptr;
+			active.SetTrack(*m_uSwitchTrackRequest->newTrack);
+			active.FadeIn(m_uSwitchTrackRequest->fadeSeconds, m_uSwitchTrackRequest->targetVolume);
+			m_uSwitchTrackRequest = nullptr;
 		}
 		Fixed deltaSeconds = deltaTime * Fixed(1, 1000);
 		active.Tick(deltaSeconds);
 		GetStandbyPlayer().Tick(deltaSeconds);
-		for (auto& sfxPlayer : sfxPlayers) {
+		for (auto& sfxPlayer : m_sfxPlayers) {
 			sfxPlayer->Tick(deltaSeconds);
 		}
 	}
 
 	AssetManager & AudioManager::GetAssetManager() {
-		return engine->GetAssetManager();
+		return m_pEngine->GetAssetManager();
 	}
 
 	SoundPlayer& AudioManager::GetOrCreateSFXPlayer() {
-		for (auto& sfxPlayer : sfxPlayers) {
+		for (auto& sfxPlayer : m_sfxPlayers) {
 			if (!sfxPlayer->IsPlaying()) {
 				return *sfxPlayer;
 			}
 		}
-		sfxPlayers.push_back(std::make_unique<SoundPlayer>(nullptr));
-		return *sfxPlayers[sfxPlayers.size() - 1];
+		m_sfxPlayers.push_back(std::make_unique<SoundPlayer>(nullptr));
+		return *m_sfxPlayers[m_sfxPlayers.size() - 1];
 	}
 
 	MusicPlayer & AudioManager::GetActivePlayer() {
-		return bSideA ? musicPlayerA : musicPlayerB;
+		return m_bSideA ? m_musicPlayerA : m_musicPlayerB;
 	}
 
 	MusicPlayer & AudioManager::GetStandbyPlayer() {
-		return bSideA ? musicPlayerB : musicPlayerA;
+		return m_bSideA ? m_musicPlayerB : m_musicPlayerA;
 	}
 
 	const MusicPlayer & AudioManager::GetActivePlayer() const {
-		return bSideA ? musicPlayerA : musicPlayerB;
+		return m_bSideA ? m_musicPlayerA : m_musicPlayerB;
 	}
 
 	const MusicPlayer & AudioManager::GetStandbyPlayer() const {
-		return bSideA ? musicPlayerB : musicPlayerA;
-	}
-	
-	AudioManager::SwitchTrackRequest::SwitchTrackRequest(MusicAsset& newTrack, const Fixed & fadeSeconds, const Fixed& targetVolume) {
-		this->fadeSeconds = fadeSeconds;
-		this->newTrack = &newTrack;
-		this->targetVolume = targetVolume;
+		return m_bSideA ? m_musicPlayerB : m_musicPlayerA;
 	}
 }

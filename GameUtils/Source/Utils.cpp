@@ -4,15 +4,17 @@
 #include "Utils.h"
 
 namespace Maths {
-	bool _bInit = false;
-	static void InitRand(bool useTime = true) {
-		if (useTime) {
-			srand(static_cast<unsigned int>(time(nullptr)));
+	namespace {
+		bool _bInit = false;
+		void InitRand(bool useTime = true) {
+			if (useTime) {
+				srand(static_cast<unsigned int>(time(nullptr)));
+			}
+			else {
+				srand(0);
+			}
+			_bInit = true;
 		}
-		else {
-			srand(0);
-		}
-		_bInit = true;
 	}
 
 	Fixed Random::Range(const Fixed& min, const Fixed& max) {
@@ -87,7 +89,7 @@ namespace Strings {
 	Pair<std::string> Bisect(const std::string & input, char delimiter) {
 		size_t idx = input.find(delimiter);
 		std::string rhs = idx < input.size() ? input.substr(idx + 1) : "";
-		return Pair(input.substr(0, idx), std::move(rhs));
+		return Pair<std::string>(input.substr(0, idx), std::move(rhs));
 	}
 
 	void RemoveChars(std::string & outInput, std::initializer_list<char> toRemove) {
@@ -103,7 +105,7 @@ namespace Strings {
 	}
 
 	void RemoveWhitespace(std::string& outInput) {
-		SubstituteChars(outInput, { Pair('\t', ' '), Pair('\n', ' ') });
+		SubstituteChars(outInput, { Pair<char>('\t', ' '), Pair<char>('\n', ' ') });
 		RemoveChars(outInput, { ' ' });
 	}
 
@@ -156,5 +158,13 @@ namespace Strings {
 			}
 			++iter;
 		}
+	}
+
+	bool IsCharEnclosedIn(const std::string& str, size_t idx, Strings::Pair<char> wrapper) {
+		size_t idx_1 = idx - 1;
+		size_t idx1 = idx + 1;
+		return idx < str.length() && idx_1 < str.length() && idx1 < str.length()
+			&& idx > 0 && idx_1 > 0 && idx1 > 0
+			&& str[idx_1] == wrapper.first && str[idx1] == wrapper.second;
 	}
 }

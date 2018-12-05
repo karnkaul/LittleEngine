@@ -1,10 +1,11 @@
 #pragma once
 #include "SFMLInterface/SystemClock.h"
+#include "Engine/CoreGame.hpp"
 
 namespace LittleEngine {
 	class Object;
 
-#if DEBUG
+#if GAME_DEBUG
 	#define DEBUG_ASSERT(expr, errLog)		if (!(expr)) { Log(errLog, Logger::Severity::Error); }
 #else
 	#define DEBUG_ASSERT(x, y)

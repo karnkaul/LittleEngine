@@ -10,9 +10,11 @@
 namespace LittleEngine {
 	// \brief Wrapper struct for SFML Drawable
 	struct Drawable {
+	private:
+		sf::Drawable* drawable;
 	public:
 		LayerInfo layer;
-
+	
 		Drawable(sf::Drawable& drawable) : drawable(&drawable) { }
 		Drawable(sf::Drawable& drawable, LayerInfo layer) : drawable(&drawable), layer(layer) {}
 		Drawable(Drawable&&) = default;
@@ -20,9 +22,6 @@ namespace LittleEngine {
 		Drawable(const Drawable&) = default;
 
 		const sf::Drawable& GetSFMLDrawable() { return *drawable; }
-
-	private:
-		sf::Drawable* drawable;
 	};
 
 	// \brief Conrete class that can create an SFML RenderWindow,
@@ -36,16 +35,23 @@ namespace LittleEngine {
 			static constexpr int MAX_LAYERS = 100;
 
 			void Push(Drawable&& drawable, int index);
-			void ForEach(std::function<void(std::vector<Drawable>)> Callback) const;
+			void ForEach(std::function<void(std::vector<Drawable>&)> Callback);
 			void Clear();
 
 		private:
 			std::array<std::vector<Drawable>, MAX_LAYERS> buffer;
 		};
-
+	
 	public:
 		static constexpr int MAX_LAYERID = Buffer::MAX_LAYERS - 1;
 
+	private:
+		Buffer m_buffer;
+		Input m_input;
+		std::unique_ptr<sf::RenderWindow> m_uWindow;
+		bool m_bFocus = false;
+
+	public:
 		WindowController(int screenWidth, int screenHeight, const std::string& windowTitle);
 		~WindowController();
 
@@ -55,7 +61,7 @@ namespace LittleEngine {
 		bool IsWindowFocussed() const;
 
 		// Call this to update InputHandler's state for this frame
-		void PollInput();
+		void PollEvents();
 		// Add drawable to buffer
 		void Push(Drawable&& drawable);
 		// Clear screen and draw current buffer
@@ -65,11 +71,6 @@ namespace LittleEngine {
 		const Input& GetInput() const;
 
 	private:
-		Buffer buffer;
-		Input input;
-		std::unique_ptr<sf::RenderWindow> window;
-		bool _bFocus = false;
-
 		WindowController(const WindowController&) = delete;
 		WindowController& operator=(const WindowController&) = delete;	
 	};

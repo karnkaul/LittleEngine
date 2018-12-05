@@ -7,7 +7,7 @@ using namespace LittleEngine;
 int main() {
 	// Instantiate engine
 	Engine::Ptr engine = Engine::Create();
-
+	
 	// Add levels and load their assets
 	engine->CreateLevel<BootLevel>();
 	engine->CreateLevel<TestLevel>();

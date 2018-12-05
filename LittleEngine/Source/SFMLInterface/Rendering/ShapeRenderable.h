@@ -6,12 +6,12 @@
 namespace LittleEngine {
 	// \brief Abstract class for drawing SFML Shapes
 	class ShapeRenderable : public Renderable {
+	protected:
+		std::unique_ptr<sf::Shape> m_uShape;	// sf::Shape cannot be a direct member
+
 	public:
 		void SetFillColour(const Colour& colour);
 		void SetBorder(const Fixed& width, const Colour& colour);
-
-	protected:
-		std::unique_ptr<sf::Shape> shape;	// sf::Shape cannot be a direct member
 
 		ShapeRenderable(std::string name, std::unique_ptr<sf::Shape> shape);
 		ShapeRenderable(const ShapeRenderable& prototype, std::unique_ptr<sf::Shape> shape);
@@ -24,12 +24,15 @@ namespace LittleEngine {
 		template<typename T>
 		T& CastShape() const {
 			static_assert(std::is_base_of<sf::Shape, T>::value, "T must derive from sf::Shape; check Output window for erroneous call");
-			return dynamic_cast<T&>(*shape);
+			return dynamic_cast<T&>(*m_uShape);
 		}
 	};
 
 	// \brief Concrete class to draw a CircleShape
 	class CircleRenderable : public ShapeRenderable {
+	private:
+		sf::CircleShape* m_pCircle;
+
 	public:
 		CircleRenderable(const Fixed& radius);
 		CircleRenderable(const Fixed& radius, const Colour& colour);
@@ -40,13 +43,13 @@ namespace LittleEngine {
 		// Returns outer rect of CircleShape (|any point| = radius)
 		virtual Rect2 GetBounds() const override;
 		virtual std::unique_ptr<Renderable> UClone() const override;
-
-	private:
-		sf::CircleShape* circle;
 	};
 
 	// \brief Concrete class to draw a RectangleShape
 	class RectangleRenderable : public ShapeRenderable {
+	private:
+		sf::RectangleShape* m_pRectangle;
+
 	public:
 		RectangleRenderable(const Vector2& size);
 		RectangleRenderable(const Vector2& size, const Colour& colour);
@@ -57,9 +60,6 @@ namespace LittleEngine {
 		// Returns bounds of RectangleShape
 		virtual Rect2 GetBounds() const override;
 		virtual std::unique_ptr<Renderable> UClone() const override;
-
-	private:
-		sf::RectangleShape* rectangle;
 	};
 }
 

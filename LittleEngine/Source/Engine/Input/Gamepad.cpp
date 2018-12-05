@@ -34,7 +34,7 @@ namespace LittleEngine {
 	}
 
 	GameInput Gamepad::ToGameInput(const KeyState & input) const {
-		for (auto& binding : bindings) {
+		for (auto& binding : m_bindings) {
 			if (binding.IsMapped(input.GetKeyCode())) {
 				return binding.key;
 			}
@@ -43,7 +43,7 @@ namespace LittleEngine {
 	}
 
 	void Gamepad::Bind(KeyCode keyCode, GameInput key) {
-		for (auto& binding : bindings) {
+		for (auto& binding : m_bindings) {
 			if (binding.key == key) {
 				if (!binding.IsMapped(keyCode)) {
 					binding.Bind(keyCode);
@@ -52,6 +52,6 @@ namespace LittleEngine {
 			}
 		}
 
-		bindings.emplace_back(key, keyCode);
+		m_bindings.emplace_back(key, keyCode);
 	}
 }

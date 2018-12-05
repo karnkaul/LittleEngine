@@ -32,70 +32,70 @@ namespace LittleEngine {
 	}
 
 	EngineConfig::EngineConfig() {
-		data.Clear();
+		m_data.Clear();
 		Verify();
 	}
 
 	using FileRW = GameUtils::FileRW;
 
 	bool EngineConfig::Load(const std::string & path) {
-		_dirty = true;
+		m_bDirty = true;
 		FileRW file(path);
-		data.Marshall(file.ReadAll(true));
-		bool success = data.NumFields() > 0;
+		m_data.Marshall(file.ReadAll(true));
+		bool success = m_data.NumFields() > 0;
 		Verify();
 		return success;
 	}
 
 	bool EngineConfig::Save(const std::string & path) {
-		if (_dirty) {
+		if (m_bDirty) {
 			FileRW file(path);
-			return file.Write(data.Unmarshall());
+			return file.Write(m_data.Unmarshall());
 		}
 		return true;
 	}
 
 	std::string EngineConfig::GetWindowTitle() const {
-		return data.GetString(WINDOW_TITLE_KEY);
+		return m_data.GetString(WINDOW_TITLE_KEY);
 	}
 
 	Fixed EngineConfig::GetColliderBorderWidth() const {
-		return Fixed(data.GetDouble(COLLIDER_SHAPE_WIDTH_KEY));
+		return Fixed(m_data.GetDouble(COLLIDER_SHAPE_WIDTH_KEY));
 	}
 
 	Logger::Severity EngineConfig::GetLogLevel() const {
-		return ParseLogLevel(data.GetString(LOG_LEVEL_KEY));
+		return ParseLogLevel(m_data.GetString(LOG_LEVEL_KEY));
 	}
 
 	const Vector2 EngineConfig::GetScreenSize() const {
-		GData vec2 = data.GetGData(SCREEN_SIZE_KEY);
+		GData vec2 = m_data.GetGData(SCREEN_SIZE_KEY);
 		return Vector2(Fixed(vec2.GetInt("x")), vec2.GetInt("y"));
 	}
 
 	bool EngineConfig::SetWindowTitle(const std::string & windowTitle) {
-		return _dirty = data.SetString(WINDOW_TITLE_KEY, windowTitle);
+		return m_bDirty = m_data.SetString(WINDOW_TITLE_KEY, windowTitle);
 	}
 
 	bool EngineConfig::SetLogLevel(const Logger::Severity & level) {
-		return _dirty = data.SetString(LOG_LEVEL_KEY, severityMap[level]);
+		return m_bDirty = m_data.SetString(LOG_LEVEL_KEY, severityMap[level]);
 	}
 
 	bool EngineConfig::SetScreenSize(const Vector2 & screenSize) {
 		GData gData;
 		gData.SetString("x", "1280");
 		gData.SetString("y", "720");
-		return _dirty = data.AddField(SCREEN_SIZE_KEY, gData);
+		return m_bDirty = m_data.AddField(SCREEN_SIZE_KEY, gData);
 	}
 
 	bool EngineConfig::SetColliderBorderWidth(const Fixed & shapeWidth) {
-		return _dirty = data.SetString(COLLIDER_SHAPE_WIDTH_KEY, shapeWidth.ToString());
+		return m_bDirty = m_data.SetString(COLLIDER_SHAPE_WIDTH_KEY, shapeWidth.ToString());
 	}
 	
 	void EngineConfig::Verify() {
-		SetStringIfEmpty(data, WINDOW_TITLE_KEY, "Game Window");
-		SetStringIfEmpty(data, LOG_LEVEL_KEY, "Info");
-		SetStringIfEmpty(data, COLLIDER_SHAPE_WIDTH_KEY, "1.0");
-		if (data.GetString(SCREEN_SIZE_KEY).empty()) SetScreenSize(Vector2(1280, 720));
-		_dirty = false;
+		SetStringIfEmpty(m_data, WINDOW_TITLE_KEY, "Game Window");
+		SetStringIfEmpty(m_data, LOG_LEVEL_KEY, "Info");
+		SetStringIfEmpty(m_data, COLLIDER_SHAPE_WIDTH_KEY, "1.0");
+		if (m_data.GetString(SCREEN_SIZE_KEY).empty()) SetScreenSize(Vector2(1280, 720));
+		m_bDirty = false;
 	}
 }

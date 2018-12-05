@@ -23,7 +23,9 @@ In the very least, it is desired for the engine to be capable of the following:
 
 ### To Build Source
 1. Microsoft Visual Studio 15 (2017)
-1. Windows 10 SDK
+1. [LLVM for Windows](http://releases.llvm.org/download.html)
+1. [VS2017 LLVM Compiler Toolchain plugin](https://marketplace.visualstudio.com/items?itemName=LLVMExtensions.llvm-toolchain)
+1. Windows 7+ SDK
 
 Unzip the SFML libraries (in /lib_x86 and /lib_x64) before linking.
 

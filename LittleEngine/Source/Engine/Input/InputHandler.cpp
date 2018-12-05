@@ -3,37 +3,38 @@
 #include "Engine/Logger/Logger.h"
 #include "SFMLInterface/Input.h"
 #include "Utils.h"
+#include "../Console/DebugConsole.h"
 
 namespace LittleEngine {
 	InputHandler::InputHandler() : Object("InputHandler") {
 		/* Setup Input Bindings */ {
-			gamepad.Bind(KeyCode::Up, GameInput::Up);
-			gamepad.Bind(KeyCode::W, GameInput::Up);
-			gamepad.Bind(KeyCode::Down, GameInput::Down);
-			gamepad.Bind(KeyCode::S, GameInput::Down);
-			gamepad.Bind(KeyCode::Left, GameInput::Left);
-			gamepad.Bind(KeyCode::A, GameInput::Left);
-			gamepad.Bind(KeyCode::Right, GameInput::Right);
-			gamepad.Bind(KeyCode::D, GameInput::Right);
-			gamepad.Bind(KeyCode::Enter, GameInput::Enter);
-			gamepad.Bind(KeyCode::Escape, GameInput::Return);
-			gamepad.Bind(KeyCode::Tab, GameInput::Select);
+			m_gamepad.Bind(KeyCode::Up, GameInput::Up);
+			m_gamepad.Bind(KeyCode::W, GameInput::Up);
+			m_gamepad.Bind(KeyCode::Down, GameInput::Down);
+			m_gamepad.Bind(KeyCode::S, GameInput::Down);
+			m_gamepad.Bind(KeyCode::Left, GameInput::Left);
+			m_gamepad.Bind(KeyCode::A, GameInput::Left);
+			m_gamepad.Bind(KeyCode::Right, GameInput::Right);
+			m_gamepad.Bind(KeyCode::D, GameInput::Right);
+			m_gamepad.Bind(KeyCode::Enter, GameInput::Enter);
+			m_gamepad.Bind(KeyCode::Escape, GameInput::Return);
+			m_gamepad.Bind(KeyCode::Tab, GameInput::Select);
 
-			gamepad.Bind(KeyCode::Space, GameInput::X);
-			gamepad.Bind(KeyCode::E, GameInput::Y);
-			gamepad.Bind(KeyCode::Control, GameInput::LB);
-			gamepad.Bind(KeyCode::Shift, GameInput::RB);
+			m_gamepad.Bind(KeyCode::Space, GameInput::X);
+			m_gamepad.Bind(KeyCode::E, GameInput::Y);
+			m_gamepad.Bind(KeyCode::Control, GameInput::LB);
+			m_gamepad.Bind(KeyCode::Shift, GameInput::RB);
 
-			gamepad.Bind(KeyCode::F12, GameInput::Debug0);
+			m_gamepad.Bind(KeyCode::F12, GameInput::Debug0);
 		}
 
-		generalObservers = {
+		m_generalObservers = {
 			{ OnKey::Pressed, InputMap() },
 			{ OnKey::Held, InputMap() },
 			{ OnKey::Released, InputMap() }
 		};
 
-		consumingObservers = {
+		m_consumingObservers = {
 			{ OnKey::Pressed, InputVecMap() },
 			{ OnKey::Held, InputVecMap() },
 			{ OnKey::Released, InputVecMap() }
@@ -46,8 +47,8 @@ namespace LittleEngine {
 	}
 
 	bool InputHandler::IsKeyPressed(const GameInput& keyCode) const {
-		auto iter = GameUtils::VectorSearch(currentSnapshot, keyCode);
-		return iter != currentSnapshot.end();
+		auto iter = GameUtils::VectorSearch(m_currentSnapshot, keyCode);
+		return iter != m_currentSnapshot.end();
 	}
 
 	OnInput::Token InputHandler::Register(const GameInput& input, OnInput::Callback callback, const OnKey& type, bool bConsume) {
@@ -56,7 +57,7 @@ namespace LittleEngine {
 			// Prepare new delegate and token
 			OnInput newDelegate;
 			OnInput::Token token = newDelegate.Register(callback);
-			InputVecMap& toModify = consumingObservers[type];
+			InputVecMap& toModify = m_consumingObservers[type];
 			auto iter = toModify.find(input);
 			// Vector exists, add new delegate
 			if (iter != toModify.end()) {
@@ -71,7 +72,7 @@ namespace LittleEngine {
 		}
 		// General observers are registered to the same delegate, go into generalObservers
 		else {
-			InputMap& toModify = generalObservers[type];
+			InputMap& toModify = m_generalObservers[type];
 			auto iter = toModify.find(input);
 			// Delegate doesn't exist, create new and add to map
 			if (iter == toModify.end()) {
@@ -83,27 +84,29 @@ namespace LittleEngine {
 		}
 	}
 
-	void InputHandler::CaptureState(const std::vector<KeyState>& pressedKeys) {
-		previousSnapshot = currentSnapshot;
-		currentSnapshot.clear();
-		for (const auto& key : pressedKeys) {
-			GameInput input = gamepad.ToGameInput(key);
-			if (input != GameInput::Invalid) {
-				auto duplicate = GameUtils::VectorSearch(currentSnapshot, input);
-				if (duplicate == currentSnapshot.end()) {
-					currentSnapshot.push_back(input);
+	void InputHandler::ProcessInput(const Input & sfmlInput) {
+		m_rawTextInput = sfmlInput.GetRawSFMLInput();
+#if ENABLED(DEBUG_CONSOLE)
+		if (m_rawTextInput.Contains('`')) DebugConsole::Activate(!DebugConsole::IsActive());
+		if (DebugConsole::IsActive()) DebugConsole::UpdateInput(m_rawTextInput);
+		else
+#endif
+		{
+			m_previousSnapshot = m_currentSnapshot;
+			m_currentSnapshot.clear();
+			const std::vector<KeyState> keyStates = sfmlInput.GetPressed();
+			for (const auto& key : keyStates) {
+				GameInput input = m_gamepad.ToGameInput(key);
+				if (input != GameInput::Invalid) {
+					auto duplicate = GameUtils::VectorSearch(m_currentSnapshot, input);
+					if (duplicate == m_currentSnapshot.end()) m_currentSnapshot.push_back(input);
 				}
 			}
 		}
-		rawTextInput.clear();
-	}
-
-	void InputHandler::CaptureRawText(const std::string & rawTextInput) {
-		this->rawTextInput = rawTextInput;
 	}
 
 	void InputHandler::FireCallbacks(const std::vector<GameInput>& inputs, OnKey type) {
-		InputVecMap& consumers = consumingObservers[type];
+		InputVecMap& consumers = m_consumingObservers[type];
 		for (const auto& input : inputs) {
 			// If any consuming callbacks exist, general ones will not be fired
 			bool fireGeneral = true;
@@ -122,7 +125,7 @@ namespace LittleEngine {
 			}
 			// No consumers exist. Fire all general callbacks
 			if (fireGeneral) {
-				InputMap& general = generalObservers[type];
+				InputMap& general = m_generalObservers[type];
 				auto iter = general.find(input);
 				if (iter != general.end()) {
 					iter->second();
@@ -135,9 +138,9 @@ namespace LittleEngine {
 		std::vector<GameInput> onPressed, onHeld, onReleased;
 		
 		// Build OnPressed and OnHeld vectors
-		for (auto input : currentSnapshot) {
-			auto search = GameUtils::VectorSearch(previousSnapshot, input);
-			if (search != previousSnapshot.end()) {
+		for (auto input : m_currentSnapshot) {
+			auto search = GameUtils::VectorSearch(m_previousSnapshot, input);
+			if (search != m_previousSnapshot.end()) {
 				onHeld.push_back(input);
 			}
 			else {
@@ -146,7 +149,7 @@ namespace LittleEngine {
 		}
 		
 		// Build OnReleased => all GameInputs in previousSnapshot that aren't in onHeld
-		onReleased = previousSnapshot;
+		onReleased = m_previousSnapshot;
 		onReleased.erase(std::remove_if(onReleased.begin(), onReleased.end(),
 			[&onHeld](GameInput input) -> bool {
 				for (auto compare : onHeld) {

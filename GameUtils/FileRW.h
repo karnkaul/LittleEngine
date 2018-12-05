@@ -6,8 +6,12 @@
 namespace GameUtils {
 	// \brief File persistor; implementation uses fstream
 	class FileRW {
+	private:
+		std::string m_path;
+		std::vector<std::string> m_lines;
+
 	public:
-		FileRW(std::string path) : path(path) {}
+		FileRW(std::string path) : m_path(path) {}
 
 		bool Exists() const;
 		std::string ReadAll(bool bDiscardNewLines = true);
@@ -16,9 +20,6 @@ namespace GameUtils {
 		bool Append(const std::string& contents);
 
 	private:
-		std::string path;
-		std::vector<std::string> m_lines;
-
 		void Read(std::function<void(std::string&& line)> Procedure);
 	};
 }

@@ -50,11 +50,11 @@ namespace LittleEngine {
 	}
 
 	Fixed Collider::DEBUG_BORDER_WIDTH = 1;
-	bool Collider::bShowingDebugShapes = false;
+	bool Collider::m_bShowingDebugShapes = false;
 
 	Collider::~Collider() {
-		debugOffToken = nullptr;
-		debugOnToken = nullptr;
+		m_debugOffToken = nullptr;
+		m_debugOnToken = nullptr;
 	}
 
 	void Collider::OnHit(Collider & other) {
@@ -66,36 +66,36 @@ namespace LittleEngine {
 	}
 
 	Collider::Collider(Actor& actor, const std::string& name) : Component(actor, name) {
-		this->world = &actor.GetActiveLevel().GetWorld();
+		this->m_pWorld = &actor.GetActiveLevel().GetWorld();
 		RegisterSubscribers();
 	}
 
 	Collider::Collider(Actor & owner, const Collider & prototype) : Component(owner, prototype) {
-		this->world = &owner.GetActiveLevel().GetWorld();
+		this->m_pWorld = &owner.GetActiveLevel().GetWorld();
 		RegisterSubscribers();
 	}
 
 	bool Collider::IsShowingDebugShape() const {
-		return bShowingDebugShapes;
+		return m_bShowingDebugShapes;
 	}
 
 	void Collider::RegisterSubscribers() {
-		debugOffToken = EventManager::Instance().Register(GameEvent::DEBUG_HIDE_COLLIDERS, [this]() { bShowingDebugShapes = false; DrawDebugShape(bShowingDebugShapes); });
-		debugOnToken = EventManager::Instance().Register(GameEvent::DEBUG_SHOW_COLLIDERS, [this]() { bShowingDebugShapes = true; DrawDebugShape(bShowingDebugShapes); });
+		m_debugOffToken = EventManager::Instance().Register(GameEvent::DEBUG_HIDE_COLLIDERS, [this]() { m_bShowingDebugShapes = false; DrawDebugShape(m_bShowingDebugShapes); });
+		m_debugOnToken = EventManager::Instance().Register(GameEvent::DEBUG_SHOW_COLLIDERS, [this]() { m_bShowingDebugShapes = true; DrawDebugShape(m_bShowingDebugShapes); });
 	}
 
 	AABBCollider::AABBCollider(Actor& actor) : Collider(actor, "AABBCollider") {
-		Vector2 size(bounds.lowerBound.x * 2, bounds.upperBound.y * 2);
-		debugShape = std::make_unique<RectangleRenderable>(size, Colour::Transparent);
-		debugShape->SetBorder(DEBUG_BORDER_WIDTH, Colour::Green);
-		debugShape->layer = LayerID::Collider;
-		debugShape->SetEnabled(IsShowingDebugShape());
+		Vector2 size(m_bounds.lowerBound.x * 2, m_bounds.upperBound.y * 2);
+		m_debugShape = std::make_unique<RectangleRenderable>(size, Colour::Transparent);
+		m_debugShape->SetBorder(DEBUG_BORDER_WIDTH, Colour::Green);
+		m_debugShape->m_layer = LayerID::Collider;
+		m_debugShape->SetEnabled(IsShowingDebugShape());
 	}
 
-	AABBCollider::AABBCollider(Actor& owner, const AABBCollider & prototype) : Collider(owner, prototype), bounds(prototype.bounds) {
-		ShapeRenderable* toCopy = prototype.debugShape.get();
-		debugShape = std::make_unique<RectangleRenderable>(*(dynamic_cast<RectangleRenderable*>(toCopy)));
-		debugShape->SetEnabled(IsShowingDebugShape());
+	AABBCollider::AABBCollider(Actor& owner, const AABBCollider & prototype) : Collider(owner, prototype), m_bounds(prototype.m_bounds) {
+		ShapeRenderable* toCopy = prototype.m_debugShape.get();
+		m_debugShape = std::make_unique<RectangleRenderable>(*(dynamic_cast<RectangleRenderable*>(toCopy)));
+		m_debugShape->SetEnabled(IsShowingDebugShape());
 	}
 
 	bool AABBCollider::IsIntersecting(const Collider & rhs) const {
@@ -104,28 +104,29 @@ namespace LittleEngine {
 
 	AABBData AABBCollider::GetWorldAABB() const {
 		Vector2 displacement = GetActor().GetTransform().Position();
-		return AABBData(bounds.lowerBound + displacement, bounds.upperBound + displacement);
+		return AABBData(m_bounds.lowerBound + displacement, m_bounds.upperBound + displacement);
 	}
 
 	void AABBCollider::SetBounds(AABBData bounds) {
-		this->bounds = bounds;
+		this->m_bounds = bounds;
 		Vector2 size(bounds.lowerBound.x * 2, bounds.upperBound.y * 2);
-		auto debugRect = dynamic_cast<RectangleRenderable*>(debugShape.get());
+		auto debugRect = dynamic_cast<RectangleRenderable*>(m_debugShape.get());
 		debugRect->SetSize(size);
 	}
 
 	void AABBCollider::DrawDebugShape(bool bShow, const Fixed& thickness) {
-		debugShape->SetEnabled(bShow);
-		debugShape->SetBorder(thickness, Colour::Green);
+		m_debugShape->SetEnabled(bShow);
+		m_debugShape->SetBorder(thickness, Colour::Green);
 		std::string prefix = bShow ? "Drawing " : "Hiding ";
 		Logger::Log(*this, prefix + "debug collision rect on " + GetActor().GetName(), Logger::Severity::Debug);
 	}
 
-	void AABBCollider::Render(RenderParams params) {
-		if (debugShape->IsEnabled()) {
-			// Undo Actor's rotation (align with axes)
-			params.screenRotation = 0;
-			debugShape->Render(params);
+	void AABBCollider::Render(RenderParams& params) {
+		if (m_debugShape->IsEnabled()) {
+			// Reset rotation (align with axes) and scale
+			params.screenRotation = Fixed::Zero;
+			params.screenScale = Vector2::One;
+			m_debugShape->Render(params);
 		}
 	}
 
@@ -146,16 +147,16 @@ namespace LittleEngine {
 	}
 
 	CircleCollider::CircleCollider(Actor& actor) : Collider(actor, "CircleCollider") {
-		debugShape = std::make_unique<CircleRenderable>(circle.radius, Colour::Transparent);
-		debugShape->SetBorder(DEBUG_BORDER_WIDTH, Colour::Green);
-		debugShape->layer = LayerID::Collider;
-		debugShape->SetEnabled(IsShowingDebugShape());
+		m_debugShape = std::make_unique<CircleRenderable>(m_circle.radius, Colour::Transparent);
+		m_debugShape->SetBorder(DEBUG_BORDER_WIDTH, Colour::Green);
+		m_debugShape->m_layer = LayerID::Collider;
+		m_debugShape->SetEnabled(IsShowingDebugShape());
 	}
 
-	CircleCollider::CircleCollider(Actor& owner, const CircleCollider & prototype) : Collider(owner, prototype.name), circle(prototype.circle) {
-		ShapeRenderable* toCopy = prototype.debugShape.get();
-		debugShape = std::make_unique<CircleRenderable>(*(dynamic_cast<CircleRenderable*>(toCopy)));
-		debugShape->SetEnabled(IsShowingDebugShape());
+	CircleCollider::CircleCollider(Actor& owner, const CircleCollider & prototype) : Collider(owner, prototype.m_name), m_circle(prototype.m_circle) {
+		ShapeRenderable* toCopy = prototype.m_debugShape.get();
+		m_debugShape = std::make_unique<CircleRenderable>(*(dynamic_cast<CircleRenderable*>(toCopy)));
+		m_debugShape->SetEnabled(IsShowingDebugShape());
 	}
 
 	bool CircleCollider::IsIntersecting(const Collider & rhs) const {
@@ -163,18 +164,18 @@ namespace LittleEngine {
 	}
 
 	CircleData CircleCollider::GetWorldCircle() const {
-		return CircleData(circle.radius, GetActor().GetTransform().Position());
+		return CircleData(m_circle.radius, GetActor().GetTransform().Position());
 	}
 
 	void CircleCollider::SetCircle(Fixed radius) {
-		circle.radius = radius;
-		auto circleShape = dynamic_cast<CircleRenderable*>(debugShape.get());
+		m_circle.radius = radius;
+		auto circleShape = dynamic_cast<CircleRenderable*>(m_debugShape.get());
 		circleShape->SetRadius(radius);
 	}
 
 	void CircleCollider::DrawDebugShape(bool bShow, const Fixed& thickness) {
-		debugShape->SetEnabled(bShow);
-		debugShape->SetBorder(thickness, Colour::Green);
+		m_debugShape->SetEnabled(bShow);
+		m_debugShape->SetBorder(thickness, Colour::Green);
 		std::string prefix = bShow ? "Drawing " : "Hiding ";
 		Logger::Log(*this, prefix + "debug collision circle on " + GetActor().GetName(), Logger::Severity::Debug);
 	}
@@ -189,11 +190,11 @@ namespace LittleEngine {
 		return lhsCircle.IsIntersecting(rhsCircle);
 	}
 
-	void CircleCollider::Render(RenderParams params) {
-		if (debugShape->IsEnabled()) {
+	void CircleCollider::Render(RenderParams& params) {
+		if (m_debugShape->IsEnabled()) {
 			// Undo Actor's rotation (be pedantic)
 			params.screenRotation = 0;
-			debugShape->Render(params);
+			m_debugShape->Render(params);
 		}
 	}
 

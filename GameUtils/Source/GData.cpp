@@ -27,7 +27,7 @@ namespace GameUtils {
 			for (const auto& token : tokens) {
 				Strings::Pair<std::string> kvp = Strings::Bisect(token, ':');
 				if (!kvp.second.empty() && !kvp.first.empty()) {
-					fieldMap.emplace(kvp.first, kvp.second);
+					m_fieldMap.emplace(kvp.first, kvp.second);
 				}
 			}
 			return true;
@@ -39,10 +39,10 @@ namespace GameUtils {
 	std::string GData::Unmarshall() const {
 		std::string ret = "{";
 		size_t slice = 0;
-		for (const auto& kvp : fieldMap) {
+		for (const auto& kvp : m_fieldMap) {
 			std::string value = kvp.second;
-			auto space = kvp.second.find(' ');
-			if (space != std::string::npos) value = '\"' + value + '\"';
+			auto space = value.find(' ');
+			if (Strings::IsCharEnclosedIn(value, space, '\"')) value = '\"' + value + '\"';
 			ret += (kvp.first + ':' + value + ',');
 			slice = 1;
 		}
@@ -50,7 +50,7 @@ namespace GameUtils {
 	}
 
 	void GData::Clear() {
-		fieldMap.clear();
+		m_fieldMap.clear();
 	}
 
 	template<typename T>
@@ -63,28 +63,28 @@ namespace GameUtils {
 	}
 
 	std::string GData::GetString(const std::string & key, const std::string & defaultValue) const {
-		auto search = fieldMap.find(key);
-		if (search != fieldMap.end()) {
+		auto search = m_fieldMap.find(key);
+		if (search != m_fieldMap.end()) {
 			return search->second;
 		}
 		return defaultValue;
 	}
 
 	bool GData::GetBool(const std::string & key, bool defaultValue) const {
-		return Get<bool>(fieldMap, key, &Strings::ToBool, defaultValue);
+		return Get<bool>(m_fieldMap, key, &Strings::ToBool, defaultValue);
 	}
 
 	int GData::GetInt(const std::string & key, int defaultValue) const {
-		return Get<int>(fieldMap, key, &Strings::ToInt, defaultValue);
+		return Get<int>(m_fieldMap, key, &Strings::ToInt, defaultValue);
 	}
 
 	double GData::GetDouble(const std::string & key, double defaultValue) const {
-		return Get<double>(fieldMap, key, &Strings::ToDouble, defaultValue);
+		return Get<double>(m_fieldMap, key, &Strings::ToDouble, defaultValue);
 	}
 
 	GData GData::GetGData(const std::string & key) const {
-		auto search = fieldMap.find(key);
-		if (search != fieldMap.end()) {
+		auto search = m_fieldMap.find(key);
+		if (search != m_fieldMap.end()) {
 			return GData(search->second);
 		}
 		return GData();
@@ -92,11 +92,11 @@ namespace GameUtils {
 
 	std::vector<GData> GData::GetVectorGData(const std::string& key) const {
 		std::vector<GData> ret;
-		auto search = fieldMap.find(key);
-		if (search != fieldMap.end()) {
+		auto search = m_fieldMap.find(key);
+		if (search != m_fieldMap.end()) {
 			std::string value = search->second;
 			if (value.size() > 2) {
-				if (value[0] = '[' && value[value.size() - 1] == ']') {
+				if (value[0] == '[' && value[value.size() - 1] == ']') {
 					value = value.substr(1, value.size() - 2);
 					std::vector<std::string> gDatas = Strings::Tokenise(value, ',', gDataEscapes);
 					for (const auto& gData : gDatas) {
@@ -109,11 +109,11 @@ namespace GameUtils {
 	}
 
 	std::vector<std::string> GData::GetVector(const std::string& key) const {
-		auto search = fieldMap.find(key);
-		if (search != fieldMap.end()) {
+		auto search = m_fieldMap.find(key);
+		if (search != m_fieldMap.end()) {
 			std::string value = search->second;
 			if (value.size() > 2) {
-				if (value[0] = '[' && value[value.size() - 1] == ']') {
+				if (value[0] == '[' && value[value.size() - 1] == ']') {
 					value = value.substr(1, value.size() - 2);
 					return Strings::Tokenise(value, ',', { '\"' });
 				}
@@ -130,13 +130,13 @@ namespace GameUtils {
 	
 	bool GData::SetString(const std::string & key, const std::string & value) {
 		if (!key.empty() && !value.empty()) {
-			fieldMap[key] = value;
+			m_fieldMap[key] = value;
 			return true;
 		}
 		return false;
 	}
 
 	const int GData::NumFields() const {
-		return static_cast<int>(fieldMap.size());
+		return static_cast<int>(m_fieldMap.size());
 	}
 }

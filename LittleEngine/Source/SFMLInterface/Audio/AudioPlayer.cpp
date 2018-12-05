@@ -4,7 +4,7 @@
 
 namespace LittleEngine {
 	AudioPlayer::~AudioPlayer() {
-		Logger::Log(*this, name + " destroyed", Logger::Severity::Debug);
+		Logger::Log(*this, m_name + " destroyed", Logger::Severity::Debug);
 	}
 
 	AudioPlayer::AudioPlayer(const std::string & name) : Object(name) {
@@ -23,84 +23,84 @@ namespace LittleEngine {
 		}
 	}
 
-	SoundPlayer::SoundPlayer(SoundAsset* soundAsset) : AudioPlayer("SFXPlayer") {
-		if (soundAsset) SetSoundAsset(*soundAsset);
+	SoundPlayer::SoundPlayer(SoundAsset* pSoundAsset) : AudioPlayer("SFXPlayer") {
+		if (pSoundAsset) SetSoundAsset(*pSoundAsset);
 	}
 
 	SoundPlayer::~SoundPlayer() {
 		if (IsPlaying()) {
-			soundAsset->sfSound.stop();
+			m_pSoundAsset->m_sfSound.stop();
 		}
 	}
 
 	bool SoundPlayer::SetSoundAsset(SoundAsset& soundAsset) {
-		this->soundAsset = &soundAsset;
+		this->m_pSoundAsset = &soundAsset;
 		return true;
 	}
 
 	void SoundPlayer::SetDirection(const Fixed& direction) {
-		soundAsset->sfSound.setPosition(Maths::Clamp_11(-direction).ToFloat(), 0, 0);
+		m_pSoundAsset->m_sfSound.setPosition(Maths::Clamp_11(-direction).ToFloat(), 0, 0);
 	}
 
 	void SoundPlayer::Play() {
-		if (soundAsset) {
-			soundAsset->sfSound.setBuffer(soundAsset->sfSoundBuffer);
+		if (m_pSoundAsset) {
+			m_pSoundAsset->m_sfSound.setBuffer(m_pSoundAsset->m_sfSoundBuffer);
 			ApplyParams();
-			soundAsset->sfSound.play();
+			m_pSoundAsset->m_sfSound.play();
 		}
 	}
 
 	void SoundPlayer::Stop() {
-		if (soundAsset) {
-			soundAsset->sfSound.stop();
+		if (m_pSoundAsset) {
+			m_pSoundAsset->m_sfSound.stop();
 		}
 	}
 
 	void SoundPlayer::Reset(Fixed seconds) {
-		if (soundAsset) {
-			soundAsset->sfSound.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.ToDouble() * 1000)));
+		if (m_pSoundAsset) {
+			m_pSoundAsset->m_sfSound.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.ToDouble() * 1000)));
 		}
 	}
 
 	bool SoundPlayer::IsPlaying() const {
-		return soundAsset && soundAsset->sfSound.getStatus() == sf::SoundSource::Status::Playing;
+		return m_pSoundAsset && m_pSoundAsset->m_sfSound.getStatus() == sf::SoundSource::Status::Playing;
 	}
 
 	void SoundPlayer::Tick(Fixed deltaSeconds) {
-		status = soundAsset ? Convert(soundAsset->sfSound.getStatus()) : Status::NoMedia;
+		m_status = m_pSoundAsset ? Convert(m_pSoundAsset->m_sfSound.getStatus()) : Status::NoMedia;
 		ApplyParams();
 	}
 
 	bool SoundPlayer::ApplyParams() {
-		if (soundAsset) {
-			soundAsset->sfSound.setVolume(Maths::Clamp01(volume * soundAsset->volumeScale).ToFloat() * 100);
-			soundAsset->sfSound.setLoop(bLooping);
+		if (m_pSoundAsset) {
+			m_pSoundAsset->m_sfSound.setVolume(Maths::Clamp01(m_volume * m_pSoundAsset->m_volumeScale).ToFloat() * 100);
+			m_pSoundAsset->m_sfSound.setLoop(m_bLooping);
 			return true;
 		}
 		return false;
 	}
 
-	MusicPlayer::MusicPlayer(MusicAsset* musicAsset) : AudioPlayer("MusicPlayer") {
-		if (musicAsset) {
-			SetTrack(*musicAsset);
+	MusicPlayer::MusicPlayer(MusicAsset* pMusicAsset) : AudioPlayer("MusicPlayer") {
+		if (pMusicAsset) {
+			SetTrack(*pMusicAsset);
 		}
 	}
 
 	MusicPlayer::~MusicPlayer() {
 		if (IsPlaying()) {
-			mainTrack->music.stop();
+			m_pMainTrack->m_sfMusic.stop();
 		}
 	}
 
 	bool MusicPlayer::SetTrack(MusicAsset& musicAsset) {
-		this->mainTrack = &musicAsset;
+		this->m_pMainTrack = &musicAsset;
 		return true;
 	}
 
 	Fixed MusicPlayer::GetDurationSeconds() const {
-		if (mainTrack && mainTrack->valid) {
-			if (!bLooping) {
-				return mainTrack->GetDurationSeconds();
+		if (m_pMainTrack && m_pMainTrack->m_bValid) {
+			if (!m_bLooping) {
+				return m_pMainTrack->GetDurationSeconds();
 			}
 			else {
 				return -Fixed::One;
@@ -111,85 +111,85 @@ namespace LittleEngine {
 
 	Fixed MusicPlayer::GetElapsedSeconds() const {
 		if (IsPlaying()) {
-			return Fixed(clock.GetElapsedMilliSeconds(), 1000);
+			return Fixed(m_clock.GetElapsedMilliSeconds(), 1000);
 		}
 		return Fixed::Zero;
 	}
 
 	bool MusicPlayer::IsFading() const {
-		return bFadingIn || bFadingOut;
+		return m_bFadingIn || m_bFadingOut;
 	}
 
 	void MusicPlayer::FadeIn(const Fixed & timeSeconds, const Fixed & targetVolume) {
-		bFadingOut = false;
-		bFadingIn = true;
-		fadeSeconds = timeSeconds;
-		this->targetVolume = Maths::Clamp01(targetVolume);
+		m_bFadingOut = false;
+		m_bFadingIn = true;
+		m_fadeSeconds = timeSeconds;
+		this->m_targetVolume = Maths::Clamp01(targetVolume);
 		BeginFade();
 	}
 
 	void MusicPlayer::FadeOut(const Fixed & timeSeconds, const Fixed & targetVolume) {
-		bFadingIn = false;
-		bFadingOut = true;
-		fadeSeconds = timeSeconds;
-		this->targetVolume = Maths::Clamp01(targetVolume);
+		m_bFadingIn = false;
+		m_bFadingOut = true;
+		m_fadeSeconds = timeSeconds;
+		this->m_targetVolume = Maths::Clamp01(targetVolume);
 		BeginFade();
 	}
 
 	void MusicPlayer::EndFade() {
-		volume = targetVolume;
-		if (bFadingOut) {
+		m_volume = m_targetVolume;
+		if (m_bFadingOut) {
 			Stop();
-			mainTrack = nullptr;
+			m_pMainTrack = nullptr;
 		}
-		bFadingIn = bFadingOut = false;
+		m_bFadingIn = m_bFadingOut = false;
 	}
 
 	void MusicPlayer::Play() {
-		if (mainTrack && mainTrack->valid) {
-			clock.Restart();
+		if (m_pMainTrack && m_pMainTrack->m_bValid) {
+			m_clock.Restart();
 			ApplyParams();
-			mainTrack->music.play();
+			m_pMainTrack->m_sfMusic.play();
 		}
 	}
 
 	void MusicPlayer::Stop() {
-		if (mainTrack) {
-			mainTrack->music.stop();
+		if (m_pMainTrack) {
+			m_pMainTrack->m_sfMusic.stop();
 		}
 	}
 
 	void MusicPlayer::Reset(Fixed seconds) {
-		if (mainTrack) {
-			clock.Restart();
-			mainTrack->music.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.ToDouble() * 1000)));
+		if (m_pMainTrack) {
+			m_clock.Restart();
+			m_pMainTrack->m_sfMusic.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.ToDouble() * 1000)));
 		}
 	}
 
 	bool MusicPlayer::IsPlaying() const {
-		return mainTrack &&  mainTrack->music.getStatus() == sf::SoundSource::Status::Playing;
+		return m_pMainTrack &&  m_pMainTrack->m_sfMusic.getStatus() == sf::SoundSource::Status::Playing;
 	}
 
 	void MusicPlayer::Tick(Fixed deltaSeconds) {
-		status = mainTrack ? Convert(mainTrack->music.getStatus()) : Status::NoMedia;
+		m_status = m_pMainTrack ? Convert(m_pMainTrack->m_sfMusic.getStatus()) : Status::NoMedia;
 		
 		// Process Fade
 		if (IsFading()) {
-			this->elapsedSeconds += deltaSeconds;
+			this->m_elapsedSeconds += deltaSeconds;
 
-			if (this->elapsedSeconds >= fadeSeconds) {
+			if (this->m_elapsedSeconds >= m_fadeSeconds) {
 				EndFade();
 			}
 
 			else {
-				Fixed ratio = Maths::Clamp01(elapsedSeconds / fadeSeconds);
-				if (bFadingIn) {
-					volume = (targetVolume - startVolume) * ratio;
+				Fixed ratio = Maths::Clamp01(m_elapsedSeconds / m_fadeSeconds);
+				if (m_bFadingIn) {
+					m_volume = (m_targetVolume - m_startVolume) * ratio;
 				}
 				else {
-					volume = startVolume * (Fixed::One - ratio);
+					m_volume = m_startVolume * (Fixed::One - ratio);
 				}
-				Logger::Log(*this, "Fading! Volume: " + volume.ToString(), Logger::Severity::HOT);
+				Logger::Log(*this, "Fading! Volume: " + m_volume.ToString(), Logger::Severity::HOT);
 			}
 		}
 		ApplyParams();
@@ -197,17 +197,17 @@ namespace LittleEngine {
 
 	void MusicPlayer::BeginFade() {
 		if (!IsPlaying()) {
-			volume = Fixed(1, 100);
+			m_volume = Fixed(1, 100);
 			Play();
 		}
-		startVolume = volume;
-		elapsedSeconds = Fixed::Zero;
+		m_startVolume = m_volume;
+		m_elapsedSeconds = Fixed::Zero;
 	}
 
 	bool MusicPlayer::ApplyParams() {
-		if (mainTrack) {
-			mainTrack->music.setVolume(Maths::Clamp01(volume * mainTrack->volumeScale).ToFloat() * 100);
-			mainTrack->music.setLoop(bLooping);
+		if (m_pMainTrack) {
+			m_pMainTrack->m_sfMusic.setVolume(Maths::Clamp01(m_volume * m_pMainTrack->m_volumeScale).ToFloat() * 100);
+			m_pMainTrack->m_sfMusic.setLoop(m_bLooping);
 			return true;
 		}
 		return false;

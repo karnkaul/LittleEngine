@@ -5,14 +5,16 @@ namespace GameUtils {
 	// \brief 2D geometric vector using Fixed
 	struct Vector2 {
 	public:
+		static const Vector2 Zero;
+		static const Vector2 One;
+
+		static Vector2 ToOrientation(Fixed degrees);
+
+	public:
 		Fixed x;
 		Fixed y;
 
-		static const Vector2 Zero;
-		static const Vector2 One;
-		
-		static Vector2 ToOrientation(Fixed degrees);
-
+	public:
 		Vector2() : x(0), y(0) {}
 		Vector2(Fixed x, Fixed y) : x(x), y(y) {}
 		Vector2(const Vector2& other) = default;
@@ -33,8 +35,6 @@ namespace GameUtils {
 		double SqrMagnitude() const;
 
 		std::string ToString() const;
-
-	private:
 	};
 
 	std::ostream& operator<<(std::ostream& out, Vector2& vector2);

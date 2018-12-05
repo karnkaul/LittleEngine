@@ -9,11 +9,11 @@ namespace LittleEngine {
 	}
 	TextData::TextData(FontAsset& font, const std::string & text, Fixed pixelSize, Colour fillColour) : TextData(font, text, pixelSize, fillColour, 0, Colour::Black) {
 	}
-	TextData::TextData(FontAsset& font, const std::string & text, Fixed pixelSize, Colour fillColour, Fixed outlineSize, Colour outlineColour) : font(&font), text(text), pixelSize(pixelSize), fillColour(fillColour), outlineSize(outlineSize), outlineColour(outlineColour) {
+	TextData::TextData(FontAsset& font, const std::string & text, Fixed pixelSize, Colour fillColour, Fixed outlineSize, Colour outlineColour) : text(text), pixelSize(pixelSize), outlineSize(outlineSize), fillColour(fillColour),  outlineColour(outlineColour), pFont(&font) {
 	}
 
 	void TextData::SetFont(FontAsset& font) {
-		this->font = &font;
+		this->pFont = &font;
 	}
 
 	float TextData::GetNAlignmentHorz() const {
@@ -40,40 +40,37 @@ namespace LittleEngine {
 		}
 	}
 
-	TextRenderable::TextRenderable(const TextData & data) : Renderable("TextRenderable"), data(data) 
-	{}
-
-	TextRenderable::TextRenderable(const TextRenderable & prototype) : Renderable(prototype.name), data(prototype.data) {
-	}
+	TextRenderable::TextRenderable(const TextData & data) : Renderable("TextRenderable"), m_data(data) {}
+	TextRenderable::TextRenderable(const TextRenderable & prototype) : Renderable(prototype.m_name), m_data(prototype.m_data) {}
 
 	std::unique_ptr<Renderable> TextRenderable::UClone() const {
 		return std::make_unique<TextRenderable>(*this);
 	}
 
 	void TextRenderable::ApplyData() {
-		text.setString(data.text);
-		text.setFont(data.font->sfFont);
-		text.setFillColor(Convert(data.fillColour));
-		text.setOutlineColor(Convert(data.outlineColour));
-		text.setOutlineThickness(data.outlineSize.Abs().ToFloat());
-		text.setCharacterSize(data.pixelSize.Abs().ToInt());
-		sf::FloatRect textRect = text.getLocalBounds();
-		text.setOrigin(sf::Vector2f(
-			textRect.width * data.GetNAlignmentHorz(),
-			textRect.height * data.GetNAlignmentVert())
+		m_sfText.setString(m_data.text);
+		m_sfText.setFont(m_data.pFont->m_sfFont);
+		m_sfText.setFillColor(Convert(m_data.fillColour));
+		m_sfText.setOutlineColor(Convert(m_data.outlineColour));
+		m_sfText.setOutlineThickness(m_data.outlineSize.Abs().ToFloat());
+		m_sfText.setCharacterSize(m_data.pixelSize.Abs().ToInt());
+		sf::FloatRect textRect = m_sfText.getLocalBounds();
+		m_sfText.setOrigin(sf::Vector2f(
+			textRect.width * m_data.GetNAlignmentHorz(),
+			textRect.height * m_data.GetNAlignmentVert())
 		);
 	}
 
 	void TextRenderable::SetPosition(const Vector2& screenPosition) {
-		text.setPosition(Convert(screenPosition));
+		m_sfText.setPosition(Convert(screenPosition));
 	}
 
 	void TextRenderable::SetRotation(const Fixed& screenRotation) {
-		text.setRotation(screenRotation.ToFloat());
+		m_sfText.setRotation(screenRotation.ToFloat());
 	}
 
 	void TextRenderable::SetScale(const Vector2 & screenScale) {
-		text.setScale(Convert(screenScale));
+		m_sfText.setScale(Convert(screenScale));
 	}
 
 	void TextRenderable::RenderInternal(RenderParams & params) {
@@ -81,11 +78,11 @@ namespace LittleEngine {
 		SetPosition(params.screenPosition);
 		SetRotation(params.screenRotation);
 		SetScale(params.screenScale);
-		params.GetWindowController().Push(Drawable(text, layer));
+		params.GetWindowController().Push(Drawable(m_sfText, m_layer));
 	}
 
 	Rect2 TextRenderable::GetBounds() const {
-		sf::FloatRect bounds = text.getLocalBounds();
+		sf::FloatRect bounds = m_sfText.getLocalBounds();
 		Fixed width(bounds.width);
 		Fixed height(bounds.height);
 		return Rect2(
@@ -95,16 +92,16 @@ namespace LittleEngine {
 	}
 
 	TextData& TextRenderable::GetTextData() {
-		return data;
+		return m_data;
 	}
 
 	TextRenderable& TextRenderable::SetSize(const Fixed& pixelSize) {
-		data.pixelSize = pixelSize;
+		m_data.pixelSize = pixelSize;
 		return *this;
 	}
 
 	TextRenderable& TextRenderable::SetColour(const Colour& colour) {
-		data.fillColour = colour;
+		m_data.fillColour = colour;
 		return *this;
 	}
 }

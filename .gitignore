@@ -1,6 +1,6 @@
 **/.vs/*
-**/Debug/*
-**/Release/*
+**/_Build/*
+**/_Intermediate/*
 **/*.exe
 **/*.lib
 **/*.pdb

@@ -6,7 +6,7 @@
 
 namespace LittleEngine {
 	void Player::InitPlayer(Level& level, TextureAsset& mainTexture, const AABBData& colliderBounds) {
-		this->level = &level;
+		this->m_pLevel = &level;
 
 		AddComponent<ControllerComponent>();
 

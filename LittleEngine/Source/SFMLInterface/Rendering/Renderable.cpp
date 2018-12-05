@@ -15,30 +15,30 @@ namespace LittleEngine {
 	const Colour Colour::Cyan(0, 255, 255);
 	const Colour Colour::Transparent(0, 0, 0, 0);
 
-	Renderable::Renderable(std::string name, bool bSilent) : Object(name), bSilent(bSilent) {
+	Renderable::Renderable(std::string name, bool bSilent) : Object(name), m_bSilent(bSilent) {
 		if (!bSilent) Logger::Log(*this, name + " created", Logger::Severity::Debug);
 	}
 
-	Renderable::Renderable(const Renderable& prototype, bool bSilent) : Object(prototype.name + "_clone"), layer(prototype.layer) {
-		if (!bSilent) Logger::Log(*this, name + " cloned", Logger::Severity::Debug);
+	Renderable::Renderable(const Renderable& prototype, bool bSilent) : Object(prototype.m_name + "_clone"), m_layer(prototype.m_layer) {
+		if (!bSilent) Logger::Log(*this, m_name + " cloned", Logger::Severity::Debug);
 	}
 
 	Renderable::~Renderable() {
-		if (!bSilent) Logger::Log(*this, name + " destroyed", Logger::Severity::Debug);
+		if (!m_bSilent) Logger::Log(*this, m_name + " destroyed", Logger::Severity::Debug);
 	}
 
 	void Renderable::Render(RenderParams & params) {
-		if (bIsEnabled) {
+		if (m_bIsEnabled) {
 			RenderInternal(params);
 		}
 	}
 
 	bool Renderable::IsEnabled() const {
-		return bIsEnabled;
+		return m_bIsEnabled;
 	}
 
 	void Renderable::SetEnabled(bool enabled) {
-		bIsEnabled = enabled;
+		m_bIsEnabled = enabled;
 	}
 
 	sf::Vector2f Renderable::Convert(const Vector2& vector) {

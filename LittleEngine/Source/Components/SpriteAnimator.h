@@ -6,31 +6,29 @@
 namespace LittleEngine {
 	// \brief Swaps textures on a SpriteRenderable over a set period of time
 	class SpriteAnimator final : public Component {
+	private:
+		std::unique_ptr<SpriteRenderable> m_uSprite;
+		std::vector<TextureAsset*> m_sprites;
+		size_t m_index = 0;
+		Fixed m_elapsed = Fixed::Zero;
+		Fixed m_animTime = Fixed::Zero;
+		bool m_bAnimating = false;
 	public:
-		bool bLooping = false;
+		bool m_bLooping = false;
 
 		SpriteAnimator(Actor& actor);
 		SpriteAnimator(Actor& owner, const SpriteAnimator& prototype);
 
+		void SetSprite(TextureAsset& texture);
 		void SetSpriteSheet(const AssetPaths& spriteSheet, const Fixed& animTime, bool bStartAnim = true);
 		void Start();
 		void Stop();
 		void Reset();
-		bool IsAnimating() const { return bAnimating; }
+		bool IsAnimating() const { return m_bAnimating; }
 		void SetLayer(LayerInfo layer);
 
 		virtual void Tick(Fixed deltaTime) override;
-		virtual void Render(RenderParams params) override;
+		virtual void Render(RenderParams& params) override;
 		virtual Component::Ptr UClone(Actor& owner) const override;
-
-	private:
-		std::unique_ptr<SpriteRenderable> sprite = nullptr;
-		std::vector<TextureAsset*> sprites;
-		size_t index = 0;
-		Fixed elapsed = Fixed::Zero;
-		Fixed animTime = Fixed::Zero;
-		bool bAnimating = false;
-
-		void SetSprite(TextureAsset& texture);
 	};
 }

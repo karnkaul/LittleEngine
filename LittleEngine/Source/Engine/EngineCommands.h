@@ -17,12 +17,12 @@ namespace LittleEngine {
 
 	// \brief Will invoke LevelManager::LoadLevel(levelID) when called
 	class LoadLevelCommand : public EngineCommand {
+	private:
+		LevelID m_levelID;
+		LevelManager* m_pLevelManager;
+
 	public:
 		LoadLevelCommand(LevelManager& levelManager, const LevelID& levelID);
-		virtual bool operator()() override;
-	
-	private:
-		LevelManager* levelManager;
-		LevelID levelID;
+		virtual bool operator()() override;	
 	};
 }

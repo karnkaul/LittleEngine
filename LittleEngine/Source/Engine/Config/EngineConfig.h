@@ -12,6 +12,10 @@ namespace LittleEngine {
 	
 	// \brief Wrapper to maintain properties saved to / loaded from config.ini
 	class EngineConfig {
+	private:
+		GData m_data;
+		bool m_bDirty = false;
+
 	public:
 		EngineConfig();
 
@@ -31,9 +35,6 @@ namespace LittleEngine {
 		bool SetColliderBorderWidth(const Fixed& shapeWidth);
 
 	private:
-		GData data;
-		bool _dirty = false;
-
 		void Verify();
 	};
 }

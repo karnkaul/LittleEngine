@@ -5,11 +5,11 @@
 #include "SFMLInterface/Rendering/RenderParams.h"
 
 namespace LittleEngine {
-	Component::Component(Actor& actor, const std::string& name) : Object(name), actor(&actor) {
+	Component::Component(Actor& actor, const std::string& name) : Object(name), m_pActor(&actor) {
 		Logger::Log(*this, ToString() + " created");
 	}
 
-	Component::Component(Actor& owner, const Component& prototype) : Object(prototype.name + "_clone"), actor(&owner) {
+	Component::Component(Actor& owner, const Component& prototype) : Object(prototype.m_name + "_clone"), m_pActor(&owner) {
 		Logger::Log(*this, ToString() + " cloned");
 	}
 
@@ -23,11 +23,11 @@ namespace LittleEngine {
 	void Component::FixedTick() {
 	}
 
-	void Component::Render(RenderParams params) {
+	void Component::Render(RenderParams& params) {
 	}
 
 	Actor& Component::GetActor() const {
-		return *actor;
+		return *m_pActor;
 	}
 
 	Component::Ptr Component::UClone(Actor& owner) const {
@@ -35,6 +35,6 @@ namespace LittleEngine {
 	}
 
 	std::string Component::ToString() const {
-		return "[" + actor->GetName() + ":" + GetName() + "]";
+		return "[" + m_pActor->GetName() + ":" + GetName() + "]";
 	}
 }

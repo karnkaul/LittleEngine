@@ -22,7 +22,6 @@ namespace LittleEngine {
 		std::vector<SoundAsset*> soundAssets;
 		Fixed sfxVol = Fixed(8, 10);
 		SoundPlayer* sfxPlayer = nullptr;
-		bool bInit = false;
 		bool bPlaying = false;
 	};
 }

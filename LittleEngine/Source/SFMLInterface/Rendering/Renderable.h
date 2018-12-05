@@ -11,8 +11,12 @@ namespace LittleEngine {
 	// \brief Base class for all SFML Rendering
 	class Renderable : public Object {
 	public:
-		LayerInfo layer;
+		LayerInfo m_layer;
+	private:
+		bool m_bIsEnabled = true;
+		bool m_bSilent;
 
+	public:
 		Renderable(std::string name, bool bSilent = false);
 		Renderable(const Renderable& prototype, bool bSilent = false);
 		virtual ~Renderable();
@@ -38,9 +42,6 @@ namespace LittleEngine {
 		Colour Convert(const sf::Color& colour);
 
 	private:
-		bool bIsEnabled = true;
-		bool bSilent;
-
 		Renderable& operator=(const Renderable&) = delete;
 	};
 }

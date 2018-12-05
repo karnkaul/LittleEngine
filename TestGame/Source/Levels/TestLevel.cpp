@@ -56,7 +56,7 @@ namespace LittleEngine {
 				if (pActor2) {
 					_actor2ID = pActor2->GetActorID();
 					auto rc0 = pActor2->AddComponent<RenderComponent>();
-					auto& r0 = rc0->SetCircleRenderable(ShapeData(Vector2(100, 0), Colour::Yellow));
+					rc0->SetCircleRenderable(ShapeData(Vector2(100, 0), Colour::Yellow));
 					auto t0 = pActor2->AddCollider<CircleCollider>();
 					t0->SetCircle(100);
 				}
@@ -81,47 +81,12 @@ namespace LittleEngine {
 		ParticleSystem* _pParticlesTest = nullptr;
 		bool bContinuous = true;
 		void OnSelectPressed() {
-			//Vector2 normalisedPosition = Vector2(Maths::Random::Range(Fixed(-1), Fixed(1)), Maths::Random::Range(Fixed(-1), Fixed(1)));
-			//Vector2 position = level->GetWorld().NormalisedToWorldPoint(normalisedPosition);
-			//auto v = Spawner::VFXExplode(position);
-			//v->Play();
-			//if (_textActor) {
-			//	if (!_cloneTest) {
-			//		_cloneTest = level->CloneActor<Actor>(*_textActor);
-			//		if (_cloneTest) {
-			//			_cloneTest->GetTransform().localPosition = Vector2::Zero;
-			//		}
-			//	}
-			//	else {
-			//		_cloneTest->Destruct();
-			//		_cloneTest = nullptr;
-			//	}
-			//}
-
-			if (!_pParticlesTest) {
-				GameUtils::FileRW reader("Assets/VFX/Fire0/Fire0.psm");
-				GameUtils::GData psGData(reader.ReadAll(true));
-				ParticleSystemData psData(*pLevel, psGData);
-
-				_pParticlesTest = pLevel->SpawnActor<ParticleSystem>("ExplodePS", true);
-				_pParticlesTest->InitParticleSystem(std::move(psData));
-			}
 			if (_pParticlesTest->IsPlaying()) _pParticlesTest->Stop();
 			else {
 				_pParticlesTest->ToggleActive(true);
 				_pParticlesTest->SetNormalisedPosition(GameUtils::Vector2(Maths::Random::Range(-Fixed::One, Fixed::One), Maths::Random::Range(-Fixed::One, Fixed::One)));
 				_pParticlesTest->Start();
 			}
-
-			/*if (ParticleSystemTests::EmitterExists()) {
-				ParticleSystemTests::Destroy();
-			}
-			else {
-				TextureAsset* t0 = level->GetAssetManager().Load<TextureAsset>("VFX/Fire0/02.png");
-				TextureAsset* t1 = level->GetAssetManager().Load<TextureAsset>("VFX/Fire0/01.png");
-				TextureAsset* t2 = level->GetAssetManager().Load<TextureAsset>("VFX/Fire0/00.png");
-				ParticleSystemTests::Create(level->GetWorld(), *t0, t1, t2);
-			}*/
 		}
 
 		void UpdateTests(const Fixed& deltaTime) {
@@ -149,7 +114,7 @@ namespace LittleEngine {
 
 	void TestLevel::LoadAssets() {
 		Logger::Log(*this, "Loading Assets...", Logger::Severity::Debug);
-		engine->GetAssetManager().LoadAll(AssetManifestData("AssetManifests/TestLevel.amf").GetManifest());
+		m_pEngine->GetAssetManager().LoadAll(AssetManifestData("AssetManifests/TestLevel.amf").GetManifest());
 	}
 
 	void TestLevel::Tick(Fixed deltaTime) {
@@ -172,7 +137,7 @@ namespace LittleEngine {
 			actor1->SetNormalisedPosition(Vector2(0, Fixed(0.9f)));
 			auto rc = actor1->AddComponent<RenderComponent>();
 			auto& tr = rc->SetTextRenderable("Hello World!");
-			tr.layer = LayerID::UI;
+			tr.m_layer = LayerID::UI;
 			tr.SetColour(Colour(200, 150, 50)).SetSize(50);
 			//_TestLevel::_textActor = actor1;
 		}
@@ -183,8 +148,6 @@ namespace LittleEngine {
 			player->InitPlayer(*this, *texture, AABBData(40, 40));
 			player->GetTransform().localPosition = Vector2(-200, -300);
 		}
-		//Player& player = GetOrSpawnPlayer("Ship.png", AABBData(40, 40), Vector2(-200, -300));
-		//Player* player = SpawnActor<Player>()
 		_TestLevel::_pTextActor = player;
 
 		RegisterScopedInput(GameInput::Return, std::bind(&TestLevel::OnQuitPressed, this), OnKey::Released);
@@ -193,7 +156,7 @@ namespace LittleEngine {
 		RegisterScopedInput(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
 		RegisterScopedInput(GameInput::Select, &_TestLevel::OnSelectPressed, OnKey::Released);
 
-		FileRW reader("Assets/VFX/Fire0/Fire0_loop.psdata");
+		FileRW reader("Assets/VFX/Fire0/Fire0_noloop.psdata");
 		GData psGData(reader.ReadAll(true));
 		ParticleSystemData psData(*this, psGData);
 
@@ -219,7 +182,7 @@ namespace LittleEngine {
 	}
 
 	void TestLevel::PostRender(const RenderParams& params) {
-		if (clock.GetElapsedMilliSeconds() > 2000 && !_TestLevel::bSoundPlayed) {
+		if (m_clock.GetElapsedMilliSeconds() > 2000 && !_TestLevel::bSoundPlayed) {
 			_TestLevel::bSoundPlayed = true;
 			GetAudioManager().PlaySFX("TestSound.wav", Fixed(2, 10));
 		}	
@@ -240,6 +203,6 @@ namespace LittleEngine {
 	}
 
 	void TestLevel::OnQuitPressed() {
-		LoadLevel(engine->GetActiveLevelID() - 1);
+		LoadLevel(m_pEngine->GetActiveLevelID() - 1);
 	}
 }

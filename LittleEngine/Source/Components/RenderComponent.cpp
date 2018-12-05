@@ -15,23 +15,23 @@ namespace LittleEngine {
 	}
 
 	RenderComponent::RenderComponent(Actor& owner, const RenderComponent & prototype) : Component(owner, prototype) {
-		uRenderable = prototype.uRenderable->UClone();
+		m_uRenderable = prototype.m_uRenderable->UClone();
 	}
 
 	LayerInfo RenderComponent::GetLayer() const {
-		return uRenderable->layer;
+		return m_uRenderable->m_layer;
 	}
 
 	void RenderComponent::SetLayer(const LayerInfo& layer) {
-		uRenderable->layer = layer;
+		m_uRenderable->m_layer = layer;
 	}
 
-	void RenderComponent::SetRenderable(std::unique_ptr<Renderable> renderable) {
-		this->uRenderable = std::move(renderable);
+	void RenderComponent::SetRenderable(std::unique_ptr<Renderable> uRenderable) {
+		this->m_uRenderable = std::move(uRenderable);
 	}
 
 	Rect2 RenderComponent::GetBounds() const {
-		return uRenderable == nullptr ? Rect2(Vector2::Zero, Vector2::Zero) : uRenderable->GetBounds();
+		return m_uRenderable == nullptr ? Rect2(Vector2::Zero, Vector2::Zero) : m_uRenderable->GetBounds();
 	}
 
 	CircleRenderable & RenderComponent::SetCircleRenderable(const ShapeData & shapeData) {
@@ -53,24 +53,24 @@ namespace LittleEngine {
 		TextureAsset* texture = GetActor().GetActiveLevel().GetAssetManager().Load<TextureAsset>(texturePath);
 		SpriteData spriteData(*texture);
 		SetRenderable(std::make_unique<SpriteRenderable>(spriteData));
-		return *dynamic_cast<SpriteRenderable*>(uRenderable.get());
+		return *dynamic_cast<SpriteRenderable*>(m_uRenderable.get());
 	}
 
 	SpriteRenderable & RenderComponent::SetSpriteRenderable(TextureAsset & texture) {
 		SpriteData spriteData(texture);
 		SetRenderable(std::make_unique<SpriteRenderable>(spriteData));
-		return dynamic_cast<SpriteRenderable&>(*uRenderable);
+		return dynamic_cast<SpriteRenderable&>(*m_uRenderable);
 	}
 
 	TextRenderable& RenderComponent::SetTextRenderable(const std::string & text) {
 		FontAsset* font = GetActor().GetActiveLevel().GetAssetManager().GetDefaultFont();
 		TextData textData(*font, text);
 		SetRenderable(std::make_unique<TextRenderable>(textData));
-		return *dynamic_cast<TextRenderable*>(uRenderable.get());
+		return *dynamic_cast<TextRenderable*>(m_uRenderable.get());
 	}
 
-	void RenderComponent::Render(RenderParams params) {
-		uRenderable->Render(params);
+	void RenderComponent::Render(RenderParams& params) {
+		m_uRenderable->Render(params);
 	}
 
 	Component::Ptr RenderComponent::UClone(Actor& owner) const {

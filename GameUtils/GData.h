@@ -5,6 +5,9 @@
 namespace GameUtils {
 	// \brief Pseudo-JSON serialisable data container
 	class GData {
+	private:
+		std::unordered_map<std::string, std::string> m_fieldMap;
+
 	public:
 		GData() = default;
 		// Pass serialised data to marhshall and load fields
@@ -34,8 +37,5 @@ namespace GameUtils {
 		bool SetString(const std::string& key, const std::string& value);
 
 		const int NumFields() const;
-
-	private:
-		std::unordered_map<std::string, std::string> fieldMap;
 	};
 }

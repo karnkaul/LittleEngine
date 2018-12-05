@@ -7,6 +7,26 @@ namespace LittleEngine {
 
 	// \brief Handler for all SFX and Music playback
 	class AudioManager final : public Object {
+	private:
+		// \brief Helper to store next track until current has faded out
+		struct SwitchTrackRequest {
+			Fixed fadeSeconds;
+			Fixed targetVolume;
+			MusicAsset* newTrack;
+			bool bFadingOldTrack = false;
+			bool bFadingNewTrack = false;
+
+			SwitchTrackRequest(MusicAsset& newTrack, const Fixed& fadeSeconds, const Fixed& targetVolume) : fadeSeconds(fadeSeconds), targetVolume(targetVolume), newTrack(&newTrack) {}
+		};
+
+	private:
+		MusicPlayer m_musicPlayerA;
+		MusicPlayer m_musicPlayerB;
+		std::vector<std::unique_ptr<SoundPlayer>> m_sfxPlayers;
+		std::unique_ptr<SwitchTrackRequest> m_uSwitchTrackRequest = nullptr;
+		Engine* m_pEngine;
+		bool m_bSideA = true;
+
 	public:
 		using Fixed = GameUtils::Fixed;
 
@@ -29,26 +49,6 @@ namespace LittleEngine {
 		void Clear(bool bImmediate = true);
 
 	private:
-		friend class Engine;
-
-		// \brief Helper to store next track until current has faded out
-		struct SwitchTrackRequest {
-			MusicAsset* newTrack = nullptr;
-			Fixed fadeSeconds = Fixed::Zero;
-			Fixed targetVolume = Fixed::Zero;
-			bool bFadingOldTrack = false;
-			bool bFadingNewTrack = false;
-
-			SwitchTrackRequest(MusicAsset& newTrack, const Fixed& fadeSeconds, const Fixed& targetVolume);
-		};
-
-		std::vector<std::unique_ptr<SoundPlayer>> sfxPlayers;
-		std::unique_ptr<SwitchTrackRequest> switchTrackRequest = nullptr;
-		MusicPlayer musicPlayerA;
-		MusicPlayer musicPlayerB;
-		bool bSideA = true;
-		Engine* engine;
-
 		AssetManager& GetAssetManager();
 		SoundPlayer& GetOrCreateSFXPlayer();
 		MusicPlayer& GetActivePlayer();
@@ -58,5 +58,7 @@ namespace LittleEngine {
 
 		// Engine to call
 		void Tick(Fixed deltaTime);
+
+		friend class Engine;
 	};
 }

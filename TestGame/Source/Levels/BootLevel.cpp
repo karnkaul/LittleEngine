@@ -5,11 +5,11 @@ namespace LittleEngine {
 	void BootLevel::OnActivated() {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 		
-		Vector2 lowerBound = this->engine->GetWorld().GetScreenBounds().lower;
+		//Vector2 lowerBound = this->engine->GetWorld().GetScreenBounds().lower;
 		if (Actor* logo = SpawnActor<Actor>("Logo", true)) {
-			logoID = logo->GetActorID();
+			m_logoID = logo->GetActorID();
 			auto renderer = logo->AddComponent<RenderComponent>();
-			logoRenderer = &renderer->SetTextRenderable("... Press Enter to Start ...");
+			m_pLogoRenderable = &renderer->SetTextRenderable("... Press Enter to Start ...");
 			logo->SetNormalisedPosition(Vector2(0, Fixed(-0.66f)));
 		}
 
@@ -21,12 +21,12 @@ namespace LittleEngine {
 
 	void BootLevel::Tick(Fixed deltaTime) {
 		// Fade logo
-		if (IsAlive(logoID)) {
+		if (IsAlive(m_logoID)) {
 			Fixed seconds = Fixed(static_cast<int>(LevelTimeMilliSeconds()), 1000);
 			Fixed speed = 2;
 			Fixed alpha = (seconds * speed).Sin().Abs() * 255;
-			Colour c = logoRenderer->GetTextData().fillColour;
-			logoRenderer->GetTextData().fillColour = Colour(c.r, c.g, c.g, UByte(alpha.ToInt()));
+			Colour c = m_pLogoRenderable->GetTextData().fillColour;
+			m_pLogoRenderable->GetTextData().fillColour = Colour(c.r, c.g, c.g, UByte(alpha.ToInt()));
 		}
 
 		// Tick all actors etc

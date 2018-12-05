@@ -14,7 +14,7 @@ namespace LittleEngine {
 		SetLayerID(static_cast<int>(layerID));
 	}
 
-	int LayerInfo::GetLayerID() {
+	int LayerInfo::GetLayerID() const {
 		return layerID;
 	}
 
@@ -32,9 +32,9 @@ namespace LittleEngine {
 		vec.push_back(drawable);
 	}
 
-	void WindowController::Buffer::ForEach(std::function<void(std::vector<Drawable>)> Callback) const {
+	void WindowController::Buffer::ForEach(std::function<void(std::vector<Drawable>&)> Callback) {
 		for (int i = 0; i <= MAX_LAYERID; ++i) {
-			std::vector<Drawable> vec = buffer[i];
+			std::vector<Drawable>& vec = buffer[i];
 			if (!vec.empty()) {
 				Callback(vec);
 			}
@@ -48,8 +48,8 @@ namespace LittleEngine {
 	}
 
 	WindowController::WindowController(int screenWidth, int screenHeight, const std::string& windowTitle) {
-		window = std::make_unique<sf::RenderWindow>(sf::VideoMode(screenWidth, screenHeight), windowTitle);
-		_bFocus = true;
+		m_uWindow = std::make_unique<sf::RenderWindow>(sf::VideoMode(screenWidth, screenHeight), windowTitle);
+		m_bFocus = true;
 	}
 
 	WindowController::~WindowController() {
@@ -57,42 +57,45 @@ namespace LittleEngine {
 	}
 
 	bool WindowController::IsWindowOpen() const {
-		return window->isOpen();
+		return m_uWindow->isOpen();
 	}
 
 	bool WindowController::IsWindowFocussed() const {
-		return _bFocus;
+		return m_bFocus;
 	}
 
-	void WindowController::PollInput() {
+	void WindowController::PollEvents() {
 		sf::Event event;
-		input.ClearRawInput();
-		while (window->isOpen() && window->pollEvent(event)) {
+		m_input.ClearRawInput();
+		while (m_uWindow->isOpen() && m_uWindow->pollEvent(event)) {
 			switch (event.type) {
 			case sf::Event::Closed:
 				CloseWindow();
 				break;
 
 			case sf::Event::LostFocus:
-				_bFocus = false;
+				m_bFocus = false;
 				break;
 
 			case sf::Event::GainedFocus:
-				_bFocus = true;
-				input.ResetKeyStates();
+				m_bFocus = true;
+				m_input.ResetKeyStates();
 				break;
 
 			case sf::Event::KeyPressed:
-				input.OnRawSpecialInput(event.key.code);
-				input.OnKeyDown(event.key);
+				m_input.OnRawSpecialInput(event.key.code);
+				m_input.OnKeyDown(event.key);
 				break;
 
 			case sf::Event::KeyReleased:
-				input.OnKeyUp(event.key);
+				m_input.OnKeyUp(event.key);
 				break;
 
 			case sf::Event::TextEntered:
-				input.OnRawInput(static_cast<int>(event.text.unicode));
+				m_input.OnRawInput(static_cast<unsigned int>(event.text.unicode));
+				break;
+
+			default:
 				break;
 			}
 		}
@@ -101,16 +104,16 @@ namespace LittleEngine {
 	void WindowController::Push(Drawable&& drawable) {
 		int index = drawable.layer.GetLayerID();
 		index = Maths::Clamp(index, 0, MAX_LAYERID);
-		buffer.Push(std::move(drawable), index);
+		m_buffer.Push(std::move(drawable), index);
 	}
 
 	void WindowController::Draw() {
 		STOPWATCH_START("window->clear()");
-		window->clear();
+		m_uWindow->clear();
 		STOPWATCH_STOP();
-		STOPWATCH_START("ForEach().draw()");
-		buffer.ForEach(
-			[&w = this->window](std::vector<Drawable> drawables) {
+		STOPWATCH_START("window->draw()");
+		m_buffer.ForEach(
+			[&w = this->m_uWindow](std::vector<Drawable>& drawables) {
 				for (Drawable& drawable : drawables) {
 					w->draw(drawable.GetSFMLDrawable());
 				}
@@ -118,17 +121,17 @@ namespace LittleEngine {
 		);
 		STOPWATCH_STOP();
 		
-		buffer.Clear();
+		m_buffer.Clear();
 		STOPWATCH_START("window->display()");
-		window->display();
+		m_uWindow->display();
 		STOPWATCH_STOP();
 	}
 
 	void WindowController::CloseWindow() {
-		window->close();
+		m_uWindow->close();
 	}
 
 	const Input& WindowController::GetInput() const {
-		return input;
+		return m_input;
 	}
 }

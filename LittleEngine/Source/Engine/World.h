@@ -9,19 +9,19 @@ namespace LittleEngine {
 
 	// \brief Wrapper for Screen Size
 	class World : public Object {
+	private:
+		Rect2 m_screenBounds;
+		Vector2 m_screenSize;
+		Vector2 m_screenCentre;
+
 	public:
 		World(const Vector2& screenSize);
 		~World();
 
-		Vector2 GetScreenSize() const { return screenSize; }
-		Rect2 GetScreenBounds() const { return screenBounds; }
+		Vector2 GetScreenSize() const { return m_screenSize; }
+		Rect2 GetScreenBounds() const { return m_screenBounds; }
 		Vector2 WorldToScreenPoint(const Vector2& worldPoint) const;
 		Vector2 NormalisedToWorldPoint(const Vector2& normalisedPoint, bool autoClamp = true) const;
 		Fixed WorldToScreenRotation(const Fixed& worldRot) const;
-		
-	private:
-		Rect2 screenBounds;
-		Vector2 screenSize;
-		Vector2 screenCentre;
 	};
 }

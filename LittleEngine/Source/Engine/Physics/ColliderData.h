@@ -8,7 +8,7 @@ namespace LittleEngine {
 	// \brief Wrapper for Axis Aligned Bounding Box Collider data.
 	// Provides APIs to test intersection and point presence
 	struct AABBData {
-		const static AABBData One;
+		static const AABBData One;
 
 		Vector2 lowerBound;
 		Vector2 upperBound;
@@ -28,10 +28,10 @@ namespace LittleEngine {
 	// \brief Wrapper for Circle Collider data.
 	// Provides APIs to test intersection and point presence
 	struct CircleData {
-		const static CircleData One;
-
-		Fixed radius;
+		static const CircleData One;
+		
 		Vector2 centre;
+		Fixed radius;
 
 		CircleData() = default;
 		CircleData(const Fixed& radius, const Vector2& centre);

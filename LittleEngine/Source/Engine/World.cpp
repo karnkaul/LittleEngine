@@ -4,24 +4,24 @@
 #include "Utils.h"
 
 namespace LittleEngine {
-	World::World(const Vector2& screenSize) : Object("World"), screenSize(screenSize) {
+	World::World(const Vector2& screenSize) : Object("World"), m_screenSize(screenSize) {
 		Fixed halfScreenX = screenSize.x * Fixed::OneHalf;
 		Fixed halfScreenY = screenSize.y * Fixed::OneHalf;
-		screenCentre = Vector2(halfScreenX, halfScreenY);
-		screenBounds = Rect2(-screenCentre, screenCentre);
-		Logger::Log(*this, "Created World for Screen " + this->screenSize.ToString());
+		m_screenCentre = Vector2(halfScreenX, halfScreenY);
+		m_screenBounds = Rect2(-m_screenCentre, m_screenCentre);
+		Logger::Log(*this, "Created World for Screen " + this->m_screenSize.ToString());
 	}
 
 	World::~World() {
-		if (screenSize.x != 0) {
-			Logger::Log(*this, "World destroyed " + screenSize.ToString());
+		if (m_screenSize.x != 0) {
+			Logger::Log(*this, "World destroyed " + m_screenSize.ToString());
 		}
 	}
 
 	Vector2 World::WorldToScreenPoint(const Vector2 & worldPoint) const {
 		Vector2 screenPoint(worldPoint.x, -worldPoint.y);
-		screenPoint += screenCentre;
-		return std::move(screenPoint);
+		screenPoint += m_screenCentre;
+		return screenPoint;
 	}
 	
 	Vector2 World::NormalisedToWorldPoint(const Vector2 & normalisedPoint, bool autoClamp) const {
@@ -32,7 +32,7 @@ namespace LittleEngine {
 			p.y = Maths::Clamp_11(p.y);
 		}
 		// r` = r * screen.r
-		Vector2 s = screenBounds.upper;
+		Vector2 s = m_screenBounds.upper;
 		return Vector2(p.x * s.x, p.y * s.y);
 	}
 

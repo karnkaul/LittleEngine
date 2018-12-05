@@ -4,7 +4,7 @@
 
 namespace GameUtils {
 	bool FileRW::Exists() const {
-		std::ifstream f(path.c_str());
+		std::ifstream f(m_path.c_str());
 		return f.good();
 	}
 
@@ -37,7 +37,7 @@ namespace GameUtils {
 		try {
 			int mode = std::ofstream::out;
 			mode |= (append) ? std::ofstream::app : std::ofstream::trunc;
-			std::ofstream file(path, mode);
+			std::ofstream file(m_path, mode);
 			file << contents;
 			file.close();
 			return true;
@@ -53,7 +53,7 @@ namespace GameUtils {
 	}
 
 	void FileRW::Read(std::function<void(std::string&& line)> Procedure) {
-		std::ifstream file(path);
+		std::ifstream file(m_path);
 		if (!file.good()) {
 			return;
 		}

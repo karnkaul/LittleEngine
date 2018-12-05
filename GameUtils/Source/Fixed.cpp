@@ -12,102 +12,102 @@ namespace GameUtils {
 	const Fixed Fixed::OneThird = Fixed(1, 3);
 	const Fixed Fixed::OneTenth = Fixed(1, 10);
 
-	Fixed::Fixed(double value) : m_value(static_cast<int>(value * SCALE_FACTOR)) {
-		if ((value * static_cast<double>(SCALE_FACTOR)) - static_cast<double>(m_value) >= 0.5f) {
-			m_value += 1;
+	Fixed::Fixed(double value) : value(static_cast<int>(value * SCALE_FACTOR)) {
+		if ((value * static_cast<double>(SCALE_FACTOR)) - static_cast<double>(value) >= 0.5f) {
+			value += 1;
 		}
 	}
 
-	Fixed::Fixed(float value) : m_value(static_cast<int>(value * SCALE_FACTOR)) {
-		if ((value * static_cast<double>(SCALE_FACTOR)) - static_cast<double>(m_value) >= 0.5f) {
-			m_value += 1;
+	Fixed::Fixed(float value) : value(static_cast<int>(value * SCALE_FACTOR)) {
+		if ((value * static_cast<double>(SCALE_FACTOR)) - static_cast<double>(value) >= 0.5f) {
+			value += 1;
 		}
 	}
 
-	Fixed::Fixed(const Fixed& other) : m_value(other.m_value) {}
+	Fixed::Fixed(const Fixed& other) : value(other.value) {}
 
 	Fixed& Fixed::operator=(const Fixed& other) {
-		m_value = other.m_value;
+		value = other.value;
 		return *this;
 	}
 
 	Fixed::Fixed(int numerator, int denominator) :
-		m_value(static_cast<int64_t>(numerator) * static_cast<int64_t>(SCALE_FACTOR) / static_cast<int64_t>(denominator))
+		value(static_cast<int64_t>(numerator) * static_cast<int64_t>(SCALE_FACTOR) / static_cast<int64_t>(denominator))
 	{}
 
 	int Fixed::ToInt() const {
 		int floor = static_cast<int>(ToDouble());
-		if ((floor * static_cast<double>(SCALE_FACTOR)) - static_cast<double>(m_value) >= 0.5f) {
+		if ((floor * static_cast<double>(SCALE_FACTOR)) - static_cast<double>(value) >= 0.5f) {
 			return floor + 1;
 		}
 		return floor;
 	}
 
 	float Fixed::ToFloat() const {
-		return static_cast<float>(m_value) / static_cast<float>(SCALE_FACTOR);
+		return static_cast<float>(value) / static_cast<float>(SCALE_FACTOR);
 	}
 
 	double Fixed::ToDouble() const {
-		return static_cast<double>(m_value) / static_cast<double>(SCALE_FACTOR);
+		return static_cast<double>(value) / static_cast<double>(SCALE_FACTOR);
 	}
 
 	Fixed & Fixed::operator+=(const Fixed & rhs) {
-		m_value += rhs.m_value;
+		value += rhs.value;
 		return *this;
 	}
 
 	Fixed & Fixed::operator-=(const Fixed & rhs) {
-		m_value -= rhs.m_value;
+		value -= rhs.value;
 		return *this;
 	}
 
 	Fixed & Fixed::operator*=(const Fixed & rhs) {
-		int64_t largeVal = static_cast<int64_t>(m_value) * static_cast<int64_t>(rhs.m_value);
-		m_value = static_cast<int>(largeVal / SCALE_FACTOR);
+		int64_t largeVal = static_cast<int64_t>(value) * static_cast<int64_t>(rhs.value);
+		value = static_cast<int>(largeVal / SCALE_FACTOR);
 		return *this;
 	}
 
 	Fixed& Fixed::operator/=(const Fixed & rhs) {
-		if (rhs.m_value == 0) {
-			m_value = 0;
+		if (rhs.value == 0) {
+			value = 0;
 		}
 		else {
-			int64_t largeVal = (int64_t)m_value * SCALE_FACTOR;
-			m_value = static_cast<int>(largeVal / rhs.m_value);
+			int64_t largeVal = (int64_t)value * SCALE_FACTOR;
+			value = static_cast<int>(largeVal / rhs.value);
 		}
 		return *this;
 	}
 
 	Fixed & Fixed::operator%=(const Fixed & rhs) {
-		m_value %= rhs.m_value;
+		value %= rhs.value;
 		return *this;
 	}
 
 	Fixed& Fixed::operator++() {
-		++m_value;
+		++value;
 		return *this;
 	}
 
 	Fixed Fixed::operator++(int) {
 		Fixed temporary(*this);
 		++*this;
-		return std::move(temporary);
+		return temporary;
 	}
 
 
 	Fixed& Fixed::operator--() {
-		--m_value;
+		--value;
 		return *this;
 	}
 
 	Fixed Fixed::operator--(int) {
 		Fixed temporary(*this);
 		--*this;
-		return std::move(temporary);
+		return temporary;
 	}
 
 	Fixed Fixed::Abs() const {
-		return Fixed(RawInit(), (m_value < 0) ? -m_value : m_value);
+		return Fixed(RawInit(), (value < 0) ? -value : value);
 	}
 
 	Fixed Fixed::Power(int exponent) const {
@@ -124,7 +124,7 @@ namespace GameUtils {
 	}
 
 	Fixed Fixed::Inverse() const {
-		return Fixed(SCALE_FACTOR, m_value);
+		return Fixed(SCALE_FACTOR, value);
 	}
 
 	Fixed Fixed::Sin() const {
@@ -140,23 +140,23 @@ namespace GameUtils {
 	}
 
 	bool Fixed::operator==(const Fixed & rhs) const {
-		return m_value == rhs.m_value;
+		return value == rhs.value;
 	}
 
 	bool Fixed::operator>(const Fixed & rhs) const {
-		return m_value > rhs.m_value;
+		return value > rhs.value;
 	}
 
 	bool Fixed::operator<(const Fixed & rhs) const {
-		return m_value < rhs.m_value;
+		return value < rhs.value;
 	}
 
 	bool Fixed::operator<=(const Fixed & rhs) const {
-		return m_value <= rhs.m_value;
+		return value <= rhs.value;
 	}
 
 	bool Fixed::operator>=(const Fixed & rhs) const {
-		return m_value >= rhs.m_value;
+		return value >= rhs.value;
 	}
 
 	std::string Fixed::ToString() const {
@@ -164,7 +164,7 @@ namespace GameUtils {
 	}
 
 	Fixed operator-(const Fixed& rhs) {
-		return Fixed(Fixed::RawInit(), -rhs.m_value);
+		return Fixed(Fixed::RawInit(), -rhs.value);
 	}
 
 	std::ostream& operator<<(std::ostream& lhs, Fixed rhs) {

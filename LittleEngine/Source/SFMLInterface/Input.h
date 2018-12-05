@@ -39,11 +39,10 @@ namespace LittleEngine {
 
 	// \brief Wrapper struct that holds key state modifiers
 	struct KeyMod {
+		static const KeyMod Default;
 		bool bControl;
 		bool bAlt;
 		bool bShift;
-		
-		const static KeyMod Default;
 		
 		KeyMod() : bControl(false), bAlt(false), bShift(false) {}
 		KeyMod(bool bControl, bool bAlt, bool bShift) : bControl(bControl), bAlt(bAlt), bShift(bShift) {}
@@ -55,15 +54,18 @@ namespace LittleEngine {
 
 	// \brief Wrapper struct to store state of sf::Event::KeyEvent
 	struct KeyState {
+	private:
+		std::string name;
+		KeyCode keyCode;
+	public:
 		bool bPressed;
 
-		KeyState(KeyCode keyCode) : keyCode(keyCode), bPressed(false), name("Unknown") {}
-		KeyState(KeyCode keyCode, const std::string& name) : keyCode(keyCode), bPressed(false), name(name) {}
+	public:
+		KeyState(KeyCode keyCode) : name("Unknown"), keyCode(keyCode), bPressed(false) {}
+		KeyState(KeyCode keyCode, const std::string& name) : name(name), keyCode(keyCode), bPressed(false) {}
+		
 		KeyCode GetKeyCode() const { return keyCode; }
 		const std::string& GetName() const { return name; }
-	private:
-		KeyCode keyCode;
-		std::string name;
 	};
 
 	// \brief Enum to detect special keyboard input (mainly for Console etc)
@@ -83,10 +85,17 @@ namespace LittleEngine {
 	struct RawTextInput {
 		std::string text;
 		RawTextInputType special;
+
+		bool Contains(char c) const;
+		void Reset();
 	};
 
 	// \brief Concrete class that a WindowController can update KeyStates to every frame
 	class Input {
+	private:
+		RawTextInput m_rawTextInput;
+		std::vector<KeyState> m_keyStates;
+
 	public:
 		Input();
 
@@ -100,9 +109,6 @@ namespace LittleEngine {
 		const RawTextInput& GetRawSFMLInput() const;
 		
 	private:
-		std::vector<KeyState> keyStates;
-		RawTextInput rawTextInput;
-
 		Input(const Input&) = delete;
 		Input& operator=(const Input&) = delete;
 
@@ -117,7 +123,7 @@ namespace LittleEngine {
 		// For WindowController
 		void ClearRawInput();
 		// For WindowController
-		void OnRawInput(int unicode);
+		void OnRawInput(unsigned int unicode);
 		// For WindowController (to capture non-ASCII keycodes, like cursor keys)
 		void OnRawSpecialInput(sf::Keyboard::Key key);
 

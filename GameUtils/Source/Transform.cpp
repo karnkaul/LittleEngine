@@ -6,7 +6,7 @@ namespace GameUtils {
 	const Transform Transform::IDENTITY = Transform();
 
 	void Transform::SetParent(Transform& parent, bool bModifyWorldSpace) {
-		m_parent = &parent;
+		pParent = &parent;
 		if (!bModifyWorldSpace) {
 			localPosition -= parent.localPosition;
 			localOrientation -= parent.localOrientation;
@@ -15,53 +15,45 @@ namespace GameUtils {
 	}
 
 	void Transform::UnsetParent(bool bModifyWorldPosition) {
-		if (m_parent != nullptr) {
-			if (!bModifyWorldPosition) {
-				localPosition = Position();
-			}
-			m_parent->RemoveChild(this);
+		if (pParent) {
+			if (!bModifyWorldPosition) localPosition = Position();
+			pParent->RemoveChild(this);
 		}
-		m_parent = nullptr;
+		pParent = nullptr;
 	}
 
 	Transform* Transform::GetParent() const {
-		return m_parent;
+		return pParent;
 	}
 
 	Vector2 Transform::Position() const {
 		Vector2 position = localPosition;
-		if (m_parent != nullptr) {
-			position += m_parent->Position();
-		}
-		return std::move(position);
+		if (pParent) position += pParent->Position();
+		return position;
 	}
 
 	Fixed Transform::Orientation() const {
 		Fixed rotation = localOrientation % Fixed(360);
-		if (m_parent != nullptr) {
-			rotation += m_parent->Orientation();
-		}
-		return std::move(rotation);
+		if (pParent) rotation += pParent->Orientation();
+		return rotation;
 	}
 
 	Vector2 Transform::Scale() const {
 		Vector2 ret = localScale;
-		if (m_parent) {
-			ret += m_parent->Scale();
-		}
+		if (pParent) ret += pParent->Scale();
 		return ret;
 	}
 
 	void Transform::Rotate(Fixed angle) {
 		localOrientation += angle;
-		GameUtils::CleanVector<Transform*>(m_children, [](Transform* child) { return child == nullptr; });
+		GameUtils::CleanVector<Transform*>(children, [](Transform* child) { return child == nullptr; });
 		// Children need to be repositioned
-		if (!m_children.empty()) {
+		if (!children.empty()) {
 			Fixed rad = angle * Maths::DEG_TO_RAD;
 			Fixed s = rad.Sin(), c = rad.Cos();
-			for (const auto& child : m_children) {
+			for (const auto& child : children) {
 				//if (Ptr transform = child.lock()) {
-				if (child != nullptr) {
+				if (child) {
 					Vector2 p = child->localPosition;
 					child->localPosition = Vector2(
 						(p.x * c) - (p.y * s),
@@ -76,28 +68,22 @@ namespace GameUtils {
 		return localPosition.ToString() + " , " + localOrientation.ToString();
 	}
 
-	Transform::Transform() : localPosition(Vector2::Zero), localOrientation(Fixed::Zero) {}
+	Transform::Transform() : localPosition(Vector2::Zero), localScale(Vector2::One), localOrientation(Fixed::Zero) {}
 
 	Transform::~Transform() {
-		if (m_parent != nullptr) {
-			m_parent->RemoveChild(this);
-		}
-		if (!m_children.empty()) {
-			for (auto child : m_children) {
-				if (child != nullptr) {
-					child->UnsetParent();
-				}
+		if (pParent) pParent->RemoveChild(this);
+		if (!children.empty()) {
+			for (auto child : children) {
+				if (child) child->UnsetParent();
 			}
 		}
 	}
 
-	void Transform::AddChild(Transform* child) {
-		m_children.emplace_back(child);
+	void Transform::AddChild(Transform* pChild) {
+		if (pChild) children.emplace_back(pChild);
 	}
 
-	void Transform::RemoveChild(Transform* child) {
-		if (child != nullptr) {
-			GameUtils::VectorErase(m_children, child);
-		}
+	void Transform::RemoveChild(Transform* pChild) {
+		if (pChild) GameUtils::VectorErase(children, pChild);
 	}
 }
