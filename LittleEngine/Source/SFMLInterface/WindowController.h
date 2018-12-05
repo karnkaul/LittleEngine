@@ -10,19 +10,18 @@
 namespace LittleEngine {
 	// \brief Wrapper struct for SFML Drawable
 	struct Drawable {
+	private:
+		sf::Drawable* drawable;
 	public:
 		LayerInfo layer;
-
+	
 		Drawable(sf::Drawable& drawable) : drawable(&drawable) { }
-		Drawable(sf::Drawable& drawable, LayerInfo layer) : layer(layer), drawable(&drawable) {}
+		Drawable(sf::Drawable& drawable, LayerInfo layer) : drawable(&drawable), layer(layer) {}
 		Drawable(Drawable&&) = default;
 		Drawable& operator=(Drawable&&) = default;
 		Drawable(const Drawable&) = default;
 
 		const sf::Drawable& GetSFMLDrawable() { return *drawable; }
-
-	private:
-		sf::Drawable* drawable;
 	};
 
 	// \brief Conrete class that can create an SFML RenderWindow,
@@ -42,10 +41,17 @@ namespace LittleEngine {
 		private:
 			std::array<std::vector<Drawable>, MAX_LAYERS> buffer;
 		};
-
+	
 	public:
 		static constexpr int MAX_LAYERID = Buffer::MAX_LAYERS - 1;
 
+	private:
+		Buffer m_buffer;
+		Input m_input;
+		std::unique_ptr<sf::RenderWindow> m_uWindow;
+		bool m_bFocus = false;
+
+	public:
 		WindowController(int screenWidth, int screenHeight, const std::string& windowTitle);
 		~WindowController();
 
@@ -65,11 +71,6 @@ namespace LittleEngine {
 		const Input& GetInput() const;
 
 	private:
-		Buffer buffer;
-		Input input;
-		std::unique_ptr<sf::RenderWindow> window;
-		bool _bFocus = false;
-
 		WindowController(const WindowController&) = delete;
 		WindowController& operator=(const WindowController&) = delete;	
 	};

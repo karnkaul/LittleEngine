@@ -39,17 +39,21 @@ namespace LittleEngine {
 
 	// \brief Complete data specifying particular set of identical-type Assets
 	struct AssetDefinition {
-		AssetType type;
 		AssetPaths resourcePaths;
+		AssetType type;
 
 		AssetDefinition(AssetDefinition&&) = default;
 		AssetDefinition(const AssetDefinition&) = delete;
 		// Create an AssetDefinition given a resource type and its AssetPaths
-		AssetDefinition(const AssetType& type, AssetPaths&& resourcePaths) : type(type), resourcePaths(std::move(resourcePaths)) {}
+		AssetDefinition(const AssetType& type, AssetPaths&& resourcePaths) : resourcePaths(std::move(resourcePaths)), type(type) {}
 	};
 	
 	// \brief Collection of AssetDefinitions
 	struct AssetManifest {
+	private:
+		std::vector<AssetDefinition> definitions;
+
+	public:
 		AssetManifest() = default;
 		AssetManifest(std::vector<AssetDefinition>&& assetDefinitions) : definitions(std::move(assetDefinitions)) {}
 
@@ -60,13 +64,14 @@ namespace LittleEngine {
 		void Clear();
 		// Convenience callback that iterates through each AssetDefinition
 		void ForEach(std::function<void(const AssetDefinition& definition)> Callback) const;
-
-	private:
-		std::vector<AssetDefinition> definitions;
 	};
 
 	// \brief Generates AssetManifest from serialised data loaded from a file, given its path
 	struct AssetManifestData {
+	private:
+		AssetManifest manifest;
+		
+	public:
 		AssetManifestData() = default;
 		AssetManifestData(AssetManifestData&&) = default;
 		AssetManifestData& operator=(AssetManifestData&&) = default;
@@ -77,13 +82,13 @@ namespace LittleEngine {
 		AssetManifest& GetManifest();
 		// \brief Pass the path to the asset manifest file (.amf)
 		void Load(const std::string& amfPath);
-
-	private:
-		AssetManifest manifest;
 	};
 
 	// \brief An Asset represents live data in memory that's ready to be used
 	class Asset {
+	protected:
+		std::string m_resourcePath;
+
 	public:
 		using Ptr = std::unique_ptr<Asset>;
 		Asset() = delete;
@@ -91,8 +96,7 @@ namespace LittleEngine {
 		Asset(const std::string& path);
 		virtual ~Asset();
 		const std::string& GetResourcePath() const;
-	protected:
-		std::string resourcePath;
+
 	private:
 		Asset(const Asset&) = delete;
 		Asset& operator=(const Asset&) = delete;
@@ -101,60 +105,71 @@ namespace LittleEngine {
 	// \brief TextureAsset is an image texture copied to VRAM
 	class TextureAsset : public Asset {
 	private:
+		sf::Texture m_sfTexture;
+
+	private:
+		// Path must be relative to the root Asset directory
+		TextureAsset(const std::string& path);
+
 		// Prevents having to expose texture to code outside SFMLInterface
 		friend class AssetManager;
 		friend class SpriteRenderable;
-
-		// Path must be relative to the root Asset directory
-		TextureAsset(const std::string& path);
-		sf::Texture sfTexture;
 	};
 
 	// \brief FontAsset is a font type loaded in RAM
 	class FontAsset : public Asset {
 	private:
-		friend class AssetManager;
-		friend class TextRenderable;
+		sf::Font m_sfFont;
 
+	private:
 		// Path must be relative to the root Asset directory
 		FontAsset(const std::string& path);
-		sf::Font sfFont;
+
+		friend class AssetManager;
+		friend class TextRenderable;
 	};
 
 	// \brief SoundAsset is an audio asset fully loaded in RAM
 	class SoundAsset : public Asset {
 	private:
-		friend class AssetManager;
-		friend class SoundPlayer;
+		sf::SoundBuffer m_sfSoundBuffer;
+		sf::Sound m_sfSound;
+		Fixed m_volumeScale = Fixed::One;
 
-		sf::SoundBuffer sfSoundBuffer;
-		sf::Sound sfSound;
-		Fixed volumeScale = Fixed::One;
-
+	private:
 		// Path must be relative to the root Asset directory
 		SoundAsset(const std::string& path, const Fixed& volumeScale = Fixed::One);
+
+		friend class AssetManager;
+		friend class SoundPlayer;
 	};
 
 	// \brief MusicAsset points to a streamed music file on storage
 	class MusicAsset : public Asset {
+	private:
+		sf::Music m_sfMusic;
+		Fixed m_volumeScale = Fixed::One;
+		bool m_bValid;
+
 	public:
 		Fixed GetDurationSeconds() const;
 
 	private:
+		// Path must be relative to the root Asset directory
+		MusicAsset(const std::string& path, const Fixed& volumeScale = Fixed::One);
+
 		friend class AssetManager;
 		friend class MusicPlayer;
 		friend class AudioManager;
-
-		sf::Music music;
-		Fixed volumeScale = Fixed::One;
-		bool valid;
-
-		// Path must be relative to the root Asset directory
-		MusicAsset(const std::string& path, const Fixed& volumeScale = Fixed::One);
 	};
 
 	// \brief Class that handles all Asset Loading. (Maintains a clearable cache)
 	class AssetManager final : public Object {
+	private:
+		std::unordered_map<std::string, Asset::Ptr> m_loaded;
+		std::string m_rootDir;
+		FontAsset* m_pDefaultFont;
+
 	public:
 		AssetManager(const std::string& rootDir = "");
 		~AssetManager();
@@ -165,8 +180,8 @@ namespace LittleEngine {
 		T* Load(const std::string& path) {
 			static_assert(std::is_base_of<Asset, T>::value, "T must derive from Asset: check Output window for erroneous call");
 			std::string fullPath = GetPath(path);
-			auto search = loaded.find(fullPath);
-			if (search != loaded.end()) {
+			auto search = m_loaded.find(fullPath);
+			if (search != m_loaded.end()) {
 #if defined(LOG_CACHED_ASSET_LOADS)
 				Logger::Log(*this, "Found Asset [" + fullPath + "] in cache", Logger::Severity::Debug);
 #endif
@@ -178,7 +193,7 @@ namespace LittleEngine {
 			struct enable_smart : public T { enable_smart(const std::string& path) : T(path) {} };
 			std::unique_ptr<T> t = std::make_unique<enable_smart>(fullPath);
 			T* pT = t.get();
-			loaded.emplace(fullPath, std::move(t));
+			m_loaded.emplace(fullPath, std::move(t));
 			return pT;
 		}
 		
@@ -217,12 +232,9 @@ namespace LittleEngine {
 		void UnloadAll();
 
 	private:
-		std::string rootDir;
-		std::string GetPath(const std::string& path);
-		std::unordered_map<std::string, Asset::Ptr> loaded;
-		FontAsset* defaultFont;
-
 		AssetManager(const AssetManager&) = delete;
 		AssetManager& operator=(const AssetManager&) = delete;
+
+		std::string GetPath(const std::string& path) const;
 	};
 }

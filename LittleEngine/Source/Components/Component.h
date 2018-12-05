@@ -13,8 +13,12 @@ namespace LittleEngine {
 	public:
 		using Ptr = std::unique_ptr<Component>;
 
-		bool bEnabled = true;
-
+	public:
+		bool m_bEnabled = true;
+	private:
+		Actor* m_pActor;
+	
+	public:
 		Component() = delete;
 		Component(Actor& owner, const Component& prototype);
 		virtual ~Component();
@@ -33,8 +37,6 @@ namespace LittleEngine {
 		Component(Actor& actor, const std::string& name);
 		
 	private:
-		Actor* actor;
-
 		Component& operator=(Component&) = delete;
 	};
 }

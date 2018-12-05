@@ -12,11 +12,13 @@ namespace LittleEngine {
 	class AudioPlayer : public Object {
 	public:
 		enum class Status { NoMedia, Stopped, Playing, Paused };
-		Status status;
+		
+	public:
+		Fixed m_volume = Fixed(80, 100);
+		Status m_status;
+		bool m_bLooping;
 
-		Fixed volume = Fixed(80, 100);
-		bool bLooping;
-
+	public:
 		virtual ~AudioPlayer();
 		virtual void Play() = 0;
 		virtual void Stop() = 0;
@@ -26,18 +28,22 @@ namespace LittleEngine {
 
 	protected:
 		AudioPlayer(const std::string& name);
-		virtual bool ApplyParams() = 0;
 		Status Convert(sf::Sound::Status status);
+		virtual bool ApplyParams() = 0;
 	};
 
 	// \brief Concrete class for Sound playback (uses pre-loaded SoundAsset)
 	class SoundPlayer : public AudioPlayer {
-	public:
-		SoundPlayer(SoundAsset* soundAsset);
-		~SoundPlayer();
-		bool SetSoundAsset(SoundAsset& soundAsset);
+	private:
+		SoundAsset* m_pSoundAsset;
 
+	public:
+		SoundPlayer(SoundAsset* pSoundAsset = nullptr);
+		~SoundPlayer();
+
+		bool SetSoundAsset(SoundAsset& soundAsset);
 		void SetDirection(const Fixed& direction);
+
 		virtual void Play() override;
 		virtual void Stop() override;
 		virtual void Reset(Fixed seconds = Fixed::Zero) override;
@@ -45,14 +51,23 @@ namespace LittleEngine {
 		virtual void Tick(Fixed deltaSeconds) override;
 
 	private:
-		SoundAsset* soundAsset;
 		virtual bool ApplyParams() override;
 	};
 
 	// \brief Concrete class for Music playback (uses streamed MusicAsset)
 	class MusicPlayer : public AudioPlayer {
+	private:
+		GameClock m_clock;
+		Fixed m_fadeSeconds = Fixed::Zero;
+		Fixed m_elapsedSeconds = Fixed::Zero;
+		Fixed m_targetVolume = Fixed::One;
+		Fixed m_startVolume = Fixed::One;
+		MusicAsset* m_pMainTrack = nullptr;
+		bool m_bFadingIn = false;
+		bool m_bFadingOut = false;
+
 	public:
-		MusicPlayer(MusicAsset* musicAsset = nullptr);
+		MusicPlayer(MusicAsset* pMusicAsset = nullptr);
 		~MusicPlayer();
 		
 		bool SetTrack(MusicAsset& track);
@@ -70,18 +85,10 @@ namespace LittleEngine {
 		virtual void Tick(Fixed deltaSeconds) override;
 
 	private:
-		friend class AudioManager;
-		GameClock clock;
-		MusicAsset* mainTrack = nullptr;
-		Fixed fadeSeconds = Fixed::Zero;
-		Fixed elapsedSeconds = Fixed::Zero;
-		Fixed targetVolume = Fixed::One;
-		Fixed startVolume = Fixed::One;
-		bool bFadingIn = false;
-		bool bFadingOut = false;
-
 		void BeginFade();
 
 		virtual bool ApplyParams() override;
+
+		friend class AudioManager;
 	};
 }

@@ -58,35 +58,35 @@ namespace LittleEngine {
 	const KeyMod KeyMod::Default = KeyMod();
 
 	KeyState& Input::GetOrCreateKeyState(KeyCode code) {
-		for (auto & keyState : keyStates) {
+		for (auto & keyState : m_keyStates) {
 			if (keyState.GetKeyCode() == code) {
 				return keyState;
 			}
 		}
-		keyStates.emplace_back(code);
-		return keyStates[keyStates.size() - 1];
+		m_keyStates.emplace_back(code);
+		return m_keyStates[m_keyStates.size() - 1];
 	}
 
 	Input::Input() {
 		// Pre-defined keys
-		keyStates.emplace_back(KeyCode::Left, "Left");
-		keyStates.emplace_back(KeyCode::Right, "Right");
-		keyStates.emplace_back(KeyCode::Up, "Up");
-		keyStates.emplace_back(KeyCode::Down, "Down");
-		keyStates.emplace_back(KeyCode::W, "W");
-		keyStates.emplace_back(KeyCode::A, "A");
-		keyStates.emplace_back(KeyCode::S, "S");
-		keyStates.emplace_back(KeyCode::D, "D");
-		keyStates.emplace_back(KeyCode::Space, "Space");
-		keyStates.emplace_back(KeyCode::Enter, "Enter");
-		keyStates.emplace_back(KeyCode::Escape, "Escape");
-		keyStates.emplace_back(KeyCode::Tab, "Tab");
-		keyStates.emplace_back(KeyCode::Backtick, "Backtick");
-		keyStates.emplace_back(KeyCode::Backspace, "Backspace");
+		m_keyStates.emplace_back(KeyCode::Left, "Left");
+		m_keyStates.emplace_back(KeyCode::Right, "Right");
+		m_keyStates.emplace_back(KeyCode::Up, "Up");
+		m_keyStates.emplace_back(KeyCode::Down, "Down");
+		m_keyStates.emplace_back(KeyCode::W, "W");
+		m_keyStates.emplace_back(KeyCode::A, "A");
+		m_keyStates.emplace_back(KeyCode::S, "S");
+		m_keyStates.emplace_back(KeyCode::D, "D");
+		m_keyStates.emplace_back(KeyCode::Space, "Space");
+		m_keyStates.emplace_back(KeyCode::Enter, "Enter");
+		m_keyStates.emplace_back(KeyCode::Escape, "Escape");
+		m_keyStates.emplace_back(KeyCode::Tab, "Tab");
+		m_keyStates.emplace_back(KeyCode::Backtick, "Backtick");
+		m_keyStates.emplace_back(KeyCode::Backspace, "Backspace");
 	}
 
 	bool Input::IsKeyPressed(KeyCode code) const {
-		for (const auto& iter : keyStates) {
+		for (const auto& iter : m_keyStates) {
 			if (iter.GetKeyCode() == code) {
 				return iter.bPressed;
 			}
@@ -95,7 +95,7 @@ namespace LittleEngine {
 	}
 
 	const KeyState Input::GetKeyState(KeyCode code) const {
-		for (const auto& iter : keyStates) {
+		for (const auto& iter : m_keyStates) {
 			if (iter.GetKeyCode() == code) {
 				return iter;
 			}
@@ -105,7 +105,7 @@ namespace LittleEngine {
 
 	const std::vector<KeyState> Input::GetPressed() const {
 		std::vector<KeyState> pressed;
-		for (const auto& iter : keyStates) {
+		for (const auto& iter : m_keyStates) {
 			if (iter.bPressed) {
 				pressed.emplace_back(iter);
 			}
@@ -114,7 +114,7 @@ namespace LittleEngine {
 	}
 
 	const RawTextInput & Input::GetRawSFMLInput() const {
-		return rawTextInput;
+		return m_rawTextInput;
 	}
 
 	void Input::OnKeyDown(const sf::Event::KeyEvent& key) {
@@ -128,39 +128,39 @@ namespace LittleEngine {
 	}
 
 	void Input::ResetKeyStates() {
-		for (auto& keyState : keyStates) {
+		for (auto& keyState : m_keyStates) {
 			keyState.bPressed = false;
 		}
 	}
 
 	void Input::ClearRawInput() {
-		rawTextInput.Reset();
+		m_rawTextInput.Reset();
 	}
 
 	void Input::OnRawInput(unsigned int unicode) {
-		HandleRawInput(rawTextInput, unicode);
+		HandleRawInput(m_rawTextInput, unicode);
 	}
 
 	void Input::OnRawSpecialInput(sf::Keyboard::Key key) {
 		switch (key) {
 		case sf::Keyboard::Up:
-			rawTextInput.special = RawTextInputType::Up;
+			m_rawTextInput.special = RawTextInputType::Up;
 			break;
 
 		case sf::Keyboard::Down:
-			rawTextInput.special = RawTextInputType::Down;
+			m_rawTextInput.special = RawTextInputType::Down;
 			break;
 
 		case sf::Keyboard::Left:
-			rawTextInput.special = RawTextInputType::Left;
+			m_rawTextInput.special = RawTextInputType::Left;
 			break;
 
 		case sf::Keyboard::Right:
-			rawTextInput.special = RawTextInputType::Right;
+			m_rawTextInput.special = RawTextInputType::Right;
 			break;
 
 		default:
-			rawTextInput.special = RawTextInputType::None;
+			m_rawTextInput.special = RawTextInputType::None;
 		}
 	}
 

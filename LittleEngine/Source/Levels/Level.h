@@ -27,9 +27,30 @@ namespace LittleEngine {
 	// Provides APIs for InputHandler, AssetManager, CollisionManager, 
 	// World, and Game Time. Constructor should load required assets.
 	class Level : public Object {
-	public:
-		const static int MAX_LEVEL_IDX = 1;
+	private:
+		enum class State {
+			INVALID = 0,
+			IDLE = 1,
+			LOADING = 2,
+			ACTIVE = 3,
+			ERROR = 10
+		};
 
+	public:
+		static const int MAX_LEVEL_IDX = 1;
+	private:
+		static int nextActorID;
+
+	protected:
+		GameClock m_clock;
+		Engine* m_pEngine;
+	private:
+		CollisionManager m_collisionManager;
+		GameUtils::TokenHandler<OnInput::Token> m_tokenHandler;
+		std::unordered_map<int, Actor::Ptr> m_actorMap;
+		State m_state = State::INVALID;
+	
+	public:
 		virtual ~Level();
 		
 		// Override to load assets before level activates
@@ -56,13 +77,13 @@ namespace LittleEngine {
 		template<typename T>
 		T* SpawnActor(const std::string& name, bool bSetEnabled, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero) {
 			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
-			DEBUG_ASSERT(state != State::ACTIVE, "SpawnActor<T>() called in live game time! Use CloneActor<T>(prototype) instead");
+			DEBUG_ASSERT(m_state != State::ACTIVE, "SpawnActor<T>() called in live game time! Use CloneActor<T>(prototype) instead");
 			//auto actor = std::make_unique<T>(*this, name, position, rotation);
 			auto actor = std::make_unique<T>();
 			actor->InitActor(*this, nextActorID++, name, position, rotation);
 			actor->ToggleActive(bSetEnabled);
 			T* ret = actor.get();
-			actorMap.emplace(actor->actorID, std::move(actor));
+			m_actorMap.emplace(actor->m_actorID, std::move(actor));
 			return ret;
 		}
 
@@ -75,7 +96,7 @@ namespace LittleEngine {
 			auto actor = std::make_unique<T>();
 			actor->InitActor(*this, nextActorID++, prototype);
 			T* ret = actor.get();
-			actorMap.emplace(actor->actorID, std::move(actor));
+			m_actorMap.emplace(actor->m_actorID, std::move(actor));
 			return ret;
 		}
 
@@ -87,9 +108,6 @@ namespace LittleEngine {
 		bool DestroyActor(int actorID);
 
 	protected:
-		GameClock clock;
-		Engine* engine;
-
 		Level(const std::string& name);
 
 		// \brief Override to initiate level (spawn destroyed/first-time actors, etc)
@@ -107,29 +125,12 @@ namespace LittleEngine {
 		void RegisterScopedInput(const GameInput& gameInput, OnInput::Callback callback, const OnKey& type, bool consume = false);
 
 	private:
-		enum class State {
-			INVALID = 0,
-			IDLE = 1,
-			LOADING = 2,
-			ACTIVE = 3,
-			ERROR = 10
-		};
-
-		friend class Engine;
-		friend class LevelManager;
-
-		static int nextActorID;
-
-		CollisionManager collisionManager;
-		GameUtils::TokenHandler<OnInput::Token> tokenHandler;
-
-	private:
-		std::unordered_map<int, Actor::Ptr> actorMap;
-		State state = State::INVALID;
-
 		void Render(RenderParams& params);
 		void SetEngine(Engine& engine);
 		void Activate();
 		void Clear();
+
+		friend class Engine;
+		friend class LevelManager;
 	};
 }

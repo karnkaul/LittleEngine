@@ -13,6 +13,10 @@ namespace LittleEngine {
 	
 	// \brief: Central point of all GameEvent dispatching
 	class EventManager : public Object {
+	private:
+		using Subscribers = std::unordered_map<GameEvent, OnEvent>;
+		Subscribers subscribers;
+
 	public:
 		static EventManager& Instance();
 
@@ -22,10 +26,6 @@ namespace LittleEngine {
 		int Notify(GameEvent eventType);
 	
 	private:
-		using Subscribers = std::unordered_map<GameEvent, OnEvent>;
-		
-		Subscribers subscribers;
-
 		EventManager();
 	};
 }

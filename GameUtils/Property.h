@@ -8,25 +8,22 @@ namespace GameUtils {
 	struct Property {
 		// \brief Property persistor; implementation uses a file reader/writer
 		class Persistor {
+		private:
+			// Vector instead of sets/maps to preserve order of insertion
+			std::vector<Property> m_properties;
+
 		public:
 			bool Load(const std::string& filePath);
 			bool Save(const std::string& filePath) const;
 			Property GetProp(const std::string& key) const;
 			void SetProp(const Property& property);
-
-		private:
-			// Vector instead of sets/maps to preserve order of insertion
-			std::vector<Property> properties;
 		};
 
 		std::string key;
 		std::string stringValue;
 
 		Property() : key(""), stringValue("") {}
-		Property(const std::string& key, const std::string& value) {
-			this->key = key;
-			this->stringValue = value;
-		}
+		Property(const std::string& key, const std::string& value) : key(key), stringValue(value) {}
 
 		int intValue(int defaultValue = -1) const {
 			int value = defaultValue;

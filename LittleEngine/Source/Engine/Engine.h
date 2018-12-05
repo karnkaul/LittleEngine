@@ -13,15 +13,6 @@ namespace Consts {
 }
 
 namespace LittleEngine {
-	class Actor;
-	class World;
-	class AssetManager;
-	class AudioManager;
-	class Level;
-	class WindowController;
-	class EngineConfig;
-	class EngineCommand;
-	class InputHandler;
 	using LevelID = int;
 
 	enum class ExitCode { 
@@ -37,7 +28,24 @@ namespace LittleEngine {
 	class Engine : Object {
 	public:
 		using Ptr = std::unique_ptr<Engine>;
-		
+
+	private:
+		template<typename T>
+		using UPtr = std::unique_ptr<T>;
+
+		UPtr<LevelManager> m_uLevelManager;
+		UPtr<class AssetManager> m_uAssetManager;
+		UPtr<class AudioManager> m_uAudioManager;
+		UPtr<class World> m_uWorld;
+		UPtr<class WindowController> m_uWindowController;
+		UPtr<class InputHandler> m_uInputHandler;
+		UPtr<class EngineConfig> m_uConfig;
+		std::vector<UPtr<class EngineCommand>> m_commands;
+		ExitCode m_exitCode = ExitCode::OK;
+		bool m_bIsPaused = false;
+		bool m_bIsQuitting = false;
+
+	public:
 		// Disable Object's intended constructor
 		Engine(const std::string&) = delete;
 		~Engine();
@@ -49,7 +57,7 @@ namespace LittleEngine {
 		
 		template<typename T>
 		LevelID CreateLevel() {
-			LevelID id = levelManager->template CreateLevel<T>();
+			LevelID id = m_uLevelManager->template CreateLevel<T>();
 			return id;
 		}
 
@@ -66,18 +74,6 @@ namespace LittleEngine {
 		void Quit();
 
 	private:
-		std::unique_ptr<AssetManager> assetManager;
-		std::unique_ptr<LevelManager> levelManager;
-		std::unique_ptr<AudioManager> audioManager;
-		std::unique_ptr<World> world;
-		std::unique_ptr<WindowController> windowController;
-		std::unique_ptr<InputHandler> inputHandler;
-		std::unique_ptr<EngineConfig> config;
-		std::vector<std::unique_ptr<EngineCommand>> commands;
-		ExitCode exitCode = ExitCode::OK;
-		bool bIsPaused = false;
-		bool bIsQuitting = false;
-
 		Engine();
 
 		bool CreateWindow();

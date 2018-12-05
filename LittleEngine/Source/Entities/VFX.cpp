@@ -17,7 +17,7 @@ namespace LittleEngine {
 		this->sfxVol = prototype.sfxVol;
 		Component::Ptr animatorComponent = prototype.animator->UClone(*this);
 		animator = dynamic_cast<SpriteAnimator*>(animatorComponent.get());
-		components.push_back(std::move(animatorComponent));
+		m_components.push_back(std::move(animatorComponent));
 		animator->Stop();
 		animator->Reset();
 	}
@@ -28,8 +28,8 @@ namespace LittleEngine {
 		}
 		animator->SetSpriteSheet(spriteSheet, animTime);
 		animator->SetLayer(LayerID::UI);
-		animator->bEnabled = false;
-		soundAssets = level->GetAssetManager().Load<SoundAsset>(sfxPaths.assetPaths);
+		animator->m_bEnabled = false;
+		soundAssets = m_pLevel->GetAssetManager().Load<SoundAsset>(sfxPaths.assetPaths);
 		this->sfxVol = sfxVol;
 		if (autoplay) {
 			Play();
@@ -42,9 +42,9 @@ namespace LittleEngine {
 		if (!soundAssets.empty()) {
 			size_t randIdx = Maths::Random::Range((size_t)0, soundAssets.size());
 			SoundAsset* random = soundAssets[randIdx];
-			if (random) sfxPlayer = level->GetAudioManager().PlaySFX(*random, sfxVol, direction);
+			if (random) sfxPlayer = m_pLevel->GetAudioManager().PlaySFX(*random, sfxVol, direction);
 		}
-		animator->bEnabled = true;
+		animator->m_bEnabled = true;
 		animator->Start();
 		bPlaying = true;
 	}
@@ -53,7 +53,7 @@ namespace LittleEngine {
 		Actor::Tick(deltaTime);
 		if (bPlaying) {
 			bool sfxPlaying = sfxPlayer && sfxPlayer->IsPlaying();
-			if (!animator->IsAnimating() && !sfxPlaying && !_bDestroyed) {
+			if (!animator->IsAnimating() && !sfxPlaying && !m_bDestroyed) {
 				Destruct();
 				bPlaying = false;
 			}

@@ -6,20 +6,20 @@ namespace LittleEngine {
 	double GameClock::gameTime = 0;
 
 	GameClock::GameClock() {
-		startTime = gameTime;
+		m_startTime = gameTime;
 	}
 
 	void GameClock::Restart() {
-		startTime = gameTime;
+		m_startTime = gameTime;
 	}
 
 	int64_t GameClock::GetElapsedMicroSeconds() const {
-		double elapsedMS = gameTime - startTime;
+		double elapsedMS = gameTime - m_startTime;
 		return static_cast<int64_t>(elapsedMS * 1000);
 	}
 
 	int GameClock::GetElapsedMilliSeconds() const {
-		int elapsed = static_cast<int>(gameTime - startTime);
+		int elapsed = static_cast<int>(gameTime - m_startTime);
 		return elapsed < 0 ? 0 : elapsed;
 	}
 

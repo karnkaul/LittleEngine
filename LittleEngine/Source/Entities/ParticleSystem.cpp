@@ -99,7 +99,7 @@ namespace LittleEngine {
 				params.screenScale = transform.Scale();
 				SpriteData& data = renderable->GetData();
 				data.colour = colour;
-				renderable->layer = layer;
+				renderable->m_layer = layer;
 				renderable->Render(params);
 			}
 		}
@@ -202,7 +202,7 @@ namespace LittleEngine {
 		}
 	
 	private:
-		const static size_t MAX_PARTICLES = 100;
+		static const size_t MAX_PARTICLES = 100;
 		std::array<Particle, MAX_PARTICLES> particles;
 
 		const EmitterData data;
@@ -325,10 +325,10 @@ namespace LittleEngine {
 		std::vector<EmitterData> emitters = data.GetEmitterDatas();
 		std::string particles;
 		for (EmitterData& data : emitters) {
-			data.pParent = &transform;
-			std::unique_ptr<Emitter> emitter = std::make_unique<Emitter>(level->GetAudioManager(), data, false);
+			data.pParent = &m_transform;
+			std::unique_ptr<Emitter> emitter = std::make_unique<Emitter>(m_pLevel->GetAudioManager(), data, false);
 			particles += (Strings::ToString(data.spawnData.numParticles) + ", ");
-			this->emitters.push_back(std::move(emitter));
+			this->m_emitters.push_back(std::move(emitter));
 		}
 		Logger::Severity logSeverity = particles.empty() || emitters.empty() ? Logger::Severity::Warning : Logger::Severity::Debug;
 		if (!particles.empty()) particles = particles.substr(0, particles.length() - 2);
@@ -339,30 +339,30 @@ namespace LittleEngine {
 	}
 
 	void ParticleSystem::Start() {
-		for (std::unique_ptr<Emitter>& emitter : emitters) {
+		for (std::unique_ptr<Emitter>& emitter : m_emitters) {
 			emitter->Reset(true);
 		}
-		bIsPlaying = true;
+		m_bIsPlaying = true;
 		Logger::Log(*this, GetNameInBrackets() + " Particle System (re)started", Logger::Severity::Debug);
 	}
 
 	void ParticleSystem::Stop() {
-		for (std::unique_ptr<Emitter>& emitter : emitters) {
+		for (std::unique_ptr<Emitter>& emitter : m_emitters) {
 			emitter->Reset(false);
 		}
-		bIsPlaying = false;
+		m_bIsPlaying = false;
 		Logger::Log(*this, GetNameInBrackets() + " Particle System stopped", Logger::Severity::Debug);
 	}
 
 	void ParticleSystem::Tick(const Fixed & deltaTime) {
-		for (std::unique_ptr<Emitter>& emitter : emitters) {
+		for (std::unique_ptr<Emitter>& emitter : m_emitters) {
 			emitter->Tick(deltaTime);
-			bIsPlaying &= emitter->bEnabled;
+			m_bIsPlaying &= emitter->bEnabled;
 		}
 	}
 
 	void ParticleSystem::Render(RenderParams & params) {
-		for (std::unique_ptr<Emitter>& emitter : emitters) {
+		for (std::unique_ptr<Emitter>& emitter : m_emitters) {
 			emitter->Render(params);
 		}
 	}

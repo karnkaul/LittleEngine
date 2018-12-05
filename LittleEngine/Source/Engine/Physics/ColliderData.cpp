@@ -6,11 +6,8 @@ namespace LittleEngine {
 	const AABBData AABBData::One = AABBData(Vector2(-half, -half), Vector2(half, half));
 	const CircleData CircleData::One = CircleData(1, Vector2(0, 0));
 
-	AABBData::AABBData(const Vector2& lowerBound, const Vector2& upperBound) : lowerBound(lowerBound), upperBound(upperBound) {
-	}
-
-	AABBData::AABBData(const Fixed& xMax, const Fixed& yMax) : AABBData(Vector2(-xMax, -yMax), Vector2(xMax, yMax)) {
-	}
+	AABBData::AABBData(const Vector2& lowerBound, const Vector2& upperBound) : lowerBound(lowerBound), upperBound(upperBound) {}
+	AABBData::AABBData(const Fixed& xMax, const Fixed& yMax) : AABBData(Vector2(-xMax, -yMax), Vector2(xMax, yMax)) {}
 
 	bool AABBData::Intersecting(const AABBData & other) const {
 		// Compare coordinates directly
@@ -29,8 +26,7 @@ namespace LittleEngine {
 			point.y >= lowerBound.y && point.y <= upperBound.y;
 	}
 
-	CircleData::CircleData(const Fixed& radius, const Vector2& centre) : radius(radius), centre(centre) {
-	}
+	CircleData::CircleData(const Fixed& radius, const Vector2& centre) : centre(centre), radius(radius) {}
 
 	bool CircleData::IsIntersecting(const CircleData & other) const {
 		// Compare radii and distance

@@ -114,7 +114,7 @@ namespace LittleEngine {
 
 	void TestLevel::LoadAssets() {
 		Logger::Log(*this, "Loading Assets...", Logger::Severity::Debug);
-		engine->GetAssetManager().LoadAll(AssetManifestData("AssetManifests/TestLevel.amf").GetManifest());
+		m_pEngine->GetAssetManager().LoadAll(AssetManifestData("AssetManifests/TestLevel.amf").GetManifest());
 	}
 
 	void TestLevel::Tick(Fixed deltaTime) {
@@ -137,7 +137,7 @@ namespace LittleEngine {
 			actor1->SetNormalisedPosition(Vector2(0, Fixed(0.9f)));
 			auto rc = actor1->AddComponent<RenderComponent>();
 			auto& tr = rc->SetTextRenderable("Hello World!");
-			tr.layer = LayerID::UI;
+			tr.m_layer = LayerID::UI;
 			tr.SetColour(Colour(200, 150, 50)).SetSize(50);
 			//_TestLevel::_textActor = actor1;
 		}
@@ -182,7 +182,7 @@ namespace LittleEngine {
 	}
 
 	void TestLevel::PostRender(const RenderParams& params) {
-		if (clock.GetElapsedMilliSeconds() > 2000 && !_TestLevel::bSoundPlayed) {
+		if (m_clock.GetElapsedMilliSeconds() > 2000 && !_TestLevel::bSoundPlayed) {
 			_TestLevel::bSoundPlayed = true;
 			GetAudioManager().PlaySFX("TestSound.wav", Fixed(2, 10));
 		}	
@@ -203,6 +203,6 @@ namespace LittleEngine {
 	}
 
 	void TestLevel::OnQuitPressed() {
-		LoadLevel(engine->GetActiveLevelID() - 1);
+		LoadLevel(m_pEngine->GetActiveLevelID() - 1);
 	}
 }

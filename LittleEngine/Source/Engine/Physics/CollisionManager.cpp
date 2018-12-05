@@ -9,8 +9,8 @@ namespace LittleEngine {
 	}
 
 	bool CollisionManager::Unregister(Collider & collider) {
-		if (!colliders.empty()) {
-			auto search = std::find_if(colliders.begin(), colliders.end(),
+		if (!m_colliders.empty()) {
+			auto search = std::find_if(m_colliders.begin(), m_colliders.end(),
 			[&collider](Collider::wPtr toCompare) {
 				if (auto rhs = toCompare.lock()) {
 					return rhs.get() == &collider;
@@ -18,8 +18,8 @@ namespace LittleEngine {
 				return false;
 			}
 			);
-			if (search != colliders.end()) {
-				colliders.erase(search);
+			if (search != m_colliders.end()) {
+				m_colliders.erase(search);
 				Logger::Log(*this, "Unregistered 1 existing " + collider.GetNameInBrackets() + " collider", Logger::Severity::Debug);
 				return true;
 			}
@@ -30,12 +30,12 @@ namespace LittleEngine {
 
 	void CollisionManager::FixedTick() {
 		Cleanup();
-		if (colliders.size() < 2) return;
-		for (size_t i = 0; i < colliders.size(); ++i) {
-			auto lhs = colliders[i].lock();
+		if (m_colliders.size() < 2) return;
+		for (size_t i = 0; i < m_colliders.size(); ++i) {
+			auto lhs = m_colliders[i].lock();
 			if (lhs != nullptr) {
-				for (size_t j = i + 1; j < colliders.size(); ++j) {
-					auto rhs = colliders[j].lock();
+				for (size_t j = i + 1; j < m_colliders.size(); ++j) {
+					auto rhs = m_colliders[j].lock();
 					if (rhs == nullptr) continue;
 					ProcessCollision(*lhs, *rhs);
 				}
@@ -44,9 +44,9 @@ namespace LittleEngine {
 	}
 
 	void CollisionManager::Cleanup() {
-		int count = static_cast<int>(colliders.size());
-		GameUtils::EraseNullWeakPtrs<Collider>(colliders);
-		int diff = count - static_cast<int>(colliders.size());
+		int count = static_cast<int>(m_colliders.size());
+		GameUtils::EraseNullWeakPtrs<Collider>(m_colliders);
+		int diff = count - static_cast<int>(m_colliders.size());
 		if (diff > 0) {
 			Logger::Log(*this, "Removed " + Strings::ToString(diff) + " stale Colliders ", Logger::Severity::Debug);
 		}

@@ -19,14 +19,17 @@ namespace LittleEngine {
 	// \brief Container for text rendering metadata
 	struct TextData {
 	public:
+		std::string text;
 		Fixed pixelSize;
 		Fixed outlineSize;
-		std::string text;
 		Colour fillColour;
 		Colour outlineColour;
 		HAlign hAlign = HAlign::Centre;
 		VAlign vAlign = VAlign::Bottom;
+	private:
+		FontAsset* pFont;
 
+	public:
 		TextData(FontAsset& font, const std::string& text);
 		TextData(FontAsset& font, const std::string& text, Fixed pixelSize, Colour fillColour);
 		TextData(FontAsset& font, const std::string& text, Fixed pixelSize, Colour fillColour, Fixed outlineSize, Colour outlineColour);
@@ -34,15 +37,18 @@ namespace LittleEngine {
 		void SetFont(FontAsset& font);
 
 	private:
-		friend class TextRenderable;
-		FontAsset* font;
-
 		float GetNAlignmentHorz() const;
 		float GetNAlignmentVert() const;
+
+		friend class TextRenderable;
 	};
 
 	// \brief Concrete wrapper for SFML text shape
 	class TextRenderable : public Renderable {
+	private:
+		TextData m_data;
+		sf::Text m_sfText;
+
 	public:
 		TextRenderable(const TextData& data);
 		TextRenderable(const TextRenderable& prototype);
@@ -61,9 +67,5 @@ namespace LittleEngine {
 		virtual void SetPosition(const Vector2& screenPosition) override;
 		virtual void SetRotation(const Fixed& screenRotation) override;
 		virtual void SetScale(const Vector2& screenScale) override;
-
-	private:
-		TextData data;
-		sf::Text text;
 	};
 }

@@ -14,7 +14,10 @@ namespace GameUtils {
 		static const Fixed OneHalf;
 		static const Fixed OneThird;
 		static const Fixed OneTenth;
+	private:
+		int value;
 
+	public:
 		Fixed() = default;
 		explicit Fixed(double);
 		explicit Fixed(float);
@@ -56,13 +59,12 @@ namespace GameUtils {
 		std::string ToString() const;
 
 	private:
-		int m_value;
 		struct RawInit {};
 
 		friend std::ostream& operator<<(std::ostream&, Fixed);
 		friend Fixed operator-(const Fixed& rhs);
 
-		Fixed(RawInit, int rawFixedValue) : m_value(rawFixedValue) {}
+		Fixed(RawInit, int rawFixedValue) : value(rawFixedValue) {}
 	};
 
 	Fixed operator+(const Fixed& lhs, const Fixed& rhs);

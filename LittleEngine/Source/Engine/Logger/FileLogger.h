@@ -7,22 +7,26 @@
 
 namespace LittleEngine {
 	// \brief RAII Asynchronous file logger; sleeps thread for a millisecond 1000 times
-	class FileLogger {
+	class FileLogger final {
+	private:
+		std::vector<std::string> m_buffer;
+		std::unique_ptr<GameUtils::FileRW> m_file;
+		std::mutex m_mutex;
+		std::thread m_worker;
+		bool m_bWriting = true;
+	public:
+		bool m_bPauseWriting = false;		// To pause writing (will not terminate/pause thread)
+
 	public:
 		FileLogger(const std::string& fileName, bool bClearFile = true);
 		~FileLogger();
-		void AddToBuffer(const std::string& message);
-		// To pause writing (will not terminate/pause thread)
-		bool bPauseWriting = false;
-	private:
-		std::vector<std::string> buffer;
-		std::unique_ptr<GameUtils::FileRW> file;
-		std::mutex mutex;
-		bool bWriting = true;
 
+		void AddToBuffer(const std::string& message);
+		
+	private:
 		FileLogger(const FileLogger&) = delete;
 		FileLogger& operator=(const FileLogger&) = delete;
-		std::thread worker;
+		
 		void AsyncWrite();
 	};
 }

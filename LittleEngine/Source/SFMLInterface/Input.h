@@ -39,11 +39,10 @@ namespace LittleEngine {
 
 	// \brief Wrapper struct that holds key state modifiers
 	struct KeyMod {
+		static const KeyMod Default;
 		bool bControl;
 		bool bAlt;
 		bool bShift;
-		
-		const static KeyMod Default;
 		
 		KeyMod() : bControl(false), bAlt(false), bShift(false) {}
 		KeyMod(bool bControl, bool bAlt, bool bShift) : bControl(bControl), bAlt(bAlt), bShift(bShift) {}
@@ -58,12 +57,13 @@ namespace LittleEngine {
 	private:
 		std::string name;
 		KeyCode keyCode;
-
 	public:
 		bool bPressed;
 
+	public:
 		KeyState(KeyCode keyCode) : name("Unknown"), keyCode(keyCode), bPressed(false) {}
 		KeyState(KeyCode keyCode, const std::string& name) : name(name), keyCode(keyCode), bPressed(false) {}
+		
 		KeyCode GetKeyCode() const { return keyCode; }
 		const std::string& GetName() const { return name; }
 	};
@@ -92,6 +92,10 @@ namespace LittleEngine {
 
 	// \brief Concrete class that a WindowController can update KeyStates to every frame
 	class Input {
+	private:
+		RawTextInput m_rawTextInput;
+		std::vector<KeyState> m_keyStates;
+
 	public:
 		Input();
 
@@ -105,9 +109,6 @@ namespace LittleEngine {
 		const RawTextInput& GetRawSFMLInput() const;
 		
 	private:
-		std::vector<KeyState> keyStates;
-		RawTextInput rawTextInput;
-
 		Input(const Input&) = delete;
 		Input& operator=(const Input&) = delete;
 

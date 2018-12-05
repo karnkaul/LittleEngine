@@ -6,9 +6,9 @@
 #include "Engine/Audio/AudioManager.h"
 
 namespace LittleEngine {
-	LoadLevelCommand::LoadLevelCommand(LevelManager& levelManager, const LevelID& levelID) : levelID(levelID), levelManager(&levelManager) {}
+	LoadLevelCommand::LoadLevelCommand(LevelManager& levelManager, const LevelID& levelID) : m_levelID(levelID), m_pLevelManager(&levelManager) {}
 
 	bool LoadLevelCommand::operator()() {
-		return levelManager->LoadLevel(levelID);
+		return m_pLevelManager->LoadLevel(m_levelID);
 	}
 }

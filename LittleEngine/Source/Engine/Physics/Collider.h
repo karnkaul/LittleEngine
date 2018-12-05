@@ -13,45 +13,52 @@ namespace LittleEngine {
 	// Note: Registration with CollisionManager must be handled by owner
 	class Collider : public Component {
 	public:
-		static Fixed DEBUG_BORDER_WIDTH;
 		using Ptr = std::shared_ptr<Collider>;
 		using wPtr = std::weak_ptr<Collider>;
+	
+	public:
+		static Fixed DEBUG_BORDER_WIDTH;
+	private:
+		static bool m_bShowingDebugShapes;
+	protected:
+		std::unique_ptr<ShapeRenderable> m_debugShape;
+		const World* m_pWorld;
+	private:
+		GameUtils::Delegate<>::Token m_debugOnToken;
+		GameUtils::Delegate<>::Token m_debugOffToken;
 
+	public:
 		virtual ~Collider();
+
+		void OnHit(Collider& other);
 
 		// Abstract Visitor
 		virtual bool IsIntersecting(const Collider& rhs) const = 0;
 		virtual void DrawDebugShape(bool show, const Fixed& thickness = DEBUG_BORDER_WIDTH) = 0;
 
-		void OnHit(Collider& other);
-
 	protected:
-		const World* world;
-		std::unique_ptr<ShapeRenderable> debugShape;
-
 		Collider(Actor& actor, const std::string& name);
 		Collider(Actor& owner, const Collider& prototype);
 
 		bool IsShowingDebugShape() const;
 		
-		friend class AABBCollider;
 		// AABB Visitor 
 		virtual bool IsIntersectAABB(const class AABBCollider& rhs) const = 0;
-		
-		friend class CircleCollider;
 		// Circle Visitor
 		virtual bool IsIntersectCircle(const class CircleCollider& rhs) const = 0;
 
 	private:
-		GameUtils::Delegate<>::Token debugOnToken;
-		GameUtils::Delegate<>::Token debugOffToken;
-		static bool bShowingDebugShapes;
-
 		void RegisterSubscribers();
+
+		friend class AABBCollider;
+		friend class CircleCollider;
 	};
 
 	// \brief Concrete class for 2D Circle collider
 	class CircleCollider : public Collider {
+	private:
+		CircleData m_circle = CircleData::One;
+
 	public:
 		CircleCollider(Actor& actor);
 		CircleCollider(Actor& owner, const CircleCollider& prototype);
@@ -65,16 +72,17 @@ namespace LittleEngine {
 		virtual Component::Ptr UClone(Actor& owner) const override;
 
 	protected:
-		friend class AABBCollider;
 		virtual bool IsIntersectAABB(const AABBCollider& rhs) const override;
 		virtual bool IsIntersectCircle(const CircleCollider& rhs) const override;
 
-	private:
-		CircleData circle = CircleData::One;
+		friend class AABBCollider;
 	};
 
 	// \brief Concrete class for 2D AABB Collider
 	class AABBCollider : public Collider {
+	private:
+		AABBData m_bounds = AABBData::One; 
+	
 	public:
 		AABBCollider(Actor& actor);
 		AABBCollider(Actor& owner, const AABBCollider& prototype);
@@ -88,11 +96,9 @@ namespace LittleEngine {
 		virtual Component::Ptr UClone(Actor& owner) const override;
 
 	protected:
-		friend class CircleCollider;
 		virtual bool IsIntersectAABB(const class AABBCollider& rhs) const override;
 		virtual bool IsIntersectCircle(const class CircleCollider& rhs) const override;
 
-	private:
-		AABBData bounds = AABBData::One;
+		friend class CircleCollider;
 	};
 }

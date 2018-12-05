@@ -42,27 +42,27 @@ namespace LittleEngine {
 		Logger::Log(*this, "Constructing Engine");
 		try {
 			/* Load Config */ {
-				config = std::make_unique<EngineConfig>();
-				if (config->Load("config.gdata")) {
+				m_uConfig = std::make_unique<EngineConfig>();
+				if (m_uConfig->Load("config.gdata")) {
 					Logger::Log(*this, "Loaded config->ini successfully", Logger::Severity::Debug);
 				}
-				Logger::g_logLevel = config->GetLogLevel();
+				Logger::g_logLevel = m_uConfig->GetLogLevel();
 			}
 			
 			/* Instantiate entities */ {
-				world = std::make_unique<World>(config->GetScreenSize());
-				assetManager = std::make_unique<AssetManager>("Assets");
-				audioManager = std::make_unique<AudioManager>(*this);
-				levelManager = std::make_unique<LevelManager>(*this);
-				inputHandler = std::make_unique<InputHandler>();
+				m_uWorld = std::make_unique<World>(m_uConfig->GetScreenSize());
+				m_uAssetManager = std::make_unique<AssetManager>("Assets");
+				m_uAudioManager = std::make_unique<AudioManager>(*this);
+				m_uLevelManager = std::make_unique<LevelManager>(*this);
+				m_uInputHandler = std::make_unique<InputHandler>();
 				Logger::Log(*this, "Engine constructed and ready to Run()", Logger::Severity::Debug);
 			}
 
-			Collider::DEBUG_BORDER_WIDTH = config->GetColliderBorderWidth();
+			Collider::DEBUG_BORDER_WIDTH = m_uConfig->GetColliderBorderWidth();
 		}
 		catch (std::bad_alloc e) {
 			Logger::Log(*this, "Error constructing engine components!", Logger::Severity::Error);
-			exitCode = ExitCode::InitError;
+			m_exitCode = ExitCode::InitError;
 		}	
 	}
 
@@ -70,13 +70,13 @@ namespace LittleEngine {
 #if ENABLED(DEBUG_CONSOLE)
 		DebugConsole::Cleanup();
 #endif
-		levelManager = nullptr;
-		audioManager = nullptr;
-		assetManager = nullptr;
-		world = nullptr;
-		inputHandler = nullptr;
-		windowController = nullptr;
-		if (config->Save("config.gdata")) {
+		m_uLevelManager = nullptr;
+		m_uAudioManager = nullptr;
+		m_uAssetManager = nullptr;
+		m_uWorld = nullptr;
+		m_uInputHandler = nullptr;
+		m_uWindowController = nullptr;
+		if (m_uConfig->Save("config.gdata")) {
 			Logger::Log(*this, "config->ini saved successfully");
 		}
 		else {
@@ -90,13 +90,13 @@ namespace LittleEngine {
 	ExitCode Engine::Run() {
 		Logger::Log(*this, "Execution started");
 		
-		if (exitCode == ExitCode::OK) {
+		if (m_exitCode == ExitCode::OK) {
 			if (CreateWindow()) {
 				/* Load Level 0 */
-				if (!levelManager->LoadLevel(BOOTLEVEL)) {
+				if (!m_uLevelManager->LoadLevel(BOOTLEVEL)) {
 					Logger::Log(*this, "Could not load level 0!", Logger::Severity::Error);
-					exitCode = ExitCode::ExecutionError;
-					return exitCode;
+					m_exitCode = ExitCode::ExecutionError;
+					return m_exitCode;
 				}
 
 				/* Debugging */
@@ -108,15 +108,15 @@ namespace LittleEngine {
 				double previous = GetCurrentMicroseconds();
 				Fixed deltaTime = 0;
 				Fixed lag = 0;
-				while (windowController->IsWindowOpen() && !bIsQuitting) {
+				while (m_uWindowController->IsWindowOpen() && !m_bIsQuitting) {
 					/* Poll Window Events */ {
-						windowController->PollEvents();
-						if (!bIsPaused && !windowController->IsWindowFocussed()) {
-							bIsPaused = true;
+						m_uWindowController->PollEvents();
+						if (!m_bIsPaused && !m_uWindowController->IsWindowFocussed()) {
+							m_bIsPaused = true;
 							Logger::Log(*this, "Game paused");
 						}
-						if (bIsPaused && windowController->IsWindowFocussed()) {
-							bIsPaused = false;
+						if (m_bIsPaused && m_uWindowController->IsWindowFocussed()) {
+							m_bIsPaused = false;
 							// Reset FixedTick time lag (account for clock not pausing)
 							previous = GetCurrentMicroseconds();
 							Logger::Log(*this, "Game unpaused");
@@ -124,8 +124,8 @@ namespace LittleEngine {
 					}
 
 					/* Process Frame */
-					if (!bIsPaused) {
-						inputHandler->ProcessInput(windowController->GetInput());
+					if (!m_bIsPaused) {
+						m_uInputHandler->ProcessInput(m_uWindowController->GetInput());
 
 						double current = GetCurrentMicroseconds();
 						deltaTime = Fixed(current - previous);
@@ -135,7 +135,7 @@ namespace LittleEngine {
 						/* Fixed Tick */ {
 							int start = SystemClock::GetCurrentMilliseconds();
 							while (lag >= MS_PER_FIXED_TICK) {
-								levelManager->GetActiveLevel()->FixedTick();
+								m_uLevelManager->GetActiveLevel()->FixedTick();
 								lag -= MS_PER_FIXED_TICK;
 								if (SystemClock::GetCurrentMilliseconds() - start > MAX_FIXED_TICK_MS) {
 									Logger::Log(*this, "Timeout during FixedTick(). Ignore if pausing rendering", Logger::Severity::Warning);
@@ -147,29 +147,29 @@ namespace LittleEngine {
 						/* Tick */ {
 							STOPWATCH_START("Tick");
 							GameClock::Tick(deltaTime);
-							inputHandler->FireInput();
-							audioManager->Tick(deltaTime);
-							levelManager->GetActiveLevel()->Tick(deltaTime);
+							m_uInputHandler->FireInput();
+							m_uAudioManager->Tick(deltaTime);
+							m_uLevelManager->GetActiveLevel()->Tick(deltaTime);
 							STOPWATCH_STOP();
 						}
 
 						/* Render */ {
 							STOPWATCH_START("Render");
-							RenderParams params(*windowController);
-							levelManager->GetActiveLevel()->Render(params);
+							RenderParams params(*m_uWindowController);
+							m_uLevelManager->GetActiveLevel()->Render(params);
 #if ENABLED(DEBUG_CONSOLE)
 							DebugConsole::RenderConsole(*this, params, deltaTime);
 #endif
-							windowController->Draw();
+							m_uWindowController->Draw();
 							STOPWATCH_STOP();
 						}
 						
 						/* Post Render: Commands */ {
 							STOPWATCH_START("Post Render");
-							for (const auto& command : commands) {
+							for (const auto& command : m_commands) {
 								(*command)();
 							}
-							commands.clear();
+							m_commands.clear();
 							STOPWATCH_STOP();
 						}
 
@@ -188,47 +188,47 @@ namespace LittleEngine {
 			}
 		}
 
-		return exitCode;
+		return m_exitCode;
 	}
 
 	const LevelID Engine::GetActiveLevelID() const {
-		return levelManager->GetActiveLevelID();
+		return m_uLevelManager->GetActiveLevelID();
 	}
 
 	InputHandler & Engine::GetInputHandler() const {
-		return *inputHandler;
+		return *m_uInputHandler;
 	}
 
 	const World& Engine::GetWorld() const {
-		return *world;
+		return *m_uWorld;
 	}
 
 	AssetManager & Engine::GetAssetManager() const {
-		return *assetManager;
+		return *m_uAssetManager;
 	}
 
 	AudioManager & Engine::GetAudioManager() const {
-		return *audioManager;
+		return *m_uAudioManager;
 	}
 
 	void Engine::LoadLevel(const LevelID& levelID) {
-		commands.emplace_back(std::make_unique<LoadLevelCommand>(*levelManager, levelID));
+		m_commands.emplace_back(std::make_unique<LoadLevelCommand>(*m_uLevelManager, levelID));
 	}
 
 	void Engine::Quit() {
-		bIsQuitting = true;
+		m_bIsQuitting = true;
 	}
 
 	bool Engine::CreateWindow() {
-		Vector2 screenSize = config->GetScreenSize();
-		std::string windowTitle = config->GetWindowTitle();
+		Vector2 screenSize = m_uConfig->GetScreenSize();
+		std::string windowTitle = m_uConfig->GetWindowTitle();
 		Logger::Log(*this, "Initialising window to " + screenSize.ToString());
 		try {
-			windowController = std::make_unique<WindowController>(screenSize.x.ToInt(), screenSize.y.ToInt(), windowTitle);
+			m_uWindowController = std::make_unique<WindowController>(screenSize.x.ToInt(), screenSize.y.ToInt(), windowTitle);
 		}
 		catch (std::bad_alloc e) {
 			Logger::Log(*this, "Error allocating Window Controller!", Logger::Severity::Error);
-			exitCode = ExitCode::AllocationError;
+			m_exitCode = ExitCode::AllocationError;
 			return false;
 		}
 		SystemClock::Restart();

@@ -7,14 +7,17 @@ namespace GameUtils {
 	// and provides an API for parenting to other Transforms.
 	struct Transform {
 	public:
-		const static Transform IDENTITY;
+		static const Transform IDENTITY;
 
-		// Position world space
-		Vector2 localPosition = Vector2::Zero;
-		// Rotation in world orientation (+ is clockwise)
-		Fixed localOrientation = Fixed::Zero;
-		Vector2 localScale = Vector2::One;
+	private:
+		std::vector<Transform*> children;
+		Transform* pParent = nullptr;
+	public:
+		Vector2 localPosition;		// screen centre is origin
+		Vector2 localScale;
+		Fixed localOrientation;		// + is clockwise
 
+	public:
 		Transform();
 		~Transform();
 
@@ -37,10 +40,7 @@ namespace GameUtils {
 		std::string ToString() const;
 
 	private:
-		std::vector<Transform*> m_children;
-		Transform* m_parent = nullptr;
-
-		void AddChild(Transform* child);
-		void RemoveChild(Transform* child);
+		void AddChild(Transform* pChild);
+		void RemoveChild(Transform* pChild);
 	};
 }

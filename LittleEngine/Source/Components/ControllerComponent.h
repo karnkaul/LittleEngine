@@ -13,6 +13,12 @@ namespace LittleEngine {
 	
 	// \brief Player Controller Component
 	class ControllerComponent : public Component {
+	private:
+		Fixed prevDeltaTime = 0;
+		std::vector<OnInput::Token> m_tokens;
+		class RenderComponent* m_pRenderer = nullptr;
+		InputHandler* m_pInputHandler;
+
 	public:
 		ControllerComponent(Actor& actor);
 		ControllerComponent(Actor& owner, const ControllerComponent& prototype);
@@ -22,11 +28,6 @@ namespace LittleEngine {
 		virtual Component::Ptr UClone(Actor& owner) const override;
 
 	private:
-		class RenderComponent* pRenderer = nullptr;
-		std::vector<OnInput::Token> tokens;
-		Fixed prevDeltaTime = 0;
-		InputHandler* inputHandler;
-
 		Vector2 GetRenderPadding();
 		void OnLeft();
 		void OnRight();

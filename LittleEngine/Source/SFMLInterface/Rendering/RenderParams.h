@@ -12,6 +12,16 @@ namespace LittleEngine {
 	// \brief Compressed wrapper struct for SFML Color
 	struct Colour {
 	public:
+		static const Colour Black;
+		static const Colour White;
+		static const Colour Red;
+		static const Colour Green;
+		static const Colour Blue;
+		static const Colour Yellow;
+		static const Colour Magenta;
+		static const Colour Cyan;
+		static const Colour Transparent;
+
 		UByte r;
 		UByte g;
 		UByte b;
@@ -19,16 +29,6 @@ namespace LittleEngine {
 
 		// Warning: All inputs must be unsigned ints!
 		Colour(UByte r = 255, UByte g = 255, UByte b = 255, UByte a = 255) : r(r), g(g), b(b), a(a) {}
-
-		const static Colour Black;
-		const static Colour White;
-		const static Colour Red;
-		const static Colour Green;
-		const static Colour Blue;
-		const static Colour Yellow;
-		const static Colour Magenta;
-		const static Colour Cyan;
-		const static Colour Transparent;
 	};
 
 	// \brief Shorthand codes for layer spaces
@@ -46,31 +46,31 @@ namespace LittleEngine {
 
 	// \brief Safe Wrapper for LayerID (WindowController::Buffer compatible)
 	struct LayerInfo {
+	private:
+		int layerID = static_cast<int>(LayerID::Default);
+
 	public:
 		LayerInfo() = default;
 		explicit LayerInfo(int layerID);
 		LayerInfo(const LayerID& layerID);
 
-		int GetLayerID();
+		int GetLayerID() const;
 		int SetLayerID(int layerID);
 		int SetLayerID(const LayerID& layerID);
-
-	private:
-		int layerID = static_cast<int>(LayerID::Default);
 	};
 
 	// \brief Final parameters passed to SFML RenderWindow
 	struct RenderParams {
 		Vector2 screenPosition;
-		Fixed screenRotation;
 		Vector2 screenScale;
+		Fixed screenRotation;
+	private:
+		WindowController* pWindowController;
 
+	public:
 		RenderParams(WindowController& controller);
 
 		WindowController& GetWindowController();
 		void Reset();
-
-	private:
-		WindowController* windowController;
 	};
 }

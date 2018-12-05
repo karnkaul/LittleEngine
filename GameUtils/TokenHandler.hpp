@@ -5,6 +5,10 @@
 namespace GameUtils {
 	template<typename T>
 	struct TokenHandler {
+	private:
+		std::vector<T> tokens;
+
+	public:
 		template<typename T>
 		void AddToken(T token) {
 			tokens.push_back(token);
@@ -13,8 +17,5 @@ namespace GameUtils {
 		void Clear() {
 			tokens.clear();
 		}
-
-	private:
-		std::vector<T> tokens;
 	};
 }

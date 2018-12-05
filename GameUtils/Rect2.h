@@ -15,11 +15,11 @@ namespace GameUtils {
 		Rect2& operator=(const Rect2&) = default;
 		Rect2& operator=(Rect2&&) = default;
 
-		Fixed GetHeight() {
+		Fixed GetHeight() const {
 			return upper.y - lower.y;
 		}
 
-		Fixed GetWidth() {
+		Fixed GetWidth() const {
 			return upper.x - lower.x;
 		}
 	};

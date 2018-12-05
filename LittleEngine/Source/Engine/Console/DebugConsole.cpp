@@ -107,14 +107,14 @@ namespace LittleEngine { namespace DebugConsole {
 		struct DebugConsoleLog {
 			using Transform = GameUtils::Transform;
 
-			const static int NUM_LOG_LINES = 10;
+			static const int NUM_LOG_LINES = 10;
 			Transform logT[NUM_LOG_LINES];
 
 			DebugConsoleLog(TextData& baseData) {
 				for (auto& l : logText) {
 					l = std::make_unique<TextRenderable>(baseData);
 					l->SetSize(15);
-					l->layer = LayerID::TOP;
+					l->m_layer = LayerID::TOP;
 				}
 			}
 
@@ -176,7 +176,7 @@ namespace LittleEngine { namespace DebugConsole {
 
 		private:
 		
-			const static int LOG_LINE_HEIGHT = 4;
+			static const int LOG_LINE_HEIGHT = 4;
 
 			Transform rootT;
 			Transform inputT;
@@ -198,7 +198,7 @@ namespace LittleEngine { namespace DebugConsole {
 					inputText = std::make_unique<TextRenderable>(textData);
 					inputText->SetColour(Colour::White);
 					inputText->SetSize(16);
-					inputText->layer = LayerID::TOP;
+					inputText->m_layer = LayerID::TOP;
 				}
 				if (rootT.localPosition == Vector2::Zero) {
 					rootT.localPosition = N2Screen(Vector2(Fixed::Zero, Fixed(3, 4)));
@@ -220,13 +220,13 @@ namespace LittleEngine { namespace DebugConsole {
 				if (background == nullptr) {
 					background = std::make_unique<RectangleRenderable>(bgSize);
 					background->SetFillColour(LOG_BG_COLOUR);
-					background->layer = LayerID::TOP;
+					background->m_layer = LayerID::TOP;
 				}
 				if (separator == nullptr) {
 					Vector2 separatorSize(bgSize.x, Fixed::One);
 					separator = std::make_unique<RectangleRenderable>(separatorSize);
 					separator->SetFillColour(LOG_TEXT_COLOUR);
-					separator->layer = LayerID::TOP;
+					separator->m_layer = LayerID::TOP;
 				}
 			}
 

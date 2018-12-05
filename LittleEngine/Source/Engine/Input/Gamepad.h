@@ -27,10 +27,6 @@ namespace LittleEngine {
 
 	// \brief Virtual gamepad: binds KeyCodes to GameInput
 	class Gamepad {
-	public:
-		GameInput ToGameInput(const KeyState& input) const;
-		void Bind(KeyCode keyCode, GameInput key);
-
 	private:
 		struct RawInput {
 			KeyCode keyCode;
@@ -41,15 +37,21 @@ namespace LittleEngine {
 		};
 
 		struct InputMapping {
-			InputMapping(GameInput key);
-			InputMapping(GameInput key, KeyCode keyCode);
-			void Bind(KeyCode keyCode);
-			bool IsMapped(KeyCode keyCode) const;
-
 			GameInput key;
 			std::vector<RawInput> rawInputs;
+
+			InputMapping(GameInput key);
+			InputMapping(GameInput key, KeyCode keyCode);
+			
+			void Bind(KeyCode keyCode);
+			bool IsMapped(KeyCode keyCode) const;
 		};
 
-		std::vector<InputMapping> bindings;
+	private:
+		std::vector<InputMapping> m_bindings;
+
+	public:
+		GameInput ToGameInput(const KeyState& input) const;
+		void Bind(KeyCode keyCode, GameInput key);
 	};
 }

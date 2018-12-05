@@ -22,49 +22,49 @@ namespace LittleEngine {
 	constexpr int RESERVE_HASH_BUCKETS = 2048;
 
 	Level::Level(const std::string& name) : Object(name) {
-		actorMap.reserve(RESERVE_HASH_BUCKETS);
-		Logger::Log(*this, GetNameInBrackets() + " (Level) created. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
+		m_actorMap.reserve(RESERVE_HASH_BUCKETS);
+		Logger::Log(*this, GetNameInBrackets() + " (Level) created. [GameTime: " + m_clock.ToString(m_clock.GetGameTimeMilliSeconds()) + "]");
 	}
 
 	Level::~Level() {
-		actorMap.clear();
+		m_actorMap.clear();
 		Logger::Log(*this, GetNameInBrackets() + " (Level) destroyed");
 	}
 
 	void Level::SetEngine(Engine & engine) {
-		this->engine = &engine;
-		state = State::IDLE;
+		this->m_pEngine = &engine;
+		m_state = State::IDLE;
 	}
 
 	void Level::LoadAssets() {}
 
 	void Level::Activate() {
 		OnActivated();
-		state = State::ACTIVE;
-		clock.Restart();
-		Logger::Log(*this, GetNameInBrackets() + " (Level) activated. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
+		m_state = State::ACTIVE;
+		m_clock.Restart();
+		Logger::Log(*this, GetNameInBrackets() + " (Level) activated. [GameTime: " + m_clock.ToString(m_clock.GetGameTimeMilliSeconds()) + "]");
 	}
 
 	void Level::OnActivated() {}
 
 	void Level::FixedTick() {
 		Logger::Log(*this, "Executing Fixed Tick", Logger::Severity::HOT);
-		collisionManager.FixedTick();
+		m_collisionManager.FixedTick();
 
-		for (auto & iter : actorMap) {
+		for (auto & iter : m_actorMap) {
 			Actor::Ptr& actor = iter.second;
-			if (!actor->_bDestroyed && actor->_bEnabled) {
+			if (!actor->m_bDestroyed && actor->m_bEnabled) {
 				actor->FixedTick();
 			}
 		}
 	}
 
 	void Level::Tick(Fixed deltaTime) {
-		Logger::Log(*this, "Executing Tick [" + Strings::ToString(actorMap.size()) + " actors]", Logger::Severity::HOT);
+		Logger::Log(*this, "Executing Tick [" + Strings::ToString(m_actorMap.size()) + " actors]", Logger::Severity::HOT);
 
-		for (auto & iter : actorMap) {
+		for (auto & iter : m_actorMap) {
 			Actor::Ptr& actor = iter.second;
-			if (!actor->_bDestroyed && actor->_bEnabled) {
+			if (!actor->m_bDestroyed && actor->m_bEnabled) {
 				actor->Tick(deltaTime);
 			}
 		}
@@ -72,10 +72,10 @@ namespace LittleEngine {
 
 	void Level::Render(RenderParams& params) {
 		STOPWATCH_START("Render");
-		GameUtils::CleanMap<int, Actor::Ptr>(actorMap, [](Actor::Ptr& actor) { return !actor || actor->_bDestroyed; });
-		for (auto & iter : actorMap) {
+		GameUtils::CleanMap<int, Actor::Ptr>(m_actorMap, [](Actor::Ptr& actor) { return !actor || actor->m_bDestroyed; });
+		for (auto & iter : m_actorMap) {
 			Actor::Ptr& actor = iter.second;
-			if (actor->_bEnabled) {
+			if (actor->m_bEnabled) {
 				actor->Render(params);
 			}
 		}
@@ -89,11 +89,11 @@ namespace LittleEngine {
 
 	void Level::Clear() {
 		OnClearing();
-		actorMap.clear();
+		m_actorMap.clear();
 		Spawner::Cleanup();
-		tokenHandler.Clear();
-		Logger::Log(*this, GetNameInBrackets() + " (Level) deactivated. [GameTime: " + clock.ToString(clock.GetGameTimeMilliSeconds()) + "]");
-		state = State::IDLE;
+		m_tokenHandler.Clear();
+		Logger::Log(*this, GetNameInBrackets() + " (Level) deactivated. [GameTime: " + m_clock.ToString(m_clock.GetGameTimeMilliSeconds()) + "]");
+		m_state = State::IDLE;
 	}
 
 	void Level::OnClearing() {
@@ -101,19 +101,19 @@ namespace LittleEngine {
 
 	void Level::RegisterScopedInput(const GameInput& gameInput, OnInput::Callback callback, const OnKey& type, bool consume) {
 		OnInput::Token token = GetInputHandler().Register(gameInput, callback, type, consume);
-		tokenHandler.AddToken(std::move(token));
+		m_tokenHandler.AddToken(std::move(token));
 	}
 
 	Actor* Level::FindActor(int actorID) const {
-		auto search = actorMap.find(actorID);
-		if (search != actorMap.end()) {
+		auto search = m_actorMap.find(actorID);
+		if (search != m_actorMap.end()) {
 			return search->second.get();
 		}
 		return nullptr;
 	}
 
 	bool Level::IsAlive(int actorID) const {
-		return actorMap.find(actorID) != actorMap.end();
+		return m_actorMap.find(actorID) != m_actorMap.end();
 	}
 
 	bool Level::DestroyActor(int actorID) {
@@ -127,46 +127,46 @@ namespace LittleEngine {
 	}
 
 	InputHandler & Level::GetInputHandler() const {
-		return engine->GetInputHandler();
+		return m_pEngine->GetInputHandler();
 	}
 
 	const World & Level::GetWorld() const {
-		return engine->GetWorld();
+		return m_pEngine->GetWorld();
 	}
 
 	AssetManager & Level::GetAssetManager() const {
-		return engine->GetAssetManager();
+		return m_pEngine->GetAssetManager();
 	}
 
 	AudioManager & Level::GetAudioManager() {
-		return engine->GetAudioManager();
+		return m_pEngine->GetAudioManager();
 	}
 
 	CollisionManager & Level::GetCollisionManager() {
-		return collisionManager;
+		return m_collisionManager;
 	}
 
 	int64_t Level::LevelTimeMicroSeconds() const {
-		return clock.GetElapsedMicroSeconds();
+		return m_clock.GetElapsedMicroSeconds();
 	}
 
 	int Level::LevelTimeMilliSeconds() const {
-		return clock.GetElapsedMilliSeconds();
+		return m_clock.GetElapsedMilliSeconds();
 	}
 
 	int Level::GameTimeMilliSeconds() const {
-		return clock.GetGameTimeMilliSeconds();
+		return m_clock.GetGameTimeMilliSeconds();
 	}
 
 	void Level::LoadLevel(LevelID levelID) {
-		engine->LoadLevel(levelID);
+		m_pEngine->LoadLevel(levelID);
 	}
 
 	void Level::Quit() {
-		engine->Quit();
+		m_pEngine->Quit();
 	}
 
 	LevelID Level::GetActiveLevelID() const {
-		return engine->GetActiveLevelID();
+		return m_pEngine->GetActiveLevelID();
 	}
 }

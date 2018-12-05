@@ -55,11 +55,11 @@ namespace GameUtils {
 
 	bool Property::Persistor::Save(const std::string& filePath) const {
 		FileRW file(filePath);
-		return file.Write(PropertiesToString(properties));
+		return file.Write(PropertiesToString(m_properties));
 	}
 
 	Property Property::Persistor::GetProp(const std::string& key) const {
-		for (auto& prop : properties) {
+		for (auto& prop : m_properties) {
 			if (prop.key == key) {
 				return prop;
 			}
@@ -68,12 +68,12 @@ namespace GameUtils {
 	}
 
 	void Property::Persistor::SetProp(const Property& property) {
-		for (auto& prop : properties) {
+		for (auto& prop : m_properties) {
 			if (prop.key == property.key) {
 				prop.stringValue = property.stringValue;
 				return;
 			}
 		}
-		properties.push_back(property);
+		m_properties.push_back(property);
 	}
 }

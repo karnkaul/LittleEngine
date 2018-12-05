@@ -4,15 +4,17 @@
 #include "Utils.h"
 
 namespace Maths {
-	bool _bInit = false;
-	static void InitRand(bool useTime = true) {
-		if (useTime) {
-			srand(static_cast<unsigned int>(time(nullptr)));
+	namespace {
+		bool _bInit = false;
+		void InitRand(bool useTime = true) {
+			if (useTime) {
+				srand(static_cast<unsigned int>(time(nullptr)));
+			}
+			else {
+				srand(0);
+			}
+			_bInit = true;
 		}
-		else {
-			srand(0);
-		}
-		_bInit = true;
 	}
 
 	Fixed Random::Range(const Fixed& min, const Fixed& max) {

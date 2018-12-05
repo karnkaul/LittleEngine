@@ -82,6 +82,10 @@ namespace LittleEngine {
 	};
 	
 	class ParticleSystem : public Actor {
+	protected:
+		std::vector<std::unique_ptr<class Emitter>> m_emitters;
+		bool m_bIsPlaying = false;
+
 	public:
 		ParticleSystem();	// Cannot default/inline impl, due to forward declared unique_ptr
 		virtual ~ParticleSystem();
@@ -89,12 +93,9 @@ namespace LittleEngine {
 		void InitParticleSystem(ParticleSystemData&& data);
 		void Start();
 		void Stop();
-		inline bool IsPlaying() const { return bIsPlaying; }
+		inline bool IsPlaying() const { return m_bIsPlaying; }
 
 	protected:
-		std::vector<std::unique_ptr<class Emitter>> emitters;
-		bool bIsPlaying = false;
-
 		virtual void Tick(const Fixed& deltaTime) override;
 		virtual void Render(RenderParams& params) override;
 	};

@@ -3,12 +3,12 @@
 #include "SFMLInterface/WindowController.h"
 
 namespace LittleEngine {
-	RenderParams::RenderParams(WindowController& controller) : windowController(&controller) {
+	RenderParams::RenderParams(WindowController& controller) : pWindowController(&controller) {
 		Reset();
 	}
 
 	WindowController& RenderParams::GetWindowController() {
-		return *windowController;
+		return *pWindowController;
 	}
 	
 	void RenderParams::Reset() {
