@@ -6,7 +6,7 @@
 #include "Engine/GameClock.h"
 #include "Entities/Actor.h"
 #include "Entities/Player.h"
-#include "Engine/Physics/CollisionManager.h"
+#include "Components/Physics/CollisionManager.h"
 #include "Engine/Audio/AudioManager.h"
 #include "Engine/Input/InputHandler.h"
 #include "Engine/Logger/Logger.h"
@@ -14,7 +14,6 @@
 
 namespace LittleEngine {
 	class Engine;
-	class World;
 	class Input;
 	struct RenderParams;
 	class AssetManager;
@@ -57,7 +56,6 @@ namespace LittleEngine {
 		virtual void LoadAssets();
 
 		InputHandler& GetInputHandler() const;
-		const World& GetWorld() const;
 		AssetManager& GetAssetManager() const;
 		AudioManager& GetAudioManager();
 		CollisionManager& GetCollisionManager();
@@ -75,12 +73,11 @@ namespace LittleEngine {
 		// \brief Safe API to spawn new Actors. All spawned Actors will be destroyed along with the Level
 		// Actors may also be prematurely destroyed. Ensure to check Actor* validity via IsAlive(actorID)
 		template<typename T>
-		T* SpawnActor(const std::string& name, bool bSetEnabled, const Vector2& position = Vector2::Zero, const Fixed& rotation = Fixed::Zero) {
+		T* SpawnActor(const std::string& name, bool bSetEnabled, const Vector2& position = Vector2::Zero, const Fixed& orientation = Fixed::Zero) {
 			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
 			DEBUG_ASSERT(m_state != State::ACTIVE, "SpawnActor<T>() called in live game time! Use CloneActor<T>(prototype) instead");
-			//auto actor = std::make_unique<T>(*this, name, position, rotation);
 			auto actor = std::make_unique<T>();
-			actor->InitActor(*this, nextActorID++, name, position, rotation);
+			actor->InitActor(*this, nextActorID++, name, position, orientation);
 			actor->ToggleActive(bSetEnabled);
 			T* ret = actor.get();
 			m_actorMap.emplace(actor->m_actorID, std::move(actor));
@@ -92,7 +89,6 @@ namespace LittleEngine {
 		template<typename T>
 		T* CloneActor(const T& prototype) {
 			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
-			//auto actor = std::make_unique<T>(*this, prototype);
 			auto actor = std::make_unique<T>();
 			actor->InitActor(*this, nextActorID++, prototype);
 			T* ret = actor.get();
@@ -117,7 +113,7 @@ namespace LittleEngine {
 		// \brief Override for callback every frame
 		virtual void Tick(Fixed deltaTime);
 		// \brief Override to obtain RenderParams for current frame (no need to call base class implementation)
-		virtual void PostRender(const RenderParams& params);
+		virtual void PostRender();
 		// \brief Override for callback before level is deactivated (no need to call base class implementation)
 		virtual void OnClearing();
 		
@@ -125,7 +121,7 @@ namespace LittleEngine {
 		void RegisterScopedInput(const GameInput& gameInput, OnInput::Callback callback, const OnKey& type, bool consume = false);
 
 	private:
-		void Render(RenderParams& params);
+		void Render();
 		void SetEngine(Engine& engine);
 		void Activate();
 		void Clear();

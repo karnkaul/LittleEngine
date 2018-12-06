@@ -16,12 +16,12 @@ namespace LittleEngine {
 	using LevelID = int;
 
 	enum class ExitCode { 
-		OK,
-		InitError,
-		DependencyError,
-		AllocationError,
-		ExecutionError,
-		CleanupError
+		OK					= 0,
+		InitError			= 101,
+		DependencyError		= 102,
+		AllocationError		= 201,
+		ExecutionError		= 301,
+		CleanupError		= 401,
 	};
 	
 	// \brief Core Engine class
@@ -33,11 +33,10 @@ namespace LittleEngine {
 		template<typename T>
 		using UPtr = std::unique_ptr<T>;
 
+		class Graphics* m_pGraphics;
 		UPtr<LevelManager> m_uLevelManager;
 		UPtr<class AssetManager> m_uAssetManager;
 		UPtr<class AudioManager> m_uAudioManager;
-		UPtr<class World> m_uWorld;
-		UPtr<class WindowController> m_uWindowController;
 		UPtr<class InputHandler> m_uInputHandler;
 		UPtr<class EngineConfig> m_uConfig;
 		std::vector<UPtr<class EngineCommand>> m_commands;
@@ -67,7 +66,6 @@ namespace LittleEngine {
 
 		const LevelID GetActiveLevelID() const;
 		InputHandler& GetInputHandler() const;
-		const World& GetWorld() const;
 		AssetManager& GetAssetManager() const;
 		AudioManager& GetAudioManager() const;
 		void LoadLevel(const LevelID& levelID);

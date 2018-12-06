@@ -3,7 +3,6 @@
 #include <thread>
 #include "Engine.h"
 #include "EngineCommands.h"
-#include "World.h"
 #include "Logger/Logger.h"
 #include "Config/EngineConfig.h"
 #include "GameClock.h"
@@ -15,7 +14,7 @@
 #include "Levels/LevelManager.h"
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Input.h"
-#include "SFMLInterface/WindowController.h"
+#include "SFMLInterface/Graphics.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 
 namespace LittleEngine {
@@ -50,7 +49,6 @@ namespace LittleEngine {
 			}
 			
 			/* Instantiate entities */ {
-				m_uWorld = std::make_unique<World>(m_uConfig->GetScreenSize());
 				m_uAssetManager = std::make_unique<AssetManager>("Assets");
 				m_uAudioManager = std::make_unique<AudioManager>(*this);
 				m_uLevelManager = std::make_unique<LevelManager>(*this);
@@ -73,9 +71,9 @@ namespace LittleEngine {
 		m_uLevelManager = nullptr;
 		m_uAudioManager = nullptr;
 		m_uAssetManager = nullptr;
-		m_uWorld = nullptr;
 		m_uInputHandler = nullptr;
-		m_uWindowController = nullptr;
+		Graphics::DestroyInstance();
+		m_pGraphics = nullptr;
 		if (m_uConfig->Save("config.gdata")) {
 			Logger::Log(*this, "config->ini saved successfully");
 		}
@@ -108,14 +106,14 @@ namespace LittleEngine {
 				double previous = GetCurrentMicroseconds();
 				Fixed deltaTime = 0;
 				Fixed lag = 0;
-				while (m_uWindowController->IsWindowOpen() && !m_bIsQuitting) {
+				while (m_pGraphics->IsWindowOpen() && !m_bIsQuitting) {
 					/* Poll Window Events */ {
-						m_uWindowController->PollEvents();
-						if (!m_bIsPaused && !m_uWindowController->IsWindowFocussed()) {
+						m_pGraphics->PollEvents();
+						if (!m_bIsPaused && !m_pGraphics->IsWindowFocussed()) {
 							m_bIsPaused = true;
 							Logger::Log(*this, "Game paused");
 						}
-						if (m_bIsPaused && m_uWindowController->IsWindowFocussed()) {
+						if (m_bIsPaused && m_pGraphics->IsWindowFocussed()) {
 							m_bIsPaused = false;
 							// Reset FixedTick time lag (account for clock not pausing)
 							previous = GetCurrentMicroseconds();
@@ -125,7 +123,7 @@ namespace LittleEngine {
 
 					/* Process Frame */
 					if (!m_bIsPaused) {
-						m_uInputHandler->ProcessInput(m_uWindowController->GetInput());
+						m_uInputHandler->ProcessInput(m_pGraphics->GetInput());
 
 						double current = GetCurrentMicroseconds();
 						deltaTime = Fixed(current - previous);
@@ -155,12 +153,11 @@ namespace LittleEngine {
 
 						/* Render */ {
 							STOPWATCH_START("Render");
-							RenderParams params(*m_uWindowController);
-							m_uLevelManager->GetActiveLevel()->Render(params);
+							m_uLevelManager->GetActiveLevel()->Render();
 #if ENABLED(DEBUG_CONSOLE)
-							DebugConsole::RenderConsole(*this, params, deltaTime);
+							DebugConsole::RenderConsole(*this, deltaTime);
 #endif
-							m_uWindowController->Draw();
+							m_pGraphics->Draw();
 							STOPWATCH_STOP();
 						}
 						
@@ -199,10 +196,6 @@ namespace LittleEngine {
 		return *m_uInputHandler;
 	}
 
-	const World& Engine::GetWorld() const {
-		return *m_uWorld;
-	}
-
 	AssetManager & Engine::GetAssetManager() const {
 		return *m_uAssetManager;
 	}
@@ -224,11 +217,21 @@ namespace LittleEngine {
 		std::string windowTitle = m_uConfig->GetWindowTitle();
 		Logger::Log(*this, "Initialising window to " + screenSize.ToString());
 		try {
-			m_uWindowController = std::make_unique<WindowController>(screenSize.x.ToInt(), screenSize.y.ToInt(), windowTitle);
+			GraphicsData data;
+			data.screenWidth = screenSize.x.ToInt();
+			data.screenHeight = screenSize.y.ToInt();
+			data.windowTitle = windowTitle;
+			data.viewSize = m_uConfig->GetViewSize();
+			m_pGraphics = &Graphics::CreateInstance(data);
 		}
-		catch (std::bad_alloc e) {
-			Logger::Log(*this, "Error allocating Window Controller!", Logger::Severity::Error);
+		catch (std::bad_alloc&) {
+			Logger::Log(*this, "Error instantiating Graphics!", Logger::Severity::Error);
 			m_exitCode = ExitCode::AllocationError;
+			return false;
+		}
+		catch (GraphicsException& e) {
+			Logger::Log(*this, e.errMsg, Logger::Severity::Error);
+			m_exitCode = ExitCode::InitError;
 			return false;
 		}
 		SystemClock::Restart();

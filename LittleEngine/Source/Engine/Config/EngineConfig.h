@@ -28,11 +28,13 @@ namespace LittleEngine {
 		Fixed GetColliderBorderWidth() const;
 		Logger::Severity GetLogLevel() const;
 		const Vector2 GetScreenSize() const;
+		const Vector2 GetViewSize() const;
 
 		bool SetWindowTitle(const std::string& windowTitle);
 		bool SetLogLevel(const Logger::Severity& level);
 		bool SetScreenSize(const Vector2& screenSize);
 		bool SetColliderBorderWidth(const Fixed& shapeWidth);
+		bool SetViewSize(const Vector2& viewSize);
 
 	private:
 		void Verify();

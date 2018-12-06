@@ -1,7 +1,6 @@
 #include "le_stdafx.h"
 #include "Renderable.h"
 #include "Engine/Logger/Logger.h"
-#include "Engine/World.h"
 #include "SFML/Graphics.hpp"
 
 namespace LittleEngine {
@@ -27,9 +26,12 @@ namespace LittleEngine {
 		if (!m_bSilent) Logger::Log(*this, m_name + " destroyed", Logger::Severity::Debug);
 	}
 
-	void Renderable::Render(RenderParams & params) {
+	void Renderable::Render(const RenderParams & params) {
 		if (m_bIsEnabled) {
-			RenderInternal(params);
+			SetPosition(params.GetScreenPosition());
+			SetOrientation(params.GetScreenOrientation());
+			SetScale(params.GetScreenScale());
+			RenderInternal();
 		}
 	}
 
@@ -39,22 +41,5 @@ namespace LittleEngine {
 
 	void Renderable::SetEnabled(bool enabled) {
 		m_bIsEnabled = enabled;
-	}
-
-	sf::Vector2f Renderable::Convert(const Vector2& vector) {
-		return sf::Vector2f(vector.x.ToFloat(), vector.y.ToFloat());
-	}
-
-	sf::Color Renderable::Convert(const Colour& colour) {
-		return sf::Color(
-			colour.r.ToUInt(),
-			colour.g.ToUInt(),
-			colour.b.ToUInt(),
-			colour.a.ToUInt()
-		);
-	}
-
-	Colour Renderable::Convert(const sf::Color& colour) {
-		return Colour(colour.r, colour.g, colour.b, colour.a);
 	}
 }

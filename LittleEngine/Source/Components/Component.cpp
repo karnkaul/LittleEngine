@@ -23,7 +23,7 @@ namespace LittleEngine {
 	void Component::FixedTick() {
 	}
 
-	void Component::Render(RenderParams& params) {
+	void Component::Render(const RenderParams& params) {
 	}
 
 	Actor& Component::GetActor() const {

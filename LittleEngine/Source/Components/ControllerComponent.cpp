@@ -5,41 +5,35 @@
 #include "Entities/Actor.h"
 #include "Engine/Logger/Logger.h"
 #include "Engine/Input/InputHandler.h"
-#include "Engine/World.h"
 #include "SFMLInterface/Rendering/Renderable.h"
 #include "Components/RenderComponent.h"
 #include "Transform.h"
 #include "SFMLInterface/Input.h"
+#include "SFMLInterface/Graphics.h"
 #include "Levels/Level.h"
 
-namespace _ControllerComponent {
-	LittleEngine::Logger::Severity s = LittleEngine::Logger::Severity::Debug;
-	void Test() {
-		LittleEngine::Logger::Log("Another left detected!", s);
-	}
-
-	void Test2() {
-		LittleEngine::Logger::Log("Consuming left detected! (no other Lefts should be triggered)", s);
-	}
-}
-
-void ClampPosition(GameUtils::Vector2& position, const GameUtils::Rect2& worldBounds, const GameUtils::Vector2& padding) {
-	if ((position.x - padding.x) < worldBounds.lower.x) {
-		position.x = worldBounds.lower.x + padding.x;
-	}
-	if ((position.x + padding.x) > worldBounds.upper.x) {
-		position.x = worldBounds.upper.x - padding.x;
-	}
-	if ((position.y - padding.y) < worldBounds.lower.y) {
-		position.y = worldBounds.lower.y + padding.y;
-	}
-	if ((position.y + padding.y) > worldBounds.upper.y) {
-		position.y = worldBounds.upper.y - padding.y;
-	}
-}
-
 namespace LittleEngine {
-	bool _bDeletedToken = false;
+	namespace _ControllerComponent {
+		LittleEngine::Logger::Severity s = LittleEngine::Logger::Severity::Debug;
+		void Test() {
+			LittleEngine::Logger::Log("Another left detected!", s);
+		}
+
+		void Test2() {
+			LittleEngine::Logger::Log("Consuming left detected! (no other Lefts should be triggered)", s);
+		}
+	}
+
+	namespace {
+		bool _bDeletedToken = false;
+
+		void ClampPosition(Vector2& position, const GameUtils::Rect2& worldBounds, const GameUtils::Vector2& padding) {
+			if ((position.x - padding.x) < worldBounds.lower.x) position.x = worldBounds.lower.x + padding.x;
+			if ((position.x + padding.x) > worldBounds.upper.x) position.x = worldBounds.upper.x - padding.x;
+			if ((position.y - padding.y) < worldBounds.lower.y) position.y = worldBounds.lower.y + padding.y;
+			if ((position.y + padding.y) > worldBounds.upper.y) position.y = worldBounds.upper.y - padding.y;
+		}
+	}
 
 	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent") {
 		this->m_pInputHandler = &actor.GetActiveLevel().GetInputHandler();
@@ -66,8 +60,7 @@ namespace LittleEngine {
 		prevDeltaTime = deltaTime;
 		Actor& actor = GetActor();
 
-		const World& world = actor.GetActiveLevel().GetWorld();
-		Rect2 worldBounds = world.GetScreenBounds();
+		Rect2 worldBounds = Graphics::GetWorldBounds();
 		Vector2 padding = GetRenderPadding();
 		ClampPosition(actor.GetTransform().localPosition, worldBounds, padding);
 
@@ -95,7 +88,7 @@ namespace LittleEngine {
 
 	void ControllerComponent::OnLeft() {
 		if (m_pInputHandler->IsKeyPressed(GameInput::LB)) {
-			GetActor().GetTransform().Rotate(prevDeltaTime / 3);
+			GetActor().GetTransform().Rotate(prevDeltaTime * Fixed::OneThird);
 		}
 		else {
 			GetActor().GetTransform().localPosition.x -= prevDeltaTime;
@@ -104,7 +97,7 @@ namespace LittleEngine {
 
 	void ControllerComponent::OnRight() {
 		if (m_pInputHandler->IsKeyPressed(GameInput::LB)) {
-			GetActor().GetTransform().Rotate(-prevDeltaTime / 3);
+			GetActor().GetTransform().Rotate(-prevDeltaTime * Fixed::OneThird);
 		}
 		else {
 			GetActor().GetTransform().localPosition.x += prevDeltaTime;

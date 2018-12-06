@@ -93,7 +93,7 @@ namespace LittleEngine {
 			
 		}
 
-		void RenderTests(RenderParams& params) {
+		void RenderTests() {
 			
 		}
 
@@ -158,7 +158,7 @@ namespace LittleEngine {
 
 		FileRW reader("Assets/VFX/Fire0/Fire0_noloop.psdata");
 		GData psGData(reader.ReadAll(true));
-		ParticleSystemData psData(*this, psGData);
+		ParticleSystemData psData(GetAssetManager(), psGData);
 
 		_TestLevel::_pParticlesTest = SpawnActor<ParticleSystem>("ExplodePS", false);
 		_TestLevel::_pParticlesTest->InitParticleSystem(std::move(psData));
@@ -177,11 +177,11 @@ namespace LittleEngine {
 		_TestLevel::CleanupTests();
 	}
 
-	void RenderTests(Level* level, RenderParams& params) {
-		_TestLevel::RenderTests(params);
+	void RenderTests(Level* level) {
+		_TestLevel::RenderTests();
 	}
 
-	void TestLevel::PostRender(const RenderParams& params) {
+	void TestLevel::PostRender() {
 		if (m_clock.GetElapsedMilliSeconds() > 2000 && !_TestLevel::bSoundPlayed) {
 			_TestLevel::bSoundPlayed = true;
 			GetAudioManager().PlaySFX("TestSound.wav", Fixed(2, 10));
@@ -198,8 +198,7 @@ namespace LittleEngine {
 			_TestLevel::musicStopped = true;
 			GetAudioManager().SwitchTrack("TestMusic.ogg", Fixed::Half, Fixed(3));
 		}*/
-		RenderParams _params(params);
-		RenderTests(this, _params);
+		RenderTests(this);
 	}
 
 	void TestLevel::OnQuitPressed() {

@@ -25,8 +25,8 @@ namespace LittleEngine {
 			Fixed seconds = Fixed(static_cast<int>(LevelTimeMilliSeconds()), 1000);
 			Fixed speed = 2;
 			Fixed alpha = (seconds * speed).Sin().Abs() * 255;
-			Colour c = m_pLogoRenderable->GetTextData().fillColour;
-			m_pLogoRenderable->GetTextData().fillColour = Colour(c.r, c.g, c.g, UByte(alpha.ToInt()));
+			Colour c = m_pLogoRenderable->GetTextData().GetFillColour();
+			m_pLogoRenderable->GetTextData().SetFillColour(Colour(c.r, c.g, c.g, UByte(alpha.ToInt())));
 		}
 
 		// Tick all actors etc

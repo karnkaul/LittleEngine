@@ -1,8 +1,9 @@
 #include "le_stdafx.h"
-#include "SFMLInterface/WindowController.h"
+#include "SFMLInterface/Graphics.h"
 #include "RenderParams.h"
 #include "TextRenderable.h"
 #include "SFMLInterface/Assets.h"
+#include "../Graphics.h"
 
 namespace LittleEngine {
 	TextData::TextData(FontAsset& font, const std::string & text) : TextData(font, text, 25, Colour::White, 0, Colour::Black) {
@@ -14,6 +15,60 @@ namespace LittleEngine {
 
 	void TextData::SetFont(FontAsset& font) {
 		this->pFont = &font;
+	}
+
+	void TextData::SetText(const std::string & text) {
+		this->text = text;
+		bDirty = true;
+	}
+
+	void TextData::SetPixelSize(Fixed pixelSize) {
+		this->pixelSize = pixelSize;
+		bDirty = true;
+	}
+
+	void TextData::SetFillColour(Colour fillColour) {
+		this->fillColour = fillColour;
+		bDirty = true;
+	}
+
+	void TextData::SetOutlineColour(Colour outlineColour) {
+		this->outlineColour = outlineColour;
+		bDirty = true;
+	}
+
+	void TextData::SetHAlign(HAlign hAlign) {
+		this->hAlign = hAlign;
+		bDirty = true;
+	}
+
+	void TextData::SetVAlign(VAlign vAlign) {
+		this->vAlign = vAlign;
+		bDirty = true;
+	}
+
+	const std::string & TextData::GetText() const {
+		return text;
+	}
+
+	Fixed TextData::GetPixelSize() const {
+		return pixelSize;
+	}
+
+	Colour TextData::GetFillColour() const {
+		return fillColour;
+	}
+
+	Colour TextData::GetOutlineColour() const {
+		return outlineColour;
+	}
+
+	HAlign TextData::GetHAlign() const {
+		return hAlign;
+	}
+
+	VAlign TextData::GetVAlign() const {
+		return vAlign;
 	}
 
 	float TextData::GetNAlignmentHorz() const {
@@ -50,8 +105,8 @@ namespace LittleEngine {
 	void TextRenderable::ApplyData() {
 		m_sfText.setString(m_data.text);
 		m_sfText.setFont(m_data.pFont->m_sfFont);
-		m_sfText.setFillColor(Convert(m_data.fillColour));
-		m_sfText.setOutlineColor(Convert(m_data.outlineColour));
+		m_sfText.setFillColor(Graphics::Cast(m_data.fillColour));
+		m_sfText.setOutlineColor(Graphics::Cast(m_data.outlineColour));
 		m_sfText.setOutlineThickness(m_data.outlineSize.Abs().ToFloat());
 		m_sfText.setCharacterSize(m_data.pixelSize.Abs().ToInt());
 		sf::FloatRect textRect = m_sfText.getLocalBounds();
@@ -59,26 +114,24 @@ namespace LittleEngine {
 			textRect.width * m_data.GetNAlignmentHorz(),
 			textRect.height * m_data.GetNAlignmentVert())
 		);
+		m_data.bDirty = false;
 	}
 
-	void TextRenderable::SetPosition(const Vector2& screenPosition) {
-		m_sfText.setPosition(Convert(screenPosition));
+	void TextRenderable::SetPosition(const Vector2& worldPosition) {
+		m_sfText.setPosition(Graphics::Cast(worldPosition));
 	}
 
-	void TextRenderable::SetRotation(const Fixed& screenRotation) {
-		m_sfText.setRotation(screenRotation.ToFloat());
+	void TextRenderable::SetOrientation(const Fixed& worldOrientation) {
+		m_sfText.setRotation(worldOrientation.ToFloat());
 	}
 
-	void TextRenderable::SetScale(const Vector2 & screenScale) {
-		m_sfText.setScale(Convert(screenScale));
+	void TextRenderable::SetScale(const Vector2 & worldScale) {
+		m_sfText.setScale(Graphics::Cast(worldScale));
 	}
 
-	void TextRenderable::RenderInternal(RenderParams & params) {
-		ApplyData();
-		SetPosition(params.screenPosition);
-		SetRotation(params.screenRotation);
-		SetScale(params.screenScale);
-		params.GetWindowController().Push(Drawable(m_sfText, m_layer));
+	void TextRenderable::RenderInternal() {
+		if (m_data.bDirty) ApplyData();
+		Graphics::Submit(Drawable(m_sfText, m_layer));
 	}
 
 	Rect2 TextRenderable::GetBounds() const {

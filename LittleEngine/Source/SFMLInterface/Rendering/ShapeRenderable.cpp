@@ -1,8 +1,9 @@
 #include "le_stdafx.h"
 #include "ShapeRenderable.h"
 #include "Engine/Logger/Logger.h"
-#include "SFMLInterface/WindowController.h"
+#include "SFMLInterface/Graphics.h"
 #include "RenderParams.h"
+#include "../Graphics.h"
 
 namespace LittleEngine {
 	ShapeRenderable::ShapeRenderable(std::string name, std::unique_ptr<sf::Shape> shape) : Renderable(name), m_uShape(std::move(shape)) {
@@ -11,33 +12,30 @@ namespace LittleEngine {
 	ShapeRenderable::ShapeRenderable(const ShapeRenderable & prototype, std::unique_ptr<sf::Shape> shape) : Renderable(prototype), m_uShape(std::move(shape)) {
 	}
 
-	void ShapeRenderable::RenderInternal(RenderParams & params) {
-		SetPosition(params.screenPosition);
-		SetRotation(params.screenRotation);
-		SetScale(params.screenScale);
+	void ShapeRenderable::RenderInternal() {
 		// Push shape into appropriate drawing layer
-		params.GetWindowController().Push(Drawable(*m_uShape, m_layer));
+		Graphics::Submit(Drawable(*m_uShape, m_layer));
 	}
 
 	void ShapeRenderable::SetFillColour(const Colour & colour) {
-		m_uShape->setFillColor(Convert(colour));
+		m_uShape->setFillColor(Graphics::Cast(colour));
 	}
 
 	void ShapeRenderable::SetBorder(const Fixed& width, const Colour & colour) {
-		m_uShape->setOutlineColor(Convert(colour));
+		m_uShape->setOutlineColor(Graphics::Cast(colour));
 		m_uShape->setOutlineThickness(width > 0 ? width.ToFloat() : 0);
 	}
 
-	void ShapeRenderable::SetPosition(const Vector2& screenPosition) {
-		m_uShape->setPosition(Convert(screenPosition));
+	void ShapeRenderable::SetPosition(const Vector2& worldPosition) {
+		m_uShape->setPosition(Graphics::Cast(worldPosition));
 	}
 
-	void ShapeRenderable::SetRotation(const Fixed& screenRotation) {
-		m_uShape->setRotation(screenRotation.ToFloat());
+	void ShapeRenderable::SetOrientation(const Fixed& worldOrientation) {
+		m_uShape->setRotation(worldOrientation.ToFloat());
 	}
 
-	void ShapeRenderable::SetScale(const Vector2 & screenScale) {
-		m_uShape->setScale(Convert(screenScale));
+	void ShapeRenderable::SetScale(const Vector2 & worldScale) {
+		m_uShape->setScale(Graphics::Cast(worldScale));
 	}
 
 	CircleRenderable::CircleRenderable(const Fixed& radius) : ShapeRenderable("CircleRenderable", std::make_unique<sf::CircleShape>(radius.ToFloat())) {
@@ -99,7 +97,7 @@ namespace LittleEngine {
 	}
 
 	void RectangleRenderable::SetSize(const Vector2& size) {
-		m_pRectangle->setSize(Convert(size));
+		m_pRectangle->setSize(Graphics::Cast(size));
 		// Reposition local centre
 		m_pRectangle->setOrigin(m_pRectangle->getSize().x * 0.5f, m_pRectangle->getSize().y * 0.5f);
 	}

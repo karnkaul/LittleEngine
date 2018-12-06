@@ -3,7 +3,7 @@
 #include "TokenHandler.hpp"
 #include "Engine/Input/InputHandler.h"
 #include "Transform.h"
-#include "Engine/Physics/Collider.h"
+#include "Components/Physics/Collider.h"
 
 namespace LittleEngine {
 	class Component;
@@ -92,17 +92,18 @@ namespace LittleEngine {
 	protected:
 		// \brief Registers corresponding input scoped to Actor's lifetime
 		void RegisterScopedInput(const GameInput& gameInput, OnInput::Callback callback, const OnKey& type, bool consume = false);
+		RenderParams GetRenderParams() const;
 
 		virtual void FixedTick();
 		virtual void Tick(const Fixed& deltaTime);
-		virtual void Render(struct RenderParams& params);
+		virtual void Render();
 
 	private:
 		Actor& operator=(const Actor&) = delete;
 
 		// Each Actor must be owned by an active Level,
 		// and be passed a reference to it in the constructor
-		void InitActor(Level& level, int actorID, const std::string& name, const Vector2& position, const Fixed& rotation);
+		void InitActor(Level& level, int actorID, const std::string& name, const Vector2& position, const Fixed& orientation);
 		// Level's CloneActor uses copy constructors of this signature (required for Actor derived classes)
 		void InitActor(Level& owner, int actorID, const Actor& prototype);
 

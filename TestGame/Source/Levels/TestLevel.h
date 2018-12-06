@@ -9,7 +9,7 @@ namespace LittleEngine {
 
 		virtual void LoadAssets() override;
 		virtual void Tick(Fixed deltaTime) override;
-		virtual void PostRender(const RenderParams& params) override;
+		virtual void PostRender() override;
 
 	protected:
 		virtual void OnActivated() override;

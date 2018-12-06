@@ -30,7 +30,7 @@ namespace GameUtils {
 		Transform* GetParent() const;
 		// Returns position from parent's origin as position in world space
 		Vector2 Position() const;
-		// Returns rotation in world orientation (+ is clockwise)
+		// Returns orientation in world space (+ is counter-clockwise)
 		Fixed Orientation() const;
 		// Returns parent-aware scale
 		Vector2 Scale() const;

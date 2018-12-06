@@ -3,7 +3,6 @@
 #include "Transform.h"
 #include "Entities/Actor.h"
 #include "Levels/Level.h"
-#include "Engine/World.h"
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Rendering/ShapeRenderable.h"
 #include "SFMLInterface/Rendering/SpriteRenderable.h"
@@ -69,7 +68,7 @@ namespace LittleEngine {
 		return *dynamic_cast<TextRenderable*>(m_uRenderable.get());
 	}
 
-	void RenderComponent::Render(RenderParams& params) {
+	void RenderComponent::Render(const RenderParams& params) {
 		m_uRenderable->Render(params);
 	}
 

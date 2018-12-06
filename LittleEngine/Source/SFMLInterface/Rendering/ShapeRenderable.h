@@ -16,10 +16,10 @@ namespace LittleEngine {
 		ShapeRenderable(std::string name, std::unique_ptr<sf::Shape> shape);
 		ShapeRenderable(const ShapeRenderable& prototype, std::unique_ptr<sf::Shape> shape);
 
-		virtual void RenderInternal(RenderParams& params) override; 
-		virtual void SetPosition(const Vector2& screenPosition) override;
-		virtual void SetRotation(const Fixed& screenRotation) override;
-		virtual void SetScale(const Vector2& screenScale) override;
+		virtual void RenderInternal() override; 
+		virtual void SetPosition(const Vector2& worldPosition) override;
+		virtual void SetOrientation(const Fixed& worldOrientation) override;
+		virtual void SetScale(const Vector2& worldScale) override;
 
 		template<typename T>
 		T& CastShape() const {

@@ -33,9 +33,9 @@ namespace GameUtils {
 	}
 
 	Fixed Transform::Orientation() const {
-		Fixed rotation = localOrientation % Fixed(360);
-		if (pParent) rotation += pParent->Orientation();
-		return rotation;
+		Fixed orientation = localOrientation % Fixed(360);
+		if (pParent) orientation += pParent->Orientation();
+		return orientation;
 	}
 
 	Vector2 Transform::Scale() const {

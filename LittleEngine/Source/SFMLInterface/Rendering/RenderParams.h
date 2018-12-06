@@ -3,7 +3,7 @@
 #include "UByte.h"
 
 namespace LittleEngine {
-	class WindowController;
+	class Graphics;
 
 	using Vector2 = GameUtils::Vector2;
 	using Fixed = GameUtils::Fixed;
@@ -44,7 +44,7 @@ namespace LittleEngine {
 		TOP = 90
 	};
 
-	// \brief Safe Wrapper for LayerID (WindowController::Buffer compatible)
+	// \brief Safe Wrapper for LayerID (Graphics::Buffer compatible)
 	struct LayerInfo {
 	private:
 		int layerID = static_cast<int>(LayerID::Default);
@@ -61,16 +61,26 @@ namespace LittleEngine {
 
 	// \brief Final parameters passed to SFML RenderWindow
 	struct RenderParams {
-		Vector2 screenPosition;
-		Vector2 screenScale;
-		Fixed screenRotation;
-	private:
-		WindowController* pWindowController;
+		Vector2 worldPosition;
+		Vector2 worldScale;
+		Fixed worldOrientation;
 
 	public:
-		RenderParams(WindowController& controller);
+		RenderParams();
+		RenderParams(const Vector2& worldPosition, Fixed worldOrientation, const Vector2& worldScale);
+		RenderParams(RenderParams&&) = default;
+		RenderParams& operator=(RenderParams&&) = default;
+		RenderParams(const RenderParams&) = default;
+		RenderParams& operator=(const RenderParams&) = default;
 
-		WindowController& GetWindowController();
 		void Reset();
+
+	private:
+		Vector2 GetScreenPosition() const;
+		Fixed GetScreenOrientation() const;
+		Vector2 GetScreenScale() const;
+
+	private:
+		friend class Renderable;
 	};
 }

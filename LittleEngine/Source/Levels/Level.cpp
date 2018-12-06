@@ -6,7 +6,6 @@
 #include "Vector2.h"
 #include "Utils.h"
 #include "Engine/Engine.h"
-#include "Engine/World.h"
 #include "Engine/Input/InputHandler.h"
 #include "SFMLInterface/Input.h"
 #include "SFMLInterface/Assets.h"
@@ -70,22 +69,22 @@ namespace LittleEngine {
 		}
 	}
 
-	void Level::Render(RenderParams& params) {
+	void Level::Render() {
 		STOPWATCH_START("Render");
 		GameUtils::CleanMap<int, Actor::Ptr>(m_actorMap, [](Actor::Ptr& actor) { return !actor || actor->m_bDestroyed; });
 		for (auto & iter : m_actorMap) {
 			Actor::Ptr& actor = iter.second;
 			if (actor->m_bEnabled) {
-				actor->Render(params);
+				actor->Render();
 			}
 		}
 		STOPWATCH_STOP();
 		STOPWATCH_START("Post Render");
-		PostRender(params);
+		PostRender();
 		STOPWATCH_STOP();
 	}
 
-	void Level::PostRender(const RenderParams& params) {}
+	void Level::PostRender() {}
 
 	void Level::Clear() {
 		OnClearing();
@@ -128,10 +127,6 @@ namespace LittleEngine {
 
 	InputHandler & Level::GetInputHandler() const {
 		return m_pEngine->GetInputHandler();
-	}
-
-	const World & Level::GetWorld() const {
-		return m_pEngine->GetWorld();
 	}
 
 	AssetManager & Level::GetAssetManager() const {

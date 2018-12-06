@@ -5,11 +5,10 @@
 #include "UByte.h"
 #include "Actor.h"
 #include "GData.h"
-#include "Levels/Level.h"
+#include "SFMLInterface/Assets.h"
 
 namespace LittleEngine {
 	struct RenderParams;
-	class World;
 	class TextureAsset;
 	class SoundAsset;
 
@@ -53,25 +52,20 @@ namespace LittleEngine {
 		Transform* pParent;
 		SoundAsset* pSound;
 		
-		EmitterData(const World& world, TextureAsset& texture, unsigned int numParticles, SoundAsset* pSound = nullptr);
+		EmitterData(TextureAsset& texture, unsigned int numParticles, SoundAsset* pSound = nullptr);
 
 		void Deserialise(const GData& gData);
-
-		const World& GetWorld() const {
-			return *pWorld;
-		}
 
 		TextureAsset& GetTexture() const {
 			return *pTexture;
 		}
 
 	private:
-		const World* pWorld;
 		TextureAsset* pTexture;
 	};
 
 	struct ParticleSystemData {
-		ParticleSystemData(Level& level, const GData& psGData);
+		ParticleSystemData(AssetManager& assetManager, const GData& psGData);
 		
 		const std::vector<EmitterData>& GetEmitterDatas() const {
 			return emitterDatas;
@@ -97,6 +91,6 @@ namespace LittleEngine {
 
 	protected:
 		virtual void Tick(const Fixed& deltaTime) override;
-		virtual void Render(RenderParams& params) override;
+		virtual void Render() override;
 	};
 }

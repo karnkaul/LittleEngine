@@ -5,7 +5,7 @@
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Input.h"
 #include "SFMLInterface/SystemClock.h"
-#include "SFMLInterface/WindowController.h"
+#include "SFMLInterface/Graphics.h"
 #include "SFMLInterface/Audio/AudioPlayer.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 #include "SFMLInterface/Rendering/Renderable.h"

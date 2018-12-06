@@ -2,7 +2,6 @@
 #include <string>
 #include "Collider.h"
 #include "Entities/Actor.h"
-#include "Engine/World.h"
 #include "Levels/Level.h"
 #include "CollisionManager.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
@@ -66,12 +65,10 @@ namespace LittleEngine {
 	}
 
 	Collider::Collider(Actor& actor, const std::string& name) : Component(actor, name) {
-		this->m_pWorld = &actor.GetActiveLevel().GetWorld();
 		RegisterSubscribers();
 	}
 
 	Collider::Collider(Actor & owner, const Collider & prototype) : Component(owner, prototype) {
-		this->m_pWorld = &owner.GetActiveLevel().GetWorld();
 		RegisterSubscribers();
 	}
 
@@ -121,12 +118,13 @@ namespace LittleEngine {
 		Logger::Log(*this, prefix + "debug collision rect on " + GetActor().GetName(), Logger::Severity::Debug);
 	}
 
-	void AABBCollider::Render(RenderParams& params) {
+	void AABBCollider::Render(const RenderParams& params) {
 		if (m_debugShape->IsEnabled()) {
-			// Reset rotation (align with axes) and scale
-			params.screenRotation = Fixed::Zero;
-			params.screenScale = Vector2::One;
-			m_debugShape->Render(params);
+			// Reset orientation (align with axes) and scale
+			RenderParams copy(params);
+			copy.worldOrientation = Fixed::Zero;
+			copy.worldScale = Vector2::One;
+			m_debugShape->Render(copy);
 		}
 	}
 
@@ -190,11 +188,12 @@ namespace LittleEngine {
 		return lhsCircle.IsIntersecting(rhsCircle);
 	}
 
-	void CircleCollider::Render(RenderParams& params) {
+	void CircleCollider::Render(const RenderParams& params) {
 		if (m_debugShape->IsEnabled()) {
-			// Undo Actor's rotation (be pedantic)
-			params.screenRotation = 0;
-			m_debugShape->Render(params);
+			// Undo Actor's orientation (be pedantic)
+			RenderParams copy(params);
+			copy.worldOrientation = 0;
+			m_debugShape->Render(copy);
 		}
 	}
 
