@@ -9,7 +9,8 @@ namespace GameUtils {
 		Vector2 upper;
 
 		Rect2() = default;
-		Rect2(Vector2 lower, Vector2 upper) : lower(lower), upper(upper) {}
+		Rect2(const Vector2& symmetric) : lower(-symmetric), upper(symmetric) {}
+		Rect2(const Vector2& lower, const Vector2& upper) : lower(lower), upper(upper) {}
 		Rect2(const Rect2&) = default;
 		Rect2(Rect2&&) = default;
 		Rect2& operator=(const Rect2&) = default;
@@ -21,6 +22,10 @@ namespace GameUtils {
 
 		Fixed GetWidth() const {
 			return upper.x - lower.x;
+		}
+
+		Vector2 GetSize() const {
+			return Vector2(GetWidth(), GetHeight());
 		}
 	};
 }

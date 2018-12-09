@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "BootLevel.h"
+#include "SFMLInterface/All.h"
+#include "Components/All.h"
 
 namespace LittleEngine {
 	void BootLevel::OnActivated() {

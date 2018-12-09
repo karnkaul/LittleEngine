@@ -4,6 +4,11 @@
 #include "Utils.h"
 #include "FileRW.h"
 #include "GData.h"
+#include "SFMLInterface/All.h"
+#include "Components/All.h"
+#include "Engine/All.h"
+#include "Entities/All.h"
+#include "UI/All.h"
 
 namespace LittleEngine {
 	using FileRW = GameUtils::FileRW;
@@ -89,12 +94,42 @@ namespace LittleEngine {
 			}
 		}
 
+		std::shared_ptr<UIElement> uUIEl0, uUIEl1;
 		void UpdateTests(const Fixed& deltaTime) {
-			
+			if (!uUIEl0) {
+				uUIEl0 = std::make_shared<UIElement>("UIEl0");
+				uUIEl0->SetLevel(*pLevel);
+				uUIEl0->m_transform.size = { 400, 300 };
+				Vector2 pivot = -Vector2::One;
+				//uUIEl0->m_transform.anchor = pivot;
+				uUIEl0->m_transform.nPosition = pivot;
+				uUIEl0->m_transform.pixelPad = { 200 * -pivot.x, 150 * -pivot.y };
+				uUIEl0->SetPanel();
+			}
+			if (!uUIEl1) {
+				uUIEl1 = std::make_shared<UIElement>("UIEl1");
+				uUIEl1->SetLevel(*pLevel);
+				uUIEl1->m_transform.nPosition = { 0, Fixed(0.5f) };
+				uUIEl1->m_transform.size = { 200, 100 };
+				uUIEl1->m_transform.SetParent(uUIEl0->m_transform);
+				uUIEl1->SetPanel(Colour(100, 50, 255, 255));
+				uUIEl1->SetText("Button");
+			}
+			if (uUIEl0) {
+				uUIEl0->Tick(deltaTime);
+			}
+			if (uUIEl1) {
+				uUIEl1->Tick(deltaTime);
+			}
 		}
 
 		void RenderTests() {
-			
+			if (uUIEl0) {
+				uUIEl0->Render();
+			}
+			if (uUIEl1) {
+				uUIEl1->Render();
+			}
 		}
 
 		void CleanupTests() {
@@ -109,6 +144,8 @@ namespace LittleEngine {
 			_pCloneTest = nullptr;
 			if (_pParticlesTest) _pParticlesTest->Destruct();
 			_pParticlesTest = nullptr;
+			if (uUIEl0) uUIEl0 = nullptr;
+			if (uUIEl1) uUIEl1 = nullptr;
 		}
 	}
 
@@ -134,12 +171,11 @@ namespace LittleEngine {
 		}
 		
 		if (auto actor1 = SpawnActor<Actor>("Actor1-TextRenderer", true)) {
-			actor1->SetNormalisedPosition(Vector2(0, Fixed(0.9f)));
+			actor1->GetTransform().localPosition = Graphics::NToWorld({ 0, Fixed(0.9f) });
 			auto rc = actor1->AddComponent<RenderComponent>();
 			auto& tr = rc->SetTextRenderable("Hello World!");
 			tr.m_layer = LayerID::UI;
 			tr.SetColour(Colour(200, 150, 50)).SetSize(50);
-			//_TestLevel::_textActor = actor1;
 		}
 
 		Player* player = SpawnActor<Player>("Player", true);

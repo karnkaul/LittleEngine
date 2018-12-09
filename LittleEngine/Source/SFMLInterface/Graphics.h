@@ -68,9 +68,9 @@ namespace LittleEngine {
 		static Colour Cast(const sf::Color& colour);
 
 		static Vector2 GetGameViewSize();
-		static Rect2 GetWorldBounds();
-		static Vector2 NormalisedToWorldPoint(const Vector2& normalised, bool autoClamp = true);// Add drawable to buffer
-		static void Submit(Drawable&& drawable);
+		static Rect2 GetWorldRect();
+		static Vector2 NToWorld(const Vector2& normalised, bool autoClamp = true);	// normalised = ([-1, 1], [-1, 1])
+		static void Submit(Drawable&& drawable);	// Add Drawable to buffer
 
 	private:
 		static std::unique_ptr<Graphics> m_instance;

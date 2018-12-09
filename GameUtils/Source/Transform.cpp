@@ -5,19 +5,28 @@
 namespace GameUtils {
 	const Transform Transform::IDENTITY = Transform();
 
+	Transform::Transform() : localPosition(Vector2::Zero), localScale(Vector2::One), localOrientation(Fixed::Zero) {}
+
+	Transform::~Transform() {
+		if (pParent) pParent->RemoveChild(*this);
+		for (auto child : children) {
+			if (child) child->pParent = nullptr;
+		}
+	}
+
 	void Transform::SetParent(Transform& parent, bool bModifyWorldSpace) {
 		pParent = &parent;
 		if (!bModifyWorldSpace) {
 			localPosition -= parent.localPosition;
 			localOrientation -= parent.localOrientation;
 		}
-		parent.AddChild(this);
+		parent.AddChild(*this);
 	}
 
 	void Transform::UnsetParent(bool bModifyWorldPosition) {
 		if (pParent) {
 			if (!bModifyWorldPosition) localPosition = Position();
-			pParent->RemoveChild(this);
+			pParent->RemoveChild(*this);
 		}
 		pParent = nullptr;
 	}
@@ -68,22 +77,11 @@ namespace GameUtils {
 		return localPosition.ToString() + " , " + localOrientation.ToString();
 	}
 
-	Transform::Transform() : localPosition(Vector2::Zero), localScale(Vector2::One), localOrientation(Fixed::Zero) {}
-
-	Transform::~Transform() {
-		if (pParent) pParent->RemoveChild(this);
-		if (!children.empty()) {
-			for (auto child : children) {
-				if (child) child->UnsetParent();
-			}
-		}
+	void Transform::AddChild(Transform& child) {
+		children.push_back(&child);
 	}
 
-	void Transform::AddChild(Transform* pChild) {
-		if (pChild) children.emplace_back(pChild);
-	}
-
-	void Transform::RemoveChild(Transform* pChild) {
-		if (pChild) GameUtils::VectorErase(children, pChild);
+	bool Transform::RemoveChild(Transform& child) {
+		return GameUtils::VectorErase(children, &child);
 	}
 }

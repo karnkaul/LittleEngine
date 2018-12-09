@@ -60,7 +60,7 @@ namespace LittleEngine {
 		prevDeltaTime = deltaTime;
 		Actor& actor = GetActor();
 
-		Rect2 worldBounds = Graphics::GetWorldBounds();
+		Rect2 worldBounds = Graphics::GetWorldRect();
 		Vector2 padding = GetRenderPadding();
 		ClampPosition(actor.GetTransform().localPosition, worldBounds, padding);
 

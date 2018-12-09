@@ -16,10 +16,11 @@ namespace LittleEngine {
 		ShapeRenderable(std::string name, std::unique_ptr<sf::Shape> shape);
 		ShapeRenderable(const ShapeRenderable& prototype, std::unique_ptr<sf::Shape> shape);
 
+	protected:
 		virtual void RenderInternal() override; 
-		virtual void SetPosition(const Vector2& worldPosition) override;
-		virtual void SetOrientation(const Fixed& worldOrientation) override;
-		virtual void SetScale(const Vector2& worldScale) override;
+		virtual void SetPosition(const Vector2& screenPosition) override;
+		virtual void SetOrientation(const Fixed& screenOrientation) override;
+		virtual void SetScale(const Vector2& screenScale) override;
 
 		template<typename T>
 		T& CastShape() const {
@@ -43,6 +44,7 @@ namespace LittleEngine {
 		// Returns outer rect of CircleShape (|any point| = radius)
 		virtual Rect2 GetBounds() const override;
 		virtual std::unique_ptr<Renderable> UClone() const override;
+		virtual void SetPivot(const Vector2& pivot) override;
 	};
 
 	// \brief Concrete class to draw a RectangleShape
@@ -60,6 +62,7 @@ namespace LittleEngine {
 		// Returns bounds of RectangleShape
 		virtual Rect2 GetBounds() const override;
 		virtual std::unique_ptr<Renderable> UClone() const override;
+		virtual void SetPivot(const Vector2& pivot) override;
 	};
 }
 

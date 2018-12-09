@@ -55,7 +55,7 @@ namespace LittleEngine {
 	}
 
 	void Actor::SetNormalisedPosition(Vector2 localNPosition) {
-		m_transform.localPosition = Graphics::NormalisedToWorldPoint(localNPosition);
+		m_transform.localPosition = Graphics::NToWorld(localNPosition);
 	}
 
 	std::string Actor::ToString() const {

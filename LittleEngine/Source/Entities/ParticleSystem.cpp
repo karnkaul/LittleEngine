@@ -348,10 +348,12 @@ namespace LittleEngine {
 	}
 
 	void ParticleSystem::Tick(const Fixed & deltaTime) {
+		bool bAnyPlaying = false;
 		for (std::unique_ptr<Emitter>& emitter : m_emitters) {
 			emitter->Tick(deltaTime);
-			m_bIsPlaying &= emitter->bEnabled;
+			bAnyPlaying |= emitter->bEnabled;
 		}
+		m_bIsPlaying = bAnyPlaying;
 	}
 
 	void ParticleSystem::Render() {

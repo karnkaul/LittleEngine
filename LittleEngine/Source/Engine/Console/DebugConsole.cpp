@@ -200,19 +200,19 @@ namespace LittleEngine { namespace DebugConsole {
 					inputText->m_layer = LayerID::TOP;
 				}
 				if (rootT.localPosition == Vector2::Zero) {
-					rootT.localPosition = Graphics::NormalisedToWorldPoint(Vector2(Fixed::Zero, Fixed(3, 4)), false);
+					rootT.localPosition = Graphics::NToWorld(Vector2(Fixed::Zero, Fixed(3, 4)), false);
 					ROOT_Y = rootT.localPosition.y;
 					Fixed textX = Fixed(-95, 100);
 					int textYNumerator = 52;
-					inputT.localPosition = Graphics::NormalisedToWorldPoint(Vector2(textX, Fixed(textYNumerator, 100)), false);
+					inputT.localPosition = Graphics::NToWorld(Vector2(textX, Fixed(textYNumerator, 100)), false);
 					inputT.SetParent(rootT, false);
 					textYNumerator += 2;
-					separatorT.localPosition = Graphics::NormalisedToWorldPoint(Vector2(Fixed::Zero, Fixed(textYNumerator, 100)), false);
+					separatorT.localPosition = Graphics::NToWorld(Vector2(Fixed::Zero, Fixed(textYNumerator, 100)), false);
 					textYNumerator += LOG_LINE_HEIGHT;
 					separatorT.SetParent(rootT, false);
 					for (auto& l : log->logT) {
 						textYNumerator += LOG_LINE_HEIGHT;
-						l.localPosition = Graphics::NormalisedToWorldPoint(Vector2(textX, Fixed(textYNumerator, 100)), false);
+						l.localPosition = Graphics::NToWorld(Vector2(textX, Fixed(textYNumerator, 100)), false);
 						l.SetParent(rootT, false);
 					}
 				}

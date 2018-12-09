@@ -27,15 +27,16 @@ namespace LittleEngine {
 		virtual Rect2 GetBounds() const = 0;
 		// Subclass will return an UNOWNED copy of itself
 		virtual std::unique_ptr<Renderable> UClone() const = 0;
+		virtual void SetPivot(const Vector2& pivot) = 0;
 		
 		bool IsEnabled() const;
 		void SetEnabled(bool bEnabled);
 	
 	protected:
 		virtual void RenderInternal() = 0;
-		virtual void SetPosition(const Vector2& worldPosition) = 0;
-		virtual void SetOrientation(const Fixed& worldOrientation) = 0;
-		virtual void SetScale(const Vector2& worldScale) = 0;
+		virtual void SetPosition(const Vector2& screenPosition) = 0;
+		virtual void SetOrientation(const Fixed& screenOrientation) = 0;
+		virtual void SetScale(const Vector2& screenScale) = 0;
 
 	private:
 		Renderable& operator=(const Renderable&) = delete;

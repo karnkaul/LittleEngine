@@ -14,3 +14,5 @@
 #include "Components/Physics/Collider.h"
 #include "Components/Physics/ColliderData.h"
 #include "Components/Physics/CollisionManager.h"
+#include "Levels/Level.h"
+#include "Levels/LevelManager.h"
