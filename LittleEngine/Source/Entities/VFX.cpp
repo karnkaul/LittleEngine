@@ -49,8 +49,8 @@ namespace LittleEngine {
 		bPlaying = true;
 	}
 
-	void VFX::Tick(const Fixed& deltaTime) {
-		Actor::Tick(deltaTime);
+	void VFX::Tick(const Fixed& deltaMS) {
+		Actor::Tick(deltaMS);
 		if (bPlaying) {
 			bool sfxPlaying = sfxPlayer && sfxPlayer->IsPlaying();
 			if (!animator->IsAnimating() && !sfxPlaying && !m_bDestroyed) {

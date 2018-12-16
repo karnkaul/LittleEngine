@@ -7,6 +7,7 @@ namespace LittleEngine {
 	using Vector2 = GameUtils::Vector2;
 	using Rect2 = GameUtils::Rect2;
 
+	// \brief Screen Rect based Transform for UIElements
 	struct UITransform {
 	public:
 		Vector2 size;
@@ -24,9 +25,10 @@ namespace LittleEngine {
 
 		void SetParent(UITransform& parent);
 		void UnsetParent();
-
+		
+		void SetAutoPadNPosition(const Vector2& nPosition, bool bClamp = true);
 		// Returns anchor's position in world space
-		Vector2 GetWorldPosition();
+		Vector2 GetWorldPosition() const;
 
 	private:
 		void AddChild(UITransform& child);

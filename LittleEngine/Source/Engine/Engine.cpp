@@ -25,7 +25,7 @@ namespace LittleEngine {
 		constexpr int MS_PER_FIXED_TICK = 6;
 		constexpr float MIN_FRAME_TIME_MS = 1000 / Consts::MAX_FPS;
 
-		inline double GetCurrentMicroseconds() {
+		inline double GetCurrentMilliseconds() {
 			return static_cast<double>(SystemClock::GetCurrentMicroseconds()) * 0.001f;
 		}
 	}
@@ -103,8 +103,8 @@ namespace LittleEngine {
 #endif
 
 				/* Core Game Loop */
-				double previous = GetCurrentMicroseconds();
-				Fixed deltaTime = 0;
+				double previous = GetCurrentMilliseconds();
+				Fixed deltaMS = 0;
 				Fixed lag = 0;
 				while (m_pGraphics->IsWindowOpen() && !m_bIsQuitting) {
 					/* Poll Window Events */ {
@@ -116,7 +116,7 @@ namespace LittleEngine {
 						if (m_bIsPaused && m_pGraphics->IsWindowFocussed()) {
 							m_bIsPaused = false;
 							// Reset FixedTick time lag (account for clock not pausing)
-							previous = GetCurrentMicroseconds();
+							previous = GetCurrentMilliseconds();
 							Logger::Log(*this, "Game unpaused");
 						}
 					}
@@ -125,10 +125,10 @@ namespace LittleEngine {
 					if (!m_bIsPaused) {
 						m_uInputHandler->ProcessInput(m_pGraphics->GetInput());
 
-						double current = GetCurrentMicroseconds();
-						deltaTime = Fixed(current - previous);
+						double current = GetCurrentMilliseconds();
+						deltaMS = Fixed(current - previous);
 						previous = current;
-						lag += deltaTime;
+						lag += deltaMS;
 
 						/* Fixed Tick */ {
 							int start = SystemClock::GetCurrentMilliseconds();
@@ -144,10 +144,10 @@ namespace LittleEngine {
 
 						/* Tick */ {
 							STOPWATCH_START("Tick");
-							GameClock::Tick(deltaTime);
+							GameClock::Tick(deltaMS);
 							m_uInputHandler->FireInput();
-							m_uAudioManager->Tick(deltaTime);
-							m_uLevelManager->GetActiveLevel()->Tick(deltaTime);
+							m_uAudioManager->Tick(deltaMS);
+							m_uLevelManager->GetActiveLevel()->Tick(deltaMS);
 							STOPWATCH_STOP();
 						}
 
@@ -155,7 +155,7 @@ namespace LittleEngine {
 							STOPWATCH_START("Render");
 							m_uLevelManager->GetActiveLevel()->Render();
 #if ENABLED(DEBUG_CONSOLE)
-							DebugConsole::RenderConsole(*this, deltaTime);
+							DebugConsole::RenderConsole(*this, deltaMS);
 #endif
 							m_pGraphics->Draw();
 							STOPWATCH_STOP();

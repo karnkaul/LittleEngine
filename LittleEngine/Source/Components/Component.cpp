@@ -17,7 +17,7 @@ namespace LittleEngine {
 		Logger::Log(*this, ToString() + " destroyed");
 	}
 
-	void Component::Tick(Fixed deltaSeconds) {
+	void Component::Tick(const Fixed& deltaSeconds) {
 	}
 
 	void Component::FixedTick() {

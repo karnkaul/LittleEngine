@@ -94,45 +94,48 @@ namespace LittleEngine {
 			}
 		}
 
-		std::shared_ptr<UIElement> uUIEl0, uUIEl1;
-		void UpdateTests(const Fixed& deltaTime) {
-			if (!uUIEl0) {
-				uUIEl0 = std::make_shared<UIElement>("UIEl0");
-				uUIEl0->SetLevel(*pLevel);
-				uUIEl0->m_transform.size = { 400, 300 };
-				Vector2 pivot = -Vector2::One;
-				//uUIEl0->m_transform.anchor = pivot;
-				uUIEl0->m_transform.nPosition = pivot;
-				uUIEl0->m_transform.pixelPad = { 200 * -pivot.x, 150 * -pivot.y };
-				uUIEl0->SetPanel();
-			}
-			if (!uUIEl1) {
-				uUIEl1 = std::make_shared<UIElement>("UIEl1");
-				uUIEl1->SetLevel(*pLevel);
-				uUIEl1->m_transform.nPosition = { 0, Fixed(0.5f) };
-				uUIEl1->m_transform.size = { 200, 100 };
-				uUIEl1->m_transform.SetParent(uUIEl0->m_transform);
-				uUIEl1->SetPanel(Colour(100, 50, 255, 255));
-				uUIEl1->SetText("Button");
-			}
-			if (uUIEl0) {
-				uUIEl0->Tick(deltaTime);
-			}
-			if (uUIEl1) {
-				uUIEl1->Tick(deltaTime);
+		UIButtonDrawer* pButtonDrawer = nullptr;
+		Fixed elapsed;
+		bool bModal = true;
+		bool bSpawnedContext = false;
+		std::vector<GameUtils::Delegate<>::Token> debugTokens;
+		
+		void UpdateTests(const Fixed& deltaMS) {
+			elapsed += deltaMS;
+			if (elapsed >= 1000 && !bSpawnedContext) {
+				bSpawnedContext = true;
+				UIButtonData data;
+				data.size = { 200, 60 };
+				data.interactingFill = { 255, 150, 255, 255 };
+				data.selectedFill = { 255, 150, 0, 255 };
+				data.notSelectedFill = { 255, 150, 0, 255 };
+				data.selectedBorder = 5;
+				data.selectedOutline = { 100, 255, 50, 255 };
+				UIButtonDrawerData drawerData;
+				drawerData.defaultButtonData = data;
+				drawerData.bDestroyOnReturn = !bModal;
+				drawerData.panelSize = { 600, 500 };
+				drawerData.panelColour = Colour(100, 100, 100, 100);
+				pButtonDrawer = pLevel->GetUIController().SpawnContext<UIButtonDrawer>();
+				pButtonDrawer->InitButtonDrawer(drawerData);
+				debugTokens.push_back(pButtonDrawer->AddButton("Button 0", []() { Logger::Log("Button 0 pressed!"); }));
+				debugTokens.push_back(pButtonDrawer->AddButton("Button 1", []() { Logger::Log("Button 1 pressed!"); }));
+				debugTokens.push_back(pButtonDrawer->AddButton("Button 2", []() { Logger::Log("Button 2 pressed!"); }));
+				debugTokens.push_back(pButtonDrawer->AddButton("Button 3", []() { Logger::Log("Button 3 pressed!"); }));
+				debugTokens.push_back(pButtonDrawer->AddButton("Button 4", []() { Logger::Log("Button 4 pressed!"); }));
+				//debugTokens.push_back(pButtonDrawer->AddButton("Button 5", []() { Logger::Log("Button 5 pressed!"); }));
+				if (bModal) debugTokens.push_back(pButtonDrawer->AddButton("Cancel", []() { pButtonDrawer->Destruct(); }));
+				pButtonDrawer->SetActive(true);
 			}
 		}
 
 		void RenderTests() {
-			if (uUIEl0) {
-				uUIEl0->Render();
-			}
-			if (uUIEl1) {
-				uUIEl1->Render();
-			}
+
 		}
 
 		void CleanupTests() {
+			elapsed = 0;
+			bSpawnedContext = false;
 			if (auto actor2 = pLevel->FindActor(_actor2ID)) {
 				actor2->Destruct();
 			}
@@ -144,8 +147,7 @@ namespace LittleEngine {
 			_pCloneTest = nullptr;
 			if (_pParticlesTest) _pParticlesTest->Destruct();
 			_pParticlesTest = nullptr;
-			if (uUIEl0) uUIEl0 = nullptr;
-			if (uUIEl1) uUIEl1 = nullptr;
+			debugTokens.clear();
 		}
 	}
 
@@ -154,9 +156,9 @@ namespace LittleEngine {
 		m_pEngine->GetAssetManager().LoadAll(AssetManifestData("AssetManifests/TestLevel.amf").GetManifest());
 	}
 
-	void TestLevel::Tick(Fixed deltaTime) {
-		_TestLevel::UpdateTests(deltaTime);
-		Level::Tick(deltaTime);
+	void TestLevel::Tick(Fixed deltaMS) {
+		_TestLevel::UpdateTests(deltaMS);
+		Level::Tick(deltaMS);
 	}
 
 	void TestLevel::OnActivated() {
@@ -203,6 +205,14 @@ namespace LittleEngine {
 		_TestLevel::playerID = player->GetActorID();
 		_TestLevel::pLevel = this;
 		_TestLevel::bSoundPlayed = _TestLevel::bMusicPlayed = false;
+
+		if (auto pSpriteTest = SpawnActor<Actor>("Sprite Coords", true)) {
+			pSpriteTest->GetTransform().localPosition = Vector2(-100, -100);
+			RenderComponent* pRc = pSpriteTest->AddComponent<RenderComponent>();
+			pRc->SetSpriteRenderable("Ship.png");
+			SpriteRenderable* pR = dynamic_cast<SpriteRenderable*>(pRc->GetRenderable());
+			pR->Crop(Vector2(10, 10), Vector2(50, 50));
+		}
 		
 		GetAudioManager().PlayMusic("TestMusic.ogg", Fixed::OneHalf);
 		/*Spawner::Init(*this);

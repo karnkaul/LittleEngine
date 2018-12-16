@@ -83,16 +83,16 @@ namespace LittleEngine {
 		if (m_sCollider) m_sCollider->FixedTick();
 	}
 
-	void Actor::Tick(const Fixed& deltaTime) {
+	void Actor::Tick(const Fixed& deltaMS) {
 		if (m_bDestroyed) return;
 
 		// Tick Components and Collider
 		for (const auto& component : m_components) {
 			if (component && component->m_bEnabled) {
-				component->Tick(deltaTime);
+				component->Tick(deltaMS);
 			}
 		}
-		if (m_sCollider) m_sCollider->Tick(deltaTime);
+		if (m_sCollider) m_sCollider->Tick(deltaMS);
 	}
 
 	void Actor::Render() {

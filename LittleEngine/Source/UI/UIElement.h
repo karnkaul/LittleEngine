@@ -1,13 +1,27 @@
 #pragma once
 #include <memory>
-#include "Engine/Object.h"
+#include "UIObject.h"
 #include "UITransform.h"
 #include "SFMLInterface/Rendering/Renderable.h"
 
 namespace LittleEngine {
-	class UIElement : public Object {
+	struct UIText {
+		Fixed pixelSize;
+		std::string text;
+		Colour colour;
+
+		UIText();
+		UIText(const char* text);
+		UIText(const std::string& text);
+		UIText(std::string&& text);
+		UIText(const std::string& text, const Fixed& pixelSize, Colour colour);
+	};
+
+	// \brief Base UI WorldEntity class: uses UITransform, is capable of drawing a panel/an image/some text
+	class UIElement : public UIObject {
 	public:
 		UITransform m_transform;
+		LayerID m_layer = LayerID::UI;
 	protected:
 		std::unique_ptr<class SpriteRenderable> m_uSprite;
 		std::unique_ptr<class TextRenderable> m_uText;
@@ -21,20 +35,20 @@ namespace LittleEngine {
 		virtual ~UIElement();
 
 		void SetPanel(UByte r = 255, UByte g = 255, UByte b = 255, UByte a = 128);
-		void SetPanel(Colour colour);
+		void SetPanel(Colour fill, const Fixed& border = Fixed::Zero, Colour outline = Colour::Transparent);
 		void SetImage(class TextureAsset& texture, Colour colour = Colour::White);
-		void SetText(const std::string& text);
+		void SetText(const UIText& uiText);
 		void SetFont(class FontAsset& font);
 
-		virtual void Tick(Fixed deltaTime);
-		virtual void Render();
+		virtual void Tick(const Fixed& deltaMS) override;
+		virtual void Render() override;
 
-	protected:
-
-		//TODO: Make Private
+		// TODO: Make private
 	public:
-		void SetLevel(Level& level);
+		void InitUIElement(Level& level);
 
-		friend class Level;
+	private:
+		friend class UIController;
+		friend class UIWidget;
 	};
 }

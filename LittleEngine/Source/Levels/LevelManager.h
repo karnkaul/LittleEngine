@@ -29,6 +29,7 @@ namespace LittleEngine {
 			if (uLevel) {
 				uLevel->SetEngine(*m_pEngine);
 				uLevel->LoadAssets();
+				uLevel->SpawnPrototypes();
 				m_createdLevels.push_back(std::move(uLevel));
 			}
 			return static_cast<LevelID>(m_createdLevels.size() - 1);

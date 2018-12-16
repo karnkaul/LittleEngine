@@ -56,8 +56,8 @@ namespace LittleEngine {
 		m_tokens.clear();
 	}
 
-	void ControllerComponent::Tick(Fixed deltaTime) {
-		prevDeltaTime = deltaTime;
+	void ControllerComponent::Tick(const Fixed& deltaMS) {
+		prevDeltaMS = deltaMS;
 		Actor& actor = GetActor();
 
 		Rect2 worldBounds = Graphics::GetWorldRect();
@@ -88,27 +88,27 @@ namespace LittleEngine {
 
 	void ControllerComponent::OnLeft() {
 		if (m_pInputHandler->IsKeyPressed(GameInput::LB)) {
-			GetActor().GetTransform().Rotate(prevDeltaTime * Fixed::OneThird);
+			GetActor().GetTransform().Rotate(prevDeltaMS * Fixed::OneThird);
 		}
 		else {
-			GetActor().GetTransform().localPosition.x -= prevDeltaTime;
+			GetActor().GetTransform().localPosition.x -= prevDeltaMS;
 		}
 	}
 
 	void ControllerComponent::OnRight() {
 		if (m_pInputHandler->IsKeyPressed(GameInput::LB)) {
-			GetActor().GetTransform().Rotate(-prevDeltaTime * Fixed::OneThird);
+			GetActor().GetTransform().Rotate(-prevDeltaMS * Fixed::OneThird);
 		}
 		else {
-			GetActor().GetTransform().localPosition.x += prevDeltaTime;
+			GetActor().GetTransform().localPosition.x += prevDeltaMS;
 		}
 	}
 
 	void ControllerComponent::OnUp() {
-		GetActor().GetTransform().localPosition.y += prevDeltaTime;
+		GetActor().GetTransform().localPosition.y += prevDeltaMS;
 	}
 
 	void ControllerComponent::OnDown() {
-		GetActor().GetTransform().localPosition.y -= prevDeltaTime;
+		GetActor().GetTransform().localPosition.y -= prevDeltaMS;
 	}
 }

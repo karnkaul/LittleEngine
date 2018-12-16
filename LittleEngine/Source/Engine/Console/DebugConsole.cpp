@@ -336,21 +336,21 @@ namespace LittleEngine { namespace DebugConsole {
 		if (rawTextInput.text != "`") liveString += rawTextInput.text;
 	}
 
-	void RenderConsole(const Engine& engine, Fixed deltaTime) {
+	void RenderConsole(const Engine& engine, Fixed deltaMS) {
 		if (!consoleRenderer) {
 			return;
 		}
 		const Fixed ANIM_SCALE = Fixed::Two;
 		static double elapsed = 0.0f;
-		elapsed += deltaTime.ToDouble();
+		elapsed += deltaMS.ToDouble();
 		if (bIsActive) {
 			if (yOffset < yOffsetMax) {
-				yOffset += (deltaTime * ANIM_SCALE);
+				yOffset += (deltaMS * ANIM_SCALE);
 			}
 		}
 		else {
 			if (yOffset > yOffsetMin) {
-				yOffset -= (deltaTime * ANIM_SCALE);
+				yOffset -= (deltaMS * ANIM_SCALE);
 			}
 		}
 		yOffset = Maths::Clamp(yOffset, yOffsetMin, yOffsetMax);

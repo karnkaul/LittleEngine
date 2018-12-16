@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CircularVector.hpp" />
     <ClInclude Include="TRange.hpp" />
     <ClInclude Include="UByte.h" />
     <ClInclude Include="Delegate.hpp" />

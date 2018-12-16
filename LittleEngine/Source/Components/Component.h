@@ -23,7 +23,7 @@ namespace LittleEngine {
 		Component(Actor& owner, const Component& prototype);
 		virtual ~Component();
 
-		virtual void Tick(Fixed deltaTime);
+		virtual void Tick(const Fixed& deltaMS);
 		virtual void FixedTick();
 		virtual void Render(const RenderParams& params);
 

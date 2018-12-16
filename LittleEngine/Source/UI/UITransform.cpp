@@ -24,10 +24,20 @@ namespace LittleEngine {
 		pParent = nullptr;
 	}
 
-	Vector2 UITransform::GetWorldPosition() {
+	void UITransform::SetAutoPadNPosition(const Vector2 & nPosition, bool bClamp) {
+		pixelPad = -Fixed::OneHalf * size;
+		if (bClamp) {
+			this->nPosition.x = Maths::Clamp_11(nPosition.x);
+			this->nPosition.y = Maths::Clamp_11(nPosition.y);
+		}
+		pixelPad.x *= this->nPosition.x;
+		pixelPad.y *= this->nPosition.y;
+		if (this->nPosition.x < Fixed::Zero) pixelPad.x = -pixelPad.x;
+		if (this->nPosition.y < Fixed::Zero) pixelPad.y = -pixelPad.y;
+	}
+
+	Vector2 UITransform::GetWorldPosition() const {
 		Vector2 offset = pParent ? pParent->GetWorldPosition() : Vector2::Zero;
-		nPosition.x = Maths::Clamp_11(nPosition.x);
-		nPosition.y = Maths::Clamp_11(nPosition.y);
 		Vector2 scale = pParent ? Fixed::OneHalf * pParent->size : Graphics::GetWorldRect().upper;
 		return Vector2(nPosition.x * scale.x, nPosition.y * scale.y) + offset + pixelPad;
 	}

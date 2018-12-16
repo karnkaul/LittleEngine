@@ -51,6 +51,9 @@
     <ClInclude Include="TRange.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CircularVector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\FileRW.cpp">

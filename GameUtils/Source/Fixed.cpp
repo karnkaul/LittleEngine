@@ -3,11 +3,11 @@
 #include "Fixed.h"
 
 namespace GameUtils {
-	const Fixed Fixed::Zero = Fixed(0);
-	const Fixed Fixed::One = Fixed(1);
-	const Fixed Fixed::Two = Fixed(2);
-	const Fixed Fixed::Three = Fixed(3);
-	const Fixed Fixed::Ten = Fixed(10);
+	const Fixed Fixed::Zero = Fixed(0, 1);
+	const Fixed Fixed::One = Fixed(1, 1);
+	const Fixed Fixed::Two = Fixed(2, 1);
+	const Fixed Fixed::Three = Fixed(3, 1);
+	const Fixed Fixed::Ten = Fixed(10, 1);
 	const Fixed Fixed::OneHalf = Fixed(1, 2);
 	const Fixed Fixed::OneThird = Fixed(1, 3);
 	const Fixed Fixed::OneTenth = Fixed(1, 10);

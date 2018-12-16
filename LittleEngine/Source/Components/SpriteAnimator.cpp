@@ -65,9 +65,9 @@ namespace LittleEngine {
 		}
 	}
 
-	void SpriteAnimator::Tick(Fixed deltaTime) {
+	void SpriteAnimator::Tick(const Fixed& deltaMS) {
 		if (m_bAnimating) {
-			m_elapsed += deltaTime;
+			m_elapsed += deltaMS;
 			Fixed ratio = Maths::Clamp01(m_elapsed / m_animTime);
 			Fixed size = static_cast<int>(m_sprites.size());
 			m_index = static_cast<size_t>((ratio * size).ToInt());

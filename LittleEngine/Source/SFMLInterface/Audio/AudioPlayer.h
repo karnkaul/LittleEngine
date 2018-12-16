@@ -28,7 +28,7 @@ namespace LittleEngine {
 
 	protected:
 		AudioPlayer(const std::string& name);
-		Status Convert(sf::Sound::Status status);
+		Status Cast(sf::Sound::Status status);
 		virtual bool ApplyParams() = 0;
 	};
 

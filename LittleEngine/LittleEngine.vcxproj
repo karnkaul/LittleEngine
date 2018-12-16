@@ -225,6 +225,7 @@
     <ClInclude Include="Source\Engine\Object.h" />
     <ClInclude Include="Source\Entities\Actor.h" />
     <ClInclude Include="Source\Entities\All.h" />
+    <ClInclude Include="Source\Entities\IWorldEntity.h" />
     <ClInclude Include="Source\Entities\ParticleSystem.h" />
     <ClInclude Include="Source\Entities\Player.h" />
     <ClInclude Include="Source\Entities\VFX.h" />
@@ -244,8 +245,14 @@
     <ClInclude Include="Source\SFMLInterface\Rendering\TextRenderable.h" />
     <ClInclude Include="Source\SFMLInterface\Graphics.h" />
     <ClInclude Include="Source\UI\All.h" />
+    <ClInclude Include="Source\UI\Contexts\UIButtonDrawer.h" />
+    <ClInclude Include="Source\UI\Contexts\UIContext.h" />
+    <ClInclude Include="Source\UI\UIController.h" />
     <ClInclude Include="Source\UI\UIElement.h" />
+    <ClInclude Include="Source\UI\UIObject.h" />
     <ClInclude Include="Source\UI\UITransform.h" />
+    <ClInclude Include="Source\UI\Widgets\UIButton.h" />
+    <ClInclude Include="Source\UI\Widgets\UIWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Components\Physics\Collider.cpp" />
@@ -291,8 +298,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\UI\Contexts\UIButtonDrawer.cpp" />
+    <ClCompile Include="Source\UI\Contexts\UIContext.cpp" />
+    <ClCompile Include="Source\UI\UIController.cpp" />
     <ClCompile Include="Source\UI\UIElement.cpp" />
+    <ClCompile Include="Source\UI\UIObject.cpp" />
     <ClCompile Include="Source\UI\UITransform.cpp" />
+    <ClCompile Include="Source\UI\Widgets\UIButton.cpp" />
+    <ClCompile Include="Source\UI\Widgets\UIWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GameUtils\GameUtils.vcxproj">

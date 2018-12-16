@@ -27,5 +27,13 @@ namespace GameUtils {
 		Vector2 GetSize() const {
 			return Vector2(GetWidth(), GetHeight());
 		}
+
+		Vector2 GetTopLeft() const {
+			return Vector2(lower.x, upper.y);
+		}
+
+		Vector2 GetBottomRight() const {
+			return Vector2(upper.x, lower.y);
+		}
 	};
 }

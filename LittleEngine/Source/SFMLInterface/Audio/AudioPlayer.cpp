@@ -2,6 +2,21 @@
 #include "AudioPlayer.h"
 #include "Utils.h"
 
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "openal32.lib")
+#pragma comment(lib, "flac.lib")
+#pragma comment(lib, "vorbisenc.lib")
+#pragma comment(lib, "vorbisfile.lib")
+#pragma comment(lib, "vorbis.lib")
+#pragma comment(lib, "ogg.lib")
+#if defined(DEBUG) || defined(_DEBUG)
+#pragma comment(lib, "sfml-audio-s-d.lib")
+#pragma comment(lib, "sfml-system-s-d.lib")
+#else
+#pragma comment(lib, "sfml-audio-s.lib")
+#pragma comment(lib, "sfml-system-s.lib")
+#endif
+
 namespace LittleEngine {
 	AudioPlayer::~AudioPlayer() {
 		Logger::Log(*this, m_name + " destroyed", Logger::Severity::Debug);
@@ -11,7 +26,7 @@ namespace LittleEngine {
 		Logger::Log(*this, name + " created", Logger::Severity::Debug);
 	}
 
-	AudioPlayer::Status AudioPlayer::Convert(sf::Sound::Status status) {
+	AudioPlayer::Status AudioPlayer::Cast(sf::Sound::Status status) {
 		switch (status) {
 		case sf::Sound::Status::Paused:
 			return Status::Paused;
@@ -67,7 +82,7 @@ namespace LittleEngine {
 	}
 
 	void SoundPlayer::Tick(Fixed deltaSeconds) {
-		m_status = m_pSoundAsset ? Convert(m_pSoundAsset->m_sfSound.getStatus()) : Status::NoMedia;
+		m_status = m_pSoundAsset ? Cast(m_pSoundAsset->m_sfSound.getStatus()) : Status::NoMedia;
 		ApplyParams();
 	}
 
@@ -171,7 +186,7 @@ namespace LittleEngine {
 	}
 
 	void MusicPlayer::Tick(Fixed deltaSeconds) {
-		m_status = m_pMainTrack ? Convert(m_pMainTrack->m_sfMusic.getStatus()) : Status::NoMedia;
+		m_status = m_pMainTrack ? Cast(m_pMainTrack->m_sfMusic.getStatus()) : Status::NoMedia;
 		
 		// Process Fade
 		if (IsFading()) {

@@ -53,6 +53,10 @@ namespace GameUtils {
 			return !m_callbacks.empty();
 		}
 
+		void Clear() {
+			m_callbacks.clear();
+		}
+
 	private:
 		// Remove expired weak_ptrs
 		void Cleanup() {

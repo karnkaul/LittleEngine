@@ -120,7 +120,7 @@ namespace LittleEngine {
 		Logger::Log(*this, GetNameInBrackets() + " cleared [" + Strings::ToString(sfxCount) + " SFXPlayers, 1 MusicPlayer]");
 	}
 
-	void AudioManager::Tick(Fixed deltaTime) {
+	void AudioManager::Tick(Fixed deltaMS) {
 		MusicPlayer& active = GetActivePlayer();
 		if (m_uSwitchTrackRequest != nullptr && !active.IsFading()) {
 			if (active.IsPlaying()) active.Stop();
@@ -128,7 +128,7 @@ namespace LittleEngine {
 			active.FadeIn(m_uSwitchTrackRequest->fadeSeconds, m_uSwitchTrackRequest->targetVolume);
 			m_uSwitchTrackRequest = nullptr;
 		}
-		Fixed deltaSeconds = deltaTime * Fixed(1, 1000);
+		Fixed deltaSeconds = deltaMS * Fixed(1, 1000);
 		active.Tick(deltaSeconds);
 		GetStandbyPlayer().Tick(deltaSeconds);
 		for (auto& sfxPlayer : m_sfxPlayers) {

@@ -21,7 +21,7 @@ namespace LittleEngine {
 		//this->engine->GetAudioManager().PlayMusic("TestMusic.ogg");
 	}
 
-	void BootLevel::Tick(Fixed deltaTime) {
+	void BootLevel::Tick(Fixed deltaMS) {
 		// Fade logo
 		if (IsAlive(m_logoID)) {
 			Fixed seconds = Fixed(static_cast<int>(LevelTimeMilliSeconds()), 1000);
@@ -32,7 +32,7 @@ namespace LittleEngine {
 		}
 
 		// Tick all actors etc
-		Level::Tick(deltaTime);
+		Level::Tick(deltaMS);
 	}
 
 	void BootLevel::OnLoadNextLevel() {

@@ -47,6 +47,11 @@ namespace LittleEngine {
 		);
 	}
 
+	void SpriteRenderable::Crop(const Vector2& topLeft, const Vector2& size) {
+		sf::IntRect textureRect(topLeft.x.ToInt(), topLeft.y.ToInt(), size.x.ToInt(), size.y.ToInt());
+		m_sprite.setTextureRect(textureRect);
+	}
+
 	Rect2 SpriteRenderable::GetBounds() const {
 		sf::FloatRect bounds = m_sprite.getLocalBounds();
 		Fixed width(bounds.width);

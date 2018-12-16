@@ -12,7 +12,7 @@ namespace LittleEngine {
 	public:
 		BootLevel() : Level("BootLevel") {};
 
-		virtual void Tick(Fixed deltaTime) override;
+		virtual void Tick(Fixed deltaMS) override;
 
 	protected:
 		virtual void OnActivated() override;

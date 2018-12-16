@@ -11,6 +11,7 @@
 #include "SFMLInterface/Assets.h"
 #include "Entities/Actor.h"
 #include "Entities/Player.h"
+#include "UI/UIController.h"
 #include "Components/ControllerComponent.h"
 #include "Components/RenderComponent.h"
 #include "Misc/Stopwatch.h"
@@ -27,6 +28,7 @@ namespace LittleEngine {
 
 	Level::~Level() {
 		m_actorMap.clear();
+		m_prototypeMap.clear();
 		Logger::Log(*this, GetNameInBrackets() + " (Level) destroyed");
 	}
 
@@ -37,9 +39,16 @@ namespace LittleEngine {
 
 	void Level::LoadAssets() {}
 
+	void Level::SpawnPrototypes() {}
+
+	UIController& Level::GetUIController() const {
+		return *m_uUIController;
+	}
+
 	void Level::Activate() {
-		OnActivated();
+		m_uUIController = std::make_unique<UIController>(*this);
 		m_state = State::ACTIVE;
+		OnActivated();
 		m_clock.Restart();
 		Logger::Log(*this, GetNameInBrackets() + " (Level) activated. [GameTime: " + m_clock.ToString(m_clock.GetGameTimeMilliSeconds()) + "]");
 	}
@@ -58,15 +67,16 @@ namespace LittleEngine {
 		}
 	}
 
-	void Level::Tick(Fixed deltaTime) {
+	void Level::Tick(Fixed deltaMS) {
 		Logger::Log(*this, "Executing Tick [" + Strings::ToString(m_actorMap.size()) + " actors]", Logger::Severity::HOT);
 
 		for (auto & iter : m_actorMap) {
 			Actor::Ptr& actor = iter.second;
 			if (!actor->m_bDestroyed && actor->m_bEnabled) {
-				actor->Tick(deltaTime);
+				actor->Tick(deltaMS);
 			}
 		}
+		if (m_uUIController) m_uUIController->Tick(deltaMS);
 	}
 
 	void Level::Render() {
@@ -78,6 +88,7 @@ namespace LittleEngine {
 				actor->Render();
 			}
 		}
+		if (m_uUIController) m_uUIController->Render();
 		STOPWATCH_STOP();
 		STOPWATCH_START("Post Render");
 		PostRender();
@@ -88,6 +99,7 @@ namespace LittleEngine {
 
 	void Level::Clear() {
 		OnClearing();
+		m_uUIController = nullptr;
 		m_actorMap.clear();
 		Spawner::Cleanup();
 		m_tokenHandler.Clear();
