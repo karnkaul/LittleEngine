@@ -37,9 +37,7 @@ namespace LittleEngine {
 		m_state = State::IDLE;
 	}
 
-	void Level::LoadAssets() {}
-
-	void Level::SpawnPrototypes() {}
+	void Level::LoadAndSpawn() {}
 
 	UIController& Level::GetUIController() const {
 		return *m_uUIController;
@@ -107,8 +105,7 @@ namespace LittleEngine {
 		m_state = State::IDLE;
 	}
 
-	void Level::OnClearing() {
-	}
+	void Level::OnClearing() {}
 
 	void Level::RegisterScopedInput(const GameInput& gameInput, OnInput::Callback callback, const OnKey& type, bool consume) {
 		OnInput::Token token = GetInputHandler().Register(gameInput, callback, type, consume);

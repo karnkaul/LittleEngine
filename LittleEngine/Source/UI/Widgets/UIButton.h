@@ -18,6 +18,8 @@ namespace LittleEngine {
 		Colour selectedFill = Colour::Transparent;
 		Colour selectedOutline = Colour::Transparent;
 		Colour interactingFill = Colour::Transparent;
+
+		static const UIButtonData DebugButton();
 	};
 
 	class UIButton : public UIWidget {

@@ -30,7 +30,7 @@ namespace LittleEngine { namespace DebugConsole {
 				FillExecuteResult(params);
 				return std::move(executeResult);
 			}
-			virtual std::vector<std::string> AutoCompleteParams(const std::string& incompleteParams) {
+			virtual std::vector<std::string> AutoCompleteParams(const std::string&) {
 				std::vector<std::string> ret = { "" };
 				return ret;
 			}
@@ -47,7 +47,7 @@ namespace LittleEngine { namespace DebugConsole {
 		public:
 			HelpCommand() : Command("help") {}
 
-			virtual void FillExecuteResult(const std::string& params) override {
+			virtual void FillExecuteResult(const std::string&) override {
 				executeResult = GetAllCommands();
 			}
 		};
@@ -127,7 +127,7 @@ namespace LittleEngine { namespace DebugConsole {
 		public:
 			QuitCommand() : Command("quit") {}
 
-			virtual void FillExecuteResult(const std::string& params) override {
+			virtual void FillExecuteResult(const std::string&) override {
 				executeResult.emplace_back("Quitting instantly", LOG_WARNING_COLOUR);
 				pEngine->Quit();
 			}

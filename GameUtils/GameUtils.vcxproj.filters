@@ -54,6 +54,9 @@
     <ClInclude Include="CircularVector.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\FileRW.cpp">

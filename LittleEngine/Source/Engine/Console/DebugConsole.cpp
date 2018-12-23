@@ -336,7 +336,7 @@ namespace LittleEngine { namespace DebugConsole {
 		if (rawTextInput.text != "`") liveString += rawTextInput.text;
 	}
 
-	void RenderConsole(const Engine& engine, Fixed deltaMS) {
+	void RenderConsole(Fixed deltaMS) {
 		if (!consoleRenderer) {
 			return;
 		}

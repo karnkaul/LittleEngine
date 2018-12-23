@@ -44,10 +44,10 @@ namespace LittleEngine {
 		GameClock m_clock;
 		Engine* m_pEngine;
 		std::unique_ptr<class UIController> m_uUIController;
+		GameUtils::TokenHandler<OnInput::Token> m_tokenHandler;
 
 	private:
 		CollisionManager m_collisionManager;
-		GameUtils::TokenHandler<OnInput::Token> m_tokenHandler;
 		std::unordered_map<int, Actor::Ptr> m_actorMap;
 		std::unordered_map<int, Actor::Ptr> m_prototypeMap;
 		State m_state = State::INVALID;
@@ -55,11 +55,9 @@ namespace LittleEngine {
 	public:
 		virtual ~Level();
 		
-		// Override to load assets before level activates
-		virtual void LoadAssets();
-		// Override to spawn T:Actor prototypes to clone at live-time
-		virtual void SpawnPrototypes();
-
+		// Override to load assets and spawn prototypes before level activates
+		virtual void LoadAndSpawn();
+		
 		UIController& GetUIController() const;
 		InputHandler& GetInputHandler() const;
 		AssetManager& GetAssetManager() const;
@@ -81,16 +79,18 @@ namespace LittleEngine {
 		template<typename T>
 		T* SpawnActor(const std::string& name, bool bSetEnabled, const Vector2& position = Vector2::Zero, const Fixed& orientation = Fixed::Zero) {
 			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
+			if (m_state == State::ACTIVE) Logger::Log(*this, "SpawnActor called in live time; SpawnPrototypes on init and use CloneActor here instead", Logger::Severity::Warning);
 			auto actor = NewActor<T>(name, bSetEnabled, position, orientation);
 			T* ret = actor.get();
 			m_actorMap.emplace(actor->m_actorID, std::move(actor));
 			return ret;
 		}
 
+		// \brief Prototypes are not Ticked or Rendered, and are not destroyed till the owning Level is
 		template<typename T>
-		T* SpawnPrototype(const std::string& name, bool bSetEnabled, const Vector2& position = Vector2::Zero, const Fixed& orientation = Fixed::Zero) {
+		T* SpawnPrototype(const std::string& name, const Vector2& position = Vector2::Zero, const Fixed& orientation = Fixed::Zero) {
 			static_assert(std::is_base_of<Actor, T>::value, "T must derive from Actor! Check output window for erroneous call");
-			auto actor = NewActor<T>(name, bSetEnabled, position, orientation);
+			auto actor = NewActor<T>(name, false, position, orientation);
 			T* ret = actor.get();
 			m_prototypeMap.emplace(actor->m_actorID, std::move(actor));
 			return ret;

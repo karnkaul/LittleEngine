@@ -10,18 +10,21 @@ namespace LittleEngine {
 	struct UIButtonDrawerData {
 		UIButtonData defaultButtonData;
 		Vector2 panelSize;
-		TRange<Fixed> btnYPosRange = { Fixed(-0.85f), Fixed(0.85f) };
+		TRange<Fixed> btnNPosRange = { Fixed(-0.85f), Fixed(0.85f) };
 		Fixed panelBorder = Fixed::Zero;
 		Colour panelColour = Colour::White;
 		Colour panelOutline = Colour::Transparent;
+		bool bHorizontal = false;
 		bool bDestroyOnReturn = true;
+
+		static const UIButtonDrawerData DebugButtonDrawer(bool bModal = false);
+		static UIButtonDrawerData CreateDrawer(bool bModal, const Vector2& size, Colour background, UIButtonData* pButtonData = nullptr);
 	};
 
 	class UIButtonDrawer : public UIContext {
 	private:
 		UIButtonDrawerData m_data;
 		std::vector<UIButton*> m_uiButtons;
-		UIElement* m_pRoot = nullptr;
 		bool m_init = false;
 
 	public:
@@ -30,7 +33,7 @@ namespace LittleEngine {
 		virtual ~UIButtonDrawer();
 
 		void InitButtonDrawer(const UIButtonDrawerData& data);
-		Delegate::Token AddButton(const UIText& buttonText, Delegate::Callback OnInteracted);
+		Delegate::Token AddButton(const UIText& buttonText, Delegate::Callback OnInteracted, const UIButtonData* pButtonData = nullptr);
 
 	private:
 		void SetButtonPositions();

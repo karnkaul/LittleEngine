@@ -3,6 +3,7 @@
 #include "UIObject.h"
 #include "UITransform.h"
 #include "SFMLInterface/Rendering/Renderable.h"
+#include "SFMLInterface/Rendering/TextRenderable.h"
 
 namespace LittleEngine {
 	struct UIText {
@@ -39,16 +40,17 @@ namespace LittleEngine {
 		void SetImage(class TextureAsset& texture, Colour colour = Colour::White);
 		void SetText(const UIText& uiText);
 		void SetFont(class FontAsset& font);
+		TextData* GetTextData() const;
 
 		virtual void Tick(const Fixed& deltaMS) override;
 		virtual void Render() override;
 
-		// TODO: Make private
-	public:
-		void InitUIElement(Level& level);
+	private:
+		void InitElement(Level& level, UITransform* pParent = nullptr);
 
 	private:
 		friend class UIController;
 		friend class UIWidget;
+		friend class UIContext;
 	};
 }

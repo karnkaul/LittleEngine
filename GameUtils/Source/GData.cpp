@@ -136,7 +136,7 @@ namespace GameUtils {
 		return false;
 	}
 
-	const int GData::NumFields() const {
+	int GData::NumFields() const {
 		return static_cast<int>(m_fieldMap.size());
 	}
 }

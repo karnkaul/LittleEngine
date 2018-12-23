@@ -63,8 +63,12 @@ namespace GameUtils {
 			--iter;
 		}
 
-		void Reset() {
-			iter = vec.begin();
+		void Reset(bool bToLast = false) {
+			if (bToLast && !vec.empty()) {
+				iter = vec.end();
+				Decrement();
+			}
+			else iter = vec.begin();
 		}
 
 		size_t Size() const {

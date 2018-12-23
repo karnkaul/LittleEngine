@@ -7,3 +7,4 @@
 #include "Widgets/UIButton.h"
 #include "Contexts/UIContext.h"
 #include "Contexts/UIButtonDrawer.h"
+#include "Contexts/UIDialogue.h"

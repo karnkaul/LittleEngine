@@ -155,7 +155,7 @@ namespace LittleEngine {
 							STOPWATCH_START("Render");
 							m_uLevelManager->GetActiveLevel()->Render();
 #if ENABLED(DEBUG_CONSOLE)
-							DebugConsole::RenderConsole(*this, deltaMS);
+							DebugConsole::RenderConsole(deltaMS);
 #endif
 							m_pGraphics->Draw();
 							STOPWATCH_STOP();
@@ -188,7 +188,7 @@ namespace LittleEngine {
 		return m_exitCode;
 	}
 
-	const LevelID Engine::GetActiveLevelID() const {
+	LevelID Engine::GetActiveLevelID() const {
 		return m_uLevelManager->GetActiveLevelID();
 	}
 

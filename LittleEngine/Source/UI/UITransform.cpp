@@ -32,8 +32,6 @@ namespace LittleEngine {
 		}
 		pixelPad.x *= this->nPosition.x;
 		pixelPad.y *= this->nPosition.y;
-		if (this->nPosition.x < Fixed::Zero) pixelPad.x = -pixelPad.x;
-		if (this->nPosition.y < Fixed::Zero) pixelPad.y = -pixelPad.y;
 	}
 
 	Vector2 UITransform::GetWorldPosition() const {

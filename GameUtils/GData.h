@@ -36,6 +36,6 @@ namespace GameUtils {
 		bool AddField(const std::string& key, GData& gData);
 		bool SetString(const std::string& key, const std::string& value);
 
-		const int NumFields() const;
+		int NumFields() const;
 	};
 }

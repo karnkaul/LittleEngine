@@ -17,7 +17,7 @@ namespace LittleEngine {
 	const std::string Actor::UNNAMED_ACTOR = "Unnamed_Actor";
 
 	Actor::Actor() : Object(UNNAMED_ACTOR) {
-		Logger::Log(*this, "Actor default constructed", Logger::Severity::Debug);
+		Logger::Log(*this, "Actor constructed", Logger::Severity::Debug);
 	}
 
 	void Actor::InitActor(Level& level, int actorID, const std::string& name, const Vector2& position, const Fixed& orientation) {

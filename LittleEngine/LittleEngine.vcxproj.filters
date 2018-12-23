@@ -234,6 +234,15 @@
     <ClInclude Include="Source\UI\Contexts\UIButtonDrawer.h">
       <Filter>Source\UI\Contexts</Filter>
     </ClInclude>
+    <ClInclude Include="Source\UI\Contexts\UIDialogue.h">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\UIWidgetMatrix.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LittleEngine.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -371,6 +380,12 @@
     </ClCompile>
     <ClCompile Include="Source\UI\Contexts\UIButtonDrawer.cpp">
       <Filter>Source\UI\Contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Contexts\UIDialogue.cpp">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIWidgetMatrix.cpp">
+      <Filter>Source\UI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -3,6 +3,17 @@
 #include "Engine/Logger/Logger.h"
 
 namespace LittleEngine {
+	const UIButtonData UIButtonData::DebugButton() {
+		UIButtonData data;
+		data.size = { 200, 60 };
+		data.interactingFill = { 255, 150, 255, 255 };
+		data.selectedFill = { 255, 135, 69, 255 };
+		data.notSelectedFill = { 255, 135, 69, 255 };
+		data.selectedBorder = 5;
+		data.selectedOutline = { 18, 139, 165, 255 };
+		return data;
+	}
+
 	UIButton::UIButton() : UIWidget("Untitled") {
 		Logger::Log(*this, "Untitled UIButton constructed", Logger::Severity::Debug);
 	}
@@ -17,7 +28,7 @@ namespace LittleEngine {
 
 	void UIButton::InitButton(UIButtonData&& data) {
 		m_data = std::move(data);
-		m_pUIElement = AddUIElement<UIElement>();
+		m_pUIElement = AddElement<UIElement>();
 		m_pUIElement->m_transform.size = m_data.size;
 		m_pUIElement->SetText(m_name);
 		m_pUIElement->SetPanel(m_data.notSelectedFill);

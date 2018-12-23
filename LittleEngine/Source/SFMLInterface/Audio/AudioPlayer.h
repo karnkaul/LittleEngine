@@ -22,9 +22,9 @@ namespace LittleEngine {
 		virtual ~AudioPlayer();
 		virtual void Play() = 0;
 		virtual void Stop() = 0;
-		virtual void Reset(Fixed seconds = Fixed::Zero) = 0;
+		virtual void Reset(const Fixed& seconds = Fixed::Zero) = 0;
 		virtual bool IsPlaying() const = 0;
-		virtual void Tick(Fixed deltaSeconds) = 0;
+		virtual void Tick(const Fixed& deltaSeconds) = 0;
 
 	protected:
 		AudioPlayer(const std::string& name);
@@ -46,9 +46,9 @@ namespace LittleEngine {
 
 		virtual void Play() override;
 		virtual void Stop() override;
-		virtual void Reset(Fixed seconds = Fixed::Zero) override;
+		virtual void Reset(const Fixed& seconds = Fixed::Zero) override;
 		virtual bool IsPlaying() const override;
-		virtual void Tick(Fixed deltaSeconds) override;
+		virtual void Tick(const Fixed& deltaSeconds) override;
 
 	private:
 		virtual bool ApplyParams() override;
@@ -80,9 +80,9 @@ namespace LittleEngine {
 		
 		virtual void Play() override;
 		virtual void Stop() override;
-		virtual void Reset(Fixed seconds = Fixed::Zero) override;
+		virtual void Reset(const Fixed& seconds = Fixed::Zero) override;
 		virtual bool IsPlaying() const override;
-		virtual void Tick(Fixed deltaSeconds) override;
+		virtual void Tick(const Fixed& deltaSeconds) override;
 
 	private:
 		void BeginFade();

@@ -71,7 +71,7 @@ namespace LittleEngine {
 		}
 	}
 
-	void SoundPlayer::Reset(Fixed seconds) {
+	void SoundPlayer::Reset(const Fixed& seconds) {
 		if (m_pSoundAsset) {
 			m_pSoundAsset->m_sfSound.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.ToDouble() * 1000)));
 		}
@@ -81,7 +81,7 @@ namespace LittleEngine {
 		return m_pSoundAsset && m_pSoundAsset->m_sfSound.getStatus() == sf::SoundSource::Status::Playing;
 	}
 
-	void SoundPlayer::Tick(Fixed deltaSeconds) {
+	void SoundPlayer::Tick(const Fixed&) {
 		m_status = m_pSoundAsset ? Cast(m_pSoundAsset->m_sfSound.getStatus()) : Status::NoMedia;
 		ApplyParams();
 	}
@@ -174,7 +174,7 @@ namespace LittleEngine {
 		}
 	}
 
-	void MusicPlayer::Reset(Fixed seconds) {
+	void MusicPlayer::Reset(const Fixed& seconds) {
 		if (m_pMainTrack) {
 			m_clock.Restart();
 			m_pMainTrack->m_sfMusic.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.ToDouble() * 1000)));
@@ -185,7 +185,7 @@ namespace LittleEngine {
 		return m_pMainTrack &&  m_pMainTrack->m_sfMusic.getStatus() == sf::SoundSource::Status::Playing;
 	}
 
-	void MusicPlayer::Tick(Fixed deltaSeconds) {
+	void MusicPlayer::Tick(const Fixed& deltaSeconds) {
 		m_status = m_pMainTrack ? Cast(m_pMainTrack->m_sfMusic.getStatus()) : Status::NoMedia;
 		
 		// Process Fade

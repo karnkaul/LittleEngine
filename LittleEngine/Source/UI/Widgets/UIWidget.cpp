@@ -1,5 +1,6 @@
 #include "le_stdafx.h"
 #include "UIWidget.h"
+#include "../Contexts/UIContext.h"
 #include "Engine/Logger/Logger.h"
 
 namespace LittleEngine {
@@ -32,5 +33,10 @@ namespace LittleEngine {
 		for (auto& uUIElement : m_uiElements) {
 			uUIElement->Render();
 		}
+	}
+
+	void UIWidget::InitElement(UIElement* pNewElement) {
+		UITransform* pParent = m_pOwner ? &m_pOwner->GetRootElement()->m_transform : nullptr;
+		pNewElement->InitElement(*m_pLevel, pParent);
 	}
 }

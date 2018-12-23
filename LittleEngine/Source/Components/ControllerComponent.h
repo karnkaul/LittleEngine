@@ -28,6 +28,7 @@ namespace LittleEngine {
 		virtual Component::Ptr UClone(Actor& owner) const override;
 
 	private:
+		void Init();
 		Vector2 GetRenderPadding();
 		void OnLeft();
 		void OnRight();

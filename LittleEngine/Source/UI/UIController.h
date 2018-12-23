@@ -15,11 +15,11 @@ namespace LittleEngine {
 		~UIController();
 
 		template<typename T>
-		T* SpawnContext(bool bSetActive = true) {
+		T* SpawnContext() {
 			static_assert(std::is_base_of<UIContext, T>::value, "T must derive from UIContext!");
 			m_uActiveContext = std::make_unique<T>();
 			m_uActiveContext->InitContext(*m_pLevel);
-			m_uActiveContext->SetActive(bSetActive);
+			m_uActiveContext->SetActive(false);
 			return dynamic_cast<T*>(m_uActiveContext.get());
 		}
 

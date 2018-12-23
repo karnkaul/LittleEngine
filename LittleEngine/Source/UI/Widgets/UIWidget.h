@@ -18,11 +18,11 @@ namespace LittleEngine {
 		virtual ~UIWidget();
 
 		template<typename T>
-		UIElement* AddUIElement() {
+		UIElement* AddElement() {
 			static_assert(std::is_base_of<UIElement, T>::value, "T must derive from UIElement. Check Output Window for erroneous call");
 			std::unique_ptr<T> uT = std::make_unique<T>();
-			uT->InitUIElement(*m_pLevel);
 			T* pT = uT.get();
+			InitElement(pT);
 			m_uiElements.push_back(std::move(uT));
 			return pT;
 		}
@@ -36,5 +36,8 @@ namespace LittleEngine {
 
 		virtual void Tick(const Fixed& deltaMS) override;
 		virtual void Render() override;
+
+	private:
+		void InitElement(UIElement* pNewElement);
 	};
 }

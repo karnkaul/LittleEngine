@@ -1,23 +1,23 @@
 #pragma once
 #include <memory>
-#include "CircularVector.hpp"
 #include "Delegate.hpp"
 #include "../UIObject.h"
 #include "../Widgets/UIWidget.h"
+#include "../UIWidgetMatrix.h"
 #include "Engine/Input/InputHandler.h"
 
 namespace LittleEngine {
 	// \brief Controller for a number of UIWidgets: allows player to cycle through and interact with all of them
 	class UIContext : public UIObject {
 	private:
-		template<typename T>
-		using CircularVector = GameUtils::CircularVector<T>;
 		using UUIWidget = std::unique_ptr<UIWidget>;
 		using UUIElement = std::unique_ptr<class UIElement>;
 	public:
 		bool m_bAutoDestroyOnCancel = false;
+	protected:
+		UIElement* m_pRootElement = nullptr;
 	private:
-		CircularVector<UUIWidget> m_uiWidgets;
+		UIWidgetMatrix m_uiWidgets;
 		std::vector<UUIElement> m_uiElements;
 		std::vector<OnInput::Token> m_inputTokens;
 		OnInput m_onCancelledDelegate;
@@ -29,19 +29,21 @@ namespace LittleEngine {
 		virtual ~UIContext();
 
 		template <typename T>
-		T* AddWidget(const std::string& name) {
+		T* AddWidget(const std::string& name, bool bNewColumn = false) {
 			static_assert(std::is_base_of<UIWidget, T>::value, "T must derive from UIWidget.");
 			std::unique_ptr<T> uT = std::make_unique<T>(name);
 			T* pT = uT.get();
 			uT->InitWidget(*m_pLevel, *this);
-			m_uiWidgets.EmplaceBack(std::move(uT));
+			m_uiWidgets.EmplaceWidget(std::move(uT), bNewColumn);
 			return pT;
 		}
 
 		template<typename T>
-		T* AddElement(const std::string& name) {
+		T* AddElement(const std::string& name, UITransform* pParent = nullptr) {
 			static_assert(std::is_base_of<UIElement, T>::value, "T must derive from UIWidget!");
 			std::unique_ptr<T> uT = std::make_unique<T>(name);
+			if (!pParent && m_pRootElement) pParent = &m_pRootElement->m_transform;
+			uT->InitElement(*m_pLevel, pParent);
 			T* pT = uT.get();
 			m_uiElements.push_back(std::move(uT));
 			return pT;
@@ -49,7 +51,9 @@ namespace LittleEngine {
 
 		void InitContext(Level& level);
 		void SetActive(bool bActive);
+		void ResetSelection();
 		UIWidget* GetSelected();
+		UIElement* GetRootElement() const;
 		OnInput::Token SetOnCancelled(OnInput::Callback Callback, bool bAutoDestroy);
 		void Destruct();
 
@@ -59,9 +63,10 @@ namespace LittleEngine {
 	protected:
 		virtual void OnDestroying();
 		
-	private:
 		void OnUp();
 		void OnDown();
+		void OnLeft();
+		void OnRight();
 		void OnEnterPressed();
 		void OnEnterReleased();
 		void OnReturnReleased();

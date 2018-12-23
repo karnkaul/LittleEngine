@@ -4,7 +4,6 @@
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Rendering/Renderable.h"
 #include "SFMLInterface/Rendering/SpriteRenderable.h"
-#include "SFMLInterface/Rendering/TextRenderable.h"
 #include "SFMLInterface/Rendering/ShapeRenderable.h"
 
 namespace LittleEngine {
@@ -26,8 +25,9 @@ namespace LittleEngine {
 		Logger::Log(*this, GetNameInBrackets() + " destroyed", Logger::Severity::Debug);
 	}
 
-	void UIElement::InitUIElement(Level & level) {
+	void UIElement::InitElement(Level & level, UITransform* pParent) {
 		this->pLevel = &level;
+		if (pParent) m_transform.SetParent(*pParent);
 	}
 
 	void UIElement::SetPanel(UByte r, UByte g, UByte b, UByte a) {
@@ -81,7 +81,12 @@ namespace LittleEngine {
 		}
 	}
 
-	void UIElement::Tick(const Fixed& deltaMS) {
+	TextData* UIElement::GetTextData() const {
+		if (m_uText) return &m_uText->GetTextData();
+		return nullptr;
+	}
+
+	void UIElement::Tick(const Fixed&) {
 		if (m_bDestroyed) return;
 		m_transform.anchor.x = Maths::Clamp_11(m_transform.anchor.x);
 		m_transform.anchor.y = Maths::Clamp_11(m_transform.anchor.y);
