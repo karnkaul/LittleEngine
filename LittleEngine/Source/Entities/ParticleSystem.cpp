@@ -78,11 +78,11 @@ namespace LittleEngine {
 			return id;
 		}
 
-		void Tick(const Fixed& deltaTime) {
+		void Tick(const Fixed& deltaMS) {
 			if (bInUse) {
-				transform.localPosition += (deltaTime * v);
-				transform.localOrientation += (deltaTime * w);
-				elapsed += deltaTime;
+				transform.localPosition += (deltaMS * v);
+				transform.localOrientation += (deltaMS * w);
+				elapsed += deltaMS;
 				if (elapsed >= ttl) {
 					bInUse = false;
 				}
@@ -162,19 +162,19 @@ namespace LittleEngine {
 		}
 
 		void PreWarm(unsigned int numTicks = 50) {
-			Fixed deltaTime = data.lifetimeData.timeToLive.min * Fixed(100);
+			Fixed deltaMS = data.lifetimeData.timeToLive.min * Fixed(100);
 			bool bTemp = bSpawnNewParticles;
 			bSpawnNewParticles = true;
 			for (unsigned int i = 0; i < numTicks; ++i) {
-				TickInternal(deltaTime);
+				TickInternal(deltaMS);
 			}
 			bSpawnNewParticles = bTemp;
 		}
 
-		void Tick(const Fixed& deltaTime) {
+		void Tick(const Fixed& deltaMS) {
 			if (!bEnabled) return;
 			if (bWaiting) {
-				elapsed += deltaTime;
+				elapsed += deltaMS;
 				if (elapsed >= data.startDelay) bWaiting = false;
 				else return;
 			}
@@ -183,7 +183,7 @@ namespace LittleEngine {
 				bSoundPlayed = true;
 			}
 
-			TickInternal(deltaTime);
+			TickInternal(deltaMS);
 		}
 
 		void Render() {
@@ -269,12 +269,12 @@ namespace LittleEngine {
 			}
 		}
 
-		void TickInternal(const Fixed& deltaTime) {
+		void TickInternal(const Fixed& deltaMS) {
 			// Update in use
 			size_t alive = 0;
 			for (size_t i = 0; i < MAX_PARTICLES; ++i) {
 				Particle& p = particles[i];
-				p.Tick(deltaTime);
+				p.Tick(deltaMS);
 				if (p.bInUse) {
 					++alive;
 					Fixed t = p.elapsed / p.ttl;
@@ -347,14 +347,18 @@ namespace LittleEngine {
 		Logger::Log(*this, GetNameInBrackets() + " Particle System stopped", Logger::Severity::Debug);
 	}
 
-	void ParticleSystem::Tick(const Fixed & deltaTime) {
+	void ParticleSystem::Tick(const Fixed & deltaMS) {
+		Actor::Tick(deltaMS);
+		bool bAnyPlaying = false;
 		for (std::unique_ptr<Emitter>& emitter : m_emitters) {
-			emitter->Tick(deltaTime);
-			m_bIsPlaying &= emitter->bEnabled;
+			emitter->Tick(deltaMS);
+			bAnyPlaying |= emitter->bEnabled;
 		}
+		m_bIsPlaying = bAnyPlaying;
 	}
 
 	void ParticleSystem::Render() {
+		Actor::Render();
 		for (std::unique_ptr<Emitter>& emitter : m_emitters) {
 			emitter->Render();
 		}

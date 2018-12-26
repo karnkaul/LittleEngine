@@ -40,7 +40,7 @@ namespace GameUtils {
 		std::string ToString() const;
 
 	private:
-		void AddChild(Transform* pChild);
-		void RemoveChild(Transform* pChild);
+		void AddChild(Transform& child);
+		bool RemoveChild(Transform& child);
 	};
 }

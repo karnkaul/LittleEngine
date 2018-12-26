@@ -56,9 +56,10 @@ namespace GameUtils {
 	// Returns true if val is found, and erases it from vec
 	template<typename T>
 	bool VectorErase(std::vector<T>& vec, const T& val) {
-		auto iter = VectorSearch(vec, val);
+		auto iter = std::find(vec.begin(), vec.end(), val);
 		if (iter != vec.end()) {
-			vec.erase(iter);
+			std::swap(*iter, vec.back());
+			vec.pop_back();
 			return true;
 		}
 		return false;
@@ -111,6 +112,13 @@ namespace Maths {
 	T Abs(T val) {
 		if (val < 0) return -val;
 		return val;
+	}
+
+	template<typename T>
+	T TransformRange(T val, T oldMin, T oldMax, T newMin, T newMax) {
+		T oldRange = oldMax - oldMin;
+		T newRange = newMax - newMin;
+		return oldRange == 0 ? newMin : (((value - oldMin) * newRange) / oldRange) + newMin;
 	}
 
 	namespace Random {

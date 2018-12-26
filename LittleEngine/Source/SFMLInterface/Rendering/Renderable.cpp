@@ -3,6 +3,20 @@
 #include "Engine/Logger/Logger.h"
 #include "SFML/Graphics.hpp"
 
+#pragma comment(lib, "freetype.lib")
+#pragma comment(lib, "opengl32.lib")
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "gdi32.lib")
+#if defined(DEBUG) || defined(_DEBUG)
+#pragma comment(lib, "sfml-graphics-s-d.lib")
+#pragma comment(lib, "sfml-window-s-d.lib")
+#pragma comment(lib, "sfml-system-s-d.lib")
+#else
+#pragma comment(lib, "sfml-graphics-s.lib")
+#pragma comment(lib, "sfml-window-s.lib")
+#pragma comment(lib, "sfml-system-s.lib")
+#endif
+
 namespace LittleEngine {
 	const Colour Colour::Black(0, 0, 0);
 	const Colour Colour::White;

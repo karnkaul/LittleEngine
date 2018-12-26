@@ -5,6 +5,17 @@
 #include "Utils.h"
 #include "Misc/Stopwatch.h"
 
+#pragma comment(lib, "opengl32.lib")
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "gdi32.lib")
+#if defined(DEBUG) || defined(_DEBUG)
+#pragma comment(lib, "sfml-window-s-d.lib")
+#pragma comment(lib, "sfml-system-s-d.lib")
+#else
+#pragma comment(lib, "sfml-window-s.lib")
+#pragma comment(lib, "sfml-system-s.lib")
+#endif
+
 namespace LittleEngine {
 	LayerInfo::LayerInfo(int layerID) {
 		SetLayerID(layerID);
@@ -87,11 +98,11 @@ SetLayerID(static_cast<int>(layerID));
 		return m_instance ? m_instance->m_gameViewSize : Vector2::Zero;
 	}
 
-	Rect2 Graphics::GetWorldBounds() {
+	Rect2 Graphics::GetWorldRect() {
 		return m_instance ? m_instance->m_worldBounds : Rect2();
 	}
 
-	Vector2 Graphics::NormalisedToWorldPoint(const Vector2 & normalised, bool autoClamp) {
+	Vector2 Graphics::NToWorld(const Vector2 & normalised, bool autoClamp) {
 		Vector2 p = normalised;
 		if (autoClamp) {
 			p.x = Maths::Clamp_11(p.x);

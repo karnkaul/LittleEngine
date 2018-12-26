@@ -58,6 +58,15 @@
     <Filter Include="Source\Components\Physics">
       <UniqueIdentifier>{054812d5-7519-4308-a14e-870cebf4634e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\UI">
+      <UniqueIdentifier>{3d34e092-debc-4270-9a37-beea6af1ecc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UI\Widgets">
+      <UniqueIdentifier>{f9b1e84b-ece9-44fb-82fd-b2deb7f41932}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UI\Contexts">
+      <UniqueIdentifier>{f7ed674d-dd0e-4f88-b7b6-2011bad1e82d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Entities\Actor.h">
@@ -195,6 +204,45 @@
     <ClInclude Include="Source\Components\Physics\CollisionManager.h">
       <Filter>Source\Components\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Source\UI\UITransform.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\UIElement.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\All.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\IWorldEntity.h">
+      <Filter>Source\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\UIObject.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\UIController.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\Widgets\UIWidget.h">
+      <Filter>Source\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\Contexts\UIContext.h">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\Widgets\UIButton.h">
+      <Filter>Source\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\Contexts\UIButtonDrawer.h">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\Contexts\UIDialogue.h">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\UIWidgetMatrix.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LittleEngine.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -308,6 +356,36 @@
     </ClCompile>
     <ClCompile Include="Source\Components\Physics\CollisionManager.cpp">
       <Filter>Source\Components\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UITransform.cpp">
+      <Filter>Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIElement.cpp">
+      <Filter>Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIObject.cpp">
+      <Filter>Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIController.cpp">
+      <Filter>Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Widgets\UIWidget.cpp">
+      <Filter>Source\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Contexts\UIContext.cpp">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Widgets\UIButton.cpp">
+      <Filter>Source\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Contexts\UIButtonDrawer.cpp">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Contexts\UIDialogue.cpp">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIWidgetMatrix.cpp">
+      <Filter>Source\UI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

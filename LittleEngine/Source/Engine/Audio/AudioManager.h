@@ -57,7 +57,7 @@ namespace LittleEngine {
 		const MusicPlayer& GetStandbyPlayer() const;
 
 		// Engine to call
-		void Tick(Fixed deltaTime);
+		void Tick(Fixed deltaMS);
 
 		friend class Engine;
 	};

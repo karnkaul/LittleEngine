@@ -90,7 +90,7 @@ namespace LittleEngine {
 		inline bool IsPlaying() const { return m_bIsPlaying; }
 
 	protected:
-		virtual void Tick(const Fixed& deltaTime) override;
+		virtual void Tick(const Fixed& deltaMS) override;
 		virtual void Render() override;
 	};
 }

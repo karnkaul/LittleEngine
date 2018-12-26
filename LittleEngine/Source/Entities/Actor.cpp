@@ -17,7 +17,7 @@ namespace LittleEngine {
 	const std::string Actor::UNNAMED_ACTOR = "Unnamed_Actor";
 
 	Actor::Actor() : Object(UNNAMED_ACTOR) {
-		Logger::Log(*this, "Actor default constructed", Logger::Severity::Debug);
+		Logger::Log(*this, "Actor constructed", Logger::Severity::Debug);
 	}
 
 	void Actor::InitActor(Level& level, int actorID, const std::string& name, const Vector2& position, const Fixed& orientation) {
@@ -55,7 +55,7 @@ namespace LittleEngine {
 	}
 
 	void Actor::SetNormalisedPosition(Vector2 localNPosition) {
-		m_transform.localPosition = Graphics::NormalisedToWorldPoint(localNPosition);
+		m_transform.localPosition = Graphics::NToWorld(localNPosition);
 	}
 
 	std::string Actor::ToString() const {
@@ -83,16 +83,16 @@ namespace LittleEngine {
 		if (m_sCollider) m_sCollider->FixedTick();
 	}
 
-	void Actor::Tick(const Fixed& deltaTime) {
+	void Actor::Tick(const Fixed& deltaMS) {
 		if (m_bDestroyed) return;
 
 		// Tick Components and Collider
 		for (const auto& component : m_components) {
 			if (component && component->m_bEnabled) {
-				component->Tick(deltaTime);
+				component->Tick(deltaMS);
 			}
 		}
-		if (m_sCollider) m_sCollider->Tick(deltaTime);
+		if (m_sCollider) m_sCollider->Tick(deltaMS);
 	}
 
 	void Actor::Render() {

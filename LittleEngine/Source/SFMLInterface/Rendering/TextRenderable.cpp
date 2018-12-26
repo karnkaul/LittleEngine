@@ -95,8 +95,13 @@ namespace LittleEngine {
 		}
 	}
 
-	TextRenderable::TextRenderable(const TextData & data) : Renderable("TextRenderable"), m_data(data) {}
-	TextRenderable::TextRenderable(const TextRenderable & prototype) : Renderable(prototype.m_name), m_data(prototype.m_data) {}
+	TextRenderable::TextRenderable(const TextData & data) : Renderable("TextRenderable"), m_data(data) {
+		ApplyData();
+	}
+
+	TextRenderable::TextRenderable(const TextRenderable & prototype) : Renderable(prototype.m_name), m_data(prototype.m_data) {
+		ApplyData();
+	}
 
 	std::unique_ptr<Renderable> TextRenderable::UClone() const {
 		return std::make_unique<TextRenderable>(*this);
@@ -110,28 +115,39 @@ namespace LittleEngine {
 		m_sfText.setOutlineThickness(m_data.outlineSize.Abs().ToFloat());
 		m_sfText.setCharacterSize(m_data.pixelSize.Abs().ToInt());
 		sf::FloatRect textRect = m_sfText.getLocalBounds();
-		m_sfText.setOrigin(sf::Vector2f(
-			textRect.width * m_data.GetNAlignmentHorz(),
-			textRect.height * m_data.GetNAlignmentVert())
-		);
+		if (!m_data.bCustomPivot) {
+			m_sfText.setOrigin(sf::Vector2f(
+				textRect.width * m_data.GetNAlignmentHorz(),
+				textRect.height * m_data.GetNAlignmentVert())
+			);
+		}
 		m_data.bDirty = false;
 	}
 
-	void TextRenderable::SetPosition(const Vector2& worldPosition) {
-		m_sfText.setPosition(Graphics::Cast(worldPosition));
+	void TextRenderable::SetPosition(const Vector2& screenPosition) {
+		m_sfText.setPosition(Graphics::Cast(screenPosition));
 	}
 
-	void TextRenderable::SetOrientation(const Fixed& worldOrientation) {
-		m_sfText.setRotation(worldOrientation.ToFloat());
+	void TextRenderable::SetOrientation(const Fixed& screenOrientation) {
+		m_sfText.setRotation(screenOrientation.ToFloat());
 	}
 
-	void TextRenderable::SetScale(const Vector2 & worldScale) {
-		m_sfText.setScale(Graphics::Cast(worldScale));
+	void TextRenderable::SetScale(const Vector2 & screenScale) {
+		m_sfText.setScale(Graphics::Cast(screenScale));
 	}
 
 	void TextRenderable::RenderInternal() {
 		if (m_data.bDirty) ApplyData();
 		Graphics::Submit(Drawable(m_sfText, m_layer));
+	}
+
+	void TextRenderable::SetPivot(const Vector2 & pivot) {
+		Vector2 sfmlPivot((pivot.x + 1) * Fixed::OneHalf, (-pivot.y + 1) * Fixed::OneHalf);
+		m_sfText.setOrigin(
+			m_sfText.getLocalBounds().width * sfmlPivot.x.ToFloat(),
+			m_sfText.getLocalBounds().height * sfmlPivot.y.ToFloat()
+		);
+		m_data.bCustomPivot = true;
 	}
 
 	Rect2 TextRenderable::GetBounds() const {
@@ -149,12 +165,12 @@ namespace LittleEngine {
 	}
 
 	TextRenderable& TextRenderable::SetSize(const Fixed& pixelSize) {
-		m_data.pixelSize = pixelSize;
+		m_data.SetPixelSize(pixelSize);
 		return *this;
 	}
 
 	TextRenderable& TextRenderable::SetColour(const Colour& colour) {
-		m_data.fillColour = colour;
+		m_data.SetFillColour(colour);
 		return *this;
 	}
 }

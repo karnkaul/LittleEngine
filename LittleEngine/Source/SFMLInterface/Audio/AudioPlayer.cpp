@@ -2,6 +2,21 @@
 #include "AudioPlayer.h"
 #include "Utils.h"
 
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "openal32.lib")
+#pragma comment(lib, "flac.lib")
+#pragma comment(lib, "vorbisenc.lib")
+#pragma comment(lib, "vorbisfile.lib")
+#pragma comment(lib, "vorbis.lib")
+#pragma comment(lib, "ogg.lib")
+#if defined(DEBUG) || defined(_DEBUG)
+#pragma comment(lib, "sfml-audio-s-d.lib")
+#pragma comment(lib, "sfml-system-s-d.lib")
+#else
+#pragma comment(lib, "sfml-audio-s.lib")
+#pragma comment(lib, "sfml-system-s.lib")
+#endif
+
 namespace LittleEngine {
 	AudioPlayer::~AudioPlayer() {
 		Logger::Log(*this, m_name + " destroyed", Logger::Severity::Debug);
@@ -11,7 +26,7 @@ namespace LittleEngine {
 		Logger::Log(*this, name + " created", Logger::Severity::Debug);
 	}
 
-	AudioPlayer::Status AudioPlayer::Convert(sf::Sound::Status status) {
+	AudioPlayer::Status AudioPlayer::Cast(sf::Sound::Status status) {
 		switch (status) {
 		case sf::Sound::Status::Paused:
 			return Status::Paused;
@@ -56,7 +71,7 @@ namespace LittleEngine {
 		}
 	}
 
-	void SoundPlayer::Reset(Fixed seconds) {
+	void SoundPlayer::Reset(const Fixed& seconds) {
 		if (m_pSoundAsset) {
 			m_pSoundAsset->m_sfSound.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.ToDouble() * 1000)));
 		}
@@ -66,8 +81,8 @@ namespace LittleEngine {
 		return m_pSoundAsset && m_pSoundAsset->m_sfSound.getStatus() == sf::SoundSource::Status::Playing;
 	}
 
-	void SoundPlayer::Tick(Fixed deltaSeconds) {
-		m_status = m_pSoundAsset ? Convert(m_pSoundAsset->m_sfSound.getStatus()) : Status::NoMedia;
+	void SoundPlayer::Tick(const Fixed&) {
+		m_status = m_pSoundAsset ? Cast(m_pSoundAsset->m_sfSound.getStatus()) : Status::NoMedia;
 		ApplyParams();
 	}
 
@@ -159,7 +174,7 @@ namespace LittleEngine {
 		}
 	}
 
-	void MusicPlayer::Reset(Fixed seconds) {
+	void MusicPlayer::Reset(const Fixed& seconds) {
 		if (m_pMainTrack) {
 			m_clock.Restart();
 			m_pMainTrack->m_sfMusic.setPlayingOffset(sf::milliseconds(static_cast<sf::Int32>(seconds.ToDouble() * 1000)));
@@ -170,8 +185,8 @@ namespace LittleEngine {
 		return m_pMainTrack &&  m_pMainTrack->m_sfMusic.getStatus() == sf::SoundSource::Status::Playing;
 	}
 
-	void MusicPlayer::Tick(Fixed deltaSeconds) {
-		m_status = m_pMainTrack ? Convert(m_pMainTrack->m_sfMusic.getStatus()) : Status::NoMedia;
+	void MusicPlayer::Tick(const Fixed& deltaSeconds) {
+		m_status = m_pMainTrack ? Cast(m_pMainTrack->m_sfMusic.getStatus()) : Status::NoMedia;
 		
 		// Process Fade
 		if (IsFading()) {

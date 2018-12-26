@@ -36,43 +36,49 @@ namespace LittleEngine {
 	}
 
 	ControllerComponent::ControllerComponent(Actor & actor) : Component(actor, "ControllerComponent") {
-		this->m_pInputHandler = &actor.GetActiveLevel().GetInputHandler();
-		m_tokens.push_back(m_pInputHandler->Register(GameInput::Left, std::bind(&ControllerComponent::OnLeft, this), OnKey::Held));
-		m_tokens.push_back(m_pInputHandler->Register(GameInput::Right, std::bind(&ControllerComponent::OnRight, this), OnKey::Held));
-		m_tokens.push_back(m_pInputHandler->Register(GameInput::Up, std::bind(&ControllerComponent::OnUp, this), OnKey::Held));
-		m_tokens.push_back(m_pInputHandler->Register(GameInput::Down, std::bind(&ControllerComponent::OnDown, this), OnKey::Held));
-		m_pRenderer = actor.GetComponent<RenderComponent>();
-		
-		// Tests
-		_bDeletedToken = false;
-		m_tokens.push_back(m_pInputHandler->Register(GameInput::Left, &_ControllerComponent::Test, OnKey::Released));
-		m_tokens.push_back(m_pInputHandler->Register(GameInput::Left, &_ControllerComponent::Test2, OnKey::Released, true));
+		Init();
 	}
 
 	ControllerComponent::ControllerComponent(Actor& owner, const ControllerComponent & prototype) : Component(owner, prototype), m_pRenderer(prototype.m_pRenderer), m_pInputHandler(prototype.m_pInputHandler) {
+		Init();
 	}
 
 	ControllerComponent::~ControllerComponent() {
 		m_tokens.clear();
 	}
 
-	void ControllerComponent::Tick(Fixed deltaTime) {
-		prevDeltaTime = deltaTime;
+	void ControllerComponent::Tick(const Fixed& deltaMS) {
+		prevDeltaMS = deltaMS;
 		Actor& actor = GetActor();
 
-		Rect2 worldBounds = Graphics::GetWorldBounds();
+		Rect2 worldBounds = Graphics::GetWorldRect();
 		Vector2 padding = GetRenderPadding();
 		ClampPosition(actor.GetTransform().localPosition, worldBounds, padding);
 
 		// TESTS
 		if (actor.GetActiveLevel().LevelTimeMilliSeconds() > 2000 && !_bDeletedToken) {
 			_bDeletedToken = true;
-			m_tokens.pop_back();
+			if (!m_tokens.empty()) m_tokens.pop_back();
 		}
 	}
 
 	Component::Ptr ControllerComponent::UClone(Actor& owner) const {
 		return std::make_unique<ControllerComponent>(owner, *this);
+	}
+
+	void ControllerComponent::Init() {
+		m_tokens.clear();
+		this->m_pInputHandler = &GetActor().GetActiveLevel().GetInputHandler();
+		m_tokens.push_back(m_pInputHandler->Register(GameInput::Left, std::bind(&ControllerComponent::OnLeft, this), OnKey::Held));
+		m_tokens.push_back(m_pInputHandler->Register(GameInput::Right, std::bind(&ControllerComponent::OnRight, this), OnKey::Held));
+		m_tokens.push_back(m_pInputHandler->Register(GameInput::Up, std::bind(&ControllerComponent::OnUp, this), OnKey::Held));
+		m_tokens.push_back(m_pInputHandler->Register(GameInput::Down, std::bind(&ControllerComponent::OnDown, this), OnKey::Held));
+		m_pRenderer = GetActor().GetComponent<RenderComponent>();
+
+		// Tests
+		_bDeletedToken = false;
+		m_tokens.push_back(m_pInputHandler->Register(GameInput::Left, &_ControllerComponent::Test, OnKey::Released));
+		m_tokens.push_back(m_pInputHandler->Register(GameInput::Left, &_ControllerComponent::Test2, OnKey::Released, true));
 	}
 
 	Vector2 ControllerComponent::GetRenderPadding() {
@@ -88,27 +94,27 @@ namespace LittleEngine {
 
 	void ControllerComponent::OnLeft() {
 		if (m_pInputHandler->IsKeyPressed(GameInput::LB)) {
-			GetActor().GetTransform().Rotate(prevDeltaTime * Fixed::OneThird);
+			GetActor().GetTransform().Rotate(prevDeltaMS * Fixed::OneThird);
 		}
 		else {
-			GetActor().GetTransform().localPosition.x -= prevDeltaTime;
+			GetActor().GetTransform().localPosition.x -= prevDeltaMS;
 		}
 	}
 
 	void ControllerComponent::OnRight() {
 		if (m_pInputHandler->IsKeyPressed(GameInput::LB)) {
-			GetActor().GetTransform().Rotate(-prevDeltaTime * Fixed::OneThird);
+			GetActor().GetTransform().Rotate(-prevDeltaMS * Fixed::OneThird);
 		}
 		else {
-			GetActor().GetTransform().localPosition.x += prevDeltaTime;
+			GetActor().GetTransform().localPosition.x += prevDeltaMS;
 		}
 	}
 
 	void ControllerComponent::OnUp() {
-		GetActor().GetTransform().localPosition.y += prevDeltaTime;
+		GetActor().GetTransform().localPosition.y += prevDeltaMS;
 	}
 
 	void ControllerComponent::OnDown() {
-		GetActor().GetTransform().localPosition.y -= prevDeltaTime;
+		GetActor().GetTransform().localPosition.y -= prevDeltaMS;
 	}
 }

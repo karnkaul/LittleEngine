@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Object.h"
+#include "IWorldEntity.h"
 #include "TokenHandler.hpp"
 #include "Engine/Input/InputHandler.h"
 #include "Transform.h"
@@ -10,7 +11,7 @@ namespace LittleEngine {
 	using Transform = GameUtils::Transform;
 
 	// \brief Base class representing a renderable entity in the world
-	class Actor : public Object {
+	class Actor : public Object, public IWorldEntity {
 	public:
 		using Ptr = std::unique_ptr<Actor>;
 		static const std::string UNNAMED_ACTOR;
@@ -95,8 +96,8 @@ namespace LittleEngine {
 		RenderParams GetRenderParams() const;
 
 		virtual void FixedTick();
-		virtual void Tick(const Fixed& deltaTime);
-		virtual void Render();
+		virtual void Tick(const Fixed& deltaMS) override;
+		virtual void Render() override;
 
 	private:
 		Actor& operator=(const Actor&) = delete;

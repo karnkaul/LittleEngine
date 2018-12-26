@@ -39,6 +39,7 @@ namespace LittleEngine {
 		SpriteRenderable& SetSpriteRenderable(const std::string& texturePath);
 		SpriteRenderable& SetSpriteRenderable(TextureAsset& texture);
 		TextRenderable& SetTextRenderable(const std::string& text);
+		Renderable* GetRenderable() const;
 
 		virtual void Render(const RenderParams& params) override;
 		virtual Component::Ptr UClone(Actor& owner) const override;

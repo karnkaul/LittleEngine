@@ -27,6 +27,7 @@ namespace LittleEngine {
 		HAlign hAlign = HAlign::Centre;
 		VAlign vAlign = VAlign::Bottom;
 		FontAsset* pFont;
+		bool bCustomPivot = false;
 		bool bDirty = false;
 
 	public:
@@ -73,13 +74,14 @@ namespace LittleEngine {
 		TextRenderable& SetColour(const Colour& colour);
 
 		virtual Rect2 GetBounds() const override;
+		virtual void SetPivot(const Vector2& pivot) override;
 
 	protected:
 		void ApplyData();
 
 		virtual void RenderInternal() override;
-		virtual void SetPosition(const Vector2& worldPosition) override;
-		virtual void SetOrientation(const Fixed& worldOrientation) override;
-		virtual void SetScale(const Vector2& worldScale) override;
+		virtual void SetPosition(const Vector2& screenPosition) override;
+		virtual void SetOrientation(const Fixed& screenOrientation) override;
+		virtual void SetScale(const Vector2& screenScale) override;
 	};
 }
