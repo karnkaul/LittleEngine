@@ -31,8 +31,9 @@ namespace LittleEngine { namespace DebugConsole {
 				FillExecuteResult(params);
 				return std::move(executeResult);
 			}
-			virtual std::vector<std::string> AutoCompleteParams(const std::string&) {
-				return std::vector<std::string>();
+			
+			virtual StringVec AutoCompleteParams(const std::string&) {
+				return StringVec();
 			}
 
 		protected:
@@ -41,15 +42,6 @@ namespace LittleEngine { namespace DebugConsole {
 			Command(const std::string& name) : name(std::move(name)) {}
 
 			virtual void FillExecuteResult(const std::string& params) = 0;
-		};
-
-		class HelpCommand : public Command {
-		public:
-			HelpCommand() : Command("help") {}
-
-			virtual void FillExecuteResult(const std::string&) override {
-				executeResult = GetAllCommands();
-			}
 		};
 
 		class ParameterisedCommand : public Command {
@@ -69,8 +61,8 @@ namespace LittleEngine { namespace DebugConsole {
 					}
 				}
 			}
-			virtual std::vector<std::string> AutoCompleteParams(const std::string& incompleteParams) override final {
-				std::vector<std::string> params;
+			virtual StringVec AutoCompleteParams(const std::string& incompleteParams) override final {
+				StringVec params;
 				/*if (!incompleteParams.empty())*/ {
 					for (const auto& p : paramCallbackMap) {
 						if (incompleteParams.empty() || (p.first.find(incompleteParams) != std::string::npos && incompleteParams[0] == p.first[0])) {
@@ -87,6 +79,15 @@ namespace LittleEngine { namespace DebugConsole {
 			ParameterisedCommand(const std::string& name) : Command(name) {}
 
 			virtual LogLine OnEmptyParams() = 0;
+		};
+
+		class HelpCommand : public Command {
+		public:
+			HelpCommand() : Command("help") {}
+
+			virtual void FillExecuteResult(const std::string&) override {
+				executeResult = GetAllCommands();
+			}
 		};
 
 		class ShowCommand : public ParameterisedCommand {
@@ -275,7 +276,7 @@ namespace LittleEngine { namespace DebugConsole {
 			if (!matchedCommands.empty()) {
 				// If exact match, build auto-compeleted params for the command
 				if (matchedCommands.size() == 1 && matchedCommands[0]->name == incompleteCommand) {
-					std::vector<std::string> matchedParams = matchedCommands[0]->AutoCompleteParams(incompleteParams);
+					StringVec matchedParams = matchedCommands[0]->AutoCompleteParams(incompleteParams);
 					for (const auto& p : matchedParams) {
 						results.params.emplace_back(std::move(p));
 					}
@@ -289,7 +290,7 @@ namespace LittleEngine { namespace DebugConsole {
 				}
 				else {
 					for (auto command : matchedCommands) {
-						std::vector<std::string> matchedParams = command->AutoCompleteParams(incompleteParams);
+						StringVec matchedParams = command->AutoCompleteParams(incompleteParams);
 						for (const auto& p : matchedParams) {
 							std::string suffix = p.empty() ? "" : " " + p;
 							results.queries.push_back(command->name + suffix);
