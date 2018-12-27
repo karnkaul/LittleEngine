@@ -2,6 +2,7 @@
 #include <map>
 #include "Utils.h"
 #include "ConsoleCommands.h"
+#include "ConsoleProfiler.h"
 #include "Engine/Events/EventManager.h"
 #include "Engine/Engine.h"
 #include "Levels/Level.h"
@@ -30,9 +31,9 @@ namespace LittleEngine { namespace DebugConsole {
 				FillExecuteResult(params);
 				return std::move(executeResult);
 			}
-			virtual std::vector<std::string> AutoCompleteParams(const std::string&) {
-				std::vector<std::string> ret = { "" };
-				return ret;
+			
+			virtual StringVec AutoCompleteParams(const std::string&) {
+				return StringVec();
 			}
 
 		protected:
@@ -41,15 +42,6 @@ namespace LittleEngine { namespace DebugConsole {
 			Command(const std::string& name) : name(std::move(name)) {}
 
 			virtual void FillExecuteResult(const std::string& params) = 0;
-		};
-
-		class HelpCommand : public Command {
-		public:
-			HelpCommand() : Command("help") {}
-
-			virtual void FillExecuteResult(const std::string&) override {
-				executeResult = GetAllCommands();
-			}
 		};
 
 		class ParameterisedCommand : public Command {
@@ -69,11 +61,11 @@ namespace LittleEngine { namespace DebugConsole {
 					}
 				}
 			}
-			virtual std::vector<std::string> AutoCompleteParams(const std::string& incompleteParams) override final {
-				std::vector<std::string> params;
-				if (!incompleteParams.empty()) {
+			virtual StringVec AutoCompleteParams(const std::string& incompleteParams) override final {
+				StringVec params;
+				/*if (!incompleteParams.empty())*/ {
 					for (const auto& p : paramCallbackMap) {
-						if (p.first.find(incompleteParams) != std::string::npos && incompleteParams[0] == p.first[0]) {
+						if (incompleteParams.empty() || (p.first.find(incompleteParams) != std::string::npos && incompleteParams[0] == p.first[0])) {
 							params.emplace_back(p.first);
 						}
 					}
@@ -89,6 +81,15 @@ namespace LittleEngine { namespace DebugConsole {
 			virtual LogLine OnEmptyParams() = 0;
 		};
 
+		class HelpCommand : public Command {
+		public:
+			HelpCommand() : Command("help") {}
+
+			virtual void FillExecuteResult(const std::string&) override {
+				executeResult = GetAllCommands();
+			}
+		};
+
 		class ShowCommand : public ParameterisedCommand {
 		public:
 			ShowCommand() : ParameterisedCommand("show") {
@@ -96,6 +97,16 @@ namespace LittleEngine { namespace DebugConsole {
 					[](std::vector<LogLine>& executeResult) {
 						EventManager::Instance().Notify(GameEvent::DEBUG_SHOW_COLLIDERS);
 						executeResult.emplace_back("Turned on Debug Colliders", LOG_TEXT_COLOUR);
+					}
+				);
+				paramCallbackMap.emplace("profiler",
+					[](std::vector<LogLine>& executeResult) {
+#if ENABLED(DEBUG_PROFILER)
+						Profiler::Toggle(true);
+						executeResult.emplace_back("Turned on Profiler", LOG_TEXT_COLOUR);
+#else
+						executeResult.emplace_back("Profiler not enabled", LOG_TEXT_COLOUR);
+#endif
 					}
 				);
 			}
@@ -113,6 +124,16 @@ namespace LittleEngine { namespace DebugConsole {
 					[](std::vector<LogLine>& executeResult) {
 						EventManager::Instance().Notify(GameEvent::DEBUG_HIDE_COLLIDERS);
 						executeResult.emplace_back("Turned off Debug Colliders", LOG_TEXT_COLOUR);
+					}
+				);
+				paramCallbackMap.emplace("profiler",
+					[](std::vector<LogLine>& executeResult) {
+#if ENABLED(DEBUG_PROFILER)
+						Profiler::Toggle(false);
+						executeResult.emplace_back("Turned off Profiler", LOG_TEXT_COLOUR);
+#else
+						executeResult.emplace_back("Profiler not enabled", LOG_TEXT_COLOUR);
+#endif
 					}
 				);
 			}
@@ -244,27 +265,35 @@ namespace LittleEngine { namespace DebugConsole {
 			return ret;
 		}
 
-		std::vector<std::string> AutoComplete(const std::string& incompleteQuery) {
+		AutoCompleteResults AutoComplete(const std::string& incompleteQuery) {
 			std::string cleanedQuery(incompleteQuery);
 			std::string incompleteCommand;
 			std::string incompleteParams;
 			SplitQuery(cleanedQuery, incompleteCommand, incompleteParams);
 
 			std::vector<Command*> matchedCommands = FindCommands(incompleteCommand);
-			std::vector<std::string> results;
+			AutoCompleteResults results;
 			if (!matchedCommands.empty()) {
+				// If exact match, build auto-compeleted params for the command
+				if (matchedCommands.size() == 1 && matchedCommands[0]->name == incompleteCommand) {
+					StringVec matchedParams = matchedCommands[0]->AutoCompleteParams(incompleteParams);
+					for (const auto& p : matchedParams) {
+						results.params.emplace_back(std::move(p));
+					}
+				}
+
 				// If no params, return matchedCommands
 				if (incompleteParams.empty()) {
 					for (auto command : matchedCommands) {
-						results.push_back(command->name);
+						results.queries.emplace_back(command->name);
 					}
 				}
 				else {
 					for (auto command : matchedCommands) {
-						std::vector<std::string> matchedParams = command->AutoCompleteParams(incompleteParams);
+						StringVec matchedParams = command->AutoCompleteParams(incompleteParams);
 						for (const auto& p : matchedParams) {
 							std::string suffix = p.empty() ? "" : " " + p;
-							results.push_back(command->name + suffix);
+							results.queries.push_back(command->name + suffix);
 						}
 					}
 				}

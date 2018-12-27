@@ -21,7 +21,7 @@ namespace LittleEngine {
 		static bool m_bShowingDebugShapes;
 	
 	protected:
-		std::unique_ptr<ShapeRenderable> m_debugShape;
+		std::unique_ptr<ShapeRenderable> m_uDebugShape;
 	private:
 		GameUtils::Delegate<>::Token m_debugOnToken;
 		GameUtils::Delegate<>::Token m_debugOffToken;

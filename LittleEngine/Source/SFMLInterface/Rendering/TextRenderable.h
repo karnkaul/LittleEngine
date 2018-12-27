@@ -65,7 +65,7 @@ namespace LittleEngine {
 		sf::Text m_sfText;
 
 	public:
-		TextRenderable(const TextData& data);
+		TextRenderable(const TextData& data, bool bSilent = false);
 		TextRenderable(const TextRenderable& prototype);
 		virtual std::unique_ptr<Renderable> UClone() const override;
 

@@ -47,8 +47,8 @@ namespace LittleEngine {
 		);
 	}
 
-	void SpriteRenderable::Crop(const Vector2& topLeft, const Vector2& size) {
-		sf::IntRect textureRect(topLeft.x.ToInt(), topLeft.y.ToInt(), size.x.ToInt(), size.y.ToInt());
+	void SpriteRenderable::Crop(const Rect2& rect) {
+		sf::IntRect textureRect(rect.GetTopLeft().x.ToInt(), rect.GetTopLeft().y.ToInt(), rect.GetSize().x.ToInt(), rect.GetSize().y.ToInt());
 		m_sprite.setTextureRect(textureRect);
 	}
 
@@ -56,10 +56,7 @@ namespace LittleEngine {
 		sf::FloatRect bounds = m_sprite.getLocalBounds();
 		Fixed width(bounds.width);
 		Fixed height(bounds.height);
-		return Rect2(
-			Vector2(-width * Fixed::OneHalf, -height * Fixed::OneHalf),
-			Vector2(width * Fixed::OneHalf, height * Fixed::OneHalf)
-		);
+		return Rect2::CentreSize({ width, height });
 	}
 
 	void SpriteRenderable::SetTexture(TextureAsset& texture) {

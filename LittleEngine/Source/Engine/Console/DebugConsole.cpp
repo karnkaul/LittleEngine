@@ -7,10 +7,11 @@
 #include "SFMLInterface/Graphics.h"
 #include "SFMLInterface/Assets.h"
 #include "Engine/Logger/Logger.h"
+#include "Engine/CoreGame.hpp"
 #include "SFML/Window/Event.hpp"
-#include "Transform.h"
 #include "LogLine.hpp"
 #include "ConsoleCommands.h"
+#include "ConsoleProfiler.h"
 #include "Utils.h"
 
 namespace LittleEngine { namespace DebugConsole {
@@ -104,8 +105,6 @@ namespace LittleEngine { namespace DebugConsole {
 		Fixed yOffset = yOffsetMin;
 
 		struct DebugConsoleLog {
-			using Transform = GameUtils::Transform;
-
 			static const int NUM_LOG_LINES = 10;
 			Transform logT[NUM_LOG_LINES];
 
@@ -142,7 +141,6 @@ namespace LittleEngine { namespace DebugConsole {
 		};
 
 		struct DebugConsoleRenderer {
-			using Transform = GameUtils::Transform;
 			const Engine* pEngine = nullptr;
 
 			void Log(const std::string& message, const Colour& colour) {
@@ -246,6 +244,9 @@ namespace LittleEngine { namespace DebugConsole {
 
 	void Init(Engine& engine) {
 		Commands::Init(engine);
+#if ENABLED(DEBUG_PROFILER)
+		Profiler::Init(engine);
+#endif
 		consoleRenderer = std::make_unique<DebugConsoleRenderer>();
 		consoleRenderer->pEngine = &engine;
 		queryCache.maxElements = 10;
@@ -262,6 +263,8 @@ namespace LittleEngine { namespace DebugConsole {
 	}
 
 	void UpdateInput(const RawTextInput& rawTextInput) {
+		static std::string previousLogText;
+
 		if (rawTextInput.special != RawTextInputType::None && rawTextInput.special != RawTextInputType::Up && rawTextInput.special != RawTextInputType::Down) {
 			bCyclingQueries = false;
 			queryCache.ResetIter();
@@ -277,18 +280,29 @@ namespace LittleEngine { namespace DebugConsole {
 		case RawTextInputType::Tab:
 		{
 			if (!liveString.empty()) {
-				std::vector<std::string> search = Commands::AutoComplete(liveString);
-				if (search.empty()) {
+				Commands::AutoCompleteResults search = Commands::AutoComplete(liveString);
+				if (search.queries.empty()) {
 					consoleRenderer->Log("Unrecognised query: \"" + liveString + "\"", LOG_WARNING_COLOUR);
+					return;
 				}
-				else if (search.size() == 1) {
-					liveString = search[0] + " ";
+				
+				if (search.queries.size() == 1) {
+					liveString = search.queries[0] + " ";
+				}
+				
+				std::string logOutput;
+				if (!search.params.empty()) {
+					for (const auto& params : search.params) {
+						logOutput += ("\t" + params);
+					}
 				}
 				else {
-					std::string logOutput;
-					for (const auto& s : search) {
-						logOutput += ("\t" + s);
+					for (const auto& query : search.queries) {
+						logOutput += ("\t" + query);
 					}
+				}
+				if (!logOutput.empty() && logOutput != previousLogText) {
+					previousLogText = logOutput;
 					consoleRenderer->Log(logOutput, LOG_TEXT_COLOUR);
 				}
 			}
@@ -336,10 +350,11 @@ namespace LittleEngine { namespace DebugConsole {
 		if (rawTextInput.text != "`") liveString += rawTextInput.text;
 	}
 
-	void RenderConsole(Fixed deltaMS) {
+	void RenderConsole(const Fixed& deltaMS) {
 		if (!consoleRenderer) {
 			return;
 		}
+		
 		const Fixed ANIM_SCALE = Fixed::Two;
 		static double elapsed = 0.0f;
 		elapsed += deltaMS.ToDouble();
@@ -358,9 +373,17 @@ namespace LittleEngine { namespace DebugConsole {
 			int doubleCadence = static_cast<int>(elapsed / 300.0f);
 			consoleRenderer->Render(yOffset, doubleCadence % 2 == 0);
 		}
+
+#if ENABLED(DEBUG_PROFILER)
+		Profiler::Tick(deltaMS);
+		Profiler::Render();
+#endif
 	}
 	
 	void Cleanup() {
+#if ENABLED(DEBUG_PROFILER)
+		Profiler::Cleanup();
+#endif
 		consoleRenderer = nullptr;
 		bIsActive = false;
 	}

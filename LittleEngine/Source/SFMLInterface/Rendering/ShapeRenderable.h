@@ -13,7 +13,7 @@ namespace LittleEngine {
 		void SetFillColour(const Colour& colour);
 		void SetBorder(const Fixed& width, const Colour& colour);
 
-		ShapeRenderable(std::string name, std::unique_ptr<sf::Shape> shape);
+		ShapeRenderable(std::string name, std::unique_ptr<sf::Shape> shape, bool bSilent);
 		ShapeRenderable(const ShapeRenderable& prototype, std::unique_ptr<sf::Shape> shape);
 
 	protected:
@@ -35,8 +35,8 @@ namespace LittleEngine {
 		sf::CircleShape* m_pCircle;
 
 	public:
-		CircleRenderable(const Fixed& radius);
-		CircleRenderable(const Fixed& radius, const Colour& colour);
+		CircleRenderable(const Fixed& radius, bool bSilent = false);
+		CircleRenderable(const Fixed& radius, const Colour& colour, bool bSilent = false);
 		CircleRenderable(const CircleRenderable& prototype);
 
 		void SetRadius(const Fixed& radius);
@@ -53,8 +53,8 @@ namespace LittleEngine {
 		sf::RectangleShape* m_pRectangle;
 
 	public:
-		RectangleRenderable(const Vector2& size);
-		RectangleRenderable(const Vector2& size, const Colour& colour);
+		RectangleRenderable(const Vector2& size, bool bSilent = false);
+		RectangleRenderable(const Vector2& size, const Colour& colour, bool bSilent = false);
 		RectangleRenderable(const RectangleRenderable& prototype);
 
 		void SetSize(const Vector2& size);

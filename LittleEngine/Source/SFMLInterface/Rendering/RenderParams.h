@@ -1,13 +1,8 @@
 #pragma once
-#include "Vector2.h"
-#include "UByte.h"
+#include "Engine/CoreGame.hpp"
 
 namespace LittleEngine {
 	class Graphics;
-
-	using Vector2 = GameUtils::Vector2;
-	using Fixed = GameUtils::Fixed;
-	using UByte = GameUtils::UByte;
 
 	// \brief Compressed wrapper struct for SFML Color
 	struct Colour {

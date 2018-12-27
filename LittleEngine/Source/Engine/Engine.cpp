@@ -10,6 +10,7 @@
 #include "Audio/AudioManager.h"
 #include "Console/DebugConsole.h"
 #include "Misc/Stopwatch.h"
+#include "Console/ConsoleProfiler.h"
 #include "Levels/Level.h"
 #include "Levels/LevelManager.h"
 #include "SFMLInterface/Assets.h"
@@ -18,12 +19,12 @@
 #include "SFMLInterface/Rendering/RenderParams.h"
 
 namespace LittleEngine {
-	using Fixed = GameUtils::Fixed;
-
 	namespace {
 		constexpr int MAX_FIXED_TICK_MS = 200;
 		constexpr int MS_PER_FIXED_TICK = 6;
 		constexpr float MIN_FRAME_TIME_MS = 1000 / Consts::MAX_FPS;
+
+		const Colour PROFILER_COLOUR = Colour::Red;
 
 		inline double GetCurrentMilliseconds() {
 			return static_cast<double>(SystemClock::GetCurrentMicroseconds()) * 0.001f;
@@ -107,6 +108,9 @@ namespace LittleEngine {
 				Fixed deltaMS = 0;
 				Fixed lag = 0;
 				while (m_pGraphics->IsWindowOpen() && !m_bIsQuitting) {
+#if ENABLED(DEBUG_PROFILER)
+					DebugConsole::Profiler::Reset();
+#endif
 					/* Poll Window Events */ {
 						m_pGraphics->PollEvents();
 						if (!m_bIsPaused && !m_pGraphics->IsWindowFocussed()) {
@@ -131,6 +135,7 @@ namespace LittleEngine {
 						lag += deltaMS;
 
 						/* Fixed Tick */ {
+							PROFILE_START("Engine::FixedTick", PROFILER_COLOUR);
 							int start = SystemClock::GetCurrentMilliseconds();
 							while (lag >= MS_PER_FIXED_TICK) {
 								m_uLevelManager->GetActiveLevel()->FixedTick();
@@ -140,18 +145,22 @@ namespace LittleEngine {
 									break;
 								}
 							}
+							PROFILE_STOP("Engine::FixedTick");
 						}
 
 						/* Tick */ {
+							PROFILE_START("Engine::Tick", PROFILER_COLOUR);
 							STOPWATCH_START("Tick");
 							GameClock::Tick(deltaMS);
 							m_uInputHandler->FireInput();
 							m_uAudioManager->Tick(deltaMS);
 							m_uLevelManager->GetActiveLevel()->Tick(deltaMS);
 							STOPWATCH_STOP();
+							PROFILE_STOP("Engine::Tick");
 						}
 
 						/* Render */ {
+							PROFILE_START("Engine::Render", PROFILER_COLOUR);
 							STOPWATCH_START("Render");
 							m_uLevelManager->GetActiveLevel()->Render();
 #if ENABLED(DEBUG_CONSOLE)
@@ -159,6 +168,7 @@ namespace LittleEngine {
 #endif
 							m_pGraphics->Draw();
 							STOPWATCH_STOP();
+							PROFILE_STOP("Engine::Render");
 						}
 						
 						/* Post Render: Commands */ {
@@ -190,6 +200,10 @@ namespace LittleEngine {
 
 	LevelID Engine::GetActiveLevelID() const {
 		return m_uLevelManager->GetActiveLevelID();
+	}
+
+	Level* Engine::GetActiveLevel() const {
+		return m_uLevelManager->GetActiveLevel();
 	}
 
 	InputHandler & Engine::GetInputHandler() const {

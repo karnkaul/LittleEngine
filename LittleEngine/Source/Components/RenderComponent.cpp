@@ -30,7 +30,7 @@ namespace LittleEngine {
 	}
 
 	Rect2 RenderComponent::GetBounds() const {
-		return m_uRenderable == nullptr ? Rect2(Vector2::Zero, Vector2::Zero) : m_uRenderable->GetBounds();
+		return m_uRenderable == nullptr ? Rect2() : m_uRenderable->GetBounds();
 	}
 
 	CircleRenderable & RenderComponent::SetCircleRenderable(const ShapeData & shapeData) {

@@ -36,7 +36,7 @@ namespace LittleEngine {
 
 	Vector2 UITransform::GetWorldPosition() const {
 		Vector2 offset = pParent ? pParent->GetWorldPosition() : Vector2::Zero;
-		Vector2 scale = pParent ? Fixed::OneHalf * pParent->size : Graphics::GetWorldRect().upper;
+		Vector2 scale = pParent ? Fixed::OneHalf * pParent->size : Graphics::GetWorldRect().GetTopRight();
 		return Vector2(nPosition.x * scale.x, nPosition.y * scale.y) + offset + pixelPad;
 	}
 

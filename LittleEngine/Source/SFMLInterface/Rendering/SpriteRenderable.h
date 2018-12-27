@@ -39,7 +39,7 @@ namespace LittleEngine {
 		void SetTexture(TextureAsset& texture);
 		SpriteData& GetData();
 		
-		void Crop(const Vector2& topLeft, const Vector2& size);
+		void Crop(const Rect2& rect);
 		virtual Rect2 GetBounds() const override;
 		virtual void SetPivot(const Vector2& pivot) override;
 

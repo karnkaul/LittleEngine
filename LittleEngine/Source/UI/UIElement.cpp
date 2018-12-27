@@ -13,16 +13,16 @@ namespace LittleEngine {
 	UIText::UIText(std::string && text) : pixelSize(20), text(std::move(text)), colour(Colour::Black) {}
 	UIText::UIText(const std::string & text, const Fixed & pixelSize, Colour colour) : pixelSize(pixelSize), text(text), colour(colour) {}
 
-	UIElement::UIElement() : UIObject("UIElement") {
-		Logger::Log(*this, "Untitled UIElement constructed", Logger::Severity::Debug);
+	UIElement::UIElement(bool bSilent) : UIObject("UIElement"), bSilent(bSilent) {
+		if (!bSilent) Logger::Log(*this, "Untitled UIElement constructed", Logger::Severity::Debug);
 	}
 
-	UIElement::UIElement(const std::string & name) : UIObject(name) {
-		Logger::Log(*this, GetNameInBrackets() + " constructed", Logger::Severity::Debug);
+	UIElement::UIElement(const std::string & name, bool bSilent) : UIObject(name), bSilent(bSilent) {
+		if (!bSilent) Logger::Log(*this, GetNameInBrackets() + " constructed", Logger::Severity::Debug);
 	}
 
 	UIElement::~UIElement() {
-		Logger::Log(*this, GetNameInBrackets() + " destroyed", Logger::Severity::Debug);
+		if (!bSilent) Logger::Log(*this, GetNameInBrackets() + " destroyed", Logger::Severity::Debug);
 	}
 
 	void UIElement::InitElement(Level & level, UITransform* pParent) {
@@ -37,7 +37,7 @@ namespace LittleEngine {
 
 	void UIElement::SetPanel(Colour fill, const Fixed& border, Colour outline) {
 		if (!m_uPanel) {
-			m_uPanel = std::make_unique<RectangleRenderable>(m_transform.size, fill);
+			m_uPanel = std::make_unique<RectangleRenderable>(m_transform.size, fill, bSilent);
 			m_uPanel->SetBorder(border, outline);
 		}
 		else {
@@ -49,7 +49,7 @@ namespace LittleEngine {
 	void UIElement::SetImage(TextureAsset & texture, Colour colour) {
 		if (!m_uSprite) {
 			SpriteData data(texture, colour);
-			m_uSprite = std::make_unique<SpriteRenderable>(data);
+			m_uSprite = std::make_unique<SpriteRenderable>(data, bSilent);
 		}
 		else {
 			m_uSprite->SetTexture(texture);
@@ -61,7 +61,7 @@ namespace LittleEngine {
 		if (!m_uText) {
 			FontAsset* font = pLevel->GetAssetManager().GetDefaultFont();
 			TextData data(*font, uiText.text, uiText.pixelSize, uiText.colour);
-			m_uText = std::make_unique<TextRenderable>(data);
+			m_uText = std::make_unique<TextRenderable>(data, bSilent);
 		}
 		else {
 			TextData& data = m_uText->GetTextData();
@@ -74,7 +74,7 @@ namespace LittleEngine {
 	void UIElement::SetFont(FontAsset & font) {
 		if (!m_uText) {
 			TextData data(font, "[Text]");
-			m_uText = std::make_unique<TextRenderable>(data);
+			m_uText = std::make_unique<TextRenderable>(data, bSilent);
 		}
 		else {
 			m_uText->GetTextData().SetFont(font);

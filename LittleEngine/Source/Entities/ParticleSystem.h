@@ -1,23 +1,13 @@
 #pragma once
 #include <memory>
-#include "Vector2.h"
-#include "TRange.hpp"
-#include "UByte.h"
 #include "Actor.h"
-#include "GData.h"
 #include "SFMLInterface/Assets.h"
+#include "Engine/CoreGame.hpp"
 
 namespace LittleEngine {
 	struct RenderParams;
 	class TextureAsset;
 	class SoundAsset;
-
-	using Fixed = GameUtils::Fixed;
-	using Vector2 = GameUtils::Vector2;
-	using UByte = GameUtils::UByte;
-	template<typename T>
-	using TRange = GameUtils::TRange<T>;
-	using GData = GameUtils::GData;
 
 	struct ParticleSpawnData {
 		TRange<Vector2> spawnPosition{ Vector2::Zero };

@@ -1,15 +1,10 @@
 #pragma once
 #include "le_stdafx.h"
 
-#include "Vector2.h"	// Vector2
-#include "GData.h"
+#include "Engine/CoreGame.hpp"
 #include "Engine/Logger/Logger.h"	// Logger::Severity
 
 namespace LittleEngine {
-	using Fixed = GameUtils::Fixed;
-	using Vector2 = GameUtils::Vector2;
-	using GData = GameUtils::GData;
-	
 	// \brief Wrapper to maintain properties saved to / loaded from config.ini
 	class EngineConfig {
 	private:

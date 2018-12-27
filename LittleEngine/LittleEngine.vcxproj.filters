@@ -243,6 +243,12 @@
     <ClInclude Include="Source\LittleEngine.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\UI\UIProgressBar.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Console\ConsoleProfiler.h">
+      <Filter>Source\Engine\Console</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
@@ -386,6 +392,12 @@
     </ClCompile>
     <ClCompile Include="Source\UI\UIWidgetMatrix.cpp">
       <Filter>Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIProgressBar.cpp">
+      <Filter>Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Console\ConsoleProfiler.cpp">
+      <Filter>Source\Engine\Console</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

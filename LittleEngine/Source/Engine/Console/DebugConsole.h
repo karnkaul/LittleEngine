@@ -15,7 +15,7 @@ namespace LittleEngine { namespace DebugConsole {
 	bool IsActive();
 	void Activate(bool bSetActive);
 	void UpdateInput(const RawTextInput& rawTextInput);
-	void RenderConsole(Fixed deltaMS);
+	void RenderConsole(const Fixed& deltaMS);
 	void Cleanup();
 } }
 #endif

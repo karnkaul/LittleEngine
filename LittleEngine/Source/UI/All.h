@@ -3,6 +3,7 @@
 #include "UIObject.h"
 #include "UIElement.h"
 #include "UIController.h"
+#include "UIProgressBar.h"
 #include "Widgets/UIWidget.h"
 #include "Widgets/UIButton.h"
 #include "Contexts/UIContext.h"

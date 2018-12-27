@@ -65,6 +65,7 @@ namespace LittleEngine {
 		ExitCode Run();
 
 		LevelID GetActiveLevelID() const;
+		Level* GetActiveLevel() const;
 		InputHandler& GetInputHandler() const;
 		AssetManager& GetAssetManager() const;
 		AudioManager& GetAudioManager() const;
