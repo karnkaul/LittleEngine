@@ -29,10 +29,11 @@ namespace LittleEngine {
 		std::unique_ptr<class RectangleRenderable> m_uPanel;
 	private:
 		class Level* pLevel;
+		bool bSilent;
 
 	public:
-		UIElement();
-		UIElement(const std::string& name);
+		UIElement(bool bSilent = false);
+		UIElement(const std::string& name, bool bSilent = false);
 		virtual ~UIElement();
 
 		void SetPanel(UByte r = 255, UByte g = 255, UByte b = 255, UByte a = 128);
@@ -45,7 +46,7 @@ namespace LittleEngine {
 		virtual void Tick(const Fixed& deltaMS) override;
 		virtual void Render() override;
 
-	private:
+	public:
 		void InitElement(Level& level, UITransform* pParent = nullptr);
 
 	private:

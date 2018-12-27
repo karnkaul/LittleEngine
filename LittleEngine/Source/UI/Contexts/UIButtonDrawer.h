@@ -1,12 +1,9 @@
 #pragma once
 #include "UIContext.h"
 #include "../Widgets/UIButton.h"
-#include "TRange.hpp"
+#include "Engine/CoreGame.hpp"
 
 namespace LittleEngine {
-	template<typename T>
-	using TRange = GameUtils::TRange<T>;
-
 	struct UIButtonDrawerData {
 		UIButtonData defaultButtonData;
 		Vector2 panelSize;

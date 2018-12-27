@@ -3,8 +3,8 @@
 #include <array>
 #include <vector>
 #include "ParticleSystem.h"
-#include "Transform.h"
 #include "Utils.h"
+#include "Engine/CoreGame.hpp"
 #include "SFMLInterface/Rendering/Renderable.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 #include "SFMLInterface/Rendering/SpriteRenderable.h"
@@ -14,8 +14,6 @@
 #include "Levels/Level.h"
 
 namespace LittleEngine {
-	using Transform = GameUtils::Transform;
-
 	namespace {
 		template<typename T>
 		T GetRandom(TRange<T> tRange) {

@@ -35,6 +35,7 @@
     <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Rect2.cpp" />
     <ClCompile Include="Source\UByte.cpp" />
     <ClCompile Include="Source\FileRW.cpp" />
     <ClCompile Include="Source\Fixed.cpp" />

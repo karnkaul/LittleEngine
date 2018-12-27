@@ -7,7 +7,7 @@
 #include "Utils.h"
 
 namespace LittleEngine {
-	ShapeRenderable::ShapeRenderable(std::string name, std::unique_ptr<sf::Shape> shape) : Renderable(name), m_uShape(std::move(shape)) {
+	ShapeRenderable::ShapeRenderable(std::string name, std::unique_ptr<sf::Shape> shape, bool bSilent) : Renderable(name, bSilent), m_uShape(std::move(shape)) {
 	}
 
 	ShapeRenderable::ShapeRenderable(const ShapeRenderable & prototype, std::unique_ptr<sf::Shape> shape) : Renderable(prototype), m_uShape(std::move(shape)) {
@@ -39,12 +39,12 @@ namespace LittleEngine {
 		m_uShape->setScale(Graphics::Cast(screenScale));
 	}
 
-	CircleRenderable::CircleRenderable(const Fixed& radius) : ShapeRenderable("CircleRenderable", std::make_unique<sf::CircleShape>(radius.ToFloat())) {
+	CircleRenderable::CircleRenderable(const Fixed& radius, bool bSilent) : ShapeRenderable("CircleRenderable", std::make_unique<sf::CircleShape>(radius.ToFloat()), bSilent) {
 		m_pCircle = &CastShape<sf::CircleShape>();
 		SetPivot(Vector2::Zero);
 	}
 
-	CircleRenderable::CircleRenderable(const Fixed& radius, const Colour& colour) : ShapeRenderable("CircleRenderable", std::make_unique<sf::CircleShape>(radius.ToFloat())) {
+	CircleRenderable::CircleRenderable(const Fixed& radius, const Colour& colour, bool bSilent) : ShapeRenderable("CircleRenderable", std::make_unique<sf::CircleShape>(radius.ToFloat()), bSilent) {
 		m_pCircle = &CastShape<sf::CircleShape>();
 		SetPivot(Vector2::Zero);
 		SetFillColour(colour);
@@ -67,10 +67,7 @@ namespace LittleEngine {
 
 	Rect2 CircleRenderable::GetBounds() const {
 		Fixed radius(m_pCircle->getRadius());
-		return Rect2(
-			Vector2(-radius, -radius),
-			Vector2(radius, radius)
-		);
+		return Rect2::CentreSize({ 2 * radius, 2 * radius });
 	}
 
 	std::unique_ptr<Renderable> CircleRenderable::UClone() const {
@@ -78,7 +75,7 @@ namespace LittleEngine {
 	}
 
 	void CircleRenderable::SetPivot(const Vector2 & pivot) {
-		Vector2 sfmlPivot((pivot.x + 1) * Fixed::OneHalf, (-pivot.y + 1) * Fixed::OneHalf);
+		Vector2 sfmlPivot((pivot.x + 1), (-pivot.y + 1));
 		float radius = m_pCircle->getRadius();
 		m_pCircle->setOrigin(
 			radius * sfmlPivot.x.ToFloat(),
@@ -86,12 +83,12 @@ namespace LittleEngine {
 		);
 	}
 
-	RectangleRenderable::RectangleRenderable(const Vector2& size) : ShapeRenderable("RectangleRenderable", std::make_unique<sf::RectangleShape>(Graphics::Cast(size))) {
+	RectangleRenderable::RectangleRenderable(const Vector2& size, bool bSilent) : ShapeRenderable("RectangleRenderable", std::make_unique<sf::RectangleShape>(Graphics::Cast(size)), bSilent) {
 		m_pRectangle = &CastShape<sf::RectangleShape>();
 		SetPivot(Vector2::Zero);
 	}
 
-	RectangleRenderable::RectangleRenderable(const Vector2& size, const Colour& colour) : ShapeRenderable("RectangleRenderable", std::make_unique<sf::RectangleShape>(Graphics::Cast(size))) {
+	RectangleRenderable::RectangleRenderable(const Vector2& size, const Colour& colour, bool bSilent) : ShapeRenderable("RectangleRenderable", std::make_unique<sf::RectangleShape>(Graphics::Cast(size)), bSilent) {
 		m_pRectangle = &CastShape<sf::RectangleShape>();
 		SetPivot(Vector2::Zero);
 		SetFillColour(colour);
@@ -116,10 +113,7 @@ namespace LittleEngine {
 		sf::Vector2f size = m_pRectangle->getSize();
 		Fixed width = Fixed(size.x) * Fixed::OneHalf;
 		Fixed height = Fixed(size.y) * Fixed::OneHalf;
-		return Rect2(
-			Vector2(-width, -height),
-			Vector2(width, height)
-		);
+		return Rect2::CentreSize({ width, height });
 	}
 
 	std::unique_ptr<Renderable> RectangleRenderable::UClone() const {

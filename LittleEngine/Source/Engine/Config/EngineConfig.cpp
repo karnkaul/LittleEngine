@@ -1,7 +1,7 @@
 #include "le_stdafx.h"
 #include <unordered_map>
 #include "EngineConfig.h"
-#include "FileRW.h"
+#include "Engine/CoreGame.hpp"
 #include "Utils.h"
 
 namespace LittleEngine {
@@ -36,8 +36,6 @@ namespace LittleEngine {
 		m_data.Clear();
 		Verify();
 	}
-
-	using FileRW = GameUtils::FileRW;
 
 	bool EngineConfig::Load(const std::string & path) {
 		m_bDirty = true;

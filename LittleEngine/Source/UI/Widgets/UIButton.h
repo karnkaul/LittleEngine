@@ -5,7 +5,6 @@
 #include "SFMLInterface/Rendering/TextRenderable.h"
 
 namespace LittleEngine {
-	using Vector2 = GameUtils::Vector2;
 	using Delegate = GameUtils::Delegate<>;
 
 	struct UIButtonData {

@@ -67,8 +67,12 @@ namespace LittleEngine {
 		m_bDestroyed = true;
 	}
 
-	void Actor::ToggleActive(bool enable) {
-		this->m_bEnabled = enable;
+	void Actor::ToggleActive(bool bEnable) {
+		this->m_bEnabled = bEnable;
+		for (const auto& component : m_components) {
+			if (component) component->m_bEnabled = bEnable;
+		}
+		if (m_sCollider) m_sCollider->m_bEnabled = bEnable;
 	}
 
 	void Actor::FixedTick() {

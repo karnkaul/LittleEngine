@@ -1,12 +1,11 @@
 #include "le_stdafx.h"
 #include "Assets.h"
 #include "Engine/Logger/Logger.h"
+#include "Engine/CoreGame.hpp"
 #include "FileRW.h"
 #include "Utils.h"
 
 namespace LittleEngine {
-	using FileRW = GameUtils::FileRW;
-
 	void AssetManifest::AddDefinition(AssetDefinition && definition) {
 		definitions.push_back(std::move(definition));
 	}

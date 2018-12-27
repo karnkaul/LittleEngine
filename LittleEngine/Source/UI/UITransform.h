@@ -1,12 +1,9 @@
 #pragma once
 #include <vector>
 #include "Rect2.h"
+#include "Engine/CoreGame.hpp"
 
 namespace LittleEngine {
-	using Fixed = GameUtils::Fixed;
-	using Vector2 = GameUtils::Vector2;
-	using Rect2 = GameUtils::Rect2;
-
 	// \brief Screen Rect based Transform for UIElements
 	struct UITransform {
 	public:

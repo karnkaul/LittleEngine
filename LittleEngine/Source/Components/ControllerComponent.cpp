@@ -28,10 +28,10 @@ namespace LittleEngine {
 		bool _bDeletedToken = false;
 
 		void ClampPosition(Vector2& position, const GameUtils::Rect2& worldBounds, const GameUtils::Vector2& padding) {
-			if ((position.x - padding.x) < worldBounds.lower.x) position.x = worldBounds.lower.x + padding.x;
-			if ((position.x + padding.x) > worldBounds.upper.x) position.x = worldBounds.upper.x - padding.x;
-			if ((position.y - padding.y) < worldBounds.lower.y) position.y = worldBounds.lower.y + padding.y;
-			if ((position.y + padding.y) > worldBounds.upper.y) position.y = worldBounds.upper.y - padding.y;
+			if ((position.x - padding.x) < worldBounds.GetBottomLeft().x) position.x = worldBounds.GetBottomLeft().x + padding.x;
+			if ((position.x + padding.x) > worldBounds.GetTopRight().x) position.x = worldBounds.GetTopRight().x - padding.x;
+			if ((position.y - padding.y) < worldBounds.GetBottomLeft().y) position.y = worldBounds.GetBottomLeft().y + padding.y;
+			if ((position.y + padding.y) > worldBounds.GetTopRight().y) position.y = worldBounds.GetTopRight().y - padding.y;
 		}
 	}
 
@@ -89,7 +89,7 @@ namespace LittleEngine {
 			Logger::Log(*this, "ControllerComponent's owning Actor does not have a RenderComponent", Logger::Severity::Warning);
 			return Vector2::Zero;
 		}
-		return m_pRenderer->GetBounds().upper;
+		return m_pRenderer->GetBounds().GetTopRight();
 	}
 
 	void ControllerComponent::OnLeft() {

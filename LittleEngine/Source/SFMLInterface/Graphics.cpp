@@ -108,7 +108,7 @@ SetLayerID(static_cast<int>(layerID));
 			p.x = Maths::Clamp_11(p.x);
 			p.y = Maths::Clamp_11(p.y);
 		}
-		const Vector2& s = m_instance ? m_instance->m_worldBounds.upper : Vector2::Zero;
+		const Vector2& s = m_instance ? m_instance->m_worldBounds.topRight : Vector2::Zero;
 		return Vector2(p.x * s.x, p.y * s.y);
 	}
 
@@ -134,7 +134,7 @@ SetLayerID(static_cast<int>(layerID));
 
 		// TODO: handle non-identical aspect ratios
 		m_gameViewSize = data.viewSize;
-		m_worldBounds = Rect2(-Fixed::OneHalf * m_gameViewSize, Fixed::OneHalf * m_gameViewSize);
+		m_worldBounds = Rect2::CentreSize(m_gameViewSize);
 		gameView.setSize(Cast(data.viewSize));
 		gameView.setCenter(Cast(Vector2::Zero));
 		m_uWindow->setView(gameView);

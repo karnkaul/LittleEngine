@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Object.h"
+#include "Engine/CoreGame.hpp"
 #include "IWorldEntity.h"
 #include "TokenHandler.hpp"
 #include "Engine/Input/InputHandler.h"
@@ -8,8 +9,7 @@
 
 namespace LittleEngine {
 	class Component;
-	using Transform = GameUtils::Transform;
-
+	
 	// \brief Base class representing a renderable entity in the world
 	class Actor : public Object, public IWorldEntity {
 	public:
@@ -37,7 +37,7 @@ namespace LittleEngine {
 		// Call this to Destroy this Actor
 		void Destruct();
 		// Call this to enable/disable Actor in the Level (useful for prototypes)
-		void ToggleActive(bool enable);
+		void ToggleActive(bool bEnable);
 
 		// Every Actor must always be owned by a Level
 		Level& GetActiveLevel() const;

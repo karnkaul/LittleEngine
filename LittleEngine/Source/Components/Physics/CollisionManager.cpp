@@ -33,11 +33,10 @@ namespace LittleEngine {
 		if (m_colliders.size() < 2) return;
 		for (size_t i = 0; i < m_colliders.size(); ++i) {
 			auto lhs = m_colliders[i].lock();
-			if (lhs != nullptr) {
+			if (lhs && lhs->m_bEnabled) {
 				for (size_t j = i + 1; j < m_colliders.size(); ++j) {
 					auto rhs = m_colliders[j].lock();
-					if (rhs == nullptr) continue;
-					ProcessCollision(*lhs, *rhs);
+					if (rhs && rhs->m_bEnabled) ProcessCollision(*lhs, *rhs);
 				}
 			}
 		}

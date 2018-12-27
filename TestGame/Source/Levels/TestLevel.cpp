@@ -3,8 +3,6 @@
 #include "LittleEngine.h"
 
 namespace LittleEngine {
-	using FileRW = GameUtils::FileRW;
-
 	// Tests
 	namespace _TestLevel {
 		Level* pLevel;
@@ -61,6 +59,7 @@ namespace LittleEngine {
 				pActor3 = pLevel->SpawnActor<Actor>("Blue Rectangle", true);
 				if (pActor3) {
 					_actor3ID = pActor3->GetActorID();
+					pActor3->GetTransform().localPosition = { 500, -200 };
 					auto rc1 = pActor3->AddComponent<RenderComponent>();
 					rc1->SetRectangleRenderable(ShapeData(Vector2(600, 100), Colour::Blue));
 					auto t1 = pActor3->AddCollider<AABBCollider>();
@@ -96,6 +95,10 @@ namespace LittleEngine {
 		bool bSpawnedDialog = false;
 		UIDialogue* pDialogue = nullptr;
 
+		Fixed progress;
+		std::unique_ptr<UIProgressBar> uProgressBar = nullptr;
+		std::unique_ptr<UIElement> uProgressBG = nullptr;
+
 		void SpawnDialogue() {
 			pDialogue = pLevel->GetUIController().SpawnContext<UIDialogue>();
 			UIDialogueData data;
@@ -130,10 +133,26 @@ namespace LittleEngine {
 			if (bToSpawnDialogue) {
 				SpawnDialogue();
 			}
+
+			if (elapsed >= 2000 && progress < Fixed(1.5f)) {
+				progress += (deltaMS / Fixed(1000));
+				if (!uProgressBar) {
+					uProgressBG = std::make_unique<UIElement>("Test ProgressBar BG");
+					uProgressBG->m_transform.size = { 500, 50 };
+					uProgressBG->SetPanel(Colour(255, 200, 100, 100));
+					uProgressBar = std::make_unique<UIProgressBar>("Test ProgressBar");
+					uProgressBar->InitProgressBar({ 500, 10 }, Colour::Magenta);
+					uProgressBar->m_transform.SetParent(uProgressBG->m_transform);
+				}
+				uProgressBar->SetProgress(progress);
+				uProgressBar->Tick(deltaMS);
+				uProgressBG->Tick(deltaMS);
+			}
 		}
 
 		void RenderTests() {
-
+			if (uProgressBar) uProgressBar->Render();
+			if (uProgressBG) uProgressBG->Render();
 		}
 
 		void CleanupTests() {
@@ -150,6 +169,8 @@ namespace LittleEngine {
 			_pCloneTest = nullptr;
 			if (_pParticlesTest) _pParticlesTest->Destruct();
 			_pParticlesTest = nullptr;
+			if (uProgressBar) uProgressBar = nullptr;
+			if (uProgressBG) uProgressBG = nullptr;
 			debugTokens.clear();
 		}
 
@@ -242,7 +263,7 @@ namespace LittleEngine {
 			RenderComponent* pRc = pSpriteTest->AddComponent<RenderComponent>();
 			pRc->SetSpriteRenderable("Ship.png");
 			SpriteRenderable* pR = dynamic_cast<SpriteRenderable*>(pRc->GetRenderable());
-			pR->Crop(Vector2(10, 10), Vector2(50, 50));
+			pR->Crop(Rect2::TLSize({ 50, 50 }, { 10, 10 }));
 		}
 		
 		GetAudioManager().PlayMusic("TestMusic.ogg", Fixed::OneHalf);

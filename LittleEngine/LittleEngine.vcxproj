@@ -211,6 +211,7 @@
     <ClInclude Include="Source\Engine\Console\ConsoleCommands.h" />
     <ClInclude Include="Source\Engine\Console\DebugConsole.h" />
     <ClInclude Include="Source\Engine\Console\LogLine.hpp" />
+    <ClInclude Include="Source\Engine\Console\ConsoleProfiler.h" />
     <ClInclude Include="Source\Engine\CoreGame.hpp" />
     <ClInclude Include="Source\Engine\Engine.h" />
     <ClInclude Include="Source\Engine\EngineCommands.h" />
@@ -249,6 +250,7 @@
     <ClInclude Include="Source\UI\Contexts\UIDialogue.h" />
     <ClInclude Include="Source\UI\UIController.h" />
     <ClInclude Include="Source\UI\UIElement.h" />
+    <ClInclude Include="Source\UI\UIProgressBar.h" />
     <ClInclude Include="Source\UI\UIWidgetMatrix.h" />
     <ClInclude Include="Source\UI\UIObject.h" />
     <ClInclude Include="Source\UI\UITransform.h" />
@@ -267,6 +269,7 @@
     <ClCompile Include="Source\Engine\Config\EngineConfig.cpp" />
     <ClCompile Include="Source\Engine\Console\ConsoleCommands.cpp" />
     <ClCompile Include="Source\Engine\Console\DebugConsole.cpp" />
+    <ClCompile Include="Source\Engine\Console\ConsoleProfiler.cpp" />
     <ClCompile Include="Source\Engine\Engine.cpp" />
     <ClCompile Include="Source\Engine\EngineCommands.cpp" />
     <ClCompile Include="Source\Engine\Events\EventManager.cpp" />
@@ -304,6 +307,7 @@
     <ClCompile Include="Source\UI\Contexts\UIDialogue.cpp" />
     <ClCompile Include="Source\UI\UIController.cpp" />
     <ClCompile Include="Source\UI\UIElement.cpp" />
+    <ClCompile Include="Source\UI\UIProgressBar.cpp" />
     <ClCompile Include="Source\UI\UIWidgetMatrix.cpp" />
     <ClCompile Include="Source\UI\UIObject.cpp" />
     <ClCompile Include="Source\UI\UITransform.cpp" />

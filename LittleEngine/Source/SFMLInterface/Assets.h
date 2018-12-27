@@ -9,9 +9,6 @@
 #include "GData.h"
 
 namespace LittleEngine {
-	using Fixed = GameUtils::Fixed;
-	using GData = GameUtils::GData;
-
 	enum class AssetType {
 		Texture,
 		Font,

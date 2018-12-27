@@ -95,7 +95,7 @@ namespace LittleEngine {
 		}
 	}
 
-	TextRenderable::TextRenderable(const TextData & data) : Renderable("TextRenderable"), m_data(data) {
+	TextRenderable::TextRenderable(const TextData & data, bool bSilent) : Renderable("TextRenderable", bSilent), m_data(data) {
 		ApplyData();
 	}
 
@@ -154,10 +154,7 @@ namespace LittleEngine {
 		sf::FloatRect bounds = m_sfText.getLocalBounds();
 		Fixed width(bounds.width);
 		Fixed height(bounds.height);
-		return Rect2(
-			Vector2(-width * Fixed::OneHalf, -height * Fixed::OneHalf),
-			Vector2(width * Fixed::OneHalf, height * Fixed::OneHalf)
-		);
+		return Rect2::CentreSize({ width, height });
 	}
 
 	TextData& TextRenderable::GetTextData() {

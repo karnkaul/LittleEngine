@@ -1,17 +1,13 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "Fixed.h"
 #include "Input.h"
-#include "Rect2.h"
 #include "SystemClock.h"
 #include "Rendering/RenderParams.h"
+#include "Engine/CoreGame.hpp"
 #include <array>
 #include <functional>
 
 namespace LittleEngine {
-	using Vector2 = GameUtils::Vector2;
-	using Rect2 = GameUtils::Rect2;
-
 	struct GraphicsData {
 		std::string windowTitle = "Untitled";
 		Vector2 viewSize = Vector2(1920, 1080);
