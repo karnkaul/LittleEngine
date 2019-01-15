@@ -111,8 +111,8 @@ namespace LittleEngine {
 
 	Rect2 RectangleRenderable::GetBounds() const {
 		sf::Vector2f size = m_pRectangle->getSize();
-		Fixed width = Fixed(size.x) * Fixed::OneHalf;
-		Fixed height = Fixed(size.y) * Fixed::OneHalf;
+		Fixed width = Fixed(size.x);
+		Fixed height = Fixed(size.y);
 		return Rect2::CentreSize({ width, height });
 	}
 

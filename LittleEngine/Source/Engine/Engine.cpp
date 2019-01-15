@@ -24,7 +24,9 @@ namespace LittleEngine {
 		constexpr int MS_PER_FIXED_TICK = 6;
 		constexpr float MIN_FRAME_TIME_MS = 1000 / Consts::MAX_FPS;
 
+#if ENABLED(DEBUG_PROFILER)
 		const Colour PROFILER_COLOUR = Colour::Red;
+#endif
 
 		inline double GetCurrentMilliseconds() {
 			return static_cast<double>(SystemClock::GetCurrentMicroseconds()) * 0.001f;
