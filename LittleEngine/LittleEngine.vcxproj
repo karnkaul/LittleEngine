@@ -1,61 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
+    <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Development|Win32">
-      <Configuration>Development</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Development|x64">
       <Configuration>Development</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Ship|x64">
+      <Configuration>Ship</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="LittleEngine\Audio\EngineAudio.cpp" />
+    <ClCompile Include="LittleEngine\Debug\Console\ConsoleInput.cpp" />
+    <ClCompile Include="LittleEngine\Debug\Console\ConsoleRenderer.cpp" />
+    <ClCompile Include="LittleEngine\Debug\Console\DebugConsole.cpp" />
+    <ClCompile Include="LittleEngine\Debug\Console\DebugCommands.cpp" />
+    <ClCompile Include="LittleEngine\Debug\Console\LogLine.cpp" />
+    <ClCompile Include="LittleEngine\Debug\DebugProfiler.cpp" />
+    <ClCompile Include="LittleEngine\Engine\EngineConfig.cpp" />
+    <ClCompile Include="LittleEngine\Engine\EngineLoop.cpp" />
+    <ClCompile Include="LittleEngine\Engine\EngineService.cpp" />
+    <ClCompile Include="LittleEngine\Engine\AsyncFileLogger.cpp" />
+    <ClCompile Include="LittleEngine\Engine\OS.cpp" />
+    <ClCompile Include="LittleEngine\Game\Component.cpp" />
+    <ClCompile Include="LittleEngine\Game\Entity.cpp" />
+    <ClCompile Include="LittleEngine\Game\GameManager.cpp" />
+    <ClCompile Include="LittleEngine\Game\Inheritable.cpp" />
+    <ClCompile Include="LittleEngine\Game\WorldObject.cpp" />
+    <ClCompile Include="LittleEngine\GFX\GFX.cpp" />
+    <ClCompile Include="LittleEngine\Input\EngineInput.cpp" />
+    <ClCompile Include="LittleEngine\Input\Gamepad.cpp" />
+    <ClCompile Include="LittleEngine\Jobs\JobManager.cpp" />
+    <ClCompile Include="LittleEngine\Jobs\JobWorker.cpp" />
+    <ClCompile Include="LittleEngine\Physics\Collider.cpp" />
+    <ClCompile Include="LittleEngine\Physics\ColliderData.cpp" />
+    <ClCompile Include="LittleEngine\Physics\CollisionManager.cpp" />
+    <ClCompile Include="LittleEngine\RenderLoop\AsyncRenderLoop.cpp" />
+    <ClCompile Include="LittleEngine\RenderLoop\RenderHeap.cpp" />
+    <ClCompile Include="LittleEngine\Repository\AsyncAssetLoader.cpp" />
+    <ClCompile Include="LittleEngine\Repository\EngineRepository.cpp" />
+    <ClCompile Include="LittleEngine\Services\Services.cpp" />
+    <ClCompile Include="LittleEngine\UI\UIContext.cpp" />
+    <ClCompile Include="LittleEngine\UI\UIManager.cpp" />
+    <ClCompile Include="LittleEngine\UI\UIElement.cpp" />
+    <ClCompile Include="LittleEngine\UI\UIObject.cpp" />
+    <ClCompile Include="LittleEngine\UI\UIProgressBar.cpp" />
+    <ClCompile Include="LittleEngine\UI\UIText.cpp" />
+    <ClCompile Include="LittleEngine\UI\UITransform.cpp" />
+    <ClCompile Include="LittleEngine\UI\UIWidget.cpp" />
+    <ClCompile Include="LittleEngine\UI\UIWidgetMatrix.cpp" />
+    <ClCompile Include="LittleEngine\World\LoadingUI.cpp" />
+    <ClCompile Include="LittleEngine\World\World.cpp" />
+    <ClCompile Include="LittleEngine\World\WorldStateMachine.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LittleEngine\Audio\EngineAudio.h" />
+    <ClInclude Include="LittleEngine\Debug\Console\CircularList.hpp" />
+    <ClInclude Include="LittleEngine\Debug\Console\ConsoleInput.h" />
+    <ClInclude Include="LittleEngine\Debug\Console\ConsoleRenderer.h" />
+    <ClInclude Include="LittleEngine\Debug\Console\DebugConsole.h" />
+    <ClInclude Include="LittleEngine\Debug\Console\DebugCommands.h" />
+    <ClInclude Include="LittleEngine\Debug\Console\LogLine.h" />
+    <ClInclude Include="LittleEngine\Debug\DebugProfiler.h" />
+    <ClInclude Include="LittleEngine\Engine\EngineConfig.h" />
+    <ClInclude Include="LittleEngine\Engine\EngineLoop.h" />
+    <ClInclude Include="LittleEngine\Engine\EngineService.h" />
+    <ClInclude Include="LittleEngine\Engine\AsyncFileLogger.h" />
+    <ClInclude Include="LittleEngine\Engine\OS.h" />
+    <ClInclude Include="LittleEngine\Game\Component.h" />
+    <ClInclude Include="LittleEngine\Game\Entity.h" />
+    <ClInclude Include="LittleEngine\Game\Game.h" />
+    <ClInclude Include="LittleEngine\Game\GameManager.h" />
+    <ClInclude Include="LittleEngine\Game\Inheritable.h" />
+    <ClInclude Include="LittleEngine\Game\WorldObject.h" />
+    <ClInclude Include="LittleEngine\Jobs\JobManager.h" />
+    <ClInclude Include="LittleEngine\Jobs\JobWorker.h" />
+    <ClInclude Include="LittleEngine\LittleEngine.h" />
+    <ClInclude Include="LittleEngine\GFX\GFX.h" />
+    <ClInclude Include="LittleEngine\Input\EngineInput.h" />
+    <ClInclude Include="LittleEngine\Input\Gamepad.h" />
+    <ClInclude Include="LittleEngine\Physics\Collider.h" />
+    <ClInclude Include="LittleEngine\Physics\ColliderData.h" />
+    <ClInclude Include="LittleEngine\Physics\CollisionManager.h" />
+    <ClInclude Include="LittleEngine\Physics\Physics.h" />
+    <ClInclude Include="LittleEngine\RenderLoop\AsyncRenderLoop.h" />
+    <ClInclude Include="LittleEngine\RenderLoop\RenderHeap.h" />
+    <ClInclude Include="LittleEngine\Repository\AsyncAssetLoader.h" />
+    <ClInclude Include="LittleEngine\Repository\EngineRepository.h" />
+    <ClInclude Include="LittleEngine\Services\IService.h" />
+    <ClInclude Include="LittleEngine\Services\Services.h" />
+    <ClInclude Include="LittleEngine\UI\UI.h" />
+    <ClInclude Include="LittleEngine\UI\UIContext.h" />
+    <ClInclude Include="LittleEngine\UI\UIManager.h" />
+    <ClInclude Include="LittleEngine\UI\UIElement.h" />
+    <ClInclude Include="LittleEngine\UI\UIObject.h" />
+    <ClInclude Include="LittleEngine\UI\UIProgressBar.h" />
+    <ClInclude Include="LittleEngine\UI\UIText.h" />
+    <ClInclude Include="LittleEngine\UI\UITransform.h" />
+    <ClInclude Include="LittleEngine\UI\UIWidget.h" />
+    <ClInclude Include="LittleEngine\UI\UIWidgetMatrix.h" />
+    <ClInclude Include="LittleEngine\World\LoadingUI.h" />
+    <ClInclude Include="LittleEngine\World\World.h" />
+    <ClInclude Include="LittleEngine\World\WorldStateMachine.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.vcxproj">
+      <Project>{af5b2e49-98bc-4c1b-8b53-0122876d47fa}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\PCH\_PCH.vcxproj">
+      <Project>{176489df-3f22-43d5-a6f4-56ef4f2d4388}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\SFMLAPI\SFMLAPI.vcxproj">
+      <Project>{927b2d28-14e8-4d17-a0fb-5d637cf4ea3c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{610E7089-F863-40CE-99AA-DDABAF1A12D7}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{F47FDA22-5053-4B11-A8D8-5281110C3B60}</ProjectGuid>
     <RootNamespace>LittleEngine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
-    <ProjectName>LittleEngine</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>llvm</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>llvm</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>llvm</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>llvm</PlatformToolset>
@@ -68,7 +149,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>llvm</PlatformToolset>
@@ -80,343 +161,141 @@
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Development|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)_Build/$(Platform)</OutDir>
-    <IntDir>_Intermediate/$(Platform)/$(Configuration)/</IntDir>
-    <TargetName>$(ProjectName)-d</TargetName>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)_Build/$(Platform)</OutDir>
-    <IntDir>_Intermediate/$(Platform)/$(Configuration)/</IntDir>
-    <TargetName>$(ProjectName)-d</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)_Build/$(Platform)/</OutDir>
-    <IntDir>_Intermediate/$(Platform)/$(Configuration)/</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)_Build/$(Platform)/</OutDir>
-    <IntDir>_Intermediate/$(Platform)/$(Configuration)/</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)_Build/$(Platform)/</OutDir>
-    <IntDir>_Intermediate/$(Platform)/$(Configuration)/</IntDir>
+    <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
+    <IntDir>_Intermediate\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
-    <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)_Build/$(Platform)/</OutDir>
-    <IntDir>_Intermediate/$(Platform)/$(Configuration)/</IntDir>
+    <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
+    <IntDir>_Intermediate\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)-$(Configuration)</TargetName>
   </PropertyGroup>
-  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClangClAdditionalOptions>-Wextra</ClangClAdditionalOptions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
+    <IntDir>_Intermediate\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)-$(Configuration)</TargetName>
   </PropertyGroup>
-  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClangClAdditionalOptions>-Werror -Wextra</ClangClAdditionalOptions>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|Win32'" Label="LLVM">
-    <ClangClAdditionalOptions>-Werror -Wextra</ClangClAdditionalOptions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
+    <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
+    <IntDir>_Intermediate\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClangClAdditionalOptions>-Wextra</ClangClAdditionalOptions>
   </PropertyGroup>
-  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClangClAdditionalOptions>-Werror -Wextra</ClangClAdditionalOptions>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'" Label="LLVM">
-    <ClangClAdditionalOptions>-Werror -Wextra</ClangClAdditionalOptions>
+    <ClangClAdditionalOptions>-Wextra</ClangClAdditionalOptions>
+    <UseLldLink>true</UseLldLink>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DEBUG;SFML_STATIC</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./;Include;Source;../GameUtils</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
-      <UndefinePreprocessorDefinitions>
-      </UndefinePreprocessorDefinitions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <SupportJustMyCode>false</SupportJustMyCode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>lib_x86</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;opengl32.lib;winmm.lib;gdi32.lib;sfml-system-s-d.lib;freetype.lib;sfml-audio-s-d.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-    <Lib />
-  </ItemDefinitionGroup>
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClangClAdditionalOptions>-Wextra -Werror</ClangClAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'" Label="LLVM">
+    <ClangClAdditionalOptions>-Wextra -Werror</ClangClAdditionalOptions>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DEBUG;SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./;Include;Source;../GameUtils</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
-      <UndefinePreprocessorDefinitions>
-      </UndefinePreprocessorDefinitions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <SupportJustMyCode>false</SupportJustMyCode>
+      <PrecompiledHeaderOutputFile>$(OutputPath)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AdditionalIncludeDirectories>.;..\Include;..\PCH;..\Core\Public;..\SFMLAPI</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>lib_x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;opengl32.lib;winmm.lib;gdi32.lib;sfml-system-s-d.lib;freetype.lib;sfml-audio-s-d.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-    <Lib />
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SFML_STATIC;LOG_PROFILING</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./;Include;Source;../GameUtils</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
-      <UndefinePreprocessorDefinitions>
-      </UndefinePreprocessorDefinitions>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>lib_x86</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-main.lib;sfml-graphics-s.lib;sfml-window-s.lib;opengl32.lib;winmm.lib;gdi32.lib;sfml-system-s.lib;freetype.lib;sfml-audio.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Development|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SFML_STATIC;LOG_PROFILING</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./;Include;Source;../GameUtils</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
-      <UndefinePreprocessorDefinitions>
-      </UndefinePreprocessorDefinitions>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>lib_x86</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-main.lib;sfml-graphics-s.lib;sfml-window-s.lib;opengl32.lib;winmm.lib;gdi32.lib;sfml-system-s.lib;freetype.lib;sfml-audio.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SFML_STATIC;LOG_PROFILING</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./;Include;Source;../GameUtils</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
-      <UndefinePreprocessorDefinitions>
-      </UndefinePreprocessorDefinitions>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>lib_x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-main.lib;sfml-graphics-s.lib;sfml-window-s.lib;opengl32.lib;winmm.lib;gdi32.lib;sfml-system-s.lib;freetype.lib;sfml-audio.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\SFMLAPI\Libraries\SFML</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SFML_STATIC;LOG_PROFILING</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./;Include;Source;../GameUtils</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>le_stdafx.h</PrecompiledHeaderFile>
-      <UndefinePreprocessorDefinitions>
-      </UndefinePreprocessorDefinitions>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <PrecompiledHeaderOutputFile>$(OutputPath)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AdditionalIncludeDirectories>.;..\Include;..\PCH;..\Core\Public;..\SFMLAPI</AdditionalIncludeDirectories>
+      <AdditionalOptions>/Zo %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>..\SFMLAPI\Libraries\SFML</AdditionalLibraryDirectories>
+    </Link>
+    <ProjectReference />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG;SHIP</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>$(OutputPath)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AdditionalIncludeDirectories>.;..\Include;..\PCH;..\Core\Public;..\SFMLAPI</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>lib_x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-main.lib;sfml-graphics-s.lib;sfml-window-s.lib;opengl32.lib;winmm.lib;gdi32.lib;sfml-system-s.lib;freetype.lib;sfml-audio.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+      <LinkTimeCodeGeneration>
+      </LinkTimeCodeGeneration>
+      <AdditionalLibraryDirectories>..\SFMLAPI\Libraries\SFML</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="le_stdafx.h" />
-    <ClInclude Include="Source\Components\All.h" />
-    <ClInclude Include="Source\Components\Physics\Collider.h" />
-    <ClInclude Include="Source\Components\Physics\ColliderData.h" />
-    <ClInclude Include="Source\Components\Physics\CollisionManager.h" />
-    <ClInclude Include="Source\Components\SpriteAnimator.h" />
-    <ClInclude Include="Source\Components\Component.h" />
-    <ClInclude Include="Source\Components\ControllerComponent.h" />
-    <ClInclude Include="Source\Components\RenderComponent.h" />
-    <ClInclude Include="Source\Engine\All.h" />
-    <ClInclude Include="Source\Engine\Audio\AudioManager.h" />
-    <ClInclude Include="Source\Engine\Config\EngineConfig.h" />
-    <ClInclude Include="Source\Engine\Console\ConsoleCommands.h" />
-    <ClInclude Include="Source\Engine\Console\DebugConsole.h" />
-    <ClInclude Include="Source\Engine\Console\LogLine.hpp" />
-    <ClInclude Include="Source\Engine\Console\ConsoleProfiler.h" />
-    <ClInclude Include="Source\Engine\CoreGame.hpp" />
-    <ClInclude Include="Source\Engine\Engine.h" />
-    <ClInclude Include="Source\Engine\EngineCommands.h" />
-    <ClInclude Include="Source\Engine\Events\EventManager.h" />
-    <ClInclude Include="Source\Engine\GameClock.h" />
-    <ClInclude Include="Source\Engine\Input\Gamepad.h" />
-    <ClInclude Include="Source\Engine\Input\InputHandler.h" />
-    <ClInclude Include="Source\Engine\Logger\FileLogger.h" />
-    <ClInclude Include="Source\Engine\Logger\Logger.h" />
-    <ClInclude Include="Source\Engine\Object.h" />
-    <ClInclude Include="Source\Entities\Actor.h" />
-    <ClInclude Include="Source\Entities\All.h" />
-    <ClInclude Include="Source\Entities\IWorldEntity.h" />
-    <ClInclude Include="Source\Entities\ParticleSystem.h" />
-    <ClInclude Include="Source\Entities\Player.h" />
-    <ClInclude Include="Source\Entities\VFX.h" />
-    <ClInclude Include="Source\Levels\Level.h" />
-    <ClInclude Include="Source\Levels\LevelManager.h" />
-    <ClInclude Include="Source\Levels\Spawner.h" />
-    <ClInclude Include="Source\LittleEngine.h" />
-    <ClInclude Include="Source\Misc\Stopwatch.h" />
-    <ClInclude Include="Source\SFMLInterface\All.h" />
-    <ClInclude Include="Source\SFMLInterface\Assets.h" />
-    <ClInclude Include="Source\SFMLInterface\Audio\AudioPlayer.h" />
-    <ClInclude Include="Source\SFMLInterface\SystemClock.h" />
-    <ClInclude Include="Source\SFMLInterface\Input.h" />
-    <ClInclude Include="Source\SFMLInterface\Rendering\Renderable.h" />
-    <ClInclude Include="Source\SFMLInterface\Rendering\RenderParams.h" />
-    <ClInclude Include="Source\SFMLInterface\Rendering\ShapeRenderable.h" />
-    <ClInclude Include="Source\SFMLInterface\Rendering\SpriteRenderable.h" />
-    <ClInclude Include="Source\SFMLInterface\Rendering\TextRenderable.h" />
-    <ClInclude Include="Source\SFMLInterface\Graphics.h" />
-    <ClInclude Include="Source\UI\All.h" />
-    <ClInclude Include="Source\UI\Contexts\UIButtonDrawer.h" />
-    <ClInclude Include="Source\UI\Contexts\UIContext.h" />
-    <ClInclude Include="Source\UI\Contexts\UIDialogue.h" />
-    <ClInclude Include="Source\UI\UIController.h" />
-    <ClInclude Include="Source\UI\UIElement.h" />
-    <ClInclude Include="Source\UI\UIProgressBar.h" />
-    <ClInclude Include="Source\UI\UIWidgetMatrix.h" />
-    <ClInclude Include="Source\UI\UIObject.h" />
-    <ClInclude Include="Source\UI\UITransform.h" />
-    <ClInclude Include="Source\UI\Widgets\UIButton.h" />
-    <ClInclude Include="Source\UI\Widgets\UIWidget.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\Components\Physics\Collider.cpp" />
-    <ClCompile Include="Source\Components\Physics\ColliderData.cpp" />
-    <ClCompile Include="Source\Components\Physics\CollisionManager.cpp" />
-    <ClCompile Include="Source\Components\SpriteAnimator.cpp" />
-    <ClCompile Include="Source\Components\Component.cpp" />
-    <ClCompile Include="Source\Components\ControllerComponent.cpp" />
-    <ClCompile Include="Source\Components\RenderComponent.cpp" />
-    <ClCompile Include="Source\Engine\Audio\AudioManager.cpp" />
-    <ClCompile Include="Source\Engine\Config\EngineConfig.cpp" />
-    <ClCompile Include="Source\Engine\Console\ConsoleCommands.cpp" />
-    <ClCompile Include="Source\Engine\Console\DebugConsole.cpp" />
-    <ClCompile Include="Source\Engine\Console\ConsoleProfiler.cpp" />
-    <ClCompile Include="Source\Engine\Engine.cpp" />
-    <ClCompile Include="Source\Engine\EngineCommands.cpp" />
-    <ClCompile Include="Source\Engine\Events\EventManager.cpp" />
-    <ClCompile Include="Source\Engine\GameClock.cpp" />
-    <ClCompile Include="Source\Engine\Input\Gamepad.cpp" />
-    <ClCompile Include="Source\Engine\Input\InputHandler.cpp" />
-    <ClCompile Include="Source\Engine\Logger\FileLogger.cpp" />
-    <ClCompile Include="Source\Engine\Logger\Logger.cpp" />
-    <ClCompile Include="Source\Entities\Actor.cpp" />
-    <ClCompile Include="Source\Entities\ParticleSystem.cpp" />
-    <ClCompile Include="Source\Entities\Player.cpp" />
-    <ClCompile Include="Source\Entities\VFX.cpp" />
-    <ClCompile Include="Source\Levels\Level.cpp" />
-    <ClCompile Include="Source\Levels\LevelManager.cpp" />
-    <ClCompile Include="Source\Levels\Spawner.cpp" />
-    <ClCompile Include="Source\Misc\Stopwatch.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Assets.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Audio\AudioPlayer.cpp" />
-    <ClCompile Include="Source\SFMLInterface\SystemClock.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Input.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Rendering\Renderable.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Rendering\RenderParams.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Rendering\ShapeRenderable.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Rendering\SpriteRenderable.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Rendering\TextRenderable.cpp" />
-    <ClCompile Include="Source\SFMLInterface\Graphics.cpp" />
-    <ClCompile Include="le_stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Development|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Development|x64'">Create</PrecompiledHeader>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;SHIP</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>$(OutputPath)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AdditionalIncludeDirectories>.;..\Include;..\PCH;..\Core\Public;..\SFMLAPI</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
-    <ClCompile Include="Source\UI\Contexts\UIButtonDrawer.cpp" />
-    <ClCompile Include="Source\UI\Contexts\UIContext.cpp" />
-    <ClCompile Include="Source\UI\Contexts\UIDialogue.cpp" />
-    <ClCompile Include="Source\UI\UIController.cpp" />
-    <ClCompile Include="Source\UI\UIElement.cpp" />
-    <ClCompile Include="Source\UI\UIProgressBar.cpp" />
-    <ClCompile Include="Source\UI\UIWidgetMatrix.cpp" />
-    <ClCompile Include="Source\UI\UIObject.cpp" />
-    <ClCompile Include="Source\UI\UITransform.cpp" />
-    <ClCompile Include="Source\UI\Widgets\UIButton.cpp" />
-    <ClCompile Include="Source\UI\Widgets\UIWidget.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GameUtils\GameUtils.vcxproj">
-      <Project>{807fe730-588c-4a7b-9d9a-09fd2790c4b4}</Project>
-    </ProjectReference>
-  </ItemGroup>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>Windows</SubSystem>
+      <LinkTimeCodeGeneration>
+      </LinkTimeCodeGeneration>
+      <AdditionalLibraryDirectories>..\SFMLAPI\Libraries\SFML</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="GameFramework">
+      <UniqueIdentifier>{dd997536-e7d7-4776-a1f2-1903591cd7cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework\Entities">
+      <UniqueIdentifier>{0eab04fd-8620-4757-88a1-d3befc93663b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework\Components">
+      <UniqueIdentifier>{1eecc52a-5627-4bd6-b2e1-9f9a5f115b16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework\UI">
+      <UniqueIdentifier>{d296f9cc-d56a-44ff-a196-2e3a1612ef7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework\UI\Contexts">
+      <UniqueIdentifier>{387b898a-43ff-407c-a350-ac4b6b6a691c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework\UI\Widgets">
+      <UniqueIdentifier>{a07c2ca0-0e5c-461e-977f-3666904fcae5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GameFramework\Components\RenderComponent.cpp">
+      <Filter>GameFramework\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework\UI\Contexts\UIButtonDrawer.cpp">
+      <Filter>GameFramework\UI\Contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework\UI\Contexts\UIDialogue.cpp">
+      <Filter>GameFramework\UI\Contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework\UI\Widgets\UIButton.cpp">
+      <Filter>GameFramework\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework\Entities\ParticleSystem.cpp">
+      <Filter>GameFramework\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework\Components\ControllerComponent.cpp">
+      <Filter>GameFramework\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework\Components\CollisionComponent.cpp">
+      <Filter>GameFramework\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework\Entities\Player.cpp">
+      <Filter>GameFramework\Entities</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameFramework\Components\RenderComponent.h">
+      <Filter>GameFramework\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\GameFramework.h">
+      <Filter>GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\Components\Components.h">
+      <Filter>GameFramework\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\UI\UI.h">
+      <Filter>GameFramework\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\UI\Contexts\UIButtonDrawer.h">
+      <Filter>GameFramework\UI\Contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\UI\Contexts\UIDialogue.h">
+      <Filter>GameFramework\UI\Contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\UI\Widgets\UIButton.h">
+      <Filter>GameFramework\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\Entities\ParticleSystem.h">
+      <Filter>GameFramework\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\Entities\Entities.h">
+      <Filter>GameFramework\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\Components\ControllerComponent.h">
+      <Filter>GameFramework\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\Components\CollisionComponent.h">
+      <Filter>GameFramework\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\Entities\Player.h">
+      <Filter>GameFramework\Entities</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

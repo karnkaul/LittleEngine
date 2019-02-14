@@ -1,3 +1,1 @@
-*.txt 	text
-*.cpp	diff
-*.h		text
+*.{png,ogg,wav,ttf,otf} filter=lfs diff=lfs merge=lfs -text

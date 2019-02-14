@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="SFMLAPI\Rendering\Colour.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\SFRenderState.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Windowing\SFEventLoop.h">
+      <Filter>SFMLAPI\Windowing</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Windowing\SFWindow.h">
+      <Filter>SFMLAPI\Windowing</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Windowing\SFWindowData.h">
+      <Filter>SFMLAPI\Windowing</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Input\SFEventHandler.h">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\SFRendering.h">
+      <Filter>SFMLAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Input\SFInputStateMachine.h">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Audio\SFAudioPlayer.h">
+      <Filter>SFMLAPI\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\SFAudio.h">
+      <Filter>SFMLAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\SFInput.h">
+      <Filter>SFMLAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\SFMLAPI.h">
+      <Filter>SFMLAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\SFWindowing.h">
+      <Filter>SFMLAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\System\SFAssets.h">
+      <Filter>SFMLAPI\System</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\System\SFGameClock.h">
+      <Filter>SFMLAPI\System</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\System\SFTime.h">
+      <Filter>SFMLAPI\System</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\System\SFTypes.h">
+      <Filter>SFMLAPI\System</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\SFSystem.h">
+      <Filter>SFMLAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\SFRenderer.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\SFPrimitive.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\GFXBuffer.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SFMLAPI\Rendering\Colour.cpp">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Windowing\SFEventLoop.cpp">
+      <Filter>SFMLAPI\Windowing</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Windowing\SFWindow.cpp">
+      <Filter>SFMLAPI\Windowing</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Windowing\SFWindowData.cpp">
+      <Filter>SFMLAPI\Windowing</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Input\SFEventHandler.cpp">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Input\SFInputStateMachine.cpp">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Audio\SFAudioPlayer.cpp">
+      <Filter>SFMLAPI\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\System\SFAssets.cpp">
+      <Filter>SFMLAPI\System</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\System\SFGameClock.cpp">
+      <Filter>SFMLAPI\System</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\System\SFTime.cpp">
+      <Filter>SFMLAPI\System</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\System\SFTypes.cpp">
+      <Filter>SFMLAPI\System</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\SFRenderState.cpp">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\SFRenderer.cpp">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\SFPrimitive.cpp">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\GFXBuffer.cpp">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="SFMLAPI">
+      <UniqueIdentifier>{ab1a8c6d-7492-49cd-8005-427732fa1fef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SFMLAPI\Rendering">
+      <UniqueIdentifier>{0855eecd-2b1c-4d9e-bb4c-d9d5c8582a15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SFMLAPI\Windowing">
+      <UniqueIdentifier>{e916c930-eacb-4818-925a-84b2306f56bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SFMLAPI\Input">
+      <UniqueIdentifier>{9c04a6a1-07e6-4f65-a17d-bec3690fc741}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SFMLAPI\Audio">
+      <UniqueIdentifier>{0e86d036-bf10-453d-a707-aa230fa1f798}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SFMLAPI\System">
+      <UniqueIdentifier>{8bec89b2-2391-47d9-b8d2-cd0e09cc7ec6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,13 @@
+#pragma once
+#include "CircularVector.hpp"
+#include "Delegate.hpp"
+#include "FileRW.h"
+#include "Fixed.h"
+#include "GData.h"
+#include "Rect2.h"
+#include "TokenHandler.hpp"
+#include "TRange.hpp"
+#include "Transform.h"
+#include "UByte.h"
+#include "Utils.h"
+#include "Vector2.h"

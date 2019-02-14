@@ -6,4 +6,6 @@
 **/*.pdb
 debug.log
 **/vc-fileutils.settings
+**/*.vcxproj.user
 **/SourceArt/*
+**/Redist/*
