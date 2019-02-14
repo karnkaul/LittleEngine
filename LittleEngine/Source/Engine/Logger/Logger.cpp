@@ -12,6 +12,8 @@ namespace LittleEngine {
 	namespace Logger {
 #pragma region Globals
 		Severity g_logLevel = Severity::Info;
+		void Cout(const std::string& log);
+
 #pragma endregion
 		namespace {
 #pragma region Definitions
@@ -20,19 +22,12 @@ namespace LittleEngine {
 #pragma endregion
 
 #pragma region Internal
-			void Cout(const std::string& severity, const std::string& caller, const std::string& message) {
+			void Log(const std::string& severity, const std::string& caller, const std::string& message) {
 				std::string suffix = (caller.length() > 0) ? " [" + caller + "]" : "";
 				suffix += (" [" + GameClock::ToString(SystemClock::GetCurrentMilliseconds()) + "]");
 				std::string log = severity + " " + message + suffix;
-				if (fileLogger) {
-					fileLogger->AddToBuffer(log);
-				}
-#if DEBUG
-				std::cout << log << std::endl;
-#endif
-#if defined(_WIN32)
-				OutputDebugString((log + "\n").c_str());
-#endif
+				Cout(log);
+				if (fileLogger) fileLogger->AddToBuffer(std::move(log));
 			}
 
 			std::string SeverityString(Logger::Severity severity) {
@@ -62,6 +57,16 @@ namespace LittleEngine {
 #pragma endregion
 
 #pragma region Implmementation
+		// FileLogger extern access
+		void Cout(const std::string& message) {
+#if DEBUG
+			std::cout << message << std::endl;
+#endif
+#if defined(_WIN32)
+			OutputDebugString((message + "\n").c_str());
+#endif
+		}
+
 		void Log(const Object& context, const std::string & message, Severity severity) {
 			Log(context.GetName(), message, severity);
 		}
@@ -71,9 +76,7 @@ namespace LittleEngine {
 		}
 
 		void Log(std::string caller, const std::string& message, Severity severity) {
-			if (severity <= g_logLevel) {
-				Cout(SeverityString(severity), caller, message);
-			}
+			if (severity <= g_logLevel) Log(SeverityString(severity), caller, message);
 		}
 
 		void Cleanup() {

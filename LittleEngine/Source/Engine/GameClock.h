@@ -1,12 +1,10 @@
 #pragma once
-#include "Fixed.h"
 #include "SFMLInterface/SystemClock.h"
+#include "Engine/CoreGame.hpp"
 
 namespace LittleEngine {
-	using Fixed = GameUtils::Fixed;
-
 	// \brief Use to measure game time
-	// Note: This DOES NOT run on its own, requires Engine to call Tick(deltaTime)!
+	// Note: This DOES NOT run on its own, requires Engine to call Tick(deltaMS)!
 	class GameClock {
 	private:
 		// Base game time maintained by Engine
@@ -26,7 +24,7 @@ namespace LittleEngine {
 
 	private:
 		// Global Ticks to be provided by Engine
-		static void Tick(const Fixed& deltaTime);
+		static void Tick(const Fixed& deltaMS);
 		// On App Reload etc
 		static void Reset();
 

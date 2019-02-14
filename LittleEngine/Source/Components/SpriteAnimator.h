@@ -27,8 +27,8 @@ namespace LittleEngine {
 		bool IsAnimating() const { return m_bAnimating; }
 		void SetLayer(LayerInfo layer);
 
-		virtual void Tick(Fixed deltaTime) override;
-		virtual void Render(RenderParams& params) override;
+		virtual void Tick(const Fixed& deltaMS) override;
+		virtual void Render(const RenderParams& params) override;
 		virtual Component::Ptr UClone(Actor& owner) const override;
 	};
 }

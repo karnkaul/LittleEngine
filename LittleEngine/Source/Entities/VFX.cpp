@@ -7,7 +7,7 @@
 #include "Utils.h"
 
 namespace LittleEngine {
-	VFX::VFX(Level & level, const std::string & prefix, const Vector2 & position, const Fixed & rotation) {
+	VFX::VFX(Level & level, const std::string & prefix, const Vector2&, const Fixed&) {
 		GeneralInit(level, GetActorID(), prefix + "_VFX");
 	}
 
@@ -49,8 +49,8 @@ namespace LittleEngine {
 		bPlaying = true;
 	}
 
-	void VFX::Tick(const Fixed& deltaTime) {
-		Actor::Tick(deltaTime);
+	void VFX::Tick(const Fixed& deltaMS) {
+		Actor::Tick(deltaMS);
 		if (bPlaying) {
 			bool sfxPlaying = sfxPlayer && sfxPlayer->IsPlaying();
 			if (!animator->IsAnimating() && !sfxPlaying && !m_bDestroyed) {

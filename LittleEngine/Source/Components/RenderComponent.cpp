@@ -3,7 +3,6 @@
 #include "Transform.h"
 #include "Entities/Actor.h"
 #include "Levels/Level.h"
-#include "Engine/World.h"
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Rendering/ShapeRenderable.h"
 #include "SFMLInterface/Rendering/SpriteRenderable.h"
@@ -31,7 +30,7 @@ namespace LittleEngine {
 	}
 
 	Rect2 RenderComponent::GetBounds() const {
-		return m_uRenderable == nullptr ? Rect2(Vector2::Zero, Vector2::Zero) : m_uRenderable->GetBounds();
+		return m_uRenderable == nullptr ? Rect2() : m_uRenderable->GetBounds();
 	}
 
 	CircleRenderable & RenderComponent::SetCircleRenderable(const ShapeData & shapeData) {
@@ -69,7 +68,11 @@ namespace LittleEngine {
 		return *dynamic_cast<TextRenderable*>(m_uRenderable.get());
 	}
 
-	void RenderComponent::Render(RenderParams& params) {
+	LittleEngine::Renderable* RenderComponent::GetRenderable() const {
+		return m_uRenderable.get();
+	}
+
+	void RenderComponent::Render(const RenderParams& params) {
 		m_uRenderable->Render(params);
 	}
 

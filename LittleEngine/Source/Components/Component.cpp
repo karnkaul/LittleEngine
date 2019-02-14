@@ -17,20 +17,20 @@ namespace LittleEngine {
 		Logger::Log(*this, ToString() + " destroyed");
 	}
 
-	void Component::Tick(Fixed deltaSeconds) {
+	void Component::Tick(const Fixed&) {
 	}
 
 	void Component::FixedTick() {
 	}
 
-	void Component::Render(RenderParams& params) {
+	void Component::Render(const RenderParams&) {
 	}
 
 	Actor& Component::GetActor() const {
 		return *m_pActor;
 	}
 
-	Component::Ptr Component::UClone(Actor& owner) const {
+	Component::Ptr Component::UClone(Actor&) const {
 		return nullptr;
 	}
 

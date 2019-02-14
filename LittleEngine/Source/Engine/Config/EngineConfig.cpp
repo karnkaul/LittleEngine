@@ -1,7 +1,7 @@
 #include "le_stdafx.h"
 #include <unordered_map>
 #include "EngineConfig.h"
-#include "FileRW.h"
+#include "Engine/CoreGame.hpp"
 #include "Utils.h"
 
 namespace LittleEngine {
@@ -9,6 +9,7 @@ namespace LittleEngine {
 		const std::string WINDOW_TITLE_KEY = "windowTitle";
 		const std::string LOG_LEVEL_KEY = "logLevel";
 		const std::string SCREEN_SIZE_KEY = "screenSize";
+		const std::string VIEW_SIZE_KEY = "viewSize";
 		const std::string COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
 
 		std::unordered_map<Logger::Severity, std::string> severityMap = {
@@ -35,8 +36,6 @@ namespace LittleEngine {
 		m_data.Clear();
 		Verify();
 	}
-
-	using FileRW = GameUtils::FileRW;
 
 	bool EngineConfig::Load(const std::string & path) {
 		m_bDirty = true;
@@ -69,7 +68,12 @@ namespace LittleEngine {
 
 	const Vector2 EngineConfig::GetScreenSize() const {
 		GData vec2 = m_data.GetGData(SCREEN_SIZE_KEY);
-		return Vector2(Fixed(vec2.GetInt("x")), vec2.GetInt("y"));
+		return Vector2(vec2.GetInt("x"), vec2.GetInt("y"));
+	}
+
+	const Vector2 EngineConfig::GetViewSize() const {
+		GData vec2 = m_data.GetGData(VIEW_SIZE_KEY);
+		return Vector2(Fixed(vec2.GetDouble("x")), Fixed(vec2.GetDouble("y")));
 	}
 
 	bool EngineConfig::SetWindowTitle(const std::string & windowTitle) {
@@ -82,20 +86,28 @@ namespace LittleEngine {
 
 	bool EngineConfig::SetScreenSize(const Vector2 & screenSize) {
 		GData gData;
-		gData.SetString("x", "1280");
-		gData.SetString("y", "720");
+		gData.SetString("x", screenSize.x.ToString());
+		gData.SetString("y", screenSize.y.ToString());
 		return m_bDirty = m_data.AddField(SCREEN_SIZE_KEY, gData);
 	}
 
 	bool EngineConfig::SetColliderBorderWidth(const Fixed & shapeWidth) {
 		return m_bDirty = m_data.SetString(COLLIDER_SHAPE_WIDTH_KEY, shapeWidth.ToString());
 	}
+
+	bool EngineConfig::SetViewSize(const Vector2 & viewSize) {
+		GData gData;
+		gData.SetString("x", viewSize.x.ToString());
+		gData.SetString("y", viewSize.y.ToString());
+		return m_bDirty = m_data.AddField(VIEW_SIZE_KEY, gData);
+	}
 	
 	void EngineConfig::Verify() {
 		SetStringIfEmpty(m_data, WINDOW_TITLE_KEY, "Game Window");
 		SetStringIfEmpty(m_data, LOG_LEVEL_KEY, "Info");
 		SetStringIfEmpty(m_data, COLLIDER_SHAPE_WIDTH_KEY, "1.0");
-		if (m_data.GetString(SCREEN_SIZE_KEY).empty()) SetScreenSize(Vector2(1280, 720));
+		if (m_data.GetString(SCREEN_SIZE_KEY).empty()) SetScreenSize(Vector2(1920, 1080));
+		if (m_data.GetString(VIEW_SIZE_KEY).empty()) SetViewSize(Vector2(1920, 1080));
 		m_bDirty = false;
 	}
 }

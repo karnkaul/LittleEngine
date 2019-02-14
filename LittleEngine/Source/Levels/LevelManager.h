@@ -28,7 +28,7 @@ namespace LittleEngine {
 			std::unique_ptr<T> uLevel = std::make_unique<T>();
 			if (uLevel) {
 				uLevel->SetEngine(*m_pEngine);
-				uLevel->LoadAssets();
+				uLevel->LoadAndSpawn();
 				m_createdLevels.push_back(std::move(uLevel));
 			}
 			return static_cast<LevelID>(m_createdLevels.size() - 1);

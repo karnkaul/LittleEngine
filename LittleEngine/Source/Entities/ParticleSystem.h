@@ -1,24 +1,13 @@
 #pragma once
 #include <memory>
-#include "Vector2.h"
-#include "TRange.hpp"
-#include "UByte.h"
 #include "Actor.h"
-#include "GData.h"
-#include "Levels/Level.h"
+#include "SFMLInterface/Assets.h"
+#include "Engine/CoreGame.hpp"
 
 namespace LittleEngine {
 	struct RenderParams;
-	class World;
 	class TextureAsset;
 	class SoundAsset;
-
-	using Fixed = GameUtils::Fixed;
-	using Vector2 = GameUtils::Vector2;
-	using UByte = GameUtils::UByte;
-	template<typename T>
-	using TRange = GameUtils::TRange<T>;
-	using GData = GameUtils::GData;
 
 	struct ParticleSpawnData {
 		TRange<Vector2> spawnPosition{ Vector2::Zero };
@@ -53,25 +42,20 @@ namespace LittleEngine {
 		Transform* pParent;
 		SoundAsset* pSound;
 		
-		EmitterData(const World& world, TextureAsset& texture, unsigned int numParticles, SoundAsset* pSound = nullptr);
+		EmitterData(TextureAsset& texture, unsigned int numParticles, SoundAsset* pSound = nullptr);
 
 		void Deserialise(const GData& gData);
-
-		const World& GetWorld() const {
-			return *pWorld;
-		}
 
 		TextureAsset& GetTexture() const {
 			return *pTexture;
 		}
 
 	private:
-		const World* pWorld;
 		TextureAsset* pTexture;
 	};
 
 	struct ParticleSystemData {
-		ParticleSystemData(Level& level, const GData& psGData);
+		ParticleSystemData(AssetManager& assetManager, const GData& psGData);
 		
 		const std::vector<EmitterData>& GetEmitterDatas() const {
 			return emitterDatas;
@@ -96,7 +80,7 @@ namespace LittleEngine {
 		inline bool IsPlaying() const { return m_bIsPlaying; }
 
 	protected:
-		virtual void Tick(const Fixed& deltaTime) override;
-		virtual void Render(RenderParams& params) override;
+		virtual void Tick(const Fixed& deltaMS) override;
+		virtual void Render() override;
 	};
 }

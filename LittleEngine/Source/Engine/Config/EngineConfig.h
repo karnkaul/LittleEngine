@@ -1,15 +1,10 @@
 #pragma once
 #include "le_stdafx.h"
 
-#include "Vector2.h"	// Vector2
-#include "GData.h"
+#include "Engine/CoreGame.hpp"
 #include "Engine/Logger/Logger.h"	// Logger::Severity
 
 namespace LittleEngine {
-	using Fixed = GameUtils::Fixed;
-	using Vector2 = GameUtils::Vector2;
-	using GData = GameUtils::GData;
-	
 	// \brief Wrapper to maintain properties saved to / loaded from config.ini
 	class EngineConfig {
 	private:
@@ -28,11 +23,13 @@ namespace LittleEngine {
 		Fixed GetColliderBorderWidth() const;
 		Logger::Severity GetLogLevel() const;
 		const Vector2 GetScreenSize() const;
+		const Vector2 GetViewSize() const;
 
 		bool SetWindowTitle(const std::string& windowTitle);
 		bool SetLogLevel(const Logger::Severity& level);
 		bool SetScreenSize(const Vector2& screenSize);
 		bool SetColliderBorderWidth(const Fixed& shapeWidth);
+		bool SetViewSize(const Vector2& viewSize);
 
 	private:
 		void Verify();

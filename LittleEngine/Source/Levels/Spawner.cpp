@@ -43,7 +43,7 @@ namespace LittleEngine {
 			}
 		}
 
-		VFX* VFXExplode(const Vector2& position) {
+		VFX* VFXExplode(const Vector2&) {
 			if (!activeLevel) return nullptr;
 
 			/*if (VFXPrototypes::explode) {

@@ -3,13 +3,13 @@
 
 #include "Actor.h"
 #include "Engine/Logger/Logger.h"
-#include "Engine/World.h"
 #include "Levels/Level.h"
 #include "Levels/LevelManager.h"
 #include "SFMLInterface/Assets.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 #include "SFMLInterface/Rendering/Renderable.h"
 #include "SFMLInterface/Rendering/SpriteRenderable.h"
+#include "SFMLInterface/Graphics.h"
 #include "Components/Component.h"
 #include "Utils.h"
 
@@ -17,13 +17,13 @@ namespace LittleEngine {
 	const std::string Actor::UNNAMED_ACTOR = "Unnamed_Actor";
 
 	Actor::Actor() : Object(UNNAMED_ACTOR) {
-		Logger::Log(*this, "Actor default constructed", Logger::Severity::Debug);
+		Logger::Log(*this, "Actor constructed", Logger::Severity::Debug);
 	}
 
-	void Actor::InitActor(Level& level, int actorID, const std::string& name, const Vector2& position, const Fixed& rotation) {
+	void Actor::InitActor(Level& level, int actorID, const std::string& name, const Vector2& position, const Fixed& orientation) {
 		GeneralInit(level, actorID, name);
 		m_transform.localPosition = position;
-		m_transform.localOrientation = rotation;
+		m_transform.localOrientation = orientation;
 		Logger::Log(*this, GetNameInBrackets() + " (Actor) spawned at " + m_transform.Position().ToString());
 	}
 
@@ -55,7 +55,7 @@ namespace LittleEngine {
 	}
 
 	void Actor::SetNormalisedPosition(Vector2 localNPosition) {
-		m_transform.localPosition = GetActiveLevel().GetWorld().NormalisedToWorldPoint(localNPosition);
+		m_transform.localPosition = Graphics::NToWorld(localNPosition);
 	}
 
 	std::string Actor::ToString() const {
@@ -67,8 +67,12 @@ namespace LittleEngine {
 		m_bDestroyed = true;
 	}
 
-	void Actor::ToggleActive(bool enable) {
-		this->m_bEnabled = enable;
+	void Actor::ToggleActive(bool bEnable) {
+		this->m_bEnabled = bEnable;
+		for (const auto& component : m_components) {
+			if (component) component->m_bEnabled = bEnable;
+		}
+		if (m_sCollider) m_sCollider->m_bEnabled = bEnable;
 	}
 
 	void Actor::FixedTick() {
@@ -83,26 +87,22 @@ namespace LittleEngine {
 		if (m_sCollider) m_sCollider->FixedTick();
 	}
 
-	void Actor::Tick(const Fixed& deltaTime) {
+	void Actor::Tick(const Fixed& deltaMS) {
 		if (m_bDestroyed) return;
 
 		// Tick Components and Collider
 		for (const auto& component : m_components) {
 			if (component && component->m_bEnabled) {
-				component->Tick(deltaTime);
+				component->Tick(deltaMS);
 			}
 		}
-		if (m_sCollider) m_sCollider->Tick(deltaTime);
+		if (m_sCollider) m_sCollider->Tick(deltaMS);
 	}
 
-	void Actor::Render(RenderParams& params) {
+	void Actor::Render() {
 		if (m_bDestroyed) return;
 
-		params.Reset();
-		params.screenPosition = m_pLevel->GetWorld().WorldToScreenPoint(m_transform.Position());
-		params.screenRotation = m_pLevel->GetWorld().WorldToScreenRotation(m_transform.Orientation());
-		params.screenScale = m_transform.Scale();
-		
+		RenderParams params = GetRenderParams();
 		// Render Components and Collider
 		for (auto& component : m_components) {
 			if (component && component->m_bEnabled) {
@@ -115,6 +115,10 @@ namespace LittleEngine {
 	void Actor::RegisterScopedInput(const GameInput & gameInput, OnInput::Callback callback, const OnKey & type, bool consume) {
 		OnInput::Token token = m_pLevel->GetInputHandler().Register(gameInput, callback, type, consume);
 		m_tokenHandler.AddToken(std::move(token));
+	}
+
+	RenderParams Actor::GetRenderParams() const {
+		return RenderParams(m_transform.Position(), m_transform.Orientation(), m_transform.Scale());
 	}
 
 	Level & Actor::GetActiveLevel() const {

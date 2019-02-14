@@ -7,9 +7,9 @@ namespace LittleEngine {
 	public:
 		TestLevel() : Level("TestLevel") {}
 
-		virtual void LoadAssets() override;
-		virtual void Tick(Fixed deltaTime) override;
-		virtual void PostRender(const RenderParams& params) override;
+		virtual void LoadAndSpawn() override;
+		virtual void Tick(Fixed deltaMS) override;
+		virtual void PostRender() override;
 
 	protected:
 		virtual void OnActivated() override;

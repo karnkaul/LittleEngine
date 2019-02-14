@@ -9,9 +9,6 @@
 #include "GData.h"
 
 namespace LittleEngine {
-	using Fixed = GameUtils::Fixed;
-	using GData = GameUtils::GData;
-
 	enum class AssetType {
 		Texture,
 		Font,
@@ -185,8 +182,7 @@ namespace LittleEngine {
 #if defined(LOG_CACHED_ASSET_LOADS)
 				Logger::Log(*this, "Found Asset [" + fullPath + "] in cache", Logger::Severity::Debug);
 #endif
-				Asset& asset = *search->second;
-				return dynamic_cast<T*>(&asset);
+				return dynamic_cast<T*>(search->second.get());
 			}
 
 			Logger::Log(*this, "Loading Asset [" + fullPath + "]", Logger::Severity::Info);

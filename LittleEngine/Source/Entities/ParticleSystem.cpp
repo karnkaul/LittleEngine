@@ -3,22 +3,18 @@
 #include <array>
 #include <vector>
 #include "ParticleSystem.h"
-#include "Transform.h"
 #include "Utils.h"
+#include "Engine/CoreGame.hpp"
 #include "SFMLInterface/Rendering/Renderable.h"
 #include "SFMLInterface/Rendering/RenderParams.h"
 #include "SFMLInterface/Rendering/SpriteRenderable.h"
-#include "Engine/World.h"
+#include "SFMLInterface/Graphics.h"
 #include "Engine/Logger/Logger.h"
 #include "Engine/Audio/AudioManager.h"
 #include "Levels/Level.h"
 
 namespace LittleEngine {
-	using Transform = GameUtils::Transform;
-
 	namespace {
-		const World* pWorld = nullptr;
-
 		template<typename T>
 		T GetRandom(TRange<T> tRange) {
 			return tRange.IsFuzzy() ? Maths::Random::Range(tRange.min, tRange.max) : tRange.min;
@@ -80,25 +76,22 @@ namespace LittleEngine {
 			return id;
 		}
 
-		void Tick(const Fixed& deltaTime) {
+		void Tick(const Fixed& deltaMS) {
 			if (bInUse) {
-				transform.localPosition += (deltaTime * v);
-				transform.localOrientation += (deltaTime * w);
-				elapsed += deltaTime;
+				transform.localPosition += (deltaMS * v);
+				transform.localOrientation += (deltaMS * w);
+				elapsed += deltaMS;
 				if (elapsed >= ttl) {
 					bInUse = false;
 				}
 			}
 		}
 
-		void Render(RenderParams& params) {
-			if (bInUse && pWorld && renderable) {
-				params.Reset();
-				params.screenPosition = pWorld->WorldToScreenPoint(transform.Position());
-				params.screenRotation = pWorld->WorldToScreenRotation(transform.Orientation());
-				params.screenScale = transform.Scale();
+		void Render() {
+			if (bInUse && renderable) {
+				RenderParams params(transform.Position(), transform.Orientation(), transform.Scale());
 				SpriteData& data = renderable->GetData();
-				data.colour = colour;
+				data.SetColour(colour);
 				renderable->m_layer = layer;
 				renderable->Render(params);
 			}
@@ -135,8 +128,7 @@ namespace LittleEngine {
 		DESERIALISE_TFIXED(gData, timeToLive);
 	}
 
-	EmitterData::EmitterData(const World& world, TextureAsset & texture, unsigned int numParticles, SoundAsset* pSound) : spawnData(numParticles), pParent(nullptr), pSound(pSound), pWorld(&world), pTexture(&texture) {
-	}
+	EmitterData::EmitterData(TextureAsset & texture, unsigned int numParticles, SoundAsset* pSound) : spawnData(numParticles), pParent(nullptr), pSound(pSound), pTexture(&texture) {}
 
 	void EmitterData::Deserialise(const GData & gData) {
 		spawnData.Deserialise(gData.GetGData("spawnData"));
@@ -149,7 +141,6 @@ namespace LittleEngine {
 	class Emitter {
 	public:
 		Emitter(AudioManager& audioManager, const EmitterData& data, bool bSetEnabled = true) : data(data), audioManager(&audioManager), bEnabled(bSetEnabled) {
-			if (!pWorld) pWorld = &data.GetWorld();
 			pParent = data.pParent;
 			for (size_t i = 0; i < MAX_PARTICLES; ++i) {
 				particles[i].SetSprite(SpriteData(this->data.GetTexture()));
@@ -169,19 +160,19 @@ namespace LittleEngine {
 		}
 
 		void PreWarm(unsigned int numTicks = 50) {
-			Fixed deltaTime = data.lifetimeData.timeToLive.min * Fixed(100);
+			Fixed deltaMS = data.lifetimeData.timeToLive.min * Fixed(100);
 			bool bTemp = bSpawnNewParticles;
 			bSpawnNewParticles = true;
 			for (unsigned int i = 0; i < numTicks; ++i) {
-				TickInternal(deltaTime);
+				TickInternal(deltaMS);
 			}
 			bSpawnNewParticles = bTemp;
 		}
 
-		void Tick(const Fixed& deltaTime) {
+		void Tick(const Fixed& deltaMS) {
 			if (!bEnabled) return;
 			if (bWaiting) {
-				elapsed += deltaTime;
+				elapsed += deltaMS;
 				if (elapsed >= data.startDelay) bWaiting = false;
 				else return;
 			}
@@ -190,14 +181,14 @@ namespace LittleEngine {
 				bSoundPlayed = true;
 			}
 
-			TickInternal(deltaTime);
+			TickInternal(deltaMS);
 		}
 
-		void Render(RenderParams& params) {
+		void Render() {
 			if (!bEnabled || bWaiting) return;
 			for (size_t i = 0; i < MAX_PARTICLES; ++i) {
 				Particle& p = particles[i];
-				p.Render(params);
+				p.Render();
 			}
 		}
 	
@@ -276,12 +267,12 @@ namespace LittleEngine {
 			}
 		}
 
-		void TickInternal(const Fixed& deltaTime) {
+		void TickInternal(const Fixed& deltaMS) {
 			// Update in use
 			size_t alive = 0;
 			for (size_t i = 0; i < MAX_PARTICLES; ++i) {
 				Particle& p = particles[i];
-				p.Tick(deltaTime);
+				p.Tick(deltaMS);
 				if (p.bInUse) {
 					++alive;
 					Fixed t = p.elapsed / p.ttl;
@@ -354,34 +345,38 @@ namespace LittleEngine {
 		Logger::Log(*this, GetNameInBrackets() + " Particle System stopped", Logger::Severity::Debug);
 	}
 
-	void ParticleSystem::Tick(const Fixed & deltaTime) {
+	void ParticleSystem::Tick(const Fixed & deltaMS) {
+		Actor::Tick(deltaMS);
+		bool bAnyPlaying = false;
 		for (std::unique_ptr<Emitter>& emitter : m_emitters) {
-			emitter->Tick(deltaTime);
-			m_bIsPlaying &= emitter->bEnabled;
+			emitter->Tick(deltaMS);
+			bAnyPlaying |= emitter->bEnabled;
+		}
+		m_bIsPlaying = bAnyPlaying;
+	}
+
+	void ParticleSystem::Render() {
+		Actor::Render();
+		for (std::unique_ptr<Emitter>& emitter : m_emitters) {
+			emitter->Render();
 		}
 	}
 
-	void ParticleSystem::Render(RenderParams & params) {
-		for (std::unique_ptr<Emitter>& emitter : m_emitters) {
-			emitter->Render(params);
-		}
-	}
-
-	ParticleSystemData::ParticleSystemData(Level& level, const GData & psGData) {
+	ParticleSystemData::ParticleSystemData(AssetManager& assetManager, const GData & psGData) {
 		std::vector<GData> emitterGDatas = psGData.GetVectorGData("emitters");
 		if (!emitterGDatas.empty()) {
 			for (auto& emitterGData : emitterGDatas) {
 				std::string texturePath = emitterGData.GetString("texturePath");
-				TextureAsset* textureAsset = level.GetAssetManager().Load<TextureAsset>(texturePath);
+				TextureAsset* textureAsset = assetManager.Load<TextureAsset>(texturePath);
 				if (!textureAsset) {
 					Logger::Log("Invalid texture path in ParticleSystemManifest [" + texturePath + "]! Ignoring creation of emitter", Logger::Severity::Warning);
 					continue;
 				}
 				SoundAsset* sound = nullptr;
 				std::string soundPath = emitterGData.GetString("soundPath");
-				if (!soundPath.empty()) sound = level.GetAssetManager().Load<SoundAsset>(soundPath);
+				if (!soundPath.empty()) sound = assetManager.Load<SoundAsset>(soundPath);
 				
-				EmitterData emitterData(level.GetWorld(), *textureAsset, 10, sound);
+				EmitterData emitterData(*textureAsset, 10, sound);
 				emitterData.pSound = sound; 
 				emitterData.Deserialise(emitterGData);
 				emitterDatas.emplace_back(std::move(emitterData));

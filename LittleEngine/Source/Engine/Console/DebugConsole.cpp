@@ -4,14 +4,14 @@
 #include <list>
 #include "SFMLInterface/Rendering/ShapeRenderable.h"
 #include "SFMLInterface/Rendering/TextRenderable.h"
-#include "SFMLInterface/WindowController.h"
+#include "SFMLInterface/Graphics.h"
 #include "SFMLInterface/Assets.h"
-#include "Engine/World.h"
 #include "Engine/Logger/Logger.h"
+#include "Engine/CoreGame.hpp"
 #include "SFML/Window/Event.hpp"
-#include "Transform.h"
 #include "LogLine.hpp"
 #include "ConsoleCommands.h"
+#include "ConsoleProfiler.h"
 #include "Utils.h"
 
 namespace LittleEngine { namespace DebugConsole {
@@ -105,8 +105,6 @@ namespace LittleEngine { namespace DebugConsole {
 		Fixed yOffset = yOffsetMin;
 
 		struct DebugConsoleLog {
-			using Transform = GameUtils::Transform;
-
 			static const int NUM_LOG_LINES = 10;
 			Transform logT[NUM_LOG_LINES];
 
@@ -125,7 +123,7 @@ namespace LittleEngine { namespace DebugConsole {
 				}
 				size_t index = 0;
 				for (const LogLine& logLine : logLines) {
-					logText[index]->GetTextData().text = logLine.text;
+					logText[index]->GetTextData().SetText(logLine.text);
 					logText[index]->SetColour(logLine.colour);
 					++index;
 				}
@@ -133,7 +131,7 @@ namespace LittleEngine { namespace DebugConsole {
 
 			void Render(RenderParams& params) {
 				for (size_t i = 0; i < NUM_LOG_LINES; ++i) {
-					params.screenPosition = logT[i].Position();
+					params.worldPosition = logT[i].Position();
 					logText[i]->Render(params);
 				}
 			}
@@ -143,34 +141,33 @@ namespace LittleEngine { namespace DebugConsole {
 		};
 
 		struct DebugConsoleRenderer {
-			using Transform = GameUtils::Transform;
-			const Engine* engine = nullptr;
+			const Engine* pEngine = nullptr;
 
 			void Log(const std::string& message, const Colour& colour) {
 				log->UpdateLog(message, colour);
 			}
 
-			void Render(RenderParams& params, Fixed yOffset, bool bDrawCursor) {
-				if (!engine) return;
+			void Render(Fixed yOffset, bool bDrawCursor) {
+				if (!pEngine) return;
 
 				InitialiseComponents();
-				rootT.localPosition.y = ROOT_Y + yOffset;
-				params.Reset();
-
-				params.screenPosition = rootT.Position();
+				rootT.localPosition.y = ROOT_Y - yOffset;
+				
+				RenderParams params;
+				params.worldPosition = rootT.Position();
 				background->Render(params);
 
 				log->Render(params);
 			
-				params.screenPosition = inputT.Position();
+				params.worldPosition = inputT.Position();
 				std::string liveText(">" + liveString);
 				if (bDrawCursor) {
 					liveText += "_";
 				}
-				inputText->GetTextData().text = liveText;
+				inputText->GetTextData().SetText(liveText);
 				inputText->Render(params);
 
-				params.screenPosition = separatorT.Position();
+				params.worldPosition = separatorT.Position();
 				separator->Render(params);
 			}
 
@@ -188,11 +185,11 @@ namespace LittleEngine { namespace DebugConsole {
 			Fixed ROOT_Y;
 
 			void InitialiseComponents() {
-				Vector2 bgSize(engine->GetWorld().GetScreenSize());
+				Vector2 bgSize(Graphics::GetGameViewSize());
 				bgSize.y *= Fixed::OneThird;
 				if (log == nullptr) {
-					TextData textData(*engine->GetAssetManager().GetDefaultFont(), "");
-					textData.hAlign = HAlign::Left;
+					TextData textData(*pEngine->GetAssetManager().GetDefaultFont(), "");
+					textData.SetHAlign(HAlign::Left);
 					log = std::make_unique<DebugConsoleLog>(textData);
 
 					inputText = std::make_unique<TextRenderable>(textData);
@@ -201,19 +198,19 @@ namespace LittleEngine { namespace DebugConsole {
 					inputText->m_layer = LayerID::TOP;
 				}
 				if (rootT.localPosition == Vector2::Zero) {
-					rootT.localPosition = N2Screen(Vector2(Fixed::Zero, Fixed(3, 4)));
+					rootT.localPosition = Graphics::NToWorld(Vector2(Fixed::Zero, Fixed(3, 4)), false);
 					ROOT_Y = rootT.localPosition.y;
 					Fixed textX = Fixed(-95, 100);
 					int textYNumerator = 52;
-					inputT.localPosition = N2Screen(Vector2(textX, Fixed(textYNumerator, 100)));
+					inputT.localPosition = Graphics::NToWorld(Vector2(textX, Fixed(textYNumerator, 100)), false);
 					inputT.SetParent(rootT, false);
 					textYNumerator += 2;
-					separatorT.localPosition = N2Screen(Vector2(Fixed::Zero, Fixed(textYNumerator, 100)));
+					separatorT.localPosition = Graphics::NToWorld(Vector2(Fixed::Zero, Fixed(textYNumerator, 100)), false);
 					textYNumerator += LOG_LINE_HEIGHT;
 					separatorT.SetParent(rootT, false);
 					for (auto& l : log->logT) {
 						textYNumerator += LOG_LINE_HEIGHT;
-						l.localPosition = N2Screen(Vector2(textX, Fixed(textYNumerator, 100)));
+						l.localPosition = Graphics::NToWorld(Vector2(textX, Fixed(textYNumerator, 100)), false);
 						l.SetParent(rootT, false);
 					}
 				}
@@ -228,15 +225,6 @@ namespace LittleEngine { namespace DebugConsole {
 					separator->SetFillColour(LOG_TEXT_COLOUR);
 					separator->m_layer = LayerID::TOP;
 				}
-			}
-
-			Vector2 N2Screen(const Vector2 nPoint) {
-				if (!engine) {
-					return nPoint;
-				}
-
-				const World& world = engine->GetWorld();
-				return world.WorldToScreenPoint(world.NormalisedToWorldPoint(nPoint, false));
 			}
 		};
 
@@ -256,8 +244,11 @@ namespace LittleEngine { namespace DebugConsole {
 
 	void Init(Engine& engine) {
 		Commands::Init(engine);
+#if ENABLED(DEBUG_PROFILER)
+		Profiler::Init(engine);
+#endif
 		consoleRenderer = std::make_unique<DebugConsoleRenderer>();
-		consoleRenderer->engine = &engine;
+		consoleRenderer->pEngine = &engine;
 		queryCache.maxElements = 10;
 	}
 
@@ -272,6 +263,8 @@ namespace LittleEngine { namespace DebugConsole {
 	}
 
 	void UpdateInput(const RawTextInput& rawTextInput) {
+		static std::string previousLogText;
+
 		if (rawTextInput.special != RawTextInputType::None && rawTextInput.special != RawTextInputType::Up && rawTextInput.special != RawTextInputType::Down) {
 			bCyclingQueries = false;
 			queryCache.ResetIter();
@@ -287,18 +280,29 @@ namespace LittleEngine { namespace DebugConsole {
 		case RawTextInputType::Tab:
 		{
 			if (!liveString.empty()) {
-				std::vector<std::string> search = Commands::AutoComplete(liveString);
-				if (search.empty()) {
+				Commands::AutoCompleteResults search = Commands::AutoComplete(liveString);
+				if (search.queries.empty()) {
 					consoleRenderer->Log("Unrecognised query: \"" + liveString + "\"", LOG_WARNING_COLOUR);
+					return;
 				}
-				else if (search.size() == 1) {
-					liveString = search[0] + " ";
+				
+				if (search.queries.size() == 1) {
+					liveString = search.queries[0] + " ";
+				}
+				
+				std::string logOutput;
+				if (!search.params.empty()) {
+					for (const auto& params : search.params) {
+						logOutput += ("\t" + params);
+					}
 				}
 				else {
-					std::string logOutput;
-					for (const auto& s : search) {
-						logOutput += ("\t" + s);
+					for (const auto& query : search.queries) {
+						logOutput += ("\t" + query);
 					}
+				}
+				if (!logOutput.empty() && logOutput != previousLogText) {
+					previousLogText = logOutput;
 					consoleRenderer->Log(logOutput, LOG_TEXT_COLOUR);
 				}
 			}
@@ -346,31 +350,40 @@ namespace LittleEngine { namespace DebugConsole {
 		if (rawTextInput.text != "`") liveString += rawTextInput.text;
 	}
 
-	void RenderConsole(const Engine& engine, RenderParams& params, Fixed deltaTime) {
+	void RenderConsole(const Fixed& deltaMS) {
 		if (!consoleRenderer) {
 			return;
 		}
+		
 		const Fixed ANIM_SCALE = Fixed::Two;
 		static double elapsed = 0.0f;
-		elapsed += deltaTime.ToDouble();
+		elapsed += deltaMS.ToDouble();
 		if (bIsActive) {
 			if (yOffset < yOffsetMax) {
-				yOffset += (deltaTime * ANIM_SCALE);
+				yOffset += (deltaMS * ANIM_SCALE);
 			}
 		}
 		else {
 			if (yOffset > yOffsetMin) {
-				yOffset -= (deltaTime * ANIM_SCALE);
+				yOffset -= (deltaMS * ANIM_SCALE);
 			}
 		}
 		yOffset = Maths::Clamp(yOffset, yOffsetMin, yOffsetMax);
 		if (yOffset > yOffsetMin) {
 			int doubleCadence = static_cast<int>(elapsed / 300.0f);
-			consoleRenderer->Render(params, yOffset, doubleCadence % 2 == 0);
+			consoleRenderer->Render(yOffset, doubleCadence % 2 == 0);
 		}
+
+#if ENABLED(DEBUG_PROFILER)
+		Profiler::Tick(deltaMS);
+		Profiler::Render();
+#endif
 	}
 	
 	void Cleanup() {
+#if ENABLED(DEBUG_PROFILER)
+		Profiler::Cleanup();
+#endif
 		consoleRenderer = nullptr;
 		bIsActive = false;
 	}

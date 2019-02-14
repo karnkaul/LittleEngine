@@ -1,12 +1,10 @@
 #pragma once
 #include "Engine/Object.h"
-#include "Fixed.h"
+#include "Engine/CoreGame.hpp"
 
 namespace LittleEngine {
 	class Actor;
 	struct RenderParams;
-
-	using Fixed = GameUtils::Fixed;
 
 	// \brief Base class for any Component attached to Actor
 	class Component : public Object {
@@ -23,9 +21,9 @@ namespace LittleEngine {
 		Component(Actor& owner, const Component& prototype);
 		virtual ~Component();
 
-		virtual void Tick(Fixed deltaTime);
+		virtual void Tick(const Fixed& deltaMS);
 		virtual void FixedTick();
-		virtual void Render(RenderParams& params);
+		virtual void Render(const RenderParams& params);
 
 		Actor& GetActor() const;
 

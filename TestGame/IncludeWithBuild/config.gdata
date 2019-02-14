@@ -2,8 +2,12 @@
 	logLevel: Debug,
 	windowTitle: GameWindow,
 	screenSize: {
-		x: 1280,
-		y: 720
+		x: 1920,
+		y: 1080
+	},
+	viewSize: {
+		x: 1920,
+		y: 1080
 	},
 	colliderShapeBorderWidth: 1.0
 }

@@ -22,24 +22,21 @@ namespace LittleEngine {
 		virtual ~Renderable();
 
 		// Call this to render the entity using the passed RenderParams
-		void Render(struct RenderParams& params);
+		void Render(const struct RenderParams& params);
 		// Subclass will return its max Bounds in screen space
 		virtual Rect2 GetBounds() const = 0;
 		// Subclass will return an UNOWNED copy of itself
 		virtual std::unique_ptr<Renderable> UClone() const = 0;
+		virtual void SetPivot(const Vector2& pivot) = 0;
 		
 		bool IsEnabled() const;
 		void SetEnabled(bool bEnabled);
 	
 	protected:
-		virtual void RenderInternal(struct RenderParams& params) = 0;
+		virtual void RenderInternal() = 0;
 		virtual void SetPosition(const Vector2& screenPosition) = 0;
-		virtual void SetRotation(const Fixed& screenRotation) = 0;
+		virtual void SetOrientation(const Fixed& screenOrientation) = 0;
 		virtual void SetScale(const Vector2& screenScale) = 0;
-
-		sf::Vector2f Convert(const Vector2& vector);
-		sf::Color Convert(const Colour& colour);
-		Colour Convert(const sf::Color& colour);
 
 	private:
 		Renderable& operator=(const Renderable&) = delete;

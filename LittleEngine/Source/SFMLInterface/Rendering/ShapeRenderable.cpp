@@ -1,53 +1,52 @@
 #include "le_stdafx.h"
 #include "ShapeRenderable.h"
 #include "Engine/Logger/Logger.h"
-#include "SFMLInterface/WindowController.h"
+#include "SFMLInterface/Graphics.h"
 #include "RenderParams.h"
+#include "../Graphics.h"
+#include "Utils.h"
 
 namespace LittleEngine {
-	ShapeRenderable::ShapeRenderable(std::string name, std::unique_ptr<sf::Shape> shape) : Renderable(name), m_uShape(std::move(shape)) {
+	ShapeRenderable::ShapeRenderable(std::string name, std::unique_ptr<sf::Shape> shape, bool bSilent) : Renderable(name, bSilent), m_uShape(std::move(shape)) {
 	}
 
 	ShapeRenderable::ShapeRenderable(const ShapeRenderable & prototype, std::unique_ptr<sf::Shape> shape) : Renderable(prototype), m_uShape(std::move(shape)) {
 	}
 
-	void ShapeRenderable::RenderInternal(RenderParams & params) {
-		SetPosition(params.screenPosition);
-		SetRotation(params.screenRotation);
-		SetScale(params.screenScale);
+	void ShapeRenderable::RenderInternal() {
 		// Push shape into appropriate drawing layer
-		params.GetWindowController().Push(Drawable(*m_uShape, m_layer));
+		Graphics::Submit(Drawable(*m_uShape, m_layer));
 	}
 
 	void ShapeRenderable::SetFillColour(const Colour & colour) {
-		m_uShape->setFillColor(Convert(colour));
+		m_uShape->setFillColor(Graphics::Cast(colour));
 	}
 
 	void ShapeRenderable::SetBorder(const Fixed& width, const Colour & colour) {
-		m_uShape->setOutlineColor(Convert(colour));
+		m_uShape->setOutlineColor(Graphics::Cast(colour));
 		m_uShape->setOutlineThickness(width > 0 ? width.ToFloat() : 0);
 	}
 
 	void ShapeRenderable::SetPosition(const Vector2& screenPosition) {
-		m_uShape->setPosition(Convert(screenPosition));
+		m_uShape->setPosition(Graphics::Cast(screenPosition));
 	}
 
-	void ShapeRenderable::SetRotation(const Fixed& screenRotation) {
-		m_uShape->setRotation(screenRotation.ToFloat());
+	void ShapeRenderable::SetOrientation(const Fixed& screenOrientation) {
+		m_uShape->setRotation(screenOrientation.ToFloat());
 	}
 
 	void ShapeRenderable::SetScale(const Vector2 & screenScale) {
-		m_uShape->setScale(Convert(screenScale));
+		m_uShape->setScale(Graphics::Cast(screenScale));
 	}
 
-	CircleRenderable::CircleRenderable(const Fixed& radius) : ShapeRenderable("CircleRenderable", std::make_unique<sf::CircleShape>(radius.ToFloat())) {
+	CircleRenderable::CircleRenderable(const Fixed& radius, bool bSilent) : ShapeRenderable("CircleRenderable", std::make_unique<sf::CircleShape>(radius.ToFloat()), bSilent) {
 		m_pCircle = &CastShape<sf::CircleShape>();
-		m_pCircle->setOrigin(radius.ToFloat(), radius.ToFloat());
+		SetPivot(Vector2::Zero);
 	}
 
-	CircleRenderable::CircleRenderable(const Fixed& radius, const Colour& colour) : ShapeRenderable("CircleRenderable", std::make_unique<sf::CircleShape>(radius.ToFloat())) {
+	CircleRenderable::CircleRenderable(const Fixed& radius, const Colour& colour, bool bSilent) : ShapeRenderable("CircleRenderable", std::make_unique<sf::CircleShape>(radius.ToFloat()), bSilent) {
 		m_pCircle = &CastShape<sf::CircleShape>();
-		m_pCircle->setOrigin(radius.ToFloat(), radius.ToFloat());
+		SetPivot(Vector2::Zero);
 		SetFillColour(colour);
 	}
 
@@ -68,24 +67,30 @@ namespace LittleEngine {
 
 	Rect2 CircleRenderable::GetBounds() const {
 		Fixed radius(m_pCircle->getRadius());
-		return Rect2(
-			Vector2(-radius, -radius),
-			Vector2(radius, radius)
-		);
+		return Rect2::CentreSize({ 2 * radius, 2 * radius });
 	}
 
 	std::unique_ptr<Renderable> CircleRenderable::UClone() const {
 		return std::make_unique<CircleRenderable>(*this);
 	}
 
-	RectangleRenderable::RectangleRenderable(const Vector2& size) : ShapeRenderable("RectangleRenderable", std::make_unique<sf::RectangleShape>(sf::Vector2f(size.x.ToFloat(), size.y.ToFloat()))) {
-		m_pRectangle = &CastShape<sf::RectangleShape>();
-		m_pRectangle->setOrigin(m_pRectangle->getSize().x * 0.5f, m_pRectangle->getSize().y * 0.5f);
+	void CircleRenderable::SetPivot(const Vector2 & pivot) {
+		Vector2 sfmlPivot((pivot.x + 1), (-pivot.y + 1));
+		float radius = m_pCircle->getRadius();
+		m_pCircle->setOrigin(
+			radius * sfmlPivot.x.ToFloat(),
+			radius * sfmlPivot.y.ToFloat()
+		);
 	}
 
-	RectangleRenderable::RectangleRenderable(const Vector2& size, const Colour& colour) : ShapeRenderable("RectangleRenderable", std::make_unique<sf::RectangleShape>(sf::Vector2f(size.x.ToFloat(), size.y.ToFloat()))) {
+	RectangleRenderable::RectangleRenderable(const Vector2& size, bool bSilent) : ShapeRenderable("RectangleRenderable", std::make_unique<sf::RectangleShape>(Graphics::Cast(size)), bSilent) {
 		m_pRectangle = &CastShape<sf::RectangleShape>();
-		m_pRectangle->setOrigin(m_pRectangle->getSize().x * 0.5f, m_pRectangle->getSize().y * 0.5f);
+		SetPivot(Vector2::Zero);
+	}
+
+	RectangleRenderable::RectangleRenderable(const Vector2& size, const Colour& colour, bool bSilent) : ShapeRenderable("RectangleRenderable", std::make_unique<sf::RectangleShape>(Graphics::Cast(size)), bSilent) {
+		m_pRectangle = &CastShape<sf::RectangleShape>();
+		SetPivot(Vector2::Zero);
 		SetFillColour(colour);
 	}
 
@@ -99,22 +104,28 @@ namespace LittleEngine {
 	}
 
 	void RectangleRenderable::SetSize(const Vector2& size) {
-		m_pRectangle->setSize(Convert(size));
+		m_pRectangle->setSize(Graphics::Cast(size));
 		// Reposition local centre
 		m_pRectangle->setOrigin(m_pRectangle->getSize().x * 0.5f, m_pRectangle->getSize().y * 0.5f);
 	}
 
 	Rect2 RectangleRenderable::GetBounds() const {
 		sf::Vector2f size = m_pRectangle->getSize();
-		Fixed width = Fixed(size.x) * Fixed::OneHalf;
-		Fixed height = Fixed(size.y) * Fixed::OneHalf;
-		return Rect2(
-			Vector2(-width, -height),
-			Vector2(width, height)
-		);
+		Fixed width = Fixed(size.x);
+		Fixed height = Fixed(size.y);
+		return Rect2::CentreSize({ width, height });
 	}
 
 	std::unique_ptr<Renderable> RectangleRenderable::UClone() const {
 		return std::make_unique<RectangleRenderable>(*this);
+	}
+
+	void RectangleRenderable::SetPivot(const Vector2 & pivot) {
+		Vector2 sfmlPivot((pivot.x + 1) * Fixed::OneHalf, (-pivot.y + 1) * Fixed::OneHalf);
+		sf::Vector2f size = m_pRectangle->getSize();
+		m_pRectangle->setOrigin(
+			size.x * sfmlPivot.x.ToFloat(),
+			size.y * sfmlPivot.y.ToFloat()
+		);
 	}
 }

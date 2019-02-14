@@ -90,7 +90,7 @@ namespace LittleEngine {
 		void Reset();
 	};
 
-	// \brief Concrete class that a WindowController can update KeyStates to every frame
+	// \brief Concrete class that a Graphics can update KeyStates to every frame
 	class Input {
 	private:
 		RawTextInput m_rawTextInput;
@@ -114,19 +114,19 @@ namespace LittleEngine {
 
 		KeyState& GetOrCreateKeyState(KeyCode code);
 
-		// For WindowController
+		// For Graphics
 		void OnKeyDown(const sf::Event::KeyEvent& key);
-		// For WindowController
+		// For Graphics
 		void OnKeyUp(const sf::Event::KeyEvent& key);
-		// For WindowController
+		// For Graphics
 		void ResetKeyStates();
-		// For WindowController
+		// For Graphics
 		void ClearRawInput();
-		// For WindowController
+		// For Graphics
 		void OnRawInput(unsigned int unicode);
-		// For WindowController (to capture non-ASCII keycodes, like cursor keys)
+		// For Graphics (to capture non-ASCII keycodes, like cursor keys)
 		void OnRawSpecialInput(sf::Keyboard::Key key);
 
-		friend class WindowController;
+		friend class Graphics;
 	};
 }

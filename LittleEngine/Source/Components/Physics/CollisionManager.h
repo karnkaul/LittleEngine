@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "Engine/Object.h"
-#include "Engine/Physics/Collider.h"
+#include "Collider.h"
 #include "Engine/Logger/Logger.h"
 
 namespace LittleEngine {

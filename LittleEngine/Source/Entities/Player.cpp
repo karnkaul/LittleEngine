@@ -13,8 +13,10 @@ namespace LittleEngine {
 		auto renderer = AddComponent<RenderComponent>();
 		renderer->SetSpriteRenderable(mainTexture);
 		renderer->SetLayer(LayerID::Player);
+		renderer->m_bEnabled = m_bEnabled;
 		
 		auto collider = AddCollider<AABBCollider>();
 		collider->SetBounds(colliderBounds);
+		collider->m_bEnabled = m_bEnabled;
 	}
 }

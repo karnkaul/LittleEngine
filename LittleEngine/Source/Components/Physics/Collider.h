@@ -6,7 +6,6 @@
 namespace LittleEngine {
 	class Actor;
 	class CollisionManager;
-	class World;
 	class ShapeRenderable;
 
 	// \brief Base class for Collision detection on an Actor.
@@ -20,9 +19,9 @@ namespace LittleEngine {
 		static Fixed DEBUG_BORDER_WIDTH;
 	private:
 		static bool m_bShowingDebugShapes;
+	
 	protected:
-		std::unique_ptr<ShapeRenderable> m_debugShape;
-		const World* m_pWorld;
+		std::unique_ptr<ShapeRenderable> m_uDebugShape;
 	private:
 		GameUtils::Delegate<>::Token m_debugOnToken;
 		GameUtils::Delegate<>::Token m_debugOffToken;
@@ -68,7 +67,7 @@ namespace LittleEngine {
 
 		virtual bool IsIntersecting(const Collider& rhs) const override;
 		virtual void DrawDebugShape(bool bShow, const Fixed& thickness = DEBUG_BORDER_WIDTH) override;
-		virtual void Render(RenderParams& params) override;
+		virtual void Render(const RenderParams& params) override;
 		virtual Component::Ptr UClone(Actor& owner) const override;
 
 	protected:
@@ -92,7 +91,7 @@ namespace LittleEngine {
 		
 		virtual bool IsIntersecting(const Collider& rhs) const override;
 		virtual void DrawDebugShape(bool bShow, const Fixed& thickness = DEBUG_BORDER_WIDTH) override;
-		virtual void Render(RenderParams& params) override;
+		virtual void Render(const RenderParams& params) override;
 		virtual Component::Ptr UClone(Actor& owner) const override;
 
 	protected:

@@ -1,13 +1,20 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "Fixed.h"
 #include "Input.h"
 #include "SystemClock.h"
 #include "Rendering/RenderParams.h"
+#include "Engine/CoreGame.hpp"
 #include <array>
 #include <functional>
 
 namespace LittleEngine {
+	struct GraphicsData {
+		std::string windowTitle = "Untitled";
+		Vector2 viewSize = Vector2(1920, 1080);
+		unsigned int screenWidth = 1280;
+		unsigned int screenHeight = 720;
+	};
+
 	// \brief Wrapper struct for SFML Drawable
 	struct Drawable {
 	private:
@@ -24,10 +31,16 @@ namespace LittleEngine {
 		const sf::Drawable& GetSFMLDrawable() { return *drawable; }
 	};
 
+	struct GraphicsException {
+		std::string errMsg;
+		
+		GraphicsException(const std::string& errMsg) : errMsg(errMsg) {}
+	};
+
 	// \brief Conrete class that can create an SFML RenderWindow,
 	// and draw a buffer of Drawables to it.
 	// Provides an InputHandler to poll inputs every frame
-	class WindowController final {
+	class Graphics final {
 	private:
 		// \brief Sprite buffer; contains MAX_LAYERS layers, 
 		// each with a vector of Drawables.
@@ -45,15 +58,33 @@ namespace LittleEngine {
 	public:
 		static constexpr int MAX_LAYERID = Buffer::MAX_LAYERS - 1;
 
+		static sf::Vector2f Cast(const Vector2& vector);
+		static Vector2 Cast(const sf::Vector2f& vector);
+		static sf::Color Cast(const Colour& colour);
+		static Colour Cast(const sf::Color& colour);
+
+		static Vector2 GetGameViewSize();
+		static Rect2 GetWorldRect();
+		static Vector2 NToWorld(const Vector2& normalised, bool autoClamp = true);	// normalised = ([-1, 1], [-1, 1])
+		static void Submit(Drawable&& drawable);	// Add Drawable to buffer
+
+	private:
+		static std::unique_ptr<Graphics> m_instance;
+
+		static Graphics& CreateInstance(const GraphicsData& data);
+		static bool DestroyInstance();
+		
 	private:
 		Buffer m_buffer;
 		Input m_input;
+		Vector2 m_gameViewSize;
+		Rect2 m_worldBounds;
 		std::unique_ptr<sf::RenderWindow> m_uWindow;
 		bool m_bFocus = false;
 
 	public:
-		WindowController(int screenWidth, int screenHeight, const std::string& windowTitle);
-		~WindowController();
+		Graphics(const GraphicsData& data);
+		~Graphics();
 
 		// For Game Loop
 		bool IsWindowOpen() const;
@@ -71,7 +102,11 @@ namespace LittleEngine {
 		const Input& GetInput() const;
 
 	private:
-		WindowController(const WindowController&) = delete;
-		WindowController& operator=(const WindowController&) = delete;	
+		sf::View gameView;
+
+		Graphics(const Graphics&) = delete;
+		Graphics& operator=(const Graphics&) = delete;	
+
+		friend class Engine;
 	};
 }

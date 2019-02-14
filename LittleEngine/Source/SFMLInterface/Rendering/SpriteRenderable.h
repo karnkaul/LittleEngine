@@ -6,15 +6,22 @@
 namespace LittleEngine {
 	// \brief Container for sprite rendering metadata
 	struct SpriteData {
-	public:
-		Colour colour;
 	private:
+		Colour colour;
+		bool bDirty = false;
 		TextureAsset* pTexture;
 		
 	public:
 		SpriteData(TextureAsset& texture) : SpriteData(texture, Colour::White) {}
 		SpriteData(TextureAsset& texture, const Colour& colour) : colour(colour), pTexture(&texture) {}
+		
+		void SetColour(Colour colour) {
+			this->colour = colour;
+			bDirty = true;
+		}
 
+		Colour GetColour() const { return colour; }
+		
 	private:
 		friend class SpriteRenderable;
 	};
@@ -32,14 +39,16 @@ namespace LittleEngine {
 		void SetTexture(TextureAsset& texture);
 		SpriteData& GetData();
 		
+		void Crop(const Rect2& rect);
 		virtual Rect2 GetBounds() const override;
+		virtual void SetPivot(const Vector2& pivot) override;
 
 	protected:
 		void ApplyData(); 
 
-		virtual void RenderInternal(RenderParams& params) override;
+		virtual void RenderInternal() override;
 		virtual void SetPosition(const Vector2& screenPosition) override;
-		virtual void SetRotation(const Fixed& screenRotation) override;
+		virtual void SetOrientation(const Fixed& screenOrientation) override;
 		virtual void SetScale(const Vector2& screenScale) override;
 		virtual std::unique_ptr<Renderable> UClone() const override;
 	};

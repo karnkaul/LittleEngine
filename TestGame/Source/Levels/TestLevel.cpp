@@ -1,13 +1,8 @@
 #include "stdafx.h"
 #include "TestLevel.h"
-#include "Entities/ParticleSystem.h"
-#include "Utils.h"
-#include "FileRW.h"
-#include "GData.h"
+#include "LittleEngine.h"
 
 namespace LittleEngine {
-	using FileRW = GameUtils::FileRW;
-
 	// Tests
 	namespace _TestLevel {
 		Level* pLevel;
@@ -64,6 +59,7 @@ namespace LittleEngine {
 				pActor3 = pLevel->SpawnActor<Actor>("Blue Rectangle", true);
 				if (pActor3) {
 					_actor3ID = pActor3->GetActorID();
+					pActor3->GetTransform().localPosition = { 500, -200 };
 					auto rc1 = pActor3->AddComponent<RenderComponent>();
 					rc1->SetRectangleRenderable(ShapeData(Vector2(600, 100), Colour::Blue));
 					auto t1 = pActor3->AddCollider<AABBCollider>();
@@ -89,15 +85,79 @@ namespace LittleEngine {
 			}
 		}
 
-		void UpdateTests(const Fixed& deltaTime) {
-			
+		UIButtonDrawer* pButtonDrawer = nullptr;
+		Fixed elapsed;
+		bool bModal = true;
+		bool bSpawnedDrawer = false;
+		std::vector<GameUtils::Delegate<>::Token> debugTokens;
+
+		bool bToSpawnDialogue = false;
+		bool bSpawnedDialog = false;
+		UIDialogue* pDialogue = nullptr;
+
+		Fixed progress;
+		std::unique_ptr<UIProgressBar> uProgressBar = nullptr;
+		std::unique_ptr<UIElement> uProgressBG = nullptr;
+
+		void SpawnDialogue() {
+			pDialogue = pLevel->GetUIController().SpawnContext<UIDialogue>();
+			UIDialogueData data;
+			data.bDestroyOnReturn = true;
+			data.titleUIText = UIText("Title", 25, Colour::Black);
+			data.contentUIText = UIText("Content goes here", 15, Colour::Black);
+			data.headerBG = Colour::Cyan;
+			data.contentBG = Colour::White;
+			data.buttonData = UIButtonData::DebugButton();
+			debugTokens.push_back(pDialogue->InitDialogue(std::move(data), "OK", []() { Logger::Log("OK pressed!"); }));
+			debugTokens.push_back(pDialogue->AddOtherButton("Cancel", []() { pDialogue->Destruct(); }, false));
+			pDialogue->SetActive(true);
+			bToSpawnDialogue = false;
+		}
+		
+		void UpdateTests(const Fixed& deltaMS) {
+			elapsed += deltaMS;
+			if (elapsed >= 1000 && !bSpawnedDrawer) {
+				bSpawnedDrawer = true;
+				pButtonDrawer = pLevel->GetUIController().SpawnContext<UIButtonDrawer>();
+				pButtonDrawer->InitButtonDrawer(UIButtonDrawerData::DebugButtonDrawer(bModal));
+				debugTokens.push_back(pButtonDrawer->AddButton("Button 0", []() { Logger::Log("Button 0 pressed!"); }));
+				debugTokens.push_back(pButtonDrawer->AddButton("Button 1", []() { Logger::Log("Button 1 pressed!"); }));
+				debugTokens.push_back(pButtonDrawer->AddButton("Button 2", []() { Logger::Log("Button 2 pressed!"); }));
+				debugTokens.push_back(pButtonDrawer->AddButton("Button 3", []() { Logger::Log("Button 3 pressed!"); }));
+				debugTokens.push_back(pButtonDrawer->AddButton("Button 4", []() { Logger::Log("Button 4 pressed!"); }));
+				debugTokens.push_back(pButtonDrawer->AddButton("Dialogue", []() { bToSpawnDialogue = true; }));
+				if (bModal) debugTokens.push_back(pButtonDrawer->AddButton("Cancel", []() { pButtonDrawer->Destruct(); }));
+				pButtonDrawer->SetActive(true);
+			}
+
+			if (bToSpawnDialogue) {
+				SpawnDialogue();
+			}
+
+			if (elapsed >= 2000 && progress < Fixed(1.5f)) {
+				progress += (deltaMS / Fixed(1000));
+				if (!uProgressBar) {
+					uProgressBG = std::make_unique<UIElement>("Test ProgressBar BG");
+					uProgressBG->m_transform.size = { 500, 50 };
+					uProgressBG->SetPanel(Colour(255, 200, 100, 100));
+					uProgressBar = std::make_unique<UIProgressBar>("Test ProgressBar");
+					uProgressBar->InitProgressBar({ 500, 10 }, Colour::Magenta);
+					uProgressBar->m_transform.SetParent(uProgressBG->m_transform);
+				}
+				uProgressBar->SetProgress(progress);
+				uProgressBar->Tick(deltaMS);
+				uProgressBG->Tick(deltaMS);
+			}
 		}
 
-		void RenderTests(RenderParams& params) {
-			
+		void RenderTests() {
+			if (uProgressBar) uProgressBar->Render();
+			if (uProgressBG) uProgressBG->Render();
 		}
 
 		void CleanupTests() {
+			elapsed = 0;
+			bSpawnedDrawer = false;
 			if (auto actor2 = pLevel->FindActor(_actor2ID)) {
 				actor2->Destruct();
 			}
@@ -109,46 +169,78 @@ namespace LittleEngine {
 			_pCloneTest = nullptr;
 			if (_pParticlesTest) _pParticlesTest->Destruct();
 			_pParticlesTest = nullptr;
+			if (uProgressBar) uProgressBar = nullptr;
+			if (uProgressBG) uProgressBG = nullptr;
+			debugTokens.clear();
 		}
+
+		Actor* p_Actor0 = nullptr;
+		Actor* p_Actor1 = nullptr;
+		Player* p_Player = nullptr;
+		GData psGData;
+		ParticleSystem* p_ParticleSystem = nullptr;
 	}
 
-	void TestLevel::LoadAssets() {
-		Logger::Log(*this, "Loading Assets...", Logger::Severity::Debug);
+	void TestLevel::LoadAndSpawn() {
+		Logger::Log(*this, "Loading Assets, spawning prototypes...", Logger::Severity::Debug);
 		m_pEngine->GetAssetManager().LoadAll(AssetManifestData("AssetManifests/TestLevel.amf").GetManifest());
+
+		_TestLevel::p_Actor0 = SpawnPrototype<Actor>("Actor0-RectangleRenderer", Vector2(300, 200));
+		if (_TestLevel::p_Actor0) {
+			_TestLevel::actor0ID = _TestLevel::p_Actor0->GetActorID();
+			auto rc0 = _TestLevel::p_Actor0->AddComponent<RenderComponent>();
+			rc0->SetRectangleRenderable(ShapeData(Vector2(300, 100), Colour::Magenta));
+		}
+
+		if ((_TestLevel::p_Actor1 = SpawnPrototype<Actor>("Actor1-TextRenderer"))) {
+			auto rc = _TestLevel::p_Actor1->AddComponent<RenderComponent>();
+			auto& tr = rc->SetTextRenderable("Hello World!");
+			tr.m_layer = LayerID::UI;
+			tr.SetColour(Colour(200, 150, 50)).SetSize(50);
+		}
+
+		_TestLevel::p_Player = SpawnPrototype<Player>("Player");
+		if (_TestLevel::p_Player) {
+			TextureAsset* texture = GetAssetManager().Load<TextureAsset>("Ship.png");
+			_TestLevel::p_Player->InitPlayer(*this, *texture, AABBData(40, 40));
+		}
+
+		FileRW reader("Assets/VFX/Fire0/Fire0_noloop.psdata");
+		_TestLevel::psGData.Marshall(reader.ReadAll(true));
+		_TestLevel::p_ParticleSystem = SpawnPrototype<ParticleSystem>("ExplodePS");
 	}
 
-	void TestLevel::Tick(Fixed deltaTime) {
-		_TestLevel::UpdateTests(deltaTime);
-		Level::Tick(deltaTime);
+	void TestLevel::Tick(Fixed deltaMS) {
+		_TestLevel::UpdateTests(deltaMS);
+		Level::Tick(deltaMS);
 	}
 
 	void TestLevel::OnActivated() {
 		Logger::Log(*this, "Running Level", Logger::Severity::Debug);
 
-		Actor* actor0 = SpawnActor<Actor>("Actor0-RectangleRenderer", true, Vector2(300, 200));
-		if (actor0) {
+		if (_TestLevel::p_Actor0) {
+			Actor* actor0 = CloneActor<Actor>(*_TestLevel::p_Actor0);
+			actor0->GetTransform().localPosition = { 300, 200 };
 			_TestLevel::actor0ID = actor0->GetActorID();
 			auto rc0 = actor0->AddComponent<RenderComponent>();
 			rc0->SetRectangleRenderable(ShapeData(Vector2(300, 100), Colour::Magenta));
 			_TestLevel::_pTextActor = actor0;
 		}
 		
-		if (auto actor1 = SpawnActor<Actor>("Actor1-TextRenderer", true)) {
-			actor1->SetNormalisedPosition(Vector2(0, Fixed(0.9f)));
+		if (_TestLevel::p_Actor1) {
+			auto actor1 = CloneActor<Actor>(*_TestLevel::p_Actor1);
+			actor1->GetTransform().localPosition = Graphics::NToWorld({ 0, Fixed(0.9f) });
 			auto rc = actor1->AddComponent<RenderComponent>();
 			auto& tr = rc->SetTextRenderable("Hello World!");
 			tr.m_layer = LayerID::UI;
 			tr.SetColour(Colour(200, 150, 50)).SetSize(50);
-			//_TestLevel::_textActor = actor1;
 		}
 
-		Player* player = SpawnActor<Player>("Player", true);
-		if (player) {
-			TextureAsset* texture = GetAssetManager().Load<TextureAsset>("Ship.png");
-			player->InitPlayer(*this, *texture, AABBData(40, 40));
+		if (_TestLevel::p_Player) {
+			Player* player = CloneActor<Player>(*_TestLevel::p_Player);
 			player->GetTransform().localPosition = Vector2(-200, -300);
+			_TestLevel::playerID = player->GetActorID();
 		}
-		_TestLevel::_pTextActor = player;
 
 		RegisterScopedInput(GameInput::Return, std::bind(&TestLevel::OnQuitPressed, this), OnKey::Released);
 		RegisterScopedInput(GameInput::X, &_TestLevel::OnXPressed, OnKey::Released);
@@ -156,17 +248,23 @@ namespace LittleEngine {
 		RegisterScopedInput(GameInput::Enter, &_TestLevel::OnEnterPressed, OnKey::Released);
 		RegisterScopedInput(GameInput::Select, &_TestLevel::OnSelectPressed, OnKey::Released);
 
-		FileRW reader("Assets/VFX/Fire0/Fire0_noloop.psdata");
-		GData psGData(reader.ReadAll(true));
-		ParticleSystemData psData(*this, psGData);
-
-		_TestLevel::_pParticlesTest = SpawnActor<ParticleSystem>("ExplodePS", false);
-		_TestLevel::_pParticlesTest->InitParticleSystem(std::move(psData));
+		if (_TestLevel::p_ParticleSystem) {
+			_TestLevel::_pParticlesTest = CloneActor<ParticleSystem>(*_TestLevel::p_ParticleSystem);
+			ParticleSystemData psData(GetAssetManager(), _TestLevel::psGData);
+			_TestLevel::_pParticlesTest->InitParticleSystem(std::move(psData));
+		}
 
 		// Tests
-		_TestLevel::playerID = player->GetActorID();
 		_TestLevel::pLevel = this;
 		_TestLevel::bSoundPlayed = _TestLevel::bMusicPlayed = false;
+
+		if (auto pSpriteTest = SpawnActor<Actor>("Sprite Coords", true)) {
+			pSpriteTest->GetTransform().localPosition = Vector2(-100, -100);
+			RenderComponent* pRc = pSpriteTest->AddComponent<RenderComponent>();
+			pRc->SetSpriteRenderable("Ship.png");
+			SpriteRenderable* pR = dynamic_cast<SpriteRenderable*>(pRc->GetRenderable());
+			pR->Crop(Rect2::TLSize({ 50, 50 }, { 10, 10 }));
+		}
 		
 		GetAudioManager().PlayMusic("TestMusic.ogg", Fixed::OneHalf);
 		/*Spawner::Init(*this);
@@ -177,11 +275,11 @@ namespace LittleEngine {
 		_TestLevel::CleanupTests();
 	}
 
-	void RenderTests(Level* level, RenderParams& params) {
-		_TestLevel::RenderTests(params);
+	void RenderTests(Level*) {
+		_TestLevel::RenderTests();
 	}
 
-	void TestLevel::PostRender(const RenderParams& params) {
+	void TestLevel::PostRender() {
 		if (m_clock.GetElapsedMilliSeconds() > 2000 && !_TestLevel::bSoundPlayed) {
 			_TestLevel::bSoundPlayed = true;
 			GetAudioManager().PlaySFX("TestSound.wav", Fixed(2, 10));
@@ -198,8 +296,7 @@ namespace LittleEngine {
 			_TestLevel::musicStopped = true;
 			GetAudioManager().SwitchTrack("TestMusic.ogg", Fixed::Half, Fixed(3));
 		}*/
-		RenderParams _params(params);
-		RenderTests(this, _params);
+		RenderTests(this);
 	}
 
 	void TestLevel::OnQuitPressed() {

@@ -43,8 +43,8 @@ namespace LittleEngine {
 		return m + ":" + s + ":" + _m;
 	}
 
-	void GameClock::Tick(const Fixed& deltaTime) {
-		gameTime += deltaTime.ToDouble();
+	void GameClock::Tick(const Fixed& deltaMS) {
+		gameTime += deltaMS.ToDouble();
 	}
 
 	void GameClock::Reset() {

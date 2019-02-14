@@ -1,13 +1,11 @@
 #pragma once
 #include "SFML/Audio.hpp"
 #include "Engine/Object.h"
-#include "Fixed.h"
-#include "SFMLInterface/Assets.h"
 #include "Engine/GameClock.h"
+#include "Engine/CoreGame.hpp"
+#include "SFMLInterface/Assets.h"
 
 namespace LittleEngine {
-	using Fixed = GameUtils::Fixed;
-
 	// \brief Base class for audio Asset playback
 	class AudioPlayer : public Object {
 	public:
@@ -22,13 +20,13 @@ namespace LittleEngine {
 		virtual ~AudioPlayer();
 		virtual void Play() = 0;
 		virtual void Stop() = 0;
-		virtual void Reset(Fixed seconds = Fixed::Zero) = 0;
+		virtual void Reset(const Fixed& seconds = Fixed::Zero) = 0;
 		virtual bool IsPlaying() const = 0;
-		virtual void Tick(Fixed deltaSeconds) = 0;
+		virtual void Tick(const Fixed& deltaSeconds) = 0;
 
 	protected:
 		AudioPlayer(const std::string& name);
-		Status Convert(sf::Sound::Status status);
+		Status Cast(sf::Sound::Status status);
 		virtual bool ApplyParams() = 0;
 	};
 
@@ -46,9 +44,9 @@ namespace LittleEngine {
 
 		virtual void Play() override;
 		virtual void Stop() override;
-		virtual void Reset(Fixed seconds = Fixed::Zero) override;
+		virtual void Reset(const Fixed& seconds = Fixed::Zero) override;
 		virtual bool IsPlaying() const override;
-		virtual void Tick(Fixed deltaSeconds) override;
+		virtual void Tick(const Fixed& deltaSeconds) override;
 
 	private:
 		virtual bool ApplyParams() override;
@@ -80,9 +78,9 @@ namespace LittleEngine {
 		
 		virtual void Play() override;
 		virtual void Stop() override;
-		virtual void Reset(Fixed seconds = Fixed::Zero) override;
+		virtual void Reset(const Fixed& seconds = Fixed::Zero) override;
 		virtual bool IsPlaying() const override;
-		virtual void Tick(Fixed deltaSeconds) override;
+		virtual void Tick(const Fixed& deltaSeconds) override;
 
 	private:
 		void BeginFade();

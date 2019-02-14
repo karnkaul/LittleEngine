@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "SFMLInterface/Audio/AudioPlayer.h"
+#include "Engine/CoreGame.hpp"
 
 namespace LittleEngine {
 	class Engine;
@@ -28,8 +29,6 @@ namespace LittleEngine {
 		bool m_bSideA = true;
 
 	public:
-		using Fixed = GameUtils::Fixed;
-
 		AudioManager(Engine& engine);
 		~AudioManager();
 
@@ -57,7 +56,7 @@ namespace LittleEngine {
 		const MusicPlayer& GetStandbyPlayer() const;
 
 		// Engine to call
-		void Tick(Fixed deltaTime);
+		void Tick(Fixed deltaMS);
 
 		friend class Engine;
 	};

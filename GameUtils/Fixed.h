@@ -15,7 +15,7 @@ namespace GameUtils {
 		static const Fixed OneThird;
 		static const Fixed OneTenth;
 	private:
-		int value;
+		int value = 0;
 
 	public:
 		Fixed() = default;

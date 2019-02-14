@@ -40,9 +40,6 @@
     <Filter Include="Source\Engine\Input">
       <UniqueIdentifier>{6d05a15d-504c-4e4c-aacc-9800c6ec9333}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine\Physics">
-      <UniqueIdentifier>{054812d5-7519-4308-a14e-870cebf4634e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\SFMLInterface\Audio">
       <UniqueIdentifier>{d7d94888-e5ff-4114-b93b-14db67006e80}</UniqueIdentifier>
     </Filter>
@@ -58,13 +55,22 @@
     <Filter Include="Source\Misc">
       <UniqueIdentifier>{b2209378-e023-4eee-a64d-669b36b65e52}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Components\Physics">
+      <UniqueIdentifier>{054812d5-7519-4308-a14e-870cebf4634e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UI">
+      <UniqueIdentifier>{3d34e092-debc-4270-9a37-beea6af1ecc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UI\Widgets">
+      <UniqueIdentifier>{f9b1e84b-ece9-44fb-82fd-b2deb7f41932}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UI\Contexts">
+      <UniqueIdentifier>{f7ed674d-dd0e-4f88-b7b6-2011bad1e82d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Entities\Actor.h">
       <Filter>Source\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SFMLInterface\WindowController.h">
-      <Filter>Source\SFMLInterface</Filter>
     </ClInclude>
     <ClInclude Include="Source\SFMLInterface\Rendering\RenderParams.h">
       <Filter>Source\SFMLInterface\Rendering</Filter>
@@ -82,9 +88,6 @@
       <Filter>Source\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Object.h">
-      <Filter>Source\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\World.h">
       <Filter>Source\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Config\EngineConfig.h">
@@ -122,15 +125,6 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\Input\Gamepad.h">
       <Filter>Source\Engine\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Physics\CollisionManager.h">
-      <Filter>Source\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Physics\Collider.h">
-      <Filter>Source\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Engine\Physics\ColliderData.h">
-      <Filter>Source\Engine\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\Entities\Player.h">
       <Filter>Source\Entities</Filter>
@@ -198,13 +192,67 @@
     <ClInclude Include="Source\Engine\CoreGame.hpp">
       <Filter>Source\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SFMLInterface\Graphics.h">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Components\Physics\Collider.h">
+      <Filter>Source\Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Components\Physics\ColliderData.h">
+      <Filter>Source\Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Components\Physics\CollisionManager.h">
+      <Filter>Source\Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\UITransform.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\UIElement.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\All.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entities\IWorldEntity.h">
+      <Filter>Source\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\UIObject.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\UIController.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\Widgets\UIWidget.h">
+      <Filter>Source\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\Contexts\UIContext.h">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\Widgets\UIButton.h">
+      <Filter>Source\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\Contexts\UIButtonDrawer.h">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\Contexts\UIDialogue.h">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\UIWidgetMatrix.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LittleEngine.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UI\UIProgressBar.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Console\ConsoleProfiler.h">
+      <Filter>Source\Engine\Console</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Entities\Actor.cpp">
       <Filter>Source\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SFMLInterface\WindowController.cpp">
-      <Filter>Source\SFMLInterface</Filter>
     </ClCompile>
     <ClCompile Include="Source\SFMLInterface\Rendering\RenderParams.cpp">
       <Filter>Source\SFMLInterface\Rendering</Filter>
@@ -219,9 +267,6 @@
       <Filter>Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\EngineCommands.cpp">
-      <Filter>Source\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\World.cpp">
       <Filter>Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Config\EngineConfig.cpp">
@@ -259,15 +304,6 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\Input\Gamepad.cpp">
       <Filter>Source\Engine\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Physics\CollisionManager.cpp">
-      <Filter>Source\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Physics\Collider.cpp">
-      <Filter>Source\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Engine\Physics\ColliderData.cpp">
-      <Filter>Source\Engine\Physics</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\Player.cpp">
       <Filter>Source\Entities</Filter>
@@ -314,6 +350,54 @@
     </ClCompile>
     <ClCompile Include="Source\SFMLInterface\Rendering\TextRenderable.cpp">
       <Filter>Source\SFMLInterface\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SFMLInterface\Graphics.cpp">
+      <Filter>Source\SFMLInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\Physics\Collider.cpp">
+      <Filter>Source\Components\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\Physics\ColliderData.cpp">
+      <Filter>Source\Components\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\Physics\CollisionManager.cpp">
+      <Filter>Source\Components\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UITransform.cpp">
+      <Filter>Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIElement.cpp">
+      <Filter>Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIObject.cpp">
+      <Filter>Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIController.cpp">
+      <Filter>Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Widgets\UIWidget.cpp">
+      <Filter>Source\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Contexts\UIContext.cpp">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Widgets\UIButton.cpp">
+      <Filter>Source\UI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Contexts\UIButtonDrawer.cpp">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Contexts\UIDialogue.cpp">
+      <Filter>Source\UI\Contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIWidgetMatrix.cpp">
+      <Filter>Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIProgressBar.cpp">
+      <Filter>Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Console\ConsoleProfiler.cpp">
+      <Filter>Source\Engine\Console</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

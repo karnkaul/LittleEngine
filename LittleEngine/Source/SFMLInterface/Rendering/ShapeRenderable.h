@@ -13,12 +13,13 @@ namespace LittleEngine {
 		void SetFillColour(const Colour& colour);
 		void SetBorder(const Fixed& width, const Colour& colour);
 
-		ShapeRenderable(std::string name, std::unique_ptr<sf::Shape> shape);
+		ShapeRenderable(std::string name, std::unique_ptr<sf::Shape> shape, bool bSilent);
 		ShapeRenderable(const ShapeRenderable& prototype, std::unique_ptr<sf::Shape> shape);
 
-		virtual void RenderInternal(RenderParams& params) override; 
+	protected:
+		virtual void RenderInternal() override; 
 		virtual void SetPosition(const Vector2& screenPosition) override;
-		virtual void SetRotation(const Fixed& screenRotation) override;
+		virtual void SetOrientation(const Fixed& screenOrientation) override;
 		virtual void SetScale(const Vector2& screenScale) override;
 
 		template<typename T>
@@ -34,8 +35,8 @@ namespace LittleEngine {
 		sf::CircleShape* m_pCircle;
 
 	public:
-		CircleRenderable(const Fixed& radius);
-		CircleRenderable(const Fixed& radius, const Colour& colour);
+		CircleRenderable(const Fixed& radius, bool bSilent = false);
+		CircleRenderable(const Fixed& radius, const Colour& colour, bool bSilent = false);
 		CircleRenderable(const CircleRenderable& prototype);
 
 		void SetRadius(const Fixed& radius);
@@ -43,6 +44,7 @@ namespace LittleEngine {
 		// Returns outer rect of CircleShape (|any point| = radius)
 		virtual Rect2 GetBounds() const override;
 		virtual std::unique_ptr<Renderable> UClone() const override;
+		virtual void SetPivot(const Vector2& pivot) override;
 	};
 
 	// \brief Concrete class to draw a RectangleShape
@@ -51,8 +53,8 @@ namespace LittleEngine {
 		sf::RectangleShape* m_pRectangle;
 
 	public:
-		RectangleRenderable(const Vector2& size);
-		RectangleRenderable(const Vector2& size, const Colour& colour);
+		RectangleRenderable(const Vector2& size, bool bSilent = false);
+		RectangleRenderable(const Vector2& size, const Colour& colour, bool bSilent = false);
 		RectangleRenderable(const RectangleRenderable& prototype);
 
 		void SetSize(const Vector2& size);
@@ -60,6 +62,7 @@ namespace LittleEngine {
 		// Returns bounds of RectangleShape
 		virtual Rect2 GetBounds() const override;
 		virtual std::unique_ptr<Renderable> UClone() const override;
+		virtual void SetPivot(const Vector2& pivot) override;
 	};
 }
 
