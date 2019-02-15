@@ -13,23 +13,27 @@ UIManager::UIManager(World& owner) : UIObject("UIManager")
 
 UIManager::~UIManager()
 {
-	if (m_uActiveContext)
-		m_uActiveContext = nullptr;
+	m_uContexts.clear();
 	LogD(LogName() + " destroyed");
 }
 
 UIContext* UIManager::GetActiveContext() const
 {
-	return m_uActiveContext.get();
+	return m_uContexts.empty() ? nullptr : m_uContexts.back().get();
 }
 
 void UIManager::Tick(Time dt)
 {
-	if (m_uActiveContext)
+	UIContext* pActive = GetActiveContext();
+	if (pActive)
 	{
-		m_uActiveContext->Tick(dt);
-		if (m_uActiveContext->m_bDestroyed)
-			m_uActiveContext = nullptr;
+		pActive->Tick(dt);
+		if (pActive->m_bDestroyed)
+		{
+			m_uContexts.pop_back();
+			if (!m_uContexts.empty())
+				m_uContexts.back()->SetActive(true, false);
+		}
 	}
 }
 } // namespace LittleEngine

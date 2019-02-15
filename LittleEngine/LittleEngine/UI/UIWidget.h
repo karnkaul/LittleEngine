@@ -10,6 +10,7 @@ class UIWidget : public UIObject
 private:
 	Vector<UPtr<UIElement>> m_uiElements;
 	class UIContext* m_pOwner = nullptr;
+	LayerID m_rootLayer;
 
 public:
 	UIWidget();
@@ -28,8 +29,6 @@ public:
 		return pT;
 	}
 
-	void InitWidget(UIContext& owner);
-
 	virtual void OnSelected() = 0;
 	virtual void OnDeselected() = 0;
 	virtual void OnInteractStart() = 0;
@@ -38,6 +37,9 @@ public:
 	virtual void Tick(Time dt) override;
 
 private:
+	void InitWidget(UIContext& owner, LayerID rootLayer);
 	void InitElement(UIElement* pNewElement);
+
+	friend class UIContext;
 };
 } // namespace LittleEngine

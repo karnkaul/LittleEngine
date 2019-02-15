@@ -23,18 +23,20 @@ UIContext::~UIContext()
 	LogD(LogName() + " UIContext destroyed");
 }
 
-void UIContext::InitContext()
+void UIContext::InitContext(LayerID rootLayer)
 {
 	m_pRootElement = AddElement<UIElement>(m_name + " Root");
+	m_pRootElement->m_layer = rootLayer;
 	SetActive(true);
 }
 
-void UIContext::SetActive(bool bActive)
+void UIContext::SetActive(bool bActive, bool bResetSelection)
 {
 	m_inputTokens.clear();
 	if (bActive)
 	{
-		ResetSelection();
+		if (bResetSelection)
+			ResetSelection();
 		Tick(Time::Zero);
 		m_inputTokens.push_back(Services::Engine()->Input()->Register(std::bind(&UIContext::OnInput, this, _1)));
 	}
@@ -43,6 +45,7 @@ void UIContext::SetActive(bool bActive)
 void UIContext::ResetSelection()
 {
 	m_uiWidgets.Reset(true);
+	m_uiWidgets.ForEach([](UPtr<UIWidget>& uWidget) { uWidget->OnDeselected(); });
 	UIWidget* pSelected = GetSelected();
 	if (pSelected)
 		pSelected->OnSelected();

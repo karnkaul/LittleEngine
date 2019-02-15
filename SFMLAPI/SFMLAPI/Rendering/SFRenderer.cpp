@@ -10,8 +10,6 @@
 
 namespace LittleEngine
 {
-using Lock = std::lock_guard<std::mutex>;
-
 SFRenderer::SFRenderer(SFWindow& sfWindow, Time tickRate)
 	: m_bRendering(true), m_pSFWindow(&sfWindow), m_tickRate(tickRate)
 {

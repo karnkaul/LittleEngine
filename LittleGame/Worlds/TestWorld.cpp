@@ -168,14 +168,15 @@ Vector<EngineInput::Token> debugTokens;
 bool bToSpawnDialogue = false;
 UIDialogue* pDialogue = nullptr;
 
-Fixed progress;
+//Fixed progress;
 UPtr<UIProgressBar> uProgressBar = nullptr;
 UPtr<UIElement> uProgressBG = nullptr;
 Time elapsed = Time::Zero;
 
 void SpawnDialogue()
 {
-	pDialogue = pTestWorld->Game()->UI()->SpawnContext<UIDialogue>();
+	LayerID dialogueLayer = static_cast<LayerID>(LAYER_UI + 2);
+	pDialogue = pTestWorld->Game()->UI()->SpawnContext<UIDialogue>(dialogueLayer);
 	UIDialogueData data;
 	data.bDestroyOnReturn = true;
 	data.titleUIText = UIText("Title", 25, Colour::Black);
@@ -220,7 +221,7 @@ void TestTick(Time dt)
 		SpawnDialogue();
 	}
 
-	if (elapsed.AsSeconds() >= 2 && progress < Fixed(1.5f))
+	/*if (elapsed.AsSeconds() >= 2 && progress < Fixed(1.5f))
 	{
 		progress += Fixed(dt.AsSeconds());
 		if (!uProgressBar)
@@ -235,7 +236,7 @@ void TestTick(Time dt)
 		uProgressBar->SetProgress(progress);
 		uProgressBar->Tick(dt);
 		uProgressBG->Tick(dt);
-	}
+	}*/
 }
 
 void Cleanup()

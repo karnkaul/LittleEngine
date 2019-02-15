@@ -98,7 +98,7 @@ public:
 	}
 
 protected:
-	std::map<String, void (*)(Vector<LogLine>&)> paramCallbackMap;
+	Map<String, void (*)(Vector<LogLine>&)> paramCallbackMap;
 
 	ParameterisedCommand(const String& name) : Command(name)
 	{
@@ -237,7 +237,7 @@ public:
 #pragma region Local Namespace Impl
 namespace
 {
-std::map<String, std::unique_ptr<Command>> commands;
+Map<String, UPtr<Command>> commands;
 
 Vector<LogLine> GetAllCommands()
 {
@@ -317,11 +317,11 @@ Vector<Command*> FindCommands(const String& incompleteCommand)
 #pragma region Implementation
 void Init()
 {
-	commands.emplace("help", std::make_unique<HelpCommand>());
-	commands.emplace("show", std::make_unique<ShowCommand>());
-	commands.emplace("hide", std::make_unique<HideCommand>());
-	commands.emplace("quit", std::make_unique<QuitCommand>());
-	commands.emplace("loadworld", std::make_unique<LoadWorldCommand>());
+	commands.emplace("help", MakeUnique<HelpCommand>());
+	commands.emplace("show", MakeUnique<ShowCommand>());
+	commands.emplace("hide", MakeUnique<HideCommand>());
+	commands.emplace("quit", MakeUnique<QuitCommand>());
+	commands.emplace("loadworld", MakeUnique<LoadWorldCommand>());
 }
 
 Vector<LogLine> Execute(const String& query)

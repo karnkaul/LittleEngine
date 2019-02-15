@@ -20,9 +20,10 @@ UIWidget::~UIWidget()
 	LogD(LogName() + " UIWidget destroyed");
 }
 
-void UIWidget::InitWidget(UIContext& owner)
+void UIWidget::InitWidget(UIContext& owner, LayerID rootLayer)
 {
 	this->m_pOwner = &owner;
+	m_rootLayer = rootLayer;
 }
 
 void UIWidget::Tick(Time dt)
@@ -39,5 +40,6 @@ void UIWidget::InitElement(UIElement* pNewElement)
 {
 	UITransform* pParent = m_pOwner ? &m_pOwner->GetRootElement()->m_transform : nullptr;
 	pNewElement->InitElement(pParent);
+	pNewElement->m_layer = m_rootLayer;
 }
 } // namespace LittleEngine

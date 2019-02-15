@@ -37,7 +37,7 @@ public:
 		static_assert(std::is_base_of<UIWidget, T>::value, "T must derive from UIWidget.");
 		UPtr<T> uT = MakeUnique<T>(name);
 		T* pT = uT.get();
-		uT->InitWidget(*this);
+		uT->InitWidget(*this, static_cast<LayerID>(m_pRootElement->m_layer + 1));
 		m_uiWidgets.EmplaceWidget(std::move(uT), bNewColumn);
 		return pT;
 	}
@@ -57,8 +57,7 @@ public:
 		return pT;
 	}
 
-	void InitContext();
-	void SetActive(bool bActive);
+	void SetActive(bool bActive, bool bResetSelection = true);
 	void ResetSelection();
 	UIWidget* GetSelected();
 	UIElement* GetRootElement() const;
@@ -82,6 +81,8 @@ protected:
 	void Discard();
 
 private:
+	void InitContext(LayerID rootLayer);
+	
 	friend class UIManager;
 };
 } // namespace LittleEngine

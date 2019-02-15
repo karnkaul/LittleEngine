@@ -11,7 +11,8 @@ using SFOrientation = TRange<Fixed>;
 using SFScale = TRange<Vector2>;
 using SFColour = TRange<Colour>;
 
-/*enum LayerID {
+enum LayerID
+{
 	LAYER_ZERO = 0,
 	LAYER_BACKGROUND = 10,
 	LAYER_DEFAULT = 100,
@@ -21,9 +22,9 @@ using SFColour = TRange<Colour>;
 	LAYER_TOP = 490,
 	LAYER_MAX = 499,
 	_LAYER_COUNT = LAYER_MAX + 1,
-};*/
+};
 
-enum LayerID
+/*enum LayerID
 {
 	LAYER_ZERO = 0,
 	LAYER_BACKGROUND = 1,
@@ -34,7 +35,7 @@ enum LayerID
 	LAYER_TOP = 48,
 	LAYER_MAX = 49,
 	_LAYER_COUNT = LAYER_MAX + 1,
-};
+};*/
 
 struct SFRenderState
 {

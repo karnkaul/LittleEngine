@@ -9,20 +9,27 @@ class UIManager final : public UIObject
 {
 public:
 private:
-	std::unique_ptr<UIContext> m_uActiveContext;
+	Vector<UPtr<UIContext>> m_uContexts;
 
 public:
 	UIManager(World& owner);
 	~UIManager();
 
 	template <typename T>
-	T* SpawnContext()
+	T* SpawnContext(LayerID baseLayer = LAYER_UI)
 	{
-		static_assert(std::is_base_of<UIContext, T>::value, "T must derive from UIContext!");
-		m_uActiveContext = MakeUnique<T>();
-		m_uActiveContext->InitContext();
-		m_uActiveContext->SetActive(false);
-		return dynamic_cast<T*>(m_uActiveContext.get());
+		static_assert(IsDerived(UIContext, T), "T must derive from UIContext!");
+		if (!m_uContexts.empty())
+		{
+			auto& uHead = m_uContexts.back();
+			uHead->SetActive(false);
+		}
+		UPtr<T> uT = MakeUnique<T>();
+		uT->InitContext(baseLayer);
+		uT->SetActive(true);
+		T* pT = dynamic_cast<T*>(uT.get());
+		m_uContexts.emplace_back(std::move(uT));
+		return pT;
 	}
 
 	UIContext* GetActiveContext() const;
