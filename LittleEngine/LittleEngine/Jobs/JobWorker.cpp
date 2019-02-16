@@ -11,6 +11,7 @@ using Lock = std::lock_guard<std::mutex>;
 JobWorker::JobWorker(JobManager& manager, u32 id, bool bSystemWorker)
 	: id(id), m_pManager(&manager), m_bSystemWorker(bSystemWorker)
 {
+	m_logName = "[JobWorker" + Strings::ToString(id);
 	m_thread = std::thread(std::bind(&JobWorker::Run, this));
 }
 
@@ -20,7 +21,7 @@ JobWorker::~JobWorker()
 	{
 		m_thread.join();
 	}
-	LogD(LogName() + " destroyed");
+	LOG_D("%s destroyed", m_logName.c_str());
 }
 
 void JobWorker::Stop()
@@ -44,11 +45,6 @@ JobID JobWorker::GetJobID() const
 JobWorker::State JobWorker::GetState() const
 {
 	return m_state;
-}
-
-String JobWorker::LogName() const
-{
-	return "[JobWorker" + Strings::ToString(id) + "]";
 }
 
 void JobWorker::Run()
@@ -84,13 +80,13 @@ void JobWorker::Run()
 			m_state = State::WORKING;
 			m_jobID = job.id;
 			String suffix = m_bSystemWorker ? " System Job " : " Job ";
-			LogD(LogName() + " Starting" + suffix + job.ToString());
+			LOG_D("%s Starting %s %s", m_logName.c_str(), m_bSystemWorker ? "System Job" : "Job", job.ToString());
 			job.task();
 			{
 				Lock lock(m_pManager->m_mutex);
 				m_pManager->m_completed.push_back(m_jobID);
 			}
-			LogD(LogName() + " Completed" + suffix + job.ToString());
+			LOG_D("%s Completed %s %s", m_logName.c_str(), m_bSystemWorker ? "System Job" : "Job", job.ToString());
 		}
 	}
 }

@@ -35,7 +35,7 @@ public:
 	State GetState() const;
 
 private:
-	String LogName() const;
+	String m_logName;
 	void Run();
 };
 } // namespace LittleEngine

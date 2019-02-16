@@ -23,10 +23,10 @@ UIButtonDrawerData UIButtonDrawerData::CreateDrawer(bool bModal, const Vector2& 
 	return data;
 }
 
-UIButtonDrawer::UIButtonDrawer() : UIContext("UIButtonDrawer")
+UIButtonDrawer::UIButtonDrawer() : UIContext("ButtonDrawer")
 {
 }
-UIButtonDrawer::UIButtonDrawer(const String& name) : UIContext(name)
+UIButtonDrawer::UIButtonDrawer(const String& name) : UIContext(name + "_ButtonDrawer")
 {
 }
 UIButtonDrawer::~UIButtonDrawer() = default;
@@ -49,7 +49,7 @@ Delegate::Token UIButtonDrawer::AddButton(const UIText& buttonText,
 {
 	if (!m_init)
 	{
-		LogE("[UIButtonDrawer] Cannot Add Button to uninitialised ButtonDrawer!");
+		LOG_E("[UIButtonDrawer] Cannot Add Button to uninitialised ButtonDrawer!");
 		return nullptr;
 	}
 	if (!pButtonData)

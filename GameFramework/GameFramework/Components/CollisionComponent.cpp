@@ -19,7 +19,7 @@ CollisionComponent::ColliderData::ColliderData(Collider* pCollider, SFPrimitive*
 
 CollisionComponent::CollisionComponent()
 {
-	m_name = "Collision";
+	SetName("Collision");
 	m_signature = Maths::Random::Range(1, 10000);
 }
 
@@ -36,7 +36,7 @@ CollisionComponent::~CollisionComponent()
 
 void CollisionComponent::AddCircle(const Fixed& radius, const Vector2& offset)
 {
-	CircleCollider* pCollider = Services::Game()->Physics()->CreateCircleCollider(m_pOwner->m_name);
+	CircleCollider* pCollider = Services::Game()->Physics()->CreateCircleCollider(m_pOwner->GetNameStr());
 	pCollider->m_ignoreSig = m_signature;
 	pCollider->m_name += ("_" + Strings::ToString(m_pColliders.size()));
 	pCollider->SetCircle(radius);
@@ -56,7 +56,7 @@ void CollisionComponent::AddCircle(const Fixed& radius, const Vector2& offset)
 
 void CollisionComponent::AddAABB(const AABBData& aabbData, const Vector2& offset)
 {
-	AABBCollider* pCollider = Services::Game()->Physics()->CreateAABBCollider(m_pOwner->m_name);
+	AABBCollider* pCollider = Services::Game()->Physics()->CreateAABBCollider(m_pOwner->GetNameStr());
 	pCollider->m_ignoreSig = m_signature;
 	pCollider->m_name += ("_" + Strings::ToString(m_pColliders.size()));
 	pCollider->SetAABB(aabbData);

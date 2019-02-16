@@ -8,11 +8,11 @@ LoadingUI::LoadingUI()
 {
 	String titleText = "Loading";
 	u32 titleSize = 75;
-#if !SHIPPING
+#if DEBUG_LOGGING
 	titleText = "LittleEngine is Loading Assets";
 	titleSize = 50;
 #endif
-	LogD("[Loading UI] constructed");
+	LOG_D("[Loading UI] constructed");
 	m_uBG = MakeUnique<UIElement>("Loading BG");
 	m_uBG->SetPanel(Colour(80, 30, 100, 150));
 	m_uTitle = MakeUnique<UIElement>("Loading Title");
@@ -30,7 +30,7 @@ LoadingUI::~LoadingUI()
 	m_uBG = nullptr;
 	m_uTitle = nullptr;
 	m_uEllipses = nullptr;
-	LogD("[Loading UI] destroyed");
+	LOG_D("[Loading UI] destroyed");
 }
 
 void LoadingUI::Tick(Time dt)

@@ -12,7 +12,7 @@ s32 SFEventLoop::Run()
 {
 	// Construct Window
 	m_uSFWindow = MakeUnique<SFWindow>(m_windowData);
-	LogI("[SFEventLoop] Running");
+	LOG_I("[SFEventLoop] Running");
 
 	PreRun();
 
@@ -45,7 +45,7 @@ s32 SFEventLoop::Run()
 	}
 
 	PostRun();
-	LogI("[SFEventLoop] Activating SFWindow on this thread, destroying SFWindow");
+	LOG_I("[SFEventLoop] Activating SFWindow on this thread, destroying SFWindow");
 
 	m_uSFWindow->setActive(true);
 	m_uSFWindow->close();
@@ -111,7 +111,8 @@ void SFEventLoop::SleepForRestOfFrame(Time frameTime)
 		StringStream s;
 		s << "[SFEventLoop] Frame Update Complete. Time taken: " << frameTime.AsMilliseconds()
 		  << " Surplus: " << surplus;
-		Core::LogOutput(s, Core::LogSeverity::HOT);
+		LOG_H("[SFEventLoop] Frame Update Complete. Time taken: %d Surplus: %d",
+			  frameTime.AsMilliseconds(), surplus);
 		if (surplus > 0)
 			sf::sleep(sf::milliseconds(surplus));
 	}

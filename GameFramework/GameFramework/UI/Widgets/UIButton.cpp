@@ -18,23 +18,23 @@ const UIButtonData UIButtonData::DebugButton()
 
 UIButton::UIButton() : UIWidget("Untitled")
 {
-	LogD("Untitled UIButton constructed");
+	SetName("", "UIButton");
 }
 
 UIButton::UIButton(const String& name) : UIWidget(name)
 {
-	LogD(LogName() + " constructed");
+	SetName("", "UIButton");
 }
 
 UIButton::~UIButton()
 {
-	LogD(LogName() + " destroyed");
+	LOG_D("%s destroyed", LogNameStr());
 }
 
 void UIButton::InitButton(UIButtonData&& data)
 {
 	m_data = std::move(data);
-	m_pUIElement = AddElement<UIElement>();
+	m_pUIElement = AddElement<UIElement>(String(GetNameStr()) + " Panel");
 	m_pUIElement->m_transform.size = m_data.size;
 	m_pUIElement->SetPanel(m_data.notSelectedFill);
 }

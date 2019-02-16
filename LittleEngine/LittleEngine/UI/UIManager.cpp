@@ -7,14 +7,14 @@ namespace LittleEngine
 {
 UIManager::UIManager(World& owner) : UIObject("UIManager")
 {
-	m_baseClass = owner.m_name;
-	LogD(LogName() + " constructed");
+	SetName("", owner.GetNameStr());
+	LOG_D("%s constructed", LogNameStr());
 }
 
 UIManager::~UIManager()
 {
 	m_uContexts.clear();
-	LogD(LogName() + " destroyed");
+	LOG_D("%s destroyed", LogNameStr());
 }
 
 UIContext* UIManager::GetActiveContext() const

@@ -10,7 +10,7 @@ using Lock = std::lock_guard<std::mutex>;
 
 AsyncFileLogger::AsyncFileLogger(const String& path) : m_filePath(path)
 {
-	Core::g_OnLogCallback = std::bind(&AsyncFileLogger::OnLog, this, _1);
+	Core::g_OnLogStr = std::bind(&AsyncFileLogger::OnLogStr, this, _1);
 	m_bStopLogging.store(false);
 	m_jobID = Services::Jobs()->EnqueueSystem(std::bind(&AsyncFileLogger::Async_StartLogging, this),
 											  "AsyncFileLogger");
@@ -18,7 +18,7 @@ AsyncFileLogger::AsyncFileLogger(const String& path) : m_filePath(path)
 
 AsyncFileLogger::~AsyncFileLogger()
 {
-	Core::g_OnLogCallback = nullptr;
+	Core::g_OnLogStr = nullptr;
 	m_bStopLogging.store(true);
 	Services::Jobs()->Wait(m_jobID);
 	Assert(!m_uWriter, "Writer should be null!");
@@ -47,9 +47,9 @@ void AsyncFileLogger::Async_StartLogging()
 	m_uWriter = nullptr;
 }
 
-void AsyncFileLogger::OnLog(const String& msg)
+void AsyncFileLogger::OnLogStr(const char* pText)
 {
 	Lock lock(m_mutex);
-	m_cache += msg;
+	m_cache += std::string(pText);
 }
 } // namespace LittleEngine

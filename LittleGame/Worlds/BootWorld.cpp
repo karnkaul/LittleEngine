@@ -66,12 +66,12 @@ UIButtonDrawerData GetDrawerData()
 //	}
 
 //	if (frame.IsReleased(GameInputType::Back)) {
-//		LogD("GameInputType::Back Released detected! Releasing token");
+//		LOG_D("GameInputType::Back Released detected! Releasing token");
 //		token1 = nullptr;
 //		return true;
 //	}
 //	else {
-//		LogD("GameInputType::Back Released not detected. Keeping blocking token");
+//		LOG_D("GameInputType::Back Released not detected. Keeping blocking token");
 //	}
 //	return false;
 //}

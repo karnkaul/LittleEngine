@@ -5,14 +5,21 @@ namespace LittleEngine
 {
 class Inheritable
 {
-public:
+private:
+	String m_logName;
 	String m_name;
-	String m_baseClass;
+	String m_className;
 
 public:
-	Inheritable(const String& name, const String& baseClass = "");
+	Inheritable(const String& name, const String& className = "");
 	virtual ~Inheritable();
 
-	String LogName() const;
+public:
+	void SetName(const String& name, const String& className = "");
+	const char* GetNameStr() const;
+	const char* LogNameStr() const;
+
+protected:
+	void RegenerateLogNameStr();
 };
 } // namespace LittleEngine

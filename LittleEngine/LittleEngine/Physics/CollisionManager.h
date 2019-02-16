@@ -9,7 +9,7 @@ class CollisionManager final
 {
 private:
 	Vector<UPtr<Collider>> m_colliders;
-	String m_name;
+	String m_logName;
 
 public:
 	CollisionManager(const String& worldName);

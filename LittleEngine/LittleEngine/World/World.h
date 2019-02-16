@@ -4,6 +4,7 @@
 #include "TokenHandler.hpp"
 #include "SFMLAPI/System/SFTime.h"
 #include "SFMLAPI/System/SFGameClock.h"
+#include "LittleEngine/Game/Inheritable.h"
 #include "LittleEngine/Input/EngineInput.h"
 #include "LittleEngine/Repository/EngineRepository.h"
 #include "LittleEngine/Audio/EngineAudio.h"
@@ -12,11 +13,8 @@ namespace LittleEngine
 {
 using WorldID = s32;
 
-class World
+class World : public Inheritable
 {
-public:
-	String m_name;
-
 private:
 	GameClock m_worldClock;
 	std::promise<void> m_preloadComplete;
@@ -27,8 +25,6 @@ protected:
 	UPtr<class GameManager> m_uGame;
 
 public:
-	static String LogName(const World& world);
-
 	World(const String& name);
 	virtual ~World();
 

@@ -36,7 +36,7 @@ GameManager* Services::Game()
 
 void Services::ProvideEngine(EngineService& engine)
 {
-	LogI("[Services] [EngineService] Provided");
+	LOG_I("[Services] [EngineService] Provided");
 	s_pEngine = &engine;
 	Provide(engine);
 }
@@ -44,13 +44,13 @@ void Services::ProvideEngine(EngineService& engine)
 void Services::UnprovideEngine(EngineService& engine)
 {
 	Unprovide(engine);
-	LogI("[Services] [EngineService] Unprovided");
+	LOG_I("[Services] [EngineService] Unprovided");
 	s_pEngine = nullptr;
 }
 
 void Services::ProvideRenderHeap(RenderHeap& renderHeap)
 {
-	LogI("[Services] [RenderHeap] Service Provided");
+	LOG_I("[Services] [RenderHeap] Service Provided");
 	Provide(renderHeap);
 	s_pRenderHeap = &renderHeap;
 }
@@ -58,13 +58,13 @@ void Services::ProvideRenderHeap(RenderHeap& renderHeap)
 void Services::UnprovideRenderHeap(RenderHeap& renderHeap)
 {
 	Unprovide(renderHeap);
-	LogI("[Services] [RenderHeap] Service Unprovided");
+	LOG_I("[Services] [RenderHeap] Service Unprovided");
 	s_pRenderHeap = nullptr;
 }
 
 void Services::ProvideJobManager(JobManager& jobManager)
 {
-	LogI("[Services] [JobManager] Service Provided");
+	LOG_I("[Services] [JobManager] Service Provided");
 	Provide(jobManager);
 	s_pJobManager = &jobManager;
 }
@@ -72,13 +72,13 @@ void Services::ProvideJobManager(JobManager& jobManager)
 void Services::UnprovideJobManager(JobManager& jobManager)
 {
 	Unprovide(jobManager);
-	LogI("[Services] [JobManager] Service Unprovided");
+	LOG_I("[Services] [JobManager] Service Unprovided");
 	s_pJobManager = nullptr;
 }
 
 void Services::ProvideGameManager(GameManager& gameManager)
 {
-	LogI("[Services] " + gameManager.LogName() + " Service Provided");
+	LOG_I("[Services] %s Service Provided", gameManager.LogNameStr());
 	Provide(gameManager);
 	s_pGameManager = &gameManager;
 }
@@ -86,7 +86,7 @@ void Services::ProvideGameManager(GameManager& gameManager)
 void Services::UnprovideGameManager(GameManager& gameManager)
 {
 	Unprovide(gameManager);
-	LogI("[Services] " + gameManager.LogName() + " Service Unprovided");
+	LOG_I("[Services] %s Service Unprovided", gameManager.LogNameStr());
 	s_pGameManager = nullptr;
 }
 

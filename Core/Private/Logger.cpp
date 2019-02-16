@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <iostream>
+#include <mutex>
 #if _WIN32
 #include "Windows.h"
 #endif
@@ -7,46 +8,45 @@
 
 namespace Core
 {
-namespace
-{
-String Cast(LogSeverity severity, size_t numChars = 1)
-{
-	switch (severity)
-	{
-	case LogSeverity::Debug:
-		return String("Debug").substr(0, numChars);
-	case LogSeverity::Info:
-		return String("Info").substr(0, numChars);
-	case LogSeverity::Warning:
-		return String("Warning").substr(0, numChars);
-	case LogSeverity::Error:
-		return String("Error").substr(0, numChars);
-	case LogSeverity::HOT:
-		return String("HOT").substr(0, numChars);
-	}
-}
-} // namespace
+using Lock = std::lock_guard<std::mutex>;
 
 LogSeverity g_MinLogSeverity = LogSeverity::Info;
 Function(void(const String&)) g_OnLogCallback = nullptr;
 
-void LogOutput(StringStream& stream, LogSeverity severity)
+namespace
 {
-	LogOutput(stream.str(), severity);
+constexpr size_t BUFFER_SIZE = 2048;
+
+std::mutex _mutex;
+char logBuffer[BUFFER_SIZE];
+const char* prefixes[5] = {"[H] ", "[D] ", "[I] ", "[W] ", "[E] "};
+} // namespace
+
+Function(void(const char*)) g_OnLogStr;
+
+void LogInternal(const char* pText, u32 severityIndex, va_list argList)
+{
+	Lock lock(_mutex);
+	s32 prefixLength = sprintf(logBuffer, "%s", prefixes[severityIndex]);
+	s32 totalLength = vsnprintf(logBuffer + prefixLength, BUFFER_SIZE - prefixLength, pText, argList);
+	strcat_s(logBuffer, BUFFER_SIZE - totalLength, "\n");
+#if _WIN32
+	OutputDebugStringA(logBuffer);
+#endif
+	std::cout << logBuffer;
+	if (g_OnLogStr)
+		g_OnLogStr(logBuffer);
 }
 
-void LogOutput(const String& str, LogSeverity severity)
+void Log(LogSeverity severity, const char* pText, ...)
 {
-	if (static_cast<s32>(severity) < static_cast<s32>(g_MinLogSeverity))
+	u32 severityIndex = static_cast<u32>(severity);
+	if (severityIndex < static_cast<u32>(g_MinLogSeverity))
 		return;
 
-	String output = "[" + Cast(severity) + "] " + str + "\n";
-	std::cout << output;
-
-	if (g_OnLogCallback)
-		g_OnLogCallback(output);
-#if _WIN32
-	OutputDebugStringA(output.c_str());
-#endif
+	va_list argList;
+	va_start(argList, pText);
+	LogInternal(pText, severityIndex, argList);
+	va_end(argList);
 }
 } // namespace Core

@@ -5,15 +5,10 @@
 
 namespace LittleEngine
 {
-UIObject::UIObject(const String& name) : m_name(name)
+UIObject::UIObject(const String& name) : Inheritable(name, "UIObject")
 {
 }
 UIObject::~UIObject() = default;
-
-String UIObject::LogName() const
-{
-	return "[" + m_name + " (" + m_baseClass + ")]";
-}
 
 EngineRepository* UIObject::Repository() const
 {

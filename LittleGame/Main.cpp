@@ -10,21 +10,17 @@
 
 using namespace LittleEngine;
 
-void TestGameLoop()
+s32 TestGameLoop()
 {
 	auto uGameLoop = EngineLoop::Create();
 
 	Services::Engine()->Worlds()->CreateWorld<BootWorld>();
 	Services::Engine()->Worlds()->CreateWorld<TestWorld>();
-	s32 returnCode = uGameLoop->Run();
-
-	StringStream s;
-	s << "EngineLoop returned: " << returnCode;
-	LogD(s);
+	return uGameLoop->Run();
 }
 
 int main()
 {
 	TestGameLoop();
-	return 0;
+	return TestGameLoop();
 }

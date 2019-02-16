@@ -145,6 +145,8 @@ T TransformRange(T val, T oldMin, T oldMax, T newMin, T newMax)
 	return oldRange == 0 ? newMin : (((value - oldMin) * newRange) / oldRange) + newMin;
 }
 
+bool IsNearlyEqual(f32 lhs, f32 rhs, f32 epsilon = 0.01f);
+
 namespace Random
 {
 // Returns [min, max]

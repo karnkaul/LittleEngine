@@ -11,14 +11,14 @@ UIElement::UIElement(bool bSilent) : UIObject("Untitled"), m_bSilent(bSilent)
 {
 	Construct();
 	if (!bSilent)
-		LogD(LogName() + " constructed");
+		LOG_D("%s constructed", LogNameStr());
 }
 
 UIElement::UIElement(const String& name, bool bSilent) : UIObject(name), m_bSilent(bSilent)
 {
 	Construct();
 	if (!bSilent)
-		LogD(LogName() + " constructed");
+		LOG_D("%s constructed", LogNameStr());
 }
 
 UIElement::~UIElement()
@@ -26,7 +26,7 @@ UIElement::~UIElement()
 	Services::RHeap()->Destroy(m_pPrimitive);
 	Services::RHeap()->Destroy(m_pText);
 	if (!m_bSilent)
-		LogD(LogName() + " destroyed");
+		LOG_D("%s destroyed", LogNameStr());
 }
 
 void UIElement::InitElement(UITransform* pParent)
@@ -39,7 +39,7 @@ void UIElement::InitElement(UITransform* pParent)
 
 void UIElement::Construct()
 {
-	m_baseClass = "UIElement";
+	SetName("", "UIElement");
 	m_pPrimitive = Services::RHeap()->New();
 	m_pText = Services::RHeap()->New();
 	m_pPrimitive->SetEnabled(true);

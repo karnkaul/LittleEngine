@@ -282,7 +282,7 @@ void MusicPlayer::Tick(Time dt)
 			{
 				m_volume = m_startVolume * (Fixed::One - ratio);
 			}
-			Core::LogOutput("Fading! Volume: " + m_volume.ToString(), Core::LogSeverity::HOT);
+			LOG_H("Fading! Volume: %.2f", m_volume.ToF32());
 		}
 	}
 	ApplyParams();

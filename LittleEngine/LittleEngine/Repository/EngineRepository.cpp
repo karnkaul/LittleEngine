@@ -8,7 +8,7 @@ namespace LittleEngine
 EngineRepository::EngineRepository(const String& rootDir) : m_rootDir(rootDir)
 {
 	m_pDefaultFont = Load<FontAsset>("main.ttf");
-	LogI("[AssetRepository] constructed");
+	LOG_I("[AssetRepository] constructed");
 }
 
 FontAsset* EngineRepository::GetDefaultFont() const
@@ -38,7 +38,7 @@ void EngineRepository::LoadAll(AssetManifest& manifest)
 			break;
 
 		default:
-			LogE("[AssetRepository] Unrecognised asset type!");
+			LOG_E("[AssetRepository] Unrecognised asset type [%d]!", definition.type);
 			break;
 		}
 	});
@@ -53,7 +53,7 @@ void EngineRepository::LoadAsync(const String& manifestPath, Function(void()) On
 void EngineRepository::UnloadAll()
 {
 	m_loaded.clear();
-	LogI("[AssetRepository] cleared");
+	LOG_I("[AssetRepository] cleared");
 }
 
 String EngineRepository::GetPath(const String& path) const
@@ -86,6 +86,6 @@ EngineRepository::~EngineRepository()
 {
 	m_pDefaultFont = nullptr;
 	UnloadAll();
-	LogI("[AssetRepository] destroyed");
+	LOG_I("[AssetRepository] destroyed");
 }
 } // namespace LittleEngine

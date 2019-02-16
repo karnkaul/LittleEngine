@@ -9,10 +9,10 @@ const Fixed headerHeight = 80;
 const Fixed footerHeight = 80;
 } // namespace
 
-UIDialogue::UIDialogue() : UIContext("UIDialogue")
+UIDialogue::UIDialogue() : UIContext("Dialogue")
 {
 }
-UIDialogue::UIDialogue(const String& name) : UIContext(name)
+UIDialogue::UIDialogue(const String& name) : UIContext(name + "_Dialogue")
 {
 }
 UIDialogue::~UIDialogue() = default;
@@ -25,24 +25,24 @@ Delegate::Token UIDialogue::InitDialogue(UIDialogueData&& data, UIText mainButto
 	m_pRootElement->m_transform.size = {m_data.size.x, m_data.size.y};
 	m_pRootElement->SetPanel(Colour::White);
 
-	m_pHeader = AddElement<UIElement>(m_name + " Header");
+	m_pHeader = AddElement<UIElement>(String(GetNameStr()) + " Header");
 	m_pHeader->m_transform.size = {m_data.size.x, headerHeight};
 	m_pHeader->m_transform.SetAutoPadNPosition({0, Fixed::One});
 	m_pHeader->SetPanel(m_data.headerBG);
 	m_pHeader->SetText(m_data.titleUIText);
 
-	m_pContent = AddElement<UIElement>(m_name + " Content");
+	m_pContent = AddElement<UIElement>(String(GetNameStr()) + " Content");
 	m_pContent->m_transform.size = {m_data.size.x, contentHeight};
 	m_pContent->m_transform.nPosition = {0, Fixed::One};
 	m_pContent->m_transform.padding = {0, -(headerHeight + contentHeight * Fixed::OneHalf)};
 	m_pContent->SetPanel(m_data.contentBG);
 	m_pContent->SetText(m_data.contentUIText);
 
-	m_pFooter = AddElement<UIElement>(m_name + " Footer");
+	m_pFooter = AddElement<UIElement>(String(GetNameStr()) + " Footer");
 	m_pFooter->m_transform.size = {m_data.size.x, footerHeight};
 	m_pFooter->m_transform.SetAutoPadNPosition({0, -Fixed::One});
 
-	m_pMainButton = AddWidget<UIButton>(m_name + " Button 0");
+	m_pMainButton = AddWidget<UIButton>(String(GetNameStr()) + " Button 0");
 	UIButtonData buttonData = m_data.buttonData;
 	m_pMainButton->InitButton(std::move(buttonData));
 	m_pMainButton->SetText(mainButtonUIText);
@@ -55,8 +55,8 @@ Delegate::Token UIDialogue::AddOtherButton(UIText otherButtonUIText, Delegate::C
 {
 	if (m_pOtherButton)
 	{
-		LogW(LogName() +
-			 " Other button already exists on this UIDialogue! Ignoring call to AddOtherButton");
+		LOG_W("%s Other button already exists on this UIDialogue! Ignoring call to AddOtherButton",
+			  LogNameStr());
 		return nullptr;
 	}
 	m_pOtherButton = AddWidget<UIButton>("Dialog Button 0", true);

@@ -16,7 +16,7 @@ AsyncRenderLoop::AsyncRenderLoop(SFWindow& glWindow, GFXBuffer& gfxBuffer, Time 
 {
 	if (bStartThread)
 	{
-		LogI("[AsyncRenderLoop] Deactivating GLWindow on this thread, starting render thread");
+		LOG_I("[AsyncRenderLoop] Deactivating GLWindow on this thread, starting render thread");
 		m_pSFWindow->setActive(false);
 		m_renderThreadJobID = Services::Jobs()->EnqueueSystem(
 			std::bind(&AsyncRenderLoop::Run, this), "Async Render Loop");
@@ -32,7 +32,7 @@ AsyncRenderLoop::~AsyncRenderLoop()
 
 void AsyncRenderLoop::Run()
 {
-	LogI("R[AsyncRenderLoop] Activating GLWindow on this thread");
+	LOG_I("R[AsyncRenderLoop] Activating GLWindow on this thread");
 	m_pSFWindow->setActive(true);
 	m_pSFWindow->setVerticalSyncEnabled(true);
 	while (m_bRendering)
@@ -42,7 +42,7 @@ void AsyncRenderLoop::Run()
 		Render(*m_pBuffer);
 		Display();
 	}
-	LogI("R[AsyncRenderLoop] Deactivating GLWindow on this thread, terminating job");
+	LOG_I("R[AsyncRenderLoop] Deactivating GLWindow on this thread, terminating job");
 	m_pSFWindow->setActive(false);
 }
 } // namespace LittleEngine

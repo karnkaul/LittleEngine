@@ -12,15 +12,15 @@ bool IgnoreSignatures(s32 lhs, s32 rhs)
 	return lhs != 0 && rhs != 0 && lhs == rhs;
 }
 }
-CollisionManager::CollisionManager(const String& worldName) : m_name("CollisionManager (" + worldName +")")
+CollisionManager::CollisionManager(const String& worldName) : m_logName("[CollisionManager (" + worldName +")]")
 {
-	LogD("[" + m_name + "] constructed");
+	LOG_D("%s constructed", m_logName.c_str());
 }
 
 CollisionManager::~CollisionManager()
 {
 	m_colliders.clear();
-	LogD("[" + m_name + "] destroyed");
+	LOG_D("%s destroyed", m_logName.c_str());
 }
 
 void CollisionManager::Tick(Time)

@@ -7,12 +7,12 @@ namespace LittleEngine
 {
 UIContext::UIContext() : UIObject("Untitled")
 {
-	LogD("Untitled UIContext constructed");
+	SetName("", "UIContext");
 }
 
 UIContext::UIContext(const String& name) : UIObject(name)
 {
-	LogD(LogName() + " UIContext constructed");
+	SetName("", "UIContext");
 }
 
 UIContext::~UIContext()
@@ -20,12 +20,12 @@ UIContext::~UIContext()
 	SetActive(false);
 	m_uiWidgets.Clear();
 	m_uiElements.clear();
-	LogD(LogName() + " UIContext destroyed");
+	LOG_D("%s destroyed", LogNameStr());
 }
 
 void UIContext::InitContext(LayerID rootLayer)
 {
-	m_pRootElement = AddElement<UIElement>(m_name + " Root");
+	m_pRootElement = AddElement<UIElement>(String(GetNameStr()) + " Root");
 	m_pRootElement->m_layer = rootLayer;
 	SetActive(true);
 }

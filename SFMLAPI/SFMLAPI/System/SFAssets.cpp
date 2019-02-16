@@ -110,7 +110,7 @@ Asset::Asset(const String& path) : m_resourcePath(path)
 
 Asset::~Asset()
 {
-	LogD("[" + m_resourcePath + "] (Asset) destroyed");
+	LOG_D("[%s] (Asset) destroyed", m_resourcePath.c_str());
 }
 
 const String& Asset::GetResourcePath() const
@@ -122,7 +122,7 @@ TextureAsset::TextureAsset(const String& path) : Asset(path)
 {
 	if (!m_sfTexture.loadFromFile(m_resourcePath))
 	{
-		LogE("Could not load texture from [" + m_resourcePath + "]!");
+		LOG_E("Could not load texture from [%s]!", m_resourcePath.c_str());
 	}
 }
 
@@ -130,7 +130,7 @@ FontAsset::FontAsset(const String& path) : Asset(path)
 {
 	if (!m_sfFont.loadFromFile(m_resourcePath))
 	{
-		LogE("Could not load font from [" + m_resourcePath + "]!");
+		LOG_E("Could not load texture from [%s]!", m_resourcePath.c_str());
 	}
 }
 
@@ -139,7 +139,7 @@ SoundAsset::SoundAsset(const String& path, const Fixed& volumeScale)
 {
 	if (!m_sfSoundBuffer.loadFromFile(path))
 	{
-		LogE("Could not load sound from [" + m_resourcePath + "]!");
+		LOG_E("Could not load texture from [%s]!", m_resourcePath.c_str());
 	}
 }
 
@@ -149,7 +149,7 @@ MusicAsset::MusicAsset(const String& path, const Fixed& volumeScale)
 	m_bValid = m_sfMusic.openFromFile(path);
 	if (!m_bValid)
 	{
-		LogE("Could not load music from [" + m_resourcePath + "]!");
+		LOG_E("Could not load texture from [%s]!", m_resourcePath.c_str());
 	}
 }
 

@@ -37,7 +37,7 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository, const String& m
 		}
 
 		default:
-			LogW("Unsupported Asset Type for asynchronous loading!");
+			LOG_W("Unsupported Asset Type [%d] for asynchronous loading!", definition.type);
 		}
 	}
 

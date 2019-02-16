@@ -21,7 +21,7 @@ private:
 		Job(const String& name, Function(void()) job);
 	};
 
-	String m_name;
+	String m_logName;
 	Vector<Job> m_Jobs;
 	Function(void()) m_OnComplete = nullptr;
 	bool m_bCompleted = false;
@@ -34,7 +34,7 @@ public:
 
 private:
 	void Update();
-	String LogName() const;
+	const char* LogNameStr() const;
 
 	friend class JobManager;
 };
@@ -49,14 +49,14 @@ private:
 
 	struct Job
 	{
-		String name;
+		String logName;
 		Function(void()) task;
 		JobID id = INVALID_ID;
 
 		Job() = default;
 		Job(JobID id, Function(void()) task, String name);
 
-		String ToString() const;
+		const char* ToString() const;
 	};
 
 private:

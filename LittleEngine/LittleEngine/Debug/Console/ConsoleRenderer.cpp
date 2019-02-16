@@ -9,7 +9,7 @@ namespace LittleEngine {
 			m_pFont = Services::Engine()->Repository()->GetDefaultFont();
 
 			// BG
-			m_uBG = MakeUnique<UIElement>("Console BG");
+			m_uBG = MakeUnique<UIElement>("Console BG", true);
 			m_uBG->SetPanel(m_bgColour);
 			Vector2 bgSize = m_uBG->m_transform.size;
 			bgSize.y *= Fixed::OneThird;
@@ -21,7 +21,7 @@ namespace LittleEngine {
 			m_uBG->m_transform.padding = maxPadding;
 
 			// Separator
-			m_uSeparator = MakeUnique<UIElement>("Console Separator");
+			m_uSeparator = MakeUnique<UIElement>("Console Separator", true);
 			m_uSeparator->SetPanel(Colour(255, 255, 255, 150));
 			m_uSeparator->m_transform.SetParent(m_uBG->m_transform);
 			m_uSeparator->m_transform.size = { bgSize.x, 2 };
@@ -29,7 +29,7 @@ namespace LittleEngine {
 			m_uSeparator->m_transform.padding = { 0, m_textSize + 5 };
 
 			// Live Line
-			m_uLiveText = MakeUnique<UIElement>("Console LiveText");
+			m_uLiveText = MakeUnique<UIElement>("Console LiveText", true);
 			m_uLiveText->m_transform.SetParent(m_uBG->m_transform);
 			m_uLiveText->m_transform.anchor = { -1, 1 };
 			m_uLiveText->m_transform.nPosition = { -1, -1 };
@@ -41,7 +41,7 @@ namespace LittleEngine {
 			s32 iPad = textPad + 2;
 			m_logLinesCount = (m_uBG->m_transform.size.y.ToU32() / textPad) - 1;
 			for (size_t i = 0; i < static_cast<size_t>(m_logLinesCount); ++i) {
-				UPtr<UIElement> uLogLineI = MakeUnique<UIElement>("Log Line " + Strings::ToString(i));
+				UPtr<UIElement> uLogLineI = MakeUnique<UIElement>("Log Line " + Strings::ToString(i), true);
 				uLogLineI->m_transform.SetParent(m_uBG->m_transform);
 				uLogLineI->m_transform.anchor = { -1, 1 };
 				uLogLineI->m_transform.nPosition = { -1, -1 };

@@ -7,7 +7,7 @@
 
 namespace LittleEngine
 {
-World::World(const String& name) : m_name(name)
+World::World(const String& name) : Inheritable(name, "World")
 {
 }
 World::~World() = default;
@@ -69,7 +69,7 @@ void World::OnClearing()
 
 void World::Activate()
 {
-	LogD(LogName(*this) + " Activated.");
+	LOG_D("%s Activated.", LogNameStr());
 	m_worldClock.Restart();
 	m_uGame = MakeUnique<GameManager>(*this);
 	OnActivated();
@@ -80,7 +80,7 @@ void World::Deactivate()
 	OnDeactivating();
 	m_uGame = nullptr;
 	Clear();
-	LogD(LogName(*this) + " Deactivated");
+	LOG_D("%s Deactivated", LogNameStr());
 }
 
 void World::Tick(Time dt)
@@ -100,10 +100,5 @@ void World::OnActivated()
 }
 void World::OnDeactivating()
 {
-}
-
-String World::LogName(const World& world)
-{
-	return "[" + world.m_name + " (World " + Strings::ToString(world.m_id) + ")]";
 }
 } // namespace LittleEngine

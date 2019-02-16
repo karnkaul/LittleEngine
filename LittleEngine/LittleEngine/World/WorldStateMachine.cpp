@@ -15,7 +15,7 @@ bool WorldStateMachine::s_bReady;
 WorldStateMachine::WorldStateMachine()
 {
 	s_bReady = false;
-	LogI("[WorldStateMachine] constructed");
+	LOG_I("[WorldStateMachine] constructed");
 }
 
 WorldStateMachine::~WorldStateMachine()
@@ -23,7 +23,7 @@ WorldStateMachine::~WorldStateMachine()
 	if (m_pActiveState)
 		m_pActiveState->Deactivate();
 	m_uCreatedStates.clear();
-	LogI("[WorldStateMachine] destroyed");
+	LOG_I("[WorldStateMachine] destroyed");
 }
 
 World* WorldStateMachine::GetActiveState() const
@@ -43,11 +43,11 @@ bool WorldStateMachine::LoadState(WorldID id)
 		if (uState->m_id == id)
 		{
 			m_pNextState = uState.get();
-			LogD("[WorldStateMachine] Load Enqueued: " + m_pNextState->LogName(*m_pNextState));
+			LOG_D("[WorldStateMachine] Load Enqueued: %s", m_pNextState->LogNameStr());
 			return true;
 		}
 	}
-	LogE("[WorldStateMachine] State ID " + Strings::ToString(id) + " does not exist!");
+	LOG_E("[WorldStateMachine] State ID [%d] does not exist!", id);
 	return false;
 }
 
@@ -57,7 +57,7 @@ void WorldStateMachine::Start(const String& manifestPath)
 	// LoadAsync all assets in manifest
 	if (!manifestPath.empty())
 	{
-		LogD("[WorldStateMachine] Loading assets from manifest [" + manifestPath + "]...");
+		LOG_D("[WorldStateMachine] Loading assets from manifest [%s]...", manifestPath.c_str());
 		Services::Engine()->Repository()->LoadAsync(manifestPath, [&]() { m_bLoaded = true; });
 		loadTime = Time::Zero;
 		m_uLoadingUI = MakeUnique<LoadingUI>();
@@ -85,7 +85,7 @@ void WorldStateMachine::PostBufferSwap()
 	{
 		m_pActiveState->Activate();
 		m_bToActivateState = false;
-		LogD("[WorldStateMachine] ...Loaded " + World::LogName(*m_pNextState));
+		LOG_I("[WorldStateMachine] ...Loaded %s", m_pNextState->LogNameStr());
 	}
 }
 
@@ -96,8 +96,7 @@ void WorldStateMachine::LoadingTick(Time dt)
 	if (m_bLoaded)
 	{
 		loadTime = Time::Now() - loadTime;
-		LogD("[WorldStateMachine] ...Manifest load complete in " +
-			 Strings::ToString(loadTime.AsSeconds()) + "s. Loading World 0");
+		LOG_I("[WorldStateMachine] ...Manifest load complete in %.2fs. Loading World 0", loadTime.AsSeconds());
 		m_bLoading = false;
 		m_uLoadingUI = nullptr;
 		LoadState(0);
@@ -112,7 +111,7 @@ void WorldStateMachine::GameTick(Time dt)
 
 	if (m_pNextState != m_pActiveState)
 	{
-		LogD("[WorldStateMachine] Loading " + World::LogName(*m_pNextState) + "...");
+		LOG_D("[WorldStateMachine] Loading %s...", m_pNextState->LogNameStr());
 		if (m_pActiveState)
 		{
 			m_pActiveState->Deactivate();

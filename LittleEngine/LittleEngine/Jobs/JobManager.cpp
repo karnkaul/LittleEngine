@@ -12,9 +12,9 @@ MultiJob::Job::Job(const String& name, Function(void()) job) : name(name), job(j
 {
 }
 
-MultiJob::MultiJob(const String& name) : m_name(name)
+MultiJob::MultiJob(const String& name) : m_logName("[" + name + " (MultiJob)]")
 {
-	LogD(LogName() + " created");
+	LOG_D("%s created", LogNameStr());
 }
 
 void MultiJob::AddJob(Function(void()) job, const String& name)
@@ -29,7 +29,7 @@ void MultiJob::StartJobs(Function(void()) OnComplete)
 {
 	JobManager* pJobs = Services::Jobs();
 	Assert(pJobs, "JobManager Service is null!");
-	LogI(LogName() + " started");
+	LOG_I("%s started", LogNameStr());
 	m_OnComplete = OnComplete;
 	Vector<JobID> jobIDs;
 	for (auto& job : m_Jobs)
@@ -51,25 +51,26 @@ void MultiJob::Update()
 {
 	if (m_bCompleted && m_OnComplete)
 	{
-		LogD(LogName() + " completed");
+		LOG_D("%s completed", LogNameStr());
 		m_OnComplete();
 		m_OnComplete = nullptr;
 	}
 }
 
-String MultiJob::LogName() const
+const char* MultiJob::LogNameStr() const
 {
-	return "[" + m_name + " (MultiJob)]";
+	return m_logName.c_str();
 }
 
-JobManager::Job::Job(JobID id, Function(void()) task, String name) : name(name), task(task), id(id)
+JobManager::Job::Job(JobID id, Function(void()) task, String name) : task(task), id(id)
 {
+	String suffix = name.empty() ? "" : "-" + name;
+	logName = "[" + Strings::ToString(id) + "]";
 }
 
-String JobManager::Job::ToString() const
+const char* JobManager::Job::ToString() const
 {
-	String nameStr = name.empty() ? "" : "-" + name;
-	return "[" + Strings::ToString(id) + nameStr + "]";
+	return logName.c_str();
 }
 
 JobManager::JobManager()
@@ -85,9 +86,10 @@ JobManager::JobManager()
 	{
 		m_systemWorkers.emplace_back(MakeUnique<JobWorker>(*this, i, true));
 	}
-	LogI("[JobManager] Detected [" + Strings::ToString(OS::Platform()->TotalThreadCount()) + "] available threads. " +
-		 "Spawned [" + Strings::ToString(systemWorkers) + "] System JobWorkers " + "and [" +
-		 Strings::ToString(userWorkers) + "] User JobWorkers");
+	LOG_I(
+		"[JobManager] Detected [%d] available threads. Spawned [%d] System JobWorkers and [%d] "
+		"User JobWorkers",
+		OS::Platform()->TotalThreadCount(), systemWorkers, userWorkers);
 	Services::ProvideJobManager(*this);
 }
 
@@ -104,7 +106,7 @@ JobManager::~JobManager()
 		worker->Stop();
 	}
 	m_systemWorkers.clear();
-	LogI("[JobManager] destroyed");
+	LOG_I("[JobManager] destroyed");
 }
 
 void JobManager::Wait(JobID id)
@@ -136,7 +138,7 @@ void JobManager::Wait(JobID id)
 	if (pWorker)
 		pWorker->Wait();
 	else if (!IsCompleted(id))
-		LogW("[JobManager] JobID [" + Strings::ToString(id) + "] not found!");
+		LOG_W("[JobManager] JobID [%d] not found!", id);
 }
 
 bool JobManager::IsRunning(JobID id)
@@ -223,7 +225,7 @@ void JobManager::Tick(Time)
 		(*iter)->Update();
 		if ((*iter)->m_bCompleted)
 		{
-			LogD("[JobManager] " + (*iter)->LogName() + " completed. Destroying instance.");
+			LOG_D("[JobManager] %s completed. Destroying instance.", (*iter)->LogNameStr());
 			iter = m_uMultiJobs.erase(iter);
 			continue;
 		}

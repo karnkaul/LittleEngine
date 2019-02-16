@@ -409,8 +409,10 @@ ParticleSystemData::ParticleSystemData(const GData& psGData)
 			TextureAsset* pTexture = pRepo->Load<TextureAsset>(texturePath);
 			if (!pTexture)
 			{
-				LogW("Invalid texture path in ParticleSystemManifest [" + texturePath +
-					 "]! Ignoring creation of emitter");
+				LOG_W(
+					"Invalid texture path in ParticleSystemManifest [%s]! Ignoring creation of "
+					"emitter",
+					texturePath.c_str());
 				continue;
 			}
 			SoundAsset* sound = nullptr;
@@ -427,7 +429,7 @@ ParticleSystemData::ParticleSystemData(const GData& psGData)
 
 ParticleSystem::ParticleSystem(const String& name) : Entity(name)
 {
-	m_baseClass = "ParticleSystem";
+	SetName(name, "ParticleSystem");
 }
 
 ParticleSystem::~ParticleSystem() = default;
@@ -451,8 +453,7 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData&& data)
 		particles = "0";
 	particles = "[" + particles + "] particles";
 
-	Core::LogOutput(
-		LogName() + " initialised: [" + Strings::ToString(emitters.size()) + "] emitters " + particles, logSeverity);
+	Core::Log(logSeverity, "%s initialised: [%d] emitters %s", LogNameStr(), emitters.size(), particles.c_str());
 }
 
 void ParticleSystem::Start()
@@ -462,7 +463,7 @@ void ParticleSystem::Start()
 		uEmitter->Reset(true);
 	}
 	m_bIsPlaying = true;
-	LogD(LogName() + " (re)started");
+	LOG_D("%s (re)started", LogNameStr());
 }
 
 void ParticleSystem::Stop()
@@ -472,7 +473,7 @@ void ParticleSystem::Stop()
 		uEmitter->Reset(false);
 	}
 	m_bIsPlaying = false;
-	LogD(LogName() + " stopped");
+	LOG_D("%s stopped", LogNameStr());
 }
 
 void ParticleSystem::Tick(Time dt)

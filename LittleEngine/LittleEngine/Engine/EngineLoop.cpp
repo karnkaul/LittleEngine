@@ -92,7 +92,7 @@ void EngineLoop::Start()
 {
 	if (m_bInit)
 	{
-		LogW("[EngineLoop] Engine already started");
+		LOG_W("[EngineLoop] Engine already started");
 		return;
 	}
 	Init();
@@ -130,7 +130,7 @@ void EngineLoop::SwapGFXBuffer()
 
 void EngineLoop::Init()
 {
-	LogI("[EngineLoop] Initialising, loading config, and setting parameters...");
+	LOG_I("[EngineLoop] Initialising, loading config, and setting parameters...");
 	m_config.Load("config.gd");
 	Core::g_MinLogSeverity = m_config.GetLogLevel();
 	m_bPauseOnFocusLoss = m_config.ShouldPauseOnFocusLoss();
@@ -142,7 +142,7 @@ void EngineLoop::Init()
 	{
 		if (!OS::Platform()->CanCreateSystemThread())
 		{
-			LogW(
+			LOG_W(
 				"Insufficient threads to create render thread!\n!ERROR! Async Renderer not "
 				"available!");
 		}
@@ -172,6 +172,6 @@ void EngineLoop::Uninit()
 	m_uEngineService = nullptr;
 	m_uJobManager = nullptr;
 	m_bInit = false;
-	LogI("[EngineLoop] Terminated, config saved.");
+	LOG_I("[EngineLoop] Terminated, config saved.");
 }
 } // namespace LittleEngine

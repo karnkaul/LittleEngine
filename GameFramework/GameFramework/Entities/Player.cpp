@@ -25,13 +25,11 @@ PlayerData::PlayerData(TextureAsset& mainTexture, const Vector<PlayerCollider>& 
 
 Player::Player(const String& name) : Entity(name)
 {
-	m_baseClass = "Player";
+	SetName(name, "Player");
 }
 
 void Player::InitPlayer(const PlayerData& data)
 {
-	AddComponent<ControllerComponent>();
-
 	auto pRenderComponent = AddComponent<RenderComponent>();
 	LayerID layer = static_cast<LayerID>(LAYER_LIVE + 5);
 	pRenderComponent->m_pSFPrimitive->SetTexture(*data.pMainTexture)->SetLayer(layer);
@@ -41,7 +39,8 @@ void Player::InitPlayer(const PlayerData& data)
 	{
 		pCollisionComponent->AddAABB(collider.bounds, collider.offset);
 	}
+	AddComponent<ControllerComponent>();
 
-	LogI(LogName() + " Initialised");
+	LOG_I("%s %s", LogNameStr(), " Initialised");
 }
 } // namespace LittleEngine

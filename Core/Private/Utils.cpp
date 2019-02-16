@@ -51,6 +51,12 @@ size_t Random::Range(size_t min, size_t max)
 	}
 	return ((rand() * (max - min)) / RAND_MAX) + min;
 }
+
+bool IsNearlyEqual(f32 lhs, f32 rhs, f32 epsilon)
+{
+	return Abs(lhs - rhs) < epsilon;
+}
+
 } // namespace Maths
 
 namespace Strings

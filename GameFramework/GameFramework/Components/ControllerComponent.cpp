@@ -35,10 +35,10 @@ TimingType ControllerComponent::GetComponentTiming() const
 
 void ControllerComponent::OnCreated()
 {
-	m_name = "Controller";
+	SetName("Controller");
 	m_pRenderComponent = m_pOwner->GetComponent<RenderComponent>();
 	if (!m_pRenderComponent)
-		LogE(LogName() + m_pOwner->LogName() + " has ControllerComponent but no RenderComponent!");
+		LOG_E("%s : %s has ControllerComponent but no RenderComponent!", LogNameStr(), m_pOwner->LogNameStr());
 	BindInput(std::bind(&ControllerComponent::OnInput, this, _1));
 	Reset();
 }

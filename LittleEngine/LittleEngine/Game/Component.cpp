@@ -10,7 +10,7 @@ Component::Component() : WorldObject("Untitled", "Component")
 
 Component::~Component()
 {
-	LogD(LogName() + " detached from " + m_pOwner->LogName() + " and destroyed");
+	LOG_D("%s detached from %s and destroyed", LogNameStr(), m_pOwner->LogNameStr());
 }
 
 TimingType Component::GetComponentTiming() const

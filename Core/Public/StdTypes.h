@@ -34,6 +34,12 @@
 #define CONSOLE 0
 #endif
 
+#if !SHIPPING
+#define DEBUG_LOGGING 1
+#else
+#define DEBUG_LOGGING 0
+#endif
+
 #define Function(x) std::function<x>
 #define IsDerived(Base, Derived) std::is_base_of<Base, Derived>::value
 

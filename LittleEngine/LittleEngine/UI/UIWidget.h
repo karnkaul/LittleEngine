@@ -18,11 +18,11 @@ public:
 	virtual ~UIWidget();
 
 	template <typename T>
-	UIElement* AddElement()
+	UIElement* AddElement(const String& name = "")
 	{
 		static_assert(std::is_base_of<UIElement, T>::value,
 					  "T must derive from UIElement. Check Output Window for erroneous call");
-		UPtr<T> uT = MakeUnique<T>();
+		UPtr<T> uT = MakeUnique<T>(name);
 		T* pT = uT.get();
 		InitElement(pT);
 		m_uiElements.push_back(std::move(uT));

@@ -50,13 +50,13 @@ bool Collider::s_bShowDebugShape = false;
 
 Collider::~Collider() = default;
 
-#if DEBUGGING
+#if DEBUG_LOGGING
 void Collider::OnHit(const Collider& other)
 {
 	static int DEBUG_skip = 0;
 	if (++DEBUG_skip > 20)
 	{
-		LogD("[" + m_name + "] colliding with [" + other.m_name + "] (throttled log)");
+		LOG_D("[%s] colliding with [%s] (throttled log)", m_name.c_str(), other.m_name.c_str());
 		DEBUG_skip = 0;
 	}
 }

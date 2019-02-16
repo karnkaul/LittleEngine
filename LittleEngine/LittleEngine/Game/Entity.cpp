@@ -10,7 +10,7 @@ Entity::Entity(const String& name) : WorldObject(name, "Entity")
 Entity::~Entity()
 {
 	m_pComponents.clear();
-	LogD(LogName() + " destroyed");
+	LOG_D("%s destroyed", LogNameStr());
 }
 
 void Entity::SetEnabled(bool bEnabled)
@@ -20,8 +20,7 @@ void Entity::SetEnabled(bool bEnabled)
 	{
 		pComponent->SetEnabled(bEnabled);
 	}
-	String action = m_bEnabled ? " Enabled" : " Disabled";
-	LogD(LogName() + action);
+	LOG_D("%s %s", LogNameStr(), m_bEnabled ? " Enabled" : " Disabled");
 }
 
 void Entity::Destruct()

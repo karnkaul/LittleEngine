@@ -46,12 +46,12 @@ namespace LittleEngine { namespace Debug {
 		};
 
 		ConsoleImpl::ConsoleImpl() {
-			LogD("Debug Console initialised");
+			LOG_D("Debug Console initialised");
 			Console::g_uLogBook = MakeUnique<LogBook>(m_renderer.m_logLinesCount);
 		}
 
 		ConsoleImpl::~ConsoleImpl() {
-			LogD("Debug Console uninitialised");
+			LOG_D("Debug Console uninitialised");
 		}
 
 		void ConsoleImpl::Tick(Time dt) {

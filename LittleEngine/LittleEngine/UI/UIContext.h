@@ -39,6 +39,7 @@ public:
 		T* pT = uT.get();
 		uT->InitWidget(*this, static_cast<LayerID>(m_pRootElement->m_layer + 1));
 		m_uiWidgets.EmplaceWidget(std::move(uT), bNewColumn);
+		LOG_D("%s %s", pT->LogNameStr(), "constructed");
 		return pT;
 	}
 
@@ -46,7 +47,7 @@ public:
 	T* AddElement(const String& name, UITransform* pParent = nullptr)
 	{
 		static_assert(std::is_base_of<UIElement, T>::value, "T must derive from UIWidget!");
-		UPtr<T> uT = MakeUnique<T>(name);
+		UPtr<T> uT = MakeUnique<T>(name, true);
 		if (!pParent && m_pRootElement)
 			pParent = &m_pRootElement->m_transform;
 		uT->InitElement(pParent);
@@ -54,6 +55,7 @@ public:
 			uT->m_layer = static_cast<LayerID>(m_pRootElement->m_layer + 1);
 		T* pT = uT.get();
 		m_uiElements.push_back(std::move(uT));
+		LOG_D("%s %s", pT->LogNameStr(), "constructed");
 		return pT;
 	}
 

@@ -5,12 +5,18 @@ namespace LittleEngine
 {
 UIProgressBar::UIProgressBar(bool bSilent) : UIElement("Progress Bar", bSilent)
 {
+	SetName("", "UIProgressBar");
 }
-UIProgressBar::UIProgressBar(const String& name, bool bSilent) : UIElement(name, bSilent)
+UIProgressBar::UIProgressBar(const String& name, bool bSilent)
+	: UIElement(name, bSilent)
 {
+	SetName("", "UIProgressBar");
 }
 
-UIProgressBar::~UIProgressBar() = default;
+UIProgressBar::~UIProgressBar()
+{
+	LOG_D("%s %s", LogNameStr(), "destroyed");
+}
 
 void UIProgressBar::InitProgressBar(const Vector2& size, Colour colour, const Fixed& initProgress)
 {

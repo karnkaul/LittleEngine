@@ -8,13 +8,13 @@ namespace LittleEngine
 {
 EngineAudio::EngineAudio()
 {
-	LogD("[EngineAudio] constructed");
+	LOG_D("[EngineAudio] constructed");
 }
 
 EngineAudio::~EngineAudio()
 {
 	Clear();
-	LogD("[EngineAudio] destroyed");
+	LOG_D("[EngineAudio] destroyed");
 }
 
 SoundPlayer* EngineAudio::PlaySFX(const String& path, const Fixed& volume, const Fixed& direction, bool bLoop)
@@ -146,7 +146,7 @@ void EngineAudio::SetMusicVolume(const Fixed& volume)
 
 void EngineAudio::Clear(bool immediate)
 {
-#if DEBUGGING
+#if DEBUG_LOGGING
 	u32 sfxCount = static_cast<u32>(m_sfxPlayers.size());
 #endif
 	for (auto& sfxPlayer : m_sfxPlayers)
@@ -166,7 +166,7 @@ void EngineAudio::Clear(bool immediate)
 	}
 	GetStandbyPlayer().Stop();
 	m_uSwitchTrackRequest = nullptr;
-	LogD("[EngineAudio] Cleared [" + Strings::ToString(sfxCount) + " SFXPlayers, 1 MusicPlayer]");
+	LOG_D("[EngineAudio] Cleared [%d] SFXPlayers, 1 MusicPlayer]", sfxCount);
 }
 
 void EngineAudio::Tick(Time dt)

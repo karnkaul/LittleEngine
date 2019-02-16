@@ -22,6 +22,6 @@ public:
 
 private:
 	void Async_StartLogging();
-	void OnLog(const String& msg);
+	void OnLogStr(const char* pText);
 };
 } // namespace LittleEngine

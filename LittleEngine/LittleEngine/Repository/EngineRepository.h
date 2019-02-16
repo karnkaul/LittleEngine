@@ -36,7 +36,7 @@ public:
 		if (search != m_loaded.end())
 		{
 #if LOG_CACHED_ASSET_LOADS
-			LogD("[EngineRepository] Found Asset [" + fullPath + "] in cache");
+			LOG_D("[EngineRepository] Found Asset [%s] in cache", fullPath.c_str());
 #endif
 			return dynamic_cast<T*>(search->second.get());
 		}
@@ -103,7 +103,7 @@ private:
 	template <typename T>
 	UPtr<T> LoadInternal(const String& fullPath)
 	{
-		LogI("[AssetManager] Loading Asset [" + fullPath + "]");
+		LOG_I("[AssetManager] Loading Asset [%s]", fullPath.c_str());
 		struct enable_smart : public T
 		{
 			enable_smart(const String& path) : T(path)

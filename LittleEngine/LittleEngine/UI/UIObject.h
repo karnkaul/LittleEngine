@@ -1,23 +1,20 @@
 #pragma once
 #include "CoreTypes.h"
+#include "LittleEngine/Game/Inheritable.h"
 #include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {
-class UIObject
+class UIObject : public Inheritable
 {
 protected:
-	String m_name;
-	String m_baseClass = "UIObj";
 	bool m_bDestroyed = false;
 
 public:
 	UIObject(const String& name);
 	virtual ~UIObject();
-
+	
 	virtual void Tick(Time dt) = 0;
-
-	String LogName() const;
 
 protected:
 	class EngineRepository* Repository() const;

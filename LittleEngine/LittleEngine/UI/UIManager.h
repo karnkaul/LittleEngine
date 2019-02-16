@@ -29,6 +29,7 @@ public:
 		uT->SetActive(true);
 		T* pT = dynamic_cast<T*>(uT.get());
 		m_uContexts.emplace_back(std::move(uT));
+		LOG_D("%s %s", pT->LogNameStr(), "constructed");
 		return pT;
 	}
 

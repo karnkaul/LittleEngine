@@ -109,7 +109,7 @@ void EngineInput::FireCallbacks()
 			m_contexts, [](InputContext& context) { return context.wToken.expired(); });
 		size_t curr = m_contexts.size();
 		if (curr != prev)
-			LogD("[EngineInput] Deleted " + Strings::ToString(prev - curr) + " stale contexts");
+			LOG_D("[EngineInput] Deleted %d stale contexts", prev - curr);
 
 		if (m_uSudoContext)
 		{

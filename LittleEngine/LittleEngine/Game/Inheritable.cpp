@@ -3,16 +3,36 @@
 
 namespace LittleEngine
 {
-Inheritable::Inheritable(const String& name, const String& baseClass)
-	: m_name(name), m_baseClass(baseClass)
+Inheritable::Inheritable(const String& name, const String& className)
+	: m_name(name), m_className(className)
 {
+	RegenerateLogNameStr();
 }
 
 Inheritable::~Inheritable() = default;
 
-String Inheritable::LogName() const
+void Inheritable::SetName(const String& name, const String& className)
 {
-	String suffix = m_baseClass.empty() ? "" : " (" + m_baseClass + ")";
-	return "[" + m_name + suffix + "]";
+	if (!name.empty())
+		m_name = name;
+	if (!className.empty())
+		m_className = className;
+	RegenerateLogNameStr();
+}
+
+const char* Inheritable::GetNameStr() const
+{
+	return m_name.c_str();
+}
+
+const char* Inheritable::LogNameStr() const
+{
+	return m_logName.c_str();
+}
+
+void Inheritable::RegenerateLogNameStr()
+{
+	String suffix = m_className.empty() ? "" : " (" + m_className + ")";
+	m_logName = "[" + m_name + suffix + "]";
 }
 } // namespace LittleEngine

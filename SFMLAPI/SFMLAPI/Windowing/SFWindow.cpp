@@ -27,13 +27,15 @@ SFWindow::SFWindow(const SFWindowData& data)
 	Vector2 viewSize = m_viewBounds.GetSize();
 	Fixed worldAspect = viewSize.x / viewSize.y;
 	Fixed screenAspect(data.windowSize.width, data.windowSize.height);
-	if (Maths::Abs(worldAspect - screenAspect) > Fixed(1, 100))
+	if (!Maths::IsNearlyEqual(worldAspect.ToF32(), screenAspect.ToF32()))
 	{
 		String screenSizeStr = "[" + Strings::ToString(data.windowSize.width) + "x" +
 							   Strings::ToString(data.windowSize.height) + "]";
-		LogW("World view's aspect ratio " + viewSize.ToString() +
-			 " is significantly different from screen's aspect ratio " + screenSizeStr +
-			 "\nExpect display to be stretched!");
+		LOG_W(
+			"[SFWindow] World view's aspect ratio %s"
+			" is significantly different from screen's aspect ratio %s"
+			"\nExpect display to be stretched!",
+			viewSize.ToString().c_str(), screenSizeStr.c_str());
 	}
 
 	sf::View view;

@@ -256,7 +256,7 @@ void SFPrimitive::UpdatePivot()
 void SFPrimitive::UpdateRenderState(const Fixed& alpha)
 {
 	if (!m_state.bEnabled)
-		LogE("DISABLED PRIMITIVE BEING UPDATED");
+		LOG_E("DISABLED PRIMITIVE BEING UPDATED");
 	UpdatePivot();
 	sf::Vector2f scale = Cast(m_state.sfScale.Lerp(alpha));
 	f32 orientation = Cast(m_state.sfOrientation.Lerp(alpha));
@@ -294,11 +294,7 @@ void SFPrimitive::UpdateRenderState(const Fixed& alpha)
 #if DEBUGGING
 	if (bDebugThisPrimitive)
 	{
-		/*Colour c = Colour::Lerp(m_state.sfSecondaryColour.min, m_state.sfSecondaryColour.max, alpha);
-		sf::Color sfC = Cast(c);
-		String sfCText = Strings::ToString(sfC.r) + ", " + Strings::ToString(sfC.g) + ", " + Strings::ToString(sfC.b) + ", " + Strings::ToString(sfC.a);
-		LogD("Colour: " + c.ToString() + " sfColor: " + sfCText + " outline: " + Strings::ToString(outlineThickness));*/
-		LogW("Enabled: " + Strings::ToString(m_state.bEnabled));
+		LOG_W("Enabled: %d", m_state.bEnabled);
 	}
 #endif
 }

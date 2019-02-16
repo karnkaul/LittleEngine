@@ -17,9 +17,9 @@ EngineService::EngineService()
 {
 	if (!OS::Platform()->CanCreateSystemThread() || Services::Jobs()->AvailableSystemThreads() < 1)
 	{
-		LogW(
-			"Insufficient workers to create persistent AsyncFileLogger job.\n!ERROR! File logging "
-			"is not available!");
+		LOG_W(
+			"Insufficient workers to create persistent AsyncFileLogger job."
+			"\n!ERROR! File logging is not available!");
 	}
 	else
 	{

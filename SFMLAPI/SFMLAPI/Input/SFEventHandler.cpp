@@ -16,20 +16,20 @@ SFWindowEventType SFEventHandler::PollEvents(SFWindow& sfWindow)
 		// Window
 		case sf::Event::Closed:
 		{
-			LogD("[SFEventHandler] Window Closed requested");
+			LOG_D("[SFEventHandler] Window Closed requested");
 			return SFWindowEventType::Closed;
 		}
 
 		case sf::Event::LostFocus:
 		{
-			LogD("[SFEventHandler] Window Lost Focus");
+			LOG_D("[SFEventHandler] Window Lost Focus");
 			m_inputSM.ResetKeyStates();
 			return SFWindowEventType::LostFocus;
 		}
 
 		case sf::Event::GainedFocus:
 		{
-			LogD("[SFEventHandler] Window Gained Focus");
+			LOG_D("[SFEventHandler] Window Gained Focus");
 			m_inputSM.ResetKeyStates();
 			return SFWindowEventType::GainedFocus;
 		}

@@ -7,17 +7,17 @@ namespace LittleEngine
 {
 UIWidget::UIWidget() : UIObject("Untitled")
 {
-	LogD("Untitled UIWidget constructed");
+	SetName("", "UIWidget");
 }
 
 UIWidget::UIWidget(const String& name) : UIObject(name)
 {
-	LogD(LogName() + " UIWidget constructed");
+	SetName("", "UIWidget");
 }
 
 UIWidget::~UIWidget()
 {
-	LogD(LogName() + " UIWidget destroyed");
+	LOG_D("%s destroyed", LogNameStr());
 }
 
 void UIWidget::InitWidget(UIContext& owner, LayerID rootLayer)

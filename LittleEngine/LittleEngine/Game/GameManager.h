@@ -14,11 +14,11 @@ private:
 	static constexpr size_t COMPONENT_LINES = static_cast<size_t>(TimingType::LAST) + 1;
 
 private:
+	String m_logName;
 	Vector<UPtr<Entity>> m_uEntities;
 	Array<Vector<UPtr<Component>>, COMPONENT_LINES> m_uComponents;
 	UPtr<UIManager> m_uUIManager;
 	UPtr<CollisionManager> m_uCollisionManager;
-	String m_name;
 	class World* m_pWorld;
 
 public:
@@ -38,7 +38,7 @@ public:
 	template <typename T>
 	T* NewComponent(Entity& owner);
 
-	String LogName() const;
+	const char* LogNameStr() const;
 
 private:
 	void Tick(Time dt);
@@ -55,7 +55,7 @@ T* GameManager::NewEntity(const String& name, const Vector2& position, const Fix
 	m_uEntities.emplace_back(std::move(uT));
 	pT->m_transform.localPosition = position;
 	pT->m_transform.localOrientation = orientation;
-	LogD(pT->LogName() + " spawned");
+	LOG_D("%s spawned", pT->LogNameStr());
 	return pT;
 }
 
@@ -70,7 +70,7 @@ T* GameManager::NewComponent(Entity& owner)
 	uT->SetOwner(owner);
 	T* pT = uT.get();
 	componentVec.emplace_back(std::move(uT));
-	LogD(pT->LogName() + " constructed and attached to " + owner.LogName());
+	LOG_D("%s constructed and attached to %s", pT->LogNameStr(), owner.LogNameStr());
 	return pT;
 }
 } // namespace LittleEngine

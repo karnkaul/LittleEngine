@@ -17,7 +17,7 @@ TimingType RenderComponent::GetComponentTiming() const
 
 void RenderComponent::OnCreated()
 {
-	m_name = "Render";
+	SetName("Render");
 	m_pSFPrimitive = Services::RHeap()->New();
 	m_pSFPrimitive->SetEnabled(true);
 }

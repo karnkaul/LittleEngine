@@ -185,7 +185,7 @@ void SpawnDialogue()
 	data.contentBG = Colour::White;
 	data.buttonData = UIButtonData::DebugButton();
 	debugTokens.push_back(
-		pDialogue->InitDialogue(std::move(data), "OK", []() { LogD("OK pressed!"); }));
+		pDialogue->InitDialogue(std::move(data), "OK", []() { LOG_D("OK pressed!"); }));
 	debugTokens.push_back(pDialogue->AddOtherButton("Cancel", []() { pDialogue->Destruct(); }, false));
 	pDialogue->SetActive(true);
 	bToSpawnDialogue = false;
@@ -200,15 +200,15 @@ void TestTick(Time dt)
 		pButtonDrawer = pTestWorld->Game()->UI()->SpawnContext<UIButtonDrawer>();
 		pButtonDrawer->InitButtonDrawer(UIButtonDrawerData::DebugButtonDrawer(bModal));
 		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 0", []() { LogD("Button 0 pressed!"); }));
+			pButtonDrawer->AddButton("Button 0", []() { LOG_D("Button 0 pressed!"); }));
 		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 1", []() { LogD("Button 1 pressed!"); }));
+			pButtonDrawer->AddButton("Button 1", []() { LOG_D("Button 1 pressed!"); }));
 		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 2", []() { LogD("Button 2 pressed!"); }));
+			pButtonDrawer->AddButton("Button 2", []() { LOG_D("Button 2 pressed!"); }));
 		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 3", []() { LogD("Button 3 pressed!"); }));
+			pButtonDrawer->AddButton("Button 3", []() { LOG_D("Button 3 pressed!"); }));
 		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 4", []() { LogD("Button 4 pressed!"); }));
+			pButtonDrawer->AddButton("Button 4", []() { LOG_D("Button 4 pressed!"); }));
 		debugTokens.push_back(pButtonDrawer->AddButton("Dialogue", []() { bToSpawnDialogue = true; }));
 		if (bModal)
 			debugTokens.push_back(

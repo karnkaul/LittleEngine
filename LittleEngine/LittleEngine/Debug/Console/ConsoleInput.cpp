@@ -58,7 +58,7 @@ namespace LittleEngine { namespace Debug {
 
 		else if (textInput.Contains(SpecialInputType::Escape)) {
 			m_liveLine.Clear();
-			LogD("Cleared");
+			LOG_D("Cleared");
 		}
 
 		else if (textInput.Contains(SpecialInputType::Tab))

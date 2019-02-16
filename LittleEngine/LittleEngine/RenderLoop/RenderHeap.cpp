@@ -63,12 +63,12 @@ bool RenderHeap::Destroy(SFPrimitive* primitive)
 			m_uPrimitives.erase(std::remove(m_uPrimitives.begin(), m_uPrimitives.end(), *iter),
 								m_uPrimitives.end());
 #if LOG_PRIMITIVE_DESTRUCTION
-			LogD("[RenderHeap] Primitive destroyed");
+			LOG_D("[RenderHeap] Primitive destroyed");
 #endif
 			return true;
 		}
 	}
-	LogW("[RenderHeap] SFPrimitive not owned by RenderHeap!");
+	LOG_W("[RenderHeap] SFPrimitive not owned by RenderHeap!");
 	return false;
 }
 
@@ -82,10 +82,10 @@ void RenderHeap::Destroy(InitList<SFPrimitive*> pPrimitives)
 
 void RenderHeap::DestroyAll()
 {
-#if DEBUGGING
+#if DEBUG_LOGGING
 	u32 cleared = m_uPrimitives.size();
 #endif
 	m_uPrimitives.clear();
-	LogI("[RenderHeap] Destroyed " + Strings::ToString(cleared) + " Primitives");
+	LOG_I("[RenderHeap] Destroyed %d Primitives", cleared);
 }
 } // namespace LittleEngine
