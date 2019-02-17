@@ -25,6 +25,7 @@
     <ClCompile Include="LittleEngine\Debug\Console\DebugConsole.cpp" />
     <ClCompile Include="LittleEngine\Debug\Console\DebugCommands.cpp" />
     <ClCompile Include="LittleEngine\Debug\Console\LogLine.cpp" />
+    <ClCompile Include="LittleEngine\Debug\Console\RenderStatsRenderer.cpp" />
     <ClCompile Include="LittleEngine\Debug\DebugProfiler.cpp" />
     <ClCompile Include="LittleEngine\Engine\EngineConfig.cpp" />
     <ClCompile Include="LittleEngine\Engine\EngineLoop.cpp" />
@@ -36,6 +37,9 @@
     <ClCompile Include="LittleEngine\Game\GameManager.cpp" />
     <ClCompile Include="LittleEngine\Game\Inheritable.cpp" />
     <ClCompile Include="LittleEngine\Game\WorldObject.cpp" />
+    <ClCompile Include="LittleEngine\Game\World\LoadingUI.cpp" />
+    <ClCompile Include="LittleEngine\Game\World\World.cpp" />
+    <ClCompile Include="LittleEngine\Game\World\WorldStateMachine.cpp" />
     <ClCompile Include="LittleEngine\GFX\GFX.cpp" />
     <ClCompile Include="LittleEngine\Input\EngineInput.cpp" />
     <ClCompile Include="LittleEngine\Input\Gamepad.cpp" />
@@ -58,9 +62,6 @@
     <ClCompile Include="LittleEngine\UI\UITransform.cpp" />
     <ClCompile Include="LittleEngine\UI\UIWidget.cpp" />
     <ClCompile Include="LittleEngine\UI\UIWidgetMatrix.cpp" />
-    <ClCompile Include="LittleEngine\World\LoadingUI.cpp" />
-    <ClCompile Include="LittleEngine\World\World.cpp" />
-    <ClCompile Include="LittleEngine\World\WorldStateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Audio\EngineAudio.h" />
@@ -70,6 +71,7 @@
     <ClInclude Include="LittleEngine\Debug\Console\DebugConsole.h" />
     <ClInclude Include="LittleEngine\Debug\Console\DebugCommands.h" />
     <ClInclude Include="LittleEngine\Debug\Console\LogLine.h" />
+    <ClInclude Include="LittleEngine\Debug\Console\RenderStatsRenderer.h" />
     <ClInclude Include="LittleEngine\Debug\DebugProfiler.h" />
     <ClInclude Include="LittleEngine\Engine\EngineConfig.h" />
     <ClInclude Include="LittleEngine\Engine\EngineLoop.h" />
@@ -82,6 +84,9 @@
     <ClInclude Include="LittleEngine\Game\GameManager.h" />
     <ClInclude Include="LittleEngine\Game\Inheritable.h" />
     <ClInclude Include="LittleEngine\Game\WorldObject.h" />
+    <ClInclude Include="LittleEngine\Game\World\LoadingUI.h" />
+    <ClInclude Include="LittleEngine\Game\World\World.h" />
+    <ClInclude Include="LittleEngine\Game\World\WorldStateMachine.h" />
     <ClInclude Include="LittleEngine\Jobs\JobManager.h" />
     <ClInclude Include="LittleEngine\Jobs\JobWorker.h" />
     <ClInclude Include="LittleEngine\LittleEngine.h" />
@@ -108,9 +113,6 @@
     <ClInclude Include="LittleEngine\UI\UITransform.h" />
     <ClInclude Include="LittleEngine\UI\UIWidget.h" />
     <ClInclude Include="LittleEngine\UI\UIWidgetMatrix.h" />
-    <ClInclude Include="LittleEngine\World\LoadingUI.h" />
-    <ClInclude Include="LittleEngine\World\World.h" />
-    <ClInclude Include="LittleEngine\World\WorldStateMachine.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">

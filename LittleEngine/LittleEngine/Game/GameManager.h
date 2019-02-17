@@ -1,5 +1,4 @@
 #pragma once
-#include "WorldObject.h"
 #include "Entity.h"
 #include "Component.h"
 #include "LittleEngine/UI/UIManager.h"
@@ -19,10 +18,9 @@ private:
 	Array<Vector<UPtr<Component>>, COMPONENT_LINES> m_uComponents;
 	UPtr<UIManager> m_uUIManager;
 	UPtr<CollisionManager> m_uCollisionManager;
-	class World* m_pWorld;
 
 public:
-	GameManager(World& owner);
+	GameManager();
 	~GameManager();
 
 	UIManager* UI() const;

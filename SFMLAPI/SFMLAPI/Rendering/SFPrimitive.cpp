@@ -63,6 +63,12 @@ SFPrimitive* SFPrimitive::SetPosition(const Vector2& sfPosition, bool bImmediate
 		m_state.sfPosition.Reset(WorldToScreen(sfPosition));
 	else
 		m_state.sfPosition.Update(WorldToScreen(sfPosition));
+	if (m_bStatic)
+	{
+		ReconcileState();
+		m_bStatic = false;
+		m_bMakeStatic = true;
+	}
 	return this;
 }
 
@@ -72,6 +78,12 @@ SFPrimitive* SFPrimitive::SetOrientation(const Fixed& sfOrientation, bool bImmed
 		m_state.sfOrientation.Reset(WorldToScreen(sfOrientation));
 	else
 		m_state.sfOrientation.Update(WorldToScreen(sfOrientation));
+	if (m_bStatic)
+	{
+		ReconcileState();
+		m_bStatic = false;
+		m_bMakeStatic = true;
+	}
 	return this;
 }
 
@@ -81,6 +93,12 @@ SFPrimitive* SFPrimitive::SetScale(const Vector2& sfScale, bool bImmediate)
 		m_state.sfScale.Reset(sfScale);
 	else
 		m_state.sfScale.Update(sfScale);
+	if (m_bStatic)
+	{
+		ReconcileState();
+		m_bStatic = false;
+		m_bMakeStatic = true;
+	}
 	return this;
 }
 
@@ -96,6 +114,12 @@ SFPrimitive* SFPrimitive::SetPrimaryColour(Colour sfColour, bool bImmediate)
 		m_state.sfPrimaryColour.Reset(sfColour);
 	else
 		m_state.sfPrimaryColour.Update(sfColour);
+	if (m_bStatic)
+	{
+		ReconcileState();
+		m_bStatic = false;
+		m_bMakeStatic = true;
+	}
 	return this;
 }
 
@@ -105,12 +129,24 @@ SFPrimitive* SFPrimitive::SetSecondaryColour(Colour sfColour, bool bImmediate)
 		m_state.sfSecondaryColour.Reset(sfColour);
 	else
 		m_state.sfSecondaryColour.Update(sfColour);
+	if (m_bStatic)
+	{
+		ReconcileState();
+		m_bStatic = false;
+		m_bMakeStatic = true;
+	}
 	return this;
 }
 
 SFPrimitive* SFPrimitive::SetOutline(const Fixed& thickness)
 {
 	m_state.outlineThickness = thickness;
+	if (m_bStatic)
+	{
+		ReconcileState();
+		m_bStatic = false;
+		m_bMakeStatic = true;
+	}
 	return this;
 }
 
@@ -242,6 +278,19 @@ void SFPrimitive::ReconcileState()
 	m_state.Reconcile();
 }
 
+void SFPrimitive::SetStatic(bool bStatic)
+{
+	if (bStatic)
+	{
+		m_bMakeStatic = true;
+		m_bStatic = false;
+	}
+	else
+	{
+		m_bMakeStatic = m_bStatic = false;
+	}
+}
+
 void SFPrimitive::UpdatePivot()
 {
 	Vector2 offset = Fixed::OneHalf * GetBounds().GetSize();
@@ -255,8 +304,9 @@ void SFPrimitive::UpdatePivot()
 
 void SFPrimitive::UpdateRenderState(const Fixed& alpha)
 {
-	if (!m_state.bEnabled)
-		LOG_E("DISABLED PRIMITIVE BEING UPDATED");
+	if (m_bStatic)
+		return;
+
 	UpdatePivot();
 	sf::Vector2f scale = Cast(m_state.sfScale.Lerp(alpha));
 	f32 orientation = Cast(m_state.sfOrientation.Lerp(alpha));
@@ -291,6 +341,11 @@ void SFPrimitive::UpdateRenderState(const Fixed& alpha)
 	m_text.setOutlineColor(outline);
 	m_sprite.setColor(fill);
 
+	if (m_bMakeStatic)
+	{
+		m_bStatic = true;
+		m_bMakeStatic = false;
+	}
 #if DEBUGGING
 	if (bDebugThisPrimitive)
 	{

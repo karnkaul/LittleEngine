@@ -1,18 +1,16 @@
 #pragma once
-#include "UIObject.h"
 #include "UIContext.h"
 
 namespace LittleEngine
 {
-// TODO: for handling multiple UIContexts
-class UIManager final : public UIObject
+class UIManager final
 {
 public:
 private:
 	Vector<UPtr<UIContext>> m_uContexts;
 
 public:
-	UIManager(World& owner);
+	UIManager();
 	~UIManager();
 
 	template <typename T>
@@ -35,6 +33,6 @@ public:
 
 	UIContext* GetActiveContext() const;
 
-	virtual void Tick(Time dt) override;
+	void Tick(Time dt);
 };
 } // namespace LittleEngine

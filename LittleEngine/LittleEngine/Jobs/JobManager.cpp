@@ -8,7 +8,7 @@
 
 namespace LittleEngine
 {
-MultiJob::Job::Job(const String& name, Function(void()) job) : name(name), job(job)
+MultiJob::SubJob::SubJob(const String& name, Function(void()) job) : name(name), job(job)
 {
 }
 
@@ -21,8 +21,8 @@ void MultiJob::AddJob(Function(void()) job, const String& name)
 {
 	String n = name;
 	if (name.empty())
-		n = "MultiJob_" + Strings::ToString(m_Jobs.size());
-	m_Jobs.emplace_back(name, job);
+		n = "MultiJob_" + Strings::ToString(m_subJobs.size());
+	m_subJobs.emplace_back(name, job);
 }
 
 void MultiJob::StartJobs(Function(void()) OnComplete)
@@ -31,14 +31,13 @@ void MultiJob::StartJobs(Function(void()) OnComplete)
 	Assert(pJobs, "JobManager Service is null!");
 	LOG_I("%s started", LogNameStr());
 	m_OnComplete = OnComplete;
-	Vector<JobID> jobIDs;
-	for (auto& job : m_Jobs)
+	for (auto& job : m_subJobs)
 	{
-		jobIDs.push_back(pJobs->Enqueue(job.job, job.name));
+		m_pendingJobIDs.push_back(pJobs->Enqueue(job.job, job.name));
 	}
 	pJobs->Enqueue(
-		[&, jobIDs]() {
-			for (auto id : jobIDs)
+		[&]() {
+			for (auto id : m_pendingJobIDs)
 			{
 				Services::Jobs()->Wait(id);
 			}
@@ -47,8 +46,26 @@ void MultiJob::StartJobs(Function(void()) OnComplete)
 		"MultiJob Observer");
 }
 
+Fixed MultiJob::GetProgress() const
+{
+	u32 done = m_subJobs.size() - m_pendingJobIDs.size();
+	return Fixed(done, m_subJobs.size());
+}
+
 void MultiJob::Update()
 {
+	auto iter = m_pendingJobIDs.begin();
+	while (iter != m_pendingJobIDs.end())
+	{
+		if (Services::Jobs()->IsCompleted(*iter))
+		{
+			iter = m_pendingJobIDs.erase(iter);
+		}
+		else
+		{
+			++iter;
+		}
+	}
 	if (m_bCompleted && m_OnComplete)
 	{
 		LOG_D("%s completed", LogNameStr());

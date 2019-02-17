@@ -13,16 +13,17 @@ using JobID = s32;
 class MultiJob
 {
 private:
-	struct Job
+	struct SubJob
 	{
 		String name;
 		Function(void()) job;
 
-		Job(const String& name, Function(void()) job);
+		SubJob(const String& name, Function(void()) job);
 	};
 
 	String m_logName;
-	Vector<Job> m_Jobs;
+	Vector<SubJob> m_subJobs;
+	List<JobID> m_pendingJobIDs;
 	Function(void()) m_OnComplete = nullptr;
 	bool m_bCompleted = false;
 
@@ -31,6 +32,7 @@ public:
 
 	void AddJob(Function(void()) job, const String& name = "");
 	void StartJobs(Function(void()) OnComplete);
+	Fixed GetProgress() const;
 
 private:
 	void Update();
@@ -91,6 +93,7 @@ private:
 	JobWorker* GetSystemWorker(JobID id);
 	void Tick(Time dt);
 
+	friend class MultiJob;
 	friend class AsyncRenderLoop;
 	friend class AsyncFileLogger;
 	friend class EngineService;

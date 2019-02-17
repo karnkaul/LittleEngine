@@ -43,19 +43,8 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository, const String& m
 
 	m_bCompleted = m_bIdle = false;
 	Assert(Services::Jobs(), "Job Service is null!");
-	MultiJob* pMultiJob = Services::Jobs()->CreateMultiJob("Async Load: " + manifestPath);
-	for (auto& texture : m_newTextures)
-	{
-		pMultiJob->AddJob(
-			[&]() { texture.asset = m_pRepository->LoadInternal<TextureAsset>(texture.assetPath); },
-			texture.assetPath);
-	}
-	for (auto& font : m_newFonts)
-	{
-		pMultiJob->AddJob(
-			[&]() { font.asset = m_pRepository->LoadInternal<FontAsset>(font.assetPath); }, font.assetPath);
-	}
-	pMultiJob->AddJob(
+	m_pMultiJob = Services::Jobs()->CreateMultiJob("Async Load: " + manifestPath);
+	m_pMultiJob->AddJob(
 		[&]() {
 			for (auto& sound : m_newSounds)
 			{
@@ -63,8 +52,24 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository, const String& m
 			}
 		},
 		"Load All Sounds");
+	for (auto& texture : m_newTextures)
+	{
+		m_pMultiJob->AddJob(
+			[&]() { texture.asset = m_pRepository->LoadInternal<TextureAsset>(texture.assetPath); },
+			texture.assetPath);
+	}
+	for (auto& font : m_newFonts)
+	{
+		m_pMultiJob->AddJob(
+			[&]() { font.asset = m_pRepository->LoadInternal<FontAsset>(font.assetPath); }, font.assetPath);
+	}
 
-	pMultiJob->StartJobs([&]() { m_bCompleted = true; });
+	m_pMultiJob->StartJobs([&]() { m_bCompleted = true; });
+}
+
+Fixed AsyncAssetLoader::GetProgress() const
+{
+	return m_pMultiJob ? m_pMultiJob->GetProgress() : -1.0f;
 }
 
 void AsyncAssetLoader::Tick(Time)

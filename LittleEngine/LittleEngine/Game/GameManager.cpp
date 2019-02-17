@@ -5,11 +5,10 @@
 
 namespace LittleEngine
 {
-GameManager::GameManager(World& owner) : m_pWorld(&owner)
+GameManager::GameManager()
 {
-	m_logName = "[GameManager (" + String(owner.GetNameStr()) + ")]";
-	m_uUIManager = MakeUnique<UIManager>(*m_pWorld);
-	m_uCollisionManager = MakeUnique<CollisionManager>(m_pWorld->GetNameStr());
+	m_uUIManager = MakeUnique<UIManager>();
+	m_uCollisionManager = MakeUnique<CollisionManager>();
 	Services::ProvideGameManager(*this);
 }
 

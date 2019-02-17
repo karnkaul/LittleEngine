@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "UIElement.h"
-#include "LittleEngine/World/World.h"
+#include "LittleEngine/Game/World/World.h"
 #include "LittleEngine/Services/Services.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
@@ -44,6 +44,8 @@ void UIElement::Construct()
 	m_pText = Services::RHeap()->New();
 	m_pPrimitive->SetEnabled(true);
 	m_pText->SetEnabled(true);
+	m_pPrimitive->SetStatic(true);
+	m_pText->SetStatic(true);
 }
 
 void UIElement::SetPanel(UByte r, UByte g, UByte b, UByte a)

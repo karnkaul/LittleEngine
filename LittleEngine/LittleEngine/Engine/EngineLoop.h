@@ -27,11 +27,11 @@ public:
 	void StopTicking();
 
 protected:
-	virtual void PreRun() override;
-	virtual void Tick(Time dt) override;
-	virtual void PostTick() override;
-	virtual void PostRun() override;
-	virtual void OnPause(bool bPause) override;
+	void PreRun() override;
+	void Tick(Time dt) override;
+	void PostTick() override;
+	void PostRun() override;
+	void OnPause(bool bPause) override;
 
 	void UpdateInput();
 	void Integrate(Time dt);

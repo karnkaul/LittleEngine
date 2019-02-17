@@ -3,6 +3,7 @@
 #include "Utils.h"
 #include <math.h>
 #include <string>
+#include <iomanip>
 
 namespace Core
 {
@@ -74,7 +75,10 @@ f64 Vector2::SqrMagnitude() const
 
 String Vector2::ToString() const
 {
-	return "[" + x.ToString() + ", " + y.ToString() + "]";
+	StringStream ret;
+	ret << std::fixed << std::setprecision(3);
+	ret << "[" << x.ToF64() << ", " << y.ToF64() << "]";
+	return ret.str();
 }
 
 Vector2 operator-(const Vector2& lhs)

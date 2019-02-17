@@ -2,6 +2,7 @@
 #include "WorldStateMachine.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/Repository/AsyncAssetLoader.h"
 
 namespace LittleEngine
 {
@@ -58,7 +59,10 @@ void WorldStateMachine::Start(const String& manifestPath)
 	if (!manifestPath.empty())
 	{
 		LOG_D("[WorldStateMachine] Loading assets from manifest [%s]...", manifestPath.c_str());
-		Services::Engine()->Repository()->LoadAsync(manifestPath, [&]() { m_bLoaded = true; });
+		m_pAssetLoader = Services::Engine()->Repository()->LoadAsync(manifestPath, [&]() {
+			m_bLoaded = true;
+			m_pAssetLoader = nullptr;
+		});
 		loadTime = Time::Zero;
 		m_uLoadingUI = MakeUnique<LoadingUI>();
 	}
@@ -92,7 +96,10 @@ void WorldStateMachine::PostBufferSwap()
 void WorldStateMachine::LoadingTick(Time dt)
 {
 	if (m_uLoadingUI)
-		m_uLoadingUI->Tick(dt);
+	{
+		Fixed progress = m_pAssetLoader ? m_pAssetLoader->GetProgress() : 1.0f;
+		m_uLoadingUI->Tick(dt, progress);
+	}
 	if (m_bLoaded)
 	{
 		loadTime = Time::Now() - loadTime;

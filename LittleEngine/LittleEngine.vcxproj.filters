@@ -26,9 +26,6 @@
     <Filter Include="LittleEngine\Engine">
       <UniqueIdentifier>{42063b7b-1281-44b6-b667-2e9e34923930}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LittleEngine\World">
-      <UniqueIdentifier>{7fab058a-fe19-463a-9bed-87f8ea20f050}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LittleEngine\Jobs">
       <UniqueIdentifier>{027c47a8-f0c3-46ed-9c5e-39e17e6cbb73}</UniqueIdentifier>
     </Filter>
@@ -46,6 +43,9 @@
     </Filter>
     <Filter Include="LittleEngine\Physics">
       <UniqueIdentifier>{bc181a82-8e38-40f3-ac97-dacf37772f4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LittleEngine\Game\World">
+      <UniqueIdentifier>{7fab058a-fe19-463a-9bed-87f8ea20f050}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -69,12 +69,6 @@
     </ClCompile>
     <ClCompile Include="LittleEngine\Engine\EngineService.cpp">
       <Filter>LittleEngine\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\World\World.cpp">
-      <Filter>LittleEngine\World</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\World\WorldStateMachine.cpp">
-      <Filter>LittleEngine\World</Filter>
     </ClCompile>
     <ClCompile Include="LittleEngine\Engine\EngineConfig.cpp">
       <Filter>LittleEngine\Engine</Filter>
@@ -111,9 +105,6 @@
     </ClCompile>
     <ClCompile Include="LittleEngine\UI\UIProgressBar.cpp">
       <Filter>LittleEngine\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\World\LoadingUI.cpp">
-      <Filter>LittleEngine\World</Filter>
     </ClCompile>
     <ClCompile Include="LittleEngine\Engine\AsyncFileLogger.cpp">
       <Filter>LittleEngine\Engine</Filter>
@@ -175,6 +166,18 @@
     <ClCompile Include="LittleEngine\Physics\CollisionManager.cpp">
       <Filter>LittleEngine\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="LittleEngine\Game\World\LoadingUI.cpp">
+      <Filter>LittleEngine\Game\World</Filter>
+    </ClCompile>
+    <ClCompile Include="LittleEngine\Game\World\World.cpp">
+      <Filter>LittleEngine\Game\World</Filter>
+    </ClCompile>
+    <ClCompile Include="LittleEngine\Game\World\WorldStateMachine.cpp">
+      <Filter>LittleEngine\Game\World</Filter>
+    </ClCompile>
+    <ClCompile Include="LittleEngine\Debug\Console\RenderStatsRenderer.cpp">
+      <Filter>LittleEngine\Debug\Console</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Input\EngineInput.h">
@@ -203,12 +206,6 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\Engine\EngineService.h">
       <Filter>LittleEngine\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\World\World.h">
-      <Filter>LittleEngine\World</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\World\WorldStateMachine.h">
-      <Filter>LittleEngine\World</Filter>
     </ClInclude>
     <ClInclude Include="LittleEngine\Engine\EngineConfig.h">
       <Filter>LittleEngine\Engine</Filter>
@@ -248,9 +245,6 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\UI\UI.h">
       <Filter>LittleEngine\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\World\LoadingUI.h">
-      <Filter>LittleEngine\World</Filter>
     </ClInclude>
     <ClInclude Include="LittleEngine\Engine\AsyncFileLogger.h">
       <Filter>LittleEngine\Engine</Filter>
@@ -320,6 +314,18 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\Physics\Physics.h">
       <Filter>LittleEngine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Game\World\LoadingUI.h">
+      <Filter>LittleEngine\Game\World</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Game\World\World.h">
+      <Filter>LittleEngine\Game\World</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Game\World\WorldStateMachine.h">
+      <Filter>LittleEngine\Game\World</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Debug\Console\RenderStatsRenderer.h">
+      <Filter>LittleEngine\Debug\Console</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

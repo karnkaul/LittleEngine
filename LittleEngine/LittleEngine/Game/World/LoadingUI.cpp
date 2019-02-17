@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LoadingUI.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/GFX/GFX.h"
 
 namespace LittleEngine
 {
@@ -20,40 +21,32 @@ LoadingUI::LoadingUI()
 	m_uTitle->SetFont(*Services::Engine()->Repository()->GetDefaultFont());
 	m_uTitle->SetText(UIText(titleText, titleSize, Colour::White));
 	m_uTitle->m_transform.nPosition = {0, Fixed(0.1f)};
-	m_uEllipses = MakeUnique<UIElement>("Loading Ellpises");
-	m_uEllipses->m_layer = static_cast<LayerID>(m_uBG->m_layer + 1);
-	m_uEllipses->m_transform.nPosition = {0, -Fixed(0.05f)};
+	m_uProgressBar = MakeUnique<UIProgressBar>("Asset Load Progress");
+	Vector2 size(GFX::GetViewSize().x, 10);
+	m_uProgressBar->InitProgressBar(size, Colour::White);
+	m_uProgressBar->m_transform.nPosition = {-Fixed::One, -Fixed(0.98f)};
+	m_uProgressBar->Tick(Time::Zero);
 }
 
 LoadingUI::~LoadingUI()
 {
 	m_uBG = nullptr;
 	m_uTitle = nullptr;
-	m_uEllipses = nullptr;
+	m_uProgressBar = nullptr;
 	LOG_D("[Loading UI] destroyed");
 }
 
-void LoadingUI::Tick(Time dt)
+void LoadingUI::Tick(Time dt, const Fixed& progress)
 {
-	m_ellipsesElapsed += dt;
-
-	// Animate
-	if (m_ellipsesElapsed.AsMilliseconds() > 250)
-	{
-		m_ellipsesText += ".";
-		if (m_ellipsesText.size() > 30)
-			m_ellipsesText = "";
-		m_ellipsesElapsed = Time::Zero;
-		m_uEllipses->SetText(UIText(m_ellipsesText, 50, Colour::White));
-	}
+	m_uProgressBar->SetProgress(progress);
 
 	TickElements(dt);
 }
 
 void LoadingUI::TickElements(Time dt)
 {
+	m_uProgressBar->Tick(dt);
 	m_uBG->Tick(dt);
 	m_uTitle->Tick(dt);
-	m_uEllipses->Tick(dt);
 }
 } // namespace LittleEngine

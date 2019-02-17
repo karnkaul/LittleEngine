@@ -1,20 +1,19 @@
 #include "stdafx.h"
 #include "UIManager.h"
-#include "LittleEngine/World/World.h"
+#include "LittleEngine/Game/World/World.h"
 #include "Logger.h"
 
 namespace LittleEngine
 {
-UIManager::UIManager(World& owner) : UIObject("UIManager")
+UIManager::UIManager()
 {
-	SetName("", owner.GetNameStr());
-	LOG_D("%s constructed", LogNameStr());
+	LOG_D("[UIManager] constructed");
 }
 
 UIManager::~UIManager()
 {
 	m_uContexts.clear();
-	LOG_D("%s destroyed", LogNameStr());
+	LOG_D("[UIManager] destroyed");
 }
 
 UIContext* UIManager::GetActiveContext() const

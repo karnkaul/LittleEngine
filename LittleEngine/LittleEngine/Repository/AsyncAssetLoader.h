@@ -23,11 +23,14 @@ private:
 	Vector<NewAsset<FontAsset>> m_newFonts;
 	Vector<NewAsset<SoundAsset>> m_newSounds;
 	class EngineRepository* m_pRepository;
+	class MultiJob* m_pMultiJob = nullptr;
 	bool m_bCompleted = false;
 	bool m_bIdle = false;
 
 public:
 	AsyncAssetLoader(EngineRepository& repository, const String& manifestPath, Function(void()) onDone);
+
+	Fixed GetProgress() const;
 
 private:
 	void Tick(Time dt);

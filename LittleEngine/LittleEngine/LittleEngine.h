@@ -10,6 +10,4 @@
 #include "Physics/Physics.h"
 #include "RenderLoop/RenderHeap.h"
 #include "Services/Services.h"
-#include "World/World.h"
-#include "World/WorldStateMachine.h"
 #include "UI/UI.h"

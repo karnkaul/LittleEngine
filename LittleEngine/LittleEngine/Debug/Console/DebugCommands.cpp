@@ -3,10 +3,11 @@
 #if ENABLED(CONSOLE)
 #include "Utils.h"
 #include "DebugConsole.h"
+#include "RenderStatsRenderer.h"
 #include "LittleEngine/Debug/DebugProfiler.h"
 #include "LittleEngine/Engine/EngineService.h"
-#include "LittleEngine/World/World.h"
-#include "LittleEngine/World/WorldStateMachine.h"
+#include "LittleEngine/Game/World/World.h"
+#include "LittleEngine/Game/World/WorldStateMachine.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/Physics/CollisionManager.h"
 
@@ -133,6 +134,7 @@ public:
 		executeResult.emplace_back("Collider Debug shapes not available", g_logTextColour);
 #endif
 		});
+
 		paramCallbackMap.emplace("profiler", [](Vector<LogLine>& executeResult) {
 #if ENABLED(PROFILER)
 			Profiler::Toggle(true);
@@ -140,6 +142,10 @@ public:
 #else
 		executeResult.emplace_back("Profiler not enabled", g_logTextColour);
 #endif
+		});
+		paramCallbackMap.emplace("renderStats", [](Vector<LogLine>& executeResult) {
+			RenderStatsRenderer::s_bConsoleRenderStatsEnabled = true;
+			executeResult.emplace_back("Turned on Render Stats", g_logTextColour);
 		});
 	}
 
@@ -170,6 +176,10 @@ public:
 #else
 			executeResult.emplace_back("Profiler not enabled", g_logTextColour);
 #endif
+		});
+		paramCallbackMap.emplace("renderStats", [](Vector<LogLine>& executeResult) {
+			RenderStatsRenderer::s_bConsoleRenderStatsEnabled = false;
+			executeResult.emplace_back("Turned off RenderStats", g_logTextColour);
 		});
 	}
 

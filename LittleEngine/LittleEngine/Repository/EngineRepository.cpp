@@ -44,10 +44,12 @@ void EngineRepository::LoadAll(AssetManifest& manifest)
 	});
 }
 
-void EngineRepository::LoadAsync(const String& manifestPath, Function(void()) OnCompleted)
+AsyncAssetLoader* EngineRepository::LoadAsync(const String& manifestPath, Function(void()) OnCompleted)
 {
 	UPtr<AsyncAssetLoader> uAsyncLoader = MakeUnique<AsyncAssetLoader>(*this, manifestPath, OnCompleted);
+	AsyncAssetLoader* pLoader = uAsyncLoader.get();
 	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
+	return pLoader;
 }
 
 void EngineRepository::UnloadAll()

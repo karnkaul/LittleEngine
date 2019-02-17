@@ -21,6 +21,5 @@ s32 TestGameLoop()
 
 int main()
 {
-	TestGameLoop();
 	return TestGameLoop();
 }

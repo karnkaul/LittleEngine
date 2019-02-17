@@ -71,7 +71,7 @@ void World::Activate()
 {
 	LOG_D("%s Activated.", LogNameStr());
 	m_worldClock.Restart();
-	m_uGame = MakeUnique<GameManager>(*this);
+	m_uGame = MakeUnique<GameManager>();
 	OnActivated();
 }
 

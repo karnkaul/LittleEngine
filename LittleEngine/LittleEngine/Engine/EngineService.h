@@ -3,7 +3,7 @@
 #include "LittleEngine/Services/IService.h"
 #include "LittleEngine/Input/EngineInput.h"
 #include "LittleEngine/Audio/EngineAudio.h"
-#include "LittleEngine/World/WorldStateMachine.h"
+#include "LittleEngine/Game/World/WorldStateMachine.h"
 #include "LittleEngine/Repository/EngineRepository.h"
 
 namespace LittleEngine

@@ -26,6 +26,7 @@ void UIProgressBar::InitProgressBar(const Vector2& size, Colour colour, const Fi
 	m_transform.size = m_size;
 	SetPanel(colour);
 	SetProgress(initProgress);
+	GetPrimitive()->SetStatic(false);
 }
 
 void UIProgressBar::SetProgress(const Fixed& progress)

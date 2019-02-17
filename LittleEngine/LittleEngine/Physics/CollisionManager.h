@@ -12,7 +12,7 @@ private:
 	String m_logName;
 
 public:
-	CollisionManager(const String& worldName);
+	CollisionManager();
 	~CollisionManager();
 
 	void Tick(Time dt);

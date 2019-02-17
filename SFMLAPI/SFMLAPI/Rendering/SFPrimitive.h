@@ -43,6 +43,8 @@ private:
 	sf::RectangleShape m_rectangle;
 	sf::Sprite m_sprite;
 	sf::Text m_text;
+	bool m_bStatic = false;
+	bool m_bMakeStatic = false;
 
 public:
 	static Vector2 WorldToScreen(const Vector2& worldPoint);
@@ -93,6 +95,7 @@ public:
 	LayerID GetLayer() const;
 
 	void ReconcileState();
+	void SetStatic(bool bStatic);
 
 private:
 	void UpdatePivot();

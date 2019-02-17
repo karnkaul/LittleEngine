@@ -87,7 +87,7 @@ public:
 	// Note: Not meant to be used in hot code!
 	void LoadAll(AssetManifest& manifest);
 	// Note: Will not load Music!
-	void LoadAsync(const String& manifestPath, Function(void()) OnComplete = nullptr);
+	AsyncAssetLoader* LoadAsync(const String& manifestPath, Function(void()) OnComplete = nullptr);
 
 	FontAsset* GetDefaultFont() const;
 

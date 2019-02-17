@@ -111,8 +111,8 @@ void SFEventLoop::SleepForRestOfFrame(Time frameTime)
 		StringStream s;
 		s << "[SFEventLoop] Frame Update Complete. Time taken: " << frameTime.AsMilliseconds()
 		  << " Surplus: " << surplus;
-		LOG_H("[SFEventLoop] Frame Update Complete. Time taken: %d Surplus: %d",
-			  frameTime.AsMilliseconds(), surplus);
+		//LOG_H("[SFEventLoop] Frame Update Complete. Time taken: %d Surplus: %d",
+			  //frameTime.AsMilliseconds(), surplus);
 		if (surplus > 0)
 			sf::sleep(sf::milliseconds(surplus));
 	}

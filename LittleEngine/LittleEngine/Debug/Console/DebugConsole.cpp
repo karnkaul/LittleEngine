@@ -4,10 +4,12 @@
 #include "DebugCommands.h"
 #include "ConsoleInput.h"
 #include "ConsoleRenderer.h"
+#include "RenderStatsRenderer.h"
 #include "CircularList.hpp"
 #include "LogLine.h"
 #include "LittleEngine/Input/EngineInput.h"
 #include "LittleEngine/Services/Services.h"
+#include "SFMLAPI/Rendering/SFRenderer.h"
 #include "Logger.h"
 
 namespace LittleEngine { namespace Debug {
@@ -29,11 +31,12 @@ namespace LittleEngine { namespace Debug {
 
 	namespace {
 		UPtr<class ConsoleImpl> uConsole;
-		
+
 		class ConsoleImpl {
 		private:
 			ConsoleInput m_input;
 			ConsoleRenderer m_renderer;
+			RenderStatsRenderer m_renderStats;
 			Time m_elapsed;
 			s32 m_cursorFrequencyMS = 200;
 			bool m_bShowCursor;
@@ -69,6 +72,7 @@ namespace LittleEngine { namespace Debug {
 				// Log Lines			
 				m_renderer.UpdateLog(Console::g_uLogBook->GetLogPage());
 			}
+			m_renderStats.Tick(dt);
 		}
 	}
 
