@@ -5,6 +5,12 @@
 
 namespace LittleEngine
 {
+namespace
+{
+Fixed progressTarget;
+Fixed progressNow;
+}
+
 LoadingUI::LoadingUI()
 {
 	String titleText = "Loading";
@@ -38,7 +44,16 @@ LoadingUI::~LoadingUI()
 
 void LoadingUI::Tick(Time dt, const Fixed& progress)
 {
-	m_uProgressBar->SetProgress(progress);
+	progressTarget = progress;
+	if (progressTarget == Fixed::One)
+	{
+		progressNow = progressTarget;
+	}
+	if (progressNow < progressTarget)
+	{
+		progressNow += Fixed(dt.AsSeconds());
+	}
+	m_uProgressBar->SetProgress(progressNow);
 
 	TickElements(dt);
 }
@@ -48,5 +63,7 @@ void LoadingUI::TickElements(Time dt)
 	m_uProgressBar->Tick(dt);
 	m_uBG->Tick(dt);
 	m_uTitle->Tick(dt);
+
+	progressTarget = Fixed::Zero;
 }
 } // namespace LittleEngine
