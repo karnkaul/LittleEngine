@@ -41,13 +41,14 @@ void UpdateFPS()
 #endif
 
 SFRenderer::SFRenderer(SFWindow& sfWindow, Time tickRate)
-	: m_bRendering(true), m_pSFWindow(&sfWindow), m_tickRate(tickRate)
+	: m_pSFWindow(&sfWindow), m_tickRate(tickRate)
 {
+	m_bRendering.store(true, std::memory_order_relaxed);
 }
 
 void SFRenderer::Render(GFXBuffer& buffer)
 {
-	if (m_bRendering)
+	if (m_bRendering.load(std::memory_order_relaxed))
 	{
 		m_pSFWindow->clear();
 
@@ -94,7 +95,7 @@ void SFRenderer::Render(GFXBuffer& buffer)
 
 void SFRenderer::Display()
 {
-	if (m_bRendering)
+	if (m_bRendering.load(std::memory_order_relaxed))
 	{
 		m_pSFWindow->display();
 	}

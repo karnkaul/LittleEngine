@@ -58,6 +58,11 @@ void LoadingUI::Tick(Time dt, const Fixed& progress)
 	TickElements(dt);
 }
 
+void LoadingUI::Reset()
+{
+	progressNow = Fixed::Zero;
+}
+
 void LoadingUI::TickElements(Time dt)
 {
 	m_uProgressBar->Tick(dt);

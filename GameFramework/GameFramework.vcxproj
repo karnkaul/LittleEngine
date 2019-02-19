@@ -41,6 +41,7 @@
     <ClCompile Include="GameFramework\UI\Contexts\UIButtonDrawer.cpp" />
     <ClCompile Include="GameFramework\UI\Contexts\UIDialogue.cpp" />
     <ClCompile Include="GameFramework\UI\Widgets\UIButton.cpp" />
+    <ClCompile Include="GameFramework\UI\Widgets\UIToggle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameFramework\Components\CollisionComponent.h" />
@@ -55,6 +56,7 @@
     <ClInclude Include="GameFramework\UI\Contexts\UIDialogue.h" />
     <ClInclude Include="GameFramework\UI\UI.h" />
     <ClInclude Include="GameFramework\UI\Widgets\UIButton.h" />
+    <ClInclude Include="GameFramework\UI\Widgets\UIToggle.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

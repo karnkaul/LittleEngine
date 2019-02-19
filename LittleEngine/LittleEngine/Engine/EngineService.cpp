@@ -15,7 +15,7 @@ using namespace Debug;
 #endif
 EngineService::EngineService()
 {
-	if (!OS::Platform()->CanCreateSystemThread() || Services::Jobs()->AvailableSystemThreads() < 1)
+	if (!OS::Platform()->CanCreateSystemThread() || Services::Jobs()->AvailableEngineThreads() < 1)
 	{
 		LOG_W(
 			"Insufficient workers to create persistent AsyncFileLogger job."

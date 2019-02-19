@@ -176,7 +176,7 @@ Time elapsed = Time::Zero;
 void SpawnDialogue()
 {
 	LayerID dialogueLayer = static_cast<LayerID>(LAYER_UI + 2);
-	pDialogue = pTestWorld->Game()->UI()->SpawnContext<UIDialogue>(dialogueLayer);
+	pDialogue = pTestWorld->Game()->UI()->PushContext<UIDialogue>(dialogueLayer);
 	UIDialogueData data;
 	data.bDestroyOnReturn = true;
 	data.titleUIText = UIText("Title", 25, Colour::Black);
@@ -191,13 +191,33 @@ void SpawnDialogue()
 	bToSpawnDialogue = false;
 }
 
+void SpawnToggle()
+{
+	LayerID toggleLayer = static_cast<LayerID>(LAYER_UI + 4);
+	UIContext* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>(toggleLayer);
+	pParent->GetRootElement()->m_transform.size = {400, 200};
+	UIToggle* pToggle0 = pParent->AddWidget<UIToggle>("Toggle0");
+	UIToggle* pToggle1 = pParent->AddWidget<UIToggle>("Toggle1");
+	
+	UIToggleData data;
+	data.labelText = "Toggle 0";
+	data.bgColour = Colour::Cyan;
+	debugTokens.push_back(pToggle0->InitToggle(data, [](bool bValue) { LOG_W("Toggle0 changed! %d", bValue); }));
+	pToggle0->GetRoot()->m_transform.SetAutoPadNPosition({0, 1});
+	data.labelText = "Toggle 1";
+	debugTokens.push_back(pToggle1->InitToggle(data, [](bool bValue) { LOG_W("Toggle1 changed! %d", bValue); }));
+	pToggle1->GetRoot()->m_transform.SetAutoPadNPosition({0, -1});
+	pParent->m_bAutoDestroyOnCancel = true;
+	pParent->SetActive(true);
+}
+
 void TestTick(Time dt)
 {
 	elapsed += dt;
 	if (elapsed.AsSeconds() >= 1 && !bSpawnedDrawer)
 	{
 		bSpawnedDrawer = true;
-		pButtonDrawer = pTestWorld->Game()->UI()->SpawnContext<UIButtonDrawer>();
+		pButtonDrawer = pTestWorld->Game()->UI()->PushContext<UIButtonDrawer>();
 		pButtonDrawer->InitButtonDrawer(UIButtonDrawerData::DebugButtonDrawer(bModal));
 		debugTokens.push_back(
 			pButtonDrawer->AddButton("Button 0", []() { LOG_D("Button 0 pressed!"); }));
@@ -208,7 +228,7 @@ void TestTick(Time dt)
 		debugTokens.push_back(
 			pButtonDrawer->AddButton("Button 3", []() { LOG_D("Button 3 pressed!"); }));
 		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 4", []() { LOG_D("Button 4 pressed!"); }));
+			pButtonDrawer->AddButton("Toggle", &SpawnToggle));
 		debugTokens.push_back(pButtonDrawer->AddButton("Dialogue", []() { bToSpawnDialogue = true; }));
 		if (bModal)
 			debugTokens.push_back(

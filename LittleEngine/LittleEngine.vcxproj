@@ -45,6 +45,7 @@
     <ClCompile Include="LittleEngine\Input\Gamepad.cpp" />
     <ClCompile Include="LittleEngine\Jobs\JobManager.cpp" />
     <ClCompile Include="LittleEngine\Jobs\JobWorker.cpp" />
+    <ClCompile Include="LittleEngine\Jobs\MultiJob.cpp" />
     <ClCompile Include="LittleEngine\Physics\Collider.cpp" />
     <ClCompile Include="LittleEngine\Physics\ColliderData.cpp" />
     <ClCompile Include="LittleEngine\Physics\CollisionManager.cpp" />
@@ -89,6 +90,7 @@
     <ClInclude Include="LittleEngine\Game\World\WorldStateMachine.h" />
     <ClInclude Include="LittleEngine\Jobs\JobManager.h" />
     <ClInclude Include="LittleEngine\Jobs\JobWorker.h" />
+    <ClInclude Include="LittleEngine\Jobs\MultiJob.h" />
     <ClInclude Include="LittleEngine\LittleEngine.h" />
     <ClInclude Include="LittleEngine\GFX\GFX.h" />
     <ClInclude Include="LittleEngine\Input\EngineInput.h" />
@@ -124,6 +126,9 @@
     <ProjectReference Include="..\SFMLAPI\SFMLAPI.vcxproj">
       <Project>{927b2d28-14e8-4d17-a0fb-5d637cf4ea3c}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

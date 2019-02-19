@@ -84,7 +84,7 @@ BootWorld::BootWorld() : World("Boot")
 void BootWorld::OnActivated()
 {
 	m_pLogoFont = Repository()->Load<FontAsset>("Sunscreen.otf");
-	if ((m_pLogoDrawer = Game()->UI()->SpawnContext<UIButtonDrawer>()))
+	if ((m_pLogoDrawer = Game()->UI()->PushContext<UIButtonDrawer>()))
 	{
 		m_pLogoDrawer->InitButtonDrawer(GetDrawerData());
 		m_pLogoHeader = m_pLogoDrawer->AddElement<UIElement>("Logo Header");
@@ -109,12 +109,9 @@ void BootWorld::Tick(Time dt)
 		Fixed seconds = Fixed(GetWorldTime().AsSeconds());
 		Fixed speed = 2;
 		Fixed alpha = (seconds * speed).Sin().Abs() * 255;
-		if (m_pLogoHeader)
-		{
-			Colour colour = m_pLogoHeader->GetText()->GetPrimaryColour();
-			colour.a = UByte(alpha.ToU32());
-			m_pLogoHeader->GetText()->SetPrimaryColour(colour);
-		}
+		Colour colour = m_pLogoHeader->GetText()->GetPrimaryColour();
+		colour.a = UByte(alpha.ToU32());
+		m_pLogoHeader->GetText()->SetPrimaryColour(colour);
 	}
 }
 

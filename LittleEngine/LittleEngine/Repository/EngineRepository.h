@@ -92,7 +92,7 @@ public:
 	FontAsset* GetDefaultFont() const;
 
 	// Unload all assets
-	void UnloadAll();
+	void UnloadAll(bool bUnloadDefaultFont);
 
 private:
 	EngineRepository(const EngineRepository&) = delete;

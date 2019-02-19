@@ -36,9 +36,10 @@ void UIWidget::Tick(Time dt)
 	}
 }
 
-void UIWidget::InitElement(UIElement* pNewElement)
+void UIWidget::InitElement(UIElement* pNewElement, UITransform* pParent)
 {
-	UITransform* pParent = m_pOwner ? &m_pOwner->GetRootElement()->m_transform : nullptr;
+	if (!pParent)
+		pParent = m_pOwner ? &m_pOwner->GetRootElement()->m_transform : nullptr;
 	pNewElement->InitElement(pParent);
 	pNewElement->m_layer = m_rootLayer;
 }

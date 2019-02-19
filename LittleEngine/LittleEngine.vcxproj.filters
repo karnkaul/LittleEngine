@@ -178,6 +178,9 @@
     <ClCompile Include="LittleEngine\Debug\Console\RenderStatsRenderer.cpp">
       <Filter>LittleEngine\Debug\Console</Filter>
     </ClCompile>
+    <ClCompile Include="LittleEngine\Jobs\MultiJob.cpp">
+      <Filter>LittleEngine\Jobs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Input\EngineInput.h">
@@ -327,5 +330,11 @@
     <ClInclude Include="LittleEngine\Debug\Console\RenderStatsRenderer.h">
       <Filter>LittleEngine\Debug\Console</Filter>
     </ClInclude>
+    <ClInclude Include="LittleEngine\Jobs\MultiJob.h">
+      <Filter>LittleEngine\Jobs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

@@ -3,43 +3,13 @@
 #include <mutex>
 #include "CoreTypes.h"
 #include "JobWorker.h"
+#include "MultiJob.h"
 #include "LittleEngine/Services/IService.h"
 #include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {
 using JobID = s32;
-
-class MultiJob
-{
-private:
-	struct SubJob
-	{
-		String name;
-		Function(void()) job;
-
-		SubJob(const String& name, Function(void()) job);
-	};
-
-	String m_logName;
-	Vector<SubJob> m_subJobs;
-	List<JobID> m_pendingJobIDs;
-	Function(void()) m_OnComplete = nullptr;
-	bool m_bCompleted = false;
-
-public:
-	MultiJob(const String& name);
-
-	void AddJob(Function(void()) job, const String& name = "");
-	void StartJobs(Function(void()) OnComplete);
-	Fixed GetProgress() const;
-
-private:
-	void Update();
-	const char* LogNameStr() const;
-
-	friend class JobManager;
-};
 
 class JobManager final : public IService
 {
@@ -54,48 +24,54 @@ private:
 		String logName;
 		Function(void()) task;
 		JobID id = INVALID_ID;
+		bool bSilent = false;
 
 		Job() = default;
-		Job(JobID id, Function(void()) task, String name);
+		Job(JobID id, Function(void()) task, String name, bool bSilent);
 
-		const char* ToString() const;
+		const char* ToStr() const;
 	};
 
 private:
-	Vector<UPtr<class JobWorker>> m_userWorkers;
-	Vector<UPtr<class JobWorker>> m_systemWorkers;
+	Vector<UPtr<class JobWorker>> m_gameWorkers;
+	Vector<UPtr<class JobWorker>> m_engineWorkers;
 	Vector<JobID> m_completed;
 	List<UPtr<MultiJob>> m_uMultiJobs;
-	List<Job> m_userJobQueue;
-	List<Job> m_systemJobQueue;
+	List<Job> m_gameJobQueue;
+	List<Job> m_engineJobQueue;
 	std::mutex m_mutex;
-	JobID m_nextUserID = 100;
-	JobID m_nextSystemID = 0;
-	u32 m_availableSystemThreads;
+	JobID m_nextGameJobID = 100;
+	JobID m_nextEngineJobID = 0;
+	u32 m_availableEngineThreads;
 
 public:
 	JobManager();
 	~JobManager();
 
 	void Wait(JobID id);
+	void Wait(InitList<JobID> ids);
+	void Wait(Vector<JobID> ids);
 	bool IsRunning(JobID id);
+	bool IsCompleted(JobID id);
 
 public:
-	JobID Enqueue(Function(void()) Task, const String& name = "");
+	JobID Enqueue(Function(void()) Task, const String& name = "", bool bSilent = false);
+	JobID EnqueueEngine(Function(void()) Task, const String& name);
 	MultiJob* CreateMultiJob(const String& name);
 
 private:
-	s32 AvailableSystemThreads() const;
-	JobID EnqueueSystem(Function(void()) Task, const String& name);
-	bool IsCompleted(JobID id);
-	bool IsEnqueued(JobID id);
-	JobWorker* GetUserWorker(JobID id);
-	JobWorker* GetSystemWorker(JobID id);
+	s32 AvailableEngineThreads() const;
 	void Tick(Time dt);
 
-	friend class MultiJob;
-	friend class AsyncRenderLoop;
-	friend class AsyncFileLogger;
+	bool Unsafe_IsCompleted(JobID id);
+	bool Unsafe_IsEnqueued(JobID id);
+	JobWorker* Unsafe_GetGameWorker(JobID id);
+	JobWorker* Unsafe_GetEngineWorker(JobID id);
+
+	Job Lock_PopJob(bool bEngineQueue = false);
+	void Lock_CompleteJob(JobID id);
+	JobID Lock_Enqueue(Job&& job, List<Job>& jobQueue);
+
 	friend class EngineService;
 	friend class EngineLoop;
 	friend class JobWorker;

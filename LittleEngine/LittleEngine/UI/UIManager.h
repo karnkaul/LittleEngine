@@ -14,7 +14,7 @@ public:
 	~UIManager();
 
 	template <typename T>
-	T* SpawnContext(LayerID baseLayer = LAYER_UI)
+	T* PushContext(LayerID baseLayer = LAYER_UI)
 	{
 		static_assert(IsDerived(UIContext, T), "T must derive from UIContext!");
 		if (!m_uContexts.empty())

@@ -20,13 +20,13 @@ private:
 	u32 id;
 	class JobManager* m_pManager;
 	std::thread m_thread;
-	std::atomic<bool> m_bWork = true;
+	std::atomic<bool> m_bWork;
 	State m_state;
 	JobID m_jobID;
-	const bool m_bSystemWorker;
+	const bool m_bEngineWorker;
 
 public:
-	JobWorker(JobManager& manager, u32 id, bool bSystem);
+	JobWorker(JobManager& manager, u32 id, bool bEngineWorker);
 	~JobWorker();
 
 	void Stop();

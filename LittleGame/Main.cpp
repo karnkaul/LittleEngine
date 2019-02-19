@@ -10,8 +10,13 @@
 
 using namespace LittleEngine;
 
+bool bInfiniteLoad = false;
+
 s32 TestGameLoop()
 {
+#if DEBUGGING
+	WorldStateMachine::s_bTEST_infiniteLoad = bInfiniteLoad;
+#endif
 	auto uGameLoop = EngineLoop::Create();
 
 	Services::Engine()->Worlds()->CreateWorld<BootWorld>();

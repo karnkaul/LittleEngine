@@ -6,11 +6,10 @@
 
 namespace LittleEngine
 {
-using Lock = std::lock_guard<std::mutex>;
-
-JobWorker::JobWorker(JobManager& manager, u32 id, bool bSystemWorker)
-	: id(id), m_pManager(&manager), m_bSystemWorker(bSystemWorker)
+JobWorker::JobWorker(JobManager& manager, u32 id, bool bEngineWorker)
+	: id(id), m_pManager(&manager), m_bEngineWorker(bEngineWorker)
 {
+	m_bWork.store(true, std::memory_order_relaxed);
 	m_logName = "[JobWorker" + Strings::ToString(id);
 	m_thread = std::thread(std::bind(&JobWorker::Run, this));
 }
@@ -26,7 +25,7 @@ JobWorker::~JobWorker()
 
 void JobWorker::Stop()
 {
-	m_bWork.store(false);
+	m_bWork.store(false, std::memory_order_relaxed);
 }
 
 void JobWorker::Wait()
@@ -49,24 +48,14 @@ JobWorker::State JobWorker::GetState() const
 
 void JobWorker::Run()
 {
-	while (m_bWork.load())
+	while (m_bWork.load(std::memory_order_relaxed))
 	{
 		// Reset
 		m_state = State::IDLE;
 		m_jobID = JobManager::INVALID_ID;
 
 		// Obtain job
-		JobManager::Job job;
-		{
-			Lock lock(m_pManager->m_mutex);
-			List<JobManager::Job>& jobList =
-				m_bSystemWorker ? m_pManager->m_systemJobQueue : m_pManager->m_userJobQueue;
-			if (!jobList.empty())
-			{
-				job = std::move(jobList.back());
-				jobList.pop_back();
-			}
-		}
+		JobManager::Job job = m_pManager->Lock_PopJob(m_bEngineWorker);
 
 		// No jobs in queue
 		if (job.id == JobManager::INVALID_ID)
@@ -79,14 +68,21 @@ void JobWorker::Run()
 		{
 			m_state = State::WORKING;
 			m_jobID = job.id;
-			String suffix = m_bSystemWorker ? " System Job " : " Job ";
-			LOG_D("%s Starting %s %s", m_logName.c_str(), m_bSystemWorker ? "System Job" : "Job", job.ToString());
-			job.task();
+			String suffix = m_bEngineWorker ? " Engine Job " : " Job ";
+			if (!job.bSilent)
+				LOG_D("%s Starting %s %s", m_logName.c_str(), m_bEngineWorker ? "Engine Job" : "Job", job.ToStr());
+			try
 			{
-				Lock lock(m_pManager->m_mutex);
-				m_pManager->m_completed.push_back(m_jobID);
+				job.task();
 			}
-			LOG_D("%s Completed %s %s", m_logName.c_str(), m_bSystemWorker ? "System Job" : "Job", job.ToString());
+			catch (std::exception& e)
+			{
+				Assert(false, "AsyncTask threw exception!");
+				LOG_E("%d threw an exception and job has failed! %d", m_jobID);
+			}
+			m_pManager->Lock_CompleteJob(m_jobID);
+			if (!job.bSilent)
+				LOG_D("%s Completed %s %s", m_logName.c_str(), m_bEngineWorker ? "Engine Job" : "Job", job.ToStr());
 		}
 	}
 }
