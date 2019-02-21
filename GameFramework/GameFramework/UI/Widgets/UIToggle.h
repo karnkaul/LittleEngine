@@ -1,23 +1,17 @@
 #pragma once
-#include "LittleEngine/UI/UIWidget.h"
 #include "Delegate.hpp"
+#include "LittleEngine/UI/UIWidget.h"
+#include "LittleEngine/UI/UIStyle.h"
 
 namespace LittleEngine
 {
 struct UIToggleData
 {
-	UIText labelText;
-	Vector2 totalSize = Vector2(250, 100);
-	Vector2 boxSize = Vector2(40, 40);
-	Colour bgColour = Colour::Transparent;
-	Colour onColour = Colour::Green;
+	Vector2 boxSize = {40, 40};
+	Colour onColour = Colour::Cyan;
 	Colour offColour = Colour::White;
-	Colour interactColour = Colour::Yellow;
-	Colour borderColourS = Colour::Red;
-	Colour borderColourNS = Colour::Transparent;
-	Fixed borderSize = Fixed::Two;
-	u32 textSize = 12;
-	bool bSetOn = false;
+	String label;
+	bool bSetOn;
 };
 
 using OnChanged = Core::Delegate<bool>;
@@ -25,11 +19,11 @@ using OnChanged = Core::Delegate<bool>;
 class UIToggle : public UIWidget
 {
 private:
+	UIToggleData m_data;
+	OnChanged m_delegate;
 	UIElement* m_pRoot;
 	UIElement* m_pLabel;
 	UIElement* m_pToggle;
-	OnChanged m_delegate;
-	UIToggleData m_data;
 	bool m_bOn = false;
 
 public:
@@ -38,6 +32,9 @@ public:
 	~UIToggle();
 
 	OnChanged::Token InitToggle(const UIToggleData& data, OnChanged::Callback onChanged);
+	void SetText(const UIText& text);
+	OnChanged::Token AddCallback(OnChanged::Callback callback);
+	void SetOn(bool bOn);
 	UIElement* GetRoot() const;
 
 public:
@@ -46,4 +43,4 @@ public:
 	virtual void OnInteractStart() override;
 	virtual void OnInteractEnd() override;
 };
-}
+} // namespace LittleEngine

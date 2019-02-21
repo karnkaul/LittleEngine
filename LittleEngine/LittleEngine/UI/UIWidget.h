@@ -1,16 +1,26 @@
 #pragma once
 #include "CoreTypes.h"
 #include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIStyle.h"
 
 namespace LittleEngine
 {
+enum class UIWidgetState
+{
+	Uninteractable,
+	NotSelected,
+	Selected,
+	Interacting
+};
+
 // \brief Base UI interactable class: must be used in conjunction with an owning UIContext
 class UIWidget : public UIObject
 {
 protected:
+	UIWidgetStyle m_style;
 	Vector<UPtr<UIElement>> m_uiElements;
 	class UIContext* m_pOwner = nullptr;
-	LayerID m_rootLayer;
+	UIWidgetState m_state;
 
 public:
 	UIWidget();
@@ -34,10 +44,12 @@ public:
 	virtual void OnInteractStart() = 0;
 	virtual void OnInteractEnd() = 0;
 
+	UIWidgetStyle& GetStyle();
+	virtual void SetStyle(const UIWidgetStyle& style);
 	virtual void Tick(Time dt) override;
 
 private:
-	void InitWidget(UIContext& owner, LayerID rootLayer);
+	void InitWidget(UIContext& owner, LayerID baseLayer);
 	void InitElement(UIElement* pNewElement, UITransform* pParent);
 
 	friend class UIContext;

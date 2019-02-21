@@ -6,7 +6,6 @@ namespace LittleEngine
 {
 struct UIDialogueData
 {
-	UIButtonData buttonData;
 	UIText titleUIText;
 	UIText contentUIText;
 	Vector2 size = {600, 300};
@@ -30,7 +29,7 @@ public:
 	UIDialogue(const String& name);
 	virtual ~UIDialogue();
 
-	Delegate::Token InitDialogue(UIDialogueData&& data, UIText mainButtonUIText, Delegate::Callback OnMainButton);
-	Delegate::Token AddOtherButton(UIText otherButtonUIText, Delegate::Callback OnOtherButton, bool bSelect = true);
+	OnClick::Token InitDialogue(UIDialogueData&& data, UIText mainButtonUIText, OnClick::Callback OnMainButton);
+	OnClick::Token AddOtherButton(UIText otherButtonUIText, OnClick::Callback OnOtherButton, bool bSelect = true);
 };
 } // namespace LittleEngine

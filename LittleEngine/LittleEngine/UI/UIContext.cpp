@@ -48,7 +48,11 @@ void UIContext::ResetSelection()
 	m_uiWidgets.ForEach([](UPtr<UIWidget>& uWidget) { uWidget->OnDeselected(); });
 	UIWidget* pSelected = GetSelected();
 	if (pSelected)
+	{
+		pSelected->m_state = UIWidgetState::Selected;
 		pSelected->OnSelected();
+	}
+		
 }
 
 UIWidget* UIContext::GetSelected()
@@ -116,11 +120,17 @@ void UIContext::OnUp()
 		return;
 	UIWidget* pSelected = GetSelected();
 	if (pSelected)
+	{
+		pSelected->m_state = UIWidgetState::NotSelected;
 		pSelected->OnDeselected();
+	}
 	m_uiWidgets.Up();
 	pSelected = GetSelected();
 	if (pSelected)
+	{
+		pSelected->m_state = UIWidgetState::Selected;
 		pSelected->OnSelected();
+	}
 }
 
 void UIContext::OnDown()
@@ -129,11 +139,18 @@ void UIContext::OnDown()
 		return;
 	UIWidget* pSelected = GetSelected();
 	if (pSelected)
+	{
+		pSelected->m_state = UIWidgetState::NotSelected;
 		pSelected->OnDeselected();
+	}
+		
 	m_uiWidgets.Down();
 	pSelected = GetSelected();
 	if (pSelected)
+	{
+		pSelected->m_state = UIWidgetState::Selected;
 		pSelected->OnSelected();
+	}
 }
 
 void UIContext::OnLeft()
@@ -142,11 +159,18 @@ void UIContext::OnLeft()
 		return;
 	UIWidget* pSelected = GetSelected();
 	if (pSelected)
+	{
+		pSelected->m_state = UIWidgetState::NotSelected;
 		pSelected->OnDeselected();
+	}
+		
 	m_uiWidgets.Left();
 	pSelected = GetSelected();
 	if (pSelected)
+	{
+		pSelected->m_state = UIWidgetState::Selected;
 		pSelected->OnSelected();
+	}
 }
 
 void UIContext::OnRight()
@@ -155,11 +179,18 @@ void UIContext::OnRight()
 		return;
 	UIWidget* pSelected = GetSelected();
 	if (pSelected)
+	{
+		pSelected->m_state = UIWidgetState::NotSelected;
 		pSelected->OnDeselected();
+	}
+
 	m_uiWidgets.Right();
 	pSelected = GetSelected();
 	if (pSelected)
+	{
+		pSelected->m_state = UIWidgetState::Selected;
 		pSelected->OnSelected();
+	}
 }
 
 void UIContext::OnEnterPressed()
@@ -167,6 +198,7 @@ void UIContext::OnEnterPressed()
 	UIWidget* pSelected = GetSelected();
 	if (pSelected)
 	{
+		pSelected->m_state = UIWidgetState::Interacting;
 		pSelected->OnInteractStart();
 	}
 }
@@ -176,6 +208,7 @@ void UIContext::OnEnterReleased()
 	UIWidget* pSelected = GetSelected();
 	if (pSelected)
 	{
+		pSelected->m_state = UIWidgetState::Selected;
 		pSelected->OnInteractEnd();
 	}
 }

@@ -6,6 +6,7 @@ namespace LittleEngine
 {
 namespace
 {
+bool bSpawnColliderMinefield = true;
 EngineInput::Token t0;
 TestWorld* pTestWorld = nullptr;
 
@@ -130,6 +131,22 @@ bool OnInput(const EngineInput::Frame& frame)
 	return false;
 }
 
+void SpawnColliderMinefield()
+{
+	u32 id = 0;
+	for (Fixed x = -600; x < 800; x += 200)
+	{
+		for (Fixed y = -350; y < 500; y += 200)
+		{
+			String name = "ColliderMine_" + Strings::ToString(id++);
+			Entity* pE = pTestWorld->Game()->NewEntity<Entity>(name, Vector2(x, y));
+			CollisionComponent* pCC = pE->AddComponent<CollisionComponent>();
+			//pRC->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)->SetPrimaryColour(Colour::Blue);
+			pCC->AddAABB(AABBData({100, 100}));
+		}
+	}
+}
+
 void StartTests()
 {
 	pEntity0 = pTestWorld->Game()->NewEntity<Entity>("Entity0", {300, 200});
@@ -158,6 +175,9 @@ void StartTests()
 	pParticleSystem0->InitParticleSystem(std::move(psData));
 	pParticleSystem0->m_transform.localScale = {Fixed(2.0f), Fixed(2.0f)};
 	pParticleSystem0->Stop();
+
+	if (bSpawnColliderMinefield)
+		SpawnColliderMinefield();
 }
 
 UIButtonDrawer* pButtonDrawer = nullptr;
@@ -183,7 +203,6 @@ void SpawnDialogue()
 	data.contentUIText = UIText("Content goes here", 15, Colour::Black);
 	data.headerBG = Colour::Cyan;
 	data.contentBG = Colour::White;
-	data.buttonData = UIButtonData::DebugButton();
 	debugTokens.push_back(
 		pDialogue->InitDialogue(std::move(data), "OK", []() { LOG_D("OK pressed!"); }));
 	debugTokens.push_back(pDialogue->AddOtherButton("Cancel", []() { pDialogue->Destruct(); }, false));
@@ -193,20 +212,28 @@ void SpawnDialogue()
 
 void SpawnToggle()
 {
+	Fixed x = 300;
+	Fixed y = 200;
 	LayerID toggleLayer = static_cast<LayerID>(LAYER_UI + 4);
 	UIContext* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>(toggleLayer);
-	pParent->GetRootElement()->m_transform.size = {400, 200};
 	UIToggle* pToggle0 = pParent->AddWidget<UIToggle>("Toggle0");
 	UIToggle* pToggle1 = pParent->AddWidget<UIToggle>("Toggle1");
+	pParent->GetRootElement()->m_transform.size = {x, y};
 	
+	UIWidgetStyle& style = pToggle0->GetStyle();
+	style.widgetSize = {x, y * Fixed::OneHalf};
+	style.background = Colour::Yellow;
+	pToggle1->SetStyle(style);
+
 	UIToggleData data;
-	data.labelText = "Toggle 0";
-	data.bgColour = Colour::Cyan;
+	data.label = "Toggle 0";
 	debugTokens.push_back(pToggle0->InitToggle(data, [](bool bValue) { LOG_W("Toggle0 changed! %d", bValue); }));
 	pToggle0->GetRoot()->m_transform.SetAutoPadNPosition({0, 1});
-	data.labelText = "Toggle 1";
+	
+	data.label = "Toggle 1";
 	debugTokens.push_back(pToggle1->InitToggle(data, [](bool bValue) { LOG_W("Toggle1 changed! %d", bValue); }));
 	pToggle1->GetRoot()->m_transform.SetAutoPadNPosition({0, -1});
+	
 	pParent->m_bAutoDestroyOnCancel = true;
 	pParent->SetActive(true);
 }

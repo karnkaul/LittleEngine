@@ -8,8 +8,7 @@ namespace
 {
 UIButtonDrawerData GetDrawerData()
 {
-	UIButtonData* pCustomButton = nullptr;
-	return UIButtonDrawerData::CreateDrawer(true, {600, 500}, Colour::Transparent, pCustomButton);
+	return UIButtonDrawerData::CreateDrawer(true, {600, 500}, Colour::Transparent);
 }
 
 // Colour start;

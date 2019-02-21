@@ -48,7 +48,7 @@ void MultiJob::Update()
 	{
 		if (Services::Jobs()->IsCompleted(*iter))
 		{
-#if DEBUGGING
+#if ENABLED(DEBUG_LOGGING)
 			JobID id = *iter;
 #endif
 			iter = m_pendingJobIDs.erase(iter);

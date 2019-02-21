@@ -17,7 +17,7 @@ UIDialogue::UIDialogue(const String& name) : UIContext(name + "_Dialogue")
 }
 UIDialogue::~UIDialogue() = default;
 
-Delegate::Token UIDialogue::InitDialogue(UIDialogueData&& data, UIText mainButtonUIText, Delegate::Callback OnMainButton)
+OnClick::Token UIDialogue::InitDialogue(UIDialogueData&& data, UIText mainButtonUIText, OnClick::Callback OnMainButton)
 {
 	m_data = std::move(data);
 	const Fixed contentHeight = m_data.size.y - (headerHeight + footerHeight);
@@ -43,15 +43,14 @@ Delegate::Token UIDialogue::InitDialogue(UIDialogueData&& data, UIText mainButto
 	m_pFooter->m_transform.SetAutoPadNPosition({0, -Fixed::One});
 
 	m_pMainButton = AddWidget<UIButton>(String(GetNameStr()) + " Button 0");
-	UIButtonData buttonData = m_data.buttonData;
-	m_pMainButton->InitButton(std::move(buttonData));
+	m_pMainButton->InitButton();
 	m_pMainButton->SetText(mainButtonUIText);
 	UIElement* pButtonEl = m_pMainButton->GetButtonElement();
 	pButtonEl->m_transform.SetParent(m_pFooter->m_transform);
 	return m_pMainButton->AddCallback(OnMainButton);
 }
 
-Delegate::Token UIDialogue::AddOtherButton(UIText otherButtonUIText, Delegate::Callback OnOtherButton, bool bSelect)
+OnClick::Token UIDialogue::AddOtherButton(UIText otherButtonUIText, OnClick::Callback OnOtherButton, bool bSelect)
 {
 	if (m_pOtherButton)
 	{
@@ -60,8 +59,7 @@ Delegate::Token UIDialogue::AddOtherButton(UIText otherButtonUIText, Delegate::C
 		return nullptr;
 	}
 	m_pOtherButton = AddWidget<UIButton>("Dialog Button 0", true);
-	UIButtonData buttonData = m_data.buttonData;
-	m_pOtherButton->InitButton(std::move(buttonData));
+	m_pOtherButton->InitButton();
 	m_pOtherButton->SetText(otherButtonUIText);
 	UIElement* pOtherButtonEl = m_pOtherButton->GetButtonElement();
 	pOtherButtonEl->m_transform.SetParent(m_pFooter->m_transform);

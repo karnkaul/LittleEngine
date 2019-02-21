@@ -1,5 +1,6 @@
 #pragma once
 #include "LittleEngine/UI/UIContext.h"
+#include "LittleEngine/UI/UIStyle.h"
 #include "GameFramework/UI/Widgets/UIButton.h"
 #include "CoreTypes.h"
 
@@ -7,20 +8,13 @@ namespace LittleEngine
 {
 struct UIButtonDrawerData
 {
-	UIButtonData defaultButtonData;
-	Vector2 panelSize;
+	UIStyle panelStyle;
 	TRange<Fixed> btnNPosRange = {Fixed(-0.85f), Fixed(0.85f)};
-	Fixed panelBorder = Fixed::Zero;
-	Colour panelColour = Colour::White;
-	Colour panelOutline = Colour::Transparent;
 	bool bHorizontal = false;
 	bool bDestroyOnReturn = true;
 
 	static const UIButtonDrawerData DebugButtonDrawer(bool bModal = false);
-	static UIButtonDrawerData CreateDrawer(bool bModal,
-										   const Vector2& size,
-										   Colour background,
-										   UIButtonData* pButtonData = nullptr);
+	static UIButtonDrawerData CreateDrawer(bool bModal, const Vector2& size, Colour background);
 };
 
 class UIButtonDrawer : public UIContext
@@ -36,9 +30,7 @@ public:
 	virtual ~UIButtonDrawer();
 
 	void InitButtonDrawer(const UIButtonDrawerData& data);
-	Delegate::Token AddButton(const UIText& buttonText,
-							  Delegate::Callback OnInteracted,
-							  const UIButtonData* pButtonData = nullptr);
+	OnClick::Token AddButton(const UIText& buttonText, OnClick::Callback OnInteracted);
 
 private:
 	void SetButtonPositions();

@@ -10,7 +10,7 @@ JobWorker::JobWorker(JobManager& manager, u32 id, bool bEngineWorker)
 	: id(id), m_pManager(&manager), m_bEngineWorker(bEngineWorker)
 {
 	m_bWork.store(true, std::memory_order_relaxed);
-	m_logName = "[JobWorker" + Strings::ToString(id);
+	m_logName = "[JobWorker" + Strings::ToString(id) + "]";
 	m_thread = std::thread(std::bind(&JobWorker::Run, this));
 }
 

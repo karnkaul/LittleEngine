@@ -6,20 +6,18 @@ namespace LittleEngine
 const UIButtonDrawerData UIButtonDrawerData::DebugButtonDrawer(bool bModal)
 {
 	UIButtonDrawerData data;
-	data.defaultButtonData = UIButtonData::DebugButton();
 	data.bDestroyOnReturn = !bModal;
-	data.panelSize = {600, 500};
-	data.panelColour = Colour(100, 100, 100, 100);
+	data.panelStyle.size = {600, 500};
+	data.panelStyle.fill = Colour(100, 100, 100, 100);
 	return data;
 }
 
-UIButtonDrawerData UIButtonDrawerData::CreateDrawer(bool bModal, const Vector2& size, Colour background, UIButtonData* pButtonData)
+UIButtonDrawerData UIButtonDrawerData::CreateDrawer(bool bModal, const Vector2& size, Colour background)
 {
 	UIButtonDrawerData data;
-	data.defaultButtonData = pButtonData ? *pButtonData : UIButtonData::DebugButton();
 	data.bDestroyOnReturn = !bModal;
-	data.panelSize = size;
-	data.panelColour = background;
+	data.panelStyle.size = size;
+	data.panelStyle.fill = background;
 	return data;
 }
 
@@ -36,28 +34,24 @@ void UIButtonDrawer::InitButtonDrawer(const UIButtonDrawerData& data)
 	if (!m_init)
 	{
 		m_data = data;
-		m_pRootElement->m_transform.size = m_data.panelSize;
-		m_pRootElement->SetPanel(m_data.panelColour, m_data.panelBorder, m_data.panelOutline);
+		m_pRootElement->m_transform.size = m_data.panelStyle.size;
+		m_pRootElement->SetPanel(m_data.panelStyle.fill, m_data.panelStyle.border, m_data.panelStyle.outline);
 		m_init = true;
 		m_bAutoDestroyOnCancel = m_data.bDestroyOnReturn;
 	}
 }
 
-Delegate::Token UIButtonDrawer::AddButton(const UIText& buttonText,
-										  Delegate::Callback OnInteracted,
-										  const UIButtonData* pButtonData)
+OnClick::Token UIButtonDrawer::AddButton(const UIText& buttonText,
+										  OnClick::Callback OnInteracted)
 {
 	if (!m_init)
 	{
 		LOG_E("[UIButtonDrawer] Cannot Add Button to uninitialised ButtonDrawer!");
 		return nullptr;
 	}
-	if (!pButtonData)
-		pButtonData = &m_data.defaultButtonData;
 	String buttonName = "Button" + Strings::ToString(m_uiButtons.size());
 	UIButton* pButton = AddWidget<UIButton>(buttonName, m_data.bHorizontal);
-	UIButtonData buttonData = *pButtonData;
-	pButton->InitButton(std::move(buttonData));
+	pButton->InitButton();
 	pButton->SetText(buttonText);
 	m_uiButtons.push_back(pButton);
 	SetButtonPositions();

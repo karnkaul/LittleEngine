@@ -27,27 +27,24 @@ CollisionManager::~CollisionManager()
 void CollisionManager::Tick(Time)
 {
 	Scrub();
-	Vector<JobID> jobIDs;
+
 	for (size_t i = 0; i < m_colliders.size(); ++i)
 	{
-		jobIDs.push_back(Services::Jobs()->Enqueue([&, i]() {
-			auto& lhs = m_colliders[i];
-			if (!lhs->m_bEnabled)
-				return;
-			for (size_t j = i + 1; j < m_colliders.size(); ++j)
+		auto& lhs = m_colliders[i];
+		if (!lhs->m_bEnabled)
+			return;
+		for (size_t j = i + 1; j < m_colliders.size(); ++j)
+		{
+			auto& rhs = m_colliders[j];
+			if (!rhs->m_bEnabled || IgnoreSignatures(lhs->m_ignoreSig, rhs->m_ignoreSig))
+				continue;
+			if (lhs->IsIntersecting(*rhs))
 			{
-				auto& rhs = m_colliders[j];
-				if (!rhs->m_bEnabled || IgnoreSignatures(lhs->m_ignoreSig, rhs->m_ignoreSig))
-					continue;
-				if (lhs->IsIntersecting(*rhs))
-				{
-					lhs->OnHit(*rhs);
-					rhs->OnHit(*lhs);
-				}
+				lhs->OnHit(*rhs);
+				rhs->OnHit(*lhs);
 			}
-		}, "", true));
+		}
 	}
-	Services::Jobs()->Wait(jobIDs);
 }
 
 CircleCollider* CollisionManager::CreateCircleCollider(const String& ownerName)

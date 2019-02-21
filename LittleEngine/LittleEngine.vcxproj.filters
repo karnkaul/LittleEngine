@@ -181,6 +181,9 @@
     <ClCompile Include="LittleEngine\Jobs\MultiJob.cpp">
       <Filter>LittleEngine\Jobs</Filter>
     </ClCompile>
+    <ClCompile Include="LittleEngine\UI\UIStyle.cpp">
+      <Filter>LittleEngine\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Input\EngineInput.h">
@@ -332,6 +335,9 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\Jobs\MultiJob.h">
       <Filter>LittleEngine\Jobs</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\UI\UIStyle.h">
+      <Filter>LittleEngine\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
