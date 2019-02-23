@@ -6,31 +6,32 @@
 
 namespace LittleEngine
 {
-struct UIButtonDrawerData
-{
-	UIStyle panelStyle;
-	TRange<Fixed> btnNPosRange = {Fixed(-0.85f), Fixed(0.85f)};
-	bool bHorizontal = false;
-	bool bDestroyOnReturn = true;
-
-	static const UIButtonDrawerData DebugButtonDrawer(bool bModal = false);
-	static UIButtonDrawerData CreateDrawer(bool bModal, const Vector2& size, Colour background);
-};
-
 class UIButtonDrawer : public UIContext
 {
 private:
+	struct UIButtonDrawerData
+	{
+		UIStyle panelStyle;
+		TRange<Fixed> btnNPosRange = {Fixed(-0.85f), Fixed(0.85f)};
+		bool bHorizontal = false;
+
+		UIButtonDrawerData();
+	};
+
+private:
 	UIButtonDrawerData m_data;
 	Vector<UIButton*> m_uiButtons;
-	bool m_init = false;
 
 public:
 	UIButtonDrawer();
 	UIButtonDrawer(const String& name);
 	virtual ~UIButtonDrawer();
 
-	void InitButtonDrawer(const UIButtonDrawerData& data);
+	UIButtonDrawer* SetPanel(const UIStyle& panelStyle);
 	OnClick::Token AddButton(const UIText& buttonText, OnClick::Callback OnInteracted);
+
+protected:
+	virtual void OnInitContext() override;
 
 private:
 	void SetButtonPositions();

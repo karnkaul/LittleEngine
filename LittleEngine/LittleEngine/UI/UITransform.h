@@ -11,6 +11,7 @@ public:
 	Vector2 nPosition = Vector2::Zero;
 	Vector2 anchor = Vector2::Zero;
 	Vector2 padding;
+	bool bAutoPad = false;
 
 private:
 	Vector<UITransform*> children;
@@ -27,12 +28,15 @@ public:
 	void SetParent(UITransform& parent);
 	void UnsetParent();
 
-	void SetAutoPadNPosition(const Vector2& nPosition, bool bClamp = true);
 	// Returns anchor's position in world space
 	Vector2 GetWorldPosition() const;
 
 private:
+	void SetAutoPadNPosition(const Vector2& nPosition, bool bClamp = true);
+	
 	void AddChild(UITransform& child);
 	bool RemoveChild(UITransform& child);
+
+	friend class UIElement;
 };
 } // namespace LittleEngine

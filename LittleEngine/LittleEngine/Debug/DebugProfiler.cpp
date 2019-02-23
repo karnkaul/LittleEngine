@@ -72,13 +72,15 @@ Renderer::Renderer()
 	m_uLabelRoot = MakeUnique<UIElement>("Profiler Labels Root", true);
 	m_uLabelRoot->InitElement();
 	m_uLabelRoot->m_transform.size = {textWidth, profilerHeight};
-	m_uLabelRoot->m_transform.SetAutoPadNPosition({-1, -1});
+	m_uLabelRoot->m_transform.bAutoPad = true;
+	m_uLabelRoot->m_transform.nPosition = {-1, -1};
 	m_uLabelRoot->m_layer = LAYER_TOP;
 	// m_uLabelRoot->SetPanel(Colour(100, 100, 100, 100));
 	m_uBarRoot = MakeUnique<UIElement>("Profiler Bars Root", true);
 	m_uBarRoot->InitElement();
 	m_uBarRoot->m_transform.size = Vector2(progressBarSize.x, profilerHeight);
-	m_uBarRoot->m_transform.SetAutoPadNPosition({1, -1});
+	m_uBarRoot->m_transform.bAutoPad = true;
+	m_uBarRoot->m_transform.nPosition = {1, -1};
 	m_uBarRoot->m_layer = LAYER_TOP;
 	// m_uBarRoot->SetPanel(Colour(100, 100, 100, 100));
 }

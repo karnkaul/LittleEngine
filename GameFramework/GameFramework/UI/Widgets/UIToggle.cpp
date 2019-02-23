@@ -19,10 +19,52 @@ UIToggle::~UIToggle()
 	LOG_D("%s destroyed", LogNameStr());
 }
 
-OnChanged::Token UIToggle::InitToggle(const UIToggleData& data, OnChanged::Callback onChanged)
+UIToggle* UIToggle::SetText(const UIText& text)
 {
-	m_data = data;
-	m_bOn = m_data.bSetOn;
+	m_pLabel->SetText(text);
+	return this;
+}
+
+UIToggle* UIToggle::SetOnColour(Colour onColour)
+{
+	m_data.onColour = onColour;
+	return this;
+}
+
+UIToggle* UIToggle::SetOffColour(Colour offColour)
+{
+	m_data.offColour = offColour;
+	return this;
+}
+
+UIToggle* UIToggle::SetBoxSize(const Vector2& size)
+{
+	m_data.boxSize = size;
+	m_pToggle->m_transform.size = m_data.boxSize;
+	return this;
+}
+
+UIToggle* UIToggle::SetOn(bool bOn)
+{
+	m_bOn = bOn;
+	Colour fill = m_bOn ? m_data.onColour : m_data.offColour;
+	UIStyle& style = m_state == UIWidgetState::Selected ? m_style.selected : m_style.notSelected;
+	m_pToggle->SetPanel(fill, style.border, style.outline);
+	return this;
+}
+
+OnChanged::Token UIToggle::AddCallback(OnChanged::Callback callback)
+{
+	return m_delegate.Register(callback);
+}
+
+UIElement* UIToggle::GetRoot() const
+{
+	return m_pRoot;
+}
+
+void UIToggle::OnInitWidget()
+{
 	m_pRoot = AddElement<UIElement>("ToggleRoot");
 	m_pRoot->SetPanel(m_style.background);
 	m_pRoot->m_transform.size = m_style.widgetSize;
@@ -33,33 +75,8 @@ OnChanged::Token UIToggle::InitToggle(const UIToggleData& data, OnChanged::Callb
 	m_pToggle->m_transform.anchor = {-1, 0};
 	m_pToggle->m_transform.nPosition = {Fixed(-0.9f), 0};
 	m_pLabel = AddElement<UIElement>("ToggleLabel", &m_pRoot->m_transform);
-	m_pLabel->SetText(m_data.label);
 	m_pLabel->m_transform.anchor = {1, 0};
 	m_pLabel->m_transform.nPosition = {Fixed(0.9f), 0};
-	return m_delegate.Register(onChanged);
-}
-
-void UIToggle::SetText(const UIText& text)
-{
-	m_pLabel->SetText(text);
-}
-
-OnChanged::Token UIToggle::AddCallback(OnChanged::Callback callback)
-{
-	return m_delegate.Register(callback);
-}
-
-void UIToggle::SetOn(bool bOn)
-{
-	m_bOn = bOn;
-	Colour fill = m_bOn ? m_data.onColour : m_data.offColour;
-	UIStyle& style = m_state == UIWidgetState::Selected ? m_style.selected : m_style.notSelected;
-	m_pToggle->SetPanel(fill, style.border, style.outline);
-}
-
-UIElement* UIToggle::GetRoot() const
-{
-	return m_pRoot;
 }
 
 void UIToggle::OnSelected()
@@ -85,5 +102,13 @@ void UIToggle::OnInteractEnd()
 	Colour fill = m_bOn ? m_data.onColour : m_data.offColour;
 	m_pToggle->SetPanel(fill, m_style.selected.border, m_style.selected.outline);
 	m_delegate(m_bOn);
+}
+
+void UIToggle::Tick(Time dt)
+{
+	UIWidget::Tick(dt);
+
+	m_pRoot->SetPanel(m_style.background);
+	m_pRoot->m_transform.size = m_style.widgetSize;
 }
 } // namespace LittleEngine

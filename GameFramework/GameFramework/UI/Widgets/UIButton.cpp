@@ -19,13 +19,6 @@ UIButton::~UIButton()
 	LOG_D("%s destroyed", LogNameStr());
 }
 
-void UIButton::InitButton()
-{
-	m_pRoot = AddElement<UIElement>(String(GetNameStr()) + " Panel");
-	m_pRoot->m_transform.size = m_style.widgetSize;
-	m_pRoot->SetPanel(m_style.notSelected.fill, m_style.notSelected.border, m_style.notSelected.outline);
-}
-
 void UIButton::SetText(const UIText& uiText)
 {
 	m_pRoot->SetText(uiText);
@@ -39,6 +32,13 @@ OnClick::Token UIButton::AddCallback(OnClick::Callback Callback)
 UIElement* UIButton::GetButtonElement() const
 {
 	return m_pRoot;
+}
+
+void UIButton::OnInitWidget()
+{
+	m_pRoot = AddElement<UIElement>(String(GetNameStr()) + " Panel");
+	m_pRoot->m_transform.size = m_style.widgetSize;
+	m_pRoot->SetPanel(m_style.notSelected.fill, m_style.notSelected.border, m_style.notSelected.outline);
 }
 
 void UIButton::OnSelected()

@@ -20,11 +20,11 @@ UIWidget::~UIWidget()
 	LOG_D("%s destroyed", LogNameStr());
 }
 
-void UIWidget::InitWidget(UIContext& owner, LayerID baseLayer)
+void UIWidget::InitWidget(UIContext& owner, UIWidgetStyle* pStyleToCopy)
 {
 	m_pOwner = &owner;
-	m_style = UIWidgetStyle::GetDefault();
-	m_style.baseLayer = baseLayer;
+	m_style = pStyleToCopy ? *pStyleToCopy : UIWidgetStyle::GetDefault();
+	OnInitWidget();
 }
 
 UIWidgetStyle& UIWidget::GetStyle()
@@ -53,5 +53,9 @@ void UIWidget::InitElement(UIElement* pNewElement, UITransform* pParent)
 		pParent = m_pOwner ? &m_pOwner->GetRootElement()->m_transform : nullptr;
 	pNewElement->InitElement(pParent);
 	pNewElement->m_layer = m_style.baseLayer;
+}
+
+void UIWidget::OnInitWidget()
+{
 }
 } // namespace LittleEngine

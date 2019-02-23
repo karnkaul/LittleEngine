@@ -19,12 +19,12 @@ public:
 	UIButton(const String& name);
 	virtual ~UIButton();
 
-	void InitButton();
 	void SetText(const UIText& uiText);
 	OnClick::Token AddCallback(OnClick::Callback Callback);
 	UIElement* GetButtonElement() const;
 
 protected:
+	virtual void OnInitWidget() override;
 	virtual void OnSelected() override;
 	virtual void OnDeselected() override;
 	virtual void OnInteractStart() override;

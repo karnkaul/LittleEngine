@@ -14,7 +14,8 @@ namespace LittleEngine {
 			Vector2 bgSize = m_uBG->m_transform.size;
 			bgSize.y *= Fixed::OneThird;
 			m_uBG->m_transform.size = bgSize;
-			m_uBG->m_transform.SetAutoPadNPosition({ 0, 1 });
+			m_uBG->m_transform.padding = {0, -Fixed::OneHalf * bgSize.y};
+			m_uBG->m_transform.nPosition = { 0, 1 };
 			minPadding = m_uBG->m_transform.padding;
 			maxPadding = -minPadding;
 			maxPadding.y *= Fixed(1.1f);

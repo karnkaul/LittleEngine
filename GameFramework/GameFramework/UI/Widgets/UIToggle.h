@@ -5,19 +5,18 @@
 
 namespace LittleEngine
 {
-struct UIToggleData
-{
-	Vector2 boxSize = {40, 40};
-	Colour onColour = Colour::Cyan;
-	Colour offColour = Colour::White;
-	String label;
-	bool bSetOn;
-};
-
 using OnChanged = Core::Delegate<bool>;
 
 class UIToggle : public UIWidget
 {
+private:
+	struct UIToggleData
+	{
+		Vector2 boxSize = {40, 40};
+		Colour onColour = Colour::Cyan;
+		Colour offColour = Colour::White;
+	};
+
 private:
 	UIToggleData m_data;
 	OnChanged m_delegate;
@@ -31,16 +30,21 @@ public:
 	UIToggle(const String& name);
 	~UIToggle();
 
-	OnChanged::Token InitToggle(const UIToggleData& data, OnChanged::Callback onChanged);
-	void SetText(const UIText& text);
+	UIToggle* SetOn(bool bOn);
+	UIToggle* SetText(const UIText& text);
+	UIToggle* SetOnColour(Colour onColour);
+	UIToggle* SetOffColour(Colour offColour);
+	UIToggle* SetBoxSize(const Vector2& size);
 	OnChanged::Token AddCallback(OnChanged::Callback callback);
-	void SetOn(bool bOn);
+	
 	UIElement* GetRoot() const;
 
 public:
+	virtual void OnInitWidget() override;
 	virtual void OnSelected() override;
 	virtual void OnDeselected() override;
 	virtual void OnInteractStart() override;
 	virtual void OnInteractEnd() override;
+	virtual void Tick(Time dt) override;
 };
 } // namespace LittleEngine

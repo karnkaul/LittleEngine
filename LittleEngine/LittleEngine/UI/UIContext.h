@@ -32,12 +32,16 @@ public:
 	virtual ~UIContext();
 
 	template <typename T>
-	T* AddWidget(const String& name, bool bNewColumn = false)
+	T* AddWidget(const String& name, UIWidgetStyle* pStyleToCopy = nullptr, bool bNewColumn = false)
 	{
 		static_assert(std::is_base_of<UIWidget, T>::value, "T must derive from UIWidget.");
 		UPtr<T> uT = MakeUnique<T>(name);
 		T* pT = uT.get();
-		uT->InitWidget(*this, static_cast<LayerID>(m_pRootElement->m_layer + 1));
+		UIWidgetStyle defaultStyle = UIWidgetStyle::GetDefault();
+		if (!pStyleToCopy)
+			pStyleToCopy = &defaultStyle;
+		pStyleToCopy->baseLayer = static_cast<LayerID>(m_pRootElement->m_layer + 1);
+		uT->InitWidget(*this, pStyleToCopy);
 		m_uiWidgets.EmplaceWidget(std::move(uT), bNewColumn);
 		LOG_D("%s %s", pT->LogNameStr(), "constructed");
 		return pT;
@@ -69,6 +73,7 @@ public:
 	virtual void Tick(Time dt) override;
 
 protected:
+	virtual void OnInitContext();
 	virtual void OnDestroying();
 
 	bool OnInput(const EngineInput::Frame& frame);

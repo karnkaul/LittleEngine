@@ -27,6 +27,7 @@ void UIContext::InitContext(LayerID rootLayer)
 {
 	m_pRootElement = AddElement<UIElement>(String(GetNameStr()) + " Root");
 	m_pRootElement->m_layer = rootLayer;
+	OnInitContext();
 	SetActive(true);
 }
 
@@ -86,6 +87,10 @@ void UIContext::Tick(Time dt)
 		uElement->Tick(dt);
 	}
 	m_uiWidgets.ForEach([dt](UIContext::UUIWidget& uUIWidget) { uUIWidget->Tick(dt); });
+}
+
+void UIContext::OnInitContext()
+{
 }
 
 void UIContext::OnDestroying()

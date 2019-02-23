@@ -14,5 +14,5 @@
 	ticksPerSecond: 40,
 	maxTickTimeMS: 25,
 	colliderShapeBorderWidth: 1,
-	bPauseOnFocusLoss: true
+	bPauseOnFocusLoss: false
 }

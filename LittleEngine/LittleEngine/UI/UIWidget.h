@@ -49,8 +49,10 @@ public:
 	virtual void Tick(Time dt) override;
 
 private:
-	void InitWidget(UIContext& owner, LayerID baseLayer);
+	void InitWidget(UIContext& owner, UIWidgetStyle* pStyleToCopy);
 	void InitElement(UIElement* pNewElement, UITransform* pParent);
+
+	virtual void OnInitWidget();
 
 	friend class UIContext;
 };

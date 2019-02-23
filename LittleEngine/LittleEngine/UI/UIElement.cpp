@@ -96,6 +96,8 @@ void UIElement::Tick(Time)
 {
 	if (m_bDestroyed)
 		return;
+	if (m_transform.bAutoPad)
+		m_transform.SetAutoPadNPosition(m_transform.nPosition);
 	m_transform.anchor.x = Maths::Clamp_11(m_transform.anchor.x);
 	m_transform.anchor.y = Maths::Clamp_11(m_transform.anchor.y);
 	m_pPrimitive->SetPivot(m_transform.anchor);
