@@ -17,41 +17,83 @@ UIDialogue::UIDialogue(const String& name) : UIContext(name + "_Dialogue")
 }
 UIDialogue::~UIDialogue() = default;
 
-Delegate::Token UIDialogue::InitDialogue(UIDialogueData&& data, UIText mainButtonUIText, Delegate::Callback OnMainButton)
+void UIDialogue::OnInitContext()
 {
-	m_data = std::move(data);
 	const Fixed contentHeight = m_data.size.y - (headerHeight + footerHeight);
-	m_bAutoDestroyOnCancel = m_data.bDestroyOnReturn;
+	m_bAutoDestroyOnCancel = true;
 	m_pRootElement->m_transform.size = {m_data.size.x, m_data.size.y};
 	m_pRootElement->SetPanel(Colour::White);
 
 	m_pHeader = AddElement<UIElement>(String(GetNameStr()) + " Header");
 	m_pHeader->m_transform.size = {m_data.size.x, headerHeight};
-	m_pHeader->m_transform.SetAutoPadNPosition({0, Fixed::One});
+	m_pHeader->m_transform.bAutoPad = true;
+	m_pHeader->m_transform.nPosition = {0, 1};
 	m_pHeader->SetPanel(m_data.headerBG);
-	m_pHeader->SetText(m_data.titleUIText);
 
 	m_pContent = AddElement<UIElement>(String(GetNameStr()) + " Content");
 	m_pContent->m_transform.size = {m_data.size.x, contentHeight};
-	m_pContent->m_transform.nPosition = {0, Fixed::One};
+	m_pContent->m_transform.nPosition = {0, 1};
 	m_pContent->m_transform.padding = {0, -(headerHeight + contentHeight * Fixed::OneHalf)};
 	m_pContent->SetPanel(m_data.contentBG);
-	m_pContent->SetText(m_data.contentUIText);
+}
+
+UIDialogue* UIDialogue::SetContent(const UIText& text, const Colour* pBackground, const Vector2* pSize)
+{
+	if (pSize)
+	{
+		m_data.size = *pSize;
+		const Fixed contentHeight = m_data.size.y - (headerHeight + footerHeight);
+		m_pContent->m_transform.size = {m_data.size.x, contentHeight};
+		m_pHeader->m_transform.size = {m_data.size.x, headerHeight};
+		if (m_pFooter)
+			m_pFooter->m_transform.size = {m_data.size.x, footerHeight};
+	}
+
+	if (pBackground)
+	{
+		m_data.contentBG = *pBackground;
+		m_pContent->SetPanel(m_data.contentBG);
+	}
+	
+	m_pContent->SetText(text);
+	return this;
+}
+
+UIDialogue* UIDialogue::SetHeader(const UIText& text, const Colour* pBackground)
+{
+	if (pBackground)
+	{
+		m_data.headerBG = *pBackground;
+		m_pHeader->SetPanel(m_data.headerBG);
+	}
+
+	m_pHeader->SetText(text);
+	return this;
+}
+
+OnClick::Token UIDialogue::AddMainButton(const UIText& text, OnClick::Callback onMainButton, bool bDismissOnBack)
+{
+	if (m_pMainButton)
+	{
+		LOG_W("%s Main button already exists on this UIDialogue! Ignoring call to AddMainButton",
+			  LogNameStr());
+		return nullptr;
+	}
 
 	m_pFooter = AddElement<UIElement>(String(GetNameStr()) + " Footer");
 	m_pFooter->m_transform.size = {m_data.size.x, footerHeight};
-	m_pFooter->m_transform.SetAutoPadNPosition({0, -Fixed::One});
+	m_pFooter->m_transform.bAutoPad = true;
+	m_pFooter->m_transform.nPosition = {0, -1};
 
 	m_pMainButton = AddWidget<UIButton>(String(GetNameStr()) + " Button 0");
-	UIButtonData buttonData = m_data.buttonData;
-	m_pMainButton->InitButton(std::move(buttonData));
-	m_pMainButton->SetText(mainButtonUIText);
+	m_pMainButton->SetText(text);
 	UIElement* pButtonEl = m_pMainButton->GetButtonElement();
 	pButtonEl->m_transform.SetParent(m_pFooter->m_transform);
-	return m_pMainButton->AddCallback(OnMainButton);
+	m_bAutoDestroyOnCancel = bDismissOnBack;
+	return m_pMainButton->AddCallback(onMainButton);
 }
 
-Delegate::Token UIDialogue::AddOtherButton(UIText otherButtonUIText, Delegate::Callback OnOtherButton, bool bSelect)
+OnClick::Token UIDialogue::AddOtherButton(const UIText& otherButtonUIText, OnClick::Callback OnOtherButton, bool bSelect)
 {
 	if (m_pOtherButton)
 	{
@@ -59,9 +101,7 @@ Delegate::Token UIDialogue::AddOtherButton(UIText otherButtonUIText, Delegate::C
 			  LogNameStr());
 		return nullptr;
 	}
-	m_pOtherButton = AddWidget<UIButton>("Dialog Button 0", true);
-	UIButtonData buttonData = m_data.buttonData;
-	m_pOtherButton->InitButton(std::move(buttonData));
+	m_pOtherButton = AddWidget<UIButton>("Dialog Button 0", nullptr, true);
 	m_pOtherButton->SetText(otherButtonUIText);
 	UIElement* pOtherButtonEl = m_pOtherButton->GetButtonElement();
 	pOtherButtonEl->m_transform.SetParent(m_pFooter->m_transform);

@@ -45,6 +45,9 @@
     <ClCompile Include="GameFramework\Entities\Player.cpp">
       <Filter>GameFramework\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="GameFramework\UI\Widgets\UIToggle.cpp">
+      <Filter>GameFramework\UI\Widgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameFramework\Components\RenderComponent.h">
@@ -82,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="GameFramework\Entities\Player.h">
       <Filter>GameFramework\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\UI\Widgets\UIToggle.h">
+      <Filter>GameFramework\UI\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

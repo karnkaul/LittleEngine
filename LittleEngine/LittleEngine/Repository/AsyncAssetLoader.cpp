@@ -42,7 +42,6 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository, const String& m
 	}
 
 	m_bCompleted = m_bIdle = false;
-	Assert(Services::Jobs(), "Job Service is null!");
 	m_pMultiJob = Services::Jobs()->CreateMultiJob("Async Load: " + manifestPath);
 	m_pMultiJob->AddJob(
 		[&]() {
@@ -52,6 +51,7 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository, const String& m
 			}
 		},
 		"Load All Sounds");
+
 	for (auto& texture : m_newTextures)
 	{
 		m_pMultiJob->AddJob(

@@ -12,6 +12,9 @@ Time loadTime;
 }
 
 bool WorldStateMachine::s_bReady;
+#if DEBUGGING
+bool WorldStateMachine::s_bTEST_infiniteLoad = false;
+#endif
 
 WorldStateMachine::WorldStateMachine()
 {
@@ -54,6 +57,9 @@ bool WorldStateMachine::LoadState(WorldID id)
 
 void WorldStateMachine::Start(const String& manifestPath)
 {
+#if DEBUGGING
+	m_manifestPath = manifestPath;
+#endif
 	m_bLoading = true;
 	// LoadAsync all assets in manifest
 	if (!manifestPath.empty())
@@ -102,7 +108,18 @@ void WorldStateMachine::LoadingTick(Time dt)
 	}
 	if (m_bLoaded)
 	{
-		loadTime = Time::Now() - loadTime;
+#if DEBUGGING
+		if (s_bTEST_infiniteLoad)
+		{
+			Services::Engine()->Repository()->UnloadAll(false);
+			m_bLoaded = false;
+			m_uLoadingUI->Reset();
+			LOG_D("[WorldStateMachine] Reloading all assets");
+			Start(m_manifestPath);
+			return;
+		}
+#endif
+			loadTime = Time::Now() - loadTime;
 		LOG_I("[WorldStateMachine] ...Manifest load complete in %.2fs. Loading World 0", loadTime.AsSeconds());
 		m_bLoading = false;
 		m_uLoadingUI = nullptr;

@@ -18,7 +18,7 @@
 	"textureSets":
 	[
 		{ pathPrefix: "VFX/Fire0", count: 3, assetPrefix: "", assetSuffix: ".png" },
-		{ pathPrefix: "STRESS_TEST", count: 10, assetPrefix: "", assetSuffix: ".png" }
+		{ pathPrefix: "STRESS_TEST", count: 5, assetPrefix: "", assetSuffix: ".png" }
 	],
 	
 	"soundSets":

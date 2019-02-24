@@ -19,6 +19,11 @@ private:
 	bool m_bToActivateState = false;
 	bool m_bLoading = false;
 	bool m_bLoaded = false;
+#if DEBUGGING
+public:
+	String m_manifestPath;
+	static bool s_bTEST_infiniteLoad;
+#endif
 
 public:
 	WorldStateMachine();

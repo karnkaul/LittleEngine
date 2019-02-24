@@ -63,7 +63,7 @@ SFPrimitive* SFPrimitive::SetPosition(const Vector2& sfPosition, bool bImmediate
 		m_state.sfPosition.Reset(WorldToScreen(sfPosition));
 	else
 		m_state.sfPosition.Update(WorldToScreen(sfPosition));
-	if (m_bStatic)
+	if (m_bStatic || m_bMakeStatic)
 	{
 		ReconcileState();
 		m_bStatic = false;
@@ -78,7 +78,7 @@ SFPrimitive* SFPrimitive::SetOrientation(const Fixed& sfOrientation, bool bImmed
 		m_state.sfOrientation.Reset(WorldToScreen(sfOrientation));
 	else
 		m_state.sfOrientation.Update(WorldToScreen(sfOrientation));
-	if (m_bStatic)
+	if (m_bStatic || m_bMakeStatic)
 	{
 		ReconcileState();
 		m_bStatic = false;
@@ -93,7 +93,7 @@ SFPrimitive* SFPrimitive::SetScale(const Vector2& sfScale, bool bImmediate)
 		m_state.sfScale.Reset(sfScale);
 	else
 		m_state.sfScale.Update(sfScale);
-	if (m_bStatic)
+	if (m_bStatic || m_bMakeStatic)
 	{
 		ReconcileState();
 		m_bStatic = false;
@@ -114,7 +114,7 @@ SFPrimitive* SFPrimitive::SetPrimaryColour(Colour sfColour, bool bImmediate)
 		m_state.sfPrimaryColour.Reset(sfColour);
 	else
 		m_state.sfPrimaryColour.Update(sfColour);
-	if (m_bStatic)
+	if (m_bStatic || m_bMakeStatic)
 	{
 		ReconcileState();
 		m_bStatic = false;
@@ -129,7 +129,7 @@ SFPrimitive* SFPrimitive::SetSecondaryColour(Colour sfColour, bool bImmediate)
 		m_state.sfSecondaryColour.Reset(sfColour);
 	else
 		m_state.sfSecondaryColour.Update(sfColour);
-	if (m_bStatic)
+	if (m_bStatic || m_bMakeStatic)
 	{
 		ReconcileState();
 		m_bStatic = false;
@@ -141,7 +141,7 @@ SFPrimitive* SFPrimitive::SetSecondaryColour(Colour sfColour, bool bImmediate)
 SFPrimitive* SFPrimitive::SetOutline(const Fixed& thickness)
 {
 	m_state.outlineThickness = thickness;
-	if (m_bStatic)
+	if (m_bStatic || m_bMakeStatic)
 	{
 		ReconcileState();
 		m_bStatic = false;
@@ -241,6 +241,11 @@ Rect2 SFPrimitive::GetTextBounds() const
 bool SFPrimitive::IsEnabled() const
 {
 	return m_state.bEnabled;
+}
+
+bool SFPrimitive::IsStatic() const
+{
+	return m_bStatic;
 }
 
 Vector2 SFPrimitive::GetPosition() const

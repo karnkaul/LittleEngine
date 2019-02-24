@@ -7,4 +7,5 @@
 #include "UITransform.h"
 #include "UIWidgetMatrix.h"
 #include "UIContext.h"
+#include "UIStyle.h"
 #include "UIWidget.h"

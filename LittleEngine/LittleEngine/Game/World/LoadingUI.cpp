@@ -30,7 +30,8 @@ LoadingUI::LoadingUI()
 	m_uProgressBar = MakeUnique<UIProgressBar>("Asset Load Progress");
 	Vector2 size(GFX::GetViewSize().x, 10);
 	m_uProgressBar->InitProgressBar(size, Colour::White);
-	m_uProgressBar->m_transform.nPosition = {-Fixed::One, -Fixed(0.98f)};
+	m_uProgressBar->m_transform.padding = {0, size.y * Fixed::OneHalf};
+	m_uProgressBar->m_transform.nPosition = {-Fixed::One, -Fixed::One};
 	m_uProgressBar->Tick(Time::Zero);
 }
 
@@ -51,11 +52,16 @@ void LoadingUI::Tick(Time dt, const Fixed& progress)
 	}
 	if (progressNow < progressTarget)
 	{
-		progressNow += Fixed(dt.AsSeconds());
+		progressNow += Fixed(dt.AsSeconds() * 2);
 	}
 	m_uProgressBar->SetProgress(progressNow);
 
 	TickElements(dt);
+}
+
+void LoadingUI::Reset()
+{
+	progressNow = Fixed::Zero;
 }
 
 void LoadingUI::TickElements(Time dt)

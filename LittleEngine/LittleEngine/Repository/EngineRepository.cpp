@@ -52,9 +52,19 @@ AsyncAssetLoader* EngineRepository::LoadAsync(const String& manifestPath, Functi
 	return pLoader;
 }
 
-void EngineRepository::UnloadAll()
+void EngineRepository::UnloadAll(bool bUnloadDefaultFont)
 {
-	m_loaded.clear();
+	if (bUnloadDefaultFont || !m_pDefaultFont)
+	{
+		m_loaded.clear();
+	}
+	else
+	{
+		String fontPath = m_pDefaultFont->GetResourcePath();
+		Core::CleanMap<String, UPtr<Asset>>(m_loaded, [fontPath](UPtr<Asset>& uAsset) {
+			return uAsset->GetResourcePath() != fontPath;
+		});
+	}
 	LOG_I("[AssetRepository] cleared");
 }
 
@@ -87,7 +97,7 @@ void EngineRepository::Tick(Time dt)
 EngineRepository::~EngineRepository()
 {
 	m_pDefaultFont = nullptr;
-	UnloadAll();
+	UnloadAll(true);
 	LOG_I("[AssetRepository] destroyed");
 }
 } // namespace LittleEngine

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CollisionManager.h"
+#include "LittleEngine/Services/Services.h"
 #include "Utils.h"
 #include "Logger.h"
 
@@ -11,7 +12,7 @@ bool IgnoreSignatures(s32 lhs, s32 rhs)
 {
 	return lhs != 0 && rhs != 0 && lhs == rhs;
 }
-}
+} // namespace
 CollisionManager::CollisionManager()
 {
 	LOG_D("[CollisionManager] constructed", m_logName.c_str());
@@ -25,12 +26,13 @@ CollisionManager::~CollisionManager()
 
 void CollisionManager::Tick(Time)
 {
+	Scrub();
+
 	for (size_t i = 0; i < m_colliders.size(); ++i)
 	{
-		Scrub();
 		auto& lhs = m_colliders[i];
 		if (!lhs->m_bEnabled)
-			continue;
+			return;
 		for (size_t j = i + 1; j < m_colliders.size(); ++j)
 		{
 			auto& rhs = m_colliders[j];
@@ -70,6 +72,7 @@ void CollisionManager::ToggleDebugShapes(bool bShow)
 
 void CollisionManager::Scrub()
 {
-	Core::CleanVector<UPtr<Collider>>(m_colliders, [](UPtr<Collider>& uCollider) { return uCollider->m_bDestroyed; });
+	Core::CleanVector<UPtr<Collider>>(
+		m_colliders, [](UPtr<Collider>& uCollider) { return uCollider->m_bDestroyed; });
 }
 } // namespace LittleEngine

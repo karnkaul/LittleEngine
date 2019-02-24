@@ -87,6 +87,7 @@ public:
 	Rect2 GetTextBounds() const;
 
 	bool IsEnabled() const;
+	bool IsStatic() const;
 	Vector2 GetPosition() const;
 	Fixed GetOrientation() const;
 	Vector2 GetScale() const;

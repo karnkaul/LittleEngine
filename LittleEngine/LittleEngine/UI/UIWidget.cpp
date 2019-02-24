@@ -20,10 +20,21 @@ UIWidget::~UIWidget()
 	LOG_D("%s destroyed", LogNameStr());
 }
 
-void UIWidget::InitWidget(UIContext& owner, LayerID rootLayer)
+void UIWidget::InitWidget(UIContext& owner, UIWidgetStyle* pStyleToCopy)
 {
-	this->m_pOwner = &owner;
-	m_rootLayer = rootLayer;
+	m_pOwner = &owner;
+	m_style = pStyleToCopy ? *pStyleToCopy : UIWidgetStyle::GetDefault();
+	OnInitWidget();
+}
+
+UIWidgetStyle& UIWidget::GetStyle()
+{
+	return m_style;
+}
+
+void UIWidget::SetStyle(const UIWidgetStyle& style)
+{
+	m_style = style;
 }
 
 void UIWidget::Tick(Time dt)
@@ -36,10 +47,15 @@ void UIWidget::Tick(Time dt)
 	}
 }
 
-void UIWidget::InitElement(UIElement* pNewElement)
+void UIWidget::InitElement(UIElement* pNewElement, UITransform* pParent)
 {
-	UITransform* pParent = m_pOwner ? &m_pOwner->GetRootElement()->m_transform : nullptr;
+	if (!pParent)
+		pParent = m_pOwner ? &m_pOwner->GetRootElement()->m_transform : nullptr;
 	pNewElement->InitElement(pParent);
-	pNewElement->m_layer = m_rootLayer;
+	pNewElement->m_layer = m_style.baseLayer;
+}
+
+void UIWidget::OnInitWidget()
+{
 }
 } // namespace LittleEngine
