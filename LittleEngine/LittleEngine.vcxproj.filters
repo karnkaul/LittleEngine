@@ -184,6 +184,9 @@
     <ClCompile Include="LittleEngine\UI\UIStyle.cpp">
       <Filter>LittleEngine\UI</Filter>
     </ClCompile>
+    <ClCompile Include="LittleEngine\Game\GameSettings.cpp">
+      <Filter>LittleEngine\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Input\EngineInput.h">
@@ -338,6 +341,9 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\UI\UIStyle.h">
       <Filter>LittleEngine\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Game\GameSettings.h">
+      <Filter>LittleEngine\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

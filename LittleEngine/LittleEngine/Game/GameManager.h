@@ -63,8 +63,8 @@ T* GameManager::NewComponent(Entity& owner)
 	static_assert(IsDerived(Component, T), "T must derive from Entity");
 	UPtr<T> uT = MakeUnique<T>();
 	size_t idx = static_cast<size_t>(uT->GetComponentTiming());
-	Assert(idx > 0 && idx < m_uComponents.size(), "Invalid Component Timing index!");
-	auto& componentVec = m_uComponents[idx];
+	Assert(m_uComponents.size() > idx, "Invalid Component Timing index!");
+	auto& componentVec = m_uComponents.at(idx);
 	uT->SetOwner(owner);
 	T* pT = uT.get();
 	componentVec.emplace_back(std::move(uT));

@@ -1,21 +1,23 @@
 #pragma once
 #include "StdTypes.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
 
 namespace LittleEngine
 {
 namespace OS
 {
-struct PlatformData final
+class PlatformData final
 {
 private:
-	const u32 cpuThreadCount;
-	s32 spareThreadCount;
-	s32 userWorkerCount;
-	s32 systemWorkerCount;
+	SFWindowSize m_maxWindowSize;
+	const u32 m_cpuThreadCount;
+	s32 m_spareThreadCount;
+	s32 m_userWorkerCount;
+	s32 m_systemWorkerCount;
 
 	// System Thread Flags
-	bool bWillCreateRenderThread;
-	bool bWillCreateLoggerThread;
+	bool m_bWillCreateRenderThread;
+	bool m_bWillCreateLoggerThread;
 
 public:
 	PlatformData();
@@ -25,12 +27,14 @@ public:
 	u32 UserWorkerCount() const;
 	u32 SystemWorkerCount() const;
 	bool CanCreateSystemThread() const;
-	
+
+	const SFWindowSize& MaxWindowSize() const;
+
 	void SetCreatingRenderThread();
 	void SetCreatingLoggerThread();
 	void SetDesiredWorkerCount(u32 workerCount);
 };
 
 PlatformData* Platform();
-};
+} // namespace OS
 } // namespace LittleEngine

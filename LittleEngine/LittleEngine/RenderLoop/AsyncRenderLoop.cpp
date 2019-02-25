@@ -11,8 +11,8 @@
 
 namespace LittleEngine
 {
-AsyncRenderLoop::AsyncRenderLoop(SFWindow& glWindow, GFXBuffer& gfxBuffer, Time tickRate, bool bStartThread)
-	: SFRenderer(glWindow, tickRate), m_pBuffer(&gfxBuffer)
+AsyncRenderLoop::AsyncRenderLoop(SFWindow& sfWindow, GFXBuffer& gfxBuffer, Time tickRate, bool bStartThread)
+	: SFRenderer(sfWindow, tickRate), m_pBuffer(&gfxBuffer)
 {
 	if (bStartThread)
 	{

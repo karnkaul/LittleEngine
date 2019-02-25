@@ -35,6 +35,7 @@
     <ClCompile Include="LittleEngine\Game\Component.cpp" />
     <ClCompile Include="LittleEngine\Game\Entity.cpp" />
     <ClCompile Include="LittleEngine\Game\GameManager.cpp" />
+    <ClCompile Include="LittleEngine\Game\GameSettings.cpp" />
     <ClCompile Include="LittleEngine\Game\Inheritable.cpp" />
     <ClCompile Include="LittleEngine\Game\WorldObject.cpp" />
     <ClCompile Include="LittleEngine\Game\World\LoadingUI.cpp" />
@@ -84,6 +85,7 @@
     <ClInclude Include="LittleEngine\Game\Entity.h" />
     <ClInclude Include="LittleEngine\Game\Game.h" />
     <ClInclude Include="LittleEngine\Game\GameManager.h" />
+    <ClInclude Include="LittleEngine\Game\GameSettings.h" />
     <ClInclude Include="LittleEngine\Game\Inheritable.h" />
     <ClInclude Include="LittleEngine\Game\WorldObject.h" />
     <ClInclude Include="LittleEngine\Game\World\LoadingUI.h" />

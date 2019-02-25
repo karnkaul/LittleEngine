@@ -9,7 +9,7 @@ constexpr u32 WIDTH = 1280;
 constexpr u32 HEIGHT = 720;
 } // namespace
 
-SFWindowSize::SFWindowSize() : width(WIDTH), height(HEIGHT)
+SFWindowSize::SFWindowSize() : width(0), height(0)
 {
 }
 SFWindowSize::SFWindowSize(u32 width, u32 height) : width(width), height(height)

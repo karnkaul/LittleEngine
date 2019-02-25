@@ -4,10 +4,12 @@
 #include "Utils.h"
 #include "DebugConsole.h"
 #include "RenderStatsRenderer.h"
+#include "Logger.h"
 #include "LittleEngine/Debug/DebugProfiler.h"
 #include "LittleEngine/Engine/EngineService.h"
 #include "LittleEngine/Game/World/World.h"
 #include "LittleEngine/Game/World/WorldStateMachine.h"
+#include "LittleEngine/GFX/GFX.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/Physics/CollisionManager.h"
 
@@ -28,10 +30,13 @@ Vector<LogLine> GetAllCommands();
 }
 
 #pragma region Commands
+// Simple command with no params, or that parses its own params dynamically
 class Command
 {
 public:
 	String name;
+	// Set to true to include space when autocompleting this Command
+	bool bTakesCustomParam = false;
 
 	virtual ~Command()
 	{
@@ -39,7 +44,8 @@ public:
 
 	Vector<LogLine> Execute(const String& params)
 	{
-		executeResult.emplace_back(name + " " + params, g_liveHistoryColour);
+		String suffix = params.empty() ? "" : " " + params;
+		executeResult.emplace_back(name + suffix, g_liveHistoryColour);
 		FillExecuteResult(params);
 		return std::move(executeResult);
 	}
@@ -52,13 +58,14 @@ public:
 protected:
 	Vector<LogLine> executeResult;
 
-	Command(const String& name) : name(std::move(name))
+	Command(const char* name) : name(name)
 	{
 	}
 
 	virtual void FillExecuteResult(const String& params) = 0;
 };
 
+// Commands that take a fixed number and constant values of parameters as options
 class ParameterisedCommand : public Command
 {
 public:
@@ -82,26 +89,25 @@ public:
 			}
 		}
 	}
+
 	virtual Vector<String> AutoCompleteParams(const String& incompleteParams) override final
 	{
 		Vector<String> params;
-		/*if (!incompleteParams.empty())*/ {
-			for (const auto& p : paramCallbackMap)
+		for (const auto& p : paramCallbackMap)
+		{
+			if (incompleteParams.empty() ||
+				(p.first.find(incompleteParams) != String::npos && incompleteParams[0] == p.first[0]))
 			{
-				if (incompleteParams.empty() ||
-					(p.first.find(incompleteParams) != String::npos && incompleteParams[0] == p.first[0]))
-				{
-					params.emplace_back(p.first);
-				}
+				params.emplace_back(p.first);
 			}
 		}
 		return params;
 	}
 
 protected:
-	Map<String, void (*)(Vector<LogLine>&)> paramCallbackMap;
+	Map<String, Function(void(Vector<LogLine>&))> paramCallbackMap;
 
-	ParameterisedCommand(const String& name) : Command(name)
+	ParameterisedCommand(const char* name) : Command(name)
 	{
 	}
 
@@ -190,6 +196,66 @@ protected:
 	}
 };
 
+class ResolutionCommand : public ParameterisedCommand
+{
+public:
+	ResolutionCommand() : ParameterisedCommand("resolution")
+	{
+		const Map<u32, SFWindowSize>& windowSizes = GFX::GetValidWindowSizes();
+		for (const auto& kvp : windowSizes)
+		{
+			const auto& windowSize = kvp.second;
+			String windowSizeText = Strings::ToString(windowSize.height) + "p";
+			paramCallbackMap.emplace(windowSizeText, [windowSize](Vector<LogLine>& executeResult) {
+				Services::Engine()->TrySetWindowSize(windowSize.height);
+				String sizeText =
+					Strings::ToString(windowSize.width) + "x" + Strings::ToString(windowSize.height);
+				executeResult.emplace_back("Set Resolution to: " + sizeText, g_logTextColour);
+			});
+		}
+	}
+	
+protected:
+	virtual LogLine OnEmptyParams()
+	{
+		return LogLine("set resolution to what height?", g_logTextColour);
+	}
+};
+
+class LogLevelCommand : public ParameterisedCommand
+{
+public:
+	LogLevelCommand() : ParameterisedCommand("loglevel")
+	{
+		paramCallbackMap.emplace("HOT", [](Vector<LogLine>& executeResult) {
+			Core::g_MinLogSeverity = Core::LogSeverity::HOT;
+			executeResult.emplace_back("Set LogLevel to [HOT]", g_logTextColour);
+		});
+		paramCallbackMap.emplace("Error", [](Vector<LogLine>& executeResult) {
+			Core::g_MinLogSeverity = Core::LogSeverity::Error;
+			executeResult.emplace_back("Set LogLevel to [Error]", g_logTextColour);
+		});
+		paramCallbackMap.emplace("Warning", [](Vector<LogLine>& executeResult) {
+			Core::g_MinLogSeverity = Core::LogSeverity::Warning;
+			executeResult.emplace_back("Set LogLevel to [Warning]", g_logTextColour);
+		});
+		paramCallbackMap.emplace("Info", [](Vector<LogLine>& executeResult) {
+			Core::g_MinLogSeverity = Core::LogSeverity::Info;
+			executeResult.emplace_back("Set LogLevel to [Info]", g_logTextColour);
+		});
+		paramCallbackMap.emplace("Debug", [](Vector<LogLine>& executeResult) {
+			Core::g_MinLogSeverity = Core::LogSeverity::Debug;
+			executeResult.emplace_back("Set LogLevel to [Debug]", g_logTextColour);
+		});
+	}
+
+protected:
+	virtual LogLine OnEmptyParams() override
+	{
+		return LogLine("set g_MinLogSeverity to what?", g_logTextColour);
+	}
+};
+
 class QuitCommand : public Command
 {
 public:
@@ -217,6 +283,7 @@ class LoadWorldCommand : public Command
 public:
 	LoadWorldCommand() : Command("loadworld")
 	{
+		bTakesCustomParam = true;
 	}
 
 	virtual void FillExecuteResult(const String& params) override
@@ -308,7 +375,7 @@ Vector<LogLine> ExecuteQuery(const String& command, const String& params)
 	return ret;
 }
 
-Vector<Command*> FindCommands(const String& incompleteCommand)
+Vector<Command*> FindCommands(const String& incompleteCommand, bool bFirstCharMustMatch)
 {
 	Vector<Command*> results;
 	for (auto& command : commands)
@@ -316,7 +383,8 @@ Vector<Command*> FindCommands(const String& incompleteCommand)
 		String name = command.second->name;
 		if (name.find(incompleteCommand) != String::npos)
 		{
-			results.push_back(command.second.get());
+			if (!bFirstCharMustMatch || command.second->name[0] == incompleteCommand[0])
+				results.push_back(command.second.get());
 		}
 	}
 	return results;
@@ -332,6 +400,8 @@ void Init()
 	commands.emplace("hide", MakeUnique<HideCommand>());
 	commands.emplace("quit", MakeUnique<QuitCommand>());
 	commands.emplace("loadworld", MakeUnique<LoadWorldCommand>());
+	commands.emplace("resolution", MakeUnique<ResolutionCommand>());
+	commands.emplace("loglevel", MakeUnique<LogLevelCommand>());
 }
 
 Vector<LogLine> Execute(const String& query)
@@ -359,18 +429,19 @@ AutoCompleteResults AutoComplete(const String& incompleteQuery)
 	String incompleteParams;
 	SplitQuery(cleanedQuery, incompleteCommand, incompleteParams);
 
-	Vector<Command*> matchedCommands = FindCommands(incompleteCommand);
+	Vector<Command*> matchedCommands = FindCommands(incompleteCommand, true);
 	AutoCompleteResults results;
 	if (!matchedCommands.empty())
 	{
 		// If exact match, build auto-compeleted params for the command
-		if (matchedCommands.size() == 1 && matchedCommands[0]->name == incompleteCommand)
+		if (matchedCommands.size() == 1)
 		{
 			Vector<String> matchedParams = matchedCommands[0]->AutoCompleteParams(incompleteParams);
-			for (const auto& p : matchedParams)
+			for (auto& p : matchedParams)
 			{
 				results.params.emplace_back(std::move(p));
 			}
+			results.bCustomParam = matchedCommands[0]->bTakesCustomParam;
 		}
 
 		// If no params, return matchedCommands

@@ -14,10 +14,15 @@ private:
 	Rect2 m_viewBounds;
 
 public:
+	static SFWindowSize GetMaxWindowSize();
+
+public:
 	SFWindow(const SFWindowData& windowData);
 
 	Vector2 GetViewSize() const;
 	// Projects unit Rect to screen
 	Vector2 Project(const Vector2& nPos, bool bPreClamp) const;
+
+	void SetSize(const SFWindowSize& size);
 };
 } // namespace LittleEngine

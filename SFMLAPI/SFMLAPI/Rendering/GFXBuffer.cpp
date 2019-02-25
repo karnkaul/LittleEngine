@@ -9,7 +9,9 @@ GFXDataFrame::GFXDataFrame(Vector<SFPrimitive>&& primitives)
 {
 	for (const auto& primitive : primitives)
 	{
-		RenderLayer& layer = layerArray[static_cast<size_t>(primitive.m_state.layer)];
+		size_t idx = static_cast<size_t>(primitive.m_state.layer);
+		Assert(layerArray.size() > idx, "Invalid layer on SFPrimitive!");
+		auto& layer = layerArray.at(idx);
 		layer.emplace_back(SFPrimitive(primitive));
 	}
 }

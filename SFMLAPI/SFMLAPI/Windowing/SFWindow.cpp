@@ -20,8 +20,14 @@
 
 namespace LittleEngine
 {
+SFWindowSize SFWindow::GetMaxWindowSize()
+{
+	sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
+	return SFWindowSize(desktopMode.width, desktopMode.height);
+}
+
 SFWindow::SFWindow(const SFWindowData& data)
-	: RenderWindow(sf::VideoMode(data.windowSize.width, data.windowSize.height), data.title)
+	: RenderWindow(sf::VideoMode(data.windowSize.width, data.windowSize.height), data.title, data.sfStyle)
 {
 	m_viewBounds = Rect2::CentreSize(data.viewSize);
 	Vector2 viewSize = m_viewBounds.GetSize();
@@ -59,5 +65,16 @@ Vector2 SFWindow::Project(const Vector2& nPos, bool bPreClamp) const
 	}
 	const Vector2& s = m_viewBounds.topRight;
 	return Vector2(p.x * s.x, p.y * s.y);
+}
+
+void SFWindow::SetSize(const SFWindowSize& size)
+{
+	sf::Vector2u fullSize = getSize();
+	sf::Vector2i halfSize(fullSize.x / 2, fullSize.y / 2);
+	sf::Vector2i position = getPosition() + halfSize;
+	setSize({size.width, size.height});
+	halfSize = sf::Vector2i(size.width / 2, size.height / 2);
+	position -= halfSize;
+	setPosition(position);
 }
 } // namespace LittleEngine

@@ -72,7 +72,8 @@ namespace LittleEngine { namespace Debug {
 				}
 
 				if (search.queries.size() == 1) {
-					m_liveLine.liveString = search.queries[0] + " ";
+					bool bSpace = search.bCustomParam || !search.params.empty();
+					m_liveLine.liveString = search.queries[0] + (bSpace ? " " : "");
 				}
 
 				String logOutput;

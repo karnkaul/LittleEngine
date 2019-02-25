@@ -6,6 +6,7 @@
 #include "LittleEngine/GFX/GFX.h"
 #include "LittleEngine/RenderLoop/RenderHeap.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/Game/GameSettings.h"
 #if DEBUGGING
 #include "LittleEngine/Physics/Collider.h"
 #endif
@@ -27,6 +28,7 @@ void EngineLoop::PreRun()
 	if (!m_bInit)
 		Init();
 	m_uAsyncRenderLoop = MakeUnique<AsyncRenderLoop>(*m_uSFWindow, m_gfxBuffer, m_tickRate, m_bRenderThread);
+	m_uEngineService->m_pRenderLoop = m_uAsyncRenderLoop.get(); 
 	m_uRenderHeap = MakeUnique<RenderHeap>(m_gfxBuffer);
 	GFX::Init(*m_uSFWindow);
 	m_uEngineService->PreRun();
@@ -39,7 +41,6 @@ void EngineLoop::Tick(Time dt)
 	UpdateInput();
 	ReconcileRenderStates();
 	Integrate(dt);
-	// SwapGFXBuffer();
 }
 
 void EngineLoop::PostTick()
@@ -130,8 +131,10 @@ void EngineLoop::SwapGFXBuffer()
 
 void EngineLoop::Init()
 {
-	LOG_I("[EngineLoop] Initialising, loading config, and setting parameters...");
+#if !SHIPPING
+	LOG_I("[EngineLoop] Initialising engine, loading config...");
 	m_config.Load("config.gd");
+#endif
 	Core::g_MinLogSeverity = m_config.GetLogLevel();
 	m_bPauseOnFocusLoss = m_config.ShouldPauseOnFocusLoss();
 	OS::Platform()->SetDesiredWorkerCount(m_config.GetNumWorkerThreads());
@@ -156,19 +159,24 @@ void EngineLoop::Init()
 #if DEBUGGING
 	Collider::s_debugShapeWidth = m_config.GetColliderBorderWidth();
 #endif
-
+	GameSettings* gameSettings = GameSettings::Instance();
 	m_tickRate = Time::Seconds(1.0f / static_cast<f64>(m_config.GetTicksPerSecond()));
 	m_maxFrameTime = Time::Milliseconds(m_config.GetMaxTickTimeMS());
 	m_windowData.title = m_config.GetWindowTitle();
 	m_windowData.viewSize = m_config.GetViewSize();
-	m_windowData.windowSize = m_config.GetScreenSize();
+	u32 windowHeight = gameSettings->GetWindowHeight();
+	u32 windowWidth = (m_windowData.viewSize.x.ToU32() * windowHeight) / m_windowData.viewSize.y.ToU32();
+	m_windowData.windowSize = SFWindowSize(windowWidth, windowHeight);
+	m_windowData.sfStyle = gameSettings->IsBordlerless() ? sf::Style::None : sf::Style::Close;
 	m_uEngineService = MakeUnique<EngineService>();
 	m_bInit = true;
 }
 
 void EngineLoop::Uninit()
 {
+#if !SHIPPING
 	m_config.Save("config.gd");
+#endif
 	m_uEngineService = nullptr;
 	m_uJobManager = nullptr;
 	m_bInit = false;

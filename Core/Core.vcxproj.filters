@@ -42,6 +42,9 @@
     <ClCompile Include="Private\Transform.cpp">
       <Filter>Private</Filter>
     </ClCompile>
+    <ClCompile Include="Private\Property.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Public\CoreTypes.h">
@@ -96,6 +99,9 @@
       <Filter>Public</Filter>
     </ClInclude>
     <ClInclude Include="Public\Core.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Property.h">
       <Filter>Public</Filter>
     </ClInclude>
   </ItemGroup>
