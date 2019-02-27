@@ -25,14 +25,15 @@ void MultiJob::AddJob(Function(void()) job, const String& name)
 
 void MultiJob::StartJobs(Function(void()) OnComplete)
 {
+	LOG_I("%s started. Running and monitoring %d jobs", LogNameStr(), m_pendingJobIDs.size());
 	JobManager* pJobs = Services::Jobs();
 	m_OnComplete = OnComplete;
 	m_bCompleted = false;
+	m_startTime = Time::Now();
 	for (auto& job : m_subJobs)
 	{
 		m_pendingJobIDs.push_back(pJobs->Enqueue(job.job, job.name));
 	}
-	LOG_I("%s started. Running and monitoring %d jobs", LogNameStr(), m_pendingJobIDs.size());
 }
 
 Fixed MultiJob::GetProgress() const
@@ -60,13 +61,18 @@ void MultiJob::Update()
 		}
 	}
 
-	if (m_pendingJobIDs.empty() && m_OnComplete)
+	if (m_pendingJobIDs.empty() && !m_bCompleted)
 	{
-		m_OnComplete();
-		m_OnComplete = nullptr;
+		if (m_OnComplete)
+		{
+			m_OnComplete();
+			m_OnComplete = nullptr;
+		}
 		m_bCompleted = true;
+		f32 secs = (Time::Now() - m_startTime).AsSeconds();
+		LOG_I("%s completed %d jobs in %.2fs", LogNameStr(), m_subJobs.size(), secs);
 	}
-}
+} // namespace LittleEngine
 
 const char* MultiJob::LogNameStr() const
 {

@@ -8,6 +8,7 @@
 namespace LittleEngine { namespace Debug {
 	ConsoleInput::ConsoleInput() {
 		m_token = Services::Engine()->Input()->RegisterSudo(std::bind(&ConsoleInput::OnInput, this, _1));
+		m_liveLine.liveString.clear();
 	}
 
 	bool ConsoleInput::OnInput(const EngineInput::Frame& frame) {

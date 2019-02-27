@@ -243,10 +243,12 @@ public:
 			Core::g_MinLogSeverity = Core::LogSeverity::Info;
 			executeResult.emplace_back("Set LogLevel to [Info]", g_logTextColour);
 		});
+#if DEBUG_LOGGING
 		paramCallbackMap.emplace("Debug", [](Vector<LogLine>& executeResult) {
 			Core::g_MinLogSeverity = Core::LogSeverity::Debug;
 			executeResult.emplace_back("Set LogLevel to [Debug]", g_logTextColour);
 		});
+#endif
 	}
 
 protected:

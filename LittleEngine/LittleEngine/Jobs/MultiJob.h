@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
+#include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {
@@ -21,6 +22,7 @@ private:
 	List<JobID> m_pendingJobIDs;
 	List<JobID> m_completedJobIDs;
 	Function(void()) m_OnComplete = nullptr;
+	Time m_startTime;
 	bool m_bCompleted = false;
 
 public:

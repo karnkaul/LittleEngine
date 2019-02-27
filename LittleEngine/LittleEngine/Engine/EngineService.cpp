@@ -67,6 +67,7 @@ EngineService::~EngineService()
 	m_uAssetRepository = nullptr;
 	m_uEngineAudio = nullptr;
 	Services::UnprovideEngine(*this);
+	LOG_I("Logging terminated");
 	m_uFileLogger = nullptr;
 }
 
