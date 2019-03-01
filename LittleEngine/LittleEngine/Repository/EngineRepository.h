@@ -26,7 +26,7 @@ public:
 	template <typename T>
 	T* Load(String path)
 	{
-		static_assert(IsDerived(Asset, T),
+		static_assert(IsDerived<Asset, T>(),
 					  "T must derive from Asset: check Output window for erroneous call");
 		String fullPath = GetPath(path);
 		m_mutex.lock();
@@ -71,7 +71,7 @@ public:
 	template <typename T>
 	Vector<T*> Load(Vector<String> assetPaths)
 	{
-		static_assert(IsDerived(Asset, T),
+		static_assert(IsDerived<Asset, T>(),
 					  "T must derive from Asset: check Output window for erroneous call");
 		Vector<T*> vec;
 		for (const auto& path : assetPaths)
@@ -87,7 +87,7 @@ public:
 	// Note: Not meant to be used in hot code!
 	void LoadAll(AssetManifest& manifest);
 	// Note: Will not load Music!
-	AsyncAssetLoader* LoadAsync(const String& manifestPath, Function(void()) OnComplete = nullptr);
+	AsyncAssetLoader* LoadAsync(const String& manifestPath, const std::function<void()>& OnComplete = nullptr);
 
 	FontAsset* GetDefaultFont() const;
 

@@ -13,7 +13,6 @@ const String TICKS_PER_SECOND_KEY = "ticksPerSecond";
 const String MAX_TICK_TIME_MS = "maxTickTimeMS";
 const String WINDOW_TITLE_KEY = "windowTitle";
 const String LOG_LEVEL_KEY = "logLevel";
-const String SCREEN_SIZE_KEY = "screenSize";
 const String VIEW_SIZE_KEY = "viewSize";
 const String COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
 
@@ -39,6 +38,8 @@ void SetStringIfEmpty(GData& data, const String& key, const String& value)
 		data.SetString(key, value);
 }
 } // namespace
+
+const bool EngineConfig::s_bPauseOnFocusLoss = true;
 
 EngineConfig::EngineConfig()
 {
@@ -106,12 +107,6 @@ Core::LogSeverity EngineConfig::GetLogLevel() const
 	return ParseLogLevel(m_data.GetString(LOG_LEVEL_KEY));
 }
 
-SFWindowSize EngineConfig::GetScreenSize() const
-{
-	GData vec2 = m_data.GetGData(SCREEN_SIZE_KEY);
-	return SFWindowSize(Maths::Abs(vec2.GetS32("x")), Maths::Abs(vec2.GetS32("y")));
-}
-
 Vector2 EngineConfig::GetViewSize() const
 {
 	GData vec2 = m_data.GetGData(VIEW_SIZE_KEY);
@@ -154,14 +149,6 @@ bool EngineConfig::SetLogLevel(LogSeverity level)
 	return m_bDirty = m_data.SetString(LOG_LEVEL_KEY, severityMap[level]);
 }
 
-bool EngineConfig::SetScreenSize(const SFWindowSize& screenSize)
-{
-	GData gData;
-	gData.SetString("x", Strings::ToString(screenSize.width));
-	gData.SetString("y", Strings::ToString(screenSize.height));
-	return m_bDirty = m_data.AddField(SCREEN_SIZE_KEY, gData);
-}
-
 bool EngineConfig::SetColliderBorderWidth(u32 shapeWidth)
 {
 	return m_bDirty = m_data.SetString(COLLIDER_SHAPE_WIDTH_KEY, Strings::ToString(shapeWidth));
@@ -184,10 +171,9 @@ void EngineConfig::Verify()
 	SetStringIfEmpty(m_data, MAX_TICK_TIME_MS, Strings::ToString(25));
 	SetStringIfEmpty(m_data, RENDER_THREAD_KEY, Strings::ToString(true));
 	SetStringIfEmpty(m_data, NUM_THREADS_KEY, Strings::ToString(6));
-	if (m_data.GetString(SCREEN_SIZE_KEY).empty())
-		SetScreenSize(SFWindowSize(1280, 720));
+	SetStringIfEmpty(m_data, PAUSE_ON_FOCUS_LOSS_KEY, Strings::ToString(s_bPauseOnFocusLoss));
 	if (m_data.GetString(VIEW_SIZE_KEY).empty())
-		SetViewSize(Vector2(1280, 720));
+		SetViewSize(Vector2(1920, 1080));
 	m_bDirty = false;
 }
 } // namespace LittleEngine

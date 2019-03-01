@@ -8,6 +8,7 @@ namespace LittleEngine { namespace Debug {
 		struct AutoCompleteResults {
 			Vector<String> queries;
 			Vector<String> params;
+			bool bCustomParam = false;
 		};
 
 		void Init();

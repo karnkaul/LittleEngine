@@ -66,7 +66,7 @@ UIElement* UIContext::GetRootElement() const
 	return m_pRootElement;
 }
 
-Core::Delegate<>::Token UIContext::SetOnCancelled(Core::Delegate<>::Callback Callback, bool bAutoDestroy)
+UIContext::OnCancelled::Token UIContext::SetOnCancelled(const OnCancelled::Callback& Callback, bool bAutoDestroy)
 {
 	m_bAutoDestroyOnCancel = bAutoDestroy;
 	return m_onCancelledDelegate.Register(Callback);

@@ -44,7 +44,7 @@ void OnEnter()
 	}
 }
 
-bool bLoopingPS = true;
+bool bLoopingPS = false;
 ParticleSystem* pParticleSystem0 = nullptr;
 void OnSelect()
 {
@@ -209,7 +209,7 @@ void SpawnToggle()
 {
 	Fixed x = 300;
 	Fixed y = 200;
-	LayerID toggleLayer = static_cast<LayerID>(LAYER_UI + 4);
+	LayerID toggleLayer = static_cast<LayerID>(LAYER_UI + 2);
 	UIContext* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>(toggleLayer);
 	pParent->GetRootElement()->m_transform.size = {x, y};
 	UIWidgetStyle toggleStyle = UIWidgetStyle::GetDefault();

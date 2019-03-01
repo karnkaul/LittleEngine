@@ -18,9 +18,10 @@ AsyncFileLogger::AsyncFileLogger(const String& path) : m_filePath(path)
 
 AsyncFileLogger::~AsyncFileLogger()
 {
-	Core::g_OnLogStr = nullptr;
+	// Freeze m_cache and terminate thread
 	m_bStopLogging.store(true, std::memory_order_relaxed);
 	Services::Jobs()->Wait(m_jobID);
+	Core::g_OnLogStr = nullptr;
 	Assert(!m_uWriter, "Writer should be null!");
 }
 
@@ -35,21 +36,24 @@ void AsyncFileLogger::Async_StartLogging()
 			Lock lock(m_mutex);
 			toWrite = std::move(m_cache);
 		}
-
-		if (!toWrite.empty())
-		{
-			m_uWriter->Append(toWrite);
-		}
-
+		m_uWriter->Append(toWrite);
 		std::this_thread::yield();
 	}
-	m_uWriter->Append("[AsyncFileLogger] terminated\n");
+	
+	//m_cache is now read-only from main thread, no lock required
+	if (!m_cache.empty())
+	{
+		m_uWriter->Append(std::move(m_cache));
+	}
 	m_uWriter = nullptr;
 }
 
 void AsyncFileLogger::OnLogStr(const char* pText)
 {
-	Lock lock(m_mutex);
-	m_cache += std::string(pText);
+	if (!m_bStopLogging.load(std::memory_order_relaxed))
+	{
+		Lock lock(m_mutex);
+		m_cache += std::string(pText);
+	}
 }
 } // namespace LittleEngine

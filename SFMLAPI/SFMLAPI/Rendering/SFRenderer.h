@@ -1,6 +1,7 @@
 #pragma once
 #include <atomic>
 #include "GFXBuffer.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
 #include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
@@ -33,5 +34,7 @@ public:
 
 	void Render(GFXBuffer& buffer);
 	void Display();
+
+	void SetWindowSize(const SFWindowSize& size);
 };
 } // namespace LittleEngine

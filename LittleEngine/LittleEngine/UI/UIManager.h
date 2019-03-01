@@ -16,7 +16,7 @@ public:
 	template <typename T>
 	T* PushContext(LayerID baseLayer = LAYER_UI)
 	{
-		static_assert(IsDerived(UIContext, T), "T must derive from UIContext!");
+		static_assert(IsDerived<UIContext, T>(), "T must derive from UIContext!");
 		if (!m_uContexts.empty())
 		{
 			auto& uHead = m_uContexts.back();

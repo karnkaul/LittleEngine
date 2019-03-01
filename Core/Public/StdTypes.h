@@ -1,6 +1,5 @@
 #pragma once
 #include <array>
-#include <functional>
 #include <list>
 #include <map>
 #include <memory>
@@ -42,9 +41,6 @@
 #define DEBUG_LOGGING 0
 #endif
 
-#define Function(x) std::function<x>
-#define IsDerived(Base, Derived) std::is_base_of<Base, Derived>::value
-
 using u8 = uint8_t;
 using s8 = int8_t;
 using u16 = uint16_t;
@@ -80,6 +76,12 @@ template <typename T>
 using SPtr = std::shared_ptr<T>;
 template <typename T>
 using WPtr = std::weak_ptr<T>;
+
+template<typename Base, typename Derived>
+constexpr bool IsDerived()
+{
+	return std::is_base_of<Base, Derived>::value;
+}
 
 template <typename T, typename... U>
 UPtr<T> MakeUnique(U&&... Args)

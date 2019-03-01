@@ -28,7 +28,7 @@ public:
 	virtual ~UIButtonDrawer();
 
 	UIButtonDrawer* SetPanel(const UIStyle& panelStyle);
-	OnClick::Token AddButton(const UIText& buttonText, OnClick::Callback OnInteracted);
+	UIButton::OnClick::Token AddButton(const UIText& buttonText, const UIButton::OnClick::Callback& OnInteracted);
 
 protected:
 	virtual void OnInitContext() override;

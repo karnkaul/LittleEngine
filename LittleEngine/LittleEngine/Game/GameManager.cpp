@@ -5,7 +5,7 @@
 
 namespace LittleEngine
 {
-GameManager::GameManager()
+GameManager::GameManager() : m_logName("GameManager")
 {
 	m_uUIManager = MakeUnique<UIManager>();
 	m_uCollisionManager = MakeUnique<CollisionManager>();

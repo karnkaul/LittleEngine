@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
+#include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {
@@ -11,23 +12,24 @@ private:
 	struct SubJob
 	{
 		String name;
-		Function(void()) job;
+		std::function<void()> job;
 
-		SubJob(const String& name, Function(void()) job);
+		SubJob(const String& name, const std::function<void()>& job);
 	};
 
 	String m_logName;
 	Vector<SubJob> m_subJobs;
 	List<JobID> m_pendingJobIDs;
 	List<JobID> m_completedJobIDs;
-	Function(void()) m_OnComplete = nullptr;
+	std::function<void()> m_OnComplete = nullptr;
+	Time m_startTime;
 	bool m_bCompleted = false;
 
 public:
 	MultiJob(const String& name);
 
-	void AddJob(Function(void()) job, const String& name = "");
-	void StartJobs(Function(void()) OnComplete);
+	void AddJob(const std::function<void()>& job, const String& name = "");
+	void StartJobs(const std::function<void()>& OnComplete);
 	Fixed GetProgress() const;
 
 private:

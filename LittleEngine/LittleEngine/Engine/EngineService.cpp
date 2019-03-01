@@ -1,18 +1,39 @@
 #include "stdafx.h"
 #include "EngineService.h"
 #include "AsyncFileLogger.h"
-#include "LittleEngine/Services/Services.h"
-#include "LittleEngine/Engine/EngineLoop.h"
-#include "LittleEngine/Engine/OS.h"
-#include "SFMLAPI/Input/SFInputStateMachine.h"
 #include "LittleEngine/Debug/DebugProfiler.h"
 #include "LittleEngine/Debug/Console/DebugConsole.h"
+#include "LittleEngine/Engine/EngineLoop.h"
+#include "LittleEngine/Engine/OS.h"
+#include "LittleEngine/GFX/GFX.h"
+#include "LittleEngine/RenderLoop/AsyncRenderLoop.h"
+#include "LittleEngine/Services/Services.h"
+#include "SFMLAPI/Input/SFInputStateMachine.h"
 
 namespace LittleEngine
 {
 #if DEBUGGING
 using namespace Debug;
 #endif
+
+namespace
+{
+struct ChangeResolutionRequest
+{
+	SFWindowSize windowSize;
+	bool bActive = false;
+
+	ChangeResolutionRequest() = default;
+	ChangeResolutionRequest(const SFWindowSize& size);
+};
+
+ChangeResolutionRequest::ChangeResolutionRequest(const SFWindowSize& size) : windowSize(size), bActive(true)
+{
+}
+
+ChangeResolutionRequest changeResolutionRequest;
+}
+
 EngineService::EngineService()
 {
 	if (!OS::Platform()->CanCreateSystemThread() || Services::Jobs()->AvailableEngineThreads() < 1)
@@ -46,6 +67,7 @@ EngineService::~EngineService()
 	m_uAssetRepository = nullptr;
 	m_uEngineAudio = nullptr;
 	Services::UnprovideEngine(*this);
+	LOG_I("Logging terminated");
 	m_uFileLogger = nullptr;
 }
 
@@ -113,10 +135,31 @@ void EngineService::PostTick()
 #if ENABLED(PROFILER)
 	Profiler::Render();
 #endif
+	if (changeResolutionRequest.bActive)
+	{
+		Assert(m_pRenderLoop, "Render Loop is null!");
+		m_pRenderLoop->SetWindowSize(changeResolutionRequest.windowSize);
+		LOG_I("Set Resolution to: %dx%d", changeResolutionRequest.windowSize.width,
+			  changeResolutionRequest.windowSize.height);
+		changeResolutionRequest = {};
+	}
 }
 
 void EngineService::PostBufferSwap()
 {
 	m_uWorldStateMachine->PostBufferSwap();
+}
+
+void EngineService::TrySetWindowSize(u32 height)
+{
+	SFWindowSize* pSize = GFX::TryGetWindowSize(height);
+	if (pSize)
+	{
+		changeResolutionRequest = ChangeResolutionRequest(*pSize);
+	}
+	else
+	{
+		LOG_W("[EngineService] No resolution that matches given height: %d", height);
+	}
 }
 } // namespace LittleEngine

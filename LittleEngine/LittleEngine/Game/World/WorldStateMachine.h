@@ -50,7 +50,7 @@ template <typename T>
 WorldID WorldStateMachine::CreateWorld()
 {
 	WorldID id = -1;
-	static_assert(IsDerived(World, T), "T must derive from World!");
+	static_assert(IsDerived<World, T>(), "T must derive from World!");
 	UPtr<T> uState = MakeUnique<T>();
 	if (uState)
 	{

@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include "Gamepad.h"
 #include "SFMLAPI/Input/SFInputStateMachine.h"
 
@@ -33,7 +34,7 @@ public:
 		bool HasData() const;
 	};
 
-	using Delegate = Function(bool(const Frame& frameData));
+	using Delegate = std::function<bool(const Frame& frameData)>;
 	using Token = SPtr<s32>;
 
 private:

@@ -13,7 +13,7 @@
 				"bFireOnce": true
 			},
 			"lifetimeData": {
-				"ttlSecs": { "min": 0.50, "max": 0.25 },
+				"ttlSecs": { "min": 0.25, "max": 0.50 },
 				"scaleOverTime": { "min": 0.80, "max": 0.30 },
 				"alphaOverTime": { "min": 255, "max": 50 }
 			},
@@ -36,7 +36,7 @@
 				"bFireOnce": true
 			},
 			"lifetimeData": {
-				"ttlSecs": { "min": 0.50, "max": 0.25 },
+				"ttlSecs": { "min": 0.25, "max": 0.50 },
 				"scaleOverTime": { "min": 1.00, "max": 0.50 },
 				"alphaOverTime": { "min": 255, "max": 50 }
 			},
@@ -59,7 +59,7 @@
 				"bFireOnce": true
 			},
 			"lifetimeData": {
-				"ttlSecs": { "min": 1.50, "max": 0.50 },
+				"ttlSecs": { "min": 0.50, "max": 1.50 },
 				"scaleOverTime": { "min": 1.00, "max": 0.50 },
 				"alphaOverTime": { "min": 255, "max": 50 }
 			},

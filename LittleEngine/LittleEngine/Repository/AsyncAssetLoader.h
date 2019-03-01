@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include "SFMLAPI/System/SFTime.h"
 #include "SFMLAPI/System/SFAssets.h"
 
@@ -18,7 +19,7 @@ private:
 		}
 	};
 
-	Function(void()) m_onDone;
+	std::function<void()> m_onDone;
 	Vector<NewAsset<TextureAsset>> m_newTextures;
 	Vector<NewAsset<FontAsset>> m_newFonts;
 	Vector<NewAsset<SoundAsset>> m_newSounds;
@@ -28,7 +29,7 @@ private:
 	bool m_bIdle = false;
 
 public:
-	AsyncAssetLoader(EngineRepository& repository, const String& manifestPath, Function(void()) onDone);
+	AsyncAssetLoader(EngineRepository& repository, const String& manifestPath, const std::function<void()>& onDone);
 
 	Fixed GetProgress() const;
 

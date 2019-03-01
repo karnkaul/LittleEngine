@@ -54,7 +54,7 @@ UIDialogue* UIDialogue::SetContent(const UIText& text, const Colour* pBackground
 		m_data.contentBG = *pBackground;
 		m_pContent->SetPanel(m_data.contentBG);
 	}
-	
+
 	m_pContent->SetText(text);
 	return this;
 }
@@ -71,12 +71,13 @@ UIDialogue* UIDialogue::SetHeader(const UIText& text, const Colour* pBackground)
 	return this;
 }
 
-OnClick::Token UIDialogue::AddMainButton(const UIText& text, OnClick::Callback onMainButton, bool bDismissOnBack)
+UIButton::OnClick::Token UIDialogue::AddMainButton(const UIText& text,
+												   const UIButton::OnClick::Callback& onMainButton,
+												   bool bDismissOnBack)
 {
 	if (m_pMainButton)
 	{
-		LOG_W("%s Main button already exists on this UIDialogue! Ignoring call to AddMainButton",
-			  LogNameStr());
+		LOG_W("%s Main button already exists on this UIDialogue! Ignoring call to AddMainButton", LogNameStr());
 		return nullptr;
 	}
 
@@ -93,7 +94,9 @@ OnClick::Token UIDialogue::AddMainButton(const UIText& text, OnClick::Callback o
 	return m_pMainButton->AddCallback(onMainButton);
 }
 
-OnClick::Token UIDialogue::AddOtherButton(const UIText& otherButtonUIText, OnClick::Callback OnOtherButton, bool bSelect)
+UIButton::OnClick::Token UIDialogue::AddOtherButton(const UIText& otherButtonUIText,
+										  const UIButton::OnClick::Callback& OnOtherButton,
+										  bool bSelect)
 {
 	if (m_pOtherButton)
 	{

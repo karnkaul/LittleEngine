@@ -16,6 +16,7 @@ private:
 	UPtr<EngineAudio> m_uEngineAudio;
 	UPtr<WorldStateMachine> m_uWorldStateMachine;
 	UPtr<class AsyncFileLogger> m_uFileLogger;
+	class AsyncRenderLoop* m_pRenderLoop = nullptr;
 	bool m_bTerminate;
 
 public:
@@ -27,6 +28,7 @@ public:
 	EngineInput* Input() const;
 	EngineAudio* Audio() const;
 
+	void TrySetWindowSize(u32 height);
 	void Terminate();
 
 private:
@@ -36,7 +38,6 @@ private:
 	void PostTick();
 	void PostBufferSwap();
 
-	friend class EngineLoop;
 	friend class EngineLoop;
 };
 } // namespace LittleEngine

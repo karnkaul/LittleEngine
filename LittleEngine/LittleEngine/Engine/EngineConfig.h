@@ -1,7 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
 #include "GData.h"
-#include "SFMLAPI/Windowing/SFWindowData.h"
 #include "Logger.h" // Logger::Severity
 
 namespace LittleEngine
@@ -13,6 +12,9 @@ using LogSeverity = Core::LogSeverity;
 class EngineConfig
 {
 private:
+	// Set this to determine whether the engine will pause ticking if the window loses focus
+	static const bool s_bPauseOnFocusLoss;
+
 	GData m_data;
 	bool m_bDirty = false;
 
@@ -32,7 +34,6 @@ public:
 	String GetWindowTitle() const;
 	u32 GetColliderBorderWidth() const;
 	LogSeverity GetLogLevel() const;
-	SFWindowSize GetScreenSize() const;
 	Vector2 GetViewSize() const;
 
 	bool SetCreateRenderThread(bool bCreate);
@@ -42,7 +43,6 @@ public:
 	bool SetMaxTimeMS(u32 maxTickTimeMS);
 	bool SetWindowTitle(const String& windowTitle);
 	bool SetLogLevel(LogSeverity level);
-	bool SetScreenSize(const SFWindowSize& screenSize);
 	bool SetColliderBorderWidth(u32 shapeWidth);
 	bool SetViewSize(const Vector2& viewSize);
 

@@ -8,7 +8,7 @@
 
 namespace LittleEngine
 {
-JobManager::Job::Job(JobID id, Function(void()) task, String name, bool bSilent)
+JobManager::Job::Job(JobID id, const std::function<void()>& task, String name, bool bSilent)
 	: task(task), id(id), bSilent(bSilent)
 {
 	String suffix = name.empty() ? "" : "-" + name;
@@ -99,7 +99,7 @@ void JobManager::Wait(InitList<JobID> ids)
 	}
 }
 
-void JobManager::Wait(Vector<JobID> ids)
+void JobManager::Wait(const Vector<JobID>& ids)
 {
 	for (auto id : ids)
 	{
@@ -119,13 +119,13 @@ bool JobManager::IsCompleted(JobID id)
 	return Unsafe_IsCompleted(id);
 }
 
-JobID JobManager::Enqueue(Function(void()) Task, const String& name, bool bSilent)
+JobID JobManager::Enqueue(const std::function<void()>& Task, const String& name, bool bSilent)
 {
 	Job job(++m_nextGameJobID, Task, name, bSilent);
 	return Lock_Enqueue(std::move(job), m_gameJobQueue);
 }
 
-JobID JobManager::EnqueueEngine(Function(void()) Task, const String& name)
+JobID JobManager::EnqueueEngine(const std::function<void()>& Task, const String& name)
 {
 	Assert(AvailableEngineThreads() > 0, "!DEADLOCK! No available engine workers!");
 	Job job(++m_nextEngineJobID, Task, name, false);

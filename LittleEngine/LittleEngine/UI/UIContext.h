@@ -10,6 +10,9 @@ namespace LittleEngine
 // \brief Controller for a number of UIWidgets: allows player to cycle through and interact with all of them
 class UIContext : public UIObject
 {
+public:
+	using OnCancelled = Core::Delegate<>;
+
 private:
 	using UUIWidget = UPtr<UIWidget>;
 	using UUIElement = UPtr<class UIElement>;
@@ -24,7 +27,7 @@ private:
 	UIWidgetMatrix m_uiWidgets;
 	Vector<UUIElement> m_uiElements;
 	Vector<EngineInput::Token> m_inputTokens;
-	Core::Delegate<> m_onCancelledDelegate;
+	OnCancelled m_onCancelledDelegate;
 
 public:
 	UIContext();
@@ -67,7 +70,7 @@ public:
 	void ResetSelection();
 	UIWidget* GetSelected();
 	UIElement* GetRootElement() const;
-	Core::Delegate<>::Token SetOnCancelled(Core::Delegate<>::Callback Callback, bool bAutoDestroy);
+	OnCancelled::Token SetOnCancelled(const OnCancelled::Callback& Callback, bool bAutoDestroy);
 	void Destruct();
 
 	virtual void Tick(Time dt) override;

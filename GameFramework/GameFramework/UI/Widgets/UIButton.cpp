@@ -24,7 +24,7 @@ void UIButton::SetText(const UIText& uiText)
 	m_pRoot->SetText(uiText);
 }
 
-OnClick::Token UIButton::AddCallback(OnClick::Callback Callback)
+UIButton::OnClick::Token UIButton::AddCallback(const UIButton::OnClick::Callback& Callback)
 {
 	return m_OnInteracted.Register(Callback);
 }

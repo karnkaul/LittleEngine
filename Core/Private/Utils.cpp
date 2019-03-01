@@ -4,61 +4,6 @@
 #include <ctime>
 #include <stack>
 
-namespace Maths
-{
-namespace
-{
-bool _bInit = false;
-void InitRand(bool useTime = true)
-{
-	if (useTime)
-	{
-		srand(static_cast<u32>(time(nullptr)));
-	}
-	else
-	{
-		srand(0);
-	}
-	_bInit = true;
-}
-} // namespace
-
-Fixed Random::Range(const Fixed& min, const Fixed& max)
-{
-	if (!_bInit)
-	{
-		InitRand();
-	}
-	s32 random = rand();
-	Fixed normalised(random, RAND_MAX);
-	return (normalised * (max - min)) + min;
-}
-
-s32 Random::Range(s32 min, s32 max)
-{
-	if (!_bInit)
-	{
-		InitRand();
-	}
-	return ((rand() * (max - min)) / RAND_MAX) + min;
-}
-
-size_t Random::Range(size_t min, size_t max)
-{
-	if (!_bInit)
-	{
-		InitRand();
-	}
-	return ((rand() * (max - min)) / RAND_MAX) + min;
-}
-
-bool IsNearlyEqual(f32 lhs, f32 rhs, f32 epsilon)
-{
-	return Abs(lhs - rhs) < epsilon;
-}
-
-} // namespace Maths
-
 namespace Strings
 {
 void ToLower(String& lhs)

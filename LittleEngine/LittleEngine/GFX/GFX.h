@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
 
 namespace LittleEngine
 {
@@ -12,5 +13,8 @@ void Cleanup();
 
 Vector2 Project(const Vector2& nPos, bool bPreClamp);
 Vector2 GetViewSize();
+
+const Map<u32, SFWindowSize>& GetValidWindowSizes();
+SFWindowSize* TryGetWindowSize(u32 height);
 } // namespace GFX
 } // namespace LittleEngine

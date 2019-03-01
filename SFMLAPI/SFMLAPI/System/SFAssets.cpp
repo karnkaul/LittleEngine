@@ -31,7 +31,7 @@ void AssetManifest::Clear()
 	definitions.clear();
 }
 
-void AssetManifest::ForEach(Function(void(const AssetDefinition& definition)) Callback) const
+void AssetManifest::ForEach(const std::function<void(const AssetDefinition& definition)>& Callback) const
 {
 	for (const auto& definition : definitions)
 	{

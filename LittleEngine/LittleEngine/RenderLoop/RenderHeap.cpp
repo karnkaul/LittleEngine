@@ -82,9 +82,7 @@ void RenderHeap::Destroy(InitList<SFPrimitive*> pPrimitives)
 
 void RenderHeap::DestroyAll()
 {
-#if DEBUG_LOGGING
 	u32 cleared = m_uPrimitives.size();
-#endif
 	m_uPrimitives.clear();
 	LOG_I("[RenderHeap] Destroyed %d Primitives", cleared);
 }

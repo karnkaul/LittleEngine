@@ -44,7 +44,7 @@ void EngineRepository::LoadAll(AssetManifest& manifest)
 	});
 }
 
-AsyncAssetLoader* EngineRepository::LoadAsync(const String& manifestPath, Function(void()) OnCompleted)
+AsyncAssetLoader* EngineRepository::LoadAsync(const String& manifestPath, const std::function<void()>& OnCompleted)
 {
 	UPtr<AsyncAssetLoader> uAsyncLoader = MakeUnique<AsyncAssetLoader>(*this, manifestPath, OnCompleted);
 	AsyncAssetLoader* pLoader = uAsyncLoader.get();
