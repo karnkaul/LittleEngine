@@ -2,6 +2,7 @@
 #include "StdTypes.h"
 #include <ostream>
 #include <sstream>
+#include <functional>
 
 #define LOG_SEVERITY(msg, severity, ...) Core::Log(Core::LogSeverity::severity, msg, __VA_ARGS__)
 #define LOG_E(x, ...) LOG_SEVERITY(x, Error, __VA_ARGS__)
@@ -27,7 +28,7 @@ enum class LogSeverity
 	Error = 4
 };
 
-extern Function(void(const char*)) g_OnLogStr;
+extern std::function<void(const char*)> g_OnLogStr;
 extern LogSeverity g_MinLogSeverity;
 
 void Log(LogSeverity severity, const char* pText, ...);

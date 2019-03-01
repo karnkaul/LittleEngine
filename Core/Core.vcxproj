@@ -176,6 +176,7 @@
     <ClCompile Include="Private\GData.cpp" />
     <ClCompile Include="Private\Logger.cpp" />
     <ClCompile Include="Private\Property.cpp" />
+    <ClCompile Include="Private\Maths.cpp" />
     <ClCompile Include="Private\Rect2.cpp" />
     <ClCompile Include="Private\SysDialog.cpp" />
     <ClCompile Include="Private\Transform.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="Public\GData.h" />
     <ClInclude Include="Public\Logger.h" />
     <ClInclude Include="Public\Property.h" />
+    <ClInclude Include="Public\Maths.h" />
     <ClInclude Include="Public\Rect2.h" />
     <ClInclude Include="Public\StdTypes.h" />
     <ClInclude Include="Public\SysDialog.h" />

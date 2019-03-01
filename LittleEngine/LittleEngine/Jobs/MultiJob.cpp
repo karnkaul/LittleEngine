@@ -7,7 +7,7 @@
 
 namespace LittleEngine
 {
-MultiJob::SubJob::SubJob(const String& name, Function(void()) job) : name(name), job(job)
+MultiJob::SubJob::SubJob(const String& name, const std::function<void()>& job) : name(name), job(job)
 {
 }
 
@@ -15,7 +15,7 @@ MultiJob::MultiJob(const String& name) : m_logName("[" + name + " (MultiJob)]")
 {
 }
 
-void MultiJob::AddJob(Function(void()) job, const String& name)
+void MultiJob::AddJob(const std::function<void()>& job, const String& name)
 {
 	String n = name;
 	if (name.empty())
@@ -23,7 +23,7 @@ void MultiJob::AddJob(Function(void()) job, const String& name)
 	m_subJobs.emplace_back(n, job);
 }
 
-void MultiJob::StartJobs(Function(void()) OnComplete)
+void MultiJob::StartJobs(const std::function<void()>& OnComplete)
 {
 	LOG_I("%s started. Running and monitoring %d jobs", LogNameStr(), m_pendingJobIDs.size());
 	JobManager* pJobs = Services::Jobs();

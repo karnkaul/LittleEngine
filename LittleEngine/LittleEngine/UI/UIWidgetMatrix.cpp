@@ -75,7 +75,7 @@ void UIWidgetMatrix::Clear()
 	m_matrix.Clear();
 }
 
-void UIWidgetMatrix::ForEach(Function(void(UPtr<UIWidget>&)) Callback)
+void UIWidgetMatrix::ForEach(const std::function<void(UPtr<UIWidget>&)>& Callback)
 {
 	m_matrix.ForEach([&Callback](Vec& vec) { vec.ForEach(Callback); });
 }

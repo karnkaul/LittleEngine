@@ -5,10 +5,11 @@
 
 namespace LittleEngine
 {
-using OnClick = Core::Delegate<>;
-
 class UIButton : public UIWidget
 {
+public:
+	using OnClick = Core::Delegate<>;
+
 private:
 	OnClick m_OnInteracted;
 	UIElement* m_pRoot = nullptr;
@@ -20,7 +21,7 @@ public:
 	virtual ~UIButton();
 
 	void SetText(const UIText& uiText);
-	OnClick::Token AddCallback(OnClick::Callback Callback);
+	OnClick::Token AddCallback(const OnClick::Callback& Callback);
 	UIElement* GetButtonElement() const;
 
 protected:

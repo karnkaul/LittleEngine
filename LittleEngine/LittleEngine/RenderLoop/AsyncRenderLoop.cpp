@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <functional>
 #include "AsyncRenderLoop.h"
 #include "RenderHeap.h"
 #include "LittleEngine/Services/Services.h"

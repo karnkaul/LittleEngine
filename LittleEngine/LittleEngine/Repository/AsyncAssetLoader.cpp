@@ -8,7 +8,9 @@ namespace LittleEngine
 {
 using Lock = std::lock_guard<std::mutex>;
 
-AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository, const String& manifestPath, Function(void()) onDone)
+AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
+								   const String& manifestPath,
+								   const std::function<void()>& onDone)
 	: m_onDone(onDone), m_pRepository(&repository)
 {
 	AssetManifestData data(manifestPath);

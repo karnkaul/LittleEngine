@@ -1,6 +1,7 @@
 #pragma once
 #include <atomic>
 #include <mutex>
+#include <functional>
 #include "CoreTypes.h"
 #include "JobWorker.h"
 #include "MultiJob.h"
@@ -22,12 +23,12 @@ private:
 	struct Job
 	{
 		String logName;
-		Function(void()) task;
+		std::function<void()> task;
 		JobID id = INVALID_ID;
 		bool bSilent = false;
 
 		Job() = default;
-		Job(JobID id, Function(void()) task, String name, bool bSilent);
+		Job(JobID id, const std::function<void()>& task, String name, bool bSilent);
 
 		const char* ToStr() const;
 	};
@@ -50,13 +51,13 @@ public:
 
 	void Wait(JobID id);
 	void Wait(InitList<JobID> ids);
-	void Wait(Vector<JobID> ids);
+	void Wait(const Vector<JobID>& ids);
 	bool IsRunning(JobID id);
 	bool IsCompleted(JobID id);
 
 public:
-	JobID Enqueue(Function(void()) Task, const String& name = "", bool bSilent = false);
-	JobID EnqueueEngine(Function(void()) Task, const String& name);
+	JobID Enqueue(const std::function<void()>& Task, const String& name = "", bool bSilent = false);
+	JobID EnqueueEngine(const std::function<void()>& Task, const String& name);
 	MultiJob* CreateMultiJob(const String& name);
 
 private:

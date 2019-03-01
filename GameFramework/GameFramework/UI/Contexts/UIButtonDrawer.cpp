@@ -24,7 +24,8 @@ UIButtonDrawer* UIButtonDrawer::SetPanel(const UIStyle& panelStyle)
 	return this;
 }
 
-OnClick::Token UIButtonDrawer::AddButton(const UIText& buttonText, OnClick::Callback OnInteracted)
+UIButton::OnClick::Token UIButtonDrawer::AddButton(const UIText& buttonText,
+												   const UIButton::OnClick::Callback& OnInteracted)
 {
 	String buttonName = "Button" + Strings::ToString(m_uiButtons.size());
 	UIButton* pButton = AddWidget<UIButton>(buttonName, nullptr, m_data.bHorizontal);

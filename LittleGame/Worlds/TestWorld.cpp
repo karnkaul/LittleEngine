@@ -44,7 +44,7 @@ void OnEnter()
 	}
 }
 
-bool bLoopingPS = true;
+bool bLoopingPS = false;
 ParticleSystem* pParticleSystem0 = nullptr;
 void OnSelect()
 {

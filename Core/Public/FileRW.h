@@ -1,5 +1,6 @@
 #pragma once
 #include "StdTypes.h"
+#include <functional>
 
 namespace Core
 {
@@ -20,6 +21,6 @@ public:
 	bool Append(const String& contents);
 
 private:
-	void Read(Function(void(String&& line)) Procedure);
+	void Read(const std::function<void(String&& line)>& Procedure);
 };
 } // namespace Core

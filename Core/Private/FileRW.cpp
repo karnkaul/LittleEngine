@@ -60,7 +60,7 @@ bool FileRW::Append(const String& contents)
 	return Write(contents, true);
 }
 
-void FileRW::Read(Function(void(String&& line)) Procedure)
+void FileRW::Read(const std::function<void(String&& line)>& Procedure)
 {
 	std::ifstream file(m_path);
 	if (!file.good())

@@ -95,7 +95,7 @@ public:
 		return vec.size();
 	}
 
-	void ForEach(Function(void(T&)) Callback)
+	void ForEach(const std::function<void(T&)>& Callback)
 	{
 		for (auto& t : vec)
 		{

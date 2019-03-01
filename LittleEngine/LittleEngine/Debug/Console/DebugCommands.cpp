@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <functional>
 #include "DebugCommands.h"
 #if ENABLED(CONSOLE)
 #include "Utils.h"
@@ -105,7 +106,7 @@ public:
 	}
 
 protected:
-	Map<String, Function(void(Vector<LogLine>&))> paramCallbackMap;
+	Map<String, std::function<void(Vector<LogLine>&)>> paramCallbackMap;
 
 	ParameterisedCommand(const char* name) : Command(name)
 	{

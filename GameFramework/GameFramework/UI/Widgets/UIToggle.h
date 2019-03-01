@@ -5,10 +5,11 @@
 
 namespace LittleEngine
 {
-using OnChanged = Core::Delegate<bool>;
-
 class UIToggle : public UIWidget
 {
+public:
+	using OnChanged = Core::Delegate<bool>;
+
 private:
 	struct UIToggleData
 	{
@@ -35,8 +36,8 @@ public:
 	UIToggle* SetOnColour(Colour onColour);
 	UIToggle* SetOffColour(Colour offColour);
 	UIToggle* SetBoxSize(const Vector2& size);
-	OnChanged::Token AddCallback(OnChanged::Callback callback);
-	
+	OnChanged::Token AddCallback(const OnChanged::Callback& callback);
+
 	UIElement* GetRoot() const;
 
 public:

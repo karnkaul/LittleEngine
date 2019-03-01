@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include "CircularVector.hpp"
 
 namespace LittleEngine
@@ -25,7 +26,7 @@ public:
 	void Right();
 	void Reset(bool bResetRows);
 	void Clear();
-	void ForEach(Function(void(UPtr<UIWidget>&)) Callback);
+	void ForEach(const std::function<void(UPtr<UIWidget>&)>& Callback);
 
 	size_t TotalCount() const;
 	size_t CurrentVecCount();

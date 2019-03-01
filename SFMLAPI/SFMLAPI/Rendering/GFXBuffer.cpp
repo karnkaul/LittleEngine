@@ -73,7 +73,7 @@ void GFXBuffer::Lock_Swap(GFXDataFrame&& newFrame, const Vector2& cullBounds)
 	}
 }
 
-void GFXBuffer::Lock_Traverse(Function(void(Vector<SFPrimitive>& vec)) Procedure)
+void GFXBuffer::Lock_Traverse(const std::function<void(Vector<SFPrimitive>& vec)>& Procedure)
 {
 	Lock lock(m_bufferMutex);
 	Vector<SFPrimitive>& active = ReferenceActiveBuffer();

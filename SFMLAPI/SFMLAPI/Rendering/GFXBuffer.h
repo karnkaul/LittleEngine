@@ -1,5 +1,6 @@
 #pragma once
 #include <mutex>
+#include <functional>
 #include "CoreTypes.h"
 #include "SFPrimitive.h"
 #include "SFMLAPI/System/SFTime.h"
@@ -41,7 +42,7 @@ public:
 
 	Time GetLastSwapTime() const;
 	void Lock_Swap(GFXDataFrame&& newFrame, const Vector2& cullBounds);
-	void Lock_Traverse(Function(void(Vector<SFPrimitive>& vec)) Procedure);
+	void Lock_Traverse(const std::function<void(Vector<SFPrimitive>& vec)>& Procedure);
 
 private:
 	Vector<SFPrimitive>* GetInactiveBuffer();

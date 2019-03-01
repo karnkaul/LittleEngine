@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include "StdTypes.h"
 
 namespace Core
@@ -12,7 +13,7 @@ template <typename... T>
 class Delegate
 {
 public:
-	using Callback = Function(void(T... t));
+	using Callback = std::function<void(T... t)>;
 	using Token = SPtr<int>;
 
 private:
@@ -31,7 +32,7 @@ private:
 
 public:
 	// Returns shared_ptr to be owned by caller
-	Token Register(Callback callback)
+	Token Register(const Callback& callback)
 	{
 		Token token = MakeShared<int>(static_cast<int>(m_callbacks.size()));
 		m_callbacks.emplace_back(callback, token);

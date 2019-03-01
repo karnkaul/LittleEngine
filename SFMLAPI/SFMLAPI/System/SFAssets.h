@@ -72,7 +72,7 @@ public:
 	void AddDefinition(const AssetType& type, AssetPaths&& resourcePaths);
 	void Clear();
 	// Convenience callback that iterates through each AssetDefinition
-	void ForEach(Function(void(const AssetDefinition& definition)) Callback) const;
+	void ForEach(const std::function<void(const AssetDefinition& definition)>& Callback) const;
 };
 
 // \brief Generates AssetManifest from serialised data loaded from a file, given its path
