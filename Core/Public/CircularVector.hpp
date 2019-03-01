@@ -7,8 +7,8 @@ template <typename T>
 struct CircularVector
 {
 private:
-	Vector<T> vec;
-	typename Vector<T>::iterator iter;
+	Vec<T> vec;
+	typename Vec<T>::iterator iter;
 
 public:
 	CircularVector()
@@ -16,7 +16,7 @@ public:
 		Reset();
 	}
 
-	CircularVector(Vector<T>&& rValue) : vec(std::move(rValue))
+	CircularVector(Vec<T>&& rValue) : vec(std::move(rValue))
 	{
 		Reset();
 	}

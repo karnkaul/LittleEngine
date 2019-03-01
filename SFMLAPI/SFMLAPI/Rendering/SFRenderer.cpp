@@ -55,7 +55,7 @@ void SFRenderer::Render(GFXBuffer& buffer)
 		Fixed renderDT = Time::Now().AsMilliseconds() - buffer.GetLastSwapTime().AsMilliseconds();
 		Fixed tickRate = m_tickRate.AsMilliseconds();
 		Fixed alpha = Maths::Clamp01(renderDT / tickRate);
-		buffer.Lock_Traverse([&](Vector<SFPrimitive>& active) {
+		buffer.Lock_Traverse([&](Vec<SFPrimitive>& active) {
 #if ENABLED(RENDER_STATS)
 			g_renderData.Reset();
 #endif

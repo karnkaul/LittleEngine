@@ -20,9 +20,9 @@ private:
 	};
 
 	std::function<void()> m_onDone;
-	Vector<NewAsset<TextureAsset>> m_newTextures;
-	Vector<NewAsset<FontAsset>> m_newFonts;
-	Vector<NewAsset<SoundAsset>> m_newSounds;
+	Vec<NewAsset<TextureAsset>> m_newTextures;
+	Vec<NewAsset<FontAsset>> m_newFonts;
+	Vec<NewAsset<SoundAsset>> m_newSounds;
 	class EngineRepository* m_pRepository;
 	class MultiJob* m_pMultiJob = nullptr;
 	bool m_bCompleted = false;

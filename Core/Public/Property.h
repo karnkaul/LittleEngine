@@ -18,7 +18,7 @@ struct Property
 
 	private:
 		// Vector instead of sets/maps to preserve order of insertion
-		Vector<Property> properties;
+		Vec<Property> properties;
 	};
 
 	String key;

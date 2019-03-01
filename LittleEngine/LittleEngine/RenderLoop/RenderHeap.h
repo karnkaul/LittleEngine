@@ -10,7 +10,7 @@ class RenderHeap : public IService
 {
 private:
 	using UPrimitive = UPtr<SFPrimitive>;
-	using UPrimitives = Vector<UPrimitive>;
+	using UPrimitives = Vec<UPrimitive>;
 	UPrimitives m_uPrimitives;
 	class GFXBuffer* m_pBuffer;
 

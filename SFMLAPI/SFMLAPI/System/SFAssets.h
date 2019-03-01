@@ -22,7 +22,7 @@ enum class AssetType
 // \brief Auto-constructs a set of generateable asset paths based on input parameters
 struct AssetPaths
 {
-	Vector<String> assetPaths;
+	Vec<String> assetPaths;
 
 	AssetPaths(AssetPaths&&) = default;
 	// Single asset's path
@@ -57,11 +57,11 @@ struct AssetDefinition
 struct AssetManifest
 {
 public:
-	Vector<AssetDefinition> definitions;
+	Vec<AssetDefinition> definitions;
 
 public:
 	AssetManifest() = default;
-	AssetManifest(Vector<AssetDefinition>&& assetDefinitions)
+	AssetManifest(Vec<AssetDefinition>&& assetDefinitions)
 		: definitions(std::move(assetDefinitions))
 	{
 	}

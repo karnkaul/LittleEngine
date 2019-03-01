@@ -18,7 +18,7 @@ private:
 	};
 
 	String m_logName;
-	Vector<SubJob> m_subJobs;
+	Vec<SubJob> m_subJobs;
 	List<JobID> m_pendingJobIDs;
 	List<JobID> m_completedJobIDs;
 	std::function<void()> m_OnComplete = nullptr;

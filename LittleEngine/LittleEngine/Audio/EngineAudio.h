@@ -28,7 +28,7 @@ private:
 private:
 	MusicPlayer m_musicPlayerA;
 	MusicPlayer m_musicPlayerB;
-	Vector<UPtr<SoundPlayer>> m_sfxPlayers;
+	Vec<UPtr<SoundPlayer>> m_sfxPlayers;
 	UPtr<SwitchTrackRequest> m_uSwitchTrackRequest;
 	bool m_bSideA = true;
 

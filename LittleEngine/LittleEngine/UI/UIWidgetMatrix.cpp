@@ -11,14 +11,14 @@ UIWidgetMatrix::UIWidgetMatrix()
 
 void UIWidgetMatrix::EmplaceWidget(UPtr<UIWidget> uWidget, bool bNextColumn)
 {
-	Vec& current = GetCurrentVec();
+	CVec& current = GetCurrentVec();
 	if (current.IsEmpty() || !bNextColumn)
 	{
 		current.EmplaceBack(std::move(uWidget));
 	}
 	else
 	{
-		Vec& newVec = GetNewVec();
+		CVec& newVec = GetNewVec();
 		newVec.EmplaceBack(std::move(uWidget));
 	}
 	++m_size;
@@ -33,14 +33,14 @@ UIWidget* UIWidgetMatrix::Get()
 
 void UIWidgetMatrix::Up()
 {
-	Vec& vec = GetCurrentVec();
+	CVec& vec = GetCurrentVec();
 	if (!vec.IsEmpty())
 		vec.Decrement();
 }
 
 void UIWidgetMatrix::Down()
 {
-	Vec& vec = GetCurrentVec();
+	CVec& vec = GetCurrentVec();
 	if (!vec.IsEmpty())
 		vec.Increment();
 }
@@ -77,7 +77,7 @@ void UIWidgetMatrix::Clear()
 
 void UIWidgetMatrix::ForEach(const std::function<void(UPtr<UIWidget>&)>& Callback)
 {
-	m_matrix.ForEach([&Callback](Vec& vec) { vec.ForEach(Callback); });
+	m_matrix.ForEach([&Callback](CVec& vec) { vec.ForEach(Callback); });
 }
 
 size_t UIWidgetMatrix::TotalCount() const
@@ -95,14 +95,14 @@ size_t UIWidgetMatrix::NumColumns() const
 	return m_matrix.Size();
 }
 
-UIWidgetMatrix::Vec& UIWidgetMatrix::GetCurrentVec()
+UIWidgetMatrix::CVec& UIWidgetMatrix::GetCurrentVec()
 {
 	return m_matrix.GetRef();
 }
 
-UIWidgetMatrix::Vec& UIWidgetMatrix::GetNewVec()
+UIWidgetMatrix::CVec& UIWidgetMatrix::GetNewVec()
 {
-	m_matrix.EmplaceBack(Vec());
+	m_matrix.EmplaceBack(CVec());
 	m_matrix.Reset(true);
 	return m_matrix.GetRef();
 }

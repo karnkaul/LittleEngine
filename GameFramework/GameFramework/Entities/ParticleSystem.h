@@ -57,14 +57,14 @@ private:
 
 struct ParticleSystemData
 {
-	Vector<EmitterData> emitterDatas;
+	Vec<EmitterData> emitterDatas;
 	ParticleSystemData(const GData& psGData);
 };
 
 class ParticleSystem : public Entity
 {
 protected:
-	Vector<UPtr<class Emitter>> m_emitters;
+	Vec<UPtr<class Emitter>> m_emitters;
 	bool m_bIsPlaying = false;
 
 public:

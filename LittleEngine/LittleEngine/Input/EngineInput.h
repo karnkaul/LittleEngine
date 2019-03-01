@@ -16,16 +16,16 @@ class EngineInput
 public:
 	struct Frame
 	{
-		using GameInputs = Vector<GameInputType>;
+		using GameInputs = Vec<GameInputType>;
 
-		Vector<GameInputType> pressed;
-		Vector<GameInputType> held;
-		Vector<GameInputType> released;
+		Vec<GameInputType> pressed;
+		Vec<GameInputType> held;
+		Vec<GameInputType> released;
 		TextInput textInput;
 
-		Frame(const Vector<GameInputType>& pressed,
-			  const Vector<GameInputType>& held,
-			  const Vector<GameInputType>& released,
+		Frame(const Vec<GameInputType>& pressed,
+			  const Vec<GameInputType>& held,
+			  const Vec<GameInputType>& released,
 			  const TextInput& special);
 
 		bool IsPressed(GameInputType keyCode) const;
@@ -49,10 +49,10 @@ private:
 	};
 
 private:
-	Vector<GameInputType> m_previousSnapshot;
-	Vector<GameInputType> m_currentSnapshot;
+	Vec<GameInputType> m_previousSnapshot;
+	Vec<GameInputType> m_currentSnapshot;
 	TextInput m_textInput;
-	Vector<InputContext> m_contexts;
+	Vec<InputContext> m_contexts;
 	UPtr<InputContext> m_uSudoContext;
 	Gamepad m_gamepad;
 

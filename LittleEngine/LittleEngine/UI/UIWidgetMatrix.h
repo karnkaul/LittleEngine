@@ -10,8 +10,8 @@ using CircularVector = Core::CircularVector<T>;
 class UIWidgetMatrix
 {
 private:
-	using Vec = CircularVector<UPtr<class UIWidget>>;
-	CircularVector<Vec> m_matrix;
+	using CVec = CircularVector<UPtr<class UIWidget>>;
+	CircularVector<CVec> m_matrix;
 	size_t m_size = 0;
 
 public:
@@ -33,7 +33,7 @@ public:
 	size_t NumColumns() const;
 
 private:
-	Vec& GetCurrentVec();
-	Vec& GetNewVec();
+	CVec& GetCurrentVec();
+	CVec& GetNewVec();
 };
 } // namespace LittleEngine

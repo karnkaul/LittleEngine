@@ -18,7 +18,7 @@ PlayerData::PlayerData(TextureAsset& mainTexture, InitList<PlayerCollider> colli
 	}
 }
 
-PlayerData::PlayerData(TextureAsset& mainTexture, const Vector<PlayerCollider>& colliders)
+PlayerData::PlayerData(TextureAsset& mainTexture, const Vec<PlayerCollider>& colliders)
 	: pMainTexture(&mainTexture), colliders(colliders)
 {
 }

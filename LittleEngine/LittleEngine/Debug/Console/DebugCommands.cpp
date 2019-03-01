@@ -27,7 +27,7 @@ namespace Commands
 {
 namespace
 {
-Vector<LogLine> GetAllCommands();
+Vec<LogLine> GetAllCommands();
 }
 
 #pragma region Commands
@@ -43,7 +43,7 @@ public:
 	{
 	}
 
-	Vector<LogLine> Execute(const String& params)
+	Vec<LogLine> Execute(const String& params)
 	{
 		String suffix = params.empty() ? "" : " " + params;
 		executeResult.emplace_back(name + suffix, g_liveHistoryColour);
@@ -51,13 +51,13 @@ public:
 		return std::move(executeResult);
 	}
 
-	virtual Vector<String> AutoCompleteParams(const String&)
+	virtual Vec<String> AutoCompleteParams(const String&)
 	{
-		return Vector<String>();
+		return Vec<String>();
 	}
 
 protected:
-	Vector<LogLine> executeResult;
+	Vec<LogLine> executeResult;
 
 	Command(const char* name) : name(name)
 	{
@@ -91,9 +91,9 @@ public:
 		}
 	}
 
-	virtual Vector<String> AutoCompleteParams(const String& incompleteParams) override final
+	virtual Vec<String> AutoCompleteParams(const String& incompleteParams) override final
 	{
-		Vector<String> params;
+		Vec<String> params;
 		for (const auto& p : paramCallbackMap)
 		{
 			if (incompleteParams.empty() ||
@@ -106,7 +106,7 @@ public:
 	}
 
 protected:
-	Map<String, std::function<void(Vector<LogLine>&)>> paramCallbackMap;
+	Map<String, std::function<void(Vec<LogLine>&)>> paramCallbackMap;
 
 	ParameterisedCommand(const char* name) : Command(name)
 	{
@@ -133,7 +133,7 @@ class ShowCommand : public ParameterisedCommand
 public:
 	ShowCommand() : ParameterisedCommand("show")
 	{
-		paramCallbackMap.emplace("colliders", [](Vector<LogLine>& executeResult) {
+		paramCallbackMap.emplace("colliders", [](Vec<LogLine>& executeResult) {
 #if DEBUGGING
 			Services::Game()->Physics()->ToggleDebugShapes(true);
 			executeResult.emplace_back("Turned on Debug Colliders", g_logTextColour);
@@ -142,7 +142,7 @@ public:
 #endif
 		});
 
-		paramCallbackMap.emplace("profiler", [](Vector<LogLine>& executeResult) {
+		paramCallbackMap.emplace("profiler", [](Vec<LogLine>& executeResult) {
 #if ENABLED(PROFILER)
 			Profiler::Toggle(true);
 			executeResult.emplace_back("Turned on Profiler", g_logTextColour);
@@ -150,7 +150,7 @@ public:
 		executeResult.emplace_back("Profiler not enabled", g_logTextColour);
 #endif
 		});
-		paramCallbackMap.emplace("renderStats", [](Vector<LogLine>& executeResult) {
+		paramCallbackMap.emplace("renderStats", [](Vec<LogLine>& executeResult) {
 			RenderStatsRenderer::s_bConsoleRenderStatsEnabled = true;
 			executeResult.emplace_back("Turned on Render Stats", g_logTextColour);
 		});
@@ -168,7 +168,7 @@ class HideCommand : public ParameterisedCommand
 public:
 	HideCommand() : ParameterisedCommand("hide")
 	{
-		paramCallbackMap.emplace("colliders", [](Vector<LogLine>& executeResult) {
+		paramCallbackMap.emplace("colliders", [](Vec<LogLine>& executeResult) {
 #if DEBUGGING
 			Services::Game()->Physics()->ToggleDebugShapes(false);
 			executeResult.emplace_back("Turned off Debug Colliders", g_logTextColour);
@@ -176,7 +176,7 @@ public:
 			executeResult.emplace_back("Collider Debug shapes not available", g_logTextColour);
 #endif
 		});
-		paramCallbackMap.emplace("profiler", [](Vector<LogLine>& executeResult) {
+		paramCallbackMap.emplace("profiler", [](Vec<LogLine>& executeResult) {
 #if ENABLED(PROFILER)
 			Profiler::Toggle(false);
 			executeResult.emplace_back("Turned off Profiler", g_logTextColour);
@@ -184,7 +184,7 @@ public:
 			executeResult.emplace_back("Profiler not enabled", g_logTextColour);
 #endif
 		});
-		paramCallbackMap.emplace("renderStats", [](Vector<LogLine>& executeResult) {
+		paramCallbackMap.emplace("renderStats", [](Vec<LogLine>& executeResult) {
 			RenderStatsRenderer::s_bConsoleRenderStatsEnabled = false;
 			executeResult.emplace_back("Turned off RenderStats", g_logTextColour);
 		});
@@ -207,7 +207,7 @@ public:
 		{
 			const auto& windowSize = kvp.second;
 			String windowSizeText = Strings::ToString(windowSize.height) + "p";
-			paramCallbackMap.emplace(windowSizeText, [windowSize](Vector<LogLine>& executeResult) {
+			paramCallbackMap.emplace(windowSizeText, [windowSize](Vec<LogLine>& executeResult) {
 				Services::Engine()->TrySetWindowSize(windowSize.height);
 				String sizeText =
 					Strings::ToString(windowSize.width) + "x" + Strings::ToString(windowSize.height);
@@ -228,24 +228,24 @@ class LogLevelCommand : public ParameterisedCommand
 public:
 	LogLevelCommand() : ParameterisedCommand("loglevel")
 	{
-		paramCallbackMap.emplace("HOT", [](Vector<LogLine>& executeResult) {
+		paramCallbackMap.emplace("HOT", [](Vec<LogLine>& executeResult) {
 			Core::g_MinLogSeverity = Core::LogSeverity::HOT;
 			executeResult.emplace_back("Set LogLevel to [HOT]", g_logTextColour);
 		});
-		paramCallbackMap.emplace("Error", [](Vector<LogLine>& executeResult) {
+		paramCallbackMap.emplace("Error", [](Vec<LogLine>& executeResult) {
 			Core::g_MinLogSeverity = Core::LogSeverity::Error;
 			executeResult.emplace_back("Set LogLevel to [Error]", g_logTextColour);
 		});
-		paramCallbackMap.emplace("Warning", [](Vector<LogLine>& executeResult) {
+		paramCallbackMap.emplace("Warning", [](Vec<LogLine>& executeResult) {
 			Core::g_MinLogSeverity = Core::LogSeverity::Warning;
 			executeResult.emplace_back("Set LogLevel to [Warning]", g_logTextColour);
 		});
-		paramCallbackMap.emplace("Info", [](Vector<LogLine>& executeResult) {
+		paramCallbackMap.emplace("Info", [](Vec<LogLine>& executeResult) {
 			Core::g_MinLogSeverity = Core::LogSeverity::Info;
 			executeResult.emplace_back("Set LogLevel to [Info]", g_logTextColour);
 		});
 #if DEBUG_LOGGING
-		paramCallbackMap.emplace("Debug", [](Vector<LogLine>& executeResult) {
+		paramCallbackMap.emplace("Debug", [](Vec<LogLine>& executeResult) {
 			Core::g_MinLogSeverity = Core::LogSeverity::Debug;
 			executeResult.emplace_back("Set LogLevel to [Debug]", g_logTextColour);
 		});
@@ -319,9 +319,9 @@ namespace
 {
 Map<String, UPtr<Command>> commands;
 
-Vector<LogLine> GetAllCommands()
+Vec<LogLine> GetAllCommands()
 {
-	Vector<LogLine> result;
+	Vec<LogLine> result;
 	result.emplace_back("Registered commands:", g_logTextColour);
 	for (auto& command : commands)
 	{
@@ -367,9 +367,9 @@ void SplitQuery(String& outQuery, String& outCommand, String& outParams)
 	}
 }
 
-Vector<LogLine> ExecuteQuery(const String& command, const String& params)
+Vec<LogLine> ExecuteQuery(const String& command, const String& params)
 {
-	Vector<LogLine> ret;
+	Vec<LogLine> ret;
 	auto search = commands.find(command);
 	if (search != commands.end())
 	{
@@ -378,9 +378,9 @@ Vector<LogLine> ExecuteQuery(const String& command, const String& params)
 	return ret;
 }
 
-Vector<Command*> FindCommands(const String& incompleteCommand, bool bFirstCharMustMatch)
+Vec<Command*> FindCommands(const String& incompleteCommand, bool bFirstCharMustMatch)
 {
-	Vector<Command*> results;
+	Vec<Command*> results;
 	for (auto& command : commands)
 	{
 		String name = command.second->name;
@@ -407,13 +407,13 @@ void Init()
 	commands.emplace("loglevel", MakeUnique<LogLevelCommand>());
 }
 
-Vector<LogLine> Execute(const String& query)
+Vec<LogLine> Execute(const String& query)
 {
 	String cleanedQuery(query);
 	String command;
 	String params;
 	SplitQuery(cleanedQuery, command, params);
-	Vector<LogLine> ret;
+	Vec<LogLine> ret;
 	if (!cleanedQuery.empty())
 	{
 		ret = Commands::ExecuteQuery(command, params);
@@ -432,14 +432,14 @@ AutoCompleteResults AutoComplete(const String& incompleteQuery)
 	String incompleteParams;
 	SplitQuery(cleanedQuery, incompleteCommand, incompleteParams);
 
-	Vector<Command*> matchedCommands = FindCommands(incompleteCommand, true);
+	Vec<Command*> matchedCommands = FindCommands(incompleteCommand, true);
 	AutoCompleteResults results;
 	if (!matchedCommands.empty())
 	{
 		// If exact match, build auto-compeleted params for the command
 		if (matchedCommands.size() == 1)
 		{
-			Vector<String> matchedParams = matchedCommands[0]->AutoCompleteParams(incompleteParams);
+			Vec<String> matchedParams = matchedCommands[0]->AutoCompleteParams(incompleteParams);
 			for (auto& p : matchedParams)
 			{
 				results.params.emplace_back(std::move(p));
@@ -459,7 +459,7 @@ AutoCompleteResults AutoComplete(const String& incompleteQuery)
 		{
 			for (auto command : matchedCommands)
 			{
-				Vector<String> matchedParams = command->AutoCompleteParams(incompleteParams);
+				Vec<String> matchedParams = command->AutoCompleteParams(incompleteParams);
 				for (const auto& p : matchedParams)
 				{
 					String suffix = p.empty() ? "" : " " + p;

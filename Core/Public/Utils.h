@@ -11,7 +11,7 @@ namespace Core
 // Erase all elements of a vector that qualify provided Predicate
 // Vector and T are passed by reference
 template <typename T>
-void CleanVector(Vector<T>& vec, const std::function<bool(T& t)>& Predicate)
+void CleanVector(Vec<T>& vec, const std::function<bool(T& t)>& Predicate)
 {
 	auto iter = std::remove_if(vec.begin(), vec.end(), Predicate);
 	vec.erase(iter, vec.end());
@@ -49,24 +49,24 @@ void CleanMap(Map<K, V>& map, const std::function<bool(V& v)>& Predicate)
 	}
 }
 
-// Given a vector<weak_ptr<T>>, erase all elements where t.lock() == nullptr
+// Given a Vec<weak_ptr<T>>, erase all elements where t.lock() == nullptr
 template <typename T>
-void EraseNullWeakPtrs(Vector<WPtr<T>>& vec)
+void EraseNullWeakPtrs(Vec<WPtr<T>>& vec)
 {
 	CleanVector<WPtr<T>>(vec, [](WPtr<T>& ptr) { return ptr.expired(); });
 }
 
-// Given a vector<T> and T& value, returns an iterator using std::find
+// Given a Vec<T> and T& value, returns an iterator using std::find
 template <typename T>
-typename Vector<T>::const_iterator VectorSearch(const Vector<T>& vec, const T& value)
+typename Vec<T>::const_iterator VectorSearch(const Vec<T>& vec, const T& value)
 {
-	typename Vector<T>::const_iterator iter = std::find(vec.begin(), vec.end(), value);
+	typename Vec<T>::const_iterator iter = std::find(vec.begin(), vec.end(), value);
 	return iter;
 }
 
 // Returns true if val is found, and erases it from vec
 template <typename T>
-bool VectorErase(Vector<T>& vec, const T& val)
+bool VectorErase(Vec<T>& vec, const T& val)
 {
 	auto iter = std::find(vec.begin(), vec.end(), val);
 	if (iter != vec.end())
@@ -125,7 +125,7 @@ void RemoveChars(String& outInput, InitList<char> toRemove);
 // Removes all tabs and spaces
 void RemoveWhitespace(String& outInput);
 // Tokenises a string via a delimiter, skipping over any delimiters within escape characters
-Vector<String> Tokenise(const String& input, const char delimiter, InitList<Pair<char>> escape);
+Vec<String> Tokenise(const String& input, const char delimiter, InitList<Pair<char>> escape);
 // Substitutes an input set of chars with a given replacement
 void SubstituteChars(String& outInput, InitList<Pair<char>> replacements);
 // Returns true if str[idx - 1] = wrapper.first && str[idx + 1] == wrapper.second

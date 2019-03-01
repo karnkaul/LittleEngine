@@ -7,7 +7,7 @@ class UIManager final
 {
 public:
 private:
-	Vector<UPtr<UIContext>> m_uContexts;
+	Vec<UPtr<UIContext>> m_uContexts;
 
 public:
 	UIManager();

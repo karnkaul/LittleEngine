@@ -20,7 +20,7 @@ private:
 
 private:
 	UIButtonDrawerData m_data;
-	Vector<UIButton*> m_uiButtons;
+	Vec<UIButton*> m_uiButtons;
 
 public:
 	UIButtonDrawer();

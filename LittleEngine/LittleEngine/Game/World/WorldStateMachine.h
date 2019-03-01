@@ -11,7 +11,7 @@ public:
 	static bool s_bReady;
 
 private:
-	Vector<UPtr<World>> m_uCreatedStates;
+	Vec<UPtr<World>> m_uCreatedStates;
 	UPtr<LoadingUI> m_uLoadingUI;
 	World* m_pActiveState = nullptr;
 	World* m_pNextState = nullptr;

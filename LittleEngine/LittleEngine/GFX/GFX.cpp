@@ -16,7 +16,7 @@ void GFX::Init(const SFWindow& sfWindow)
 	pSFWindow = &sfWindow;
 	
 	SFWindowSize max = SFWindow::GetMaxWindowSize();
-	Vector<u32> heights = {360, 540, 720, 900, 1080, 1440, 2160};
+	Vec<u32> heights = {360, 540, 720, 900, 1080, 1440, 2160};
 	windowSizes.clear();
 	sf::Vector2u w = sfWindow.getSize();
 	for (auto height : heights)

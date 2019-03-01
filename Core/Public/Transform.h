@@ -12,7 +12,7 @@ public:
 	static const Transform IDENTITY;
 
 private:
-	Vector<Transform*> children;
+	Vec<Transform*> children;
 	Transform* pParent = nullptr;
 
 public:

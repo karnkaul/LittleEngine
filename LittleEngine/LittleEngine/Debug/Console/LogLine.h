@@ -17,9 +17,9 @@ namespace LittleEngine { namespace Debug {
 	class LogBook {
 	private:
 		const u32 m_lineCount;
-		Vector<LogLine> m_logLines;
-		Vector<LogLine>::reverse_iterator m_bottom;
-		Vector<LogLine>::reverse_iterator m_top;
+		Vec<LogLine> m_logLines;
+		Vec<LogLine>::reverse_iterator m_bottom;
+		Vec<LogLine>::reverse_iterator m_top;
 
 	public:
 		LogBook(u32 lineCount);
@@ -28,8 +28,8 @@ namespace LittleEngine { namespace Debug {
 		void PageUp();
 		void PageDown();
 
-		Vector<LogLine> GetLogPage() const;
-		void Append(Vector<LogLine>&& move);
+		Vec<LogLine> GetLogPage() const;
+		void Append(Vec<LogLine>&& move);
 		void Append(const LogLine& logLine);
 	};
 

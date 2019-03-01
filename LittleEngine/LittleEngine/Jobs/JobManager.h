@@ -34,9 +34,9 @@ private:
 	};
 
 private:
-	Vector<UPtr<class JobWorker>> m_gameWorkers;
-	Vector<UPtr<class JobWorker>> m_engineWorkers;
-	Vector<JobID> m_completed;
+	Vec<UPtr<class JobWorker>> m_gameWorkers;
+	Vec<UPtr<class JobWorker>> m_engineWorkers;
+	Vec<JobID> m_completed;
 	List<UPtr<MultiJob>> m_uMultiJobs;
 	List<Job> m_gameJobQueue;
 	List<Job> m_engineJobQueue;
@@ -51,7 +51,7 @@ public:
 
 	void Wait(JobID id);
 	void Wait(InitList<JobID> ids);
-	void Wait(const Vector<JobID>& ids);
+	void Wait(const Vec<JobID>& ids);
 	bool IsRunning(JobID id);
 	bool IsCompleted(JobID id);
 

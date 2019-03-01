@@ -52,11 +52,11 @@ public:
 
 	// Note: Not meant to be used in hot code!
 	template <typename T>
-	Vector<T*> Load(InitList<String> assetPaths)
+	Vec<T*> Load(InitList<String> assetPaths)
 	{
 		static_assert(IsDerived(Asset, T),
 					  "T must derive from Asset: check Output window for erroneous call");
-		Vector<T*> vec;
+		Vec<T*> vec;
 		for (const auto& path : assetPaths)
 		{
 			if (T* asset = Load<T>(path))
@@ -69,11 +69,11 @@ public:
 
 	// Note: Not meant to be used in hot code!
 	template <typename T>
-	Vector<T*> Load(Vector<String> assetPaths)
+	Vec<T*> Load(Vec<String> assetPaths)
 	{
 		static_assert(IsDerived<Asset, T>(),
 					  "T must derive from Asset: check Output window for erroneous call");
-		Vector<T*> vec;
+		Vec<T*> vec;
 		for (const auto& path : assetPaths)
 		{
 			if (T* asset = Load<T>(path))

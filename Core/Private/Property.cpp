@@ -8,7 +8,7 @@ namespace Core
 {
 namespace
 {
-String PropertiesToString(const Vector<Property>& vec)
+String PropertiesToString(const Vec<Property>& vec)
 {
 	String fileContents;
 	for (const auto& prop : vec)
@@ -28,7 +28,7 @@ bool Property::Persistor::Load(const String& filePath)
 	}
 
 	String text = fileRW.ReadAll(false);
-	Vector<String> lines = Strings::Tokenise(text, '\n', {});
+	Vec<String> lines = Strings::Tokenise(text, '\n', {});
 	for (const auto& line : lines)
 	{
 		if (line.length() <= 0)
@@ -36,7 +36,7 @@ bool Property::Persistor::Load(const String& filePath)
 		if (line.c_str()[0] == '#')
 			continue; // Ignore comments
 
-		Vector<String> tokens = Strings::Tokenise(line, ':', {});
+		Vec<String> tokens = Strings::Tokenise(line, ':', {});
 		if (tokens.size() > 1)
 		{
 			SetProp(Property(tokens[0], tokens[1]));

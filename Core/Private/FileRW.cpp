@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FileRW.h"
+#include "Logger.h"
 #include <fstream>
-#include <iostream>
 
 namespace Core
 {
@@ -30,7 +30,7 @@ String FileRW::ReadAll(bool bDiscardNewLines)
 	return ret;
 }
 
-const Vector<String>& FileRW::ReadLines()
+const Vec<String>& FileRW::ReadLines()
 {
 	m_lines.clear();
 	Read([&](String&& line) { m_lines.push_back(std::move(line)); });
@@ -48,9 +48,9 @@ bool FileRW::Write(const String& contents, bool append)
 		file.close();
 		return true;
 	}
-	catch (std::exception& e)
+	catch (const std::exception& e)
 	{
-		std::cout << e.what() << std::endl;
+		LOG_E("Error writing to file at [%s]!\n%s", m_path.c_str(), e.what());
 		return false;
 	}
 }

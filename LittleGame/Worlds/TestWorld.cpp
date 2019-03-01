@@ -128,6 +128,11 @@ bool OnInput(const EngineInput::Frame& frame)
 		OnY();
 	}
 
+	if (frame.IsReleased(GameInputType::LB))
+	{
+		Assert(false, "Test Assert");
+	}
+
 	return false;
 }
 
@@ -183,7 +188,7 @@ void StartTests()
 UIButtonDrawer* pButtonDrawer = nullptr;
 bool bModal = true;
 bool bSpawnedDrawer = false;
-Vector<EngineInput::Token> debugTokens;
+Vec<EngineInput::Token> debugTokens;
 
 bool bToSpawnDialogue = false;
 UIDialogue* pDialogue = nullptr;

@@ -14,8 +14,8 @@ private:
 
 private:
 	String m_logName;
-	Vector<UPtr<Entity>> m_uEntities;
-	Array<Vector<UPtr<Component>>, COMPONENT_LINES> m_uComponents;
+	Vec<UPtr<Entity>> m_uEntities;
+	Array<Vec<UPtr<Component>>, COMPONENT_LINES> m_uComponents;
 	UPtr<UIManager> m_uUIManager;
 	UPtr<CollisionManager> m_uCollisionManager;
 

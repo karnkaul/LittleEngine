@@ -99,7 +99,7 @@ void JobManager::Wait(InitList<JobID> ids)
 	}
 }
 
-void JobManager::Wait(const Vector<JobID>& ids)
+void JobManager::Wait(const Vec<JobID>& ids)
 {
 	for (auto id : ids)
 	{

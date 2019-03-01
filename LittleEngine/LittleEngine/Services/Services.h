@@ -11,7 +11,7 @@ namespace LittleEngine
 class Services
 {
 private:
-	static Vector<IService*> s_pServices;
+	static Vec<IService*> s_pServices;
 	static EngineService* s_pEngine;
 	static RenderHeap* s_pRenderHeap;
 	static JobManager* s_pJobManager;

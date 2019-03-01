@@ -25,8 +25,8 @@ protected:
 
 private:
 	UIWidgetMatrix m_uiWidgets;
-	Vector<UUIElement> m_uiElements;
-	Vector<EngineInput::Token> m_inputTokens;
+	Vec<UUIElement> m_uiElements;
+	Vec<EngineInput::Token> m_inputTokens;
 	OnCancelled m_onCancelledDelegate;
 
 public:

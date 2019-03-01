@@ -74,7 +74,7 @@ namespace LittleEngine {
 			m_uLiveText->SetText(UIText(text, m_textSize, m_liveTextColour));
 		}
 
-		void ConsoleRenderer::UpdateLog(const Vector<LogLine>& logLines) {
+		void ConsoleRenderer::UpdateLog(const Vec<LogLine>& logLines) {
 			auto iter = logLines.begin();
 			for (auto& uLogText : m_uLogTexts) {
 				if (iter == logLines.end()) break;

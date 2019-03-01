@@ -29,7 +29,7 @@ s32 ToS32(const String& input, s32 defaultValue)
 	{
 		ret = std::stoi(input);
 	}
-	catch (std::exception&)
+	catch(const std::exception&)
 	{
 		ret = defaultValue;
 	}
@@ -43,7 +43,7 @@ f32 ToF32(const String& input, f32 defaultValue)
 	{
 		ret = std::stof(input);
 	}
-	catch (std::exception&)
+	catch(const std::exception&)
 	{
 		ret = defaultValue;
 	}
@@ -57,7 +57,7 @@ f64 ToF64(const String& input, f64 defaultValue)
 	{
 		ret = std::stod(input);
 	}
-	catch (std::exception&)
+	catch(const std::exception&)
 	{
 		ret = defaultValue;
 	}
@@ -95,13 +95,13 @@ void RemoveWhitespace(String& outInput)
 	RemoveChars(outInput, {' '});
 }
 
-Vector<String> Tokenise(const String& s, const char delimiter, InitList<Pair<char>> escape)
+Vec<String> Tokenise(const String& s, const char delimiter, InitList<Pair<char>> escape)
 {
 	auto end = s.cend();
 	auto start = end;
 
 	std::stack<Pair<char>> escapeStack;
-	Vector<String> v;
+	Vec<String> v;
 	bool escaping = false;
 	for (auto it = s.cbegin(); it != end; ++it)
 	{

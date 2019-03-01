@@ -28,7 +28,7 @@ private:
 		}
 	};
 
-	Vector<Wrapper> m_callbacks;
+	Vec<Wrapper> m_callbacks;
 
 public:
 	// Returns shared_ptr to be owned by caller
