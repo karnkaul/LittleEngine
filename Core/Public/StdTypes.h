@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 #include <array>
 #include <list>
 #include <map>
@@ -59,7 +60,7 @@ using InitList = std::initializer_list<T>;
 template <typename T, size_t U>
 using Array = std::array<T, U>;
 template <typename T>
-using Vector = std::vector<T>;
+using Vec = std::vector<T>;
 template <typename T>
 using List = std::list<T>;
 template <typename T>
@@ -94,3 +95,7 @@ SPtr<T> MakeShared(U&&... Args)
 {
 	return std::make_shared<T>(std::forward<U>(Args)...);
 }
+
+class DependencyException : public std::exception
+{
+};

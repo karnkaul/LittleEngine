@@ -19,7 +19,7 @@ public:
 	UPtr<UIElement> m_uSeparator;
 
 	UPtr<UIElement> m_uLiveText;
-	Vector<UPtr<UIElement>> m_uLogTexts;
+	Vec<UPtr<UIElement>> m_uLogTexts;
 
 	Colour m_liveTextColour = Colour(255, 255, 255, g_logTextAlpha);
 	Colour m_bgColour = Colour(100, 50, 100, 100);
@@ -31,7 +31,7 @@ public:
 
 	void Tick(Time dt);
 	void SetLiveString(const String& text);
-	void UpdateLog(const Vector<LogLine>& logLines);
+	void UpdateLog(const Vec<LogLine>& logLines);
 };
 } // namespace Debug
 } // namespace LittleEngine

@@ -18,7 +18,7 @@ class UIWidget : public UIObject
 {
 protected:
 	UIWidgetStyle m_style;
-	Vector<UPtr<UIElement>> m_uiElements;
+	Vec<UPtr<UIElement>> m_uiElements;
 	class UIContext* m_pOwner = nullptr;
 	UIWidgetState m_state;
 

@@ -5,7 +5,7 @@
 
 namespace LittleEngine
 {
-GFXDataFrame::GFXDataFrame(Vector<SFPrimitive>&& primitives)
+GFXDataFrame::GFXDataFrame(Vec<SFPrimitive>&& primitives)
 {
 	for (const auto& primitive : primitives)
 	{
@@ -35,9 +35,9 @@ void GFXDataFrame::Cull(const Vector2& cullBounds)
 	}
 }
 
-Vector<SFPrimitive> GFXDataFrame::CollapseAndMove()
+Vec<SFPrimitive> GFXDataFrame::CollapseAndMove()
 {
-	Vector<SFPrimitive> ret;
+	Vec<SFPrimitive> ret;
 	for (auto& layer : layerArray)
 	{
 		std::move(layer.begin(), layer.end(), std::back_inserter(ret));
@@ -55,16 +55,16 @@ Time GFXBuffer::GetLastSwapTime() const
 	return m_lastSwapTime;
 }
 
-Vector<SFPrimitive>& GFXBuffer::ReferenceActiveBuffer()
+Vec<SFPrimitive>& GFXBuffer::ReferenceActiveBuffer()
 {
-	Vector<SFPrimitive>& source = m_bufferIdx == 1 ? m_buffer1 : m_buffer0;
+	Vec<SFPrimitive>& source = m_bufferIdx == 1 ? m_buffer1 : m_buffer0;
 	return source;
 }
 
 void GFXBuffer::Lock_Swap(GFXDataFrame&& newFrame, const Vector2& cullBounds)
 {
 	newFrame.Cull(cullBounds);
-	Vector<SFPrimitive>* inactive = GetInactiveBuffer();
+	Vec<SFPrimitive>* inactive = GetInactiveBuffer();
 	*inactive = newFrame.CollapseAndMove();
 	{
 		Lock lock(m_bufferMutex);
@@ -73,14 +73,14 @@ void GFXBuffer::Lock_Swap(GFXDataFrame&& newFrame, const Vector2& cullBounds)
 	}
 }
 
-void GFXBuffer::Lock_Traverse(const std::function<void(Vector<SFPrimitive>& vec)>& Procedure)
+void GFXBuffer::Lock_Traverse(const std::function<void(Vec<SFPrimitive>& vec)>& Procedure)
 {
 	Lock lock(m_bufferMutex);
-	Vector<SFPrimitive>& active = ReferenceActiveBuffer();
+	Vec<SFPrimitive>& active = ReferenceActiveBuffer();
 	Procedure(active);
 }
 
-Vector<SFPrimitive>* GFXBuffer::GetInactiveBuffer()
+Vec<SFPrimitive>* GFXBuffer::GetInactiveBuffer()
 {
 	return (m_bufferIdx == 1) ? &m_buffer0 : &m_buffer1;
 }

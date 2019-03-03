@@ -28,7 +28,7 @@ public:
 
 	bool ShouldCreateRenderThread() const;
 	bool ShouldPauseOnFocusLoss() const;
-	u32 GetNumWorkerThreads() const;
+	u32 GetNumGameThreads() const;
 	u32 GetTicksPerSecond() const;
 	u32 GetMaxTickTimeMS() const;
 	String GetWindowTitle() const;
@@ -38,7 +38,7 @@ public:
 
 	bool SetCreateRenderThread(bool bCreate);
 	bool SetPauseOnFocusLoss(bool bPause);
-	bool SetNumWorkerThreads(u32 numThreads);
+	bool SetNumGameThreads(u32 numThreads);
 	bool SetTicksPerSecond(u32 ticksPerSecond);
 	bool SetMaxTimeMS(u32 maxTickTimeMS);
 	bool SetWindowTitle(const String& windowTitle);

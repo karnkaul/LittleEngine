@@ -16,23 +16,27 @@ enum class AssetType
 	Texture,
 	Font,
 	Sound,
-	Music,
+	Text,
+};
+
+class AssetLoadException : public std::exception
+{
 };
 
 // \brief Auto-constructs a set of generateable asset paths based on input parameters
-struct AssetPaths
+struct AssetIDContainer
 {
-	Vector<String> assetPaths;
+	Vec<String> assetIDs;
 
-	AssetPaths(AssetPaths&&) = default;
+	AssetIDContainer(AssetIDContainer&&) = default;
 	// Single asset's path
-	AssetPaths(const String& assetPath);
+	AssetIDContainer(const String& assetPath);
 	// Multiple assets' paths
-	AssetPaths(InitList<String> assetPaths);
+	AssetIDContainer(InitList<String> assetPaths);
 	// Multiple assets' paths with a prefix for each
-	AssetPaths(const String& pathPrefix, InitList<String> assetPaths);
+	AssetIDContainer(const String& pathPrefix, InitList<String> assetPaths);
 	// Multiple assets's paths with a prefix for each path, prefix and suffix for each asset
-	AssetPaths(const String& pathPrefix, u32 count, const String& assetPrefix, const String& assetSuffix);
+	AssetIDContainer(const String& pathPrefix, u32 count, const String& assetPrefix, const String& assetSuffix);
 
 	// Get a random path from vector of paths
 	String GetRandom() const;
@@ -41,14 +45,14 @@ struct AssetPaths
 // \brief Complete data specifying particular set of identical-type Assets
 struct AssetDefinition
 {
-	AssetPaths resourcePaths;
+	AssetIDContainer assetIDs;
 	AssetType type;
 
 	AssetDefinition(AssetDefinition&&) = default;
 	AssetDefinition(const AssetDefinition&) = delete;
 	// Create an AssetDefinition given a resource type and its AssetPaths
-	AssetDefinition(const AssetType& type, AssetPaths&& resourcePaths)
-		: resourcePaths(std::move(resourcePaths)), type(type)
+	AssetDefinition(const AssetType& type, AssetIDContainer&& assetIDs)
+		: assetIDs(std::move(assetIDs)), type(type)
 	{
 	}
 };
@@ -57,11 +61,11 @@ struct AssetDefinition
 struct AssetManifest
 {
 public:
-	Vector<AssetDefinition> definitions;
+	Vec<AssetDefinition> definitions;
 
 public:
 	AssetManifest() = default;
-	AssetManifest(Vector<AssetDefinition>&& assetDefinitions)
+	AssetManifest(Vec<AssetDefinition>&& assetDefinitions)
 		: definitions(std::move(assetDefinitions))
 	{
 	}
@@ -69,7 +73,7 @@ public:
 	// Add definition to the manifest
 	void AddDefinition(AssetDefinition&& definition);
 	// Create and add an AssetDefinition to the manifest
-	void AddDefinition(const AssetType& type, AssetPaths&& resourcePaths);
+	void AddDefinition(const AssetType& type, AssetIDContainer&& resourcePaths);
 	void Clear();
 	// Convenience callback that iterates through each AssetDefinition
 	void ForEach(const std::function<void(const AssetDefinition& definition)>& Callback) const;
@@ -82,31 +86,25 @@ private:
 	AssetManifest manifest;
 
 public:
-	AssetManifestData() = default;
-	AssetManifestData(AssetManifestData&&) = default;
-	AssetManifestData& operator=(AssetManifestData&&) = default;
-	// \brief Pass the path to the asset manifest file (.amf)
-	AssetManifestData(const String& amfPath);
-
 	// \brief Note: this is not a const function! Manifests are designed to move their data
 	AssetManifest& GetManifest();
 	// \brief Pass the path to the asset manifest file (.amf)
 	void Load(const String& amfPath);
+	void Deserialise(const String& serialised);
 };
 
 // \brief An Asset represents live data in memory that's ready to be used
 class Asset
 {
 protected:
-	String m_resourcePath;
-
+	String m_id;
+	
 public:
 	using Ptr = UPtr<Asset>;
 	Asset() = delete;
-	// Path must be relative to the root Asset directory
-	Asset(const String& path);
+	Asset(const String& id);
 	virtual ~Asset();
-	const String& GetResourcePath() const;
+	const String& GetID() const;
 
 private:
 	Asset(const Asset&) = delete;
@@ -120,8 +118,8 @@ private:
 	sf::Texture m_sfTexture;
 
 public:
-	// Path must be relative to the root Asset directory
-	TextureAsset(const String& path);
+	TextureAsset(const String& id, const String& pathPrefix);
+	TextureAsset(const String& id, const Vec<u8>& buffer);
 
 private:
 	// Prevents having to expose texture to code outside SFMLInterface
@@ -134,10 +132,11 @@ class FontAsset : public Asset
 {
 private:
 	sf::Font m_sfFont;
+	Vec<u8> m_fontBuffer;
 
 public:
-	// Path must be relative to the root Asset directory
-	FontAsset(const String& path);
+	FontAsset(const String& id, const String& pathPrefix);
+	FontAsset(const String& id, const Vec<u8>& buffer);
 
 private:
 	friend class SFText;
@@ -152,31 +151,22 @@ private:
 	Fixed m_volumeScale = Fixed::One;
 
 public:
-	// Path must be relative to the root Asset directory
-	SoundAsset(const String& path, const Fixed& volumeScale = Fixed::One);
+	SoundAsset(const String& id, const String& pathPrefix, const Fixed& volumeScale = Fixed::One);
+	SoundAsset(const String& id, const Vec<u8>& buffer, const Fixed& volumeScale = Fixed::One);
 
 private:
 	friend class SoundPlayer;
 };
 
-// \brief MusicAsset points to a streamed music file on storage
-class MusicAsset : public Asset
+class TextAsset : public Asset
 {
-public:
-	bool m_bValid;
-
 private:
-	sf::Music m_sfMusic;
-	Fixed m_volumeScale = Fixed::One;
+	String m_text;
 
 public:
-	// Path must be relative to the root Asset directory
-	MusicAsset(const String& path, const Fixed& volumeScale = Fixed::One);
+	TextAsset(const String& id, const String& pathPrefix);
+	TextAsset(const String& id, const Vec<u8>& buffer);
 
-public:
-	Time GetDuration() const;
-
-private:
-	friend class MusicPlayer;
+	const String& GetText() const;
 };
 } // namespace LittleEngine

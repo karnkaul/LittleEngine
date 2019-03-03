@@ -60,7 +60,7 @@ enum class SpecialInputType
 struct TextInput
 {
 	String text;
-	Vector<SpecialInputType> specials;
+	Vec<SpecialInputType> specials;
 
 	bool Contains(char c) const;
 	bool Contains(SpecialInputType special) const;
@@ -69,7 +69,7 @@ struct TextInput
 
 struct SFInputDataFrame
 {
-	Vector<KeyState> pressed;
+	Vec<KeyState> pressed;
 	TextInput textInput;
 };
 
@@ -78,7 +78,7 @@ class SFInputStateMachine
 {
 private:
 	TextInput m_textInput;
-	Vector<KeyState> m_keyStates;
+	Vec<KeyState> m_keyStates;
 
 public:
 	SFInputStateMachine();

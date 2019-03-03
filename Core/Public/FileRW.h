@@ -9,14 +9,14 @@ class FileRW
 {
 private:
 	String m_path;
-	Vector<String> m_lines;
+	Vec<String> m_lines;
 
 public:
 	FileRW(const String& path);
 
 	bool Exists() const;
 	String ReadAll(bool bDiscardNewLines = true);
-	const Vector<String>& ReadLines();
+	const Vec<String>& ReadLines();
 	bool Write(const String& contents, bool bAppend = false);
 	bool Append(const String& contents);
 

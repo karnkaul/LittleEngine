@@ -15,10 +15,10 @@ struct PlayerCollider
 struct PlayerData
 {
 	TextureAsset* pMainTexture;
-	Vector<PlayerCollider> colliders;
+	Vec<PlayerCollider> colliders;
 
 	PlayerData(TextureAsset& mainTexture, InitList<PlayerCollider> colliders);
-	PlayerData(TextureAsset& mainTexture, const Vector<PlayerCollider>& colliders);
+	PlayerData(TextureAsset& mainTexture, const Vec<PlayerCollider>& colliders);
 };
 
 class Player final : public Entity

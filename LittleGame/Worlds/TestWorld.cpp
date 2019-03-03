@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TestWorld.h"
 #include "GameFramework/GameFramework.h"
+#include "ArchiveReader.h"
 
 namespace LittleEngine
 {
@@ -12,6 +13,9 @@ TestWorld* pTestWorld = nullptr;
 
 Entity *pEntity0 = nullptr, *pEntity1 = nullptr;
 Entity *pEntity2 = nullptr, *pEntity3 = nullptr;
+Entity* pEntity4 = nullptr;
+
+UPtr<TextureAsset> uArchivedTexture;
 
 void OnEnter()
 {
@@ -41,6 +45,25 @@ void OnEnter()
 		pEntity2 = nullptr;
 		pEntity3->Destruct();
 		pEntity3 = nullptr;
+	}
+
+	if (!pEntity4)
+	{
+		if (!uArchivedTexture)
+		{
+			Core::ArchiveReader reader;
+			reader.Load("GameAssets.cooked");
+			uArchivedTexture = MakeUnique<TextureAsset>("ARCHIVE_TEST_Ship_old.png",
+														reader.Decompress("Textures/Ship_old.png"));
+		}
+		pEntity4 = pTestWorld->Game()->NewEntity<Entity>("Archive texture");
+		auto rc4 = pEntity4->AddComponent<RenderComponent>();
+		rc4->m_pSFPrimitive->SetTexture(*uArchivedTexture);
+	}
+	else
+	{
+		pEntity4->Destruct();
+		pEntity4 = nullptr;
 	}
 }
 
@@ -128,6 +151,11 @@ bool OnInput(const EngineInput::Frame& frame)
 		OnY();
 	}
 
+	if (frame.IsReleased(GameInputType::LB))
+	{
+		Assert(false, "Test Assert");
+	}
+
 	return false;
 }
 
@@ -163,13 +191,14 @@ void StartTests()
 		->SetEnabled(true);
 
 	pPlayer = pTestWorld->Game()->NewEntity<Player>("Player0", {0, -300});
-	TextureAsset* pTexture = pTestWorld->Game()->Repository()->Load<TextureAsset>("Ship.png");
+	TextureAsset* pTexture = pTestWorld->Game()->Repository()->Load<TextureAsset>("Textures/Ship.png");
 	PlayerData data(*pTexture, {PlayerCollider(AABBData({120, 60}), {0, -15}), PlayerCollider(AABBData({60, 80}))});
 	pPlayer->InitPlayer(data);
 
-	String path = bLoopingPS ? "Assets/VFX/Fire0/Fire0_loop.psdata" : "Assets/VFX/Fire0/Fire0_noloop.psdata";
-	FileRW reader(path);
-	GData psGData(reader.ReadAll(true));
+	String path =
+		bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
+	TextAsset* pText = pTestWorld->Repository()->Load<TextAsset>(path);
+	GData psGData(pText->GetText());
 	ParticleSystemData psData(psGData);
 	pParticleSystem0 = pTestWorld->Game()->NewEntity<ParticleSystem>("Fire0");
 	pParticleSystem0->InitParticleSystem(std::move(psData));
@@ -183,7 +212,7 @@ void StartTests()
 UIButtonDrawer* pButtonDrawer = nullptr;
 bool bModal = true;
 bool bSpawnedDrawer = false;
-Vector<EngineInput::Token> debugTokens;
+Vec<EngineInput::Token> debugTokens;
 
 bool bToSpawnDialogue = false;
 UIDialogue* pDialogue = nullptr;
@@ -290,7 +319,7 @@ void Cleanup()
 	pParticleSystem0 = nullptr;
 	pPlayer = nullptr;
 
-	pEntity0 = pEntity1 = pEntity2 = pEntity3 = nullptr;
+	pEntity0 = pEntity1 = pEntity2 = pEntity3 = pEntity4 = nullptr;
 
 	bSpawnedDrawer = false;
 
@@ -299,6 +328,8 @@ void Cleanup()
 	if (uProgressBG)
 		uProgressBG = nullptr;
 	debugTokens.clear();
+
+	uArchivedTexture = nullptr;
 }
 } // namespace
 

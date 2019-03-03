@@ -8,33 +8,40 @@ namespace LittleEngine
 {
 using Lock = std::lock_guard<std::mutex>;
 
+#if !SHIPPING
 AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
 								   const String& manifestPath,
 								   const std::function<void()>& onDone)
 	: m_onDone(onDone), m_pRepository(&repository)
 {
-	AssetManifestData data(manifestPath);
+	AssetManifestData data;
+	data.Load(manifestPath);
 	AssetManifest& manifest = data.GetManifest();
-
 	for (auto& definition : manifest.definitions)
 	{
 		switch (definition.type)
 		{
 		case AssetType::Texture:
 		{
-			AddTexturePaths(definition.resourcePaths);
+			AddTextureIDs(definition.assetIDs);
 			break;
 		}
 
 		case AssetType::Font:
 		{
-			AddFontPaths(definition.resourcePaths);
+			AddFontIDs(definition.assetIDs);
 			break;
 		}
 
 		case AssetType::Sound:
 		{
-			AddSoundPaths(definition.resourcePaths);
+			AddSoundIDs(definition.assetIDs);
+			break;
+		}
+
+		case AssetType::Text:
+		{
+			AddTextIDs(definition.assetIDs);
 			break;
 		}
 
@@ -49,7 +56,7 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
 		[&]() {
 			for (auto& sound : m_newSounds)
 			{
-				sound.asset = m_pRepository->LoadInternal<SoundAsset>(sound.assetPath);
+				sound.asset = m_pRepository->LoadInternal<SoundAsset>(sound.assetID);
 			}
 		},
 		"Load All Sounds");
@@ -57,13 +64,108 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
 	for (auto& texture : m_newTextures)
 	{
 		m_pMultiJob->AddJob(
-			[&]() { texture.asset = m_pRepository->LoadInternal<TextureAsset>(texture.assetPath); },
-			texture.assetPath);
+			[&]() { texture.asset = m_pRepository->LoadInternal<TextureAsset>(texture.assetID); },
+			texture.assetID);
 	}
 	for (auto& font : m_newFonts)
 	{
 		m_pMultiJob->AddJob(
-			[&]() { font.asset = m_pRepository->LoadInternal<FontAsset>(font.assetPath); }, font.assetPath);
+			[&]() { font.asset = m_pRepository->LoadInternal<FontAsset>(font.assetID); }, font.assetID);
+	}
+	for (auto& text : m_newTexts)
+	{
+		m_pMultiJob->AddJob(
+			[&]() { text.asset = m_pRepository->LoadInternal<TextAsset>(text.assetID); }, text.assetID);
+	}
+
+	m_pMultiJob->StartJobs([&]() { m_bCompleted = true; });
+}
+#endif
+
+AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
+								   const String& archivePath,
+								   const String& manifestPath,
+								   const std::function<void()>& onDone)
+	: m_onDone(onDone), m_pRepository(&repository)
+{
+	m_archiveReader.Load(archivePath.c_str());
+	Vec<u8> manifestBuffer = m_archiveReader.Decompress(manifestPath);
+	String manifestText = m_archiveReader.ToText(manifestBuffer);
+	AssetManifestData data;
+	data.Deserialise(manifestText);
+
+	AssetManifest& manifest = data.GetManifest();
+	for (auto& definition : manifest.definitions)
+	{
+		switch (definition.type)
+		{
+		case AssetType::Texture:
+		{
+			AddTextureIDs(definition.assetIDs);
+			break;
+		}
+
+		case AssetType::Font:
+		{
+			AddFontIDs(definition.assetIDs);
+			break;
+		}
+
+		case AssetType::Sound:
+		{
+			AddSoundIDs(definition.assetIDs);
+			break;
+		}
+
+		case AssetType::Text:
+		{
+			AddTextIDs(definition.assetIDs);
+			break;
+		}
+
+		default:
+			LOG_W("Unsupported Asset Type [%d] for asynchronous loading!", definition.type);
+		}
+	}
+
+	m_bCompleted = m_bIdle = false;
+	m_pMultiJob = Services::Jobs()->CreateMultiJob("Async Decompress: " + archivePath);
+	m_pMultiJob->AddJob(
+		[&]() {
+			for (auto& sound : m_newSounds)
+			{
+				sound.asset = m_pRepository->LoadInternal<SoundAsset>(
+					sound.assetID, m_archiveReader.Decompress(sound.assetID));
+			}
+		},
+		"Load All Sounds");
+
+	for (auto& texture : m_newTextures)
+	{
+		m_pMultiJob->AddJob(
+			[&]() {
+				texture.asset = m_pRepository->LoadInternal<TextureAsset>(
+					texture.assetID, m_archiveReader.Decompress(texture.assetID));
+			},
+			texture.assetID);
+	}
+	for (auto& font : m_newFonts)
+	{
+		m_pMultiJob->AddJob(
+			[&]() {
+				font.asset = m_pRepository->LoadInternal<FontAsset>(
+					font.assetID, m_archiveReader.Decompress(font.assetID));
+			},
+			font.assetID);
+	}
+	for (auto& text : m_newTexts)
+	{
+		m_pMultiJob->AddJob(
+			[&]() {
+				text.asset = m_pRepository->LoadInternal<TextAsset>(
+					text.assetID, m_archiveReader.Decompress(text.assetID));
+			},
+			text.assetID);
 	}
 
 	m_pMultiJob->StartJobs([&]() { m_bCompleted = true; });
@@ -82,15 +184,23 @@ void AsyncAssetLoader::Tick(Time)
 			Lock lock(m_pRepository->m_mutex);
 			for (auto& newAsset : m_newTextures)
 			{
-				m_pRepository->m_loaded.emplace(newAsset.assetPath, std::move(newAsset.asset));
+				if (newAsset.asset)
+					m_pRepository->m_loaded.emplace(newAsset.assetID, std::move(newAsset.asset));
 			}
 			for (auto& newAsset : m_newFonts)
 			{
-				m_pRepository->m_loaded.emplace(newAsset.assetPath, std::move(newAsset.asset));
+				if (newAsset.asset)
+					m_pRepository->m_loaded.emplace(newAsset.assetID, std::move(newAsset.asset));
 			}
 			for (auto& newAsset : m_newSounds)
 			{
-				m_pRepository->m_loaded.emplace(newAsset.assetPath, std::move(newAsset.asset));
+				if (newAsset.asset)
+					m_pRepository->m_loaded.emplace(newAsset.assetID, std::move(newAsset.asset));
+			}
+			for (auto& newAsset : m_newTexts)
+			{
+				if (newAsset.asset)
+					m_pRepository->m_loaded.emplace(newAsset.assetID, std::move(newAsset.asset));
 			}
 		}
 		if (m_onDone)
@@ -100,38 +210,46 @@ void AsyncAssetLoader::Tick(Time)
 	}
 }
 
-void AsyncAssetLoader::AddTexturePaths(const AssetPaths& paths)
+void AsyncAssetLoader::AddTextureIDs(const AssetIDContainer& IDs)
 {
-	for (auto& path : paths.assetPaths)
+	for (auto& id : IDs.assetIDs)
 	{
-		String fullPath = m_pRepository->GetPath(path);
-		if (!m_pRepository->IsLoaded(fullPath))
+		if (!m_pRepository->IsLoaded(id))
 		{
-			m_newTextures.emplace_back(fullPath);
+			m_newTextures.emplace_back(id);
 		}
 	}
 }
 
-void AsyncAssetLoader::AddFontPaths(const AssetPaths& paths)
+void AsyncAssetLoader::AddFontIDs(const AssetIDContainer& IDs)
 {
-	for (auto& path : paths.assetPaths)
+	for (auto& id : IDs.assetIDs)
 	{
-		String fullPath = m_pRepository->GetPath(path);
-		if (!m_pRepository->IsLoaded(fullPath))
+		if (!m_pRepository->IsLoaded(id))
 		{
-			m_newFonts.emplace_back(fullPath);
+			m_newFonts.emplace_back(id);
 		}
 	}
 }
 
-void AsyncAssetLoader::AddSoundPaths(const AssetPaths& paths)
+void AsyncAssetLoader::AddSoundIDs(const AssetIDContainer& IDs)
 {
-	for (auto& path : paths.assetPaths)
+	for (auto& id : IDs.assetIDs)
 	{
-		String fullPath = m_pRepository->GetPath(path);
-		if (!m_pRepository->IsLoaded(fullPath))
+		if (!m_pRepository->IsLoaded(id))
 		{
-			m_newSounds.emplace_back(fullPath);
+			m_newSounds.emplace_back(id);
+		}
+	}
+}
+
+void AsyncAssetLoader::AddTextIDs(const AssetIDContainer& IDs)
+{
+	for (auto& id : IDs.assetIDs)
+	{
+		if (!m_pRepository->IsLoaded(id))
+		{
+			m_newTexts.emplace_back(id);
 		}
 	}
 }

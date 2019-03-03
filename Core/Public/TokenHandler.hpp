@@ -9,7 +9,7 @@ template <typename T>
 struct TokenHandler
 {
 private:
-	Vector<T> tokens;
+	Vec<T> tokens;
 
 public:
 	template <typename T>

@@ -8,7 +8,7 @@ namespace
 {
 const String RENDER_THREAD_KEY = "renderThread";
 const String PAUSE_ON_FOCUS_LOSS_KEY = "bPauseOnFocusLoss";
-const String NUM_THREADS_KEY = "numUserThreads";
+const String NUM_GAME_THREADS_KEY = "numGameThreads";
 const String TICKS_PER_SECOND_KEY = "ticksPerSecond";
 const String MAX_TICK_TIME_MS = "maxTickTimeMS";
 const String WINDOW_TITLE_KEY = "windowTitle";
@@ -39,7 +39,7 @@ void SetStringIfEmpty(GData& data, const String& key, const String& value)
 }
 } // namespace
 
-const bool EngineConfig::s_bPauseOnFocusLoss = true;
+const bool EngineConfig::s_bPauseOnFocusLoss = false;
 
 EngineConfig::EngineConfig()
 {
@@ -77,9 +77,9 @@ bool EngineConfig::ShouldPauseOnFocusLoss() const
 	return m_data.GetBool(PAUSE_ON_FOCUS_LOSS_KEY);
 }
 
-u32 EngineConfig::GetNumWorkerThreads() const
+u32 EngineConfig::GetNumGameThreads() const
 {
-	return static_cast<u32>(m_data.GetS32(NUM_THREADS_KEY));
+	return static_cast<u32>(m_data.GetS32(NUM_GAME_THREADS_KEY));
 }
 
 u32 EngineConfig::GetTicksPerSecond() const
@@ -123,9 +123,9 @@ bool EngineConfig::SetPauseOnFocusLoss(bool bPause)
 	return m_bDirty = m_data.SetString(PAUSE_ON_FOCUS_LOSS_KEY, Strings::ToString(bPause));
 }
 
-bool EngineConfig::SetNumWorkerThreads(u32 numThreads)
+bool EngineConfig::SetNumGameThreads(u32 numThreads)
 {
-	return m_bDirty = m_data.SetString(NUM_THREADS_KEY, Strings::ToString(numThreads));
+	return m_bDirty = m_data.SetString(NUM_GAME_THREADS_KEY, Strings::ToString(numThreads));
 	;
 }
 
@@ -170,7 +170,7 @@ void EngineConfig::Verify()
 	SetStringIfEmpty(m_data, TICKS_PER_SECOND_KEY, Strings::ToString(40));
 	SetStringIfEmpty(m_data, MAX_TICK_TIME_MS, Strings::ToString(25));
 	SetStringIfEmpty(m_data, RENDER_THREAD_KEY, Strings::ToString(true));
-	SetStringIfEmpty(m_data, NUM_THREADS_KEY, Strings::ToString(6));
+	SetStringIfEmpty(m_data, NUM_GAME_THREADS_KEY, Strings::ToString(6));
 	SetStringIfEmpty(m_data, PAUSE_ON_FOCUS_LOSS_KEY, Strings::ToString(s_bPauseOnFocusLoss));
 	if (m_data.GetString(VIEW_SIZE_KEY).empty())
 		SetViewSize(Vector2(1920, 1080));

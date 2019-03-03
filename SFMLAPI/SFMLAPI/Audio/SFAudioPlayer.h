@@ -73,16 +73,15 @@ private:
 	Fixed m_targetVolume = Fixed::One;
 	Fixed m_startVolume = Fixed::One;
 	GameClock m_clock;
-	MusicAsset* m_pMainTrack = nullptr;
+	sf::Music m_sfMusic;
 	bool m_bFadingIn = false;
 	bool m_bFadingOut = false;
 
 public:
-	MusicPlayer(MusicAsset* pMusicAsset = nullptr);
+	MusicPlayer();
 	~MusicPlayer();
 
-	bool SetTrack(MusicAsset& track);
-	bool HasTrack() const;
+	bool SetTrack(const String& path);
 	Time GetDuration() const;
 	Time GetElapsed() const;
 	bool IsFading() const;
@@ -90,6 +89,7 @@ public:
 	void FadeOut(Time time, const Fixed& targetVolume = Fixed::Zero);
 	void EndFade();
 
+	bool IsPaused() const;
 	virtual void Play() override;
 	virtual void Stop() override;
 	virtual void Pause() override;

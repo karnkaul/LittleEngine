@@ -75,10 +75,10 @@ void JobWorker::Run()
 			{
 				job.task();
 			}
-			catch (std::exception& e)
+			catch (const std::exception& e)
 			{
 				Assert(false, "AsyncTask threw exception!");
-				LOG_E("%d threw an exception and job has failed! %d", m_jobID);
+				LOG_E("%d threw an exception and job has failed! %d\n%s", m_jobID, e.what());
 			}
 			m_pManager->Lock_CompleteJob(m_jobID);
 			if (!job.bSilent)

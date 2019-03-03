@@ -5,10 +5,47 @@
 
 namespace LittleEngine
 {
-EngineRepository::EngineRepository(const String& rootDir) : m_rootDir(rootDir)
+EngineRepository::EngineRepository(const String& archivePath, const String& rootDir)
+	: m_rootDir(rootDir)
 {
-	m_pDefaultFont = Load<FontAsset>("main.ttf");
-	LOG_I("[AssetRepository] constructed");
+	String fontID = "Fonts/main.ttf";
+	m_archiveReader.Load(archivePath.c_str());
+	if (!m_archiveReader.IsPresent(fontID.c_str()))
+	{
+		LOG_E("[EngineRepository] Cooked assets does not contain %s!", fontID.c_str());
+	}
+	else
+	{
+		UPtr<FontAsset> uDefaultFont =
+			LoadInternal<FontAsset>(fontID, m_archiveReader.Decompress(fontID));
+		if (uDefaultFont)
+		{
+			m_pDefaultFont = uDefaultFont.get();
+			m_loaded.emplace(fontID, std::move(uDefaultFont));
+		}
+		else
+		{
+			LOG_E("[EngineRepository] Could not load %s from Cooked assets!", fontID.c_str());
+		}
+	}
+
+#if !SHIPPING
+	if (!m_pDefaultFont)
+	{
+		UPtr<FontAsset> uDefaultFont = LoadInternal<FontAsset>(fontID);
+		if (uDefaultFont)
+		{
+			m_pDefaultFont = uDefaultFont.get();
+			m_loaded.emplace(fontID, std::move(uDefaultFont));
+		}
+		else
+		{
+			LOG_E("[EngineRepository] Could not load %s from filesystem assets!", fontID.c_str());
+		}
+	}
+#endif
+	LOG_I("[EngineRepository] constructed");
+	Assert(m_pDefaultFont, "Invariant violated: Default Font is null!");
 }
 
 FontAsset* EngineRepository::GetDefaultFont() const
@@ -22,31 +59,40 @@ void EngineRepository::LoadAll(AssetManifest& manifest)
 		switch (definition.type)
 		{
 		case AssetType::Texture:
-			Load<TextureAsset>(definition.resourcePaths.assetPaths);
+			Load<TextureAsset>(definition.assetIDs.assetIDs);
 			break;
 
 		case AssetType::Font:
-			Load<FontAsset>(definition.resourcePaths.assetPaths);
+			Load<FontAsset>(definition.assetIDs.assetIDs);
 			break;
 
 		case AssetType::Sound:
-			Load<SoundAsset>(definition.resourcePaths.assetPaths);
-			break;
-
-		case AssetType::Music:
-			Load<MusicAsset>(definition.resourcePaths.assetPaths);
+			Load<SoundAsset>(definition.assetIDs.assetIDs);
 			break;
 
 		default:
-			LOG_E("[AssetRepository] Unrecognised asset type [%d]!", definition.type);
+			LOG_E("[EngineRepository] Unrecognised asset type [%d]!", definition.type);
 			break;
 		}
 	});
 }
 
-AsyncAssetLoader* EngineRepository::LoadAsync(const String& manifestPath, const std::function<void()>& OnCompleted)
+#if !SHIPPING
+AsyncAssetLoader* EngineRepository::LoadAsync(const String& manifestPath, const std::function<void()>& onComplete)
 {
-	UPtr<AsyncAssetLoader> uAsyncLoader = MakeUnique<AsyncAssetLoader>(*this, manifestPath, OnCompleted);
+	UPtr<AsyncAssetLoader> uAsyncLoader = MakeUnique<AsyncAssetLoader>(*this, manifestPath, onComplete);
+	AsyncAssetLoader* pLoader = uAsyncLoader.get();
+	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
+	return pLoader;
+}
+#endif
+
+AsyncAssetLoader* EngineRepository::LoadAsync(const String& archivePath,
+											  const String& manifestPath,
+											  const std::function<void()>& onComplete)
+{
+	UPtr<AsyncAssetLoader> uAsyncLoader =
+		MakeUnique<AsyncAssetLoader>(*this, archivePath, manifestPath, onComplete);
 	AsyncAssetLoader* pLoader = uAsyncLoader.get();
 	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
 	return pLoader;
@@ -60,22 +106,16 @@ void EngineRepository::UnloadAll(bool bUnloadDefaultFont)
 	}
 	else
 	{
-		String fontPath = m_pDefaultFont->GetResourcePath();
-		Core::CleanMap<String, UPtr<Asset>>(m_loaded, [fontPath](UPtr<Asset>& uAsset) {
-			return uAsset->GetResourcePath() != fontPath;
-		});
+		String fontID = m_pDefaultFont->GetID();
+		Core::CleanMap<String, UPtr<Asset>>(
+			m_loaded, [fontID](UPtr<Asset>& uAsset) { return uAsset->GetID() != fontID; });
 	}
-	LOG_I("[AssetRepository] cleared");
+	LOG_I("[EngineRepository] cleared");
 }
 
-String EngineRepository::GetPath(const String& path) const
+bool EngineRepository::IsLoaded(const String& id)
 {
-	return m_rootDir.empty() ? path : m_rootDir + "/" + path;
-}
-
-bool EngineRepository::IsLoaded(const String& fullPath)
-{
-	auto search = m_loaded.find(fullPath);
+	auto search = m_loaded.find(id);
 	return search != m_loaded.end();
 }
 
@@ -98,6 +138,7 @@ EngineRepository::~EngineRepository()
 {
 	m_pDefaultFont = nullptr;
 	UnloadAll(true);
-	LOG_I("[AssetRepository] destroyed");
+	Core::ArchiveReader::UnInit();
+	LOG_I("[EngineRepository] destroyed");
 }
 } // namespace LittleEngine

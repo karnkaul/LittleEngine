@@ -32,8 +32,8 @@ public:
 	f64 GetF64(const String& key, f64 defaultValue = -1.0f) const;
 	GData GetGData(const String& key) const;
 
-	Vector<GData> GetVectorGData(const String& key) const;
-	Vector<String> GetVector(const String& key) const;
+	Vec<GData> GetVectorGData(const String& key) const;
+	Vec<String> GetVector(const String& key) const;
 
 	bool AddField(const String& key, GData& gData);
 	bool SetString(const String& key, const String& value);

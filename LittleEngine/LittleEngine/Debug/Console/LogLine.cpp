@@ -49,13 +49,13 @@ namespace LittleEngine { namespace Debug {
 		}
 	}
 
-	Vector<LogLine> LogBook::GetLogPage() const {
-		Vector<LogLine> ret;
+	Vec<LogLine> LogBook::GetLogPage() const {
+		Vec<LogLine> ret;
 		std::copy(m_bottom, m_top, std::back_inserter(ret));
 		return ret;
 	}
 
-	void LogBook::Append(Vector<LogLine>&& move) {
+	void LogBook::Append(Vec<LogLine>&& move) {
 		std::move(move.begin(), move.end(), std::back_inserter(m_logLines));
 		Reset();
 	}

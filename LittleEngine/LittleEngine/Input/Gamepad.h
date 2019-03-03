@@ -33,7 +33,7 @@ private:
 	struct InputMapping
 	{
 		GameInputType gameInput;
-		Vector<KeyCode> keyCodes;
+		Vec<KeyCode> keyCodes;
 
 		InputMapping(GameInputType key);
 		InputMapping(GameInputType key, KeyCode keyCode);
@@ -43,7 +43,7 @@ private:
 	};
 
 private:
-	Vector<InputMapping> m_bindings;
+	Vec<InputMapping> m_bindings;
 
 public:
 	GameInputType ToGameInputType(const KeyState& input) const;

@@ -5,9 +5,9 @@
 
 namespace LittleEngine
 {
-EngineInput::Frame::Frame(const Vector<GameInputType>& pressed,
-						  const Vector<GameInputType>& held,
-						  const Vector<GameInputType>& released,
+EngineInput::Frame::Frame(const Vec<GameInputType>& pressed,
+						  const Vec<GameInputType>& held,
+						  const Vec<GameInputType>& released,
 						  const TextInput& textInput)
 	: pressed(pressed), held(held), released(released), textInput(textInput)
 {
@@ -78,7 +78,7 @@ void EngineInput::TakeSnapshot(const SFInputDataFrame& frameData)
 
 void EngineInput::FireCallbacks()
 {
-	Vector<GameInputType> pressed, held, released;
+	Vec<GameInputType> pressed, held, released;
 
 	// Build "pressed" and "held" vectors
 	for (auto input : m_currentSnapshot)

@@ -10,17 +10,17 @@ namespace LittleEngine
 struct GFXDataFrame
 {
 private:
-	using RenderLayer = Vector<SFPrimitive>;
+	using RenderLayer = Vec<SFPrimitive>;
 	Array<RenderLayer, _LAYER_COUNT> layerArray;
 
 public:
 	static bool IsOutOfBounds(const Vector2& position, const Rect2& objectBounds, const Vector2& worldBounds);
 
-	GFXDataFrame(Vector<SFPrimitive>&& primitives);
+	GFXDataFrame(Vec<SFPrimitive>&& primitives);
 
 private:
 	void Cull(const Vector2& cullBounds);
-	Vector<SFPrimitive> CollapseAndMove();
+	Vec<SFPrimitive> CollapseAndMove();
 
 	friend class GFXBuffer;
 	friend class EngineLoop;
@@ -32,8 +32,8 @@ private:
 	using Lock = std::lock_guard<std::mutex>;
 
 	std::mutex m_bufferMutex;
-	Vector<SFPrimitive> m_buffer0;
-	Vector<SFPrimitive> m_buffer1;
+	Vec<SFPrimitive> m_buffer0;
+	Vec<SFPrimitive> m_buffer1;
 	size_t m_bufferIdx;
 	Time m_lastSwapTime;
 
@@ -42,10 +42,10 @@ public:
 
 	Time GetLastSwapTime() const;
 	void Lock_Swap(GFXDataFrame&& newFrame, const Vector2& cullBounds);
-	void Lock_Traverse(const std::function<void(Vector<SFPrimitive>& vec)>& Procedure);
+	void Lock_Traverse(const std::function<void(Vec<SFPrimitive>& vec)>& Procedure);
 
 private:
-	Vector<SFPrimitive>* GetInactiveBuffer();
-	Vector<SFPrimitive>& ReferenceActiveBuffer();
+	Vec<SFPrimitive>* GetInactiveBuffer();
+	Vec<SFPrimitive>& ReferenceActiveBuffer();
 };
 } // namespace LittleEngine

@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include "ArchiveReader.h"
 #include "SFMLAPI/System/SFTime.h"
 #include "SFMLAPI/System/SFAssets.h"
 
@@ -12,33 +13,42 @@ private:
 	struct NewAsset
 	{
 		UPtr<T> asset;
-		String assetPath;
+		String assetID;
 
-		NewAsset(const String& path) : assetPath(path)
+		NewAsset(const String& id) : assetID(id)
 		{
 		}
 	};
 
+	Core::ArchiveReader m_archiveReader;
 	std::function<void()> m_onDone;
-	Vector<NewAsset<TextureAsset>> m_newTextures;
-	Vector<NewAsset<FontAsset>> m_newFonts;
-	Vector<NewAsset<SoundAsset>> m_newSounds;
+	Vec<NewAsset<TextureAsset>> m_newTextures;
+	Vec<NewAsset<FontAsset>> m_newFonts;
+	Vec<NewAsset<SoundAsset>> m_newSounds;
+	Vec<NewAsset<TextAsset>> m_newTexts;
 	class EngineRepository* m_pRepository;
 	class MultiJob* m_pMultiJob = nullptr;
 	bool m_bCompleted = false;
 	bool m_bIdle = false;
 
 public:
+#if !SHIPPING
 	AsyncAssetLoader(EngineRepository& repository, const String& manifestPath, const std::function<void()>& onDone);
+#endif
+	AsyncAssetLoader(EngineRepository& repository,
+					 const String& archivePath,
+					 const String& manifestPath,
+					 const std::function<void()>& onDone);
 
 	Fixed GetProgress() const;
 
 private:
 	void Tick(Time dt);
 
-	void AddTexturePaths(const AssetPaths& paths);
-	void AddFontPaths(const AssetPaths& paths);
-	void AddSoundPaths(const AssetPaths& paths);
+	void AddTextureIDs(const AssetIDContainer& IDs);
+	void AddFontIDs(const AssetIDContainer& IDs);
+	void AddSoundIDs(const AssetIDContainer& IDs);
+	void AddTextIDs(const AssetIDContainer& IDs);
 
 	friend class EngineRepository;
 };

@@ -10,7 +10,7 @@ namespace LittleEngine
 class Entity : public WorldObject
 {
 private:
-	Vector<Component*> m_pComponents;
+	Vec<Component*> m_pComponents;
 
 protected:
 	bool m_bDestroyed = false;

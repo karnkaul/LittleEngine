@@ -14,7 +14,7 @@ public:
 	bool bAutoPad = false;
 
 private:
-	Vector<UITransform*> children;
+	Vec<UITransform*> children;
 	UITransform* pParent = nullptr;
 
 public:

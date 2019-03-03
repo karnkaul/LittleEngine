@@ -28,7 +28,7 @@ SFPrimitive* RenderHeap::New(const SFPrimitiveData& data)
 
 GFXDataFrame RenderHeap::ConstructDataFrame()
 {
-	Vector<SFPrimitive> primitives;
+	Vec<SFPrimitive> primitives;
 	for (auto& uObj : m_uPrimitives)
 	{
 		primitives.emplace_back(SFPrimitive(*uObj));

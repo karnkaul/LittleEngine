@@ -1,6 +1,7 @@
 #pragma once
 #include <mutex>
 #include "CoreTypes.h"
+#include "ArchiveReader.h"
 #include "SFMLAPI/System/SFAssets.h"
 
 namespace LittleEngine
@@ -11,6 +12,7 @@ class EngineRepository final
 private:
 	using Lock = std::lock_guard<std::mutex>;
 
+	Core::ArchiveReader m_archiveReader;
 	List<UPtr<class AsyncAssetLoader>> m_uAsyncLoaders;
 	std::mutex m_mutex;
 	UMap<String, Asset::Ptr> m_loaded;
@@ -18,45 +20,75 @@ private:
 	FontAsset* m_pDefaultFont;
 
 public:
-	EngineRepository(const String& rootDir = "");
+	EngineRepository(const String& archivePath, const String& rootDir = "");
 	~EngineRepository();
 
 	// Loads Asset at path. T must derive from Asset!
-	// Note: Not meant to be used in hot code!
 	template <typename T>
-	T* Load(String path)
+	T* Load(const String& id)
 	{
 		static_assert(IsDerived<Asset, T>(),
 					  "T must derive from Asset: check Output window for erroneous call");
-		String fullPath = GetPath(path);
 		m_mutex.lock();
-		auto search = m_loaded.find(fullPath);
+		auto search = m_loaded.find(id);
 		m_mutex.unlock();
 
 		if (search != m_loaded.end())
 		{
 #if LOG_CACHED_ASSET_LOADS
-			LOG_D("[EngineRepository] Found Asset [%s] in cache", fullPath.c_str());
+			LOG_D("[EngineRepository] Found Asset [%s] in cache", id.c_str());
 #endif
 			return dynamic_cast<T*>(search->second.get());
 		}
 
-		UPtr<T> uT = LoadInternal<T>(fullPath);
-		T* pT = uT.get();
+		LOG_W("[EngineRepository] Orphaned asset (not loaded by manifest) requested at runtime [%s]", id.c_str());
+		T* pT = nullptr;
+		if (!m_archiveReader.IsPresent(id.c_str()))
+		{
+			LOG_E("[EngineRepository] Cooked archive does not contain [%s]!", id.c_str());
+		}
+		else
+		{
+			UPtr<T> uT = LoadInternal<T>(id, m_archiveReader.Decompress(id));
+			if (uT)
+			{
+				pT = uT.get();
+				m_mutex.lock();
+				m_loaded.emplace(id, std::move(uT));
+				m_mutex.unlock();
+			}
+			else
+			{
+				LOG_E("[EngineRepository] Could not load [%s] from cooked archive!", id.c_str());
+			}
+		}
 
-		m_mutex.lock();
-		m_loaded.emplace(fullPath, std::move(uT));
-		m_mutex.unlock();
+#if !SHIPPING
+		if (!pT)
+		{
+			UPtr<T> uT = LoadInternal<T>(id);
+			if (uT)
+			{
+				pT = uT.get();
+				m_mutex.lock();
+				m_loaded.emplace(id, std::move(uT));
+				m_mutex.unlock();
+			}
+			else
+			{
+				LOG_E("[EngineRepository] Could not load [%s] from filesystem!", id.c_str());
+			}
+		}
+#endif
 		return pT;
 	}
 
-	// Note: Not meant to be used in hot code!
 	template <typename T>
-	Vector<T*> Load(InitList<String> assetPaths)
+	Vec<T*> Load(InitList<String> assetPaths)
 	{
 		static_assert(IsDerived(Asset, T),
 					  "T must derive from Asset: check Output window for erroneous call");
-		Vector<T*> vec;
+		Vec<T*> vec;
 		for (const auto& path : assetPaths)
 		{
 			if (T* asset = Load<T>(path))
@@ -67,13 +99,12 @@ public:
 		return vec;
 	}
 
-	// Note: Not meant to be used in hot code!
 	template <typename T>
-	Vector<T*> Load(Vector<String> assetPaths)
+	Vec<T*> Load(Vec<String> assetPaths)
 	{
 		static_assert(IsDerived<Asset, T>(),
 					  "T must derive from Asset: check Output window for erroneous call");
-		Vector<T*> vec;
+		Vec<T*> vec;
 		for (const auto& path : assetPaths)
 		{
 			if (T* asset = Load<T>(path))
@@ -84,10 +115,13 @@ public:
 		return vec;
 	}
 
-	// Note: Not meant to be used in hot code!
 	void LoadAll(AssetManifest& manifest);
-	// Note: Will not load Music!
-	AsyncAssetLoader* LoadAsync(const String& manifestPath, const std::function<void()>& OnComplete = nullptr);
+#if !SHIPPING
+	AsyncAssetLoader* LoadAsync(const String& manifestPath, const std::function<void()>& onComplete = nullptr);
+#endif
+	AsyncAssetLoader* LoadAsync(const String& archivePath,
+								const String& manifestPath,
+								const std::function<void()>& onComplete = nullptr);
 
 	FontAsset* GetDefaultFont() const;
 
@@ -98,22 +132,53 @@ private:
 	EngineRepository(const EngineRepository&) = delete;
 	EngineRepository& operator=(const EngineRepository&) = delete;
 
-	String GetPath(const String& path) const;
-
-	template <typename T>
-	UPtr<T> LoadInternal(const String& fullPath)
+	template<typename T>
+	UPtr<T> LoadInternal(const String& id, const Vec<u8>& buffer)
 	{
-		LOG_I("[AssetManager] Loading Asset [%s]", fullPath.c_str());
 		struct enable_smart : public T
 		{
-			enable_smart(const String& path) : T(path)
+			enable_smart(const String& id, const Vec<u8>& buffer) : T(id, buffer)
 			{
 			}
 		};
-		return MakeUnique<enable_smart>(fullPath);
+
+		UPtr<enable_smart> uT;
+		try
+		{
+			uT = MakeUnique<enable_smart>(id, buffer);
+		}
+		catch (const AssetLoadException& e)
+		{
+		}
+		LOG_I("[AssetManager] Decompressed Asset [%s]", id.c_str());
+		return std::move(uT);
 	}
 
-	bool IsLoaded(const String& fullPath);
+#if !SHIPPING
+	template <typename T>
+	UPtr<T> LoadInternal(const String& id)
+	{
+		LOG_I("[AssetManager] Loading Asset from filesystem [%s]", id.c_str());
+		struct enable_smart : public T
+		{
+			enable_smart(const String& id, const String& pathPrefix) : T(id, pathPrefix)
+			{
+			}
+		};
+
+		UPtr<enable_smart> uT;
+		try
+		{
+			uT = MakeUnique<enable_smart>(id, m_rootDir);
+		}
+		catch (const AssetLoadException& e)
+		{
+		}
+		return std::move(uT);
+	}
+#endif
+
+	bool IsLoaded(const String& id);
 
 	void Tick(Time dt);
 

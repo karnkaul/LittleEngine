@@ -1,12 +1,14 @@
 #include "stdafx.h"
-#include "Asserts.h"
-#include "SysDialog.h"
 #include <assert.h>
 #include <iostream>
 #include <string>
 #include <unordered_set>
-
+#include "Asserts.h"
 #include "SysDialog.h"
+#include "Logger.h"
+#if _MSC_VER
+#include <Windows.h>
+#endif
 
 namespace Core
 {
@@ -48,8 +50,15 @@ void AssertWithMsg(bool expr, const char* message, const char* fileName, long li
 	{
 	case ResponseType::Assert:
 	{
-		std::cerr << message << std::endl;
+		LOG_E("Assertion failed: %s", message);
+#if _MSC_VER
+		if (IsDebuggerPresent())
+			__debugbreak();
+		else
+			assert(false);
+#else
 		assert(false && message);
+#endif
 		break;
 	}
 	case ResponseType::Disable:

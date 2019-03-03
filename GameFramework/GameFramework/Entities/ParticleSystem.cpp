@@ -184,7 +184,7 @@ void Particle::Tick(Time dt)
 class Emitter final
 {
 private:
-	Vector<Particle> m_particles;
+	Vec<Particle> m_particles;
 	const EmitterData m_data;
 	Time m_elapsed;
 	Transform* m_pParent = nullptr;
@@ -207,7 +207,7 @@ public:
 private:
 	void Init();
 	Particle* Provision();
-	Vector<Particle*> ProvisionLot(u32 count);
+	Vec<Particle*> ProvisionLot(u32 count);
 	void InitParticle(Particle& p);
 	void InitParticles();
 	void TickInternal(Time dt);
@@ -311,9 +311,9 @@ Particle* Emitter::Provision()
 	return nullptr;
 }
 
-Vector<Particle*> Emitter::ProvisionLot(u32 count)
+Vec<Particle*> Emitter::ProvisionLot(u32 count)
 {
-	Vector<Particle*> ret;
+	Vec<Particle*> ret;
 	auto iter = m_particles.begin();
 	u32 total = 0;
 	while (iter != m_particles.end() && total < count)
@@ -350,7 +350,7 @@ void Emitter::InitParticle(Particle& p)
 
 void Emitter::InitParticles()
 {
-	Vector<Particle*> provisioned = ProvisionLot(m_data.spawnData.numParticles);
+	Vec<Particle*> provisioned = ProvisionLot(m_data.spawnData.numParticles);
 	for (auto p : provisioned)
 	{
 		InitParticle(*p);
@@ -399,7 +399,7 @@ void Emitter::TickInternal(Time dt)
 
 ParticleSystemData::ParticleSystemData(const GData& psGData)
 {
-	Vector<GData> emitterGDatas = psGData.GetVectorGData("emitters");
+	Vec<GData> emitterGDatas = psGData.GetVectorGData("emitters");
 	if (!emitterGDatas.empty())
 	{
 		EngineRepository* pRepo = Services::Game()->Repository();
@@ -436,7 +436,7 @@ ParticleSystem::~ParticleSystem() = default;
 
 void ParticleSystem::InitParticleSystem(ParticleSystemData&& data)
 {
-	Vector<EmitterData>& emitters = data.emitterDatas;
+	Vec<EmitterData>& emitters = data.emitterDatas;
 	String particles;
 	for (EmitterData& data : emitters)
 	{

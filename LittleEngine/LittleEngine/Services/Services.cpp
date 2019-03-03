@@ -4,7 +4,7 @@
 
 namespace LittleEngine
 {
-Vector<IService*> Services::s_pServices;
+Vec<IService*> Services::s_pServices;
 EngineService* Services::s_pEngine = nullptr;
 RenderHeap* Services::s_pRenderHeap = nullptr;
 JobManager* Services::s_pJobManager = nullptr;

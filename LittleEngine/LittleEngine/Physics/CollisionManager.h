@@ -8,7 +8,7 @@ namespace LittleEngine
 class CollisionManager final
 {
 private:
-	Vector<UPtr<Collider>> m_colliders;
+	Vec<UPtr<Collider>> m_colliders;
 	String m_logName;
 
 public:

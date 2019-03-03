@@ -12,7 +12,7 @@ class EngineService final : public IService
 {
 private:
 	UPtr<EngineInput> m_uEngineInput;
-	UPtr<EngineRepository> m_uAssetRepository;
+	UPtr<EngineRepository> m_uEngineRepository;
 	UPtr<EngineAudio> m_uEngineAudio;
 	UPtr<WorldStateMachine> m_uWorldStateMachine;
 	UPtr<class AsyncFileLogger> m_uFileLogger;

@@ -11,7 +11,7 @@ public:
 	static bool s_bReady;
 
 private:
-	Vector<UPtr<World>> m_uCreatedStates;
+	Vec<UPtr<World>> m_uCreatedStates;
 	UPtr<LoadingUI> m_uLoadingUI;
 	World* m_pActiveState = nullptr;
 	World* m_pNextState = nullptr;
@@ -22,6 +22,7 @@ private:
 #if DEBUGGING
 public:
 	String m_manifestPath;
+	String m_archivePath;
 	static bool s_bTEST_infiniteLoad;
 #endif
 
@@ -36,7 +37,7 @@ public:
 	bool LoadState(WorldID id);
 
 private:
-	void Start(const String& manifestPath = "");
+	void Start(const String& manifestPath = "", const String& archivePath = "");
 	void Tick(Time dt);
 	void PostBufferSwap();
 

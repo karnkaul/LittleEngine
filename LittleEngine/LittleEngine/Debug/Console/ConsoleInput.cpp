@@ -27,7 +27,7 @@ namespace LittleEngine { namespace Debug {
 	void ConsoleInput::Update() {
 		if (!m_query.empty()) {
 			queryCache.PushFront(m_query);
-			Vector<LogLine> logAppend = Commands::Execute(m_query);
+			Vec<LogLine> logAppend = Commands::Execute(m_query);
 			Console::g_uLogBook->Append(std::move(logAppend));
 			m_query.clear();
 		}

@@ -26,7 +26,7 @@ bool GData::Marshall(const String& serialised)
 	{
 		Clear();
 		String rawText = temp.substr(1, temp.size() - 2);
-		Vector<String> tokens = Strings::Tokenise(rawText, ',', gDataEscapes);
+		Vec<String> tokens = Strings::Tokenise(rawText, ',', gDataEscapes);
 		for (const auto& token : tokens)
 		{
 			Strings::Pair<String> kvp = Strings::Bisect(token, ':');
@@ -120,9 +120,9 @@ GData GData::GetGData(const String& key) const
 	return GData();
 }
 
-Vector<GData> GData::GetVectorGData(const String& key) const
+Vec<GData> GData::GetVectorGData(const String& key) const
 {
-	Vector<GData> ret;
+	Vec<GData> ret;
 	auto search = m_fieldMap.find(key);
 	if (search != m_fieldMap.end())
 	{
@@ -132,7 +132,7 @@ Vector<GData> GData::GetVectorGData(const String& key) const
 			if (value[0] == '[' && value[value.size() - 1] == ']')
 			{
 				value = value.substr(1, value.size() - 2);
-				Vector<String> gDatas = Strings::Tokenise(value, ',', gDataEscapes);
+				Vec<String> gDatas = Strings::Tokenise(value, ',', gDataEscapes);
 				for (const auto& gData : gDatas)
 				{
 					ret.emplace_back(gData);
@@ -143,7 +143,7 @@ Vector<GData> GData::GetVectorGData(const String& key) const
 	return ret;
 }
 
-Vector<String> GData::GetVector(const String& key) const
+Vec<String> GData::GetVector(const String& key) const
 {
 	auto search = m_fieldMap.find(key);
 	if (search != m_fieldMap.end())
@@ -158,7 +158,7 @@ Vector<String> GData::GetVector(const String& key) const
 			}
 		}
 	}
-	return Vector<String>();
+	return Vec<String>();
 }
 
 bool GData::AddField(const String& key, GData& gData)
