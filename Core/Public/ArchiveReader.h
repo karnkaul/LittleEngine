@@ -5,9 +5,11 @@ namespace Core
 {
 class ArchiveReader final
 {
+private:
+	static bool s_bInit;
+
 public:
 	ArchiveReader();
-	~ArchiveReader();
 
 	void Load(const char* szArchivePath);
 	void Load(InitList<const char*> archivePaths);
@@ -15,5 +17,9 @@ public:
 
 	bool IsPresent(const char* szPathInArchive) const;
 	Vec<u8> Decompress(const String& pathInArchive) const;
+
+public:
+	static void UnInit();
+	static String ToText(const Vec<u8>& rawBuffer);
 };
 }

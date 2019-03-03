@@ -129,41 +129,24 @@ bool SoundPlayer::ApplyParams()
 	return false;
 }
 
-MusicPlayer::MusicPlayer(MusicAsset* pMusicAsset)
-{
-	if (pMusicAsset)
-	{
-		SetTrack(*pMusicAsset);
-	}
-}
+MusicPlayer::MusicPlayer() = default;
 
 MusicPlayer::~MusicPlayer()
 {
 	if (IsPlaying())
 	{
-		m_pMainTrack->m_sfMusic.stop();
+		m_sfMusic.stop();
 	}
 }
 
-bool MusicPlayer::SetTrack(MusicAsset& musicAsset)
+bool MusicPlayer::SetTrack(const String& path)
 {
-	this->m_pMainTrack = &musicAsset;
-	return true;
-}
-
-
-bool MusicPlayer::HasTrack() const
-{
-	return m_pMainTrack && m_pMainTrack->m_bValid;
+	return m_sfMusic.openFromFile(path);
 }
 
 Time MusicPlayer::GetDuration() const
 {
-	if (m_pMainTrack && m_pMainTrack->m_bValid)
-	{
-		return m_pMainTrack->GetDuration();
-	}
-	return Time::Zero;
+	return Time::Microseconds(m_sfMusic.getDuration().asMicroseconds());
 }
 
 Time MusicPlayer::GetElapsed() const
@@ -204,61 +187,54 @@ void MusicPlayer::EndFade()
 	if (m_bFadingOut)
 	{
 		Stop();
-		m_pMainTrack = nullptr;
 	}
 	m_bFadingIn = m_bFadingOut = false;
 }
 
+
+bool MusicPlayer::IsPaused() const
+{
+	return m_status == AudioPlayer::Status::Paused;
+}
+
 void MusicPlayer::Play()
 {
-	if (m_pMainTrack && m_pMainTrack->m_bValid)
-	{
-		m_clock.Restart();
-		ApplyParams();
-		m_pMainTrack->m_sfMusic.play();
-	}
+	m_clock.Restart();
+	ApplyParams();
+	m_sfMusic.play();
 }
 
 void MusicPlayer::Stop()
 {
-	if (m_pMainTrack)
-	{
-		m_pMainTrack->m_sfMusic.stop();
-	}
+	m_sfMusic.stop();
 }
 
 void MusicPlayer::Pause()
 {
-	if (m_pMainTrack)
-	{
-		m_pMainTrack->m_sfMusic.pause();
-		m_status = AudioPlayer::Status::Paused;
-	}
+	m_sfMusic.pause();
+	m_status = AudioPlayer::Status::Paused;
 }
 
 void MusicPlayer::Resume()
 {
 	if (m_status == AudioPlayer::Status::Paused)
-		m_pMainTrack->m_sfMusic.play();
+		m_sfMusic.play();
 }
 
 void MusicPlayer::Reset(Time time)
 {
-	if (m_pMainTrack)
-	{
-		m_clock.Restart();
-		m_pMainTrack->m_sfMusic.setPlayingOffset(sf::milliseconds(time.AsMilliseconds()));
-	}
+	m_clock.Restart();
+	m_sfMusic.setPlayingOffset(sf::milliseconds(time.AsMilliseconds()));
 }
 
 bool MusicPlayer::IsPlaying() const
 {
-	return m_pMainTrack && m_pMainTrack->m_sfMusic.getStatus() == sf::SoundSource::Status::Playing;
+	return m_sfMusic.getStatus() == sf::SoundSource::Status::Playing;
 }
 
 void MusicPlayer::Tick(Time dt)
 {
-	m_status = m_pMainTrack ? Cast(m_pMainTrack->m_sfMusic.getStatus()) : Status::NoMedia;
+	m_status = Cast(m_sfMusic.getStatus());
 
 	// Process Fade
 	if (IsFading())
@@ -301,12 +277,8 @@ void MusicPlayer::BeginFade()
 
 bool MusicPlayer::ApplyParams()
 {
-	if (m_pMainTrack)
-	{
-		m_pMainTrack->m_sfMusic.setVolume(Maths::Clamp01(m_volume * m_pMainTrack->m_volumeScale).ToF32() * 100);
-		m_pMainTrack->m_sfMusic.setLoop(m_bLooping);
-		return true;
-	}
-	return false;
+	m_sfMusic.setVolume(Maths::Clamp01(m_volume).ToF32() * 100);
+	m_sfMusic.setLoop(m_bLooping);
+	return true;
 }
 } // namespace LittleEngine

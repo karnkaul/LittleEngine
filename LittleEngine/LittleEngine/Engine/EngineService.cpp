@@ -48,7 +48,7 @@ EngineService::EngineService()
 		m_uFileLogger = MakeUnique<AsyncFileLogger>("Debug.log");
 	}
 	m_uEngineInput = MakeUnique<EngineInput>();
-	m_uAssetRepository = MakeUnique<EngineRepository>("Assets");
+	m_uEngineRepository = MakeUnique<EngineRepository>("GameAssets.cooked", "GameAssets");
 	m_uWorldStateMachine = MakeUnique<WorldStateMachine>();
 	m_uEngineAudio = MakeUnique<EngineAudio>();
 	Services::ProvideEngine(*this);
@@ -64,7 +64,7 @@ EngineService::~EngineService()
 #endif
 	m_uWorldStateMachine = nullptr;
 	m_uEngineInput = nullptr;
-	m_uAssetRepository = nullptr;
+	m_uEngineRepository = nullptr;
 	m_uEngineAudio = nullptr;
 	Services::UnprovideEngine(*this);
 	LOG_I("Logging terminated");
@@ -78,7 +78,7 @@ WorldStateMachine* EngineService::Worlds() const
 
 EngineRepository* EngineService::Repository() const
 {
-	return m_uAssetRepository.get();
+	return m_uEngineRepository.get();
 }
 
 EngineInput* EngineService::Input() const
@@ -105,7 +105,7 @@ void EngineService::PreRun()
 #if ENABLED(PROFILER)
 	Profiler::Init(std::this_thread::get_id());
 #endif
-	m_uWorldStateMachine->Start("GameAssets.manifest");
+	m_uWorldStateMachine->Start("Manifest.minified", "GameAssets.cooked");
 }
 
 void EngineService::UpdateInput(const SFInputDataFrame& inputDataFrame)
@@ -118,7 +118,7 @@ void EngineService::Tick(Time dt)
 {
 	PROFILE_START("Engine::Tick", Colour::Magenta);
 	Services::Jobs()->Tick(dt);
-	m_uAssetRepository->Tick(dt);
+	m_uEngineRepository->Tick(dt);
 	m_uWorldStateMachine->Tick(dt);
 	m_uEngineAudio->Tick(dt);
 #if ENABLED(CONSOLE)

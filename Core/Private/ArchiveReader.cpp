@@ -5,12 +5,18 @@
 
 namespace Core
 {
+bool ArchiveReader::s_bInit = false;
+
 ArchiveReader::ArchiveReader()
 {
-	s32 success = PHYSFS_init(nullptr);
-	if (!success)
+	if (!s_bInit)
 	{
-		throw DependencyException();
+		s32 success = PHYSFS_init(nullptr);
+		if (!success)
+		{
+			throw DependencyException();
+		}
+		s_bInit = true;
 	}
 }
 
@@ -35,11 +41,6 @@ void ArchiveReader::Load(InitList<const char*> archivePaths)
 	}
 }
 
-ArchiveReader::~ArchiveReader()
-{
-	PHYSFS_deinit();
-}
-
 bool ArchiveReader::IsPresent(const char* szPathInArchive) const
 {
 	return PHYSFS_exists(szPathInArchive);
@@ -56,5 +57,20 @@ Vec<u8> ArchiveReader::Decompress(const String& pathInArchive) const
 		return buffer;
 	}
 	return {};
+}
+
+void ArchiveReader::UnInit()
+{
+	PHYSFS_deinit();
+}
+
+String ArchiveReader::ToText(const Vec<u8>& rawBuffer)
+{
+	Vec<char> charBuffer(rawBuffer.size() + 1, 0);
+	for (size_t i = 0; i < rawBuffer.size(); ++i)
+	{
+		charBuffer[i] = static_cast<char>(rawBuffer[i]);
+	}
+	return String(charBuffer.data());
 }
 } // namespace Core

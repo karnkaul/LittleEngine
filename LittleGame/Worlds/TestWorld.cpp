@@ -191,13 +191,14 @@ void StartTests()
 		->SetEnabled(true);
 
 	pPlayer = pTestWorld->Game()->NewEntity<Player>("Player0", {0, -300});
-	TextureAsset* pTexture = pTestWorld->Game()->Repository()->Load<TextureAsset>("Ship.png");
+	TextureAsset* pTexture = pTestWorld->Game()->Repository()->Load<TextureAsset>("Textures/Ship.png");
 	PlayerData data(*pTexture, {PlayerCollider(AABBData({120, 60}), {0, -15}), PlayerCollider(AABBData({60, 80}))});
 	pPlayer->InitPlayer(data);
 
-	String path = bLoopingPS ? "Assets/VFX/Fire0/Fire0_loop.psdata" : "Assets/VFX/Fire0/Fire0_noloop.psdata";
-	FileRW reader(path);
-	GData psGData(reader.ReadAll(true));
+	String path =
+		bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
+	TextAsset* pText = pTestWorld->Repository()->Load<TextAsset>(path);
+	GData psGData(pText->GetText());
 	ParticleSystemData psData(psGData);
 	pParticleSystem0 = pTestWorld->Game()->NewEntity<ParticleSystem>("Fire0");
 	pParticleSystem0->InitParticleSystem(std::move(psData));
@@ -318,7 +319,7 @@ void Cleanup()
 	pParticleSystem0 = nullptr;
 	pPlayer = nullptr;
 
-	pEntity0 = pEntity1 = pEntity2 = pEntity3 = nullptr;
+	pEntity0 = pEntity1 = pEntity2 = pEntity3 = pEntity4 = nullptr;
 
 	bSpawnedDrawer = false;
 

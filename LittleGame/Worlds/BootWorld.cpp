@@ -10,7 +10,7 @@ BootWorld::BootWorld() : World("Boot")
 
 void BootWorld::OnActivated()
 {
-	m_pLogoFont = Repository()->Load<FontAsset>("Sunscreen.otf");
+	m_pLogoFont = Repository()->Load<FontAsset>("Fonts/Sunscreen.otf");
 	if ((m_pLogoDrawer = Game()->UI()->PushContext<UIButtonDrawer>()))
 	{
 		m_pLogoHeader = m_pLogoDrawer->AddElement<UIElement>("Logo Header");

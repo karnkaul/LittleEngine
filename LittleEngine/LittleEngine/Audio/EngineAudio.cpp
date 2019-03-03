@@ -56,31 +56,26 @@ bool EngineAudio::IsSFXPlaying() const
 	return false;
 }
 
-bool EngineAudio::PlayMusic(const String& path, const Fixed& volume, Time fadeTime, bool bLoop)
+bool EngineAudio::PlayMusic(const String& id, const Fixed& volume, Time fadeTime, bool bLoop)
 {
-	MusicAsset* asset = GetAssetManager().Load<MusicAsset>(path);
-	bool bValid = asset->m_bValid;
-	if (bValid)
+	m_uSwitchTrackRequest = nullptr;
+	MusicPlayer& active = GetActivePlayer();
+	active.m_bLooping = bLoop;
+	if (active.IsPlaying())
 	{
-		m_uSwitchTrackRequest = nullptr;
-		MusicPlayer& active = GetActivePlayer();
-		active.m_bLooping = bLoop;
-		if (active.IsPlaying())
-		{
-			active.Stop();
-		}
-		active.SetTrack(*asset);
-		if (fadeTime.AsSeconds() > 0)
-		{
-			active.FadeIn(fadeTime, volume);
-		}
-		else
-		{
-			active.m_volume = volume;
-			active.Play();
-		}
+		active.Stop();
 	}
-	return bValid;
+	active.SetTrack(GetPath(id));
+	if (fadeTime.AsSeconds() > 0)
+	{
+		active.FadeIn(fadeTime, volume);
+	}
+	else
+	{
+		active.m_volume = volume;
+		active.Play();
+	}
+	return true;
 }
 
 bool EngineAudio::IsMusicPlaying() const
@@ -97,7 +92,7 @@ void EngineAudio::StopMusic(Time fadeTime)
 bool EngineAudio::ResumeMusic(Time fadeTime, const Fixed& volume)
 {
 	MusicPlayer& player = GetActivePlayer();
-	if (player.HasTrack())
+	if (player.IsPaused())
 	{
 		if (fadeTime.AsSeconds() > 0.0f)
 		{
@@ -113,19 +108,16 @@ bool EngineAudio::ResumeMusic(Time fadeTime, const Fixed& volume)
 	return false;
 }
 
-void EngineAudio::SwitchTrack(const String& path, const Fixed& volume, Time fadeTime)
+void EngineAudio::SwitchTrack(const String& id, const Fixed& volume, Time fadeTime)
 {
-	MusicAsset* newTrack = GetAssetManager().Load<MusicAsset>(path);
-	if (newTrack != nullptr)
+	m_uSwitchTrackRequest = MakeUnique<SwitchTrackRequest>(GetPath(id), fadeTime, volume);
+	if (IsMusicPlaying())
 	{
-		m_uSwitchTrackRequest = MakeUnique<SwitchTrackRequest>(*newTrack, fadeTime, volume);
-		if (IsMusicPlaying())
-		{
-			GetActivePlayer().FadeOut(fadeTime.Scale(Fixed::OneHalf));
-			m_uSwitchTrackRequest->bFadingOldTrack = true;
-			m_uSwitchTrackRequest->fadeTime.Scale(Fixed::OneHalf);
-		}
+		GetActivePlayer().FadeOut(fadeTime.Scale(Fixed::OneHalf));
+		m_uSwitchTrackRequest->bFadingOldTrack = true;
+		m_uSwitchTrackRequest->fadeTime.Scale(Fixed::OneHalf);
 	}
+	
 }
 
 void EngineAudio::SetMusicVolume(const Fixed& volume)
@@ -176,7 +168,7 @@ void EngineAudio::Tick(Time dt)
 	{
 		if (active.IsPlaying())
 			active.Stop();
-		active.SetTrack(*m_uSwitchTrackRequest->newTrack);
+		active.SetTrack(m_uSwitchTrackRequest->newTrackPath);
 		active.FadeIn(m_uSwitchTrackRequest->fadeTime, m_uSwitchTrackRequest->targetVolume);
 		m_uSwitchTrackRequest = nullptr;
 	}
@@ -186,6 +178,13 @@ void EngineAudio::Tick(Time dt)
 	{
 		sfxPlayer->Tick(dt);
 	}
+}
+
+String EngineAudio::GetPath(const String& id) const
+{
+	String rootDir(m_szRootMusicDir);
+	String prefix = rootDir.empty() ? "" : rootDir + "/";
+	return prefix + id;
 }
 
 EngineRepository& EngineAudio::GetAssetManager()

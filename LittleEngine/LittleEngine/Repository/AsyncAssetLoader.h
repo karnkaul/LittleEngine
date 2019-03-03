@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include "ArchiveReader.h"
 #include "SFMLAPI/System/SFTime.h"
 #include "SFMLAPI/System/SFAssets.h"
 
@@ -12,13 +13,14 @@ private:
 	struct NewAsset
 	{
 		UPtr<T> asset;
-		String assetPath;
+		String assetID;
 
-		NewAsset(const String& path) : assetPath(path)
+		NewAsset(const String& id) : assetID(id)
 		{
 		}
 	};
 
+	Core::ArchiveReader m_archiveReader;
 	std::function<void()> m_onDone;
 	Vec<NewAsset<TextureAsset>> m_newTextures;
 	Vec<NewAsset<FontAsset>> m_newFonts;
@@ -30,15 +32,19 @@ private:
 
 public:
 	AsyncAssetLoader(EngineRepository& repository, const String& manifestPath, const std::function<void()>& onDone);
+	AsyncAssetLoader(EngineRepository& repository,
+					 const String& archivePath,
+					 const String& manifestPath,
+					 const std::function<void()>& onDone);
 
 	Fixed GetProgress() const;
 
 private:
 	void Tick(Time dt);
 
-	void AddTexturePaths(const AssetPaths& paths);
-	void AddFontPaths(const AssetPaths& paths);
-	void AddSoundPaths(const AssetPaths& paths);
+	void AddTextureIDs(const AssetIDContainer& IDs);
+	void AddFontIDs(const AssetIDContainer& IDs);
+	void AddSoundIDs(const AssetIDContainer& IDs);
 
 	friend class EngineRepository;
 };
