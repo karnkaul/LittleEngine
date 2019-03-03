@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TestWorld.h"
 #include "GameFramework/GameFramework.h"
+#include "ArchiveReader.h"
 
 namespace LittleEngine
 {
@@ -12,6 +13,9 @@ TestWorld* pTestWorld = nullptr;
 
 Entity *pEntity0 = nullptr, *pEntity1 = nullptr;
 Entity *pEntity2 = nullptr, *pEntity3 = nullptr;
+Entity* pEntity4 = nullptr;
+
+UPtr<TextureAsset> uArchivedTexture;
 
 void OnEnter()
 {
@@ -41,6 +45,25 @@ void OnEnter()
 		pEntity2 = nullptr;
 		pEntity3->Destruct();
 		pEntity3 = nullptr;
+	}
+
+	if (!pEntity4)
+	{
+		if (!uArchivedTexture)
+		{
+			Core::ArchiveReader reader;
+			reader.Load("GameAssets.cooked");
+			uArchivedTexture = MakeUnique<TextureAsset>("ARCHIVE_TEST_Ship_old.png",
+														reader.Decompress("Textures/Ship_old.png"));
+		}
+		pEntity4 = pTestWorld->Game()->NewEntity<Entity>("Archive texture");
+		auto rc4 = pEntity4->AddComponent<RenderComponent>();
+		rc4->m_pSFPrimitive->SetTexture(*uArchivedTexture);
+	}
+	else
+	{
+		pEntity4->Destruct();
+		pEntity4 = nullptr;
 	}
 }
 
@@ -304,6 +327,8 @@ void Cleanup()
 	if (uProgressBG)
 		uProgressBG = nullptr;
 	debugTokens.clear();
+
+	uArchivedTexture = nullptr;
 }
 } // namespace
 

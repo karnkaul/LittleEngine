@@ -82,15 +82,18 @@ void AsyncAssetLoader::Tick(Time)
 			Lock lock(m_pRepository->m_mutex);
 			for (auto& newAsset : m_newTextures)
 			{
-				m_pRepository->m_loaded.emplace(newAsset.assetPath, std::move(newAsset.asset));
+				if (newAsset.asset)
+					m_pRepository->m_loaded.emplace(newAsset.assetPath, std::move(newAsset.asset));
 			}
 			for (auto& newAsset : m_newFonts)
 			{
-				m_pRepository->m_loaded.emplace(newAsset.assetPath, std::move(newAsset.asset));
+				if (newAsset.asset)
+					m_pRepository->m_loaded.emplace(newAsset.assetPath, std::move(newAsset.asset));
 			}
 			for (auto& newAsset : m_newSounds)
 			{
-				m_pRepository->m_loaded.emplace(newAsset.assetPath, std::move(newAsset.asset));
+				if (newAsset.asset)
+					m_pRepository->m_loaded.emplace(newAsset.assetPath, std::move(newAsset.asset));
 			}
 		}
 		if (m_onDone)

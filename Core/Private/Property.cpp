@@ -13,7 +13,7 @@ String PropertiesToString(const Vec<Property>& vec)
 	String fileContents;
 	for (const auto& prop : vec)
 	{
-		fileContents += (prop.key + ":" + prop.stringValue + "\n");
+		fileContents += (prop.key + "=" + prop.stringValue + "\n");
 	}
 	return fileContents;
 }
@@ -36,7 +36,7 @@ bool Property::Persistor::Load(const String& filePath)
 		if (line.c_str()[0] == '#')
 			continue; // Ignore comments
 
-		Vec<String> tokens = Strings::Tokenise(line, ':', {});
+		Vec<String> tokens = Strings::Tokenise(line, '=', {});
 		if (tokens.size() > 1)
 		{
 			SetProp(Property(tokens[0], tokens[1]));

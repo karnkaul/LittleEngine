@@ -95,3 +95,7 @@ SPtr<T> MakeShared(U&&... Args)
 {
 	return std::make_shared<T>(std::forward<U>(Args)...);
 }
+
+class DependencyException : public std::exception
+{
+};

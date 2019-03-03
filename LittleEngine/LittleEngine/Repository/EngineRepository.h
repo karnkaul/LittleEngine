@@ -41,12 +41,15 @@ public:
 			return dynamic_cast<T*>(search->second.get());
 		}
 
+		T* pT = nullptr;
 		UPtr<T> uT = LoadInternal<T>(fullPath);
-		T* pT = uT.get();
-
-		m_mutex.lock();
-		m_loaded.emplace(fullPath, std::move(uT));
-		m_mutex.unlock();
+		if (uT)
+		{
+			pT = uT.get();
+			m_mutex.lock();
+			m_loaded.emplace(fullPath, std::move(uT));
+			m_mutex.unlock();
+		}
 		return pT;
 	}
 
@@ -110,7 +113,16 @@ private:
 			{
 			}
 		};
-		return MakeUnique<enable_smart>(fullPath);
+
+		UPtr<enable_smart> uT; 
+		try
+		{
+			uT = MakeUnique<enable_smart>(fullPath);
+		}
+		catch (const AssetLoadException& e)
+		{
+		}
+		return std::move(uT);
 	}
 
 	bool IsLoaded(const String& fullPath);

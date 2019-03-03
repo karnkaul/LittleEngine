@@ -133,7 +133,7 @@ void EngineLoop::Init()
 {
 #if !SHIPPING
 	LOG_I("[EngineLoop] Initialising engine, loading config...");
-	m_config.Load("config.gd");
+	m_config.Load("_config.gd");
 #endif
 	Core::g_MinLogSeverity = m_config.GetLogLevel();
 	m_bPauseOnFocusLoss = m_config.ShouldPauseOnFocusLoss();
@@ -175,7 +175,7 @@ void EngineLoop::Init()
 void EngineLoop::Uninit()
 {
 #if !SHIPPING
-	m_config.Save("config.gd");
+	m_config.Save("_config.gd");
 #endif
 	m_uEngineService = nullptr;
 	m_uJobManager = nullptr;

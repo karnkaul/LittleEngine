@@ -8,7 +8,7 @@ namespace LittleEngine
 {
 namespace
 {
-const char* FILE_PATH = "settings.txt";
+const char* FILE_PATH = "Settings.txt";
 
 const char* WINDOW_HEIGHT_KEY = "RESOLUTION";
 const char* BORDERLESS_KEY = "BORDERLESS";

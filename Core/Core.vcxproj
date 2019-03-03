@@ -107,7 +107,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\PCH;Public</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\PCH;Public;..\Include</AdditionalIncludeDirectories>
       <SupportJustMyCode>false</SupportJustMyCode>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -121,7 +121,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\PCH;Public</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\PCH;Public;..\Include</AdditionalIncludeDirectories>
       <SupportJustMyCode>false</SupportJustMyCode>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -139,7 +139,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\PCH;Public</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\PCH;Public;..\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG;SHIP</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(OutputPath)LittleEngine-$(Configuration).pch</PrecompiledHeaderOutputFile>
@@ -158,7 +158,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\PCH;Public</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\PCH;Public;..\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;SHIP</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(OutputPath)LittleEngine-$(Configuration).pch</PrecompiledHeaderOutputFile>
@@ -170,6 +170,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Private\ArchiveReader.cpp" />
     <ClCompile Include="Private\Asserts.cpp" />
     <ClCompile Include="Private\FileRW.cpp" />
     <ClCompile Include="Private\Fixed.cpp" />
@@ -185,6 +186,7 @@
     <ClCompile Include="Private\Vector2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Public\ArchiveReader.h" />
     <ClInclude Include="Public\Asserts.h" />
     <ClInclude Include="Public\CircularVector.hpp" />
     <ClInclude Include="Public\CoreTypes.h" />

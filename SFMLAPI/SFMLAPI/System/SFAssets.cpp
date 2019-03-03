@@ -102,6 +102,7 @@ void AssetManifestData::Load(const String& amfPath)
 			manifest.AddDefinition(AssetType::Sound, Deserialise(sSet));
 		}
 	}
+	manifest.archivePath = data.GetString("archivePath");
 }
 
 Asset::Asset(const String& path) : m_resourcePath(path)
@@ -123,14 +124,35 @@ TextureAsset::TextureAsset(const String& path) : Asset(path)
 	if (!m_sfTexture.loadFromFile(m_resourcePath))
 	{
 		LOG_E("Could not load texture from [%s]!", m_resourcePath.c_str());
+		throw AssetLoadException();
 	}
 }
+
+
+ TextureAsset::TextureAsset(const String& path, const Vec<u8>& buffer) : Asset(path)
+{
+	 if (!m_sfTexture.loadFromMemory(buffer.data(), buffer.size()))
+	 {
+		 LOG_E("Could not load texture from [%s]!", m_resourcePath.c_str());
+		 throw AssetLoadException();
+	 }
+ }
 
 FontAsset::FontAsset(const String& path) : Asset(path)
 {
 	if (!m_sfFont.loadFromFile(m_resourcePath))
 	{
 		LOG_E("Could not load font from [%s]!", m_resourcePath.c_str());
+		throw AssetLoadException();
+	}
+}
+
+FontAsset::FontAsset(const String& path, const Vec<u8>& buffer) : Asset(path), m_fontBuffer(buffer)
+{
+	if (!m_sfFont.loadFromMemory(m_fontBuffer.data(), m_fontBuffer.size()))
+	{
+		LOG_E("Could not load font from [%s]!", m_resourcePath.c_str());
+		throw AssetLoadException();
 	}
 }
 
@@ -140,6 +162,16 @@ SoundAsset::SoundAsset(const String& path, const Fixed& volumeScale)
 	if (!m_sfSoundBuffer.loadFromFile(path))
 	{
 		LOG_E("Could not load sound from [%s]!", m_resourcePath.c_str());
+		throw AssetLoadException();
+	}
+}
+SoundAsset::SoundAsset(const String& path, const Vec<u8>& buffer, const Fixed& volumeScale)
+	: Asset(path), m_volumeScale(Maths::Clamp01(volumeScale))
+{
+	if (!m_sfSoundBuffer.loadFromMemory(buffer.data(), buffer.size()))
+	{
+		LOG_E("Could not load sound from [%s]!", m_resourcePath.c_str());
+		throw AssetLoadException();
 	}
 }
 
@@ -150,6 +182,7 @@ MusicAsset::MusicAsset(const String& path, const Fixed& volumeScale)
 	if (!m_bValid)
 	{
 		LOG_E("Could not load music from [%s]!", m_resourcePath.c_str());
+		throw AssetLoadException();
 	}
 }
 

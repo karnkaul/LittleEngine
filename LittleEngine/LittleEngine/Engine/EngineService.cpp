@@ -45,7 +45,7 @@ EngineService::EngineService()
 	else
 	{
 		OS::Platform()->SetCreatingLoggerThread();
-		m_uFileLogger = MakeUnique<AsyncFileLogger>("debug.log");
+		m_uFileLogger = MakeUnique<AsyncFileLogger>("Debug.log");
 	}
 	m_uEngineInput = MakeUnique<EngineInput>();
 	m_uAssetRepository = MakeUnique<EngineRepository>("Assets");
@@ -105,7 +105,7 @@ void EngineService::PreRun()
 #if ENABLED(PROFILER)
 	Profiler::Init(std::this_thread::get_id());
 #endif
-	m_uWorldStateMachine->Start("GameAssets.amf");
+	m_uWorldStateMachine->Start("GameAssets.manifest");
 }
 
 void EngineService::UpdateInput(const SFInputDataFrame& inputDataFrame)

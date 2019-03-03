@@ -19,6 +19,10 @@ enum class AssetType
 	Music,
 };
 
+class AssetLoadException : public std::exception
+{
+};
+
 // \brief Auto-constructs a set of generateable asset paths based on input parameters
 struct AssetPaths
 {
@@ -57,6 +61,7 @@ struct AssetDefinition
 struct AssetManifest
 {
 public:
+	String archivePath;
 	Vec<AssetDefinition> definitions;
 
 public:
@@ -120,8 +125,8 @@ private:
 	sf::Texture m_sfTexture;
 
 public:
-	// Path must be relative to the root Asset directory
 	TextureAsset(const String& path);
+	TextureAsset(const String& path, const Vec<u8>& buffer);
 
 private:
 	// Prevents having to expose texture to code outside SFMLInterface
@@ -134,10 +139,12 @@ class FontAsset : public Asset
 {
 private:
 	sf::Font m_sfFont;
+	Vec<u8> m_fontBuffer;
 
 public:
 	// Path must be relative to the root Asset directory
 	FontAsset(const String& path);
+	FontAsset(const String& path, const Vec<u8>& buffer);
 
 private:
 	friend class SFText;
@@ -154,6 +161,7 @@ private:
 public:
 	// Path must be relative to the root Asset directory
 	SoundAsset(const String& path, const Fixed& volumeScale = Fixed::One);
+	SoundAsset(const String& path, const Vec<u8>& buffer, const Fixed& volumeScale = Fixed::One);
 
 private:
 	friend class SoundPlayer;
