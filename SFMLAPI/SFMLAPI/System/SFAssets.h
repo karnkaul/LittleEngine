@@ -13,15 +13,13 @@ namespace LittleEngine
 {
 enum class AssetType
 {
-	Texture,
-	Font,
-	Sound,
-	Text,
+	Texture = 0,
+	Font = 1,
+	Sound = 2,
+	Text = 3,
 };
 
-class AssetLoadException : public std::exception
-{
-};
+extern const char* g_szAssetType[4];
 
 // \brief Auto-constructs a set of generateable asset paths based on input parameters
 struct AssetIDContainer
@@ -98,13 +96,17 @@ class Asset
 {
 protected:
 	String m_id;
-	
+	AssetType m_type;
+	bool m_bError = false;
+
 public:
 	using Ptr = UPtr<Asset>;
 	Asset() = delete;
-	Asset(const String& id);
+	Asset(const String& id, AssetType type);
 	virtual ~Asset();
-	const String& GetID() const;
+	const char* GetID() const;
+	bool IsError() const;
+	AssetType GetType() const;
 
 private:
 	Asset(const Asset&) = delete;

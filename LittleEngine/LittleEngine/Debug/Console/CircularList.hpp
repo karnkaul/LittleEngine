@@ -22,7 +22,7 @@ namespace LittleEngine {
 
 		void PushFront(const T& value, bool bResetIter = true) {
 			items.emplace_front(value);
-			if (maxElements > 0 && items.size() > static_cast<size_t>(maxElements)) {
+			if (maxElements > 0 && items.size() > ToIdx(maxElements)) {
 				items.pop_back();
 			}
 			if (bResetIter) {

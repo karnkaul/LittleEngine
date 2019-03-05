@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include <iostream>
 #include <thread>
-#include "Logger.h"
-#include "CoreTypes.h"
-#include "Delegate.hpp"
 #include "LittleEngine/LittleEngine.h"
 #include "Worlds/BootWorld.h"
 #include "Worlds/TestWorld.h"

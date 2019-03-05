@@ -41,7 +41,7 @@ namespace LittleEngine {
 			// Log Lines
 			s32 iPad = textPad + 2;
 			m_logLinesCount = (m_uBG->m_transform.size.y.ToU32() / textPad) - 1;
-			for (size_t i = 0; i < static_cast<size_t>(m_logLinesCount); ++i) {
+			for (size_t i = 0; i < ToIdx(m_logLinesCount); ++i) {
 				UPtr<UIElement> uLogLineI = MakeUnique<UIElement>("Log Line " + Strings::ToString(i), true);
 				uLogLineI->m_transform.SetParent(m_uBG->m_transform);
 				uLogLineI->m_transform.anchor = { -1, 1 };

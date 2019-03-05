@@ -5,6 +5,18 @@
 
 namespace LittleEngine
 {
+Core::Version GameManager::s_gameVersion = "0.1";
+
+void GameManager::SetGameVersion(const Core::Version& version)
+{
+	s_gameVersion = version;
+}
+
+const Core::Version& GameManager::GetGameVersion()
+{
+	return s_gameVersion;
+}
+
 GameManager::GameManager() : m_logName("GameManager")
 {
 	m_uUIManager = MakeUnique<UIManager>();

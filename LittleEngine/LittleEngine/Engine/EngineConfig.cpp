@@ -40,6 +40,7 @@ void SetStringIfEmpty(GData& data, const String& key, const String& value)
 } // namespace
 
 const bool EngineConfig::s_bPauseOnFocusLoss = false;
+const Version EngineConfig::s_engineVersion = "0.1.1";
 
 EngineConfig::EngineConfig()
 {
@@ -111,6 +112,11 @@ Vector2 EngineConfig::GetViewSize() const
 {
 	GData vec2 = m_data.GetGData(VIEW_SIZE_KEY);
 	return Vector2(Fixed(vec2.GetF64("x")), Fixed(vec2.GetF64("y")));
+}
+
+const Version& EngineConfig::GetEngineVersion()
+{
+	return s_engineVersion;
 }
 
 bool EngineConfig::SetCreateRenderThread(bool bCreate)

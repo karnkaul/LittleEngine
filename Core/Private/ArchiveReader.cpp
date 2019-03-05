@@ -50,10 +50,10 @@ Vec<u8> ArchiveReader::Decompress(const String& pathInArchive) const
 {
 	if (IsPresent(pathInArchive.c_str()))
 	{
-		PHYSFS_file* pFile = PHYSFS_openRead(pathInArchive.c_str());
+		PHYSFS_File* pFile = PHYSFS_openRead(pathInArchive.c_str());
 		PHYSFS_sint64 size = PHYSFS_fileLength(pFile);
 		Vec<u8> buffer(size, 0);
-		PHYSFS_read(pFile, &buffer[0], 1, size);
+		PHYSFS_readBytes(pFile, &buffer[0], size);
 		return buffer;
 	}
 	return {};

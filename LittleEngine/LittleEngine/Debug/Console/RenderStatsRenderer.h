@@ -23,6 +23,18 @@ public:
 	RenderStatsRenderer();
 	void Tick(Time dt);
 };
+
+#if !SHIPPING
+class VersionRenderer
+{
+private:
+	UPtr<UIElement> m_uEngineVersion;
+	UPtr<UIElement> m_uGameVersion;
+
+public:
+	VersionRenderer();
+};
+#endif
 }
 }
 #endif

@@ -78,7 +78,7 @@ using SPtr = std::shared_ptr<T>;
 template <typename T>
 using WPtr = std::weak_ptr<T>;
 
-template<typename Base, typename Derived>
+template <typename Base, typename Derived>
 constexpr bool IsDerived()
 {
 	return std::is_base_of<Base, Derived>::value;
@@ -94,6 +94,12 @@ template <typename T, typename... U>
 SPtr<T> MakeShared(U&&... Args)
 {
 	return std::make_shared<T>(std::forward<U>(Args)...);
+}
+
+template <typename T>
+constexpr size_t ToIdx(T t)
+{
+	return static_cast<size_t>(t);
 }
 
 class DependencyException : public std::exception

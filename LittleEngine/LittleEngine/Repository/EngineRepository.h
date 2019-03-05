@@ -143,14 +143,10 @@ private:
 		};
 
 		UPtr<enable_smart> uT;
-		try
-		{
-			uT = MakeUnique<enable_smart>(id, buffer);
-		}
-		catch (const AssetLoadException& e)
-		{
-		}
-		LOG_I("[AssetManager] Decompressed Asset [%s]", id.c_str());
+		uT = MakeUnique<enable_smart>(id, buffer);
+		if (uT->IsError())
+			return nullptr;
+		LOG_I("[AssetManager] Decompressed %s [%s]", g_szAssetType[ToIdx(uT->GetType())], id.c_str());
 		return std::move(uT);
 	}
 
@@ -158,7 +154,6 @@ private:
 	template <typename T>
 	UPtr<T> LoadInternal(const String& id)
 	{
-		LOG_I("[AssetManager] Loading Asset from filesystem [%s]", id.c_str());
 		struct enable_smart : public T
 		{
 			enable_smart(const String& id, const String& pathPrefix) : T(id, pathPrefix)
@@ -167,13 +162,10 @@ private:
 		};
 
 		UPtr<enable_smart> uT;
-		try
-		{
-			uT = MakeUnique<enable_smart>(id, m_rootDir);
-		}
-		catch (const AssetLoadException& e)
-		{
-		}
+		uT = MakeUnique<enable_smart>(id, m_rootDir);
+		if (uT->IsError())
+			return nullptr;
+		LOG_I("[AssetManager] Loaded %s from filesystem [%s]", g_szAssetType[ToIdx(uT->GetType())], id.c_str());
 		return std::move(uT);
 	}
 #endif

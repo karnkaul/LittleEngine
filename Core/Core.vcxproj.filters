@@ -51,6 +51,9 @@
     <ClCompile Include="Private\ArchiveReader.cpp">
       <Filter>Private</Filter>
     </ClCompile>
+    <ClCompile Include="Private\Version.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Public\CoreTypes.h">
@@ -114,6 +117,9 @@
       <Filter>Public</Filter>
     </ClInclude>
     <ClInclude Include="Public\ArchiveReader.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Version.h">
       <Filter>Public</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,11 +2,13 @@
 #include "CoreTypes.h"
 #include "GData.h"
 #include "Logger.h" // Logger::Severity
+#include "Version.h"
 
 namespace LittleEngine
 {
 using GData = Core::GData;
 using LogSeverity = Core::LogSeverity;
+using Version = Core::Version;
 
 // \brief Wrapper to maintain properties saved to / loaded from config.ini
 class EngineConfig
@@ -14,9 +16,13 @@ class EngineConfig
 private:
 	// Set this to determine whether the engine will pause ticking if the window loses focus
 	static const bool s_bPauseOnFocusLoss;
+	static const Version s_engineVersion;
 
 	GData m_data;
 	bool m_bDirty = false;
+
+public:
+	static const Version& GetEngineVersion();
 
 public:
 	EngineConfig();

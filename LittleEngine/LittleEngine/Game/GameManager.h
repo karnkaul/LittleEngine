@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "Component.h"
+#include "Version.h"
 #include "LittleEngine/UI/UIManager.h"
 #include "LittleEngine/Physics/CollisionManager.h"
 #include "LittleEngine/Services/IService.h"
@@ -10,7 +11,8 @@ namespace LittleEngine
 class GameManager final : public IService
 {
 private:
-	static constexpr size_t COMPONENT_LINES = static_cast<size_t>(TimingType::LAST) + 1;
+	static constexpr size_t COMPONENT_LINES = ToIdx(TimingType::LAST) + 1;
+	static Core::Version s_gameVersion;
 
 private:
 	String m_logName;
@@ -18,6 +20,10 @@ private:
 	Array<Vec<UPtr<Component>>, COMPONENT_LINES> m_uComponents;
 	UPtr<UIManager> m_uUIManager;
 	UPtr<CollisionManager> m_uCollisionManager;
+
+public:
+	static void SetGameVersion(const Core::Version& version);
+	static const Core::Version& GetGameVersion();
 
 public:
 	GameManager();
@@ -62,7 +68,7 @@ T* GameManager::NewComponent(Entity& owner)
 {
 	static_assert(IsDerived<Component, T>(), "T must derive from Entity");
 	UPtr<T> uT = MakeUnique<T>();
-	size_t idx = static_cast<size_t>(uT->GetComponentTiming());
+	size_t idx = ToIdx(uT->GetComponentTiming());
 	Assert(m_uComponents.size() > idx, "Invalid Component Timing index!");
 	auto& componentVec = m_uComponents.at(idx);
 	uT->SetOwner(owner);

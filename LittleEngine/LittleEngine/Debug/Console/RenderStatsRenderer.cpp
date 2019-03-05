@@ -2,6 +2,8 @@
 #include "RenderStatsRenderer.h"
 #if ENABLED(CONSOLE)
 #include "LittleEngine/GFX/GFX.h"
+#include "LittleEngine/Engine/EngineConfig.h"
+#include "LittleEngine/Game/GameManager.h"
 #include "SFMLAPI/Rendering/SFRenderer.h"
 
 namespace LittleEngine
@@ -10,7 +12,7 @@ namespace Debug
 {
 namespace
 {
-void UpdateText(bool bEnabled, UIElement& element, const char* prefix, u32 stat)
+void UpdateRenderStat(bool bEnabled, UIElement& element, const char* prefix, u32 stat)
 {
 	if (bEnabled)
 	{
@@ -52,11 +54,32 @@ RenderStatsRenderer::RenderStatsRenderer()
 
 void RenderStatsRenderer::Tick(Time)
 {
-	UpdateText(s_bConsoleRenderStatsEnabled, *m_uPrimitiveCount, "Primitives: ", g_renderData.primitiveCount);
-	UpdateText(s_bConsoleRenderStatsEnabled, *m_uFPS, "FPS: ", g_renderData.framesPerSecond);
-	UpdateText(s_bConsoleRenderStatsEnabled, *m_uDynamicCount, "Dynamic: ", g_renderData.dynamicCount);
-	UpdateText(s_bConsoleRenderStatsEnabled, *m_uStaticCount, "Static: ", g_renderData.staticCount);
+	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uPrimitiveCount, "Primitives: ", g_renderData.primitiveCount);
+	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uFPS, "FPS: ", g_renderData.framesPerSecond);
+	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uDynamicCount, "Dynamic: ", g_renderData.dynamicCount);
+	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uStaticCount, "Static: ", g_renderData.staticCount);
 }
+
+#if !SHIPPING
+VersionRenderer::VersionRenderer()
+{
+	const Core::Version& engineVersion = EngineConfig::GetEngineVersion();
+	m_uEngineVersion = MakeUnique<UIElement>("EngineVersion");
+	m_uEngineVersion->SetText(UIText(engineVersion.ToString(), 10, g_logTextColour));
+	m_uEngineVersion->GetText()
+		->SetPivot({-1, 0})
+		->SetPosition(GFX::Project({-Fixed(0.99f), -Fixed(0.97f)}, false))
+		->SetEnabled(true);
+
+	const Core::Version& gameVersion = GameManager::GetGameVersion();
+	m_uGameVersion = MakeUnique<UIElement>("GameVersion");
+	m_uGameVersion->SetText(UIText(gameVersion.ToString(), 11, g_logTextColour));
+	m_uGameVersion->GetText()
+		->SetPivot({-1, 0})
+		->SetPosition(GFX::Project({-Fixed(0.99f), -Fixed(0.95f)}, false))
+		->SetEnabled(true);
+}
+#endif
 } // namespace Debug
 } // namespace LittleEngine
 #endif

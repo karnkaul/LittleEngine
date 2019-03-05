@@ -381,7 +381,7 @@ void Emitter::TickInternal(Time dt)
 	// Re provision if required
 	if (m_bSpawnNewParticles)
 	{
-		size_t spawnCount = static_cast<size_t>(m_data.spawnData.numParticles) - alive;
+		size_t spawnCount = ToIdx(m_data.spawnData.numParticles) - alive;
 		for (size_t i = 0; i < spawnCount; ++i)
 		{
 			Particle* p = Provision();

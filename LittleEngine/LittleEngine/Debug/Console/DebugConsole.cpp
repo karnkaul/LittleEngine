@@ -37,6 +37,10 @@ namespace LittleEngine { namespace Debug {
 			ConsoleInput m_input;
 			ConsoleRenderer m_renderer;
 			RenderStatsRenderer m_renderStats;
+#if !SHIPPING
+			VersionRenderer m_version;
+#endif
+			
 			Time m_elapsed;
 			s32 m_cursorFrequencyMS = 200;
 			bool m_bShowCursor;
