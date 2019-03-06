@@ -8,7 +8,7 @@
 
 namespace LittleEngine
 {
-JobManager::Job::Job(JobID id, const std::function<void()>& task, String name, bool bSilent)
+JobManager::Job::Job(JobHandle id, const std::function<void()>& task, String name, bool bSilent)
 	: task(task), id(id), bSilent(bSilent)
 {
 	String suffix = name.empty() ? "" : "-" + name;
@@ -25,11 +25,11 @@ JobManager::JobManager()
 	u32 engineWorkers = OS::Platform()->SystemWorkerCount();
 	u32 gameWorkers = OS::Platform()->UserWorkerCount();
 	m_availableEngineThreads = engineWorkers;
-	for (u32 i = 0; i < gameWorkers; ++i)
+	for (u8 i = 0; i < gameWorkers; ++i)
 	{
 		m_gameWorkers.emplace_back(MakeUnique<JobWorker>(*this, i + 100, false));
 	}
-	for (u32 i = 0; i < engineWorkers; ++i)
+	for (u8 i = 0; i < engineWorkers; ++i)
 	{
 		m_engineWorkers.emplace_back(MakeUnique<JobWorker>(*this, i, true));
 	}
@@ -56,7 +56,7 @@ JobManager::~JobManager()
 	LOG_I("[JobManager] destroyed");
 }
 
-void JobManager::Wait(JobID id)
+void JobManager::Wait(JobHandle id)
 {
 	// Is Job in queue?
 	bool bInQueue = false;
@@ -91,7 +91,7 @@ void JobManager::Wait(JobID id)
 #endif
 }
 
-void JobManager::Wait(InitList<JobID> ids)
+void JobManager::Wait(InitList<JobHandle> ids)
 {
 	for (auto id : ids)
 	{
@@ -99,7 +99,7 @@ void JobManager::Wait(InitList<JobID> ids)
 	}
 }
 
-void JobManager::Wait(const Vec<JobID>& ids)
+void JobManager::Wait(const Vec<JobHandle>& ids)
 {
 	for (auto id : ids)
 	{
@@ -107,25 +107,25 @@ void JobManager::Wait(const Vec<JobID>& ids)
 	}
 }
 
-bool JobManager::IsRunning(JobID id)
+bool JobManager::IsRunning(JobHandle id)
 {
 	Lock lock(m_mutex);
 	return Unsafe_IsEnqueued(id) || Unsafe_GetGameWorker(id);
 }
 
-bool JobManager::IsCompleted(JobID id)
+bool JobManager::IsCompleted(JobHandle id)
 {
 	Lock lock(m_mutex);
 	return Unsafe_IsCompleted(id);
 }
 
-JobID JobManager::Enqueue(const std::function<void()>& Task, const String& name, bool bSilent)
+JobHandle JobManager::Enqueue(const std::function<void()>& Task, const String& name, bool bSilent)
 {
 	Job job(++m_nextGameJobID, Task, name, bSilent);
 	return Lock_Enqueue(std::move(job), m_gameJobQueue);
 }
 
-JobID JobManager::EnqueueEngine(const std::function<void()>& Task, const String& name)
+JobHandle JobManager::EnqueueEngine(const std::function<void()>& Task, const String& name)
 {
 	Assert(AvailableEngineThreads() > 0, "!DEADLOCK! No available engine workers!");
 	Job job(++m_nextEngineJobID, Task, name, false);
@@ -165,12 +165,12 @@ void JobManager::Tick(Time)
 	}
 }
 
-bool JobManager::Unsafe_IsCompleted(JobID id)
+bool JobManager::Unsafe_IsCompleted(JobHandle id)
 {
 	return std::find(m_completed.begin(), m_completed.end(), id) != m_completed.end();
 }
 
-bool JobManager::Unsafe_IsEnqueued(JobID id)
+bool JobManager::Unsafe_IsEnqueued(JobHandle id)
 {
 	auto gameIter = std::find_if(m_gameJobQueue.begin(), m_gameJobQueue.end(),
 								 [id](Job& job) { return job.id == id; });
@@ -179,14 +179,14 @@ bool JobManager::Unsafe_IsEnqueued(JobID id)
 	return gameIter != m_gameJobQueue.end() || engineIter != m_engineJobQueue.end();
 }
 
-JobWorker* JobManager::Unsafe_GetGameWorker(JobID id)
+JobWorker* JobManager::Unsafe_GetGameWorker(JobHandle id)
 {
 	auto iter = std::find_if(m_gameWorkers.begin(), m_gameWorkers.end(),
 							 [id](UPtr<JobWorker>& uJob) { return uJob->GetJobID() == id; });
 	return (iter == m_gameWorkers.end()) ? nullptr : iter->get();
 }
 
-JobWorker* JobManager::Unsafe_GetEngineWorker(JobID id)
+JobWorker* JobManager::Unsafe_GetEngineWorker(JobHandle id)
 {
 	auto iter = std::find_if(m_engineWorkers.begin(), m_engineWorkers.end(),
 							 [id](UPtr<JobWorker>& uJob) { return uJob->GetJobID() == id; });
@@ -206,15 +206,15 @@ JobManager::Job JobManager::Lock_PopJob(bool bEngineJob)
 	return {};
 }
 
-void JobManager::Lock_CompleteJob(JobID id)
+void JobManager::Lock_CompleteJob(JobHandle id)
 {
 	Lock lock(m_mutex);
 	m_completed.push_back(id);
 }
 
-JobID JobManager::Lock_Enqueue(Job&& job, List<Job>& jobQueue)
+JobHandle JobManager::Lock_Enqueue(Job&& job, List<Job>& jobQueue)
 {
-	JobID id = job.id;
+	JobHandle id = job.id;
 	Lock lock(m_mutex);
 	jobQueue.emplace_front(std::move(job));
 	return id;

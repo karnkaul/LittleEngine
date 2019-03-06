@@ -1,11 +1,10 @@
 #pragma once
 #include "CoreTypes.h"
+#include "JobHandle.h"
 #include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {
-using JobID = s32;
-
 class MultiJob
 {
 private:
@@ -19,8 +18,8 @@ private:
 
 	String m_logName;
 	Vec<SubJob> m_subJobs;
-	List<JobID> m_pendingJobIDs;
-	List<JobID> m_completedJobIDs;
+	List<JobHandle> m_pendingJobIDs;
+	List<JobHandle> m_completedJobIDs;
 	std::function<void()> m_OnComplete = nullptr;
 	Time m_startTime;
 	bool m_bCompleted = false;

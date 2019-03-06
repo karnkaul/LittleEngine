@@ -6,7 +6,7 @@
 
 namespace LittleEngine
 {
-JobWorker::JobWorker(JobManager& manager, u32 id, bool bEngineWorker)
+JobWorker::JobWorker(JobManager& manager, u8 id, bool bEngineWorker)
 	: id(id), m_pManager(&manager), m_bEngineWorker(bEngineWorker)
 {
 	m_bWork.store(true, std::memory_order_relaxed);
@@ -36,7 +36,7 @@ void JobWorker::Wait()
 	}
 }
 
-JobID JobWorker::GetJobID() const
+JobHandle JobWorker::GetJobID() const
 {
 	return m_jobID;
 }

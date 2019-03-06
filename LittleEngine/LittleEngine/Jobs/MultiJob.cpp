@@ -47,10 +47,10 @@ void MultiJob::Update()
 	auto iter = m_pendingJobIDs.begin();
 	while (iter != m_pendingJobIDs.end())
 	{
-		if (Services::Jobs()->IsCompleted(*iter))
+		if (iter->IsCompleted())
 		{
 #if ENABLED(DEBUG_LOGGING)
-			JobID id = *iter;
+			JobHandle id = *iter;
 #endif
 			iter = m_pendingJobIDs.erase(iter);
 			LOG_D("%s Job %d completed. %d jobs remaining", LogNameStr(), id, m_pendingJobIDs.size());

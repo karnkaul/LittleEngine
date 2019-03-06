@@ -2,7 +2,7 @@
 #include "CoreTypes.h"
 
 namespace LittleEngine {
-	template<typename T>
+	template <typename T>
 	struct CircularList {
 		int maxElements = -1;
 

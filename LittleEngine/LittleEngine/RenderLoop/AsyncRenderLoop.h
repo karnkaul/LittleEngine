@@ -11,7 +11,7 @@ namespace LittleEngine
 class AsyncRenderLoop final : public SFRenderer
 {
 private:
-	JobID m_renderThreadJobID = -1;
+	JobHandle m_renderJobHandle = -1;
 	GFXBuffer* m_pBuffer;
 
 public:

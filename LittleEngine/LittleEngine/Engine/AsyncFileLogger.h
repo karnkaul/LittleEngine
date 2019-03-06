@@ -14,7 +14,7 @@ private:
 	UPtr<FileRW> m_uWriter;
 	std::atomic<bool> m_bStopLogging;
 	std::mutex m_mutex;
-	JobID m_jobID;
+	JobHandle m_jobHandle;
 
 public:
 	AsyncFileLogger(const String& filePath);

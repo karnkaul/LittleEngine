@@ -44,6 +44,7 @@
     <ClCompile Include="LittleEngine\GFX\GFX.cpp" />
     <ClCompile Include="LittleEngine\Input\EngineInput.cpp" />
     <ClCompile Include="LittleEngine\Input\Gamepad.cpp" />
+    <ClCompile Include="LittleEngine\Jobs\JobHandle.cpp" />
     <ClCompile Include="LittleEngine\Jobs\JobManager.cpp" />
     <ClCompile Include="LittleEngine\Jobs\JobWorker.cpp" />
     <ClCompile Include="LittleEngine\Jobs\MultiJob.cpp" />
@@ -91,6 +92,7 @@
     <ClInclude Include="LittleEngine\Game\World\LoadingUI.h" />
     <ClInclude Include="LittleEngine\Game\World\World.h" />
     <ClInclude Include="LittleEngine\Game\World\WorldStateMachine.h" />
+    <ClInclude Include="LittleEngine\Jobs\JobHandle.h" />
     <ClInclude Include="LittleEngine\Jobs\JobManager.h" />
     <ClInclude Include="LittleEngine\Jobs\JobWorker.h" />
     <ClInclude Include="LittleEngine\Jobs\MultiJob.h" />

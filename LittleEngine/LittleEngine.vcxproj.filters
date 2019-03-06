@@ -187,6 +187,9 @@
     <ClCompile Include="LittleEngine\Game\GameSettings.cpp">
       <Filter>LittleEngine\Game</Filter>
     </ClCompile>
+    <ClCompile Include="LittleEngine\Jobs\JobHandle.cpp">
+      <Filter>LittleEngine\Jobs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Input\EngineInput.h">
@@ -344,6 +347,9 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\Game\GameSettings.h">
       <Filter>LittleEngine\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Jobs\JobHandle.h">
+      <Filter>LittleEngine\Jobs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
