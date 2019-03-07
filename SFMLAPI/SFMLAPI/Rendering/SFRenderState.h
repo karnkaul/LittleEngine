@@ -24,19 +24,6 @@ enum LayerID
 	_LAYER_COUNT = LAYER_MAX + 1,
 };
 
-/*enum LayerID
-{
-	LAYER_ZERO = 0,
-	LAYER_BACKGROUND = 1,
-	LAYER_DEFAULT = 10,
-	LAYER_LIVE = 20,
-	LAYER_FX = 30,
-	LAYER_UI = 40,
-	LAYER_TOP = 48,
-	LAYER_MAX = 49,
-	_LAYER_COUNT = LAYER_MAX + 1,
-};*/
-
 struct SFRenderState
 {
 	SFPosition sfPosition = Vector2::Zero;

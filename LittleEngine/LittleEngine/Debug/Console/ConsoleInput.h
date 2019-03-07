@@ -5,25 +5,30 @@
 #include "LogLine.h"
 #include "LittleEngine/Input/EngineInput.h"
 
-namespace LittleEngine { namespace Debug {
-	class ConsoleInput {
-	public:
-		static constexpr char CONSOLE_KEY = '`';
+namespace LittleEngine
+{
+namespace Debug
+{
+class ConsoleInput
+{
+public:
+	static constexpr char CONSOLE_KEY = '`';
 
-		LiveLine m_liveLine;
-		String m_query;
-		CircularList<String> queryCache;
-		EngineInput::Token m_token;
-		bool bCyclingQueries = false;
+	LiveLine m_liveLine;
+	String m_query;
+	CircularList<String> queryCache;
+	EngineInput::Token m_token;
+	bool bCyclingQueries = false;
 
-		ConsoleInput();
+	ConsoleInput();
 
-		bool OnInput(const EngineInput::Frame& frame);
-		void Update();
-		String GetConsoleLiveLine(bool bShowCursor) const;
+	bool OnInput(const EngineInput::Frame& frame);
+	void Update();
+	String GetConsoleLiveLine(bool bShowCursor) const;
 
-	private:
-		void UpdateLiveLine(const EngineInput::Frame& frame);
-	};
-} }
+private:
+	void UpdateLiveLine(const EngineInput::Frame& frame);
+};
+} // namespace Debug
+} // namespace LittleEngine
 #endif

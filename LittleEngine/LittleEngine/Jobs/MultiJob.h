@@ -18,8 +18,8 @@ private:
 
 	String m_logName;
 	Vec<SubJob> m_subJobs;
-	List<JobHandle> m_pendingJobIDs;
-	List<JobHandle> m_completedJobIDs;
+	List<SPtr<JobHandle>> m_pendingJobs;
+	List<SPtr<JobHandle>> m_completedJobs;
 	std::function<void()> m_OnComplete = nullptr;
 	Time m_startTime;
 	bool m_bCompleted = false;

@@ -5,19 +5,24 @@
 #include "SFMLAPI/System/SFTime.h"
 #include "SFMLAPI/Rendering/Colour.h"
 
-namespace LittleEngine { namespace Debug {
-	extern UByte g_logTextAlpha;
-	extern Colour g_logTextColour;
-	extern Colour g_logWarningColour;
-	extern Colour g_liveHistoryColour;
+namespace LittleEngine
+{
+namespace Debug
+{
+extern UByte g_logTextAlpha;
+extern Colour g_logTextColour;
+extern Colour g_logWarningColour;
+extern Colour g_liveHistoryColour;
 
-	namespace Console {
-		extern bool g_bEnabled;
-		extern UPtr<LogBook> g_uLogBook;
+namespace Console
+{
+extern bool g_bEnabled;
+extern UPtr<LogBook> g_uLogBook;
 
-		void Init();
-		void Tick(Time dt);
-		void Cleanup();
-	}
-} }
+void Init();
+void Tick(Time dt);
+void Cleanup();
+} // namespace Console
+} // namespace Debug
+} // namespace LittleEngine
 #endif

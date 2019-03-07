@@ -7,7 +7,8 @@
 
 namespace LittleEngine
 {
-MultiJob::SubJob::SubJob(const String& name, const std::function<void()>& job) : name(name), job(job)
+MultiJob::SubJob::SubJob(const String& name, const std::function<void()>& job)
+	: name(name), job(job)
 {
 }
 
@@ -25,35 +26,35 @@ void MultiJob::AddJob(const std::function<void()>& job, const String& name)
 
 void MultiJob::StartJobs(const std::function<void()>& OnComplete)
 {
-	LOG_I("%s started. Running and monitoring %d jobs", LogNameStr(), m_pendingJobIDs.size());
+	LOG_I("%s started. Running and monitoring %d jobs", LogNameStr(), m_pendingJobs.size());
 	JobManager* pJobs = Services::Jobs();
 	m_OnComplete = OnComplete;
 	m_bCompleted = false;
 	m_startTime = Time::Now();
 	for (auto& job : m_subJobs)
 	{
-		m_pendingJobIDs.push_back(pJobs->Enqueue(job.job, job.name));
+		m_pendingJobs.push_back(pJobs->Enqueue(job.job, job.name));
 	}
 }
 
 Fixed MultiJob::GetProgress() const
 {
-	u32 done = m_subJobs.size() - m_pendingJobIDs.size();
+	u32 done = m_subJobs.size() - m_pendingJobs.size();
 	return Fixed(done, m_subJobs.size());
 }
 
 void MultiJob::Update()
 {
-	auto iter = m_pendingJobIDs.begin();
-	while (iter != m_pendingJobIDs.end())
+	auto iter = m_pendingJobs.begin();
+	while (iter != m_pendingJobs.end())
 	{
-		if (iter->IsCompleted())
+		if ((*iter)->HasCompleted())
 		{
 #if ENABLED(DEBUG_LOGGING)
-			JobHandle id = *iter;
+			s32 id = (*iter)->GetID();
 #endif
-			iter = m_pendingJobIDs.erase(iter);
-			LOG_D("%s Job %d completed. %d jobs remaining", LogNameStr(), id, m_pendingJobIDs.size());
+			iter = m_pendingJobs.erase(iter);
+			LOG_D("%s Job %d completed. %d jobs remaining", LogNameStr(), id, m_pendingJobs.size());
 		}
 		else
 		{
@@ -61,7 +62,7 @@ void MultiJob::Update()
 		}
 	}
 
-	if (m_pendingJobIDs.empty() && !m_bCompleted)
+	if (m_pendingJobs.empty() && !m_bCompleted)
 	{
 		if (m_OnComplete)
 		{
@@ -72,7 +73,7 @@ void MultiJob::Update()
 		f32 secs = (Time::Now() - m_startTime).AsSeconds();
 		LOG_I("%s completed %d jobs in %.2fs", LogNameStr(), m_subJobs.size(), secs);
 	}
-} // namespace LittleEngine
+}
 
 const char* MultiJob::LogNameStr() const
 {

@@ -33,7 +33,7 @@ public:
 
 private:
 	void SetAutoPadNPosition(const Vector2& nPosition, bool bClamp = true);
-	
+
 	void AddChild(UITransform& child);
 	bool RemoveChild(UITransform& child);
 

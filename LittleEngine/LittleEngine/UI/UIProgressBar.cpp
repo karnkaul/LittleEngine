@@ -7,8 +7,7 @@ UIProgressBar::UIProgressBar(bool bSilent) : UIElement("Progress Bar", bSilent)
 {
 	SetName("", "UIProgressBar");
 }
-UIProgressBar::UIProgressBar(const String& name, bool bSilent)
-	: UIElement(name, bSilent)
+UIProgressBar::UIProgressBar(const String& name, bool bSilent) : UIElement(name, bSilent)
 {
 	SetName("", "UIProgressBar");
 }

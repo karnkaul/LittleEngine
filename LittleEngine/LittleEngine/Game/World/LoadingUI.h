@@ -9,7 +9,10 @@ class LoadingUI final
 private:
 	UPtr<UIElement> m_uBG;
 	UPtr<UIElement> m_uTitle;
+	UPtr<UIElement> m_uEllipsis;
 	UPtr<UIProgressBar> m_uProgressBar;
+	String m_ellipsis;
+	Time m_elapsed;
 
 public:
 	LoadingUI();

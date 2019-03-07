@@ -78,7 +78,7 @@ void OnSelect()
 		pParticleSystem0->Stop();
 	else
 	{
-		//pParticleSystem0->SetEnabled(true);
+		// pParticleSystem0->SetEnabled(true);
 		Fixed x = Maths::Random::Range(-Fixed::One, Fixed::One);
 		Fixed y = Maths::Random::Range(-Fixed::One, Fixed::One);
 		Vector2 worldPos = GFX::Project({x, y}, false);
@@ -169,7 +169,7 @@ void SpawnColliderMinefield()
 			String name = "ColliderMine_" + Strings::ToString(id++);
 			Entity* pE = pTestWorld->Game()->NewEntity<Entity>(name, Vector2(x, y));
 			CollisionComponent* pCC = pE->AddComponent<CollisionComponent>();
-			//pRC->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)->SetPrimaryColour(Colour::Blue);
+			// pRC->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)->SetPrimaryColour(Colour::Blue);
 			pCC->AddAABB(AABBData({100, 100}));
 		}
 	}
@@ -179,7 +179,9 @@ void StartTests()
 {
 	pEntity0 = pTestWorld->Game()->NewEntity<Entity>("Entity0", {300, 200});
 	auto rc0 = pEntity0->AddComponent<RenderComponent>();
-	rc0->m_pSFPrimitive->SetSize({300, 100}, SFShapeType::Rectangle)->SetPrimaryColour(Colour::Magenta)->SetEnabled(true);
+	rc0->m_pSFPrimitive->SetSize({300, 100}, SFShapeType::Rectangle)
+		->SetPrimaryColour(Colour::Magenta)
+		->SetEnabled(true);
 
 	pEntity1 = pTestWorld->Game()->NewEntity<Entity>("Entity1", GFX::Project({0, Fixed(0.9f)}, false));
 	auto rc1 = pEntity1->AddComponent<RenderComponent>();
@@ -191,12 +193,13 @@ void StartTests()
 		->SetEnabled(true);
 
 	pPlayer = pTestWorld->Game()->NewEntity<Player>("Player0", {0, -300});
-	TextureAsset* pTexture = pTestWorld->Game()->Repository()->Load<TextureAsset>("Textures/Ship.png");
-	PlayerData data(*pTexture, {PlayerCollider(AABBData({120, 60}), {0, -15}), PlayerCollider(AABBData({60, 80}))});
+	TextureAsset* pTexture =
+		pTestWorld->Game()->Repository()->Load<TextureAsset>("Textures/Ship.png");
+	PlayerData data(
+		*pTexture, {PlayerCollider(AABBData({120, 60}), {0, -15}), PlayerCollider(AABBData({60, 80}))});
 	pPlayer->InitPlayer(data);
 
-	String path =
-		bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
+	String path = bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
 	TextAsset* pText = pTestWorld->Repository()->Load<TextAsset>(path);
 	GData psGData(pText->GetText());
 	ParticleSystemData psData(psGData);
@@ -217,7 +220,7 @@ Vec<EngineInput::Token> debugTokens;
 bool bToSpawnDialogue = false;
 UIDialogue* pDialogue = nullptr;
 
-//Fixed progress;
+// Fixed progress;
 UPtr<UIProgressBar> uProgressBar = nullptr;
 UPtr<UIElement> uProgressBG = nullptr;
 Time elapsed = Time::Zero;
@@ -246,15 +249,16 @@ void SpawnToggle()
 	toggleStyle.background = Colour::Yellow;
 	UIToggle* pToggle0 = pParent->AddWidget<UIToggle>("Toggle0", &toggleStyle);
 	UIToggle* pToggle1 = pParent->AddWidget<UIToggle>("Toggle1", &toggleStyle);
-	
+
 	debugTokens.push_back(pToggle0->AddCallback([](bool bVal) { LOG_W("Toggle0 changed! %d", bVal); }));
 	pToggle0->GetRoot()->m_transform.bAutoPad = true;
 	pToggle0->SetText("Toggle 0")->SetOn(false)->GetRoot()->m_transform.nPosition = {0, 1};
-	
-	debugTokens.push_back(pToggle1->AddCallback([](bool bValue) { LOG_W("Toggle1 changed! %d", bValue); }));
+
+	debugTokens.push_back(
+		pToggle1->AddCallback([](bool bValue) { LOG_W("Toggle1 changed! %d", bValue); }));
 	pToggle1->GetRoot()->m_transform.bAutoPad = true;
-	pToggle1->SetText("Toggle 1")->SetOn(true)->GetRoot()->m_transform.nPosition = {0, -1}; 
-	
+	pToggle1->SetText("Toggle 1")->SetOn(true)->GetRoot()->m_transform.nPosition = {0, -1};
+
 	pParent->m_bAutoDestroyOnCancel = true;
 	pParent->SetActive(true);
 }
@@ -279,8 +283,7 @@ void TestTick(Time dt)
 			pButtonDrawer->AddButton("Button 2", []() { LOG_D("Button 2 pressed!"); }));
 		debugTokens.push_back(
 			pButtonDrawer->AddButton("Button 3", []() { LOG_D("Button 3 pressed!"); }));
-		debugTokens.push_back(
-			pButtonDrawer->AddButton("Toggle", &SpawnToggle));
+		debugTokens.push_back(pButtonDrawer->AddButton("Toggle", &SpawnToggle));
 		debugTokens.push_back(pButtonDrawer->AddButton("Dialogue", []() { bToSpawnDialogue = true; }));
 		if (bModal)
 			debugTokens.push_back(
@@ -315,7 +318,7 @@ void Cleanup()
 {
 	elapsed = Time::Zero;
 	pTestWorld = nullptr;
-	
+
 	pParticleSystem0 = nullptr;
 	pPlayer = nullptr;
 

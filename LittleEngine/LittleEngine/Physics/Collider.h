@@ -76,4 +76,4 @@ private:
 	friend class Collider;
 	friend class CircleCollider;
 };
-}
+} // namespace LittleEngine

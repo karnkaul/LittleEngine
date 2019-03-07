@@ -11,7 +11,7 @@ struct AABBData
 
 	Vector2 lowerBound;
 	Vector2 upperBound;
-	
+
 	AABBData() = default;
 	AABBData(const AABBData&) = default;
 	AABBData(AABBData&&) = default;

@@ -27,12 +27,13 @@ struct ChangeResolutionRequest
 	ChangeResolutionRequest(const SFWindowSize& size);
 };
 
-ChangeResolutionRequest::ChangeResolutionRequest(const SFWindowSize& size) : windowSize(size), bActive(true)
+ChangeResolutionRequest::ChangeResolutionRequest(const SFWindowSize& size)
+	: windowSize(size), bActive(true)
 {
 }
 
 ChangeResolutionRequest changeResolutionRequest;
-}
+} // namespace
 
 EngineService::EngineService()
 {

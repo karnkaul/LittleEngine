@@ -17,15 +17,16 @@ AsyncRenderLoop::AsyncRenderLoop(SFWindow& sfWindow, GFXBuffer& gfxBuffer, Time 
 	{
 		LOG_I("[AsyncRenderLoop] Deactivating GLWindow on this thread, starting render thread");
 		m_pSFWindow->setActive(false);
-		m_renderJobHandle.EnqueueEngine(std::bind(&AsyncRenderLoop::Run, this),
-										"Async Render Loop");
+		m_pRenderJobHandle = Services::Jobs()->EnqueueEngine(std::bind(&AsyncRenderLoop::Run, this),
+															 "Async Render Loop");
 	}
 }
 
 AsyncRenderLoop::~AsyncRenderLoop()
 {
 	m_bRendering.store(false, std::memory_order_relaxed);
-	m_renderJobHandle.Wait();
+	if (m_pRenderJobHandle)
+		m_pRenderJobHandle->Wait();
 }
 
 void AsyncRenderLoop::Run()

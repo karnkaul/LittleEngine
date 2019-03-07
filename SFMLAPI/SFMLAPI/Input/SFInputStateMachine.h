@@ -52,6 +52,10 @@ enum class SpecialInputType
 	Left,
 	Right,
 	Shift,
+	Control,
+	Alt,
+	Insert,
+	Delete,
 	PageUp,
 	PageDown,
 };
@@ -69,6 +73,7 @@ struct TextInput
 
 struct SFInputDataFrame
 {
+	static String clipboard;
 	Vec<KeyState> pressed;
 	TextInput textInput;
 };

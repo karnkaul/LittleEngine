@@ -27,4 +27,4 @@ public:
 private:
 	void Scrub();
 };
-}
+} // namespace LittleEngine

@@ -8,8 +8,9 @@ namespace LittleEngine
 EngineInput::Frame::Frame(const Vec<GameInputType>& pressed,
 						  const Vec<GameInputType>& held,
 						  const Vec<GameInputType>& released,
-						  const TextInput& textInput)
-	: pressed(pressed), held(held), released(released), textInput(textInput)
+						  const TextInput& textInput,
+						  const String& clipboard)
+	: pressed(pressed), held(held), released(released), textInput(textInput), clipboard(clipboard)
 {
 }
 
@@ -63,6 +64,7 @@ void EngineInput::TakeSnapshot(const SFInputDataFrame& frameData)
 {
 	m_previousSnapshot = m_currentSnapshot;
 	m_textInput = frameData.textInput;
+	m_clipboard = frameData.clipboard;
 	m_currentSnapshot.clear();
 	for (const auto& key : frameData.pressed)
 	{
@@ -101,7 +103,7 @@ void EngineInput::FireCallbacks()
 	if (m_uSudoContext && m_uSudoContext->wToken.expired())
 		m_uSudoContext = nullptr;
 
-	Frame dataFrame(pressed, held, released, m_textInput);
+	Frame dataFrame(pressed, held, released, m_textInput, m_clipboard);
 	if (dataFrame.HasData())
 	{
 		size_t prev = m_contexts.size();

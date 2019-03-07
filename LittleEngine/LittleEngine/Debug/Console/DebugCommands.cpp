@@ -215,7 +215,7 @@ public:
 			});
 		}
 	}
-	
+
 protected:
 	virtual LogLine OnEmptyParams()
 	{

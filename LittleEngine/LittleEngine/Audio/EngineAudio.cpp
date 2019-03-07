@@ -117,7 +117,6 @@ void EngineAudio::SwitchTrack(const String& id, const Fixed& volume, Time fadeTi
 		m_uSwitchTrackRequest->bFadingOldTrack = true;
 		m_uSwitchTrackRequest->fadeTime.Scale(Fixed::OneHalf);
 	}
-	
 }
 
 void EngineAudio::SetMusicVolume(const Fixed& volume)

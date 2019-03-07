@@ -43,7 +43,7 @@ void Transform::UnsetParent(bool bModifyWorldSpace)
 			localPosition = Position();
 			localOrientation = Orientation();
 		}
-			
+
 		pParent->RemoveChild(*this);
 	}
 	pParent = nullptr;

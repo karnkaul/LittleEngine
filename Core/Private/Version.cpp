@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Version.h"
 #include "Utils.h"
-		 
+
 namespace Core
 {
 Version::Version() : major(0), minor(0), patch(0)
@@ -56,9 +56,8 @@ bool Version::operator!=(const Version& rhs)
 
 bool Version::operator<(const Version& rhs)
 {
-	return (major < rhs.major) || 
-		(major == rhs.major && minor < rhs.minor) || 
-		(major == rhs.major && minor == rhs.minor && patch < rhs.patch);
+	return (major < rhs.major) || (major == rhs.major && minor < rhs.minor) ||
+		   (major == rhs.major && minor == rhs.minor && patch < rhs.patch);
 }
 
 bool Version::operator<=(const Version& rhs)
@@ -68,9 +67,8 @@ bool Version::operator<=(const Version& rhs)
 
 bool Version::operator>(const Version& rhs)
 {
-	return (major > rhs.major) || 
-		(major == rhs.major && minor > rhs.minor) || 
-		(major == rhs.major && minor == rhs.minor && patch > rhs.patch);
+	return (major > rhs.major) || (major == rhs.major && minor > rhs.minor) ||
+		   (major == rhs.major && minor == rhs.minor && patch > rhs.patch);
 }
 
 bool Version::operator>=(const Version& rhs)

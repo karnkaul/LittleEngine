@@ -28,4 +28,4 @@ public:
 
 	void InitPlayer(const PlayerData& data);
 };
-}
+} // namespace LittleEngine

@@ -20,6 +20,7 @@ protected:
 	UPtr<class SFWindow> m_uSFWindow;
 	bool m_bStopTicking = false;
 	bool m_bPauseOnFocusLoss = true;
+
 private:
 	Time m_elapsed;
 	bool m_bPauseTicking = false;

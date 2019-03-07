@@ -22,11 +22,13 @@ public:
 		Vec<GameInputType> held;
 		Vec<GameInputType> released;
 		TextInput textInput;
+		String clipboard;
 
 		Frame(const Vec<GameInputType>& pressed,
 			  const Vec<GameInputType>& held,
 			  const Vec<GameInputType>& released,
-			  const TextInput& special);
+			  const TextInput& special,
+			  const String& clipboard);
 
 		bool IsPressed(GameInputType keyCode) const;
 		bool IsHeld(GameInputType keyCode) const;
@@ -52,6 +54,7 @@ private:
 	Vec<GameInputType> m_previousSnapshot;
 	Vec<GameInputType> m_currentSnapshot;
 	TextInput m_textInput;
+	String m_clipboard;
 	Vec<InputContext> m_contexts;
 	UPtr<InputContext> m_uSudoContext;
 	Gamepad m_gamepad;

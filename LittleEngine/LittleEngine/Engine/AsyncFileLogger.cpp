@@ -20,24 +20,24 @@ String GetPrologue()
 	ret += " Engine: " + EngineConfig::GetEngineVersion().ToString();
 	return ret + "\n";
 }
-}
+} // namespace
 using Lock = std::lock_guard<std::mutex>;
 
 AsyncFileLogger::AsyncFileLogger(const String& path) : m_filePath(path)
 {
 	Core::g_OnLogStr = std::bind(&AsyncFileLogger::OnLogStr, this, _1);
 	m_bStopLogging.store(false, std::memory_order_relaxed);
-	m_jobHandle.EnqueueEngine(std::bind(&AsyncFileLogger::Async_StartLogging, this),
-							  "AsyncFileLogger");
+	m_sFileLogJobHandle = Services::Jobs()->EnqueueEngine(
+		std::bind(&AsyncFileLogger::Async_StartLogging, this), "AsyncFileLogger");
 }
 
 AsyncFileLogger::~AsyncFileLogger()
 {
 	// Freeze m_cache and terminate thread
 	m_bStopLogging.store(true, std::memory_order_relaxed);
-	m_jobHandle.Wait();
+	if (m_sFileLogJobHandle)
+		m_sFileLogJobHandle->Wait();
 	Core::g_OnLogStr = nullptr;
-	Assert(!m_uWriter, "Writer should be null!");
 }
 
 void AsyncFileLogger::Async_StartLogging()

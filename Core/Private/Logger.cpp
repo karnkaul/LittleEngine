@@ -32,7 +32,8 @@ void LogInternal(const char* pText, u32 severityIndex, va_list argList)
 	std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	std::tm ltm;
 	localtime_s(&ltm, &now);
-	totalLength += snprintf(logBuffer + totalLength, BUFFER_SIZE - totalLength, " [%02d:%02d:%02d]", ltm.tm_hour, ltm.tm_min, ltm.tm_sec);
+	totalLength += snprintf(logBuffer + totalLength, BUFFER_SIZE - totalLength, " [%02d:%02d:%02d]",
+							ltm.tm_hour, ltm.tm_min, ltm.tm_sec);
 	strcat_s(logBuffer, BUFFER_SIZE - totalLength, "\n");
 #if _WIN32
 	OutputDebugStringA(logBuffer);

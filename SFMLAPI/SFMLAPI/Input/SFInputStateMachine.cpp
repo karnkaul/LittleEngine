@@ -54,6 +54,8 @@ KeyState& SFInputStateMachine::GetOrCreateKeyState(KeyCode code)
 	return *m_keyStates.rbegin();
 }
 
+String SFInputDataFrame::clipboard;
+
 SFInputStateMachine::SFInputStateMachine()
 {
 	// Pre-defined keys
@@ -108,6 +110,7 @@ const SFInputDataFrame SFInputStateMachine::GetFrameInputData() const
 		}
 	}
 	frame.textInput = m_textInput;
+	frame.clipboard = sf::Clipboard::getString();
 	return frame;
 }
 
@@ -186,6 +189,24 @@ void SFInputStateMachine::StoreNonASCIISpecialInput(KeyCode key)
 	case KeyCode::LShift:
 	case KeyCode::RShift:
 		m_textInput.specials.push_back(SpecialInputType::Shift);
+		break;
+
+	case KeyCode::LControl:
+	case KeyCode::RControl:
+		m_textInput.specials.push_back(SpecialInputType::Control);
+		break;
+
+	case KeyCode::LAlt:
+	case KeyCode::RAlt:
+		m_textInput.specials.push_back(SpecialInputType::Alt);
+		break;
+
+	case KeyCode::Insert:
+		m_textInput.specials.push_back(SpecialInputType::Insert);
+		break;
+
+	case KeyCode::Delete:
+		m_textInput.specials.push_back(SpecialInputType::Delete);
 		break;
 
 	case KeyCode::PageUp:

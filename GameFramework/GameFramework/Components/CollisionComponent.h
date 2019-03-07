@@ -39,4 +39,4 @@ public:
 	virtual void Tick(Time dt) override;
 	virtual void SetEnabled(bool bEnabled) override;
 };
-}
+} // namespace LittleEngine

@@ -25,10 +25,10 @@ public:
 
 	u32 GetWindowHeight();
 	bool IsBordlerless();
-	
+
 	void SetWindowHeight(u32 height);
 	void SetBorderless(bool bBordlerless);
-	
+
 private:
 	void SetDefaults();
 	void LoadAndOverride();

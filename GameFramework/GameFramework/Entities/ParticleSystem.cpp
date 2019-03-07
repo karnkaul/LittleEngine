@@ -453,7 +453,8 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData&& data)
 		particles = "0";
 	particles = "[" + particles + "] particles";
 
-	Core::Log(logSeverity, "%s initialised: [%d] emitters %s", LogNameStr(), emitters.size(), particles.c_str());
+	Core::Log(logSeverity, "%s initialised: [%d] emitters %s", LogNameStr(), emitters.size(),
+			  particles.c_str());
 }
 
 void ParticleSystem::Start()

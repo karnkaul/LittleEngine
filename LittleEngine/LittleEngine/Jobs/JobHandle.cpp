@@ -4,36 +4,24 @@
 
 namespace LittleEngine
 {
-JobHandle::JobHandle(s64 jobID) : jobID(jobID)
+JobHandle::JobHandle(s64 jobID, std::future<void>&& future)
+	: m_future(std::move(future)), m_jobID(jobID)
 {
 }
 
-JobHandle::operator s64() const
+s64 JobHandle::GetID() const
 {
-	return jobID;
+	return m_jobID;
 }
 
-void JobHandle::Wait() const
+void JobHandle::Wait()
 {
-	Services::Jobs()->Wait(jobID);
+	if (m_future.valid())
+		m_future.get();
 }
 
-bool JobHandle::IsRunning() const
+bool JobHandle::HasCompleted() const
 {
-	return Services::Jobs()->IsRunning(jobID);
-}
-bool JobHandle::IsCompleted() const
-{
-	return Services::Jobs()->IsCompleted(jobID);
-}
-
-void JobHandle::Enqueue(const std::function<void()>& Task, const String& name, bool bSilent)
-{
-	*this = Services::Jobs()->Enqueue(Task, name, bSilent);
-}
-
-void JobHandle::EnqueueEngine(const std::function<void()>& Task, const String& name)
-{
-	*this = Services::Jobs()->EnqueueEngine(Task, name);
+	return m_future.valid() && m_future.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready;
 }
 } // namespace LittleEngine

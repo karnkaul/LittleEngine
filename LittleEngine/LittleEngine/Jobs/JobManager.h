@@ -20,26 +20,33 @@ public:
 private:
 	using Lock = std::lock_guard<std::mutex>;
 
-	struct Job
+	class Job
 	{
+	private:
+		std::promise<void> m_promise;
 		String logName;
-		std::function<void()> task;
-		JobHandle id = INVALID_ID;
-		bool bSilent = false;
+	public:
+		SPtr<JobHandle> m_sHandle;
+		std::function<void()> m_task;
+		s32 m_id;
+		bool m_bSilent = false;
 
+	public:
 		Job() = default;
-		Job(JobHandle id, const std::function<void()>& task, String name, bool bSilent);
+		Job(s32 id, const std::function<void()>& task, String name, bool bSilent);
 
 		const char* ToStr() const;
+
+		void Run();
+		void Fulfil();
 	};
 
 private:
 	Vec<UPtr<class JobWorker>> m_gameWorkers;
 	Vec<UPtr<class JobWorker>> m_engineWorkers;
-	Vec<JobHandle> m_completed;
 	List<UPtr<MultiJob>> m_uMultiJobs;
-	List<Job> m_gameJobQueue;
-	List<Job> m_engineJobQueue;
+	List<UPtr<Job>> m_gameJobQueue;
+	List<UPtr<Job>> m_engineJobQueue;
 	std::mutex m_mutex;
 	s64 m_nextGameJobID = 100;
 	s64 m_nextEngineJobID = 0;
@@ -49,29 +56,17 @@ public:
 	JobManager();
 	~JobManager();
 
-	void Wait(JobHandle id);
-	void Wait(InitList<JobHandle> ids);
-	void Wait(const Vec<JobHandle>& ids);
-	bool IsRunning(JobHandle id);
-	bool IsCompleted(JobHandle id);
-
 public:
-	JobHandle Enqueue(const std::function<void()>& Task, const String& name = "", bool bSilent = false);
-	JobHandle EnqueueEngine(const std::function<void()>& Task, const String& name);
+	SPtr<JobHandle> Enqueue(const std::function<void()>& Task, const String& name = "", bool bSilent = false);
+	SPtr<JobHandle> EnqueueEngine(const std::function<void()>& Task, const String& name);
 	MultiJob* CreateMultiJob(const String& name);
 
 private:
 	s32 AvailableEngineThreads() const;
 	void Tick(Time dt);
 
-	bool Unsafe_IsCompleted(JobHandle id);
-	bool Unsafe_IsEnqueued(JobHandle id);
-	JobWorker* Unsafe_GetGameWorker(JobHandle id);
-	JobWorker* Unsafe_GetEngineWorker(JobHandle id);
-
-	Job Lock_PopJob(bool bEngineQueue = false);
-	void Lock_CompleteJob(JobHandle id);
-	JobHandle Lock_Enqueue(Job&& job, List<Job>& jobQueue);
+	UPtr<Job> Lock_PopJob(bool bEngineQueue = false);
+	SPtr<JobHandle> Lock_Enqueue(UPtr<Job>&& uJob, List<UPtr<Job>>& jobQueue);
 
 	friend class EngineService;
 	friend class EngineLoop;

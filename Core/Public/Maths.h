@@ -116,4 +116,4 @@ T Lerp(const T& min, const T& max, const Fixed& alpha)
 {
 	return min + alpha * (max - min);
 }
-}
+} // namespace Maths

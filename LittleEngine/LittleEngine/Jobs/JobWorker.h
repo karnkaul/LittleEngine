@@ -21,7 +21,6 @@ private:
 	std::thread m_thread;
 	std::atomic<bool> m_bWork;
 	State m_state;
-	JobHandle m_jobID;
 	const bool m_bEngineWorker;
 
 public:
@@ -29,8 +28,6 @@ public:
 	~JobWorker();
 
 	void Stop();
-	void Wait();
-	JobHandle GetJobID() const;
 	State GetState() const;
 
 private:

@@ -8,16 +8,35 @@
 
 namespace LittleEngine
 {
-JobManager::Job::Job(JobHandle id, const std::function<void()>& task, String name, bool bSilent)
-	: task(task), id(id), bSilent(bSilent)
+JobManager::Job::Job(s32 id, const std::function<void()>& task, String name, bool bSilent)
+	: m_task(task), m_id(id), m_bSilent(bSilent)
 {
 	String suffix = name.empty() ? "" : "-" + name;
 	logName = "[" + Strings::ToString(id) + suffix + "]";
+	m_sHandle = MakeShared<JobHandle>(id, m_promise.get_future());
 }
 
 const char* JobManager::Job::ToStr() const
 {
 	return logName.c_str();
+}
+
+void JobManager::Job::Run()
+{
+	try
+	{
+		m_task();
+	}
+	catch (const std::exception& e)
+	{
+		Assert(false, "AsyncTask threw exception!");
+		LOG_E("%d threw an exception and job has failed! %d\n%s", m_sHandle->GetID(), e.what());
+	}
+}
+
+void JobManager::Job::Fulfil()
+{
+	m_promise.set_value();
 }
 
 JobManager::JobManager()
@@ -56,80 +75,17 @@ JobManager::~JobManager()
 	LOG_I("[JobManager] destroyed");
 }
 
-void JobManager::Wait(JobHandle id)
+SPtr<JobHandle> JobManager::Enqueue(const std::function<void()>& Task, const String& name, bool bSilent)
 {
-	// Is Job in queue?
-	bool bInQueue = false;
-	do
-	{
-		{
-			Lock lock(m_mutex);
-			if (Unsafe_IsCompleted(id))
-				return;
-			bInQueue = Unsafe_IsEnqueued(id);
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-	} while (bInQueue);
-
-	// Is Job running?
-	JobWorker* pWorker = nullptr;
-	{
-		Lock lock(m_mutex);
-		if (Unsafe_IsCompleted(id))
-			return;
-		pWorker = id < 100 ? Unsafe_GetEngineWorker(id) : Unsafe_GetGameWorker(id);
-	}
-	if (pWorker)
-	{
-		pWorker->Wait();
-	}
-#if DEBUGGING
-	else if (!IsCompleted(id))
-	{
-		LOG_E("[JobManager] JobID [%d] not found!", id);
-	}
-#endif
+	UPtr<Job> uJob = MakeUnique<Job>(++m_nextGameJobID, Task, name, bSilent);
+	return Lock_Enqueue(std::move(uJob), m_gameJobQueue);
 }
 
-void JobManager::Wait(InitList<JobHandle> ids)
-{
-	for (auto id : ids)
-	{
-		Wait(id);
-	}
-}
-
-void JobManager::Wait(const Vec<JobHandle>& ids)
-{
-	for (auto id : ids)
-	{
-		Wait(id);
-	}
-}
-
-bool JobManager::IsRunning(JobHandle id)
-{
-	Lock lock(m_mutex);
-	return Unsafe_IsEnqueued(id) || Unsafe_GetGameWorker(id);
-}
-
-bool JobManager::IsCompleted(JobHandle id)
-{
-	Lock lock(m_mutex);
-	return Unsafe_IsCompleted(id);
-}
-
-JobHandle JobManager::Enqueue(const std::function<void()>& Task, const String& name, bool bSilent)
-{
-	Job job(++m_nextGameJobID, Task, name, bSilent);
-	return Lock_Enqueue(std::move(job), m_gameJobQueue);
-}
-
-JobHandle JobManager::EnqueueEngine(const std::function<void()>& Task, const String& name)
+SPtr<JobHandle> JobManager::EnqueueEngine(const std::function<void()>& Task, const String& name)
 {
 	Assert(AvailableEngineThreads() > 0, "!DEADLOCK! No available engine workers!");
-	Job job(++m_nextEngineJobID, Task, name, false);
-	return Lock_Enqueue(std::move(job), m_engineJobQueue);
+	UPtr<Job> uJob = MakeUnique<Job>(++m_nextEngineJobID, Task, name, false);
+	return Lock_Enqueue(std::move(uJob), m_engineJobQueue);
 }
 
 MultiJob* JobManager::CreateMultiJob(const String& name)
@@ -165,58 +121,24 @@ void JobManager::Tick(Time)
 	}
 }
 
-bool JobManager::Unsafe_IsCompleted(JobHandle id)
-{
-	return std::find(m_completed.begin(), m_completed.end(), id) != m_completed.end();
-}
-
-bool JobManager::Unsafe_IsEnqueued(JobHandle id)
-{
-	auto gameIter = std::find_if(m_gameJobQueue.begin(), m_gameJobQueue.end(),
-								 [id](Job& job) { return job.id == id; });
-	auto engineIter = std::find_if(m_engineJobQueue.begin(), m_engineJobQueue.end(),
-								   [id](Job& job) { return job.id == id; });
-	return gameIter != m_gameJobQueue.end() || engineIter != m_engineJobQueue.end();
-}
-
-JobWorker* JobManager::Unsafe_GetGameWorker(JobHandle id)
-{
-	auto iter = std::find_if(m_gameWorkers.begin(), m_gameWorkers.end(),
-							 [id](UPtr<JobWorker>& uJob) { return uJob->GetJobID() == id; });
-	return (iter == m_gameWorkers.end()) ? nullptr : iter->get();
-}
-
-JobWorker* JobManager::Unsafe_GetEngineWorker(JobHandle id)
-{
-	auto iter = std::find_if(m_engineWorkers.begin(), m_engineWorkers.end(),
-							 [id](UPtr<JobWorker>& uJob) { return uJob->GetJobID() == id; });
-	return (iter == m_engineWorkers.end()) ? nullptr : iter->get();
-}
-
-JobManager::Job JobManager::Lock_PopJob(bool bEngineJob)
+UPtr<JobManager::Job> JobManager::Lock_PopJob(bool bEngineJob)
 {
 	Lock lock(m_mutex);
-	List<JobManager::Job>& jobList = bEngineJob ? m_engineJobQueue : m_gameJobQueue;
+	List<UPtr<Job>>& jobList = bEngineJob ? m_engineJobQueue : m_gameJobQueue;
 	if (!jobList.empty())
 	{
-		Job job = std::move(jobList.back());
+		UPtr<Job> uJob = std::move(jobList.back());
 		jobList.pop_back();
-		return job;
+		return uJob;
 	}
 	return {};
 }
 
-void JobManager::Lock_CompleteJob(JobHandle id)
+SPtr<JobHandle> JobManager::Lock_Enqueue(UPtr<Job>&& uJob, List<UPtr<Job>>& jobQueue)
 {
+	SPtr<JobHandle> sHandle = uJob->m_sHandle;
 	Lock lock(m_mutex);
-	m_completed.push_back(id);
-}
-
-JobHandle JobManager::Lock_Enqueue(Job&& job, List<Job>& jobQueue)
-{
-	JobHandle id = job.id;
-	Lock lock(m_mutex);
-	jobQueue.emplace_front(std::move(job));
-	return id;
+	jobQueue.emplace_front(std::move(uJob));
+	return sHandle;
 }
 } // namespace LittleEngine

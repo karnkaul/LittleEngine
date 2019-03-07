@@ -65,7 +65,7 @@ protected:
 
 private:
 	void InitContext(LayerID rootLayer);
-	
+
 	friend class UIManager;
 };
 

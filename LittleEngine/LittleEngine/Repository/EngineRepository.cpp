@@ -16,8 +16,7 @@ EngineRepository::EngineRepository(const String& archivePath, const String& root
 	}
 	else
 	{
-		UPtr<FontAsset> uDefaultFont =
-			LoadInternal<FontAsset>(fontID, m_archiveReader.Decompress(fontID));
+		UPtr<FontAsset> uDefaultFont = LoadInternal<FontAsset>(fontID, m_archiveReader.Decompress(fontID));
 		if (uDefaultFont)
 		{
 			m_pDefaultFont = uDefaultFont.get();

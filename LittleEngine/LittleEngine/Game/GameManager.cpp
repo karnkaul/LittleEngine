@@ -76,13 +76,14 @@ void GameManager::Tick(Time dt)
 	m_uCollisionManager->Tick(dt);
 	for (auto& componentVec : m_uComponents)
 	{
-		Core::CleanVector<UPtr<Component>>(componentVec, [](UPtr<Component>& uC) { return uC->m_bDestroyed; });
+		Core::CleanVector<UPtr<Component>>(componentVec,
+										   [](UPtr<Component>& uC) { return uC->m_bDestroyed; });
 		for (auto& uComponent : componentVec)
 		{
 			uComponent->Tick(dt);
 		}
 	}
-	Core::CleanVector<UPtr<Entity>>(m_uEntities, [](UPtr<Entity>& uE){ return uE->m_bDestroyed; });
+	Core::CleanVector<UPtr<Entity>>(m_uEntities, [](UPtr<Entity>& uE) { return uE->m_bDestroyed; });
 	for (auto& uEntity : m_uEntities)
 	{
 		uEntity->Tick(dt);

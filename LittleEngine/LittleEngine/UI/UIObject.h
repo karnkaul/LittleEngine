@@ -13,7 +13,7 @@ protected:
 public:
 	UIObject(const String& name);
 	virtual ~UIObject();
-	
+
 	virtual void Tick(Time dt) = 0;
 
 protected:

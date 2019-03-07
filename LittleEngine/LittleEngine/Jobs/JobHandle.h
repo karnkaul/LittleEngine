@@ -1,21 +1,26 @@
 #pragma once
+#include <future>
 #include "CoreTypes.h"
+
 namespace LittleEngine
 {
-struct JobHandle
+class JobHandle final
 {
-	s64 jobID = -1;
+private:
+	std::future<void> m_future;
+	s64 m_jobID = -1;
 
+public:
 	JobHandle() = default;
-	JobHandle(s64 jobID);
+	JobHandle(s64 jobID, std::future<void>&& future);
 
-	operator s64() const;
+	s64 GetID() const;
 
-	void Wait() const;
-	bool IsRunning() const;
-	bool IsCompleted() const;
+	void Wait();
+	bool HasCompleted() const;
 
-	void Enqueue(const std::function<void()>& Task, const String& name = "", bool bSilent = false);
-	void EnqueueEngine(const std::function<void()>& Task, const String& name);
+private:
+	friend class JobWorker;
+	friend class JobManager;
 };
 } // namespace LittleEngine

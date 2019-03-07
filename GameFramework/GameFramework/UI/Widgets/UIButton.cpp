@@ -74,7 +74,8 @@ void UIButton::OnInteractEnd()
 		if (m_bSelected)
 			m_pRoot->SetPanel(m_style.selected.fill, m_style.selected.border, m_style.selected.outline);
 		else
-			m_pRoot->SetPanel(m_style.notSelected.fill, m_style.notSelected.border, m_style.notSelected.outline);
+			m_pRoot->SetPanel(m_style.notSelected.fill, m_style.notSelected.border,
+							  m_style.notSelected.outline);
 	}
 	m_OnInteracted();
 }
