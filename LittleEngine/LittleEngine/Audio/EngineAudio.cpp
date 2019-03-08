@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "EngineAudio.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/Engine/EngineService.h"
 #include "LittleEngine/Repository/EngineRepository.h"
 #include "Utils.h"
 

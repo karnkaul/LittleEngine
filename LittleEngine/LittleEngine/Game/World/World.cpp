@@ -2,6 +2,7 @@
 #include "World.h"
 #include "Utils.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/Engine/EngineService.h"
 #include "LittleEngine/UI/UIManager.h"
 #include "LittleEngine/Game/GameManager.h"
 

@@ -1,6 +1,6 @@
 #pragma once
-#include <functional>
 #include <algorithm>
+#include <functional>
 #include <tuple>
 #include "Fixed.h"
 #include "StdTypes.h"

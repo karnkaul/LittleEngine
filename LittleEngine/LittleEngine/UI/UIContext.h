@@ -4,6 +4,7 @@
 #include "LittleEngine/UI/UIWidget.h"
 #include "LittleEngine/UI/UIWidgetMatrix.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/Input/EngineInput.h"
 
 namespace LittleEngine
 {

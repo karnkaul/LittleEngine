@@ -3,6 +3,8 @@
 #include "EngineRepository.h"
 #include "LittleEngine/Services/Services.h"
 #include "SFMLAPI/System/SFAssets.h"
+#include "LittleEngine/Jobs/JobManager.h"
+#include "LittleEngine/Jobs/MultiJob.h"
 
 namespace LittleEngine
 {

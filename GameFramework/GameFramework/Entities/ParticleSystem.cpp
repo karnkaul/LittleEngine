@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "ParticleSystem.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/Audio/EngineAudio.h"
+#include "LittleEngine/Game/GameManager.h"
+#include "LittleEngine/Repository/EngineRepository.h"
 
 namespace LittleEngine
 {

@@ -3,6 +3,7 @@
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/RenderLoop/RenderHeap.h"
 #include "LittleEngine/Repository/AsyncAssetLoader.h"
+#include "LittleEngine/Engine/EngineService.h"
 
 namespace LittleEngine
 {

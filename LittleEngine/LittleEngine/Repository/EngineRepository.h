@@ -1,5 +1,6 @@
 #pragma once
 #include <mutex>
+#include <future>
 #include "CoreTypes.h"
 #include "ArchiveReader.h"
 #include "SFMLAPI/System/SFAssets.h"
@@ -27,11 +28,8 @@ public:
 	template <typename T>
 	T* Load(const String& id);
 	template <typename T>
-	Vec<T*> Load(InitList<String> assetPaths);
-	template <typename T>
-	Vec<T*> Load(Vec<String> assetPaths);
+	std::future<T*> LoadAsync(const String& id);
 
-	void LoadAll(AssetManifest& manifest);
 #if !SHIPPING
 	AsyncAssetLoader* LoadAsync(const String& manifestPath, const std::function<void()>& onComplete = nullptr);
 #endif
@@ -124,35 +122,73 @@ T* EngineRepository::Load(const String& id)
 }
 
 template <typename T>
-Vec<T*> EngineRepository::Load(InitList<String> assetPaths)
-{
-	static_assert(IsDerived(Asset, T),
-				  "T must derive from Asset: check Output window for erroneous call");
-	Vec<T*> vec;
-	for (const auto& path : assetPaths)
-	{
-		if (T* asset = Load<T>(path))
-		{
-			vec.emplace_back(asset);
-		}
-	}
-	return vec;
-}
-
-template <typename T>
-Vec<T*> EngineRepository::Load(Vec<String> assetPaths)
+std::future<T*> EngineRepository::LoadAsync(const String& id)
 {
 	static_assert(IsDerived<Asset, T>(),
 				  "T must derive from Asset: check Output window for erroneous call");
-	Vec<T*> vec;
-	for (const auto& path : assetPaths)
+	// std::function needs to be copyable, so cannot use UPtr<promise> here
+	SPtr<std::promise<T*>> sPromise = MakeShared<std::promise<T*>>();
+
+	m_mutex.lock();
+	auto search = m_loaded.find(id);
+	m_mutex.unlock();
+	if (search != m_loaded.end())
 	{
-		if (T* asset = Load<T>(path))
-		{
-			vec.emplace_back(asset);
-		}
+#if LOG_CACHED_ASSET_LOADS
+		LOG_D("[EngineRepository] Found Asset [%s] in cache", id.c_str());
+#endif
+		sPromise->set_value(dynamic_cast<T*>(search->second.get()));
+		return sPromise->get_future();
 	}
-	return vec;
+
+	if (m_archiveReader.IsPresent(id.c_str()))
+	{
+		Services::Jobs()->Enqueue(
+			[this, id, sPromise]() {
+				UPtr<T> uT = LoadInternal<T>(id, m_archiveReader.Decompress(id));
+				T* pT = nullptr;
+				if (uT)
+				{
+					pT = uT.get();
+					m_mutex.lock();
+					m_loaded.emplace(id, std::move(uT));
+					m_mutex.unlock();
+				}
+				else
+				{
+					LOG_E("[EngineRepository] Could not load [%s] from cooked archive!", id.c_str());
+				}
+				sPromise->set_value(pT);
+			},
+			"", true);
+	}
+	else
+	{
+		LOG_E("[EngineRepository] Cooked archive does not contain [%s]!", id.c_str());
+#if !SHIPPING
+		Services::Jobs()->Enqueue(
+			[this, id, sPromise]() {
+				UPtr<T> uT = LoadInternal<T>(id);
+				T* pT = nullptr;
+				if (uT)
+				{
+					pT = uT.get();
+					m_mutex.lock();
+					m_loaded.emplace(id, std::move(uT));
+					m_mutex.unlock();
+				}
+				else
+				{
+					LOG_E("[EngineRepository] Could not load [%s] from filesystem!", id.c_str());
+				}
+				sPromise->set_value(pT);
+			},
+			"", true);
+#else
+		sPromise->set_value(nullptr);
+#endif
+	}
+	return sPromise->get_future();
 }
 
 template <typename T>

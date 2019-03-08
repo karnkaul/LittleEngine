@@ -8,6 +8,8 @@
 #include "Logger.h"
 #include "LittleEngine/Debug/DebugProfiler.h"
 #include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/Repository/EngineRepository.h"
+#include "LittleEngine/Game/GameManager.h"
 #include "LittleEngine/Game/World/World.h"
 #include "LittleEngine/Game/World/WorldStateMachine.h"
 #include "LittleEngine/GFX/GFX.h"

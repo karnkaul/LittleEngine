@@ -5,6 +5,7 @@
 #include "Logger.h"
 #include "LittleEngine/Engine/EngineConfig.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/Game/GameManager.h"
 
 namespace LittleEngine
 {

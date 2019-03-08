@@ -52,30 +52,6 @@ FontAsset* EngineRepository::GetDefaultFont() const
 	return m_pDefaultFont;
 }
 
-void EngineRepository::LoadAll(AssetManifest& manifest)
-{
-	manifest.ForEach([this](const AssetDefinition& definition) {
-		switch (definition.type)
-		{
-		case AssetType::Texture:
-			Load<TextureAsset>(definition.assetIDs.assetIDs);
-			break;
-
-		case AssetType::Font:
-			Load<FontAsset>(definition.assetIDs.assetIDs);
-			break;
-
-		case AssetType::Sound:
-			Load<SoundAsset>(definition.assetIDs.assetIDs);
-			break;
-
-		default:
-			LOG_E("[EngineRepository] Unrecognised asset type [%d]!", definition.type);
-			break;
-		}
-	});
-}
-
 #if !SHIPPING
 AsyncAssetLoader* EngineRepository::LoadAsync(const String& manifestPath, const std::function<void()>& onComplete)
 {

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "WorldObject.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/Game/GameManager.h"
 
 namespace LittleEngine
 {

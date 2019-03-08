@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UIContext.h"
 #include "LittleEngine/Game/World/World.h"
+#include "LittleEngine/Engine/EngineService.h"
 #include "Logger.h"
 
 namespace LittleEngine

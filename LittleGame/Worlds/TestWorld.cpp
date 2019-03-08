@@ -296,6 +296,50 @@ void TestTick(Time dt)
 		SpawnDialogue();
 	}
 
+	static bool bLoadedAsyncAsset = false;
+	static std::future<TextureAsset*> future0;
+	static std::future<TextAsset*> future1;
+	static u8 frame = 0;
+
+	static bool bLoaded0 = false;
+	static bool bLoaded1 = false;
+	static bool bLoadAsyncComplete = false;
+	if (bLoadedAsyncAsset && !bLoadAsyncComplete)
+	{
+		++frame;
+		if (future0._Is_ready())
+		{
+#if ENABLED(DEBUG_LOGGING)
+			TextureAsset* pTexture = future0.get();
+#endif
+			LOG_D("Texture loaded on frame %d", frame);
+			bLoaded0 = true;
+		}
+
+		if (future1._Is_ready())
+		{
+#if ENABLED(DEBUG_LOGGING)
+			TextAsset* pText = future1.get();
+#endif
+			LOG_D("Text loaded on frame %d", frame);
+			bLoaded1 = true;
+		}
+
+		bLoadAsyncComplete = bLoaded0 && bLoaded1;
+		if (!bLoadAsyncComplete)
+		{
+			LOG_D("Waiting for Async Load. Frame %d", frame);
+		}
+	}
+
+	if (elapsed.AsSeconds() >= 3 && !bLoadedAsyncAsset)
+	{
+		bLoadedAsyncAsset = true;
+		future0 = pTestWorld->Repository()->LoadAsync<TextureAsset>("Misc/06.png");
+		future1 = pTestWorld->Repository()->LoadAsync<TextAsset>("Misc/BinaryText.txt");
+		LOG_D("Loading assets async. Frame %d", frame);
+	}
+
 	/*if (elapsed.AsSeconds() >= 2 && progress < Fixed(1.5f))
 	{
 		progress += Fixed(dt.AsSeconds());

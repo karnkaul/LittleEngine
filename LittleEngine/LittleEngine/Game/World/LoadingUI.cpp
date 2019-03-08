@@ -2,6 +2,7 @@
 #include "LoadingUI.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/GFX/GFX.h"
+#include "LittleEngine/Engine/EngineService.h"
 
 namespace LittleEngine
 {

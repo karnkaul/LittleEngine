@@ -1,10 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
 #include "IService.h"
-#include "LittleEngine/Engine/EngineService.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
-#include "LittleEngine/Jobs/JobManager.h"
-#include "LittleEngine/Game/GameManager.h"
 
 namespace LittleEngine
 {
@@ -12,10 +8,10 @@ class Services
 {
 private:
 	static Vec<IService*> s_pServices;
-	static EngineService* s_pEngine;
-	static RenderHeap* s_pRenderHeap;
-	static JobManager* s_pJobManager;
-	static GameManager* s_pGameManager;
+	static class EngineService* s_pEngine;
+	static class RenderHeap* s_pRenderHeap;
+	static class JobManager* s_pJobManager;
+	static class GameManager* s_pGameManager;
 
 public:
 	static void Clear();

@@ -2,6 +2,7 @@
 #include "ConsoleRenderer.h"
 #if ENABLED(CONSOLE)
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/Engine/EngineService.h"
 
 namespace LittleEngine
 {

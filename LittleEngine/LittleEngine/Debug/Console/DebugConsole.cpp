@@ -9,6 +9,7 @@
 #include "LogLine.h"
 #include "LittleEngine/Input/EngineInput.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/Engine/EngineService.h"
 #include "SFMLAPI/Rendering/SFRenderer.h"
 #include "Logger.h"
 
