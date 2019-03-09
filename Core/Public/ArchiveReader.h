@@ -16,7 +16,7 @@ public:
 	void Load(const Vec<String>& archivePaths);
 
 	bool IsPresent(const char* szPathInArchive) const;
-	Vec<u8> Decompress(const String& pathInArchive) const;
+	Vec<u8> Decompress(const char* szPathInArchive) const;
 
 public:
 	static void UnInit();

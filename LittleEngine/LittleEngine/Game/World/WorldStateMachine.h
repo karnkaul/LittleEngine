@@ -15,7 +15,7 @@ private:
 	UPtr<LoadingUI> m_uLoadingUI;
 	World* m_pActiveState = nullptr;
 	World* m_pNextState = nullptr;
-	class AsyncAssetLoader* m_pAssetLoader = nullptr;
+	class ManifestLoader* m_pAssetLoader = nullptr;
 	bool m_bToActivateState = false;
 	bool m_bLoading = false;
 	bool m_bLoaded = false;

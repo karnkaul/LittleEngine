@@ -21,7 +21,7 @@ EngineAudio::~EngineAudio()
 SoundPlayer* EngineAudio::PlaySFX(const String& path, const Fixed& volume, const Fixed& direction, bool bLoop)
 {
 	SoundPlayer& sfxPlayer = GetOrCreateSFXPlayer();
-	SoundAsset* asset = GetAssetManager().Load<SoundAsset>(path);
+	SoundAsset* asset = GetRepository().Load<SoundAsset>(path);
 	if (asset)
 	{
 		sfxPlayer.SetSoundAsset(*asset);
@@ -187,7 +187,7 @@ String EngineAudio::GetPath(const String& id) const
 	return prefix + id;
 }
 
-EngineRepository& EngineAudio::GetAssetManager()
+EngineRepository& EngineAudio::GetRepository()
 {
 	return *Services::Engine()->Repository();
 }

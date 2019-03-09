@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "EngineRepository.h"
-#include "AsyncAssetLoader.h"
+#include "ManifestLoader.h"
 #include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
@@ -9,14 +9,14 @@ EngineRepository::EngineRepository(const String& archivePath, const String& root
 	: m_rootDir(rootDir)
 {
 	String fontID = "Fonts/main.ttf";
-	m_archiveReader.Load(archivePath.c_str());
-	if (!m_archiveReader.IsPresent(fontID.c_str()))
+	m_cooked.Load(archivePath.c_str());
+	if (!m_cooked.IsPresent(fontID.c_str()))
 	{
 		LOG_E("[EngineRepository] Cooked assets does not contain %s!", fontID.c_str());
 	}
 	else
 	{
-		UPtr<FontAsset> uDefaultFont = LoadInternal<FontAsset>(fontID, m_archiveReader.Decompress(fontID));
+		UPtr<FontAsset> uDefaultFont = CreateAsset<FontAsset>(fontID, m_cooked.Decompress(fontID.c_str()));
 		if (uDefaultFont)
 		{
 			m_pDefaultFont = uDefaultFont.get();
@@ -31,7 +31,7 @@ EngineRepository::EngineRepository(const String& archivePath, const String& root
 #if !SHIPPING
 	if (!m_pDefaultFont)
 	{
-		UPtr<FontAsset> uDefaultFont = LoadInternal<FontAsset>(fontID);
+		UPtr<FontAsset> uDefaultFont = FetchAsset<FontAsset>(fontID);
 		if (uDefaultFont)
 		{
 			m_pDefaultFont = uDefaultFont.get();
@@ -53,22 +53,22 @@ FontAsset* EngineRepository::GetDefaultFont() const
 }
 
 #if !SHIPPING
-AsyncAssetLoader* EngineRepository::LoadAsync(const String& manifestPath, const std::function<void()>& onComplete)
+ManifestLoader* EngineRepository::LoadAsync(const String& manifestPath, const std::function<void()>& onComplete)
 {
-	UPtr<AsyncAssetLoader> uAsyncLoader = MakeUnique<AsyncAssetLoader>(*this, manifestPath, onComplete);
-	AsyncAssetLoader* pLoader = uAsyncLoader.get();
+	UPtr<ManifestLoader> uAsyncLoader = MakeUnique<ManifestLoader>(*this, manifestPath, onComplete);
+	ManifestLoader* pLoader = uAsyncLoader.get();
 	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
 	return pLoader;
 }
 #endif
 
-AsyncAssetLoader* EngineRepository::LoadAsync(const String& archivePath,
+ManifestLoader* EngineRepository::LoadAsync(const String& archivePath,
 											  const String& manifestPath,
 											  const std::function<void()>& onComplete)
 {
-	UPtr<AsyncAssetLoader> uAsyncLoader =
-		MakeUnique<AsyncAssetLoader>(*this, archivePath, manifestPath, onComplete);
-	AsyncAssetLoader* pLoader = uAsyncLoader.get();
+	UPtr<ManifestLoader> uAsyncLoader =
+		MakeUnique<ManifestLoader>(*this, archivePath, manifestPath, onComplete);
+	ManifestLoader* pLoader = uAsyncLoader.get();
 	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
 	return pLoader;
 }

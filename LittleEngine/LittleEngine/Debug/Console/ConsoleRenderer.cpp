@@ -15,6 +15,7 @@ ConsoleRenderer::ConsoleRenderer()
 	// BG
 	m_uBG = MakeUnique<UIElement>("Console BG", true);
 	m_uBG->SetPanel(m_bgColour);
+	m_uBG->m_layer = static_cast<LayerID>(LAYER_TOP - 5);
 	Vector2 bgSize = m_uBG->m_transform.size;
 	bgSize.y *= Fixed::OneThird;
 	m_uBG->m_transform.size = bgSize;
@@ -27,6 +28,7 @@ ConsoleRenderer::ConsoleRenderer()
 
 	// Separator
 	m_uSeparator = MakeUnique<UIElement>("Console Separator", true);
+	m_uSeparator->m_layer = static_cast<LayerID>(LAYER_TOP - 3);
 	m_uSeparator->SetPanel(Colour(255, 255, 255, 150));
 	m_uSeparator->m_transform.SetParent(m_uBG->m_transform);
 	m_uSeparator->m_transform.size = {bgSize.x, 2};
@@ -35,6 +37,7 @@ ConsoleRenderer::ConsoleRenderer()
 
 	// Live Line
 	m_uLiveText = MakeUnique<UIElement>("Console LiveText", true);
+	m_uLiveText->m_layer = LAYER_TOP;
 	m_uLiveText->m_transform.SetParent(m_uBG->m_transform);
 	m_uLiveText->m_transform.anchor = {-1, 1};
 	m_uLiveText->m_transform.nPosition = {-1, -1};
@@ -49,6 +52,7 @@ ConsoleRenderer::ConsoleRenderer()
 	{
 		UPtr<UIElement> uLogLineI = MakeUnique<UIElement>("Log Line " + Strings::ToString(i), true);
 		uLogLineI->m_transform.SetParent(m_uBG->m_transform);
+		uLogLineI->m_layer = LAYER_TOP;
 		uLogLineI->m_transform.anchor = {-1, 1};
 		uLogLineI->m_transform.nPosition = {-1, -1};
 		iPad += textPad;

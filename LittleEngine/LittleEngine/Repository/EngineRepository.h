@@ -13,8 +13,8 @@ class EngineRepository final
 private:
 	using Lock = std::lock_guard<std::mutex>;
 
-	Core::ArchiveReader m_archiveReader;
-	List<UPtr<class AsyncAssetLoader>> m_uAsyncLoaders;
+	Core::ArchiveReader m_cooked;
+	List<UPtr<class ManifestLoader>> m_uAsyncLoaders;
 	std::mutex m_mutex;
 	UMap<String, Asset::Ptr> m_loaded;
 	String m_rootDir;
@@ -31,9 +31,9 @@ public:
 	std::future<T*> LoadAsync(const String& id);
 
 #if !SHIPPING
-	AsyncAssetLoader* LoadAsync(const String& manifestPath, const std::function<void()>& onComplete = nullptr);
+	ManifestLoader* LoadAsync(const String& manifestPath, const std::function<void()>& onComplete = nullptr);
 #endif
-	AsyncAssetLoader* LoadAsync(const String& archivePath,
+	ManifestLoader* LoadAsync(const String& archivePath,
 								const String& manifestPath,
 								const std::function<void()>& onComplete = nullptr);
 
@@ -47,11 +47,20 @@ private:
 	EngineRepository& operator=(const EngineRepository&) = delete;
 
 	template <typename T>
-	UPtr<T> LoadInternal(const String& id, const Vec<u8>& buffer);
+	T* GetLoaded(const String& id);
+	template <typename T>
+	T* LoadFromArchive(const String& id);
+#if !SHIPPING
+	template <typename T>
+	T* LoadFromFilesystem(const String& id);
+#endif
+
+	template <typename T>
+	UPtr<T> CreateAsset(const String& id, const Vec<u8>& buffer);
 
 #if !SHIPPING
 	template <typename T>
-	UPtr<T> LoadInternal(const String& id);
+	UPtr<T> FetchAsset(const String& id);
 #endif
 
 	bool IsLoaded(const String& id);
@@ -59,7 +68,7 @@ private:
 	void Tick(Time dt);
 
 	friend class EngineService;
-	friend class AsyncAssetLoader;
+	friend class ManifestLoader;
 };
 
 template <typename T>
@@ -67,55 +76,21 @@ T* EngineRepository::Load(const String& id)
 {
 	static_assert(IsDerived<Asset, T>(),
 				  "T must derive from Asset: check Output window for erroneous call");
-	m_mutex.lock();
-	auto search = m_loaded.find(id);
-	m_mutex.unlock();
 
-	if (search != m_loaded.end())
-	{
-#if LOG_CACHED_ASSET_LOADS
-		LOG_D("[EngineRepository] Found Asset [%s] in cache", id.c_str());
-#endif
-		return dynamic_cast<T*>(search->second.get());
-	}
+	T* pT = GetLoaded<T>(id);
+	if (pT)
+		return pT;
 
 	LOG_W("[EngineRepository] Orphaned asset (not loaded by manifest) requested at runtime [%s]", id.c_str());
-	T* pT = nullptr;
-	if (!m_archiveReader.IsPresent(id.c_str()))
+	if (m_cooked.IsPresent(id.c_str()))
 	{
-		LOG_E("[EngineRepository] Cooked archive does not contain [%s]!", id.c_str());
+		pT = LoadFromArchive<T>(id.c_str());
 	}
-	else
-	{
-		UPtr<T> uT = LoadInternal<T>(id, m_archiveReader.Decompress(id));
-		if (uT)
-		{
-			pT = uT.get();
-			m_mutex.lock();
-			m_loaded.emplace(id, std::move(uT));
-			m_mutex.unlock();
-		}
-		else
-		{
-			LOG_E("[EngineRepository] Could not load [%s] from cooked archive!", id.c_str());
-		}
-	}
-
 #if !SHIPPING
 	if (!pT)
 	{
-		UPtr<T> uT = LoadInternal<T>(id);
-		if (uT)
-		{
-			pT = uT.get();
-			m_mutex.lock();
-			m_loaded.emplace(id, std::move(uT));
-			m_mutex.unlock();
-		}
-		else
-		{
-			LOG_E("[EngineRepository] Could not load [%s] from filesystem!", id.c_str());
-		}
+		LOG_W("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
+		pT = LoadFromFilesystem<T>(id.c_str());
 	}
 #endif
 	return pT;
@@ -129,70 +104,79 @@ std::future<T*> EngineRepository::LoadAsync(const String& id)
 	// std::function needs to be copyable, so cannot use UPtr<promise> here
 	SPtr<std::promise<T*>> sPromise = MakeShared<std::promise<T*>>();
 
-	m_mutex.lock();
+	T* pT = GetLoaded<T>(id);
+	if (pT)
+	{
+		sPromise->set_value(pT);
+		return sPromise->get_future();
+	}
+
+	if (m_cooked.IsPresent(id.c_str()))
+	{
+		Services::Jobs()->Enqueue(
+			[this, id, sPromise]() { sPromise->set_value(LoadFromArchive<T>(id.c_str())); }, "", true);
+	}
+	else
+	{
+		LOG_W("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
+#if !SHIPPING
+		Services::Jobs()->Enqueue(
+			[this, id, sPromise]() { sPromise->set_value(LoadFromFilesystem<T>(id.c_str())); }, "", true);
+#else
+		sPromise->set_value(nullptr);
+#endif
+	}
+
+	return sPromise->get_future();
+}
+
+template <typename T>
+T* EngineRepository::GetLoaded(const String& id)
+{
+	Lock lock(m_mutex);
 	auto search = m_loaded.find(id);
-	m_mutex.unlock();
 	if (search != m_loaded.end())
 	{
 #if LOG_CACHED_ASSET_LOADS
 		LOG_D("[EngineRepository] Found Asset [%s] in cache", id.c_str());
 #endif
-		sPromise->set_value(dynamic_cast<T*>(search->second.get()));
-		return sPromise->get_future();
+		return dynamic_cast<T*>(search->second.get());
 	}
-
-	if (m_archiveReader.IsPresent(id.c_str()))
-	{
-		Services::Jobs()->Enqueue(
-			[this, id, sPromise]() {
-				UPtr<T> uT = LoadInternal<T>(id, m_archiveReader.Decompress(id));
-				T* pT = nullptr;
-				if (uT)
-				{
-					pT = uT.get();
-					m_mutex.lock();
-					m_loaded.emplace(id, std::move(uT));
-					m_mutex.unlock();
-				}
-				else
-				{
-					LOG_E("[EngineRepository] Could not load [%s] from cooked archive!", id.c_str());
-				}
-				sPromise->set_value(pT);
-			},
-			"", true);
-	}
-	else
-	{
-		LOG_E("[EngineRepository] Cooked archive does not contain [%s]!", id.c_str());
-#if !SHIPPING
-		Services::Jobs()->Enqueue(
-			[this, id, sPromise]() {
-				UPtr<T> uT = LoadInternal<T>(id);
-				T* pT = nullptr;
-				if (uT)
-				{
-					pT = uT.get();
-					m_mutex.lock();
-					m_loaded.emplace(id, std::move(uT));
-					m_mutex.unlock();
-				}
-				else
-				{
-					LOG_E("[EngineRepository] Could not load [%s] from filesystem!", id.c_str());
-				}
-				sPromise->set_value(pT);
-			},
-			"", true);
-#else
-		sPromise->set_value(nullptr);
-#endif
-	}
-	return sPromise->get_future();
+	return nullptr;
 }
 
 template <typename T>
-UPtr<T> EngineRepository::LoadInternal(const String& id, const Vec<u8>& buffer)
+T* EngineRepository::LoadFromArchive(const String& id)
+{
+	T* pT = nullptr;
+	UPtr<T> uT = CreateAsset<T>(id, m_cooked.Decompress(id.c_str()));
+	if (uT)
+	{
+		pT = uT.get();
+		Lock lock(m_mutex);
+		m_loaded.emplace(id, std::move(uT));
+	}
+	return pT;
+}
+
+#if !SHIPPING
+template <typename T>
+T* EngineRepository::LoadFromFilesystem(const String& id)
+{
+	T* pT = nullptr;
+	UPtr<T> uT = FetchAsset<T>(id);
+	if (uT)
+	{
+		pT = uT.get();
+		Lock lock(m_mutex);
+		m_loaded.emplace(id, std::move(uT));
+	}
+	return pT;
+}
+#endif
+
+template <typename T>
+UPtr<T> EngineRepository::CreateAsset(const String& id, const Vec<u8>& buffer)
 {
 	struct enable_smart : public T
 	{
@@ -205,13 +189,13 @@ UPtr<T> EngineRepository::LoadInternal(const String& id, const Vec<u8>& buffer)
 	uT = MakeUnique<enable_smart>(id, buffer);
 	if (!uT || uT->IsError())
 		return nullptr;
-	LOG_I("[AssetManager] Decompressed %s [%s]", g_szAssetType[ToIdx(uT->GetType())], id.c_str());
+	LOG_I("[EngineRepository] Decompressed %s [%s]", g_szAssetType[ToIdx(uT->GetType())], id.c_str());
 	return std::move(uT);
 }
 
 #if !SHIPPING
 template <typename T>
-UPtr<T> EngineRepository::LoadInternal(const String& id)
+UPtr<T> EngineRepository::FetchAsset(const String& id)
 {
 	struct enable_smart : public T
 	{
@@ -224,7 +208,7 @@ UPtr<T> EngineRepository::LoadInternal(const String& id)
 	uT = MakeUnique<enable_smart>(id, m_rootDir);
 	if (!uT || uT->IsError())
 		return nullptr;
-	LOG_I("[AssetManager] Loaded %s from filesystem [%s]", g_szAssetType[ToIdx(uT->GetType())], id.c_str());
+	LOG_I("[EngineRepository] Loaded %s from filesystem [%s]", g_szAssetType[ToIdx(uT->GetType())], id.c_str());
 	return std::move(uT);
 }
 #endif

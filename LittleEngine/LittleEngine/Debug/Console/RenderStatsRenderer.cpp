@@ -28,24 +28,28 @@ bool RenderStatsRenderer::s_bConsoleRenderStatsEnabled = false;
 RenderStatsRenderer::RenderStatsRenderer()
 {
 	m_uPrimitiveCount = MakeUnique<UIElement>("PrimitiveCount");
+	m_uPrimitiveCount->m_layer = LAYER_TOP;
 	m_uPrimitiveCount->GetText()
 		->SetPivot({-1, 0})
 		->SetPosition(GFX::Project({Fixed(0.90f), -Fixed(0.92f)}, false))
 		->SetEnabled(false);
 
 	m_uDynamicCount = MakeUnique<UIElement>("DynamicPrimitiveCount");
+	m_uDynamicCount->m_layer = LAYER_TOP;
 	m_uDynamicCount->GetText()
 		->SetPivot({-1, 0})
 		->SetPosition(GFX::Project({Fixed(0.90f), -Fixed(0.94f)}, false))
 		->SetEnabled(false);
 
 	m_uStaticCount = MakeUnique<UIElement>("StaticPrimitiveCount");
+	m_uStaticCount->m_layer = LAYER_TOP;
 	m_uStaticCount->GetText()
 		->SetPivot({-1, 0})
 		->SetPosition(GFX::Project({Fixed(0.90f), -Fixed(0.96f)}, false))
 		->SetEnabled(false);
 
 	m_uFPS = MakeUnique<UIElement>("FPS");
+	m_uFPS->m_layer = LAYER_TOP;
 	m_uFPS->GetText()
 		->SetPivot({-1, 0})
 		->SetPosition(GFX::Project({Fixed(0.90f), -Fixed(0.98f)}, false))
@@ -66,6 +70,7 @@ VersionRenderer::VersionRenderer()
 	const Core::Version& engineVersion = EngineConfig::GetEngineVersion();
 	m_uEngineVersion = MakeUnique<UIElement>("EngineVersion");
 	m_uEngineVersion->SetText(UIText(engineVersion.ToString(), 10, g_logTextColour));
+	m_uEngineVersion->m_layer = LAYER_TOP;
 	m_uEngineVersion->GetText()
 		->SetPivot({-1, 0})
 		->SetPosition(GFX::Project({-Fixed(0.99f), -Fixed(0.97f)}, false))
@@ -74,7 +79,9 @@ VersionRenderer::VersionRenderer()
 	const Core::Version& gameVersion = GameManager::GetGameVersion();
 	m_uGameVersion = MakeUnique<UIElement>("GameVersion");
 	m_uGameVersion->SetText(UIText(gameVersion.ToString(), 11, g_logTextColour));
+	m_uGameVersion->m_layer = LAYER_TOP;
 	m_uGameVersion->GetText()
+		->SetLayer(LAYER_TOP)
 		->SetPivot({-1, 0})
 		->SetPosition(GFX::Project({-Fixed(0.99f), -Fixed(0.95f)}, false))
 		->SetEnabled(true);

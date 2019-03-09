@@ -6,7 +6,7 @@
 
 namespace LittleEngine
 {
-class AsyncAssetLoader final
+class ManifestLoader final
 {
 private:
 	template <typename T>
@@ -33,9 +33,9 @@ private:
 
 public:
 #if !SHIPPING
-	AsyncAssetLoader(EngineRepository& repository, const String& manifestPath, const std::function<void()>& onDone);
+	ManifestLoader(EngineRepository& repository, const String& manifestPath, const std::function<void()>& onDone);
 #endif
-	AsyncAssetLoader(EngineRepository& repository,
+	ManifestLoader(EngineRepository& repository,
 					 const String& archivePath,
 					 const String& manifestPath,
 					 const std::function<void()>& onDone);

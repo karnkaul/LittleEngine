@@ -2,7 +2,7 @@
 #include "WorldStateMachine.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/RenderLoop/RenderHeap.h"
-#include "LittleEngine/Repository/AsyncAssetLoader.h"
+#include "LittleEngine/Repository/ManifestLoader.h"
 #include "LittleEngine/Engine/EngineService.h"
 
 namespace LittleEngine

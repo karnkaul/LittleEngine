@@ -63,7 +63,7 @@ public:
 	void Clear(bool bImmediate = true);
 
 private:
-	class EngineRepository& GetAssetManager();
+	class EngineRepository& GetRepository();
 	SoundPlayer& GetOrCreateSFXPlayer();
 	MusicPlayer& GetActivePlayer();
 	MusicPlayer& GetStandbyPlayer();
