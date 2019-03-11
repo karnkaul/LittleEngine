@@ -22,6 +22,8 @@ public:
 		Vec<GameInputType> held;
 		Vec<GameInputType> released;
 		TextInput textInput;
+		
+		static String GetClipboard();
 
 		Frame(const Vec<GameInputType>& pressed,
 			  const Vec<GameInputType>& held,

@@ -1,15 +1,17 @@
 #include "stdafx.h"
-#include "AsyncAssetLoader.h"
+#include "ManifestLoader.h"
 #include "EngineRepository.h"
 #include "LittleEngine/Services/Services.h"
 #include "SFMLAPI/System/SFAssets.h"
+#include "LittleEngine/Jobs/JobManager.h"
+#include "LittleEngine/Jobs/MultiJob.h"
 
 namespace LittleEngine
 {
 using Lock = std::lock_guard<std::mutex>;
 
 #if !SHIPPING
-AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
+ManifestLoader::ManifestLoader(EngineRepository& repository,
 								   const String& manifestPath,
 								   const std::function<void()>& onDone)
 	: m_onDone(onDone), m_pRepository(&repository)
@@ -56,7 +58,7 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
 		[&]() {
 			for (auto& sound : m_newSounds)
 			{
-				sound.asset = m_pRepository->LoadInternal<SoundAsset>(sound.assetID);
+				sound.asset = m_pRepository->FetchAsset<SoundAsset>(sound.assetID);
 			}
 		},
 		"Load All Sounds");
@@ -64,32 +66,32 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
 	for (auto& texture : m_newTextures)
 	{
 		m_pMultiJob->AddJob(
-			[&]() { texture.asset = m_pRepository->LoadInternal<TextureAsset>(texture.assetID); },
+			[&]() { texture.asset = m_pRepository->FetchAsset<TextureAsset>(texture.assetID); },
 			texture.assetID);
 	}
 	for (auto& font : m_newFonts)
 	{
 		m_pMultiJob->AddJob(
-			[&]() { font.asset = m_pRepository->LoadInternal<FontAsset>(font.assetID); }, font.assetID);
+			[&]() { font.asset = m_pRepository->FetchAsset<FontAsset>(font.assetID); }, font.assetID);
 	}
 	for (auto& text : m_newTexts)
 	{
 		m_pMultiJob->AddJob(
-			[&]() { text.asset = m_pRepository->LoadInternal<TextAsset>(text.assetID); }, text.assetID);
+			[&]() { text.asset = m_pRepository->FetchAsset<TextAsset>(text.assetID); }, text.assetID);
 	}
 
 	m_pMultiJob->StartJobs([&]() { m_bCompleted = true; });
 }
 #endif
 
-AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
+ManifestLoader::ManifestLoader(EngineRepository& repository,
 								   const String& archivePath,
 								   const String& manifestPath,
 								   const std::function<void()>& onDone)
 	: m_onDone(onDone), m_pRepository(&repository)
 {
 	m_archiveReader.Load(archivePath.c_str());
-	Vec<u8> manifestBuffer = m_archiveReader.Decompress(manifestPath);
+	Vec<u8> manifestBuffer = m_archiveReader.Decompress(manifestPath.c_str());
 	String manifestText = m_archiveReader.ToText(manifestBuffer);
 	AssetManifestData data;
 	data.Deserialise(manifestText);
@@ -134,8 +136,8 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
 		[&]() {
 			for (auto& sound : m_newSounds)
 			{
-				sound.asset = m_pRepository->LoadInternal<SoundAsset>(
-					sound.assetID, m_archiveReader.Decompress(sound.assetID));
+				sound.asset = m_pRepository->CreateAsset<SoundAsset>(
+					sound.assetID, m_archiveReader.Decompress(sound.assetID.c_str()));
 			}
 		},
 		"Load All Sounds");
@@ -144,8 +146,8 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
 	{
 		m_pMultiJob->AddJob(
 			[&]() {
-				texture.asset = m_pRepository->LoadInternal<TextureAsset>(
-					texture.assetID, m_archiveReader.Decompress(texture.assetID));
+				texture.asset = m_pRepository->CreateAsset<TextureAsset>(
+					texture.assetID, m_archiveReader.Decompress(texture.assetID.c_str()));
 			},
 			texture.assetID);
 	}
@@ -153,8 +155,8 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
 	{
 		m_pMultiJob->AddJob(
 			[&]() {
-				font.asset = m_pRepository->LoadInternal<FontAsset>(
-					font.assetID, m_archiveReader.Decompress(font.assetID));
+				font.asset = m_pRepository->CreateAsset<FontAsset>(
+					font.assetID, m_archiveReader.Decompress(font.assetID.c_str()));
 			},
 			font.assetID);
 	}
@@ -162,8 +164,8 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
 	{
 		m_pMultiJob->AddJob(
 			[&]() {
-				text.asset = m_pRepository->LoadInternal<TextAsset>(
-					text.assetID, m_archiveReader.Decompress(text.assetID));
+				text.asset = m_pRepository->CreateAsset<TextAsset>(
+					text.assetID, m_archiveReader.Decompress(text.assetID.c_str()));
 			},
 			text.assetID);
 	}
@@ -171,12 +173,12 @@ AsyncAssetLoader::AsyncAssetLoader(EngineRepository& repository,
 	m_pMultiJob->StartJobs([&]() { m_bCompleted = true; });
 }
 
-Fixed AsyncAssetLoader::GetProgress() const
+Fixed ManifestLoader::GetProgress() const
 {
 	return m_pMultiJob ? m_pMultiJob->GetProgress() : -1.0f;
 }
 
-void AsyncAssetLoader::Tick(Time)
+void ManifestLoader::Tick(Time)
 {
 	if (m_bCompleted)
 	{
@@ -210,7 +212,7 @@ void AsyncAssetLoader::Tick(Time)
 	}
 }
 
-void AsyncAssetLoader::AddTextureIDs(const AssetIDContainer& IDs)
+void ManifestLoader::AddTextureIDs(const AssetIDContainer& IDs)
 {
 	for (auto& id : IDs.assetIDs)
 	{
@@ -221,7 +223,7 @@ void AsyncAssetLoader::AddTextureIDs(const AssetIDContainer& IDs)
 	}
 }
 
-void AsyncAssetLoader::AddFontIDs(const AssetIDContainer& IDs)
+void ManifestLoader::AddFontIDs(const AssetIDContainer& IDs)
 {
 	for (auto& id : IDs.assetIDs)
 	{
@@ -232,7 +234,7 @@ void AsyncAssetLoader::AddFontIDs(const AssetIDContainer& IDs)
 	}
 }
 
-void AsyncAssetLoader::AddSoundIDs(const AssetIDContainer& IDs)
+void ManifestLoader::AddSoundIDs(const AssetIDContainer& IDs)
 {
 	for (auto& id : IDs.assetIDs)
 	{
@@ -243,7 +245,7 @@ void AsyncAssetLoader::AddSoundIDs(const AssetIDContainer& IDs)
 	}
 }
 
-void AsyncAssetLoader::AddTextIDs(const AssetIDContainer& IDs)
+void ManifestLoader::AddTextIDs(const AssetIDContainer& IDs)
 {
 	for (auto& id : IDs.assetIDs)
 	{

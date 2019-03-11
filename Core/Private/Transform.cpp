@@ -16,10 +16,10 @@ Transform::~Transform()
 {
 	if (pParent)
 		pParent->RemoveChild(*this);
-	for (auto child : children)
+	for (auto pChild : pChildren)
 	{
-		if (child)
-			child->pParent = nullptr;
+		if (pChild)
+			pChild->pParent = nullptr;
 	}
 }
 
@@ -43,7 +43,7 @@ void Transform::UnsetParent(bool bModifyWorldSpace)
 			localPosition = Position();
 			localOrientation = Orientation();
 		}
-			
+
 		pParent->RemoveChild(*this);
 	}
 	pParent = nullptr;
@@ -84,19 +84,18 @@ Vector2 Transform::Scale() const
 void Transform::Rotate(Fixed angle)
 {
 	localOrientation += angle;
-	Core::CleanVector<Transform*>(children, [](Transform* child) { return child == nullptr; });
+	Core::CleanVector<Transform*>(pChildren, [](Transform* child) { return child == nullptr; });
 	// Children need to be repositioned
-	if (!children.empty())
+	if (!pChildren.empty())
 	{
 		Fixed rad = angle * Maths::DEG_TO_RAD;
 		Fixed s = rad.Sin(), c = rad.Cos();
-		for (const auto& child : children)
+		for (auto pChild : pChildren)
 		{
-			// if (Ptr transform = child.lock()) {
-			if (child)
+			if (pChild)
 			{
-				Vector2 p = child->localPosition;
-				child->localPosition = Vector2((p.x * c) - (p.y * s), (p.x * s) + (p.y * c));
+				Vector2 p = pChild->localPosition;
+				pChild->localPosition = Vector2((p.x * c) - (p.y * s), (p.x * s) + (p.y * c));
 			}
 		}
 	}
@@ -109,11 +108,11 @@ String Transform::ToString() const
 
 void Transform::AddChild(Transform& child)
 {
-	children.push_back(&child);
+	pChildren.push_back(&child);
 }
 
 bool Transform::RemoveChild(Transform& child)
 {
-	return Core::VectorErase(children, &child);
+	return Core::VectorErase(pChildren, &child);
 }
 } // namespace Core

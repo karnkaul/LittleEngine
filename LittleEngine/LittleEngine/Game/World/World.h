@@ -1,5 +1,4 @@
 #pragma once
-#include <future>
 #include "CoreTypes.h"
 #include "TokenHandler.hpp"
 #include "SFMLAPI/System/SFTime.h"
@@ -17,8 +16,7 @@ class World : public Inheritable
 {
 private:
 	GameClock m_worldClock;
-	std::promise<void> m_preloadComplete;
-
+	
 protected:
 	Core::TokenHandler<EngineInput::Token> m_tokenHandler;
 	WorldID m_id;

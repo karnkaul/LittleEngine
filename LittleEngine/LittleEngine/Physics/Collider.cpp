@@ -61,7 +61,7 @@ void Collider::OnHit(const Collider& other)
 	}
 }
 #else
-void Collider::OnHit(const Collider&) 
+void Collider::OnHit(const Collider&)
 {
 }
 #endif

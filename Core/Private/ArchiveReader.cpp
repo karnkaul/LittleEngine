@@ -46,15 +46,18 @@ bool ArchiveReader::IsPresent(const char* szPathInArchive) const
 	return PHYSFS_exists(szPathInArchive);
 }
 
-Vec<u8> ArchiveReader::Decompress(const String& pathInArchive) const
+Vec<u8> ArchiveReader::Decompress(const char* szPathInArchive) const
 {
-	if (IsPresent(pathInArchive.c_str()))
+	if (IsPresent(szPathInArchive))
 	{
-		PHYSFS_File* pFile = PHYSFS_openRead(pathInArchive.c_str());
+		PHYSFS_File* pFile = PHYSFS_openRead(szPathInArchive);
 		PHYSFS_sint64 size = PHYSFS_fileLength(pFile);
-		Vec<u8> buffer(size, 0);
-		PHYSFS_readBytes(pFile, &buffer[0], size);
-		return buffer;
+		if (size > 0)
+		{
+			Vec<u8> buffer(size, 0);
+			PHYSFS_readBytes(pFile, &buffer[0], size);
+			return buffer;
+		}
 	}
 	return {};
 }

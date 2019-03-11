@@ -3,17 +3,23 @@
 #if ENABLED(CONSOLE)
 #include "LogLine.h"
 
-namespace LittleEngine { namespace Debug {
-	namespace Commands {
-		struct AutoCompleteResults {
-			Vec<String> queries;
-			Vec<String> params;
-			bool bCustomParam = false;
-		};
+namespace LittleEngine
+{
+namespace Debug
+{
+namespace Commands
+{
+struct AutoCompleteResults
+{
+	Vec<String> queries;
+	Vec<String> params;
+	bool bCustomParam = false;
+};
 
-		void Init();
-		Vec<LogLine> Execute(const String& query);
-		AutoCompleteResults AutoComplete(const String& incompleteQuery);
-	}
-} }
+void Init();
+Vec<LogLine> Execute(const String& query);
+AutoCompleteResults AutoComplete(const String& incompleteQuery);
+} // namespace Commands
+} // namespace Debug
+} // namespace LittleEngine
 #endif

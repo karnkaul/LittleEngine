@@ -2,6 +2,7 @@
 #include "RenderComponent.h"
 #include "LittleEngine/Game/Entity.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/RenderLoop/RenderHeap.h"
 
 namespace LittleEngine
 {

@@ -95,8 +95,8 @@ UIButton::OnClick::Token UIDialogue::AddMainButton(const UIText& text,
 }
 
 UIButton::OnClick::Token UIDialogue::AddOtherButton(const UIText& otherButtonUIText,
-										  const UIButton::OnClick::Callback& OnOtherButton,
-										  bool bSelect)
+													const UIButton::OnClick::Callback& OnOtherButton,
+													bool bSelect)
 {
 	if (m_pOtherButton)
 	{

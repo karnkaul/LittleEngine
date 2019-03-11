@@ -2,7 +2,9 @@
 #include <atomic>
 #include <mutex>
 #include <functional>
+#include <future>
 #include "CoreTypes.h"
+#include "JobHandle.h"
 #include "JobWorker.h"
 #include "MultiJob.h"
 #include "LittleEngine/Services/IService.h"
@@ -10,68 +12,61 @@
 
 namespace LittleEngine
 {
-using JobID = s32;
-
 class JobManager final : public IService
 {
 public:
-	static constexpr JobID INVALID_ID = -1;
+	static constexpr s32 INVALID_ID = -1;
 
 private:
 	using Lock = std::lock_guard<std::mutex>;
 
-	struct Job
+	class Job
 	{
+	private:
+		std::promise<void> m_promise;
 		String logName;
-		std::function<void()> task;
-		JobID id = INVALID_ID;
-		bool bSilent = false;
+	public:
+		SPtr<JobHandle> m_sHandle;
+		std::function<void()> m_task;
+		s32 m_id;
+		bool m_bSilent = false;
 
+	public:
 		Job() = default;
-		Job(JobID id, const std::function<void()>& task, String name, bool bSilent);
+		Job(s32 id, const std::function<void()>& task, String name, bool bSilent);
 
 		const char* ToStr() const;
+
+		void Run();
+		void Fulfil();
 	};
 
 private:
 	Vec<UPtr<class JobWorker>> m_gameWorkers;
 	Vec<UPtr<class JobWorker>> m_engineWorkers;
-	Vec<JobID> m_completed;
 	List<UPtr<MultiJob>> m_uMultiJobs;
-	List<Job> m_gameJobQueue;
-	List<Job> m_engineJobQueue;
+	List<UPtr<Job>> m_gameJobQueue;
+	List<UPtr<Job>> m_engineJobQueue;
 	std::mutex m_mutex;
-	JobID m_nextGameJobID = 100;
-	JobID m_nextEngineJobID = 0;
-	u32 m_availableEngineThreads;
+	s64 m_nextGameJobID = 100;
+	s64 m_nextEngineJobID = 0;
+	u8 m_availableEngineThreads;
 
 public:
 	JobManager();
 	~JobManager();
 
-	void Wait(JobID id);
-	void Wait(InitList<JobID> ids);
-	void Wait(const Vec<JobID>& ids);
-	bool IsRunning(JobID id);
-	bool IsCompleted(JobID id);
-
 public:
-	JobID Enqueue(const std::function<void()>& Task, const String& name = "", bool bSilent = false);
-	JobID EnqueueEngine(const std::function<void()>& Task, const String& name);
+	SPtr<JobHandle> Enqueue(const std::function<void()>& Task, const String& name = "", bool bSilent = false);
+	SPtr<JobHandle> EnqueueEngine(const std::function<void()>& Task, const String& name);
 	MultiJob* CreateMultiJob(const String& name);
 
 private:
 	s32 AvailableEngineThreads() const;
 	void Tick(Time dt);
 
-	bool Unsafe_IsCompleted(JobID id);
-	bool Unsafe_IsEnqueued(JobID id);
-	JobWorker* Unsafe_GetGameWorker(JobID id);
-	JobWorker* Unsafe_GetEngineWorker(JobID id);
-
-	Job Lock_PopJob(bool bEngineQueue = false);
-	void Lock_CompleteJob(JobID id);
-	JobID Lock_Enqueue(Job&& job, List<Job>& jobQueue);
+	UPtr<Job> Lock_PopJob(bool bEngineQueue = false);
+	SPtr<JobHandle> Lock_Enqueue(UPtr<Job>&& uJob, List<UPtr<Job>>& jobQueue);
 
 	friend class EngineService;
 	friend class EngineLoop;

@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "ParticleSystem.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/Audio/EngineAudio.h"
+#include "LittleEngine/Game/GameManager.h"
+#include "LittleEngine/Repository/EngineRepository.h"
 
 namespace LittleEngine
 {
@@ -453,7 +457,8 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData&& data)
 		particles = "0";
 	particles = "[" + particles + "] particles";
 
-	Core::Log(logSeverity, "%s initialised: [%d] emitters %s", LogNameStr(), emitters.size(), particles.c_str());
+	Core::Log(logSeverity, "%s initialised: [%d] emitters %s", LogNameStr(), emitters.size(),
+			  particles.c_str());
 }
 
 void ParticleSystem::Start()

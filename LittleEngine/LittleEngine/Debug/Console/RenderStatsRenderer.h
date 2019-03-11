@@ -13,6 +13,7 @@ class RenderStatsRenderer
 {
 public:
 	static bool s_bConsoleRenderStatsEnabled;
+
 private:
 	UPtr<UIElement> m_uPrimitiveCount;
 	UPtr<UIElement> m_uStaticCount;
@@ -35,6 +36,6 @@ public:
 	VersionRenderer();
 };
 #endif
-}
-}
+} // namespace Debug
+} // namespace LittleEngine
 #endif

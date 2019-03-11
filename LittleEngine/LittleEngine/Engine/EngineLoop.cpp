@@ -28,7 +28,7 @@ void EngineLoop::PreRun()
 	if (!m_bInit)
 		Init();
 	m_uAsyncRenderLoop = MakeUnique<AsyncRenderLoop>(*m_uSFWindow, m_gfxBuffer, m_tickRate, m_bRenderThread);
-	m_uEngineService->m_pRenderLoop = m_uAsyncRenderLoop.get(); 
+	m_uEngineService->m_pRenderLoop = m_uAsyncRenderLoop.get();
 	m_uRenderHeap = MakeUnique<RenderHeap>(m_gfxBuffer);
 	GFX::Init(*m_uSFWindow);
 	m_uEngineService->PreRun();
@@ -155,7 +155,7 @@ void EngineLoop::Init()
 			m_bRenderThread = true;
 		}
 	}
-	
+
 #if DEBUGGING
 	Collider::s_debugShapeWidth = m_config.GetColliderBorderWidth();
 #endif

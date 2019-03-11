@@ -52,6 +52,10 @@ enum class SpecialInputType
 	Left,
 	Right,
 	Shift,
+	Control,
+	Alt,
+	Insert,
+	Delete,
 	PageUp,
 	PageDown,
 };
@@ -71,6 +75,8 @@ struct SFInputDataFrame
 {
 	Vec<KeyState> pressed;
 	TextInput textInput;
+
+	static String GetClipboard();
 };
 
 // \brief Concrete class that a Graphics can update KeyStates to every frame

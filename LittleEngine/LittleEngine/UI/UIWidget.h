@@ -28,16 +28,7 @@ public:
 	virtual ~UIWidget();
 
 	template <typename T>
-	UIElement* AddElement(const String& name = "", UITransform* pParent = nullptr)
-	{
-		static_assert(std::is_base_of<UIElement, T>::value,
-					  "T must derive from UIElement. Check Output Window for erroneous call");
-		UPtr<T> uT = MakeUnique<T>(name);
-		T* pT = uT.get();
-		InitElement(pT, pParent);
-		m_uiElements.push_back(std::move(uT));
-		return pT;
-	}
+	UIElement* AddElement(const String& name = "", UITransform* pParent = nullptr);
 
 	virtual void OnSelected() = 0;
 	virtual void OnDeselected() = 0;
@@ -56,4 +47,16 @@ private:
 
 	friend class UIContext;
 };
+
+template <typename T>
+UIElement* UIWidget::AddElement(const String& name, UITransform* pParent)
+{
+	static_assert(std::is_base_of<UIElement, T>::value,
+				  "T must derive from UIElement. Check Output Window for erroneous call");
+	UPtr<T> uT = MakeUnique<T>(name);
+	T* pT = uT.get();
+	InitElement(pT, pParent);
+	m_uiElements.push_back(std::move(uT));
+	return pT;
+}
 } // namespace LittleEngine

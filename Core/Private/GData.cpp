@@ -7,7 +7,18 @@ namespace Core
 namespace
 {
 InitList<Strings::Pair<char>> gDataEscapes = {{'{', '}'}, {'[', ']'}, '\"'};
+
+template <typename T>
+T Get(const UMap<String, String>& table, const String& key, T (*Adaptor)(const String&, T), const T& defaultValue)
+{
+	auto search = table.find(key);
+	if (search != table.end())
+	{
+		return Adaptor(search->second, defaultValue);
+	}
+	return defaultValue;
 }
+} // namespace
 
 GData::GData(const String& serialised)
 {
@@ -60,17 +71,6 @@ String GData::Unmarshall() const
 void GData::Clear()
 {
 	m_fieldMap.clear();
-}
-
-template <typename T>
-static T Get(const UMap<String, String>& table, const String& key, T (*Adaptor)(const String&, T), const T& defaultValue)
-{
-	auto search = table.find(key);
-	if (search != table.end())
-	{
-		return Adaptor(search->second, defaultValue);
-	}
-	return defaultValue;
 }
 
 String GData::GetString(const String& key, const String& defaultValue) const

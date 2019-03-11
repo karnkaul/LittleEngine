@@ -4,6 +4,7 @@
 #include "LittleEngine/UI/UIWidget.h"
 #include "LittleEngine/UI/UIWidgetMatrix.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/Input/EngineInput.h"
 
 namespace LittleEngine
 {
@@ -35,36 +36,9 @@ public:
 	virtual ~UIContext();
 
 	template <typename T>
-	T* AddWidget(const String& name, UIWidgetStyle* pStyleToCopy = nullptr, bool bNewColumn = false)
-	{
-		static_assert(std::is_base_of<UIWidget, T>::value, "T must derive from UIWidget.");
-		UPtr<T> uT = MakeUnique<T>(name);
-		T* pT = uT.get();
-		UIWidgetStyle defaultStyle = UIWidgetStyle::GetDefault();
-		if (!pStyleToCopy)
-			pStyleToCopy = &defaultStyle;
-		pStyleToCopy->baseLayer = static_cast<LayerID>(m_pRootElement->m_layer + 1);
-		uT->InitWidget(*this, pStyleToCopy);
-		m_uiWidgets.EmplaceWidget(std::move(uT), bNewColumn);
-		LOG_D("%s %s", pT->LogNameStr(), "constructed");
-		return pT;
-	}
-
+	T* AddWidget(const String& name, UIWidgetStyle* pStyleToCopy = nullptr, bool bNewColumn = false);
 	template <typename T>
-	T* AddElement(const String& name, UITransform* pParent = nullptr)
-	{
-		static_assert(std::is_base_of<UIElement, T>::value, "T must derive from UIWidget!");
-		UPtr<T> uT = MakeUnique<T>(name, true);
-		if (!pParent && m_pRootElement)
-			pParent = &m_pRootElement->m_transform;
-		uT->InitElement(pParent);
-		if (m_pRootElement)
-			uT->m_layer = static_cast<LayerID>(m_pRootElement->m_layer + 1);
-		T* pT = uT.get();
-		m_uiElements.push_back(std::move(uT));
-		LOG_D("%s %s", pT->LogNameStr(), "constructed");
-		return pT;
-	}
+	T* AddElement(const String& name, UITransform* pParent = nullptr);
 
 	void SetActive(bool bActive, bool bResetSelection = true);
 	void ResetSelection();
@@ -92,7 +66,39 @@ protected:
 
 private:
 	void InitContext(LayerID rootLayer);
-	
+
 	friend class UIManager;
 };
+
+template <typename T>
+T* UIContext::AddWidget(const String& name, UIWidgetStyle* pStyleToCopy, bool bNewColumn)
+{
+	static_assert(std::is_base_of<UIWidget, T>::value, "T must derive from UIWidget.");
+	UPtr<T> uT = MakeUnique<T>(name);
+	T* pT = uT.get();
+	UIWidgetStyle defaultStyle = UIWidgetStyle::GetDefault();
+	if (!pStyleToCopy)
+		pStyleToCopy = &defaultStyle;
+	pStyleToCopy->baseLayer = static_cast<LayerID>(m_pRootElement->m_layer + 1);
+	uT->InitWidget(*this, pStyleToCopy);
+	m_uiWidgets.EmplaceWidget(std::move(uT), bNewColumn);
+	LOG_D("%s %s", pT->LogNameStr(), "constructed");
+	return pT;
+}
+
+template <typename T>
+T* UIContext::AddElement(const String& name, UITransform* pParent)
+{
+	static_assert(std::is_base_of<UIElement, T>::value, "T must derive from UIWidget!");
+	UPtr<T> uT = MakeUnique<T>(name, true);
+	if (!pParent && m_pRootElement)
+		pParent = &m_pRootElement->m_transform;
+	uT->InitElement(pParent);
+	if (m_pRootElement)
+		uT->m_layer = static_cast<LayerID>(m_pRootElement->m_layer + 1);
+	T* pT = uT.get();
+	m_uiElements.push_back(std::move(uT));
+	LOG_D("%s %s", pT->LogNameStr(), "constructed");
+	return pT;
+}
 } // namespace LittleEngine

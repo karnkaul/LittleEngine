@@ -2,6 +2,7 @@
 #include "UIObject.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/Repository/EngineRepository.h"
+#include "LittleEngine/Engine/EngineService.h"
 
 namespace LittleEngine
 {

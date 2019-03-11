@@ -49,10 +49,7 @@ public:
 	bool IsSFXPlaying() const;
 
 	// Returns true if asset is loaded successfully
-	bool PlayMusic(const String& id,
-				   const Fixed& volume = Fixed::One,
-				   Time fadeTime = Time::Seconds(1),
-				   bool bLoop = true);
+	bool PlayMusic(const String& id, const Fixed& volume = Fixed::One, Time fadeTime = Time::Seconds(1), bool bLoop = true);
 	bool IsMusicPlaying() const;
 	void StopMusic(Time fadeTime = Time::Zero);
 	bool ResumeMusic(Time fadeTime = Time::Zero, const Fixed& volume = Fixed::One);
@@ -66,7 +63,7 @@ public:
 	void Clear(bool bImmediate = true);
 
 private:
-	class EngineRepository& GetAssetManager();
+	class EngineRepository& GetRepository();
 	SoundPlayer& GetOrCreateSFXPlayer();
 	MusicPlayer& GetActivePlayer();
 	MusicPlayer& GetStandbyPlayer();

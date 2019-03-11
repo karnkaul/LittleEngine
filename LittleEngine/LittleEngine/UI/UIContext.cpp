@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UIContext.h"
 #include "LittleEngine/Game/World/World.h"
+#include "LittleEngine/Engine/EngineService.h"
 #include "Logger.h"
 
 namespace LittleEngine
@@ -53,7 +54,6 @@ void UIContext::ResetSelection()
 		pSelected->m_state = UIWidgetState::Selected;
 		pSelected->OnSelected();
 	}
-		
 }
 
 UIWidget* UIContext::GetSelected()
@@ -148,7 +148,7 @@ void UIContext::OnDown()
 		pSelected->m_state = UIWidgetState::NotSelected;
 		pSelected->OnDeselected();
 	}
-		
+
 	m_uiWidgets.Down();
 	pSelected = GetSelected();
 	if (pSelected)
@@ -168,7 +168,7 @@ void UIContext::OnLeft()
 		pSelected->m_state = UIWidgetState::NotSelected;
 		pSelected->OnDeselected();
 	}
-		
+
 	m_uiWidgets.Left();
 	pSelected = GetSelected();
 	if (pSelected)

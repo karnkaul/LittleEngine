@@ -29,7 +29,7 @@ s32 ToS32(const String& input, s32 defaultValue)
 	{
 		ret = std::stoi(input);
 	}
-	catch(const std::exception&)
+	catch (const std::exception&)
 	{
 		ret = defaultValue;
 	}
@@ -43,7 +43,7 @@ f32 ToF32(const String& input, f32 defaultValue)
 	{
 		ret = std::stof(input);
 	}
-	catch(const std::exception&)
+	catch (const std::exception&)
 	{
 		ret = defaultValue;
 	}
@@ -57,7 +57,7 @@ f64 ToF64(const String& input, f64 defaultValue)
 	{
 		ret = std::stod(input);
 	}
-	catch(const std::exception&)
+	catch (const std::exception&)
 	{
 		ret = defaultValue;
 	}

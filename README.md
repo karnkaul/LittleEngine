@@ -37,7 +37,7 @@ When not `SHIPPING`, the Engine can load assets into memory at any time, and dir
 >*Expect warning logs for loading assets not present in `GameAssets.cooked`.*
 
 The Engine needs an `AssetManifest` to locate relevant bytes within the cooked archive, and expects this to be in the root directory of the archive, named `Manifest.minified`. (Text files with a `.minified` / `.min` suffix must not contain any spaces, tabs, quotes, newlines, or any other special characters: they are read directly as bytes.) For convenience a pretty version can be maintained alongside for editing during development, with its contents minified and copied to `Manifest.minified` before creating the cooked archive.
->*Expect warning logs for loading assets not present in the `Manifest.minified`.*
+>*Expect warning logs and potential hitches on calling Load<T> for assets not present in the `Manifest.minified`.*
 
 ### Running the Engine
 The Engine uses a state machine to manage the active `World` and switch to a different `World`. Follow these steps in `main()` to set up and run the engine:

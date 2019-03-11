@@ -191,7 +191,6 @@ void MusicPlayer::EndFade()
 	m_bFadingIn = m_bFadingOut = false;
 }
 
-
 bool MusicPlayer::IsPaused() const
 {
 	return m_status == AudioPlayer::Status::Paused;

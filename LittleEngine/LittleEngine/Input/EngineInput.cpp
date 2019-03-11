@@ -5,6 +5,11 @@
 
 namespace LittleEngine
 {
+String EngineInput::Frame::GetClipboard()
+{
+	return SFInputDataFrame::GetClipboard();
+}
+
 EngineInput::Frame::Frame(const Vec<GameInputType>& pressed,
 						  const Vec<GameInputType>& held,
 						  const Vec<GameInputType>& released,

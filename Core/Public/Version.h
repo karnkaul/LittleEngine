@@ -28,4 +28,4 @@ public:
 	bool operator>(const Version& rhs);
 	bool operator>=(const Version& rhs);
 };
-}
+} // namespace Core

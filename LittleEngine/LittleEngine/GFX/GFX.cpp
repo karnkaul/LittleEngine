@@ -9,12 +9,12 @@ namespace
 {
 const SFWindow* pSFWindow = nullptr;
 Map<u32, SFWindowSize> windowSizes;
-}
+} // namespace
 
 void GFX::Init(const SFWindow& sfWindow)
 {
 	pSFWindow = &sfWindow;
-	
+
 	SFWindowSize max = SFWindow::GetMaxWindowSize();
 	Vec<u32> heights = {360, 540, 720, 900, 1080, 1440, 2160};
 	windowSizes.clear();

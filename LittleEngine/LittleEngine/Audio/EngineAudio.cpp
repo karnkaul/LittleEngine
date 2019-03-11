@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "EngineAudio.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/Engine/EngineService.h"
 #include "LittleEngine/Repository/EngineRepository.h"
 #include "Utils.h"
 
@@ -20,7 +21,7 @@ EngineAudio::~EngineAudio()
 SoundPlayer* EngineAudio::PlaySFX(const String& path, const Fixed& volume, const Fixed& direction, bool bLoop)
 {
 	SoundPlayer& sfxPlayer = GetOrCreateSFXPlayer();
-	SoundAsset* asset = GetAssetManager().Load<SoundAsset>(path);
+	SoundAsset* asset = GetRepository().Load<SoundAsset>(path);
 	if (asset)
 	{
 		sfxPlayer.SetSoundAsset(*asset);
@@ -117,7 +118,6 @@ void EngineAudio::SwitchTrack(const String& id, const Fixed& volume, Time fadeTi
 		m_uSwitchTrackRequest->bFadingOldTrack = true;
 		m_uSwitchTrackRequest->fadeTime.Scale(Fixed::OneHalf);
 	}
-	
 }
 
 void EngineAudio::SetMusicVolume(const Fixed& volume)
@@ -187,7 +187,7 @@ String EngineAudio::GetPath(const String& id) const
 	return prefix + id;
 }
 
-EngineRepository& EngineAudio::GetAssetManager()
+EngineRepository& EngineAudio::GetRepository()
 {
 	return *Services::Engine()->Repository();
 }

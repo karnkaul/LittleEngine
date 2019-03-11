@@ -2,7 +2,8 @@
 #include "WorldStateMachine.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/RenderLoop/RenderHeap.h"
-#include "LittleEngine/Repository/AsyncAssetLoader.h"
+#include "LittleEngine/Repository/ManifestLoader.h"
+#include "LittleEngine/Engine/EngineService.h"
 
 namespace LittleEngine
 {
@@ -68,25 +69,30 @@ void WorldStateMachine::Start(const String& manifestPath, const String& archiveP
 #if !SHIPPING
 		if (archivePath.empty())
 		{
-			LOG_D("[WorldStateMachine] Loading assets from filesystem using manifest at [%s]...", manifestPath.c_str());
+			LOG_D("[WorldStateMachine] Loading assets from filesystem using manifest at [%s]...",
+				  manifestPath.c_str());
 			m_pAssetLoader = Services::Engine()->Repository()->LoadAsync(manifestPath, [&]() {
 				m_bLoaded = true;
 				m_pAssetLoader = nullptr;
 			});
 			loadTime = Time::Zero;
-			m_uLoadingUI = MakeUnique<LoadingUI>();
+			if (!m_uLoadingUI)
+				m_uLoadingUI = MakeUnique<LoadingUI>();
 		}
 		else
 #endif
 		{
-			LOG_D("[WorldStateMachine] Loading cooked assets from archive at [%s] using manifest [%s]...",
-				  archivePath.c_str(), manifestPath.c_str());
+			LOG_D(
+				"[WorldStateMachine] Loading cooked assets from archive at [%s] using manifest "
+				"[%s]...",
+				archivePath.c_str(), manifestPath.c_str());
 			m_pAssetLoader = Services::Engine()->Repository()->LoadAsync(archivePath, manifestPath, [&]() {
 				m_bLoaded = true;
 				m_pAssetLoader = nullptr;
 			});
 			loadTime = Time::Zero;
-			m_uLoadingUI = MakeUnique<LoadingUI>();
+			if (!m_uLoadingUI)
+				m_uLoadingUI = MakeUnique<LoadingUI>();
 		}
 	}
 	else
@@ -125,6 +131,8 @@ void WorldStateMachine::LoadingTick(Time dt)
 	}
 	if (m_bLoaded)
 	{
+		loadTime = Time::Now() - loadTime;
+		LOG_I("[WorldStateMachine] ...Manifest load complete in %.2fs. Loading World 0", loadTime.AsSeconds());
 #if DEBUGGING
 		if (s_bTEST_infiniteLoad)
 		{
@@ -136,8 +144,6 @@ void WorldStateMachine::LoadingTick(Time dt)
 			return;
 		}
 #endif
-			loadTime = Time::Now() - loadTime;
-		LOG_I("[WorldStateMachine] ...Manifest load complete in %.2fs. Loading World 0", loadTime.AsSeconds());
 		m_bLoading = false;
 		m_uLoadingUI = nullptr;
 		LoadState(0);

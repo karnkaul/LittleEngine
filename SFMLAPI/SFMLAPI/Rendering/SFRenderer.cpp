@@ -78,16 +78,6 @@ void SFRenderer::Render(GFXBuffer& buffer)
 #if ENABLED(RENDER_STATS)
 			g_renderData.dynamicCount = g_renderData.primitiveCount - g_renderData.staticCount;
 			UpdateFPS();
-			// TODO: Use console to show stats instead of Log
-			static Time logTime = Time::Now() + Time::Seconds(1.0f);
-			if ((Time::Now() - logTime).AsSeconds() > 0.5f)
-			{
-				logTime = Time::Now();
-				LOG_H(
-					"(THROTTLED) [SFRenderer] Primitives: Total: %d Static: %d Dynamic: %d fps: %d",
-					g_renderData.primitiveCount, g_renderData.staticCount,
-					g_renderData.dynamicCount, g_renderData.framesPerSecond);
-			}
 #endif
 		});
 	}

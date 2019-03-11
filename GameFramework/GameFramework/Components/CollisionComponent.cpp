@@ -2,6 +2,8 @@
 #include "CollisionComponent.h"
 #include "Utils.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/Game/GameManager.h"
 
 namespace LittleEngine
 {

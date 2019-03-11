@@ -31,9 +31,9 @@ public:
 
 	UIManager* UI() const;
 	EngineInput* Input() const;
-	EngineAudio* Audio() const;
-	EngineRepository* Repository() const;
-	WorldStateMachine* Worlds() const;
+	class EngineAudio* Audio() const;
+	class EngineRepository* Repository() const;
+	class WorldStateMachine* Worlds() const;
 	CollisionManager* Physics() const;
 
 public:

@@ -17,7 +17,7 @@ String PropertiesToString(const Vec<Property>& vec)
 	}
 	return fileContents;
 }
-}
+} // namespace
 
 bool Property::Persistor::Load(const String& filePath)
 {

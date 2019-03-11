@@ -2,6 +2,7 @@
 #include "UIElement.h"
 #include "LittleEngine/Game/World/World.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/RenderLoop/RenderHeap.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
 
