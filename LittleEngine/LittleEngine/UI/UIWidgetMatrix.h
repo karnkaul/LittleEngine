@@ -19,6 +19,7 @@ public:
 
 	void EmplaceWidget(UPtr<UIWidget> uWidget, bool bNextColumn = false);
 	UIWidget* Get();
+	Vec<UPtr<UIWidget>>::const_iterator GetIter() const;
 
 	void Up();
 	void Down();
@@ -33,6 +34,7 @@ public:
 	size_t NumColumns() const;
 
 private:
+	const CVec& GetCurrentVec() const;
 	CVec& GetCurrentVec();
 	CVec& GetNewVec();
 };

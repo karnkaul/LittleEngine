@@ -20,15 +20,14 @@ private:
 
 public:
 	bool m_bAutoDestroyOnCancel = false;
-
 protected:
 	UIElement* m_pRootElement = nullptr;
-
 private:
 	UIWidgetMatrix m_uiWidgets;
 	Vec<UUIElement> m_uiElements;
 	Vec<EngineInput::Token> m_inputTokens;
 	OnCancelled m_onCancelledDelegate;
+	bool m_bInteracting = false;
 
 public:
 	UIContext();
@@ -60,12 +59,13 @@ protected:
 	void OnLeft();
 	void OnRight();
 	void OnEnterPressed();
-	void OnEnterReleased();
+	void OnEnterReleased(bool bInteract);
 	void OnBackReleased();
 	void Discard();
 
 private:
 	void InitContext(LayerID rootLayer);
+	UIWidget* SetNextSelectable(const std::function<void()>& iterate);
 
 	friend class UIManager;
 };

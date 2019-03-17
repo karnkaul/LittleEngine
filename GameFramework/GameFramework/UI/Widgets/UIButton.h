@@ -13,7 +13,6 @@ public:
 private:
 	OnClick m_OnInteracted;
 	UIElement* m_pRoot = nullptr;
-	bool m_bSelected = false;
 
 public:
 	UIButton();
@@ -24,11 +23,14 @@ public:
 	OnClick::Token AddCallback(const OnClick::Callback& Callback);
 	UIElement* GetButtonElement() const;
 
+public:
+	virtual void SetInteractable(bool bInteractable) override;
+
 protected:
 	virtual void OnInitWidget() override;
 	virtual void OnSelected() override;
 	virtual void OnDeselected() override;
 	virtual void OnInteractStart() override;
-	virtual void OnInteractEnd() override;
+	virtual void OnInteractEnd(bool bInteract) override;
 };
 } // namespace LittleEngine

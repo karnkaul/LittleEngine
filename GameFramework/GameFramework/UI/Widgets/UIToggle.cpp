@@ -96,12 +96,25 @@ void UIToggle::OnInteractStart()
 	m_pToggle->SetPanel(m_style.interacting.fill, m_style.interacting.border, m_style.interacting.outline);
 }
 
-void UIToggle::OnInteractEnd()
+void UIToggle::OnInteractEnd(bool bInteract)
 {
-	m_bOn = !m_bOn;
+	if (bInteract)
+		m_bOn = !m_bOn;
 	Colour fill = m_bOn ? m_data.onColour : m_data.offColour;
 	m_pToggle->SetPanel(fill, m_style.selected.border, m_style.selected.outline);
-	m_delegate(m_bOn);
+	if (bInteract)
+		m_delegate(m_bOn);
+}
+
+void UIToggle::SetInteractable(bool bInteractable)
+{
+	UIStyle& style = bInteractable
+						 ? (m_prevState == UIWidgetState::Selected ? m_style.selected : m_style.notSelected)
+						 : m_style.uninteractable;
+	m_pToggle->SetPanel(style.fill, style.border, style.outline);
+	m_state = bInteractable
+				  ? (m_prevState == UIWidgetState::Selected ? UIWidgetState::Selected : UIWidgetState::NotSelected)
+				  : UIWidgetState::Uninteractable;
 }
 
 void UIToggle::Tick(Time dt)

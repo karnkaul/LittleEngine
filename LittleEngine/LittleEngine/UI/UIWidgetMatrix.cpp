@@ -31,6 +31,11 @@ UIWidget* UIWidgetMatrix::Get()
 	return m_matrix.GetRef().GetRef().get();
 }
 
+Vec<UPtr<UIWidget>>::const_iterator UIWidgetMatrix::GetIter() const
+{
+	return GetCurrentVec().GetIter();
+}
+
 void UIWidgetMatrix::Up()
 {
 	CVec& vec = GetCurrentVec();
@@ -93,6 +98,11 @@ size_t UIWidgetMatrix::CurrentVecCount()
 size_t UIWidgetMatrix::NumColumns() const
 {
 	return m_matrix.Size();
+}
+
+const UIWidgetMatrix::CVec& UIWidgetMatrix::GetCurrentVec() const
+{
+	return m_matrix.GetRef();
 }
 
 UIWidgetMatrix::CVec& UIWidgetMatrix::GetCurrentVec()

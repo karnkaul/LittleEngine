@@ -275,12 +275,16 @@ void TestTick(Time dt)
 		panelStyle.size = {500, 600};
 		panelStyle.fill = Colour(100, 100, 100, 100);
 		pButtonDrawer->SetPanel(panelStyle);
+		UIButton* pButton1 = nullptr;
 		debugTokens.push_back(
 			pButtonDrawer->AddButton("Button 0", []() { LOG_D("Button 0 pressed!"); }));
 		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 1", []() { LOG_D("Button 1 pressed!"); }));
-		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 2", []() { LOG_D("Button 2 pressed!"); }));
+			pButtonDrawer->AddButton("Button 1", []() { LOG_D("Button 1 pressed!"); }, &pButton1));
+		pButton1->SetInteractable(false);
+		debugTokens.push_back(pButtonDrawer->AddButton("Toggle B1", [pButton1]() {
+			pButton1->SetInteractable(!pButton1->IsInteractable());
+			LOG_D("Button 1 Set Interactable: %s", Strings::ToString(pButton1->IsInteractable()).c_str());
+		}));
 		debugTokens.push_back(
 			pButtonDrawer->AddButton("Button 3", []() { LOG_D("Button 3 pressed!"); }));
 		debugTokens.push_back(pButtonDrawer->AddButton("Toggle", &SpawnToggle));

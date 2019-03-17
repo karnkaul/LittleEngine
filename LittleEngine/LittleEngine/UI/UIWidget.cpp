@@ -25,6 +25,7 @@ void UIWidget::InitWidget(UIContext& owner, UIWidgetStyle* pStyleToCopy)
 	m_pOwner = &owner;
 	m_style = pStyleToCopy ? *pStyleToCopy : UIWidgetStyle::GetDefault();
 	OnInitWidget();
+	SetInteractable(true);
 }
 
 UIWidgetStyle& UIWidget::GetStyle()
@@ -37,6 +38,12 @@ void UIWidget::SetStyle(const UIWidgetStyle& style)
 	m_style = style;
 }
 
+
+bool UIWidget::IsInteractable() const
+{
+	return m_state != UIWidgetState::Uninteractable;
+}
+
 void UIWidget::Tick(Time dt)
 {
 	if (m_bDestroyed)
@@ -45,6 +52,12 @@ void UIWidget::Tick(Time dt)
 	{
 		uUIelement->Tick(dt);
 	}
+}
+
+void UIWidget::SetState(UIWidgetState state)
+{
+	m_prevState = m_state == UIWidgetState::Interacting ? state : m_state;
+	m_state = state;
 }
 
 void UIWidget::InitElement(UIElement* pNewElement, UITransform* pParent)
