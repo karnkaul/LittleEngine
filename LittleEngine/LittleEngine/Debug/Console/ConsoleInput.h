@@ -4,17 +4,18 @@
 #include "CircularList.hpp"
 #include "LogLine.h"
 #include "LittleEngine/Input/EngineInput.h"
+#include "LittleEngine/Input/KeyboardInput.h"
 
 namespace LittleEngine
 {
 namespace Debug
 {
-class ConsoleInput
+class ConsoleInput final
 {
 public:
 	static constexpr char CONSOLE_KEY = '`';
 
-	LiveLine m_liveLine;
+	KeyboardInput m_keyboard;
 	String m_query;
 	CircularList<String> queryCache;
 	EngineInput::Token m_token;
