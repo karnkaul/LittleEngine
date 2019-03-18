@@ -45,8 +45,8 @@ TRange<Vector2> GetTRangeV2(const GData& minMaxVec)
 {
 	GData min = minMaxVec.GetGData("min");
 	GData max = minMaxVec.GetGData("max");
-	return TRange<Vector2>(Vector2(Fixed(min.GetF64("x", 0.0f)), Fixed(min.GetF64("y", 0.0f))),
-						   Vector2(Fixed(max.GetF64("x", 0.0f)), Fixed(max.GetF64("y", 0.0f))));
+	return TRange<Vector2>(Vector2(Fixed(min.GetF64("x", 0.0)), Fixed(min.GetF64("y", 0.0))),
+						   Vector2(Fixed(max.GetF64("x", 0.0)), Fixed(max.GetF64("y", 0.0))));
 }
 
 TRange<UByte> GetTRangeUB(const GData& minMax)

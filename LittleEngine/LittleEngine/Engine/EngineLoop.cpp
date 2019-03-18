@@ -160,7 +160,7 @@ void EngineLoop::Init()
 	Collider::s_debugShapeWidth = m_config.GetColliderBorderWidth();
 #endif
 	GameSettings* gameSettings = GameSettings::Instance();
-	m_tickRate = Time::Seconds(1.0f / static_cast<f64>(m_config.GetTicksPerSecond()));
+	m_tickRate = Time::Seconds(1.0f / static_cast<f32>(m_config.GetTicksPerSecond()));
 	m_maxFrameTime = Time::Milliseconds(m_config.GetMaxTickTimeMS());
 	m_windowData.title = m_config.GetWindowTitle();
 	m_windowData.viewSize = m_config.GetViewSize();

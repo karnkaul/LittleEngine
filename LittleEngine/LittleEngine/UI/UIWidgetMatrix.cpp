@@ -24,16 +24,72 @@ void UIWidgetMatrix::EmplaceWidget(UPtr<UIWidget> uWidget, bool bNextColumn)
 	++m_size;
 }
 
-UIWidget* UIWidgetMatrix::Get()
+UIWidget* UIWidgetMatrix::Current()
 {
 	if (m_matrix.IsEmpty() || m_matrix.GetRef().IsEmpty())
 		return nullptr;
 	return m_matrix.GetRef().GetRef().get();
 }
 
-Vec<UPtr<UIWidget>>::const_iterator UIWidgetMatrix::GetIter() const
+UIWidget* UIWidgetMatrix::NextSelectableVertical(bool bDownwards)
 {
-	return GetCurrentVec().GetIter();
+	auto start = GetCurrentVec().GetIter();
+	// Go vertical
+	bDownwards ? Down() : Up();
+	auto iter = GetCurrentVec().GetIter();
+	while (iter != start)
+	{
+		// If current is selectable, return it
+		UIWidget* pCurrent = Current();
+		if (pCurrent && pCurrent->IsInteractable())
+		{
+			return pCurrent;
+		}
+		// Otherwise go vertical and try again
+		else
+		{
+			bDownwards ? Down() : Up();
+			iter = GetCurrentVec().GetIter();
+		}
+	}
+
+	// Back to start (iter == start now)
+	UIWidget* pCurrent = Current();
+	if (pCurrent && pCurrent->IsInteractable())
+	{
+		return pCurrent;
+	}
+	return nullptr;
+}
+
+UIWidget* UIWidgetMatrix::NextSelectableHorizontal(bool bRightwards)
+{
+	auto horzStart = m_matrix.GetIter();
+	// Go horizontal
+	bRightwards ? Right() : Left();
+	auto horzIter = m_matrix.GetIter();
+	while (horzIter != horzStart)
+	{
+		// If current is selectable, return it
+		UIWidget* pCurrent = Current();
+		if (pCurrent && pCurrent->IsInteractable())
+		{
+			return pCurrent;
+		}
+		// Otherwise find next selectable
+		else
+		{
+			pCurrent = NextSelectableVertical(true);
+			if (pCurrent)
+			{
+				return pCurrent;
+			}
+			// No selectable in column, proceed to next
+			bRightwards ? Right() : Left();
+			horzIter = m_matrix.GetIter();
+		}
+	}
+	return nullptr;
 }
 
 void UIWidgetMatrix::Up()

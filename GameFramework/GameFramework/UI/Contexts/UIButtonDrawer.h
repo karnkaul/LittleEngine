@@ -27,6 +27,8 @@ public:
 	UIButtonDrawer(const String& name);
 	virtual ~UIButtonDrawer();
 
+	// Returns false if any button already added - will be vertical
+	bool SetHorizontal(bool bHorizontal = true);
 	UIButtonDrawer* SetPanel(const UIStyle& panelStyle);
 	UIButton::OnClick::Token AddButton(const UIText& buttonText, const UIButton::OnClick::Callback& OnInteracted, UIButton** ppButton = nullptr);
 

@@ -169,7 +169,6 @@ void SpawnColliderMinefield()
 			String name = "ColliderMine_" + Strings::ToString(id++);
 			Entity* pE = pTestWorld->Game()->NewEntity<Entity>(name, Vector2(x, y));
 			CollisionComponent* pCC = pE->AddComponent<CollisionComponent>();
-			// pRC->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)->SetPrimaryColour(Colour::Blue);
 			pCC->AddAABB(AABBData({100, 100}));
 		}
 	}
@@ -285,8 +284,8 @@ void TestTick(Time dt)
 			pButton1->SetInteractable(!pButton1->IsInteractable());
 			LOG_D("Button 1 Set Interactable: %s", Strings::ToString(pButton1->IsInteractable()).c_str());
 		}));
-		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 3", []() { LOG_D("Button 3 pressed!"); }));
+		/*debugTokens.push_back(
+			pButtonDrawer->AddButton("Button 3", []() { LOG_D("Button 3 pressed!"); }));*/
 		debugTokens.push_back(pButtonDrawer->AddButton("Toggle", &SpawnToggle));
 		debugTokens.push_back(pButtonDrawer->AddButton("Dialogue", []() { bToSpawnDialogue = true; }));
 		if (bModal)

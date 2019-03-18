@@ -16,7 +16,7 @@ const Fixed Fixed::OneTenth = Fixed(1, 10);
 
 Fixed::Fixed(f32 value) : value(static_cast<s32>(value * SCALE_FACTOR))
 {
-	if ((value * static_cast<f64>(SCALE_FACTOR)) - static_cast<f64>(value) >= 0.5f)
+	if ((value * static_cast<f64>(SCALE_FACTOR)) - static_cast<f64>(value) >= 0.5)
 	{
 		value += 1;
 	}
@@ -24,7 +24,7 @@ Fixed::Fixed(f32 value) : value(static_cast<s32>(value * SCALE_FACTOR))
 
 Fixed::Fixed(f64 value) : value(static_cast<s32>(value * SCALE_FACTOR))
 {
-	if ((value * static_cast<f64>(SCALE_FACTOR)) - static_cast<f64>(value) >= 0.5f)
+	if ((value * static_cast<f64>(SCALE_FACTOR)) - static_cast<f64>(value) >= 0.5)
 	{
 		value += 1;
 	}
@@ -51,7 +51,7 @@ u32 Fixed::ToU32() const
 	if (val < 0)
 		val = -val;
 	u32 floor = static_cast<u32>(val);
-	if ((floor * static_cast<f64>(SCALE_FACTOR)) - static_cast<f64>(value) >= 0.5f)
+	if ((floor * static_cast<f64>(SCALE_FACTOR)) - static_cast<f64>(value) >= 0.5)
 	{
 		return floor + 1;
 	}
@@ -61,7 +61,7 @@ u32 Fixed::ToU32() const
 s32 Fixed::ToS32() const
 {
 	s32 floor = static_cast<s32>(ToF64());
-	if ((floor * static_cast<f64>(SCALE_FACTOR)) - static_cast<f64>(value) >= 0.5f)
+	if ((floor * static_cast<f64>(SCALE_FACTOR)) - static_cast<f64>(value) >= 0.5)
 	{
 		return floor + 1;
 	}

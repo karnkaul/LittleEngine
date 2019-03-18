@@ -49,7 +49,7 @@ void ControllerComponent::Tick(Time dt)
 	{
 		m_pOwner->m_transform.Rotate(m_rotation * m_angularSpeed * dt.AsMilliseconds());
 	}
-	if (m_displacement.SqrMagnitude() > 0.0f)
+	if (m_displacement.SqrMagnitude() > 0.0)
 	{
 		m_pOwner->m_transform.localPosition += (m_displacement * m_linearSpeed * dt.AsMilliseconds());
 	}
@@ -106,7 +106,7 @@ bool ControllerComponent::OnInput(const EngineInput::Frame& frame)
 		}
 	}
 
-	if (m_displacement.SqrMagnitude() > 0.0f)
+	if (m_displacement.SqrMagnitude() > 0.0)
 		m_displacement.Normalise();
 	return false;
 }

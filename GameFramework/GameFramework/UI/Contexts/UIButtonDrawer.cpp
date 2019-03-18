@@ -16,6 +16,17 @@ UIButtonDrawer::UIButtonDrawer(const String& name) : UIContext(name + "_ButtonDr
 }
 UIButtonDrawer::~UIButtonDrawer() = default;
 
+bool UIButtonDrawer::SetHorizontal(bool bHorizontal)
+{
+	if (m_uiButtons.empty())
+	{
+		m_data.bHorizontal = bHorizontal;
+		return true;
+	}
+	LOG_W("[UIButtonDrawer] Cannot change orientation after adding Buttons!");
+	return false;
+}
+
 UIButtonDrawer* UIButtonDrawer::SetPanel(const UIStyle& panelStyle)
 {
 	m_data.panelStyle = panelStyle;

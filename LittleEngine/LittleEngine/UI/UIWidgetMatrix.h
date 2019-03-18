@@ -18,9 +18,10 @@ public:
 	UIWidgetMatrix();
 
 	void EmplaceWidget(UPtr<UIWidget> uWidget, bool bNextColumn = false);
-	UIWidget* Get();
-	Vec<UPtr<UIWidget>>::const_iterator GetIter() const;
-
+	UIWidget* Current();
+	UIWidget* NextSelectableVertical(bool bDownwards);
+	UIWidget* NextSelectableHorizontal(bool bRightwards);
+	
 	void Up();
 	void Down();
 	void Left();

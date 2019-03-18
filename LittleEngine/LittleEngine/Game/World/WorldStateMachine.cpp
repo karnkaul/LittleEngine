@@ -126,7 +126,7 @@ void WorldStateMachine::LoadingTick(Time dt)
 {
 	if (m_uLoadingUI)
 	{
-		Fixed progress = m_pAssetLoader ? m_pAssetLoader->GetProgress() : 1.0f;
+		Fixed progress = m_pAssetLoader ? m_pAssetLoader->GetProgress() : Fixed::One;
 		m_uLoadingUI->Tick(dt, progress);
 	}
 	if (m_bLoaded)
