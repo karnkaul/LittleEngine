@@ -48,6 +48,9 @@
     <ClCompile Include="GameFramework\UI\Widgets\UIToggle.cpp">
       <Filter>GameFramework\UI\Widgets</Filter>
     </ClCompile>
+    <ClCompile Include="GameFramework\UI\Widgets\UITextInput.cpp">
+      <Filter>GameFramework\UI\Widgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameFramework\Components\RenderComponent.h">
@@ -87,6 +90,9 @@
       <Filter>GameFramework\Entities</Filter>
     </ClInclude>
     <ClInclude Include="GameFramework\UI\Widgets\UIToggle.h">
+      <Filter>GameFramework\UI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\UI\Widgets\UITextInput.h">
       <Filter>GameFramework\UI\Widgets</Filter>
     </ClInclude>
   </ItemGroup>

@@ -23,7 +23,7 @@ UIWidget::~UIWidget()
 void UIWidget::InitWidget(UIContext& owner, UIWidgetStyle* pStyleToCopy)
 {
 	m_pOwner = &owner;
-	m_style = pStyleToCopy ? *pStyleToCopy : UIWidgetStyle::GetDefault();
+	m_style = pStyleToCopy ? *pStyleToCopy : UIWidgetStyle::GetDefault0();
 	OnInitWidget();
 	SetInteractable(true);
 }

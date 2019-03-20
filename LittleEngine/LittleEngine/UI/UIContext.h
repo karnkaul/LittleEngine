@@ -65,7 +65,6 @@ protected:
 
 private:
 	void InitContext(LayerID rootLayer);
-	UIWidget* SetNextSelectable(const std::function<void()>& iterate);
 
 	friend class UIManager;
 };
@@ -76,7 +75,7 @@ T* UIContext::AddWidget(const String& name, UIWidgetStyle* pStyleToCopy, bool bN
 	static_assert(std::is_base_of<UIWidget, T>::value, "T must derive from UIWidget.");
 	UPtr<T> uT = MakeUnique<T>(name);
 	T* pT = uT.get();
-	UIWidgetStyle defaultStyle = UIWidgetStyle::GetDefault();
+	UIWidgetStyle defaultStyle = UIWidgetStyle::GetDefault0();
 	if (!pStyleToCopy)
 		pStyleToCopy = &defaultStyle;
 	pStyleToCopy->baseLayer = static_cast<LayerID>(m_pRootElement->m_layer + 1);

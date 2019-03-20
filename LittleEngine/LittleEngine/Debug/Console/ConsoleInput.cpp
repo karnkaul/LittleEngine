@@ -17,6 +17,7 @@ ConsoleInput::ConsoleInput()
 
 bool ConsoleInput::OnInput(const EngineInput::Frame& frame)
 {
+	bool bWasEnabled = Console::g_bEnabled;
 	if (frame.textInput.Contains(CONSOLE_KEY))
 	{
 		Console::g_bEnabled = !Console::g_bEnabled;
@@ -28,7 +29,7 @@ bool ConsoleInput::OnInput(const EngineInput::Frame& frame)
 		return true;
 	}
 
-	return false;
+	return bWasEnabled;
 }
 
 void ConsoleInput::Update()

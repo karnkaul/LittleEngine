@@ -243,7 +243,7 @@ void SpawnToggle()
 	LayerID toggleLayer = static_cast<LayerID>(LAYER_UI + 2);
 	UIContext* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>(toggleLayer);
 	pParent->GetRootElement()->m_transform.size = {x, y};
-	UIWidgetStyle toggleStyle = UIWidgetStyle::GetDefault();
+	UIWidgetStyle toggleStyle = UIWidgetStyle::GetDefault0();
 	toggleStyle.widgetSize = {x, y * Fixed::OneHalf};
 	toggleStyle.background = Colour::Yellow;
 	UIToggle* pToggle0 = pParent->AddWidget<UIToggle>("Toggle0", &toggleStyle);
@@ -292,6 +292,18 @@ void TestTick(Time dt)
 			debugTokens.push_back(
 				pButtonDrawer->AddButton("Cancel", []() { pButtonDrawer->Destruct(); }));
 		pButtonDrawer->SetActive(true);
+	}
+
+	static bool bSpawnedTextInput = false;
+	static UIContext* pTextContext = nullptr;
+	static UITextInput* pTextInput = nullptr;
+	if (elapsed.AsSeconds() >= 3 && !bSpawnedTextInput)
+	{
+		pTextContext = pTestWorld->Game()->UI()->PushContext<UIContext>();
+		pTextInput = pTextContext->AddWidget<UITextInput>("TextInput");
+		pTextContext->m_bAutoDestroyOnCancel = true;
+		pTextContext->SetActive(true);
+		bSpawnedTextInput = true;
 	}
 
 	if (bToSpawnDialogue)
