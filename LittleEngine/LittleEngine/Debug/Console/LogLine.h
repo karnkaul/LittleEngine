@@ -37,15 +37,6 @@ public:
 	void Append(Vec<LogLine>&& move);
 	void Append(const LogLine& logLine);
 };
-
-struct LiveLine
-{
-	String liveString;
-
-	void Append(const String& newInput);
-	void Backspace();
-	void Clear();
-};
 } // namespace Debug
 } // namespace LittleEngine
 #endif

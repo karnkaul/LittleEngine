@@ -20,7 +20,8 @@ protected:
 	UIWidgetStyle m_style;
 	Vec<UPtr<UIElement>> m_uiElements;
 	class UIContext* m_pOwner = nullptr;
-	UIWidgetState m_state;
+	UIWidgetState m_state = UIWidgetState::NotSelected;
+	UIWidgetState m_prevState;
 
 public:
 	UIWidget();
@@ -30,13 +31,21 @@ public:
 	template <typename T>
 	UIElement* AddElement(const String& name = "", UITransform* pParent = nullptr);
 
+	UIWidgetStyle& GetStyle();
+
+public:
+	virtual void SetStyle(const UIWidgetStyle& style);
+	virtual void SetInteractable(bool bInteractable) = 0;
+	bool IsInteractable() const;
+
+protected:
+	void SetState(UIWidgetState state);
+
+protected:
 	virtual void OnSelected() = 0;
 	virtual void OnDeselected() = 0;
 	virtual void OnInteractStart() = 0;
-	virtual void OnInteractEnd() = 0;
-
-	UIWidgetStyle& GetStyle();
-	virtual void SetStyle(const UIWidgetStyle& style);
+	virtual void OnInteractEnd(bool bInteract) = 0;
 	virtual void Tick(Time dt) override;
 
 private:

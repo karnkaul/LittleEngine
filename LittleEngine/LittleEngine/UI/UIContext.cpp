@@ -47,18 +47,21 @@ void UIContext::SetActive(bool bActive, bool bResetSelection)
 void UIContext::ResetSelection()
 {
 	m_uiWidgets.Reset(true);
-	m_uiWidgets.ForEach([](UPtr<UIWidget>& uWidget) { uWidget->OnDeselected(); });
+	m_uiWidgets.ForEach([](UPtr<UIWidget>& uWidget) {
+		if (uWidget->m_state != UIWidgetState::Uninteractable)
+			uWidget->OnDeselected();
+	});
 	UIWidget* pSelected = GetSelected();
-	if (pSelected)
+	if (pSelected && pSelected->IsInteractable())
 	{
-		pSelected->m_state = UIWidgetState::Selected;
+		pSelected->SetState(UIWidgetState::Selected);
 		pSelected->OnSelected();
 	}
 }
 
 UIWidget* UIContext::GetSelected()
 {
-	return m_uiWidgets.Get();
+	return m_uiWidgets.Current();
 }
 
 UIElement* UIContext::GetRootElement() const
@@ -105,7 +108,7 @@ bool UIContext::OnInput(const EngineInput::Frame& frame)
 	if (frame.IsPressed(GameInputType::Enter))
 		OnEnterPressed();
 	if (frame.IsReleased(GameInputType::Enter))
-		OnEnterReleased();
+		OnEnterReleased(m_bInteracting);
 	if (frame.IsReleased(GameInputType::Back))
 		OnBackReleased();
 	if (frame.IsReleased(GameInputType::Up))
@@ -121,107 +124,112 @@ bool UIContext::OnInput(const EngineInput::Frame& frame)
 
 void UIContext::OnUp()
 {
-	if (m_uiWidgets.CurrentVecCount() < 2)
+	if (m_bInteracting || m_uiWidgets.CurrentVecCount() < 2)
 		return;
 	UIWidget* pSelected = GetSelected();
-	if (pSelected)
+	if (pSelected && pSelected->IsInteractable())
 	{
-		pSelected->m_state = UIWidgetState::NotSelected;
+		pSelected->SetState(UIWidgetState::NotSelected);
 		pSelected->OnDeselected();
 	}
-	m_uiWidgets.Up();
-	pSelected = GetSelected();
+	pSelected = m_uiWidgets.NextSelectableVertical(false);
 	if (pSelected)
 	{
-		pSelected->m_state = UIWidgetState::Selected;
+		pSelected->SetState(UIWidgetState::Selected);
 		pSelected->OnSelected();
 	}
 }
 
 void UIContext::OnDown()
 {
-	if (m_uiWidgets.CurrentVecCount() < 2)
+	if (m_bInteracting || m_uiWidgets.CurrentVecCount() < 2)
 		return;
-	UIWidget* pSelected = GetSelected();
-	if (pSelected)
+	UIWidget* pWidget = GetSelected();
+	if (pWidget && pWidget->IsInteractable())
 	{
-		pSelected->m_state = UIWidgetState::NotSelected;
-		pSelected->OnDeselected();
+		pWidget->SetState(UIWidgetState::NotSelected);
+		pWidget->OnDeselected();
 	}
-
-	m_uiWidgets.Down();
-	pSelected = GetSelected();
-	if (pSelected)
+	pWidget = m_uiWidgets.NextSelectableVertical(true);
+	if (pWidget)
 	{
-		pSelected->m_state = UIWidgetState::Selected;
-		pSelected->OnSelected();
+		pWidget->SetState(UIWidgetState::Selected);
+		pWidget->OnSelected();
 	}
 }
 
 void UIContext::OnLeft()
 {
-	if (m_uiWidgets.NumColumns() < 2)
+	if (m_bInteracting || m_uiWidgets.NumColumns() < 2)
 		return;
-	UIWidget* pSelected = GetSelected();
-	if (pSelected)
+	UIWidget* pWidget = GetSelected();
+	if (pWidget && pWidget->IsInteractable())
 	{
-		pSelected->m_state = UIWidgetState::NotSelected;
-		pSelected->OnDeselected();
+		pWidget->SetState(UIWidgetState::NotSelected);
+		pWidget->OnDeselected();
 	}
-
-	m_uiWidgets.Left();
-	pSelected = GetSelected();
-	if (pSelected)
+	pWidget = m_uiWidgets.NextSelectableHorizontal(false);
+	if (pWidget)
 	{
-		pSelected->m_state = UIWidgetState::Selected;
-		pSelected->OnSelected();
+		pWidget->SetState(UIWidgetState::Selected);
+		pWidget->OnSelected();
 	}
 }
 
 void UIContext::OnRight()
 {
-	if (m_uiWidgets.NumColumns() < 2)
+	if (m_bInteracting || m_uiWidgets.NumColumns() < 2)
 		return;
-	UIWidget* pSelected = GetSelected();
-	if (pSelected)
+	UIWidget* pWidget = GetSelected();
+	if (pWidget && pWidget->IsInteractable())
 	{
-		pSelected->m_state = UIWidgetState::NotSelected;
-		pSelected->OnDeselected();
+		pWidget->SetState(UIWidgetState::NotSelected);
+		pWidget->OnDeselected();
 	}
-
-	m_uiWidgets.Right();
-	pSelected = GetSelected();
-	if (pSelected)
+	pWidget = m_uiWidgets.NextSelectableHorizontal(true);
+	if (pWidget)
 	{
-		pSelected->m_state = UIWidgetState::Selected;
-		pSelected->OnSelected();
+		pWidget->SetState(UIWidgetState::Selected);
+		pWidget->OnSelected();
 	}
 }
 
 void UIContext::OnEnterPressed()
 {
 	UIWidget* pSelected = GetSelected();
-	if (pSelected)
+	if (pSelected && pSelected->IsInteractable())
 	{
-		pSelected->m_state = UIWidgetState::Interacting;
+		pSelected->SetState(UIWidgetState::Interacting);
 		pSelected->OnInteractStart();
+		m_bInteracting = true;
 	}
 }
 
-void UIContext::OnEnterReleased()
+void UIContext::OnEnterReleased(bool bInteract)
 {
-	UIWidget* pSelected = GetSelected();
-	if (pSelected)
+	if (m_bInteracting)
 	{
-		pSelected->m_state = UIWidgetState::Selected;
-		pSelected->OnInteractEnd();
+		UIWidget* pSelected = GetSelected();
+		if (pSelected && pSelected->IsInteractable())
+		{
+			pSelected->SetState(UIWidgetState::Selected);
+			pSelected->OnInteractEnd(bInteract);
+		}
+		m_bInteracting = false;
 	}
 }
 
 void UIContext::OnBackReleased()
 {
-	m_onCancelledDelegate();
-	m_bDestroyed = m_bAutoDestroyOnCancel;
+	if (m_bInteracting)
+	{
+		OnEnterReleased(false);
+	}
+	else
+	{
+		m_onCancelledDelegate();
+		m_bDestroyed = m_bAutoDestroyOnCancel;
+	}
 }
 
 void UIContext::Discard()

@@ -25,7 +25,6 @@ private:
 public:
 	UIDialogue();
 	UIDialogue(const String& name);
-	virtual ~UIDialogue();
 
 	UIDialogue* SetContent(const UIText& text, const Colour* pBackground = nullptr, const Vector2* pSize = nullptr);
 	UIDialogue* SetHeader(const UIText& text, const Colour* pBackground = nullptr);

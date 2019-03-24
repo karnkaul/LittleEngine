@@ -41,7 +41,7 @@ String ToLower(const String& lhs);
 bool ToBool(const String& input, bool defaultValue = false);
 s32 ToS32(const String& input, s32 defaultValue = -1);
 f32 ToF32(const String& input, f32 defaultValue = -1.0f);
-f64 ToF64(const String& input, f64 defaultValue = -1.0f);
+f64 ToF64(const String& input, f64 defaultValue = -1.0);
 
 template <typename T>
 String ToString(T input);

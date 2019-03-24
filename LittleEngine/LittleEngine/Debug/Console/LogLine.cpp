@@ -15,22 +15,6 @@ UIText LogLine::ToUIText() const
 	return UIText(text, TEXT_SIZE, colour);
 }
 
-void LiveLine::Append(const String& newInput)
-{
-	if (!newInput.empty())
-		liveString += newInput;
-}
-
-void LiveLine::Backspace()
-{
-	liveString = liveString.substr(0, liveString.size() - 1);
-}
-
-void LiveLine::Clear()
-{
-	liveString.clear();
-}
-
 LogBook::LogBook(u32 lineCount) : m_lineCount(lineCount)
 {
 	Reset();

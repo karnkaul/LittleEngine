@@ -20,15 +20,14 @@ private:
 
 public:
 	bool m_bAutoDestroyOnCancel = false;
-
 protected:
 	UIElement* m_pRootElement = nullptr;
-
 private:
 	UIWidgetMatrix m_uiWidgets;
 	Vec<UUIElement> m_uiElements;
 	Vec<EngineInput::Token> m_inputTokens;
 	OnCancelled m_onCancelledDelegate;
+	bool m_bInteracting = false;
 
 public:
 	UIContext();
@@ -60,7 +59,7 @@ protected:
 	void OnLeft();
 	void OnRight();
 	void OnEnterPressed();
-	void OnEnterReleased();
+	void OnEnterReleased(bool bInteract);
 	void OnBackReleased();
 	void Discard();
 
@@ -76,7 +75,7 @@ T* UIContext::AddWidget(const String& name, UIWidgetStyle* pStyleToCopy, bool bN
 	static_assert(std::is_base_of<UIWidget, T>::value, "T must derive from UIWidget.");
 	UPtr<T> uT = MakeUnique<T>(name);
 	T* pT = uT.get();
-	UIWidgetStyle defaultStyle = UIWidgetStyle::GetDefault();
+	UIWidgetStyle defaultStyle = UIWidgetStyle::GetDefault0();
 	if (!pStyleToCopy)
 		pStyleToCopy = &defaultStyle;
 	pStyleToCopy->baseLayer = static_cast<LayerID>(m_pRootElement->m_layer + 1);

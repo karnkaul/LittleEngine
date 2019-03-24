@@ -9,7 +9,7 @@ namespace LittleEngine
 {
 namespace Debug
 {
-class ConsoleRenderer
+class ConsoleRenderer final
 {
 public:
 	Vector2 maxPadding;

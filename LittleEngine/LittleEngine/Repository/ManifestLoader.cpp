@@ -175,7 +175,7 @@ ManifestLoader::ManifestLoader(EngineRepository& repository,
 
 Fixed ManifestLoader::GetProgress() const
 {
-	return m_pMultiJob ? m_pMultiJob->GetProgress() : -1.0f;
+	return m_pMultiJob ? m_pMultiJob->GetProgress() : -Fixed::One;
 }
 
 void ManifestLoader::Tick(Time)

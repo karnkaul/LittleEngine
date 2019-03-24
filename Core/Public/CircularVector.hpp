@@ -21,6 +21,11 @@ public:
 		Reset();
 	}
 
+	typename Vec<T>::const_iterator GetIter() const
+	{
+		return iter;
+	}
+
 	bool IsEmpty() const
 	{
 		return vec.empty();
@@ -55,7 +60,17 @@ public:
 		return &(*iter);
 	}
 
+	const T* GetPtr() const
+	{
+		return &(*iter);
+	}
+
 	T& GetRef()
+	{
+		return *iter;
+	}
+
+	const T& GetRef() const
 	{
 		return *iter;
 	}
@@ -87,7 +102,9 @@ public:
 			Decrement();
 		}
 		else
+		{
 			iter = vec.begin();
+		}
 	}
 
 	size_t Size() const

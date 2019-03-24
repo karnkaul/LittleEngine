@@ -29,7 +29,7 @@ public:
 	String GetString(const String& key, const char spaceDelimiter, const String& defaultValue) const;
 	bool GetBool(const String& key, bool defaultValue = false) const;
 	s32 GetS32(const String& key, s32 defaultValue = -1) const;
-	f64 GetF64(const String& key, f64 defaultValue = -1.0f) const;
+	f64 GetF64(const String& key, f64 defaultValue = -1.0) const;
 	GData GetGData(const String& key) const;
 
 	Vec<GData> GetVectorGData(const String& key) const;

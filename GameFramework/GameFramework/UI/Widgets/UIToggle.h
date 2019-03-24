@@ -41,11 +41,14 @@ public:
 	UIElement* GetRoot() const;
 
 public:
+	virtual void SetInteractable(bool bInteractable) override;
+
+protected:
 	virtual void OnInitWidget() override;
 	virtual void OnSelected() override;
 	virtual void OnDeselected() override;
 	virtual void OnInteractStart() override;
-	virtual void OnInteractEnd() override;
+	virtual void OnInteractEnd(bool bInteract) override;
 	virtual void Tick(Time dt) override;
 };
 } // namespace LittleEngine

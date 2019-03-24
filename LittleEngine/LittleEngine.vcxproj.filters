@@ -190,6 +190,9 @@
     <ClCompile Include="LittleEngine\Repository\ManifestLoader.cpp">
       <Filter>LittleEngine\Repository</Filter>
     </ClCompile>
+    <ClCompile Include="LittleEngine\Input\KeyboardInput.cpp">
+      <Filter>LittleEngine\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Input\EngineInput.h">
@@ -350,6 +353,9 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\Repository\ManifestLoader.h">
       <Filter>LittleEngine\Repository</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Input\KeyboardInput.h">
+      <Filter>LittleEngine\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

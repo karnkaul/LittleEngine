@@ -18,8 +18,10 @@ public:
 	UIWidgetMatrix();
 
 	void EmplaceWidget(UPtr<UIWidget> uWidget, bool bNextColumn = false);
-	UIWidget* Get();
-
+	UIWidget* Current();
+	UIWidget* NextSelectableVertical(bool bDownwards);
+	UIWidget* NextSelectableHorizontal(bool bRightwards);
+	
 	void Up();
 	void Down();
 	void Left();
@@ -33,6 +35,7 @@ public:
 	size_t NumColumns() const;
 
 private:
+	const CVec& GetCurrentVec() const;
 	CVec& GetCurrentVec();
 	CVec& GetNewVec();
 };

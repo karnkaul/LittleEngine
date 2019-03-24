@@ -169,7 +169,6 @@ void SpawnColliderMinefield()
 			String name = "ColliderMine_" + Strings::ToString(id++);
 			Entity* pE = pTestWorld->Game()->NewEntity<Entity>(name, Vector2(x, y));
 			CollisionComponent* pCC = pE->AddComponent<CollisionComponent>();
-			// pRC->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)->SetPrimaryColour(Colour::Blue);
 			pCC->AddAABB(AABBData({100, 100}));
 		}
 	}
@@ -244,7 +243,7 @@ void SpawnToggle()
 	LayerID toggleLayer = static_cast<LayerID>(LAYER_UI + 2);
 	UIContext* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>(toggleLayer);
 	pParent->GetRootElement()->m_transform.size = {x, y};
-	UIWidgetStyle toggleStyle = UIWidgetStyle::GetDefault();
+	UIWidgetStyle toggleStyle = UIWidgetStyle::GetDefault0();
 	toggleStyle.widgetSize = {x, y * Fixed::OneHalf};
 	toggleStyle.background = Colour::Yellow;
 	UIToggle* pToggle0 = pParent->AddWidget<UIToggle>("Toggle0", &toggleStyle);
@@ -263,6 +262,13 @@ void SpawnToggle()
 	pParent->SetActive(true);
 }
 
+bool bSpawnedSelection = false;
+UIContext* pSelectionContext = nullptr;
+UISelection* pSelection = nullptr;
+#if DEBUG_LOGGING
+UISelection::OnChanged::Token selectionToken;
+#endif
+
 void TestTick(Time dt)
 {
 	elapsed += dt;
@@ -275,20 +281,53 @@ void TestTick(Time dt)
 		panelStyle.size = {500, 600};
 		panelStyle.fill = Colour(100, 100, 100, 100);
 		pButtonDrawer->SetPanel(panelStyle);
+		UIButton* pButton1 = nullptr;
 		debugTokens.push_back(
 			pButtonDrawer->AddButton("Button 0", []() { LOG_D("Button 0 pressed!"); }));
 		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 1", []() { LOG_D("Button 1 pressed!"); }));
-		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 2", []() { LOG_D("Button 2 pressed!"); }));
-		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 3", []() { LOG_D("Button 3 pressed!"); }));
+			pButtonDrawer->AddButton("Button 1", []() { LOG_D("Button 1 pressed!"); }, &pButton1));
+		pButton1->SetInteractable(false);
+		debugTokens.push_back(pButtonDrawer->AddButton("Toggle B1", [pButton1]() {
+			pButton1->SetInteractable(!pButton1->IsInteractable());
+			LOG_D("Button 1 Set Interactable: %s", Strings::ToString(pButton1->IsInteractable()).c_str());
+		}));
+		/*debugTokens.push_back(
+			pButtonDrawer->AddButton("Button 3", []() { LOG_D("Button 3 pressed!"); }));*/
 		debugTokens.push_back(pButtonDrawer->AddButton("Toggle", &SpawnToggle));
 		debugTokens.push_back(pButtonDrawer->AddButton("Dialogue", []() { bToSpawnDialogue = true; }));
 		if (bModal)
 			debugTokens.push_back(
 				pButtonDrawer->AddButton("Cancel", []() { pButtonDrawer->Destruct(); }));
 		pButtonDrawer->SetActive(true);
+	}
+
+	if (elapsed.AsSeconds() >= 3 && !bSpawnedSelection)
+	{
+		bSpawnedSelection = true;
+		pSelectionContext = pTestWorld->Game()->UI()->PushContext<UIContext>();
+		pSelectionContext->m_bAutoDestroyOnCancel = true;
+
+		pSelection = pSelectionContext->AddWidget<UISelection>("Selection");
+		pSelection->AddOption("One")->AddOption("Two")->AddOption("Three")->SetValue("Two");
+#if DEBUG_LOGGING
+		selectionToken = pSelection->SetOnChanged([](const UISelection::Option& selected) {
+			LOG_D("Selected: %d, %s", selected.idx, selected.value.c_str());
+		});
+#endif
+
+		pSelectionContext->SetActive(true);
+	}
+
+	static bool bSpawnedTextInput = false;
+	static UIContext* pTextContext = nullptr;
+	static UITextInput* pTextInput = nullptr;
+	if (elapsed.AsSeconds() >= 5 && !bSpawnedTextInput)
+	{
+		pTextContext = pTestWorld->Game()->UI()->PushContext<UIContext>();
+		pTextInput = pTextContext->AddWidget<UITextInput>("TextInput");
+		pTextContext->m_bAutoDestroyOnCancel = true;
+		pTextContext->SetActive(true);
+		bSpawnedTextInput = true;
 	}
 
 	if (bToSpawnDialogue)
@@ -377,6 +416,13 @@ void Cleanup()
 	debugTokens.clear();
 
 	uArchivedTexture = nullptr;
+
+	bSpawnedSelection = false;
+	pSelectionContext = nullptr;
+	pSelection = nullptr;
+#if DEBUG_LOGGING
+	selectionToken = nullptr;
+#endif
 }
 } // namespace
 
