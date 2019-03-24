@@ -15,7 +15,6 @@ UIDialogue::UIDialogue() : UIContext("Dialogue")
 UIDialogue::UIDialogue(const String& name) : UIContext(name + "_Dialogue")
 {
 }
-UIDialogue::~UIDialogue() = default;
 
 void UIDialogue::OnInitContext()
 {

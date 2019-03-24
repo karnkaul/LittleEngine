@@ -25,8 +25,7 @@ private:
 public:
 	UIButtonDrawer();
 	UIButtonDrawer(const String& name);
-	virtual ~UIButtonDrawer();
-
+	
 	// Returns false if any button already added - will be vertical
 	bool SetHorizontal(bool bHorizontal = true);
 	UIButtonDrawer* SetPanel(const UIStyle& panelStyle);

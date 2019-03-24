@@ -262,6 +262,13 @@ void SpawnToggle()
 	pParent->SetActive(true);
 }
 
+bool bSpawnedSelection = false;
+UIContext* pSelectionContext = nullptr;
+UISelection* pSelection = nullptr;
+#if DEBUG_LOGGING
+UISelection::OnChanged::Token selectionToken;
+#endif
+
 void TestTick(Time dt)
 {
 	elapsed += dt;
@@ -294,10 +301,27 @@ void TestTick(Time dt)
 		pButtonDrawer->SetActive(true);
 	}
 
+	if (elapsed.AsSeconds() >= 3 && !bSpawnedSelection)
+	{
+		bSpawnedSelection = true;
+		pSelectionContext = pTestWorld->Game()->UI()->PushContext<UIContext>();
+		pSelectionContext->m_bAutoDestroyOnCancel = true;
+
+		pSelection = pSelectionContext->AddWidget<UISelection>("Selection");
+		pSelection->AddOption("One")->AddOption("Two")->AddOption("Three")->SetValue("Two");
+#if DEBUG_LOGGING
+		selectionToken = pSelection->SetOnChanged([](const UISelection::Option& selected) {
+			LOG_D("Selected: %d, %s", selected.idx, selected.value.c_str());
+		});
+#endif
+
+		pSelectionContext->SetActive(true);
+	}
+
 	static bool bSpawnedTextInput = false;
 	static UIContext* pTextContext = nullptr;
 	static UITextInput* pTextInput = nullptr;
-	if (elapsed.AsSeconds() >= 3 && !bSpawnedTextInput)
+	if (elapsed.AsSeconds() >= 5 && !bSpawnedTextInput)
 	{
 		pTextContext = pTestWorld->Game()->UI()->PushContext<UIContext>();
 		pTextInput = pTextContext->AddWidget<UITextInput>("TextInput");
@@ -392,6 +416,13 @@ void Cleanup()
 	debugTokens.clear();
 
 	uArchivedTexture = nullptr;
+
+	bSpawnedSelection = false;
+	pSelectionContext = nullptr;
+	pSelection = nullptr;
+#if DEBUG_LOGGING
+	selectionToken = nullptr;
+#endif
 }
 } // namespace
 
