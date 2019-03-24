@@ -119,5 +119,13 @@ public:
 			Callback(t);
 		}
 	}
+
+	void ForEach(const std::function<void(const T&)>& Callback) const
+	{
+		for (const auto& t : vec)
+		{
+			Callback(t);
+		}
+	}
 };
 } // namespace Core

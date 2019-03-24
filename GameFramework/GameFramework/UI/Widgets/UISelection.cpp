@@ -6,10 +6,6 @@
 
 namespace LittleEngine
 {
-UISelection::Option::Option(const String& value, size_t idx) : value(value), idx(static_cast<u32>(idx))
-{
-}
-
 UISelection::UISelection() : UIButton("Untitled")
 {
 	SetName("", "UISelection");
@@ -25,7 +21,7 @@ UISelection::~UISelection()
 	LOG_D("%s destroyed", LogNameStr());
 }
 
-UISelection::OnChanged::Token UISelection::SetOnChanged(const OnChanged::Callback& callback)
+UISelection::OnChanged::Token UISelection::RegisterOnChanged(const OnChanged::Callback& callback)
 {
 	return m_onChanged.Register(callback);
 }
@@ -88,8 +84,7 @@ void UISelection::OnInitWidget()
 
 void UISelection::OnSpawnDrawer()
 {
-	LayerID drawerLayer = static_cast<LayerID>(m_style.baseLayer + 2);
-	m_pDrawer = Services::Game()->UI()->PushContext<UIButtonDrawer>(drawerLayer);
+	m_pDrawer = Services::Game()->UI()->PushContext<UIButtonDrawer>();
 	UIStyle panelStyle;
 	panelStyle.size = m_data.panelSize;
 	panelStyle.fill = m_data.panelColour;
@@ -104,8 +99,7 @@ void UISelection::OnSpawnDrawer()
 			m_pDrawer->Destruct();
 			m_value = option;
 			SetText(m_value);
-			Option selected(m_value, idx);
-			m_onChanged(selected);
+			m_onChanged(std::make_pair(idx, option));
 		}));
 	}
 

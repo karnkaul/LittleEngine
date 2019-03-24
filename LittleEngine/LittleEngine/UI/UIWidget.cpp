@@ -68,6 +68,19 @@ void UIWidget::InitElement(UIElement* pNewElement, UITransform* pParent)
 	pNewElement->m_layer = m_style.baseLayer;
 }
 
+LayerID UIWidget::GetMaxLayer() const
+{
+	LayerID maxLayer = LAYER_ZERO;
+	for (const auto& uElement : m_uiElements)
+	{
+		if (uElement->m_layer > maxLayer)
+		{
+			maxLayer = uElement->m_layer;
+		}
+	}
+	return maxLayer;
+}
+
 void UIWidget::OnInitWidget()
 {
 }

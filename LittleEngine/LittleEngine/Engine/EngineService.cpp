@@ -52,6 +52,7 @@ EngineService::EngineService()
 	m_uEngineRepository = MakeUnique<EngineRepository>("GameAssets.cooked", "GameAssets");
 	m_uWorldStateMachine = MakeUnique<WorldStateMachine>();
 	m_uEngineAudio = MakeUnique<EngineAudio>();
+	Time::Reset();
 	Services::ProvideEngine(*this);
 }
 

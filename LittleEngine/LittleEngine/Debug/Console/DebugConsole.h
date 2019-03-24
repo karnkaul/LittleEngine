@@ -1,8 +1,8 @@
 #pragma once
 #include "StdTypes.h"
 #if ENABLED(CONSOLE)
+#include "SimpleTime.h"
 #include "LogLine.h"
-#include "SFMLAPI/System/SFTime.h"
 #include "SFMLAPI/Rendering/Colour.h"
 
 namespace LittleEngine

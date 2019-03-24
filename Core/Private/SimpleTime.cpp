@@ -1,21 +1,15 @@
 #include "stdafx.h"
-#include "SFTime.h"
+#include <chrono>
+#include "SimpleTime.h"
 #include "Utils.h"
-#include "SFML/System/Time.hpp"
-#include "SFML/System/Clock.hpp"
-
-#pragma comment(lib, "winmm.lib")
-#if defined(_DEBUG)
-#pragma comment(lib, "sfml-system-s-d.lib")
-#else
-#pragma comment(lib, "sfml-system-s.lib")
-#endif
 
 namespace LittleEngine
 {
 namespace
 {
-sf::Clock realTimeClock;
+using namespace std::chrono;
+
+time_point epoch = high_resolution_clock::now();
 }
 
 const Time Time::Zero = Time(0);
@@ -54,7 +48,8 @@ Time Time::Seconds(f32 seconds)
 
 Time Time::Now()
 {
-	return Time(static_cast<s64>(realTimeClock.getElapsedTime().asMicroseconds()));
+	using namespace std::chrono;
+	return Time(duration_cast<microseconds>(high_resolution_clock::now() - epoch).count());
 }
 
 Time Time::Clamp(Time val, Time min, Time max)
@@ -66,9 +61,9 @@ Time Time::Clamp(Time val, Time min, Time max)
 	return val;
 }
 
-void Time::RestartRealtimeClock()
+void Time::Reset()
 {
-	realTimeClock.restart();
+	epoch = std::chrono::high_resolution_clock::now();
 }
 
 Time::Time() : microSeconds(0)

@@ -40,7 +40,7 @@ void SetStringIfEmpty(GData& data, const String& key, const String& value)
 } // namespace
 
 const bool EngineConfig::s_bPauseOnFocusLoss = false;
-const Version EngineConfig::s_engineVersion = "0.1.3";
+const Version EngineConfig::s_engineVersion = "0.1.4";
 
 EngineConfig::EngineConfig()
 {

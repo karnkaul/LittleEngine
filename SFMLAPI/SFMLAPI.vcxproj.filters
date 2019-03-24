@@ -46,9 +46,6 @@
     <ClInclude Include="SFMLAPI\System\SFGameClock.h">
       <Filter>SFMLAPI\System</Filter>
     </ClInclude>
-    <ClInclude Include="SFMLAPI\System\SFTime.h">
-      <Filter>SFMLAPI\System</Filter>
-    </ClInclude>
     <ClInclude Include="SFMLAPI\System\SFTypes.h">
       <Filter>SFMLAPI\System</Filter>
     </ClInclude>
@@ -91,9 +88,6 @@
       <Filter>SFMLAPI\System</Filter>
     </ClCompile>
     <ClCompile Include="SFMLAPI\System\SFGameClock.cpp">
-      <Filter>SFMLAPI\System</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\System\SFTime.cpp">
       <Filter>SFMLAPI\System</Filter>
     </ClCompile>
     <ClCompile Include="SFMLAPI\System\SFTypes.cpp">

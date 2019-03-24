@@ -4,11 +4,11 @@
 #include <functional>
 #include <future>
 #include "CoreTypes.h"
+#include "SimpleTime.h"
 #include "JobHandle.h"
 #include "JobWorker.h"
 #include "MultiJob.h"
 #include "LittleEngine/Services/IService.h"
-#include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {

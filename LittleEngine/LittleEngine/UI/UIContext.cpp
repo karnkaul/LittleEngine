@@ -32,6 +32,27 @@ void UIContext::InitContext(LayerID rootLayer)
 	SetActive(true);
 }
 
+LayerID UIContext::GetMaxLayer() const
+{
+	LayerID maxLayer = m_pRootElement->m_layer;
+	for (const auto& uElement : m_uiElements)
+	{
+		if (uElement->m_layer > maxLayer)
+		{
+			maxLayer = uElement->m_layer;
+		}
+	}
+	m_uiWidgets.ForEach([&maxLayer](const UPtr<UIWidget>& uWidget) 
+	{
+		if (uWidget->GetMaxLayer() > maxLayer)
+		{
+			maxLayer = uWidget->GetMaxLayer();
+		}
+	}
+	);
+	return maxLayer;
+}
+
 void UIContext::SetActive(bool bActive, bool bResetSelection)
 {
 	m_inputTokens.clear();

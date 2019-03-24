@@ -2,8 +2,8 @@
 #include <mutex>
 #include <functional>
 #include "CoreTypes.h"
+#include "SimpleTime.h"
 #include "SFPrimitive.h"
-#include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {

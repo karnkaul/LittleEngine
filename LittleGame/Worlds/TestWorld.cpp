@@ -226,8 +226,7 @@ Time elapsed = Time::Zero;
 
 void SpawnDialogue()
 {
-	LayerID dialogueLayer = static_cast<LayerID>(LAYER_UI + 2);
-	pDialogue = pTestWorld->Game()->UI()->PushContext<UIDialogue>(dialogueLayer);
+	pDialogue = pTestWorld->Game()->UI()->PushContext<UIDialogue>();
 	pDialogue->SetHeader(UIText("Title", 25, Colour::Black));
 	pDialogue->SetContent(UIText("Content goes here", 15, Colour::Black), &Colour::White);
 	debugTokens.push_back(pDialogue->AddMainButton("OK", []() { LOG_D("OK pressed!"); }, false));
@@ -240,8 +239,7 @@ void SpawnToggle()
 {
 	Fixed x = 300;
 	Fixed y = 200;
-	LayerID toggleLayer = static_cast<LayerID>(LAYER_UI + 2);
-	UIContext* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>(toggleLayer);
+	UIContext* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>();
 	pParent->GetRootElement()->m_transform.size = {x, y};
 	UIWidgetStyle toggleStyle = UIWidgetStyle::GetDefault0();
 	toggleStyle.widgetSize = {x, y * Fixed::OneHalf};
@@ -308,10 +306,10 @@ void TestTick(Time dt)
 		pSelectionContext->m_bAutoDestroyOnCancel = true;
 
 		pSelection = pSelectionContext->AddWidget<UISelection>("Selection");
-		pSelection->AddOption("One")->AddOption("Two")->AddOption("Three")->SetValue("Two");
+		pSelection->AddOptions({"One", "Two", "Three", "Four"})->SetValue("Two");
 #if DEBUG_LOGGING
-		selectionToken = pSelection->SetOnChanged([](const UISelection::Option& selected) {
-			LOG_D("Selected: %d, %s", selected.idx, selected.value.c_str());
+		selectionToken = pSelection->RegisterOnChanged([](std::pair<size_t, String> selected) {
+			LOG_D("Selected: %d, %s", selected.first, selected.second.c_str());
 		});
 #endif
 

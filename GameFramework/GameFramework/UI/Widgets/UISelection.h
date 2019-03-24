@@ -6,14 +6,7 @@ namespace LittleEngine
 class UISelection : public UIButton
 {
 public:
-	struct Option
-	{
-		String value;
-		u32 idx;
-
-		Option(const String& value, size_t idx);
-	};
-	using OnChanged = Core::Delegate<const Option&>;
+	using OnChanged = Core::Delegate<std::pair<size_t, String>>;
 
 private:
 	struct UISelectionData
@@ -35,7 +28,7 @@ public:
 	UISelection(const String& name);
 	virtual ~UISelection();
 
-	OnChanged::Token SetOnChanged(const OnChanged::Callback& callback);
+	OnChanged::Token RegisterOnChanged(const OnChanged::Callback& callback);
 	UISelection* SetValue(const String& text);
 	UISelection* AddOption(const String& option);
 	UISelection* AddOptions(const Vec<String>& options);

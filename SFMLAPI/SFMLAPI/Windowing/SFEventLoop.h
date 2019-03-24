@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreTypes.h"
 #include "SFWindowData.h"
-#include "SFMLAPI/System/SFTime.h"
+#include "SimpleTime.h"
 #include "SFMLAPI/Input/SFEventHandler.h"
 
 namespace LittleEngine

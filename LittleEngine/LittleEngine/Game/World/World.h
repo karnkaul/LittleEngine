@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreTypes.h"
 #include "TokenHandler.hpp"
-#include "SFMLAPI/System/SFTime.h"
+#include "SimpleTime.h"
 #include "SFMLAPI/System/SFGameClock.h"
 #include "LittleEngine/Game/Inheritable.h"
 #include "LittleEngine/Input/EngineInput.h"

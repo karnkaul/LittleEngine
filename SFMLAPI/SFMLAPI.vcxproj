@@ -35,7 +35,6 @@
     <ClInclude Include="SFMLAPI\SFWindowing.h" />
     <ClInclude Include="SFMLAPI\System\SFAssets.h" />
     <ClInclude Include="SFMLAPI\System\SFGameClock.h" />
-    <ClInclude Include="SFMLAPI\System\SFTime.h" />
     <ClInclude Include="SFMLAPI\System\SFTypes.h" />
     <ClInclude Include="SFMLAPI\Windowing\SFEventLoop.h" />
     <ClInclude Include="SFMLAPI\Windowing\SFWindow.h" />
@@ -52,7 +51,6 @@
     <ClCompile Include="SFMLAPI\Rendering\SFRenderState.cpp" />
     <ClCompile Include="SFMLAPI\System\SFAssets.cpp" />
     <ClCompile Include="SFMLAPI\System\SFGameClock.cpp" />
-    <ClCompile Include="SFMLAPI\System\SFTime.cpp" />
     <ClCompile Include="SFMLAPI\System\SFTypes.cpp" />
     <ClCompile Include="SFMLAPI\Windowing\SFEventLoop.cpp" />
     <ClCompile Include="SFMLAPI\Windowing\SFWindow.cpp" />

@@ -1,11 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
 
-namespace sf
-{
-class Time;
-}
-
 namespace LittleEngine
 {
 struct Time
@@ -21,8 +16,8 @@ public:
 	static Time Seconds(f32 seconds);
 	static Time Now();
 	static Time Clamp(Time val, Time min, Time max);
-	static void RestartRealtimeClock();
-
+	static void Reset();
+	
 	Time();
 	explicit Time(s64 microSeconds);
 	explicit Time(sf::Time& sfTime);

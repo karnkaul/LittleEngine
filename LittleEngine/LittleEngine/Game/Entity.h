@@ -1,10 +1,10 @@
 #pragma once
+#include "SimpleTime.h"
 #include "WorldObject.h"
 #include "Component.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/Game/GameManager.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
-#include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {

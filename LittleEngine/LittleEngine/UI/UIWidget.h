@@ -51,6 +51,7 @@ protected:
 private:
 	void InitWidget(UIContext& owner, UIWidgetStyle* pStyleToCopy);
 	void InitElement(UIElement* pNewElement, UITransform* pParent);
+	LayerID GetMaxLayer() const;
 
 	virtual void OnInitWidget();
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreTypes.h"
+#include "SimpleTime.h"
 #include "JobHandle.h"
-#include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {

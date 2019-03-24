@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <unordered_map>
-#include "SFTime.h"
+#include "SimpleTime.h"
 #include "CoreTypes.h"
 #include "Logger.h"
 #include "Utils.h"

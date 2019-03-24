@@ -1,8 +1,8 @@
 #pragma once
 #include <atomic>
+#include "SimpleTime.h"
 #include "GFXBuffer.h"
 #include "SFMLAPI/Windowing/SFWindowData.h"
-#include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {

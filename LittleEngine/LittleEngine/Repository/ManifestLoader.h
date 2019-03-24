@@ -1,7 +1,7 @@
 #pragma once
 #include <functional>
 #include "ArchiveReader.h"
-#include "SFMLAPI/System/SFTime.h"
+#include "SimpleTime.h"
 #include "SFMLAPI/System/SFAssets.h"
 
 namespace LittleEngine

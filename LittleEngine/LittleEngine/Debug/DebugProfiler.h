@@ -2,8 +2,8 @@
 #include "CoreTypes.h"
 #if ENABLED(PROFILER)
 #include <thread>
+#include "SimpleTime.h"
 #include "SFMLAPI/Rendering/Colour.h"
-#include "SFMLAPI/System/SFTime.h"
 
 #define PROFILE_START(id, colour) LittleEngine::Debug::Profiler::Start(id, colour)
 #define PROFILE_STOP(id) LittleEngine::Debug::Profiler::Stop(id)

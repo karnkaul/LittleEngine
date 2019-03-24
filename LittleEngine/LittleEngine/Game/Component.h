@@ -1,6 +1,6 @@
 #pragma once
+#include "SimpleTime.h"
 #include "WorldObject.h"
-#include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {

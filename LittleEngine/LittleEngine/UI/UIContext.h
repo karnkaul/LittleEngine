@@ -65,6 +65,7 @@ protected:
 
 private:
 	void InitContext(LayerID rootLayer);
+	LayerID GetMaxLayer() const;
 
 	friend class UIManager;
 };

@@ -141,6 +141,11 @@ void UIWidgetMatrix::ForEach(const std::function<void(UPtr<UIWidget>&)>& Callbac
 	m_matrix.ForEach([&Callback](CVec& vec) { vec.ForEach(Callback); });
 }
 
+void UIWidgetMatrix::ForEach(const std::function<void(const UPtr<UIWidget>&)>& Callback) const
+{
+	m_matrix.ForEach([&Callback](const CVec& vec) { vec.ForEach(Callback); });
+}
+
 size_t UIWidgetMatrix::TotalCount() const
 {
 	return m_size;
