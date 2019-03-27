@@ -1,5 +1,6 @@
 #pragma once
-#include "UIContext.h"
+#include "CoreTypes.h"
+#include "SimpleTime.h"
 
 namespace LittleEngine
 {
@@ -7,7 +8,7 @@ class UIManager final
 {
 public:
 private:
-	Vec<UPtr<UIContext>> m_uContexts;
+	Vec<UPtr<class UIContext>> m_uContexts;
 
 public:
 	UIManager();

@@ -1,7 +1,6 @@
 #pragma once
 #include "Delegate.hpp"
 #include "LittleEngine/UI/UIWidget.h"
-#include "LittleEngine/UI/UIStyle.h"
 
 namespace LittleEngine
 {
@@ -32,7 +31,7 @@ public:
 	~UIToggle();
 
 	UIToggle* SetOn(bool bOn);
-	UIToggle* SetText(const UIText& text);
+	UIToggle* SetText(const struct UIText& text);
 	UIToggle* SetOnColour(Colour onColour);
 	UIToggle* SetOffColour(Colour offColour);
 	UIToggle* SetBoxSize(const Vector2& size);

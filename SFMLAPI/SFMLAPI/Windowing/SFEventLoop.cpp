@@ -1,17 +1,27 @@
 #include "stdafx.h"
 #include "SFEventLoop.h"
 #include "SFWindow.h"
-#include "SFMLAPI/System/SFGameClock.h"
+#include "SFWindowData.h"
 #include "Logger.h"
+#include "SFMLAPI/Input/SFEventHandler.h"
+#include "SFMLAPI/Input/SFInputDataFrame.h"
+#include "SFMLAPI/System/SFGameClock.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
 
 namespace LittleEngine
 {
+SFEventLoop::SFEventLoop()
+{
+	m_uSFWindowData = MakeUnique<SFWindowData>();
+	m_uSFEventHandler = MakeUnique<SFEventHandler>();
+}
+
 SFEventLoop::~SFEventLoop() = default;
 
 s32 SFEventLoop::Run()
 {
 	// Construct Window
-	m_uSFWindow = MakeUnique<SFWindow>(m_windowData);
+	m_uSFWindow = MakeUnique<SFWindow>(*m_uSFWindowData);
 	LOG_I("[SFEventLoop] Running");
 
 	PreRun();
@@ -57,12 +67,12 @@ s32 SFEventLoop::Run()
 
 SFInputDataFrame SFEventLoop::GetInputDataFrame() const
 {
-	return m_sfEventHandler.GetFrameInputData();
+	return m_uSFEventHandler->GetFrameInputData();
 }
 
 void SFEventLoop::PollEvents()
 {
-	SFWindowEventType windowEvent = m_sfEventHandler.PollEvents(*m_uSFWindow);
+	SFWindowEventType windowEvent = m_uSFEventHandler->PollEvents(*m_uSFWindow);
 	switch (windowEvent)
 	{
 	case SFWindowEventType::Closed:
@@ -111,8 +121,8 @@ void SFEventLoop::SleepForRestOfFrame(Time frameTime)
 		StringStream s;
 		s << "[SFEventLoop] Frame Update Complete. Time taken: " << frameTime.AsMilliseconds()
 		  << " Surplus: " << surplus;
-		//LOG_H("[SFEventLoop] Frame Update Complete. Time taken: %d Surplus: %d",
-			  //frameTime.AsMilliseconds(), surplus);
+		// LOG_H("[SFEventLoop] Frame Update Complete. Time taken: %d Surplus: %d",
+		// frameTime.AsMilliseconds(), surplus);
 		if (surplus > 0)
 			sf::sleep(sf::milliseconds(surplus));
 	}

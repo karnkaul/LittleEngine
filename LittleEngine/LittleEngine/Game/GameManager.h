@@ -1,9 +1,8 @@
 #pragma once
-#include "Entity.h"
-#include "Component.h"
+#include "Logger.h"
+#include "SimpleTime.h"
 #include "Version.h"
-#include "LittleEngine/UI/UIManager.h"
-#include "LittleEngine/Physics/CollisionManager.h"
+#include "ComponentTimingType.h"
 #include "LittleEngine/Services/IService.h"
 
 namespace LittleEngine
@@ -16,10 +15,10 @@ private:
 
 private:
 	String m_logName;
-	Vec<UPtr<Entity>> m_uEntities;
-	Array<Vec<UPtr<Component>>, COMPONENT_LINES> m_uComponents;
-	UPtr<UIManager> m_uUIManager;
-	UPtr<CollisionManager> m_uCollisionManager;
+	Vec<UPtr<class Entity>> m_uEntities;
+	Array<Vec<UPtr<class Component>>, COMPONENT_LINES> m_uComponents;
+	UPtr<class UIManager> m_uUIManager;
+	UPtr<class CollisionManager> m_uCollisionManager;
 
 public:
 	static void SetGameVersion(const Core::Version& version);
@@ -30,7 +29,7 @@ public:
 	~GameManager();
 
 	UIManager* UI() const;
-	EngineInput* Input() const;
+	class EngineInput* Input() const;
 	class EngineAudio* Audio() const;
 	class EngineRepository* Repository() const;
 	class WorldStateMachine* Worlds() const;

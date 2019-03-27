@@ -5,7 +5,7 @@
 #include "SFRenderer.h"
 #include "SFRenderState.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
-#include "SFMLAPI/SFSystem.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
 #include "SFML/Graphics.hpp"
 
 namespace LittleEngine
@@ -45,6 +45,8 @@ SFRenderer::SFRenderer(SFWindow& sfWindow, Time tickRate)
 {
 	m_bRendering.store(true, std::memory_order_relaxed);
 }
+
+SFRenderer::~SFRenderer() = default;
 
 void SFRenderer::Render(GFXBuffer& buffer)
 {

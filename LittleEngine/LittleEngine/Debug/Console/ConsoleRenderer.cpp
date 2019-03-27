@@ -1,14 +1,20 @@
 #include "stdafx.h"
 #include "ConsoleRenderer.h"
 #if ENABLED(CONSOLE)
-#include "LittleEngine/Services/Services.h"
+#include "Utils.h"
+#include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/Repository/EngineRepository.h"
+#include "LittleEngine/Services/Services.h"
+#include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIText.h"
+#include "LogLine.h"
 
 namespace LittleEngine
 {
 namespace Debug
 {
-ConsoleRenderer::ConsoleRenderer()
+ConsoleRenderer::ConsoleRenderer() : m_textSize(LogLine::TEXT_SIZE)
 {
 	m_pFont = Services::Engine()->Repository()->GetDefaultFont();
 
@@ -60,6 +66,8 @@ ConsoleRenderer::ConsoleRenderer()
 		m_uLogTexts.emplace_back(std::move(uLogLineI));
 	}
 }
+
+ConsoleRenderer::~ConsoleRenderer() = default;
 
 void ConsoleRenderer::Tick(Time dt)
 {

@@ -70,7 +70,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Audio\EngineAudio.h" />
-    <ClInclude Include="LittleEngine\Debug\Console\CircularList.hpp" />
     <ClInclude Include="LittleEngine\Debug\Console\ConsoleInput.h" />
     <ClInclude Include="LittleEngine\Debug\Console\ConsoleRenderer.h" />
     <ClInclude Include="LittleEngine\Debug\Console\DebugConsole.h" />
@@ -84,6 +83,7 @@
     <ClInclude Include="LittleEngine\Engine\AsyncFileLogger.h" />
     <ClInclude Include="LittleEngine\Engine\OS.h" />
     <ClInclude Include="LittleEngine\Game\Component.h" />
+    <ClInclude Include="LittleEngine\Game\ComponentTimingType.h" />
     <ClInclude Include="LittleEngine\Game\Entity.h" />
     <ClInclude Include="LittleEngine\Game\Game.h" />
     <ClInclude Include="LittleEngine\Game\GameManager.h" />
@@ -134,9 +134,6 @@
     <ProjectReference Include="..\SFMLAPI\SFMLAPI.vcxproj">
       <Project>{927b2d28-14e8-4d17-a0fb-5d637cf4ea3c}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

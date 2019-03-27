@@ -1,7 +1,5 @@
 #pragma once
-#include "Delegate.hpp"
 #include "StdTypes.h"
-#include <vector>
 
 namespace Core
 {

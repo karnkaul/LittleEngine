@@ -1,7 +1,11 @@
 #include "stdafx.h"
+#include "Logger.h"
+#include "SFMLAPI/System/SFAssets.h"
+#include "LoadingUI.h"
 #include "WorldStateMachine.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/Repository/EngineRepository.h"
 #include "LittleEngine/Repository/ManifestLoader.h"
 #include "LittleEngine/Engine/EngineService.h"
 

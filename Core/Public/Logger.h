@@ -1,7 +1,5 @@
 #pragma once
 #include "StdTypes.h"
-#include <ostream>
-#include <sstream>
 #include <functional>
 
 #define LOG_SEVERITY(msg, severity, ...) Core::Log(Core::LogSeverity::severity, msg, __VA_ARGS__)

@@ -1,10 +1,11 @@
 #include "stdafx.h"
-#include "RenderHeap.h"
 #include "CoreTypes.h"
-#include "LittleEngine/Services/Services.h"
-#include "SFMLAPI/Rendering/GFXBuffer.h"
-#include "SFMLAPI/System/SFAssets.h"
 #include "Logger.h"
+#include "SFMLAPI/Rendering/GFXBuffer.h"
+#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/System/SFAssets.h"
+#include "RenderHeap.h"
+#include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
 {

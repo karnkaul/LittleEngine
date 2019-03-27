@@ -28,6 +28,9 @@ GData::GData(const String& serialised)
 	}
 }
 
+GData::GData() = default;
+GData::~GData() = default;
+
 bool GData::Marshall(const String& serialised)
 {
 	String temp(serialised);

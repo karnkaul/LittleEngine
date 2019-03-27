@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "DebugProfiler.h"
 #if ENABLED(PROFILER)
+#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/System/SFGameClock.h"
 #include "LittleEngine/GFX/GFX.h"
 #include "LittleEngine/Services/Services.h"
-#include "LittleEngine/UI/UIProgressBar.h"
 #include "LittleEngine/UI/UIElement.h"
-#include "SFMLAPI/System/SFGameClock.h"
+#include "LittleEngine/UI/UIProgressBar.h"
+#include "LittleEngine/UI/UIText.h"
 
 namespace LittleEngine
 {

@@ -1,8 +1,14 @@
 #include "stdafx.h"
+#include "Logger.h"
 #include "LoadingUI.h"
-#include "LittleEngine/Services/Services.h"
-#include "LittleEngine/GFX/GFX.h"
+#include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/GFX/GFX.h"
+#include "LittleEngine/Repository/EngineRepository.h"
+#include "LittleEngine/Services/Services.h"
+#include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIProgressBar.h"
+#include "LittleEngine/UI/UIText.h"
 
 namespace LittleEngine
 {

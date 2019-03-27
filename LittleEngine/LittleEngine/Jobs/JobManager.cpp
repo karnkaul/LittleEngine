@@ -1,10 +1,13 @@
 #include "stdafx.h"
 #include <thread>
-#include "JobManager.h"
 #include "Logger.h"
 #include "Utils.h"
-#include "LittleEngine/Services/Services.h"
+#include "JobHandle.h"
+#include "JobManager.h"
+#include "JobWorker.h"
+#include "MultiJob.h"
 #include "LittleEngine/Engine/OS.h"
+#include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
 {

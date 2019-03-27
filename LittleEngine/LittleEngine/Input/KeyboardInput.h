@@ -1,6 +1,5 @@
 #pragma once
 #include "StdTypes.h"
-#include "Delegate.hpp"
 #include "LittleEngine/Input/EngineInput.h"
 
 namespace LittleEngine

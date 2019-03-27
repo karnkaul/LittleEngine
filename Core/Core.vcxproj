@@ -190,6 +190,7 @@
   <ItemGroup>
     <ClInclude Include="Public\ArchiveReader.h" />
     <ClInclude Include="Public\Asserts.h" />
+    <ClInclude Include="Public\CircularList.hpp" />
     <ClInclude Include="Public\CircularVector.hpp" />
     <ClInclude Include="Public\CoreTypes.h" />
     <ClInclude Include="Public\Delegate.hpp" />

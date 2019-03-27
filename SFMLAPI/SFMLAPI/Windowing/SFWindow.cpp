@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "SFWindow.h"
-#include "SFMLAPI/System/SFTypes.h"
+#include "SFWindowData.h"
 #include "Utils.h"
 #include "Logger.h"
+#include "SFMLAPI/System/SFTypes.h"
 
 #pragma comment(lib, "freetype.lib")
 #pragma comment(lib, "opengl32.lib")
@@ -49,6 +50,8 @@ SFWindow::SFWindow(const SFWindowData& data)
 	view.setCenter(Cast(Vector2::Zero));
 	setView(view);
 }
+
+SFWindow::~SFWindow() = default;
 
 Vector2 SFWindow::GetViewSize() const
 {

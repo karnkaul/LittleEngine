@@ -1,8 +1,12 @@
 #include "stdafx.h"
-#include "UIContext.h"
-#include "LittleEngine/Game/World/World.h"
-#include "LittleEngine/Engine/EngineService.h"
 #include "Logger.h"
+#include "UIContext.h"
+#include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/Game/World/World.h"
+#include "LittleEngine/Services/Services.h"
+#include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIWidget.h"
+#include "LittleEngine/UI/UIWidgetMatrix.h"
 
 namespace LittleEngine
 {
@@ -19,13 +23,14 @@ UIContext::UIContext(const String& name) : UIObject(name)
 UIContext::~UIContext()
 {
 	SetActive(false);
-	m_uiWidgets.Clear();
+	m_uUIWidgets->Clear();
 	m_uiElements.clear();
 	LOG_D("%s destroyed", LogNameStr());
 }
 
 void UIContext::InitContext(LayerID rootLayer)
 {
+	m_uUIWidgets = MakeUnique<UIWidgetMatrix>();
 	m_pRootElement = AddElement<UIElement>(String(GetNameStr()) + " Root");
 	m_pRootElement->m_layer = rootLayer;
 	OnInitContext();
@@ -42,7 +47,7 @@ LayerID UIContext::GetMaxLayer() const
 			maxLayer = uElement->m_layer;
 		}
 	}
-	m_uiWidgets.ForEach([&maxLayer](const UPtr<UIWidget>& uWidget) 
+	m_uUIWidgets->ForEach([&maxLayer](const UPtr<UIWidget>& uWidget) 
 	{
 		if (uWidget->GetMaxLayer() > maxLayer)
 		{
@@ -67,8 +72,8 @@ void UIContext::SetActive(bool bActive, bool bResetSelection)
 
 void UIContext::ResetSelection()
 {
-	m_uiWidgets.Reset(true);
-	m_uiWidgets.ForEach([](UPtr<UIWidget>& uWidget) {
+	m_uUIWidgets->Reset(true);
+	m_uUIWidgets->ForEach([](UPtr<UIWidget>& uWidget) {
 		if (uWidget->m_state != UIWidgetState::Uninteractable)
 			uWidget->OnDeselected();
 	});
@@ -82,7 +87,7 @@ void UIContext::ResetSelection()
 
 UIWidget* UIContext::GetSelected()
 {
-	return m_uiWidgets.Current();
+	return m_uUIWidgets->Current();
 }
 
 UIElement* UIContext::GetRootElement() const
@@ -110,7 +115,7 @@ void UIContext::Tick(Time dt)
 	{
 		uElement->Tick(dt);
 	}
-	m_uiWidgets.ForEach([dt](UIContext::UUIWidget& uUIWidget) { uUIWidget->Tick(dt); });
+	m_uUIWidgets->ForEach([dt](UIContext::UUIWidget& uUIWidget) { uUIWidget->Tick(dt); });
 }
 
 void UIContext::OnInitContext()
@@ -145,7 +150,7 @@ bool UIContext::OnInput(const EngineInput::Frame& frame)
 
 void UIContext::OnUp()
 {
-	if (m_bInteracting || m_uiWidgets.CurrentVecCount() < 2)
+	if (m_bInteracting || m_uUIWidgets->CurrentVecCount() < 2)
 		return;
 	UIWidget* pSelected = GetSelected();
 	if (pSelected && pSelected->IsInteractable())
@@ -153,7 +158,7 @@ void UIContext::OnUp()
 		pSelected->SetState(UIWidgetState::NotSelected);
 		pSelected->OnDeselected();
 	}
-	pSelected = m_uiWidgets.NextSelectableVertical(false);
+	pSelected = m_uUIWidgets->NextSelectableVertical(false);
 	if (pSelected)
 	{
 		pSelected->SetState(UIWidgetState::Selected);
@@ -163,7 +168,7 @@ void UIContext::OnUp()
 
 void UIContext::OnDown()
 {
-	if (m_bInteracting || m_uiWidgets.CurrentVecCount() < 2)
+	if (m_bInteracting || m_uUIWidgets->CurrentVecCount() < 2)
 		return;
 	UIWidget* pWidget = GetSelected();
 	if (pWidget && pWidget->IsInteractable())
@@ -171,7 +176,7 @@ void UIContext::OnDown()
 		pWidget->SetState(UIWidgetState::NotSelected);
 		pWidget->OnDeselected();
 	}
-	pWidget = m_uiWidgets.NextSelectableVertical(true);
+	pWidget = m_uUIWidgets->NextSelectableVertical(true);
 	if (pWidget)
 	{
 		pWidget->SetState(UIWidgetState::Selected);
@@ -181,7 +186,7 @@ void UIContext::OnDown()
 
 void UIContext::OnLeft()
 {
-	if (m_bInteracting || m_uiWidgets.NumColumns() < 2)
+	if (m_bInteracting || m_uUIWidgets->NumColumns() < 2)
 		return;
 	UIWidget* pWidget = GetSelected();
 	if (pWidget && pWidget->IsInteractable())
@@ -189,7 +194,7 @@ void UIContext::OnLeft()
 		pWidget->SetState(UIWidgetState::NotSelected);
 		pWidget->OnDeselected();
 	}
-	pWidget = m_uiWidgets.NextSelectableHorizontal(false);
+	pWidget = m_uUIWidgets->NextSelectableHorizontal(false);
 	if (pWidget)
 	{
 		pWidget->SetState(UIWidgetState::Selected);
@@ -199,7 +204,7 @@ void UIContext::OnLeft()
 
 void UIContext::OnRight()
 {
-	if (m_bInteracting || m_uiWidgets.NumColumns() < 2)
+	if (m_bInteracting || m_uUIWidgets->NumColumns() < 2)
 		return;
 	UIWidget* pWidget = GetSelected();
 	if (pWidget && pWidget->IsInteractable())
@@ -207,7 +212,7 @@ void UIContext::OnRight()
 		pWidget->SetState(UIWidgetState::NotSelected);
 		pWidget->OnDeselected();
 	}
-	pWidget = m_uiWidgets.NextSelectableHorizontal(true);
+	pWidget = m_uUIWidgets->NextSelectableHorizontal(true);
 	if (pWidget)
 	{
 		pWidget->SetState(UIWidgetState::Selected);

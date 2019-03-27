@@ -1,11 +1,14 @@
 #include "stdafx.h"
 #include <thread>
 #include <time.h>
-#include "AsyncFileLogger.h"
+#include "FileRW.h"
 #include "Logger.h"
+#include "AsyncFileLogger.h"
 #include "LittleEngine/Engine/EngineConfig.h"
-#include "LittleEngine/Services/Services.h"
 #include "LittleEngine/Game/GameManager.h"
+#include "LittleEngine/Jobs/JobHandle.h"
+#include "LittleEngine/Jobs/JobManager.h"
+#include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
 {
@@ -26,7 +29,7 @@ using Lock = std::lock_guard<std::mutex>;
 
 AsyncFileLogger::AsyncFileLogger(const String& path) : m_filePath(path)
 {
-	Core::g_OnLogStr = std::bind(&AsyncFileLogger::OnLogStr, this, _1);
+	Core::g_OnLogStr = std::bind(&AsyncFileLogger::OnLogStr, this, std::placeholders::_1);
 	m_bStopLogging.store(false, std::memory_order_relaxed);
 	m_sFileLogJobHandle = Services::Jobs()->EnqueueEngine(
 		std::bind(&AsyncFileLogger::Async_StartLogging, this), "AsyncFileLogger");

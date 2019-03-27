@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "UIObject.h"
+#include "SFMLAPI/System/SFAssets.h"
+#include "LittleEngine/Engine/EngineService.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/Repository/EngineRepository.h"
-#include "LittleEngine/Engine/EngineService.h"
 
 namespace LittleEngine
 {

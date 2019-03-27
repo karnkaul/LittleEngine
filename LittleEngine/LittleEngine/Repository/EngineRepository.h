@@ -2,8 +2,12 @@
 #include <mutex>
 #include <future>
 #include "CoreTypes.h"
-#include "ArchiveReader.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "Logger.h"
+
+namespace Core
+{
+class ArchiveReader;
+}
 
 namespace LittleEngine
 {
@@ -12,13 +16,13 @@ class EngineRepository final
 {
 private:
 	using Lock = std::lock_guard<std::mutex>;
-
-	Core::ArchiveReader m_cooked;
+	
+	UPtr<Core::ArchiveReader> m_uCooked;
 	List<UPtr<class ManifestLoader>> m_uAsyncLoaders;
 	std::mutex m_mutex;
 	UMap<String, Asset::Ptr> m_loaded;
 	String m_rootDir;
-	FontAsset* m_pDefaultFont;
+	class FontAsset* m_pDefaultFont;
 
 public:
 	EngineRepository(const String& archivePath, const String& rootDir = "");
@@ -82,7 +86,7 @@ T* EngineRepository::Load(const String& id)
 		return pT;
 
 	LOG_W("[EngineRepository] Orphaned asset (not loaded by manifest) requested at runtime [%s]", id.c_str());
-	if (m_cooked.IsPresent(id.c_str()))
+	if (m_uCooked->IsPresent(id.c_str()))
 	{
 		pT = LoadFromArchive<T>(id.c_str());
 	}
@@ -111,7 +115,7 @@ std::future<T*> EngineRepository::LoadAsync(const String& id)
 		return sPromise->get_future();
 	}
 
-	if (m_cooked.IsPresent(id.c_str()))
+	if (m_uCooked->IsPresent(id.c_str()))
 	{
 		Services::Jobs()->Enqueue(
 			[this, id, sPromise]() { sPromise->set_value(LoadFromArchive<T>(id.c_str())); }, "", true);
@@ -149,7 +153,7 @@ template <typename T>
 T* EngineRepository::LoadFromArchive(const String& id)
 {
 	T* pT = nullptr;
-	UPtr<T> uT = CreateAsset<T>(id, m_cooked.Decompress(id.c_str()));
+	UPtr<T> uT = CreateAsset<T>(id, m_uCooked->Decompress(id.c_str()));
 	if (uT)
 	{
 		pT = uT.get();

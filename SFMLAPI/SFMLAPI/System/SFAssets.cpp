@@ -2,7 +2,9 @@
 #include "SFAssets.h"
 #include "CoreTypes.h"
 #include "Utils.h"
+#include "GData.h"
 #include "ArchiveReader.h"
+#include "Logger.h"
 
 namespace LittleEngine
 {

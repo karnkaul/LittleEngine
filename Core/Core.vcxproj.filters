@@ -128,5 +128,8 @@
     <ClInclude Include="Public\SimpleTime.h">
       <Filter>Public</Filter>
     </ClInclude>
+    <ClInclude Include="Public\CircularList.hpp">
+      <Filter>Public</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

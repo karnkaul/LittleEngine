@@ -1,4 +1,10 @@
 #include "stdafx.h"
+#include "Logger.h"
+#include "SFMLAPI/Rendering/SFLayerID.h"
+#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/System/SFAssets.h"
+#include "LittleEngine/Game/GameManager.h"
+#include "LittleEngine/Services/Services.h"
 #include "Player.h"
 #include "GameFramework/Components/Components.h"
 

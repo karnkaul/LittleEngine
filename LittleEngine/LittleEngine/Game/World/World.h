@@ -2,11 +2,8 @@
 #include "CoreTypes.h"
 #include "TokenHandler.hpp"
 #include "SimpleTime.h"
-#include "SFMLAPI/System/SFGameClock.h"
 #include "LittleEngine/Game/Inheritable.h"
 #include "LittleEngine/Input/EngineInput.h"
-#include "LittleEngine/Repository/EngineRepository.h"
-#include "LittleEngine/Audio/EngineAudio.h"
 
 namespace LittleEngine
 {
@@ -15,7 +12,7 @@ using WorldID = s32;
 class World : public Inheritable
 {
 private:
-	GameClock m_worldClock;
+	UPtr<class GameClock> m_uWorldClock;
 	
 protected:
 	Core::TokenHandler<EngineInput::Token> m_tokenHandler;
@@ -26,17 +23,17 @@ public:
 	World(const String& name);
 	virtual ~World();
 
-	void PlaySFX(SoundAsset* pSound, const Fixed& volume, const Fixed& direction, bool bLoop);
+	void PlaySFX(class SoundAsset* pSound, const Fixed& volume, const Fixed& direction, bool bLoop);
 	void PlayMusic(const String& path, const Fixed& volume, Time fadeTime, bool bLoop);
-	void BindInput(EngineInput::Delegate Callback);
+	void BindInput(const EngineInput::Delegate& Callback);
 	bool LoadWorld(WorldID id);
 	void Quit();
 
 	Time GetWorldTime() const;
-	EngineRepository* Repository() const;
-	EngineAudio* Audio() const;
-	EngineInput* Input() const;
-	GameManager* Game() const;
+	class EngineRepository* Repository() const;
+	class EngineAudio* Audio() const;
+	class EngineInput* Input() const;
+	class GameManager* Game() const;
 
 protected:
 	virtual void Tick(Time dt);

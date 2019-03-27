@@ -16,6 +16,6 @@ public:
 	virtual ~WorldObject();
 
 protected:
-	void BindInput(EngineInput::Delegate Callback);
+	void BindInput(const EngineInput::Delegate& Callback);
 };
 } // namespace LittleEngine

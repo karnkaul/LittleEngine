@@ -1,8 +1,9 @@
 #pragma once
+#include "CoreTypes.h"
+#include "TRange.hpp"
 #include "LittleEngine/UI/UIContext.h"
 #include "LittleEngine/UI/UIStyle.h"
 #include "GameFramework/UI/Widgets/UIButton.h"
-#include "CoreTypes.h"
 
 namespace LittleEngine
 {
@@ -12,7 +13,7 @@ private:
 	struct UIButtonDrawerData
 	{
 		UIStyle panelStyle;
-		TRange<Fixed> btnNPosRange = {Fixed(-0.85f), Fixed(0.85f)};
+		Core::TRange<Fixed> btnNPosRange = {Fixed(-0.85f), Fixed(0.85f)};
 		bool bHorizontal = false;
 
 		UIButtonDrawerData();
@@ -25,11 +26,13 @@ private:
 public:
 	UIButtonDrawer();
 	UIButtonDrawer(const String& name);
-	
+
 	// Returns false if any button already added - will be vertical
 	bool SetHorizontal(bool bHorizontal = true);
 	UIButtonDrawer* SetPanel(const UIStyle& panelStyle);
-	UIButton::OnClick::Token AddButton(const UIText& buttonText, const UIButton::OnClick::Callback& OnInteracted, UIButton** ppButton = nullptr);
+	UIButton::OnClick::Token AddButton(const UIText& buttonText,
+									   const UIButton::OnClick::Callback& OnInteracted,
+									   UIButton** ppButton = nullptr);
 
 protected:
 	virtual void OnInitContext() override;

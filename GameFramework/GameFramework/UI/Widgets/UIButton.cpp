@@ -1,6 +1,8 @@
 #include "stdafx.h"
-#include "UIButton.h"
 #include "Logger.h"
+#include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIText.h"
+#include "UIButton.h"
 
 namespace LittleEngine
 {

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LogLine.h"
+#include "LittleEngine/UI/UIText.h"
 #if ENABLED(CONSOLE)
 
 namespace LittleEngine
@@ -19,6 +20,8 @@ LogBook::LogBook(u32 lineCount) : m_lineCount(lineCount)
 {
 	Reset();
 }
+
+LogBook::~LogBook() = default;
 
 void LogBook::Reset()
 {

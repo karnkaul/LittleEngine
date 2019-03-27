@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "Gamepad.h"
 #include "Utils.h"
+#include "Gamepad.h"
 
 namespace LittleEngine
 {

@@ -11,6 +11,8 @@ GameClock::GameClock()
 	m_startTime = gameTime;
 }
 
+GameClock::~GameClock() = default;
+
 void GameClock::Restart()
 {
 	m_startTime = gameTime;

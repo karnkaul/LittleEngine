@@ -21,9 +21,11 @@
   <ItemGroup>
     <ClInclude Include="SFMLAPI\Audio\SFAudioPlayer.h" />
     <ClInclude Include="SFMLAPI\Input\SFEventHandler.h" />
+    <ClInclude Include="SFMLAPI\Input\SFInputDataFrame.h" />
     <ClInclude Include="SFMLAPI\Input\SFInputStateMachine.h" />
     <ClInclude Include="SFMLAPI\Rendering\Colour.h" />
     <ClInclude Include="SFMLAPI\Rendering\GFXBuffer.h" />
+    <ClInclude Include="SFMLAPI\Rendering\SFLayerID.h" />
     <ClInclude Include="SFMLAPI\Rendering\SFPrimitive.h" />
     <ClInclude Include="SFMLAPI\Rendering\SFRenderer.h" />
     <ClInclude Include="SFMLAPI\Rendering\SFRenderState.h" />
@@ -43,6 +45,7 @@
   <ItemGroup>
     <ClCompile Include="SFMLAPI\Audio\SFAudioPlayer.cpp" />
     <ClCompile Include="SFMLAPI\Input\SFEventHandler.cpp" />
+    <ClCompile Include="SFMLAPI\Input\SFInputDataFrame.cpp" />
     <ClCompile Include="SFMLAPI\Input\SFInputStateMachine.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\Colour.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\GFXBuffer.cpp" />

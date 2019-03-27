@@ -1,8 +1,9 @@
 #include "stdafx.h"
+#include "Logger.h"
+#include "Utils.h"
+#include "Collider.h"
 #include "CollisionManager.h"
 #include "LittleEngine/Services/Services.h"
-#include "Utils.h"
-#include "Logger.h"
 
 namespace LittleEngine
 {

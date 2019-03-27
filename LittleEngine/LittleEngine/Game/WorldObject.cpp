@@ -11,7 +11,7 @@ WorldObject::WorldObject(const String& name, const String& baseClass) : Inherita
 
 WorldObject::~WorldObject() = default;
 
-void WorldObject::BindInput(EngineInput::Delegate Callback)
+void WorldObject::BindInput(const EngineInput::Delegate& Callback)
 {
 	m_tokenHandler.AddToken(Services::Game()->Input()->Register(Callback));
 }

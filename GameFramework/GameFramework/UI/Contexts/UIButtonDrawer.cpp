@@ -1,4 +1,7 @@
 #include "stdafx.h"
+#include "Logger.h"
+#include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIWidgetMatrix.h"
 #include "UIButtonDrawer.h"
 
 namespace LittleEngine

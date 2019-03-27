@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "Logger.h"
+#include "Component.h"
 #include "Entity.h"
 
 namespace LittleEngine

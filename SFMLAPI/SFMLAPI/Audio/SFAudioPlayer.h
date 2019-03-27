@@ -1,7 +1,11 @@
 #pragma once
 #include "CoreTypes.h"
-#include "SFMLAPI/SFSystem.h"
-#include "SFML/Audio.hpp"
+#include "SimpleTime.h"
+
+namespace sf
+{
+class Music;
+}
 
 namespace LittleEngine
 {
@@ -43,7 +47,7 @@ class SoundPlayer : public AudioPlayer
 {
 private:
 	sf::Sound m_sfSound;
-	SoundAsset* m_pSoundAsset = nullptr;
+	class SoundAsset* m_pSoundAsset = nullptr;
 
 public:
 	SoundPlayer(SoundAsset* pSoundAsset = nullptr);
@@ -72,8 +76,8 @@ private:
 	Time m_elapsedTime;
 	Fixed m_targetVolume = Fixed::One;
 	Fixed m_startVolume = Fixed::One;
-	GameClock m_clock;
-	sf::Music m_sfMusic;
+	UPtr<class GameClock> m_uClock;
+	UPtr<sf::Music> m_uSFMusic;
 	bool m_bFadingIn = false;
 	bool m_bFadingOut = false;
 

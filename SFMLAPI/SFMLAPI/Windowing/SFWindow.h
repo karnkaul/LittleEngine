@@ -2,7 +2,6 @@
 #include <memory>
 #include "CoreTypes.h"
 #include "SFML/Graphics.hpp"
-#include "SFWindowData.h"
 
 namespace LittleEngine
 {
@@ -14,15 +13,16 @@ private:
 	Rect2 m_viewBounds;
 
 public:
-	static SFWindowSize GetMaxWindowSize();
+	static struct SFWindowSize GetMaxWindowSize();
 
 public:
-	SFWindow(const SFWindowData& windowData);
+	SFWindow(const struct SFWindowData& windowData);
+	~SFWindow();
 
 	Vector2 GetViewSize() const;
 	// Projects unit Rect to screen
 	Vector2 Project(const Vector2& nPos, bool bPreClamp) const;
 
-	void SetSize(const SFWindowSize& size);
+	void SetSize(const struct SFWindowSize& size);
 };
 } // namespace LittleEngine

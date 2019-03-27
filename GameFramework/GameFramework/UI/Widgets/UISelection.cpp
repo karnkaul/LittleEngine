@@ -1,8 +1,10 @@
 #include "stdafx.h"
+#include "LittleEngine/Game/GameManager.h"
+#include "LittleEngine/Services/Services.h"
+#include "LittleEngine/UI/UIManager.h"
+#include "LittleEngine/UI/UIText.h"
 #include "UISelection.h"
 #include "GameFramework/UI/Contexts/UIButtonDrawer.h"
-#include "LittleEngine/Services/Services.h"
-#include "LittleEngine/Game/GameManager.h"
 
 namespace LittleEngine
 {

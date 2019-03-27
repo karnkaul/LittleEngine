@@ -39,6 +39,7 @@ private:
 
 public:
 	GFXBuffer();
+	~GFXBuffer();
 
 	Time GetLastSwapTime() const;
 	void Lock_Swap(GFXDataFrame&& newFrame, const Vector2& cullBounds);

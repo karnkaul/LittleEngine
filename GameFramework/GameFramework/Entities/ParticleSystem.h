@@ -1,10 +1,17 @@
 #pragma once
-#include "GData.h"
+#include "TRange.hpp"
 #include "LittleEngine/Game/Entity.h"
+
+namespace Core
+{
+class GData;
+}
 
 namespace LittleEngine
 {
 using GData = Core::GData;
+template<typename T>
+using TRange = Core::TRange<T>;
 
 struct ParticleSpawnData
 {
@@ -40,9 +47,9 @@ struct EmitterData
 	Fixed startDelaySecs = Fixed::Zero;
 	s32 layerDelta = 0;
 	Transform* pParent;
-	SoundAsset* pSound;
+	class SoundAsset* pSound;
 
-	EmitterData(TextureAsset& texture, u32 numParticles, SoundAsset* pSound = nullptr);
+	EmitterData(class TextureAsset& texture, u32 numParticles, SoundAsset* pSound = nullptr);
 
 	void Deserialise(const GData& gData);
 

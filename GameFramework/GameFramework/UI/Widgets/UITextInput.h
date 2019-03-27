@@ -1,8 +1,8 @@
 #pragma once
-#include "LittleEngine/UI/UIWidget.h"
-#include "LittleEngine/Input/KeyboardInput.h"
-#include "LittleEngine/Input/EngineInput.h"
 #include "Delegate.hpp"
+#include "LittleEngine/UI/UIWidget.h"
+#include "LittleEngine/Input/EngineInput.h"
+#include "LittleEngine/UI/UIText.h"
 
 namespace LittleEngine
 {
@@ -20,7 +20,7 @@ private:
 
 private:
 	UITextInputData m_data;
-	KeyboardInput m_keyboard;
+	UPtr<class KeyboardInput> m_uKeyboard;
 	String m_prevText;
 	EngineInput::Token m_token;
 	OnEditComplete m_onEditComplete;

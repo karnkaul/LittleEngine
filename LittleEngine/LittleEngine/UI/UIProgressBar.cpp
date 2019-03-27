@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "Logger.h"
+#include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "UIProgressBar.h"
 
 namespace LittleEngine

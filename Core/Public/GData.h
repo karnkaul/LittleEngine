@@ -10,13 +10,14 @@ private:
 	UMap<String, String> m_fieldMap;
 
 public:
-	GData() = default;
+	GData();
 	// Pass serialised data to marhshall and load fields
 	GData(const String& serialised);
 	GData(const GData& rhs) = default;
 	GData(GData&&) = default;
 	GData& operator=(const GData&) = default;
 	GData& operator=(GData&&) = default;
+	~GData();
 
 	// Marhshalls and load fields from serialised data
 	bool Marshall(const String& serialised);

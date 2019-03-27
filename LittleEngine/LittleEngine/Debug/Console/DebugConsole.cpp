@@ -1,17 +1,17 @@
 #include "stdafx.h"
 #include "DebugConsole.h"
 #if ENABLED(CONSOLE)
-#include "DebugCommands.h"
+#include "Logger.h"
+#include "CircularList.hpp"
 #include "ConsoleInput.h"
 #include "ConsoleRenderer.h"
-#include "RenderStatsRenderer.h"
-#include "CircularList.hpp"
+#include "DebugCommands.h"
 #include "LogLine.h"
+#include "RenderStatsRenderer.h"
+#include "SFMLAPI/Rendering/SFRenderer.h"
 #include "LittleEngine/Input/EngineInput.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/Engine/EngineService.h"
-#include "SFMLAPI/Rendering/SFRenderer.h"
-#include "Logger.h"
 
 namespace LittleEngine
 {

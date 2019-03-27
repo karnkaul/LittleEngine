@@ -3,6 +3,7 @@
 #if ENABLED(CONSOLE)
 #include "DebugConsole.h"
 #include "DebugCommands.h"
+#include "LogLine.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/Engine/EngineService.h"
 

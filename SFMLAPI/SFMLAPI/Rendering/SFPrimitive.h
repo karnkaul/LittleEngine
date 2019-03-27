@@ -2,7 +2,6 @@
 #include "CoreTypes.h"
 #include "Colour.h"
 #include "SFRenderState.h"
-#include "SFMLAPI/System/SFAssets.h"
 #include "SFML/Graphics.hpp"
 
 namespace LittleEngine
@@ -25,8 +24,8 @@ struct SFPrimitiveData
 	String text;
 	Colour primary;
 	Colour secondary;
-	TextureAsset* texture = nullptr;
-	FontAsset* font = nullptr;
+	class TextureAsset* texture = nullptr;
+	class FontAsset* font = nullptr;
 };
 
 class SFPrimitive final
@@ -73,11 +72,11 @@ public:
 	SFPrimitive* SetSize(const Vector2& size, SFShapeType onShape);
 
 	// Sprite
-	SFPrimitive* SetTexture(const TextureAsset& texture);
+	SFPrimitive* SetTexture(const class TextureAsset & texture);
 	SFPrimitive* Crop(const Rect2& rect);
 
 	// Text
-	SFPrimitive* SetFont(const FontAsset& font);
+	SFPrimitive* SetFont(const class FontAsset& font);
 	SFPrimitive* SetTextSize(u32 pixelSize);
 	SFPrimitive* SetText(const String& text);
 

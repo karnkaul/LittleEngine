@@ -1,13 +1,12 @@
 #pragma once
 #include "LittleEngine/Game/Component.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
 
 namespace LittleEngine
 {
 class RenderComponent : public Component
 {
 public:
-	SFPrimitive* m_pSFPrimitive;
+	class SFPrimitive* m_pSFPrimitive;
 
 public:
 	virtual ~RenderComponent();

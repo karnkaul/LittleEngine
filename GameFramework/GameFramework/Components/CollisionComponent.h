@@ -1,7 +1,5 @@
 #pragma once
 #include "LittleEngine/Game/Component.h"
-#include "LittleEngine/Physics/Physics.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
 
 namespace LittleEngine
 {
@@ -14,9 +12,9 @@ protected:
 	struct ColliderData
 	{
 		Vector2 offset;
-		Collider* pCollider;
+		class Collider* pCollider;
 #if DEBUGGING
-		SFPrimitive* pSFPrimitive;
+		class SFPrimitive* pSFPrimitive;
 #endif
 
 		ColliderData(Collider* pCollider, const Vector2& offset);
@@ -33,7 +31,7 @@ public:
 	~CollisionComponent();
 
 	void AddCircle(const Fixed& radius, const Vector2& offset = Vector2::Zero);
-	void AddAABB(const AABBData& aabbData, const Vector2& offset = Vector2::Zero);
+	void AddAABB(const struct AABBData& aabbData, const Vector2& offset = Vector2::Zero);
 
 	virtual TimingType GetComponentTiming() const override;
 	virtual void Tick(Time dt) override;

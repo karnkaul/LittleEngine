@@ -1,7 +1,6 @@
 #pragma once
-#include "LittleEngine/UI/UIText.h"
 #include "SFMLAPI/Rendering/Colour.h"
-#include "SFMLAPI/Rendering/SFRenderState.h"
+#include "SFMLAPI/Rendering/SFLayerID.h"
 
 namespace LittleEngine
 {

@@ -1,7 +1,8 @@
 #include "stdafx.h"
-#include "EngineInput.h"
 #include "Logger.h"
 #include "Utils.h"
+#include "SFMLAPI/Input/SFInputStateMachine.h"
+#include "EngineInput.h"
 
 namespace LittleEngine
 {
@@ -39,7 +40,7 @@ bool EngineInput::Frame::HasData() const
 		   !textInput.text.empty();
 }
 
-EngineInput::InputContext::InputContext(Delegate Callback, Token& sToken)
+EngineInput::InputContext::InputContext(const Delegate& Callback, Token& sToken)
 	: Callback(Callback), wToken(sToken)
 {
 }
@@ -49,7 +50,7 @@ EngineInput::EngineInput()
 	BindDefaults();
 }
 
-EngineInput::Token EngineInput::Register(Delegate Callback)
+EngineInput::Token EngineInput::Register(const Delegate& Callback)
 {
 	Token token = CreateToken();
 	InputContext newTop(Callback, token);
@@ -57,7 +58,7 @@ EngineInput::Token EngineInput::Register(Delegate Callback)
 	return token;
 }
 
-EngineInput::Token EngineInput::RegisterSudo(Delegate Callback)
+EngineInput::Token EngineInput::RegisterSudo(const Delegate& Callback)
 {
 	Token token = CreateToken();
 	m_uSudoContext = MakeUnique<InputContext>(Callback, token);

@@ -279,9 +279,6 @@
     <ClInclude Include="LittleEngine\Debug\Console\LogLine.h">
       <Filter>LittleEngine\Debug\Console</Filter>
     </ClInclude>
-    <ClInclude Include="LittleEngine\Debug\Console\CircularList.hpp">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClInclude>
     <ClInclude Include="LittleEngine\Debug\Console\ConsoleInput.h">
       <Filter>LittleEngine\Debug\Console</Filter>
     </ClInclude>
@@ -357,8 +354,8 @@
     <ClInclude Include="LittleEngine\Input\KeyboardInput.h">
       <Filter>LittleEngine\Input</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
+    <ClInclude Include="LittleEngine\Game\ComponentTimingType.h">
+      <Filter>LittleEngine\Game</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

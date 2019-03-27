@@ -1,8 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
-#include "SFWindowData.h"
 #include "SimpleTime.h"
-#include "SFMLAPI/Input/SFEventHandler.h"
 
 namespace LittleEngine
 {
@@ -11,13 +9,13 @@ namespace LittleEngine
 class SFEventLoop
 {
 protected:
-	SFWindowData m_windowData;
-	SFEventHandler m_sfEventHandler;
+	UPtr<struct SFWindowData> m_uSFWindowData;
+	UPtr<class SFEventHandler> m_uSFEventHandler;
+	UPtr<class SFWindow> m_uSFWindow;
 	// Events will be polled and Tick() called at this rate
 	Time m_tickRate = Time::Seconds(1.0f / 45.0f);
 	// No more than this much frame time will be ticked per frame
 	Time m_maxFrameTime = Time::Milliseconds(25);
-	UPtr<class SFWindow> m_uSFWindow;
 	bool m_bStopTicking = false;
 	bool m_bPauseOnFocusLoss = true;
 
@@ -26,13 +24,14 @@ private:
 	bool m_bPauseTicking = false;
 
 public:
+	SFEventLoop();
 	virtual ~SFEventLoop();
 
 	// Blocks current thread and starts event loop on it
 	s32 Run();
 
 protected:
-	SFInputDataFrame GetInputDataFrame() const;
+	struct SFInputDataFrame GetInputDataFrame() const;
 	void Sleep(Time time);
 
 private:

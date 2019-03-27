@@ -1,7 +1,5 @@
 #pragma once
 #include "World.h"
-#include "LoadingUI.h"
-#include "LittleEngine/UI/UIElement.h"
 
 namespace LittleEngine
 {
@@ -12,7 +10,7 @@ public:
 
 private:
 	Vec<UPtr<World>> m_uCreatedStates;
-	UPtr<LoadingUI> m_uLoadingUI;
+	UPtr<class LoadingUI> m_uLoadingUI;
 	World* m_pActiveState = nullptr;
 	World* m_pNextState = nullptr;
 	class ManifestLoader* m_pAssetLoader = nullptr;

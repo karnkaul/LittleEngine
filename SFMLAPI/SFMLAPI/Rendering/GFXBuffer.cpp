@@ -50,6 +50,8 @@ GFXBuffer::GFXBuffer()
 	m_bufferIdx = 0;
 }
 
+GFXBuffer::~GFXBuffer() = default;
+
 Time GFXBuffer::GetLastSwapTime() const
 {
 	return m_lastSwapTime;

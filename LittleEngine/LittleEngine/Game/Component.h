@@ -1,18 +1,10 @@
 #pragma once
 #include "SimpleTime.h"
+#include "ComponentTimingType.h"
 #include "WorldObject.h"
 
 namespace LittleEngine
 {
-enum class TimingType
-{
-	FIRST = 0,
-	PRE = 1,
-	DEFAULT = 2,
-	POST = 3,
-	LAST = 4,
-};
-
 class Component : public WorldObject
 {
 protected:

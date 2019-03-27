@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "Logger.h"
 #include "Utils.h"
-#include "MultiJob.h"
 #include "JobManager.h"
+#include "JobHandle.h"
+#include "MultiJob.h"
 #include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine

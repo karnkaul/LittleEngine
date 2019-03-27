@@ -1,6 +1,7 @@
 #pragma once
-#include "SFMLAPI/System/SFTypes.h"
+#include "Colour.h"
 #include "TRange.hpp"
+#include "SFLayerID.h"
 
 namespace LittleEngine
 {
@@ -10,19 +11,6 @@ using SFPosition = TRange<Vector2>;
 using SFOrientation = TRange<Fixed>;
 using SFScale = TRange<Vector2>;
 using SFColour = TRange<Colour>;
-
-enum LayerID
-{
-	LAYER_ZERO = 0,
-	LAYER_BACKGROUND = 10,
-	LAYER_DEFAULT = 100,
-	LAYER_LIVE = 200,
-	LAYER_FX = 300,
-	LAYER_UI = 400,
-	LAYER_TOP = 490,
-	LAYER_MAX = 499,
-	_LAYER_COUNT = LAYER_MAX + 1,
-};
 
 struct SFRenderState
 {

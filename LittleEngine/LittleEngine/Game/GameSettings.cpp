@@ -1,8 +1,9 @@
 #include "stdafx.h"
-#include "GameSettings.h"
 #include "FileRW.h"
 #include "Utils.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
+#include "GameSettings.h"
 
 namespace LittleEngine
 {

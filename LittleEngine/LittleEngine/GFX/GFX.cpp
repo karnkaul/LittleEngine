@@ -1,7 +1,7 @@
 #include "stdafx.h"
+#include "SFMLAPI/Windowing/SFWindow.h"
 #include "GFX.h"
 #include "LittleEngine/Game/GameSettings.h"
-#include "SFMLAPI/Windowing/SFWindow.h"
 
 namespace LittleEngine
 {

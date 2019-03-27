@@ -1,8 +1,10 @@
 #include "stdafx.h"
+#include "Logger.h"
+#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "LittleEngine/Game/Entity.h"
+#include "LittleEngine/GFX/GFX.h"
 #include "ControllerComponent.h"
 #include "RenderComponent.h"
-#include "LittleEngine/GFX/GFX.h"
-#include "LittleEngine/Game/Entity.h"
 
 namespace LittleEngine
 {

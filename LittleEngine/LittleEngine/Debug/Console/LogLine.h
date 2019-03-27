@@ -1,11 +1,12 @@
 #pragma once
 #include "CoreTypes.h"
 #if ENABLED(CONSOLE)
-#include "LittleEngine/UI/UIText.h"
 #include "SFMLAPI/Rendering/Colour.h"
 
 namespace LittleEngine
 {
+struct UIText;
+
 namespace Debug
 {
 struct LogLine
@@ -28,6 +29,7 @@ private:
 
 public:
 	LogBook(u32 lineCount);
+	~LogBook();
 
 	void Reset();
 	void PageUp();

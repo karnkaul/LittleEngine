@@ -1,6 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
-#include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIObject.h"
 #include "LittleEngine/UI/UIStyle.h"
 
 namespace LittleEngine
@@ -18,7 +18,7 @@ class UIWidget : public UIObject
 {
 protected:
 	UIWidgetStyle m_style;
-	Vec<UPtr<UIElement>> m_uiElements;
+	Vec<UPtr<class UIElement>> m_uiElements;
 	class UIContext* m_pOwner = nullptr;
 	UIWidgetState m_state = UIWidgetState::NotSelected;
 	UIWidgetState m_prevState;
@@ -29,7 +29,7 @@ public:
 	virtual ~UIWidget();
 
 	template <typename T>
-	UIElement* AddElement(const String& name = "", UITransform* pParent = nullptr);
+	UIElement* AddElement(const String& name = "", struct UITransform* pParent = nullptr);
 
 	UIWidgetStyle& GetStyle();
 

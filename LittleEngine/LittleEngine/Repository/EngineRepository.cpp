@@ -1,4 +1,7 @@
 #include "stdafx.h"
+#include "ArchiveReader.h"
+#include "Utils.h"
+#include "SFMLAPI/System/SFAssets.h"
 #include "EngineRepository.h"
 #include "ManifestLoader.h"
 #include "LittleEngine/Services/Services.h"
@@ -8,15 +11,16 @@ namespace LittleEngine
 EngineRepository::EngineRepository(const String& archivePath, const String& rootDir)
 	: m_rootDir(rootDir)
 {
+	m_uCooked = MakeUnique<Core::ArchiveReader>();
 	String fontID = "Fonts/main.ttf";
-	m_cooked.Load(archivePath.c_str());
-	if (!m_cooked.IsPresent(fontID.c_str()))
+	m_uCooked->Load(archivePath.c_str());
+	if (!m_uCooked->IsPresent(fontID.c_str()))
 	{
 		LOG_E("[EngineRepository] Cooked assets does not contain %s!", fontID.c_str());
 	}
 	else
 	{
-		UPtr<FontAsset> uDefaultFont = CreateAsset<FontAsset>(fontID, m_cooked.Decompress(fontID.c_str()));
+		UPtr<FontAsset> uDefaultFont = CreateAsset<FontAsset>(fontID, m_uCooked->Decompress(fontID.c_str()));
 		if (uDefaultFont)
 		{
 			m_pDefaultFont = uDefaultFont.get();

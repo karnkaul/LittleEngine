@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "SFInputStateMachine.h"
-#include "Utils.h"
-#include <unordered_map>
 
 namespace LittleEngine
 {
@@ -27,20 +25,6 @@ KeyMod::KeyMod(const sf::Event::KeyEvent& event)
 {
 }
 
-KeyState::KeyState(KeyCode keyCode, const String& name)
-	: name(name), keyCode(keyCode), bPressed(false)
-{
-}
-
-KeyCode KeyState::GetKeyCode() const
-{
-	return keyCode;
-}
-const String& KeyState::GetName() const
-{
-	return name;
-}
-
 KeyState& SFInputStateMachine::GetOrCreateKeyState(KeyCode code)
 {
 	for (auto& keyState : m_keyStates)
@@ -52,11 +36,6 @@ KeyState& SFInputStateMachine::GetOrCreateKeyState(KeyCode code)
 	}
 	m_keyStates.emplace_back(code);
 	return *m_keyStates.rbegin();
-}
-
-String SFInputDataFrame::GetClipboard()
-{
-	return sf::Clipboard::getString();
 }
 
 SFInputStateMachine::SFInputStateMachine()
@@ -222,22 +201,5 @@ void SFInputStateMachine::StoreNonASCIISpecialInput(KeyCode key)
 	default:
 		break;
 	}
-}
-
-bool TextInput::Contains(char c) const
-{
-	size_t idx = text.find(c);
-	return idx != String::npos;
-}
-
-bool TextInput::Contains(SpecialInputType special) const
-{
-	return Core::VectorSearch(specials, special) != specials.end();
-}
-
-void TextInput::Reset()
-{
-	text.clear();
-	specials.clear();
 }
 } // namespace LittleEngine

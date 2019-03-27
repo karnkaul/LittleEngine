@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "JobWorker.h"
-#include "JobManager.h"
 #include "Logger.h"
 #include "Utils.h"
+#include "JobWorker.h"
+#include "JobManager.h"
 
 namespace LittleEngine
 {

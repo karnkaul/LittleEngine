@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "SFPrimitive.h"
 #include "Logger.h"
+#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/SFTypes.h"
 
 namespace LittleEngine
 {

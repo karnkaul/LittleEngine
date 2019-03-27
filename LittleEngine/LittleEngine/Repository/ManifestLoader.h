@@ -1,8 +1,11 @@
 #pragma once
 #include <functional>
-#include "ArchiveReader.h"
 #include "SimpleTime.h"
-#include "SFMLAPI/System/SFAssets.h"
+
+namespace Core
+{
+class ArchiveReader;
+}
 
 namespace LittleEngine
 {
@@ -20,12 +23,12 @@ private:
 		}
 	};
 
-	Core::ArchiveReader m_archiveReader;
+	UPtr<Core::ArchiveReader> m_uArchiveReader;
 	std::function<void()> m_onDone;
-	Vec<NewAsset<TextureAsset>> m_newTextures;
-	Vec<NewAsset<FontAsset>> m_newFonts;
-	Vec<NewAsset<SoundAsset>> m_newSounds;
-	Vec<NewAsset<TextAsset>> m_newTexts;
+	Vec<NewAsset<class TextureAsset>> m_newTextures;
+	Vec<NewAsset<class FontAsset>> m_newFonts;
+	Vec<NewAsset<class SoundAsset>> m_newSounds;
+	Vec<NewAsset<class TextAsset>> m_newTexts;
 	class EngineRepository* m_pRepository;
 	class MultiJob* m_pMultiJob = nullptr;
 	bool m_bCompleted = false;

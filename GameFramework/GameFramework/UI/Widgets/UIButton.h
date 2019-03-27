@@ -1,7 +1,6 @@
 #pragma once
 #include "Delegate.hpp"
 #include "LittleEngine/UI/UIWidget.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
 
 namespace LittleEngine
 {
@@ -19,7 +18,7 @@ public:
 	UIButton(const String& name);
 	virtual ~UIButton();
 
-	void SetText(const UIText& uiText);
+	void SetText(const struct UIText& uiText);
 	OnClick::Token AddCallback(const OnClick::Callback& Callback);
 	UIElement* GetButtonElement() const;
 

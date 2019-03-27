@@ -1,7 +1,9 @@
 #include "stdafx.h"
-#include "UIWidget.h"
-#include "LittleEngine/UI/UIContext.h"
 #include "Logger.h"
+#include "UIWidget.h"
+#include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIContext.h"
+#include "LittleEngine/UI/UITransform.h"
 
 namespace LittleEngine
 {

@@ -1,11 +1,6 @@
 #pragma once
-#include <string>
-#include <unordered_map>
-#include "SimpleTime.h"
 #include "CoreTypes.h"
-#include "Logger.h"
-#include "Utils.h"
-#include "GData.h"
+#include "SimpleTime.h"
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
 

@@ -1,10 +1,11 @@
 #include "stdafx.h"
+#include "ArchiveReader.h"
+#include "SFMLAPI/System/SFAssets.h"
 #include "ManifestLoader.h"
 #include "EngineRepository.h"
-#include "LittleEngine/Services/Services.h"
-#include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Jobs/JobManager.h"
 #include "LittleEngine/Jobs/MultiJob.h"
+#include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
 {
@@ -90,9 +91,10 @@ ManifestLoader::ManifestLoader(EngineRepository& repository,
 								   const std::function<void()>& onDone)
 	: m_onDone(onDone), m_pRepository(&repository)
 {
-	m_archiveReader.Load(archivePath.c_str());
-	Vec<u8> manifestBuffer = m_archiveReader.Decompress(manifestPath.c_str());
-	String manifestText = m_archiveReader.ToText(manifestBuffer);
+	m_uArchiveReader = MakeUnique<Core::ArchiveReader>();
+	m_uArchiveReader->Load(archivePath.c_str());
+	Vec<u8> manifestBuffer = m_uArchiveReader->Decompress(manifestPath.c_str());
+	String manifestText = m_uArchiveReader->ToText(manifestBuffer);
 	AssetManifestData data;
 	data.Deserialise(manifestText);
 
@@ -137,7 +139,7 @@ ManifestLoader::ManifestLoader(EngineRepository& repository,
 			for (auto& sound : m_newSounds)
 			{
 				sound.asset = m_pRepository->CreateAsset<SoundAsset>(
-					sound.assetID, m_archiveReader.Decompress(sound.assetID.c_str()));
+					sound.assetID, m_uArchiveReader->Decompress(sound.assetID.c_str()));
 			}
 		},
 		"Load All Sounds");
@@ -147,7 +149,7 @@ ManifestLoader::ManifestLoader(EngineRepository& repository,
 		m_pMultiJob->AddJob(
 			[&]() {
 				texture.asset = m_pRepository->CreateAsset<TextureAsset>(
-					texture.assetID, m_archiveReader.Decompress(texture.assetID.c_str()));
+					texture.assetID, m_uArchiveReader->Decompress(texture.assetID.c_str()));
 			},
 			texture.assetID);
 	}
@@ -156,7 +158,7 @@ ManifestLoader::ManifestLoader(EngineRepository& repository,
 		m_pMultiJob->AddJob(
 			[&]() {
 				font.asset = m_pRepository->CreateAsset<FontAsset>(
-					font.assetID, m_archiveReader.Decompress(font.assetID.c_str()));
+					font.assetID, m_uArchiveReader->Decompress(font.assetID.c_str()));
 			},
 			font.assetID);
 	}
@@ -165,7 +167,7 @@ ManifestLoader::ManifestLoader(EngineRepository& repository,
 		m_pMultiJob->AddJob(
 			[&]() {
 				text.asset = m_pRepository->CreateAsset<TextAsset>(
-					text.assetID, m_archiveReader.Decompress(text.assetID.c_str()));
+					text.assetID, m_uArchiveReader->Decompress(text.assetID.c_str()));
 			},
 			text.assetID);
 	}

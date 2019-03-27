@@ -1,9 +1,8 @@
 #pragma once
 #include "CoreTypes.h"
 #include "Delegate.hpp"
-#include "LittleEngine/UI/UIWidget.h"
-#include "LittleEngine/UI/UIWidgetMatrix.h"
-#include "LittleEngine/Services/Services.h"
+#include "SFMLAPI/Rendering/SFLayerID.h"
+#include "UIObject.h"
 #include "LittleEngine/Input/EngineInput.h"
 
 namespace LittleEngine
@@ -15,7 +14,7 @@ public:
 	using OnCancelled = Core::Delegate<>;
 
 private:
-	using UUIWidget = UPtr<UIWidget>;
+	using UUIWidget = UPtr<class UIWidget>;
 	using UUIElement = UPtr<class UIElement>;
 
 public:
@@ -23,7 +22,7 @@ public:
 protected:
 	UIElement* m_pRootElement = nullptr;
 private:
-	UIWidgetMatrix m_uiWidgets;
+	UPtr<class UIWidgetMatrix> m_uUIWidgets;
 	Vec<UUIElement> m_uiElements;
 	Vec<EngineInput::Token> m_inputTokens;
 	OnCancelled m_onCancelledDelegate;
@@ -35,9 +34,9 @@ public:
 	virtual ~UIContext();
 
 	template <typename T>
-	T* AddWidget(const String& name, UIWidgetStyle* pStyleToCopy = nullptr, bool bNewColumn = false);
+	T* AddWidget(const String& name, struct UIWidgetStyle* pStyleToCopy = nullptr, bool bNewColumn = false);
 	template <typename T>
-	T* AddElement(const String& name, UITransform* pParent = nullptr);
+	T* AddElement(const String& name, struct UITransform* pParent = nullptr);
 
 	void SetActive(bool bActive, bool bResetSelection = true);
 	void ResetSelection();
@@ -81,7 +80,7 @@ T* UIContext::AddWidget(const String& name, UIWidgetStyle* pStyleToCopy, bool bN
 		pStyleToCopy = &defaultStyle;
 	pStyleToCopy->baseLayer = static_cast<LayerID>(m_pRootElement->m_layer + 1);
 	uT->InitWidget(*this, pStyleToCopy);
-	m_uiWidgets.EmplaceWidget(std::move(uT), bNewColumn);
+	m_uUIWidgets->EmplaceWidget(std::move(uT), bNewColumn);
 	LOG_D("%s %s", pT->LogNameStr(), "constructed");
 	return pT;
 }

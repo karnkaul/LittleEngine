@@ -1,7 +1,6 @@
 #pragma once
 #include <functional>
 #include "Gamepad.h"
-#include "SFMLAPI/Input/SFInputStateMachine.h"
 
 namespace LittleEngine
 {
@@ -47,7 +46,7 @@ private:
 		Delegate Callback;
 		WToken wToken;
 
-		InputContext(Delegate Callback, Token& sToken);
+		InputContext(const Delegate& Callback, Token& sToken);
 	};
 
 private:
@@ -62,11 +61,11 @@ public:
 	EngineInput();
 
 public:
-	Token Register(Delegate Callback);
+	Token Register(const Delegate& Callback);
 
 private:
-	Token RegisterSudo(Delegate Callback);
-	void TakeSnapshot(const SFInputDataFrame& frameData);
+	Token RegisterSudo(const Delegate& Callback);
+	void TakeSnapshot(const struct SFInputDataFrame& frameData);
 	void FireCallbacks();
 	void BindDefaults();
 

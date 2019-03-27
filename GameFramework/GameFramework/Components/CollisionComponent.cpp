@@ -1,9 +1,13 @@
 #include "stdafx.h"
-#include "CollisionComponent.h"
 #include "Utils.h"
-#include "LittleEngine/Services/Services.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "LittleEngine/Game/Entity.h"
 #include "LittleEngine/Game/GameManager.h"
+#include "LittleEngine/Physics/Collider.h"
+#include "LittleEngine/Physics/CollisionManager.h"
+#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/Services/Services.h"
+#include "CollisionComponent.h"
 
 namespace LittleEngine
 {

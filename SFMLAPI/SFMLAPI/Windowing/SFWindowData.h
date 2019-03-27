@@ -1,7 +1,11 @@
 #pragma once
 #include "CoreTypes.h"
 #include "SFML/Config.hpp"
-#include "SFML/Window/WindowStyle.hpp"
+
+namespace sf
+{
+typedef unsigned char Uint8;
+}
 
 namespace LittleEngine
 {

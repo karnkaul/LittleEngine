@@ -42,7 +42,7 @@ public:
 						 const Fixed& volume = Fixed::One,
 						 const Fixed& direction = Fixed::Zero,
 						 bool bLoop = false);
-	SoundPlayer* PlaySFX(SoundAsset& sound,
+	SoundPlayer* PlaySFX(class SoundAsset& sound,
 						 const Fixed& volume = Fixed::One,
 						 const Fixed& direction = Fixed::Zero,
 						 bool bLoop = false);

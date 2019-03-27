@@ -1,12 +1,15 @@
 #pragma once
 #include "CoreTypes.h"
-#include "GData.h"
 #include "Logger.h" // Logger::Severity
 #include "Version.h"
 
+namespace Core
+{
+class GData;
+}
+
 namespace LittleEngine
 {
-using GData = Core::GData;
 using LogSeverity = Core::LogSeverity;
 using Version = Core::Version;
 
@@ -18,7 +21,7 @@ private:
 	static const bool s_bPauseOnFocusLoss;
 	static const Version s_engineVersion;
 
-	GData m_data;
+	UPtr<Core::GData> m_uData;
 	bool m_bDirty = false;
 
 public:
@@ -26,6 +29,7 @@ public:
 
 public:
 	EngineConfig();
+	~EngineConfig();
 
 	// Load config file from path and replace cache values if valid
 	bool Load(const String& path);

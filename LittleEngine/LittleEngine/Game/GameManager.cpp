@@ -1,8 +1,13 @@
 #include "stdafx.h"
-#include "GameManager.h"
-#include "LittleEngine/Services/Services.h"
-#include "LittleEngine/Engine/EngineService.h"
 #include "Logger.h"
+#include "Utils.h"
+#include "Component.h"
+#include "Entity.h"
+#include "GameManager.h"
+#include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/Physics/CollisionManager.h"
+#include "LittleEngine/Services/Services.h"
+#include "LittleEngine/UI/UIManager.h"
 
 namespace LittleEngine
 {
