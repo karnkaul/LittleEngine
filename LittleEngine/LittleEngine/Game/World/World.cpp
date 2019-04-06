@@ -6,6 +6,7 @@
 #include "WorldStateMachine.h"
 #include "LittleEngine/Audio/EngineAudio.h"
 #include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/Game/Camera.h"
 #include "LittleEngine/Game/GameManager.h"
 #include "LittleEngine/Repository/EngineRepository.h"
 #include "LittleEngine/Services/Services.h"

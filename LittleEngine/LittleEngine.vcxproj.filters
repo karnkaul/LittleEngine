@@ -193,6 +193,9 @@
     <ClCompile Include="LittleEngine\Input\KeyboardInput.cpp">
       <Filter>LittleEngine\Input</Filter>
     </ClCompile>
+    <ClCompile Include="LittleEngine\Game\Camera.cpp">
+      <Filter>LittleEngine\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Input\EngineInput.h">
@@ -355,6 +358,9 @@
       <Filter>LittleEngine\Input</Filter>
     </ClInclude>
     <ClInclude Include="LittleEngine\Game\ComponentTimingType.h">
+      <Filter>LittleEngine\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Game\Camera.h">
       <Filter>LittleEngine\Game</Filter>
     </ClInclude>
   </ItemGroup>

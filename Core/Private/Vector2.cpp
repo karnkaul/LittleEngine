@@ -10,6 +10,14 @@ namespace Core
 const Vector2 Vector2::Zero = Vector2(0, 0);
 const Vector2 Vector2::One = Vector2(1, 1);
 
+Vector2::Vector2() : x(Fixed::Zero), y(Fixed::Zero)
+{
+}
+
+Vector2::Vector2(Fixed x, Fixed y) : x(std::move(x)), y(std::move(y))
+{
+}
+
 Vector2 Vector2::ToOrientation(Fixed degrees)
 {
 	return Vector2((Maths::DEG_TO_RAD * degrees).Sin(), (Maths::DEG_TO_RAD * degrees).Cos());

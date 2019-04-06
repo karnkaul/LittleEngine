@@ -19,6 +19,7 @@ private:
 	Array<Vec<UPtr<class Component>>, COMPONENT_LINES> m_uComponents;
 	UPtr<class UIManager> m_uUIManager;
 	UPtr<class CollisionManager> m_uCollisionManager;
+	UPtr<class Camera> m_uWorldCamera;
 
 public:
 	static void SetGameVersion(const Core::Version& version);
@@ -33,6 +34,7 @@ public:
 	class EngineAudio* Audio() const;
 	class EngineRepository* Repository() const;
 	class WorldStateMachine* Worlds() const;
+	Camera* WorldCamera() const;
 	CollisionManager* Physics() const;
 
 public:

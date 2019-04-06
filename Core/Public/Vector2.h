@@ -17,12 +17,8 @@ public:
 	Fixed y;
 
 public:
-	Vector2() : x(0), y(0)
-	{
-	}
-	Vector2(Fixed x, Fixed y) : x(x), y(y)
-	{
-	}
+	Vector2();
+	Vector2(Fixed x, Fixed y);
 	Vector2(const Vector2& other) = default;
 	Vector2& operator=(const Vector2&) = default;
 	Vector2(Vector2&&) = default;

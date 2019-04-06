@@ -32,6 +32,7 @@
     <ClCompile Include="LittleEngine\Engine\EngineService.cpp" />
     <ClCompile Include="LittleEngine\Engine\AsyncFileLogger.cpp" />
     <ClCompile Include="LittleEngine\Engine\OS.cpp" />
+    <ClCompile Include="LittleEngine\Game\Camera.cpp" />
     <ClCompile Include="LittleEngine\Game\Component.cpp" />
     <ClCompile Include="LittleEngine\Game\Entity.cpp" />
     <ClCompile Include="LittleEngine\Game\GameManager.cpp" />
@@ -82,6 +83,7 @@
     <ClInclude Include="LittleEngine\Engine\EngineService.h" />
     <ClInclude Include="LittleEngine\Engine\AsyncFileLogger.h" />
     <ClInclude Include="LittleEngine\Engine\OS.h" />
+    <ClInclude Include="LittleEngine\Game\Camera.h" />
     <ClInclude Include="LittleEngine\Game\Component.h" />
     <ClInclude Include="LittleEngine\Game\ComponentTimingType.h" />
     <ClInclude Include="LittleEngine\Game\Entity.h" />

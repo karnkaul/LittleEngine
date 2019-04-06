@@ -84,6 +84,7 @@ void OnSelect()
 		Vector2 worldPos = GFX::Project({x, y}, false);
 		pParticleSystem0->m_transform.localPosition = worldPos;
 		pParticleSystem0->Start();
+		pTestWorld->Game()->WorldCamera()->Shake();
 	}
 }
 
@@ -154,6 +155,18 @@ bool OnInput(const EngineInput::Frame& frame)
 	if (frame.IsReleased(GameInputType::LB))
 	{
 		Assert(false, "Test Assert");
+	}
+
+	if (frame.IsHeld(GameInputType::Left) && frame.IsHeld(GameInputType::RB))
+	{
+		pTestWorld->Game()->WorldCamera()->m_transform.localPosition.x -= Fixed::Three;
+		return true;
+	}
+
+	if (frame.IsHeld(GameInputType::Right) && frame.IsHeld(GameInputType::RB))
+	{
+		pTestWorld->Game()->WorldCamera()->m_transform.localPosition.x += Fixed::Three;
+		return true;
 	}
 
 	return false;
@@ -431,8 +444,8 @@ TestWorld::TestWorld() : World("Test")
 void TestWorld::OnActivated()
 {
 	pTestWorld = this;
-	BindInput(&OnInput);
 	StartTests();
+	BindInput(&OnInput);
 }
 
 void TestWorld::Tick(Time dt)

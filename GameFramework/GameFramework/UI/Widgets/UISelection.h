@@ -41,8 +41,8 @@ public:
 
 protected:
 	virtual void OnInitWidget() override;
-	
+
 private:
 	void OnSpawnDrawer();
 };
-}
+} // namespace LittleEngine

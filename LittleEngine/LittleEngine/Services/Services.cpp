@@ -3,7 +3,9 @@
 #include "LittleEngine/Jobs/JobManager.h"
 #include "LittleEngine/Engine/EngineService.h"
 #include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/Game/Camera.h"
 #include "LittleEngine/Game/GameManager.h"
+#include "LittleEngine/Game/World/WorldStateMachine.h"
 #include "Services.h"
 
 namespace LittleEngine
@@ -36,6 +38,12 @@ GameManager* Services::Game()
 {
 	Assert(s_pGameManager, "Services: [GameManager] is null!");
 	return s_pGameManager;
+}
+
+
+LittleEngine::Camera* Services::WorldCamera()
+{
+	return s_pGameManager ? s_pGameManager->WorldCamera() : nullptr;
 }
 
 void Services::ProvideEngine(EngineService& engine)

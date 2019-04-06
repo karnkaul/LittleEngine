@@ -1,4 +1,5 @@
 #pragma once
+#include "Camera.h"
 #include "Component.h"
 #include "Entity.h"
 #include "GameManager.h"

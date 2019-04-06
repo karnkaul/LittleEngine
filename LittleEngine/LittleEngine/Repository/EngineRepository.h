@@ -88,13 +88,13 @@ T* EngineRepository::Load(const String& id)
 	LOG_W("[EngineRepository] Orphaned asset (not loaded by manifest) requested at runtime [%s]", id.c_str());
 	if (m_uCooked->IsPresent(id.c_str()))
 	{
-		pT = LoadFromArchive<T>(id.c_str());
+		pT = LoadFromArchive<T>(id);
 	}
 #if !SHIPPING
 	if (!pT)
 	{
 		LOG_W("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
-		pT = LoadFromFilesystem<T>(id.c_str());
+		pT = LoadFromFilesystem<T>(id);
 	}
 #endif
 	return pT;
@@ -118,14 +118,14 @@ std::future<T*> EngineRepository::LoadAsync(const String& id)
 	if (m_uCooked->IsPresent(id.c_str()))
 	{
 		Services::Jobs()->Enqueue(
-			[this, id, sPromise]() { sPromise->set_value(LoadFromArchive<T>(id.c_str())); }, "", true);
+			[this, id, sPromise]() { sPromise->set_value(LoadFromArchive<T>(id)); }, "", true);
 	}
 	else
 	{
 		LOG_W("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
 #if !SHIPPING
 		Services::Jobs()->Enqueue(
-			[this, id, sPromise]() { sPromise->set_value(LoadFromFilesystem<T>(id.c_str())); }, "", true);
+			[this, id, sPromise]() { sPromise->set_value(LoadFromFilesystem<T>(id)); }, "", true);
 #else
 		sPromise->set_value(nullptr);
 #endif

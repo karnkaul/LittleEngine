@@ -23,6 +23,7 @@ public:
 	static RenderHeap* RHeap();
 	static JobManager* Jobs();
 	static GameManager* Game();
+	static class Camera* WorldCamera();
 
 	static void Provide(IService& service);
 	static void Unprovide(IService& service);

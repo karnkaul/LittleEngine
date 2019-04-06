@@ -54,4 +54,4 @@ protected:
 private:
 	bool OnInput(const EngineInput::Frame& frame);
 };
-}
+} // namespace LittleEngine

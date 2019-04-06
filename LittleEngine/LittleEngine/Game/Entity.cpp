@@ -1,12 +1,20 @@
 #include "stdafx.h"
 #include "Logger.h"
+#include "Camera.h"
 #include "Component.h"
 #include "Entity.h"
+#include "Camera.h"
+#include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
 {
 Entity::Entity(const String& name) : WorldObject(name, "Entity")
 {
+	Camera* pWorldCam = Services::WorldCamera();
+	if (pWorldCam)
+	{
+		m_transform.SetParent(pWorldCam->m_transform);
+	}
 }
 
 Entity::~Entity()
