@@ -14,8 +14,8 @@ using Lock = std::lock_guard<std::mutex>;
 #if !SHIPPING
 ManifestLoader::ManifestLoader(EngineRepository& repository,
 								   const String& manifestPath,
-								   const std::function<void()>& onDone)
-	: m_onDone(onDone), m_pRepository(&repository)
+								   std::function<void()> onDone)
+	: m_onDone(std::move(onDone)), m_pRepository(&repository)
 {
 	AssetManifestData data;
 	data.Load(manifestPath);
@@ -88,8 +88,8 @@ ManifestLoader::ManifestLoader(EngineRepository& repository,
 ManifestLoader::ManifestLoader(EngineRepository& repository,
 								   const String& archivePath,
 								   const String& manifestPath,
-								   const std::function<void()>& onDone)
-	: m_onDone(onDone), m_pRepository(&repository)
+								   std::function<void()> onDone)
+	: m_onDone(std::move(onDone)), m_pRepository(&repository)
 {
 	m_uArchiveReader = MakeUnique<Core::ArchiveReader>();
 	m_uArchiveReader->Load(archivePath.c_str());
@@ -180,7 +180,7 @@ Fixed ManifestLoader::GetProgress() const
 	return m_pMultiJob ? m_pMultiJob->GetProgress() : -Fixed::One;
 }
 
-void ManifestLoader::Tick(Time)
+void ManifestLoader::Tick(Time /*dt*/)
 {
 	if (m_bCompleted)
 	{
@@ -189,26 +189,36 @@ void ManifestLoader::Tick(Time)
 			for (auto& newAsset : m_newTextures)
 			{
 				if (newAsset.asset)
+				{
 					m_pRepository->m_loaded.emplace(newAsset.assetID, std::move(newAsset.asset));
+				}
 			}
 			for (auto& newAsset : m_newFonts)
 			{
 				if (newAsset.asset)
+				{
 					m_pRepository->m_loaded.emplace(newAsset.assetID, std::move(newAsset.asset));
+				}
 			}
 			for (auto& newAsset : m_newSounds)
 			{
 				if (newAsset.asset)
+				{
 					m_pRepository->m_loaded.emplace(newAsset.assetID, std::move(newAsset.asset));
+				}
 			}
 			for (auto& newAsset : m_newTexts)
 			{
 				if (newAsset.asset)
+				{
 					m_pRepository->m_loaded.emplace(newAsset.assetID, std::move(newAsset.asset));
+				}
 			}
 		}
 		if (m_onDone)
+		{
 			m_onDone();
+		}
 		m_onDone = nullptr;
 		m_bIdle = true;
 	}

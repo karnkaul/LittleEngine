@@ -14,14 +14,14 @@ private:
 	UPtr<class RenderHeap> m_uRenderHeap;
 	UPtr<class AsyncRenderLoop> m_uAsyncRenderLoop;
 	UPtr<class EngineService> m_uEngineService;
-	bool m_bRenderThread;
+	bool m_bRenderThread = true;
 	bool m_bInit = false;
 
 public:
 	static UPtr<EngineLoop> Create();
 
 public:
-	~EngineLoop();
+	~EngineLoop() override;
 
 	void Start();
 	void StopTicking();

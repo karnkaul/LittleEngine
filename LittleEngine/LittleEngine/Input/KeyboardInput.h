@@ -24,4 +24,4 @@ public:
 	void Clear();
 	String GetLiveString() const;
 };
-}
+} // namespace LittleEngine

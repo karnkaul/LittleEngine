@@ -24,12 +24,12 @@ public:
 	Vector2(Vector2&&) = default;
 	Vector2& operator=(Vector2&&) = default;
 
-	Vector2& operator+=(const Vector2& rhs);
-	Vector2& operator-=(const Vector2& rhs);
-	Vector2& operator*=(const Fixed& fixed);
-	Vector2& operator/=(const Fixed& fixed);
+	Vector2& operator+=(Vector2 rhs);
+	Vector2& operator-=(Vector2 rhs);
+	Vector2& operator*=(Fixed fixed);
+	Vector2& operator/=(Fixed fixed);
 
-	Fixed Dot(const Vector2& rhs) const;
+	Fixed Dot(Vector2 rhs) const;
 
 	Vector2 Normalised() const;
 	void Normalise();
@@ -40,12 +40,12 @@ public:
 };
 
 std::ostream& operator<<(std::ostream& out, Vector2& vector2);
-Vector2 operator-(const Vector2& lhs);
-Vector2 operator+(const Vector2& lhs, const Vector2& rhs);
-Vector2 operator-(const Vector2& lhs, const Vector2& rhs);
-Vector2 operator*(const Fixed& lhs, const Vector2& rhs);
-Vector2 operator*(const Vector2& lhs, const Fixed& rhs);
-Vector2 operator/(const Vector2& lhs, const Fixed& rhs);
-bool operator==(const Vector2& lhs, const Vector2& rhs);
-bool operator!=(const Vector2& lhs, const Vector2& rhs);
+Vector2 operator-(Vector2 lhs);
+Vector2 operator+(Vector2 lhs, Vector2 rhs);
+Vector2 operator-(Vector2 lhs, Vector2 rhs);
+Vector2 operator*(Fixed lhs, Vector2 rhs);
+Vector2 operator*(Vector2 lhs, Fixed rhs);
+Vector2 operator/(Vector2 lhs, Fixed rhs);
+bool operator==(Vector2 lhs, Vector2 rhs);
+bool operator!=(Vector2 lhs, Vector2 rhs);
 } // namespace Core

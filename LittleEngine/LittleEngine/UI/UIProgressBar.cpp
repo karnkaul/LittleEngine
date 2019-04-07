@@ -9,7 +9,7 @@ UIProgressBar::UIProgressBar(bool bSilent) : UIElement("Progress Bar", bSilent)
 {
 	SetName("", "UIProgressBar");
 }
-UIProgressBar::UIProgressBar(const String& name, bool bSilent) : UIElement(name, bSilent)
+UIProgressBar::UIProgressBar(String name, bool bSilent) : UIElement(std::move(name), bSilent)
 {
 	SetName("", "UIProgressBar");
 }
@@ -19,7 +19,7 @@ UIProgressBar::~UIProgressBar()
 	LOG_D("%s %s", LogNameStr(), "destroyed");
 }
 
-void UIProgressBar::InitProgressBar(const Vector2& size, Colour colour, const Fixed& initProgress)
+void UIProgressBar::InitProgressBar(Vector2 size, Colour colour, Fixed initProgress)
 {
 	m_size = size;
 	m_transform.anchor = {-1, 0};
@@ -30,7 +30,7 @@ void UIProgressBar::InitProgressBar(const Vector2& size, Colour colour, const Fi
 	GetPrimitive()->SetStatic(false);
 }
 
-void UIProgressBar::SetProgress(const Fixed& progress)
+void UIProgressBar::SetProgress(Fixed progress)
 {
 	Fixed width = m_size.x * Maths::Clamp01(progress);
 	m_transform.size.x = width;

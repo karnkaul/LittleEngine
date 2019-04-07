@@ -14,7 +14,7 @@ UIButtonDrawer::UIButtonDrawerData::UIButtonDrawerData()
 UIButtonDrawer::UIButtonDrawer() : UIContext("ButtonDrawer")
 {
 }
-UIButtonDrawer::UIButtonDrawer(const String& name) : UIContext(name + "_ButtonDrawer")
+UIButtonDrawer::UIButtonDrawer(String name) : UIContext(std::move(name) + "_ButtonDrawer")
 {
 }
 

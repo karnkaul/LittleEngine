@@ -13,4 +13,4 @@ enum LayerID
 	LAYER_MAX = 499,
 	_LAYER_COUNT = LAYER_MAX + 1,
 };
-}
+}  // namespace LittleEngine

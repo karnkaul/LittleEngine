@@ -42,14 +42,14 @@ private:
 public:
 	CircleCollider(const String& ownerName = "");
 
-	void SetCircle(const Fixed& radius);
+	void SetCircle(Fixed radius);
 	CircleData GetWorldCircle() const;
 
-	virtual bool IsIntersecting(const Collider& other) const override;
+	bool IsIntersecting(const Collider& other) const override;
 
 protected:
-	virtual bool IsIntersectAABB(const class AABBCollider& other) const override;
-	virtual bool IsIntersectCircle(const CircleCollider& other) const override;
+	bool IsIntersectAABB(const class AABBCollider& other) const override;
+	bool IsIntersectCircle(const CircleCollider& other) const override;
 
 	friend class Collider;
 	friend class AABBCollider;
@@ -66,11 +66,11 @@ public:
 	void SetAABB(const AABBData& aabb);
 	AABBData GetWorldAABB() const;
 
-	virtual bool IsIntersecting(const Collider& other) const override;
+	bool IsIntersecting(const Collider& other) const override;
 
 protected:
-	virtual bool IsIntersectAABB(const AABBCollider& other) const override;
-	virtual bool IsIntersectCircle(const CircleCollider& other) const override;
+	bool IsIntersectAABB(const AABBCollider& other) const override;
+	bool IsIntersectCircle(const CircleCollider& other) const override;
 
 private:
 	friend class Collider;

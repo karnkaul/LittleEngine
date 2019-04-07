@@ -21,13 +21,15 @@ World::World(const String& name) : Inheritable(name, "World")
 
 World::~World() = default;
 
-void World::PlaySFX(SoundAsset* pSound, const Fixed& volume, const Fixed& direction, bool bLoop)
+void World::PlaySFX(SoundAsset* pSound, Fixed volume, Fixed direction, bool bLoop)
 {
 	if (pSound)
+	{
 		Services::Engine()->Audio()->PlaySFX(*pSound, volume, direction, bLoop);
+	}
 }
 
-void World::PlayMusic(const String& path, const Fixed& volume, Time fadeTime, bool bLoop)
+void World::PlayMusic(const String& path, Fixed volume, Time fadeTime, bool bLoop)
 {
 	Services::Engine()->Audio()->PlayMusic(path, volume, fadeTime, bLoop);
 }

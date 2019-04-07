@@ -28,7 +28,7 @@ template <typename T>
 T TransformRange(T value, T oldMin, T oldMax, T newMin, T newMax);
 
 template <typename T>
-T Lerp(const T& min, const T& max, const Fixed& alpha);
+T Lerp(T min, T max, Fixed alpha);
 
 bool IsNearlyEqual(f32 lhs, f32 rhs, f32 epsilon = 0.01f);
 
@@ -43,7 +43,7 @@ private:
 public:
 	static s32 Range(s32 min, s32 max);
 	static size_t Range(size_t min, size_t max);
-	static Fixed Range(const Fixed& min, const Fixed& max, u32 precision = 1000);
+	static Fixed Range(Fixed min, Fixed max, u32 precision = 1000);
 
 public:
 	Random(s32 min, s32 max);
@@ -99,7 +99,9 @@ template <typename T>
 T Abs(T val)
 {
 	if (val < 0)
-		return -val;
+	{
+		return -val;	
+	}
 	return val;
 }
 
@@ -112,7 +114,7 @@ T TransformRange(T value, T oldMin, T oldMax, T newMin, T newMax)
 }
 
 template <typename T>
-T Lerp(const T& min, const T& max, const Fixed& alpha)
+T Lerp(T min, T max, Fixed alpha)
 {
 	return min + alpha * (max - min);
 }

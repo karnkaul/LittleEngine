@@ -8,9 +8,9 @@ namespace LittleEngine
 struct KeyMod
 {
 	static const KeyMod Default;
-	bool bControl;
-	bool bAlt;
-	bool bShift;
+	bool bControl = false;
+	bool bAlt = false;
+	bool bShift = false;
 
 	KeyMod();
 	KeyMod(bool bControl, bool bAlt, bool bShift);

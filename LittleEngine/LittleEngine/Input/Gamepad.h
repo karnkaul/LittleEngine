@@ -35,9 +35,9 @@ private:
 		GameInputType gameInput;
 		Vec<KeyCode> keyCodes;
 
-		InputMapping(GameInputType key);
-		InputMapping(GameInputType key, KeyCode keyCode);
-		InputMapping(GameInputType key, InitList<KeyCode> keyCodes);
+		InputMapping(GameInputType gameInput);
+		InputMapping(GameInputType gameInput, KeyCode keyCode);
+		InputMapping(GameInputType gameInput, InitList<KeyCode> keyCodes);
 
 		bool IsMapped(KeyCode keyCode) const;
 	};

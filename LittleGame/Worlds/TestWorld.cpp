@@ -72,10 +72,14 @@ ParticleSystem* pParticleSystem0 = nullptr;
 void OnSelect()
 {
 	if (!pParticleSystem0)
+	{
 		return;
+	}
 
 	if (pParticleSystem0->IsPlaying())
+	{
 		pParticleSystem0->Stop();
+	}
 	else
 	{
 		// pParticleSystem0->SetEnabled(true);
@@ -180,8 +184,8 @@ void SpawnColliderMinefield()
 		for (Fixed y = -350; y < 500; y += 200)
 		{
 			String name = "ColliderMine_" + Strings::ToString(id++);
-			Entity* pE = pTestWorld->Game()->NewEntity<Entity>(name, Vector2(x, y));
-			CollisionComponent* pCC = pE->AddComponent<CollisionComponent>();
+			auto* pE = pTestWorld->Game()->NewEntity<Entity>(name, Vector2(x, y));
+			auto* pCC = pE->AddComponent<CollisionComponent>();
 			pCC->AddAABB(AABBData({100, 100}));
 		}
 	}
@@ -205,14 +209,13 @@ void StartTests()
 		->SetEnabled(true);
 
 	pPlayer = pTestWorld->Game()->NewEntity<Player>("Player0", {0, -300});
-	TextureAsset* pTexture =
-		pTestWorld->Game()->Repository()->Load<TextureAsset>("Textures/Ship.png");
+	auto* pTexture = pTestWorld->Game()->Repository()->Load<TextureAsset>("Textures/Ship.png");
 	PlayerData data(
 		*pTexture, {PlayerCollider(AABBData({120, 60}), {0, -15}), PlayerCollider(AABBData({60, 80}))});
 	pPlayer->InitPlayer(data);
 
 	String path = bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
-	TextAsset* pText = pTestWorld->Repository()->Load<TextAsset>(path);
+	auto* pText = pTestWorld->Repository()->Load<TextAsset>(path);
 	GData psGData(pText->GetText());
 	ParticleSystemData psData(psGData);
 	pParticleSystem0 = pTestWorld->Game()->NewEntity<ParticleSystem>("Fire0");
@@ -221,7 +224,9 @@ void StartTests()
 	pParticleSystem0->Stop();
 
 	if (bSpawnColliderMinefield)
+	{
 		SpawnColliderMinefield();
+	}
 }
 
 UIButtonDrawer* pButtonDrawer = nullptr;
@@ -252,13 +257,13 @@ void SpawnToggle()
 {
 	Fixed x = 300;
 	Fixed y = 200;
-	UIContext* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>();
+	auto* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>();
 	pParent->GetRootElement()->m_transform.size = {x, y};
 	UIWidgetStyle toggleStyle = UIWidgetStyle::GetDefault0();
 	toggleStyle.widgetSize = {x, y * Fixed::OneHalf};
 	toggleStyle.background = Colour::Yellow;
-	UIToggle* pToggle0 = pParent->AddWidget<UIToggle>("Toggle0", &toggleStyle);
-	UIToggle* pToggle1 = pParent->AddWidget<UIToggle>("Toggle1", &toggleStyle);
+	auto* pToggle0 = pParent->AddWidget<UIToggle>("Toggle0", &toggleStyle);
+	auto* pToggle1 = pParent->AddWidget<UIToggle>("Toggle1", &toggleStyle);
 
 	debugTokens.push_back(pToggle0->AddCallback([](bool bVal) { LOG_W("Toggle0 changed! %d", bVal); }));
 	pToggle0->GetRoot()->m_transform.bAutoPad = true;
@@ -307,8 +312,10 @@ void TestTick(Time dt)
 		debugTokens.push_back(pButtonDrawer->AddButton("Toggle", &SpawnToggle));
 		debugTokens.push_back(pButtonDrawer->AddButton("Dialogue", []() { bToSpawnDialogue = true; }));
 		if (bModal)
+		{
 			debugTokens.push_back(
 				pButtonDrawer->AddButton("Cancel", []() { pButtonDrawer->Destruct(); }));
+		}
 		pButtonDrawer->SetActive(true);
 	}
 
@@ -421,9 +428,13 @@ void Cleanup()
 	bSpawnedDrawer = false;
 
 	if (uProgressBar)
+	{
 		uProgressBar = nullptr;
+	}
 	if (uProgressBG)
+	{
 		uProgressBG = nullptr;
+	}
 	debugTokens.clear();
 
 	uArchivedTexture = nullptr;

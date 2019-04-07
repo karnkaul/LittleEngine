@@ -9,4 +9,4 @@ enum class TimingType
 	POST = 3,
 	LAST = 4,
 };
-}
+}  // namespace LittleEngine

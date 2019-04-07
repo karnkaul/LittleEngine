@@ -18,8 +18,8 @@ public:
 	bool m_bReset = true;
 
 public:
-	Entity(const String& name);
-	virtual ~Entity();
+	Entity(String name);
+	~Entity() override;
 
 	virtual void Destruct();
 	virtual void SetEnabled(bool bEnabled);
@@ -49,7 +49,9 @@ T* Entity::GetComponent()
 	{
 		T* t = dynamic_cast<T*>(pComponent);
 		if (t)
+		{
 			return t;
+		}
 	}
 	return nullptr;
 }

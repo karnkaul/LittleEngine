@@ -14,10 +14,12 @@ const Colour Colour::Magenta(255, 0, 255);
 const Colour Colour::Cyan(0, 255, 255);
 const Colour Colour::Transparent(0, 0, 0, 0);
 
-Colour Colour::Lerp(const Colour& min, const Colour& max, const Fixed& alpha)
+Colour Colour::Lerp(Colour min, Colour max, Fixed alpha)
 {
 	if (min == max)
+	{
 		return min;
+	}
 	return ((Fixed::One - alpha) * min) + (alpha * max);
 }
 
@@ -59,7 +61,7 @@ Colour operator-(Colour lhs, Colour rhs)
 	return Colour(lhs) -= rhs;
 }
 
-Colour& operator*=(const Fixed& nCoefficient, Colour& c)
+Colour& operator*=(Fixed nCoefficient, Colour& c)
 {
 	f32 n = Maths::Clamp01(nCoefficient).ToF32();
 	c.r = n * c.r;
@@ -69,7 +71,7 @@ Colour& operator*=(const Fixed& nCoefficient, Colour& c)
 	return c;
 }
 
-Colour operator*(const Fixed& nCoefficient, const Colour& colour)
+Colour operator*(Fixed nCoefficient, Colour colour)
 {
 	Colour c(colour);
 	return nCoefficient *= c;

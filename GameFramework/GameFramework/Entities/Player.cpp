@@ -10,7 +10,7 @@
 
 namespace LittleEngine
 {
-PlayerCollider::PlayerCollider(const AABBData& bounds, const Vector2& offset)
+PlayerCollider::PlayerCollider(const AABBData& bounds, Vector2 offset)
 	: bounds(bounds), offset(offset)
 {
 }
@@ -29,7 +29,7 @@ PlayerData::PlayerData(TextureAsset& mainTexture, const Vec<PlayerCollider>& col
 {
 }
 
-Player::Player(const String& name) : Entity(name)
+Player::Player(String name) : Entity(std::move(name))
 {
 	SetName(name, "Player");
 }

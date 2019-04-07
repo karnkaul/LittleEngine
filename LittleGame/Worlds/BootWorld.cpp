@@ -16,7 +16,9 @@ void BootWorld::OnActivated()
 		m_pLogoHeader = m_pLogoDrawer->AddElement<UIElement>("Logo Header");
 		m_pLogoHeader->SetText(UIText("Little Engine", 80, Colour::White));
 		if (m_pLogoFont)
+		{
 			m_pLogoHeader->SetFont(*m_pLogoFont);
+		}
 		m_pLogoHeader->m_transform.UnsetParent();
 		m_pLogoHeader->m_transform.nPosition = {0, Fixed(0.8f)};
 		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton("Start", std::bind(&BootWorld::OnLoadNextWorld, this)));

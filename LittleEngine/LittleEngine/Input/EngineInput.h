@@ -24,10 +24,10 @@ public:
 		
 		static String GetClipboard();
 
-		Frame(const Vec<GameInputType>& pressed,
-			  const Vec<GameInputType>& held,
-			  const Vec<GameInputType>& released,
-			  const TextInput& special);
+		Frame(Vec<GameInputType> pressed,
+			  Vec<GameInputType> held,
+			  Vec<GameInputType> released,
+			  TextInput textInput);
 
 		bool IsPressed(GameInputType keyCode) const;
 		bool IsHeld(GameInputType keyCode) const;
@@ -43,10 +43,10 @@ private:
 
 	struct InputContext
 	{
-		Delegate Callback;
+		Delegate callback;
 		WToken wToken;
 
-		InputContext(const Delegate& Callback, Token& sToken);
+		InputContext(Delegate callback, Token& sToken);
 	};
 
 private:

@@ -84,13 +84,17 @@ public:
 	{
 		++iter;
 		if (iter == vec.end())
+		{
 			iter = vec.begin();
+		}
 	}
 
 	void Decrement()
 	{
 		if (iter == vec.begin())
+		{
 			iter = vec.end();
+		}
 		--iter;
 	}
 

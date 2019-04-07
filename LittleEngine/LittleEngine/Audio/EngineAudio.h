@@ -19,8 +19,8 @@ private:
 		bool bFadingOldTrack = false;
 		bool bFadingNewTrack = false;
 
-		SwitchTrackRequest(const String& newTrackPath, Time fadeTime, const Fixed& targetVolume)
-			: fadeTime(fadeTime), targetVolume(targetVolume), newTrackPath(newTrackPath)
+		SwitchTrackRequest(String  newTrackPath, Time fadeTime, Fixed  targetVolume)
+			: fadeTime(fadeTime), targetVolume(std::move(targetVolume)), newTrackPath(std::move(newTrackPath))
 		{
 		}
 	};
@@ -39,22 +39,22 @@ public:
 
 	// Returns nullptr if asset could not be loaded
 	SoundPlayer* PlaySFX(const String& id,
-						 const Fixed& volume = Fixed::One,
-						 const Fixed& direction = Fixed::Zero,
+						 Fixed volume = Fixed::One,
+						 Fixed direction = Fixed::Zero,
 						 bool bLoop = false);
 	SoundPlayer* PlaySFX(class SoundAsset& sound,
-						 const Fixed& volume = Fixed::One,
-						 const Fixed& direction = Fixed::Zero,
+						 Fixed volume = Fixed::One,
+						 Fixed direction = Fixed::Zero,
 						 bool bLoop = false);
 	bool IsSFXPlaying() const;
 
 	// Returns true if asset is loaded successfully
-	bool PlayMusic(const String& id, const Fixed& volume = Fixed::One, Time fadeTime = Time::Seconds(1), bool bLoop = true);
+	bool PlayMusic(const String& id, Fixed volume = Fixed::One, Time fadeTime = Time::Seconds(1), bool bLoop = true);
 	bool IsMusicPlaying() const;
 	void StopMusic(Time fadeTime = Time::Zero);
-	bool ResumeMusic(Time fadeTime = Time::Zero, const Fixed& volume = Fixed::One);
-	void SwitchTrack(const String& id, const Fixed& volume = Fixed::One, Time fadeTime = Time::Seconds(1));
-	void SetMusicVolume(const Fixed& volume);
+	bool ResumeMusic(Time fadeTime = Time::Zero, Fixed volume = Fixed::One);
+	void SwitchTrack(const String& id, Fixed volume = Fixed::One, Time fadeTime = Time::Seconds(1));
+	void SetMusicVolume(Fixed volume);
 
 	void PauseAll();
 	void ResumeAll();

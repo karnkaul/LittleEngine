@@ -25,7 +25,7 @@ private:
 
 public:
 	UIButtonDrawer();
-	UIButtonDrawer(const String& name);
+	UIButtonDrawer(String name);
 
 	// Returns false if any button already added - will be vertical
 	bool SetHorizontal(bool bHorizontal = true);
@@ -35,7 +35,7 @@ public:
 									   UIButton** ppButton = nullptr);
 
 protected:
-	virtual void OnInitContext() override;
+	void OnInitContext() override;
 
 private:
 	void SetButtonPositions();

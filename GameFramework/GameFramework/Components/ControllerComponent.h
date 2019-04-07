@@ -17,10 +17,10 @@ protected:
 public:
 	void Reset();
 
-	virtual TimingType GetComponentTiming() const override;
-	virtual void OnCreated() override;
-	virtual void Tick(Time dt) override;
-	virtual void SetEnabled(bool bEnabled) override;
+	TimingType GetComponentTiming() const override;
+	void OnCreated() override;
+	void Tick(Time dt) override;
+	void SetEnabled(bool bEnabled) override;
 
 private:
 	virtual bool OnInput(const EngineInput::Frame& frame);

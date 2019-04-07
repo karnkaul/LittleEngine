@@ -7,7 +7,7 @@
 
 namespace LittleEngine
 {
-UIObject::UIObject(const String& name) : Inheritable(name, "UIObject")
+UIObject::UIObject(String name) : Inheritable(std::move(name), "UIObject")
 {
 }
 UIObject::~UIObject() = default;

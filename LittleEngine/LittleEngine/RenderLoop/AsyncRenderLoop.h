@@ -14,7 +14,7 @@ private:
 
 public:
 	AsyncRenderLoop(SFWindow& sfWindow, GFXBuffer& gfxBuffer, Time tickRate, bool bStartThread);
-	~AsyncRenderLoop();
+	~AsyncRenderLoop() override;
 
 private:
 	void Run();

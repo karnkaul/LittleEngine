@@ -8,7 +8,7 @@ namespace LittleEngine
 class Component : public WorldObject
 {
 protected:
-	class Entity* m_pOwner;
+	class Entity* m_pOwner = nullptr;
 	bool m_bDestroyed = false;
 
 public:
@@ -16,7 +16,7 @@ public:
 
 public:
 	Component();
-	virtual ~Component();
+	~Component() override;
 
 	virtual TimingType GetComponentTiming() const;
 	virtual void OnCreated();

@@ -13,7 +13,7 @@ UISelection::UISelection() : UIButton("Untitled")
 	SetName("", "UISelection");
 }
 
-UISelection::UISelection(const String& name) : UIButton(name)
+UISelection::UISelection(String name) : UIButton(std::move(name))
 {
 	SetName("", "UISelection");
 }
@@ -53,7 +53,7 @@ UISelection* UISelection::AddOptions(Vec<String>&& options)
 	return this;
 }
 
-UISelection* UISelection::SetPanelSize(const Vector2& size)
+UISelection* UISelection::SetPanelSize(Vector2 size)
 {
 	m_data.panelSize = size;
 	return this;

@@ -12,7 +12,7 @@ UIToggle::UIToggle() : UIWidget("Untitled")
 	SetName("", "UIToggle");
 }
 
-UIToggle::UIToggle(const String& name) : UIWidget(name)
+UIToggle::UIToggle(String name) : UIWidget(std::move(name))
 {
 	SetName("", "UIToggle");
 }
@@ -40,7 +40,7 @@ UIToggle* UIToggle::SetOffColour(Colour offColour)
 	return this;
 }
 
-UIToggle* UIToggle::SetBoxSize(const Vector2& size)
+UIToggle* UIToggle::SetBoxSize(Vector2 size)
 {
 	m_data.boxSize = size;
 	m_pToggle->m_transform.size = m_data.boxSize;
@@ -102,11 +102,15 @@ void UIToggle::OnInteractStart()
 void UIToggle::OnInteractEnd(bool bInteract)
 {
 	if (bInteract)
+	{
 		m_bOn = !m_bOn;
+	}
 	Colour fill = m_bOn ? m_data.onColour : m_data.offColour;
 	m_pToggle->SetPanel(fill, m_style.selected.border, m_style.selected.outline);
 	if (bInteract)
+	{
 		m_delegate(m_bOn);
+	}
 }
 
 void UIToggle::SetInteractable(bool bInteractable)

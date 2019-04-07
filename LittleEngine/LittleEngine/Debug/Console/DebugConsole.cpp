@@ -51,7 +51,7 @@ private:
 
 	Time m_elapsed;
 	s32 m_cursorFrequencyMS = 200;
-	bool m_bShowCursor;
+	bool m_bShowCursor = true;
 
 public:
 	ConsoleImpl();
@@ -103,9 +103,13 @@ void Console::Init()
 void Console::Tick(Time dt)
 {
 	if (bQuit)
+	{
 		Services::Engine()->Terminate();
+	}
 	if (uConsole)
+	{
 		uConsole->Tick(dt);
+	}
 }
 
 void Console::Cleanup()

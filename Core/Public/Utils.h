@@ -56,7 +56,7 @@ struct Pair
 	Pair(typename std::pair<T, T>&& pair) : first(pair.first), second(pair.second)
 	{
 	}
-	Pair(T first, T second) : first(first), second(second)
+	Pair(T first, T second) : first(std::move(first)), second(std::move(second))
 	{
 	}
 	Pair(T value) : first(value), second(value)
@@ -75,7 +75,7 @@ void RemoveChars(String& outInput, InitList<char> toRemove);
 // Removes all tabs and spaces
 void RemoveWhitespace(String& outInput);
 // Tokenises a string via a delimiter, skipping over any delimiters within escape characters
-Vec<String> Tokenise(const String& input, const char delimiter, InitList<Pair<char>> escape);
+Vec<String> Tokenise(const String& s, char delimiter, InitList<Pair<char>> escape);
 // Substitutes an input set of chars with a given replacement
 void SubstituteChars(String& outInput, InitList<Pair<char>> replacements);
 // Returns true if str[idx - 1] = wrapper.first && str[idx + 1] == wrapper.second
@@ -132,8 +132,7 @@ void EraseNullWeakPtrs(Vec<WPtr<T>>& vec)
 template <typename T>
 typename Vec<T>::const_iterator VectorSearch(const Vec<T>& vec, const T& value)
 {
-	typename Vec<T>::const_iterator iter = std::find(vec.begin(), vec.end(), value);
-	return iter;
+	return std::find(vec.begin(), vec.end(), value);
 }
 
 template <typename T>

@@ -35,14 +35,18 @@ s32 SFEventLoop::Run()
 		// Break and exit if Window closed
 		PollEvents();
 		if (m_bStopTicking)
+		{
 			continue;
+		}
 
 		Time tickDT;
 		if (!m_bPauseTicking)
 		{
 			Tick(currentTime, accumulator);
 			if (m_bStopTicking)
+			{
 				continue;
+			}
 
 			PostTick();
 			tickDT = Time::Now() - currentTime;
@@ -81,12 +85,16 @@ void SFEventLoop::PollEvents()
 
 	case SFWindowEventType::LostFocus:
 		if (m_bPauseOnFocusLoss)
+		{
 			OnPause(true);
+		}
 		break;
 
 	case SFWindowEventType::GainedFocus:
 		if (m_bPauseOnFocusLoss)
+		{
 			OnPause(false);
+		}
 		break;
 
 	default:
@@ -107,7 +115,9 @@ void SFEventLoop::Tick(Time& outCurrentTime, Time& outAccumulator)
 		GameClock::Tick(dt);
 		Tick(dt);
 		if (m_bStopTicking)
+		{
 			return;
+		}
 		m_elapsed += dt;
 		outAccumulator -= dt;
 	}
@@ -116,15 +126,9 @@ void SFEventLoop::Tick(Time& outCurrentTime, Time& outAccumulator)
 void SFEventLoop::SleepForRestOfFrame(Time frameTime)
 {
 	s32 surplus = (m_tickRate - frameTime).AsMilliseconds();
-	if (Core::g_MinLogSeverity >= Core::LogSeverity::HOT)
+	if (surplus > 0)
 	{
-		StringStream s;
-		s << "[SFEventLoop] Frame Update Complete. Time taken: " << frameTime.AsMilliseconds()
-		  << " Surplus: " << surplus;
-		// LOG_H("[SFEventLoop] Frame Update Complete. Time taken: %d Surplus: %d",
-		// frameTime.AsMilliseconds(), surplus);
-		if (surplus > 0)
-			sf::sleep(sf::milliseconds(surplus));
+		sf::sleep(sf::milliseconds(surplus));
 	}
 }
 
@@ -142,7 +146,7 @@ void SFEventLoop::PostRun()
 void SFEventLoop::PostWindowDestruct()
 {
 }
-void SFEventLoop::Tick(Time)
+void SFEventLoop::Tick(Time /*dt*/)
 {
 }
 void SFEventLoop::PostTick()

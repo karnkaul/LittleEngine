@@ -6,15 +6,15 @@ namespace LittleEngine
 class RenderComponent : public Component
 {
 public:
-	class SFPrimitive* m_pSFPrimitive;
+	class SFPrimitive* m_pSFPrimitive = nullptr;
 
 public:
-	virtual ~RenderComponent();
+	~RenderComponent() override;
 
-	virtual TimingType GetComponentTiming() const override;
-	virtual void OnCreated() override;
-	virtual void SetEnabled(bool bEnabled) override;
-	virtual void Tick(Time dt) override;
+	TimingType GetComponentTiming() const override;
+	void OnCreated() override;
+	void SetEnabled(bool bEnabled) override;
+	void Tick(Time dt) override;
 
 private:
 	void UpdatePrimitive();

@@ -58,7 +58,7 @@ Vector2 SFWindow::GetViewSize() const
 	return m_viewBounds.GetSize();
 }
 
-Vector2 SFWindow::Project(const Vector2& nPos, bool bPreClamp) const
+Vector2 SFWindow::Project(Vector2 nPos, bool bPreClamp) const
 {
 	Vector2 p = nPos;
 	if (bPreClamp)
@@ -66,7 +66,7 @@ Vector2 SFWindow::Project(const Vector2& nPos, bool bPreClamp) const
 		p.x = Maths::Clamp_11(p.x);
 		p.y = Maths::Clamp_11(p.y);
 	}
-	const Vector2& s = m_viewBounds.topRight;
+	Vector2 s = m_viewBounds.topRight;
 	return Vector2(p.x * s.x, p.y * s.y);
 }
 

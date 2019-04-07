@@ -5,7 +5,7 @@
 
 namespace Core
 {
-FileRW::FileRW(const String& path) : m_path(path)
+FileRW::FileRW(String path) : m_path(std::move(path))
 {
 }
 

@@ -22,11 +22,11 @@ private:
 
 public:
 	Fixed() = default;
-	explicit Fixed(f32);
-	explicit Fixed(f64);
-	Fixed(const Fixed&);
+	explicit Fixed(f32 value);
+	explicit Fixed(f64 value);
+	Fixed(const Fixed& rhs);
 	Fixed(Fixed&&) = default;
-	Fixed& operator=(const Fixed&);
+	Fixed& operator=(const Fixed& rhs);
 	Fixed& operator=(Fixed&&) = default;
 
 	Fixed(s32 numerator, s32 denominator = 1);
@@ -49,7 +49,6 @@ public:
 	Fixed Power(f32 exponent) const;
 	Fixed Sqrt() const;
 	Fixed Inverse() const;
-	// TODO: Need lookup tables for determinism
 	Fixed Sin() const;
 	Fixed Cos() const;
 	Fixed Tan() const;
@@ -63,16 +62,8 @@ public:
 	String ToString() const;
 
 private:
-	struct RawInit
-	{
-	};
-
-	friend std::ostream& operator<<(std::ostream&, Fixed);
+	friend std::ostream& operator<<(std::ostream& os, Fixed rhs);
 	friend Fixed operator-(const Fixed& rhs);
-
-	Fixed(RawInit, s32 rawFixedValue) : value(rawFixedValue)
-	{
-	}
 };
 
 Fixed operator+(const Fixed& lhs, const Fixed& rhs);

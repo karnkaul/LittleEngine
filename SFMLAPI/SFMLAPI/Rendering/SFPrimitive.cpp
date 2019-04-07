@@ -6,22 +6,22 @@
 
 namespace LittleEngine
 {
-Vector2 SFPrimitive::WorldToScreen(const Vector2& worldPoint)
+Vector2 SFPrimitive::WorldToScreen(Vector2 worldPoint)
 {
 	return Vector2(worldPoint.x, -worldPoint.y);
 }
 
-Fixed SFPrimitive::WorldToScreen(const Fixed& worldOrientation)
+Fixed SFPrimitive::WorldToScreen(Fixed worldOrientation)
 {
 	return -worldOrientation;
 }
 
-Vector2 SFPrimitive::ScreenToWorld(const Vector2& screenPoint)
+Vector2 SFPrimitive::ScreenToWorld(Vector2 screenPoint)
 {
 	return Vector2(screenPoint.x, -screenPoint.y);
 }
 
-Fixed SFPrimitive::ScreenToWorld(const Fixed& screenOrientation)
+Fixed SFPrimitive::ScreenToWorld(Fixed screenOrientation)
 {
 	return -screenOrientation;
 }
@@ -36,9 +36,13 @@ SFPrimitive::SFPrimitive(const SFPrimitiveData& data)
 	SetPrimaryColour(data.primary);
 	SetSecondaryColour(data.secondary);
 	if (data.texture)
+	{
 		SetTexture(*data.texture);
+	}
 	if (data.font)
+	{
 		SetFont(*data.font);
+	}
 	if (!data.text.empty())
 	{
 		SetText(data.text);
@@ -59,12 +63,16 @@ SFPrimitive* SFPrimitive::SetLayer(LayerID layer)
 	return this;
 }
 
-SFPrimitive* SFPrimitive::SetPosition(const Vector2& sfPosition, bool bImmediate)
+SFPrimitive* SFPrimitive::SetPosition(Vector2 sfPosition, bool bImmediate)
 {
 	if (bImmediate)
+	{
 		m_state.sfPosition.Reset(WorldToScreen(sfPosition));
+	}
 	else
+	{
 		m_state.sfPosition.Update(WorldToScreen(sfPosition));
+	}
 	if (m_bStatic || m_bMakeStatic)
 	{
 		ReconcileState();
@@ -74,12 +82,16 @@ SFPrimitive* SFPrimitive::SetPosition(const Vector2& sfPosition, bool bImmediate
 	return this;
 }
 
-SFPrimitive* SFPrimitive::SetOrientation(const Fixed& sfOrientation, bool bImmediate)
+SFPrimitive* SFPrimitive::SetOrientation(Fixed sfOrientation, bool bImmediate)
 {
 	if (bImmediate)
+	{
 		m_state.sfOrientation.Reset(WorldToScreen(sfOrientation));
+	}
 	else
+	{
 		m_state.sfOrientation.Update(WorldToScreen(sfOrientation));
+	}
 	if (m_bStatic || m_bMakeStatic)
 	{
 		ReconcileState();
@@ -89,12 +101,16 @@ SFPrimitive* SFPrimitive::SetOrientation(const Fixed& sfOrientation, bool bImmed
 	return this;
 }
 
-SFPrimitive* SFPrimitive::SetScale(const Vector2& sfScale, bool bImmediate)
+SFPrimitive* SFPrimitive::SetScale(Vector2 sfScale, bool bImmediate)
 {
 	if (bImmediate)
+	{
 		m_state.sfScale.Reset(sfScale);
+	}
 	else
+	{
 		m_state.sfScale.Update(sfScale);
+	}
 	if (m_bStatic || m_bMakeStatic)
 	{
 		ReconcileState();
@@ -104,7 +120,7 @@ SFPrimitive* SFPrimitive::SetScale(const Vector2& sfScale, bool bImmediate)
 	return this;
 }
 
-SFPrimitive* SFPrimitive::SetPivot(const Vector2& pivot)
+SFPrimitive* SFPrimitive::SetPivot(Vector2 pivot)
 {
 	m_state.pivot = pivot;
 	return this;
@@ -113,9 +129,13 @@ SFPrimitive* SFPrimitive::SetPivot(const Vector2& pivot)
 SFPrimitive* SFPrimitive::SetPrimaryColour(Colour sfColour, bool bImmediate)
 {
 	if (bImmediate)
+	{
 		m_state.sfPrimaryColour.Reset(sfColour);
+	}
 	else
+	{
 		m_state.sfPrimaryColour.Update(sfColour);
+	}
 	if (m_bStatic || m_bMakeStatic)
 	{
 		ReconcileState();
@@ -128,9 +148,13 @@ SFPrimitive* SFPrimitive::SetPrimaryColour(Colour sfColour, bool bImmediate)
 SFPrimitive* SFPrimitive::SetSecondaryColour(Colour sfColour, bool bImmediate)
 {
 	if (bImmediate)
+	{
 		m_state.sfSecondaryColour.Reset(sfColour);
+	}
 	else
+	{
 		m_state.sfSecondaryColour.Update(sfColour);
+	}
 	if (m_bStatic || m_bMakeStatic)
 	{
 		ReconcileState();
@@ -140,7 +164,7 @@ SFPrimitive* SFPrimitive::SetSecondaryColour(Colour sfColour, bool bImmediate)
 	return this;
 }
 
-SFPrimitive* SFPrimitive::SetOutline(const Fixed& thickness)
+SFPrimitive* SFPrimitive::SetOutline(Fixed thickness)
 {
 	m_state.outlineThickness = thickness;
 	if (m_bStatic || m_bMakeStatic)
@@ -152,13 +176,17 @@ SFPrimitive* SFPrimitive::SetOutline(const Fixed& thickness)
 	return this;
 }
 
-SFPrimitive* SFPrimitive::SetSize(const Vector2& size, SFShapeType onShape)
+SFPrimitive* SFPrimitive::SetSize(Vector2 size, SFShapeType onShape)
 {
 	sf::Vector2f s = Cast(size);
 	if (onShape == SFShapeType::Circle)
+	{
 		m_circle.setRadius(s.x);
+	}
 	else
+	{
 		m_rectangle.setSize(s);
+	}
 	return this;
 }
 
@@ -199,10 +227,14 @@ Rect2 SFPrimitive::GetBounds() const
 	Rect2 ret = GetShapeBounds();
 	Rect2 temp = GetSpriteBounds();
 	if (temp.GetSize().SqrMagnitude() > ret.GetSize().SqrMagnitude())
+	{
 		ret = temp;
+	}
 	temp = GetTextBounds();
 	if (temp.GetSize().SqrMagnitude() > ret.GetSize().SqrMagnitude())
+	{
 		ret = temp;
+	}
 	return ret;
 }
 
@@ -309,10 +341,12 @@ void SFPrimitive::UpdatePivot()
 	m_text.setOrigin(v);
 }
 
-void SFPrimitive::UpdateRenderState(const Fixed& alpha)
+void SFPrimitive::UpdateRenderState(Fixed alpha)
 {
 	if (m_bStatic)
+	{
 		return;
+	}
 
 	UpdatePivot();
 	sf::Vector2f scale = Cast(m_state.sfScale.Lerp(alpha));

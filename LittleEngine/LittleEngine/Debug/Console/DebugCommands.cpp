@@ -43,9 +43,7 @@ public:
 	// Set to true to include space when autocompleting this Command
 	bool bTakesCustomParam = false;
 
-	virtual ~Command()
-	{
-	}
+	virtual ~Command() = default;
 
 	Vec<LogLine> Execute(const String& params)
 	{
@@ -55,7 +53,7 @@ public:
 		return std::move(executeResult);
 	}
 
-	virtual Vec<String> AutoCompleteParams(const String&)
+	virtual Vec<String> AutoCompleteParams(const String& /*query*/)
 	{
 		return Vec<String>();
 	}
@@ -74,7 +72,7 @@ protected:
 class ParameterisedCommand : public Command
 {
 public:
-	virtual void FillExecuteResult(const String& params) override final
+	void FillExecuteResult(const String& params) final
 	{
 		if (params.empty())
 		{
@@ -95,7 +93,7 @@ public:
 		}
 	}
 
-	virtual Vec<String> AutoCompleteParams(const String& incompleteParams) override final
+	Vec<String> AutoCompleteParams(const String& incompleteParams) final
 	{
 		Vec<String> params;
 		for (const auto& p : paramCallbackMap)
@@ -126,7 +124,7 @@ public:
 	{
 	}
 
-	virtual void FillExecuteResult(const String&) override
+	void FillExecuteResult(const String& /*query*/) override
 	{
 		executeResult = GetAllCommands();
 	}
@@ -161,7 +159,7 @@ public:
 	}
 
 protected:
-	virtual LogLine OnEmptyParams() override
+	LogLine OnEmptyParams() override
 	{
 		return LogLine("show what?", g_logTextColour);
 	}
@@ -195,7 +193,7 @@ public:
 	}
 
 protected:
-	virtual LogLine OnEmptyParams() override
+	LogLine OnEmptyParams() override
 	{
 		return LogLine("hide what?", g_logTextColour);
 	}
@@ -211,17 +209,19 @@ public:
 		{
 			const auto& windowSize = kvp.second;
 			String windowSizeText = Strings::ToString(windowSize.height) + "p";
-			paramCallbackMap.emplace(windowSizeText, [windowSize](Vec<LogLine>& executeResult) {
-				Services::Engine()->TrySetWindowSize(windowSize.height);
+			paramCallbackMap.emplace(windowSizeText, 
+			[w = windowSize.width, h = windowSize.height ](Vec<LogLine>& executeResult) 
+			{
+				Services::Engine()->TrySetWindowSize(h);
 				String sizeText =
-					Strings::ToString(windowSize.width) + "x" + Strings::ToString(windowSize.height);
+					Strings::ToString(w) + "x" + Strings::ToString(h);
 				executeResult.emplace_back("Set Resolution to: " + sizeText, g_logTextColour);
 			});
 		}
 	}
 
 protected:
-	virtual LogLine OnEmptyParams()
+	LogLine OnEmptyParams() override
 	{
 		return LogLine("set resolution to what height?", g_logTextColour);
 	}
@@ -257,7 +257,7 @@ public:
 	}
 
 protected:
-	virtual LogLine OnEmptyParams() override
+	LogLine OnEmptyParams() override
 	{
 		return LogLine("set g_MinLogSeverity to what?", g_logTextColour);
 	}
@@ -270,7 +270,7 @@ public:
 	{
 	}
 
-	virtual void FillExecuteResult(const String&) override
+	void FillExecuteResult(const String& /*query*/) override
 	{
 		if (WorldStateMachine::s_bReady)
 		{
@@ -293,7 +293,7 @@ public:
 		bTakesCustomParam = true;
 	}
 
-	virtual void FillExecuteResult(const String& params) override
+	void FillExecuteResult(const String& params) override
 	{
 		if (params.empty())
 		{
@@ -391,7 +391,9 @@ Vec<Command*> FindCommands(const String& incompleteCommand, bool bFirstCharMustM
 		if (name.find(incompleteCommand) != String::npos)
 		{
 			if (!bFirstCharMustMatch || command.second->name[0] == incompleteCommand[0])
+			{
 				results.push_back(command.second.get());
+			}
 		}
 	}
 	return results;

@@ -17,11 +17,11 @@ public:
 
 public:
 	SFWindow(const struct SFWindowData& windowData);
-	~SFWindow();
+	~SFWindow() override;
 
 	Vector2 GetViewSize() const;
 	// Projects unit Rect to screen
-	Vector2 Project(const Vector2& nPos, bool bPreClamp) const;
+	Vector2 Project(Vector2 nPos, bool bPreClamp) const;
 
 	void SetSize(const struct SFWindowSize& size);
 };

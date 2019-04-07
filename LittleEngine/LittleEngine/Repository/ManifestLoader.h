@@ -18,7 +18,7 @@ private:
 		UPtr<T> asset;
 		String assetID;
 
-		NewAsset(const String& id) : assetID(id)
+		NewAsset(String id) : assetID(std::move(id))
 		{
 		}
 	};
@@ -36,12 +36,12 @@ private:
 
 public:
 #if !SHIPPING
-	ManifestLoader(EngineRepository& repository, const String& manifestPath, const std::function<void()>& onDone);
+	ManifestLoader(EngineRepository& repository, const String& manifestPath, std::function<void()> onDone);
 #endif
 	ManifestLoader(EngineRepository& repository,
 					 const String& archivePath,
 					 const String& manifestPath,
-					 const std::function<void()>& onDone);
+					 std::function<void()> onDone);
 
 	Fixed GetProgress() const;
 

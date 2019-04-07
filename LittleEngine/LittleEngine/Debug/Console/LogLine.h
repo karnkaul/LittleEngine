@@ -15,7 +15,7 @@ struct LogLine
 	Colour colour;
 	static constexpr u32 TEXT_SIZE = 19;
 
-	LogLine(const String& text, Colour colour);
+	LogLine(String text, Colour colour);
 	UIText ToUIText() const;
 };
 

@@ -34,7 +34,7 @@ void GFX::Cleanup()
 	pSFWindow = nullptr;
 }
 
-Vector2 GFX::Project(const Vector2& nPos, bool bPreClamp)
+Vector2 GFX::Project(Vector2 nPos, bool bPreClamp)
 {
 	return pSFWindow ? pSFWindow->Project(nPos, bPreClamp) : nPos;
 }

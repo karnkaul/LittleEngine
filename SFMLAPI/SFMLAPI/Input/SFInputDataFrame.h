@@ -18,7 +18,7 @@ public:
 	bool bPressed;
 
 public:
-	KeyState(KeyCode keyCode, const String& name = "Unknown");
+	KeyState(KeyCode keyCode, const char* szName = "Unknown");
 
 	KeyCode GetKeyCode() const;
 	const String& GetName() const;

@@ -28,19 +28,19 @@ Vector2 GetRandom(TRange<Vector2> tRange)
 							: tRange.min;
 }
 
-Fixed Lerp(TRange<Fixed> tRange, const Fixed& t)
+Fixed Lerp(TRange<Fixed> tRange, Fixed t)
 {
 	return Maths::Lerp(tRange.min, tRange.max, t);
 }
 
-UByte Lerp(TRange<UByte> tRange, const Fixed& alpha)
+UByte Lerp(TRange<UByte> tRange, Fixed alpha)
 {
 	float _t = (Fixed::One - alpha).ToF32();
 	float t = alpha.ToF32();
 	return _t * tRange.min + t * tRange.max;
 }
 
-TRange<Fixed> GetTRangeF(const GData& minMax, const Fixed& defaultMin, const Fixed& defaultMax)
+TRange<Fixed> GetTRangeF(const GData& minMax, Fixed defaultMin, Fixed defaultMax)
 {
 	return TRange<Fixed>(Fixed(minMax.GetF64("min", defaultMin.ToF32())),
 						 Fixed(minMax.GetF64("max", defaultMax.ToF32())));
@@ -125,10 +125,10 @@ public:
 	Particle& operator=(const Particle& copy) = delete;
 	~Particle();
 
-	void Init(const Vector2& u,
+	void Init(Vector2 u,
 			  const Time& ttl,
 			  const Transform& transform = Transform::IDENTITY,
-			  const Fixed& w = Fixed::Zero,
+			  Fixed w = Fixed::Zero,
 			  Colour c = Colour::White,
 			  s32 layerDelta = 0);
 
@@ -153,7 +153,7 @@ Particle::~Particle()
 	Services::RHeap()->Destroy(m_pSFPrimitive);
 }
 
-void Particle::Init(const Vector2& u, const Time& ttl, const Transform& transform, const Fixed& w, Colour c, s32 layerDelta)
+void Particle::Init(Vector2 u, const Time& ttl, const Transform& transform, Fixed w, Colour c, s32 layerDelta)
 {
 	m_bInUse = true;
 	this->m_ttl = ttl;
@@ -198,9 +198,9 @@ private:
 	Time m_elapsed;
 	Transform* m_pParent = nullptr;
 	SoundPlayer* m_pSoundPlayer = nullptr;
-	bool m_bSpawnNewParticles;
-	bool m_bWaiting;
-	bool m_bSoundPlayed;
+	bool m_bSpawnNewParticles = true;
+	bool m_bWaiting = false;
+	bool m_bSoundPlayed = false;
 
 public:
 	bool m_bEnabled = true;
@@ -436,7 +436,7 @@ ParticleSystemData::ParticleSystemData(const GData& psGData)
 	}
 }
 
-ParticleSystem::ParticleSystem(const String& name) : Entity(name)
+ParticleSystem::ParticleSystem(String name) : Entity(std::move(name))
 {
 	SetName(name, "ParticleSystem");
 }

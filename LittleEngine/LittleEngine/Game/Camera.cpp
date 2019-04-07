@@ -4,15 +4,10 @@
 
 namespace LittleEngine
 {
-Camera::Camera()
-{
-}
+Camera::Camera() = default;
+Camera::~Camera() = default;
 
-Camera::~Camera()
-{
-}
-
-void Camera::Shake(const Fixed& intensity, Time duration)
+void Camera::Shake(Fixed intensity, Time duration)
 {
 	if (!m_bShaking)
 	{

@@ -31,7 +31,7 @@ void RenderComponent::SetEnabled(bool bEnabled)
 	m_pSFPrimitive->SetEnabled(bEnabled);
 }
 
-void RenderComponent::Tick(Time)
+void RenderComponent::Tick(Time /*dt*/)
 {
 	UpdatePrimitive();
 }

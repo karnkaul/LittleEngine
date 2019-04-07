@@ -14,7 +14,7 @@ UITextInput::UITextInput() : UIWidget("Untitled")
 	SetName("", "UITextInput");
 }
 
-UITextInput::UITextInput(const String& name) : UIWidget(name)
+UITextInput::UITextInput(String name) : UIWidget(std::move(name))
 {
 	SetName("", "UITextInput");
 }

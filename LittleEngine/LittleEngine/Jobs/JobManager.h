@@ -29,7 +29,7 @@ private:
 
 	public:
 		Job() = default;
-		Job(s32 id, const std::function<void()>& task, String name, bool bSilent);
+		Job(s32 id, std::function<void()> task, String name, bool bSilent);
 
 		const char* ToStr() const;
 
@@ -50,12 +50,12 @@ private:
 
 public:
 	JobManager();
-	~JobManager();
+	~JobManager() override;
 
 public:
-	SPtr<JobHandle> Enqueue(const std::function<void()>& Task, const String& name = "", bool bSilent = false);
-	SPtr<JobHandle> EnqueueEngine(const std::function<void()>& Task, const String& name);
-	MultiJob* CreateMultiJob(const String& name);
+	SPtr<JobHandle> Enqueue(const std::function<void()>& Task, String name = "", bool bSilent = false);
+	SPtr<JobHandle> EnqueueEngine(const std::function<void()>& Task, String name);
+	MultiJob* CreateMultiJob(String name);
 
 private:
 	s32 AvailableEngineThreads() const;

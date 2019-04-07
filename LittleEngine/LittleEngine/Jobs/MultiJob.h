@@ -12,7 +12,7 @@ private:
 		String name;
 		std::function<void()> job;
 
-		SubJob(const String& name, const std::function<void()>& job);
+		SubJob(String name, std::function<void()> job);
 	};
 
 	String m_logName;
@@ -24,9 +24,9 @@ private:
 	bool m_bCompleted = false;
 
 public:
-	MultiJob(const String& name);
+	MultiJob(String name);
 
-	void AddJob(const std::function<void()>& job, const String& name = "");
+	void AddJob(const std::function<void()>& job, String name = "");
 	void StartJobs(const std::function<void()>& OnComplete);
 	Fixed GetProgress() const;
 

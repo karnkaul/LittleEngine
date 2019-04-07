@@ -21,7 +21,7 @@ private:
 	SPtr<class JobHandle> m_sFileLogJobHandle;
 
 public:
-	AsyncFileLogger(const String& filePath);
+	AsyncFileLogger(String filePath);
 	~AsyncFileLogger();
 
 private:

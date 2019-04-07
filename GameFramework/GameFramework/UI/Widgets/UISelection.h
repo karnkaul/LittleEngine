@@ -25,22 +25,22 @@ private:
 
 public:
 	UISelection();
-	UISelection(const String& name);
-	virtual ~UISelection();
+	UISelection(String name);
+	~UISelection() override;
 
 	OnChanged::Token RegisterOnChanged(const OnChanged::Callback& callback);
 	UISelection* SetValue(const String& text);
 	UISelection* AddOption(const String& option);
 	UISelection* AddOptions(const Vec<String>& options);
 	UISelection* AddOptions(Vec<String>&& options);
-	UISelection* SetPanelSize(const Vector2& size);
+	UISelection* SetPanelSize(Vector2 size);
 	UISelection* SetPanelColour(Colour colour);
 
 	const String& GetCurrentValue() const;
 	Vec<String>& GetOptions();
 
 protected:
-	virtual void OnInitWidget() override;
+	void OnInitWidget() override;
 
 private:
 	void OnSpawnDrawer();

@@ -30,15 +30,8 @@ Fixed::Fixed(f64 value) : value(static_cast<s32>(value * SCALE_FACTOR))
 	}
 }
 
-Fixed::Fixed(const Fixed& other) : value(other.value)
-{
-}
-
-Fixed& Fixed::operator=(const Fixed& other)
-{
-	value = other.value;
-	return *this;
-}
+Fixed::Fixed(const Fixed& other) = default;
+Fixed& Fixed::operator=(const Fixed& other) = default;
 
 Fixed::Fixed(s32 numerator, s32 denominator)
 	: value(static_cast<s64>(numerator) * static_cast<s64>(SCALE_FACTOR) / static_cast<s64>(denominator))
@@ -49,7 +42,9 @@ u32 Fixed::ToU32() const
 {
 	f64 val = ToF64();
 	if (val < 0)
+	{
 		val = -val;
+	}
 	u32 floor = static_cast<u32>(val);
 	if ((floor * static_cast<f64>(SCALE_FACTOR)) - static_cast<f64>(value) >= 0.5)
 	{
@@ -105,7 +100,7 @@ Fixed& Fixed::operator/=(const Fixed& rhs)
 	}
 	else
 	{
-		s64 largeVal = (s64)value * SCALE_FACTOR;
+		s64 largeVal = static_cast<s64>(value) * SCALE_FACTOR;
 		value = static_cast<s32>(largeVal / rhs.value);
 	}
 	return *this;
@@ -145,7 +140,7 @@ Fixed Fixed::operator--(int)
 
 Fixed Fixed::Abs() const
 {
-	return Fixed(RawInit(), (value < 0) ? -value : value);
+	return (value < 0) ? -*this : *this;
 }
 
 Fixed Fixed::Power(f32 exponent) const
@@ -216,7 +211,9 @@ String Fixed::ToString() const
 
 Fixed operator-(const Fixed& rhs)
 {
-	return Fixed(Fixed::RawInit(), -rhs.value);
+	Fixed ret;
+	ret.value = -rhs.value;
+	return ret;
 }
 
 std::ostream& operator<<(std::ostream& lhs, Fixed rhs)

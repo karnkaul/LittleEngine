@@ -17,10 +17,10 @@ private:
 	bool m_bToActivateState = false;
 	bool m_bLoading = false;
 	bool m_bLoaded = false;
-#if DEBUGGING
-public:
 	String m_manifestPath;
 	String m_archivePath;
+#if DEBUGGING
+public:
 	static bool s_bTEST_infiniteLoad;
 #endif
 
@@ -35,7 +35,7 @@ public:
 	bool LoadState(WorldID id);
 
 private:
-	void Start(const String& manifestPath = "", const String& archivePath = "");
+	void Start(String manifestPath = "", String archivePath = "");
 	void Tick(Time dt);
 	void PostBufferSwap();
 

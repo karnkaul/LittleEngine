@@ -112,7 +112,9 @@ void PlatformData::SetCreatingLoggerThread()
 void PlatformData::SetDesiredWorkerCount(u32 workerCount)
 {
 	if (static_cast<u32>(m_userWorkerCount) > workerCount)
+	{
 		m_userWorkerCount = workerCount;
+	}
 }
 
 PlatformData* Platform()

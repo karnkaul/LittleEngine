@@ -24,21 +24,8 @@ using namespace Debug;
 
 namespace
 {
-struct ChangeResolutionRequest
-{
-	SFWindowSize windowSize;
-	bool bActive = false;
-
-	ChangeResolutionRequest() = default;
-	ChangeResolutionRequest(const SFWindowSize& size);
-};
-
-ChangeResolutionRequest::ChangeResolutionRequest(const SFWindowSize& size)
-	: windowSize(size), bActive(true)
-{
-}
-
-ChangeResolutionRequest changeResolutionRequest;
+SFWindowSize* pNewWindowSize = nullptr;
+bool bChangeResolution = false;
 } // namespace
 
 EngineService::EngineService()
@@ -143,13 +130,13 @@ void EngineService::PostTick()
 #if ENABLED(PROFILER)
 	Profiler::Render();
 #endif
-	if (changeResolutionRequest.bActive)
+	if (bChangeResolution && pNewWindowSize)
 	{
 		Assert(m_pRenderLoop, "Render Loop is null!");
-		m_pRenderLoop->SetWindowSize(changeResolutionRequest.windowSize);
-		LOG_I("Set Resolution to: %dx%d", changeResolutionRequest.windowSize.width,
-			  changeResolutionRequest.windowSize.height);
-		changeResolutionRequest = {};
+		m_pRenderLoop->SetWindowSize(*pNewWindowSize);
+		LOG_I("Set Resolution to: %dx%d", pNewWindowSize->width,
+			  pNewWindowSize->height);
+		bChangeResolution = false;
 	}
 }
 
@@ -163,7 +150,8 @@ void EngineService::TrySetWindowSize(u32 height)
 	SFWindowSize* pSize = GFX::TryGetWindowSize(height);
 	if (pSize)
 	{
-		changeResolutionRequest = ChangeResolutionRequest(*pSize);
+		pNewWindowSize = pSize;
+		bChangeResolution = true;
 	}
 	else
 	{

@@ -25,7 +25,7 @@ CollisionManager::~CollisionManager()
 	LOG_D("[CollisionManager] destroyed", m_logName.c_str());
 }
 
-void CollisionManager::Tick(Time)
+void CollisionManager::Tick(Time /*dt*/)
 {
 	Scrub();
 
@@ -33,12 +33,16 @@ void CollisionManager::Tick(Time)
 	{
 		auto& lhs = m_colliders[i];
 		if (!lhs->m_bEnabled)
+		{
 			return;
+		}
 		for (size_t j = i + 1; j < m_colliders.size(); ++j)
 		{
 			auto& rhs = m_colliders[j];
 			if (!rhs->m_bEnabled || IgnoreSignatures(lhs->m_ignoreSig, rhs->m_ignoreSig))
+			{
 				continue;
+			}
 			if (lhs->IsIntersecting(*rhs))
 			{
 				lhs->OnHit(*rhs);

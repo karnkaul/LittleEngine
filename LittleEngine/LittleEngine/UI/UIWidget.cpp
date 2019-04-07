@@ -12,7 +12,7 @@ UIWidget::UIWidget() : UIObject("Untitled")
 	SetName("", "UIWidget");
 }
 
-UIWidget::UIWidget(const String& name) : UIObject(name)
+UIWidget::UIWidget(String name) : UIObject(std::move(name))
 {
 	SetName("", "UIWidget");
 }
@@ -49,7 +49,9 @@ bool UIWidget::IsInteractable() const
 void UIWidget::Tick(Time dt)
 {
 	if (m_bDestroyed)
+	{
 		return;
+	}
 	for (auto& uUIelement : m_uiElements)
 	{
 		uUIelement->Tick(dt);
@@ -65,7 +67,9 @@ void UIWidget::SetState(UIWidgetState state)
 void UIWidget::InitElement(UIElement* pNewElement, UITransform* pParent)
 {
 	if (!pParent)
+	{
 		pParent = m_pOwner ? &m_pOwner->GetRootElement()->m_transform : nullptr;
+	}
 	pNewElement->InitElement(pParent);
 	pNewElement->m_layer = m_style.baseLayer;
 }

@@ -75,16 +75,24 @@ void ConsoleRenderer::Tick(Time dt)
 	if (Console::g_bEnabled)
 	{
 		if (m_uBG->m_transform.padding.y > minPadding.y)
+		{
 			m_uBG->m_transform.padding.y -= dy;
+		}
 		if (m_uBG->m_transform.padding.y < minPadding.y)
+		{
 			m_uBG->m_transform.padding.y = minPadding.y;
+		}
 	}
 	if (!Console::g_bEnabled)
 	{
 		if (m_uBG->m_transform.padding.y < maxPadding.y)
+		{
 			m_uBG->m_transform.padding.y += dy;
+		}
 		if (m_uBG->m_transform.padding.y > maxPadding.y)
+		{
 			m_uBG->m_transform.padding.y = maxPadding.y;
+		}
 	}
 	m_uBG->Tick(dt);
 	m_uSeparator->Tick(dt);
@@ -106,7 +114,9 @@ void ConsoleRenderer::UpdateLog(const Vec<LogLine>& logLines)
 	for (auto& uLogText : m_uLogTexts)
 	{
 		if (iter == logLines.end())
+		{
 			break;
+		}
 		uLogText->SetText(iter->ToUIText());
 		++iter;
 	}

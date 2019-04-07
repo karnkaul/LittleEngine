@@ -75,8 +75,8 @@ protected:
 	bool m_bIsPlaying = false;
 
 public:
-	ParticleSystem(const String& name); // Cannot default/inline impl, due to forward declared unique_ptr
-	virtual ~ParticleSystem();
+	ParticleSystem(String name); // Cannot default/inline impl, due to forward declared unique_ptr
+	~ParticleSystem() override;
 
 	void InitParticleSystem(ParticleSystemData&& data);
 	void Start();
@@ -86,6 +86,6 @@ public:
 		return m_bIsPlaying;
 	}
 
-	void Tick(Time dt);
+	void Tick(Time dt) override;
 };
 } // namespace LittleEngine

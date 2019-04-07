@@ -8,7 +8,9 @@ namespace LittleEngine
 void LiveLine::Append(const String& newInput)
 {
 	if (!newInput.empty())
+	{
 		liveString += newInput;
+	}
 }
 
 void LiveLine::Backspace()
@@ -27,7 +29,7 @@ void KeyboardInput::Update(const EngineInput::Frame& frame)
 
 	if (frame.IsHeld(GameInputType::RB) && frame.textInput.Contains(SpecialInputType::Insert))
 	{
-		m_liveLine.Append(frame.GetClipboard());
+		m_liveLine.Append(EngineInput::Frame::GetClipboard());
 	}
 
 	else if (frame.textInput.Contains(SpecialInputType::Backspace))

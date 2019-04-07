@@ -6,14 +6,13 @@ namespace LittleEngine
 {
 struct UIText
 {
-	u32 pixelSize;
+	u32 pixelSize = 30;
 	String text;
 	Colour colour;
 
 	UIText();
 	UIText(const char* text);
-	UIText(const String& text);
-	UIText(String&& text);
-	UIText(const String& text, u32 pixelSize, Colour colour);
+	UIText(String text);
+	UIText(String text, u32 pixelSize, Colour colour);
 };
 } // namespace LittleEngine

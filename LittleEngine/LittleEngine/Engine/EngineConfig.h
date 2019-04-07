@@ -54,7 +54,7 @@ public:
 	bool SetWindowTitle(const String& windowTitle);
 	bool SetLogLevel(LogSeverity level);
 	bool SetColliderBorderWidth(u32 shapeWidth);
-	bool SetViewSize(const Vector2& viewSize);
+	bool SetViewSize(Vector2 viewSize);
 
 private:
 	void Verify();

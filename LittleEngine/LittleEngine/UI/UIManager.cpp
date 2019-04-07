@@ -32,7 +32,9 @@ void UIManager::Tick(Time dt)
 		{
 			m_uContexts.pop_back();
 			if (!m_uContexts.empty())
+			{
 				m_uContexts.back()->SetActive(true, false);
+			}
 		}
 	}
 }

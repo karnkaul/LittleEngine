@@ -3,8 +3,8 @@
 
 namespace LittleEngine
 {
-KeyState::KeyState(KeyCode keyCode, const String& name)
-	: name(name), keyCode(keyCode), bPressed(false)
+KeyState::KeyState(KeyCode keyCode, const char* szName)
+	: name(szName), keyCode(keyCode), bPressed(false)
 {
 }
 

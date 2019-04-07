@@ -27,7 +27,9 @@ void UIWidgetMatrix::EmplaceWidget(UPtr<UIWidget> uWidget, bool bNextColumn)
 UIWidget* UIWidgetMatrix::Current()
 {
 	if (m_matrix.IsEmpty() || m_matrix.GetRef().IsEmpty())
+	{
 		return nullptr;
+	}
 	return m_matrix.GetRef().GetRef().get();
 }
 
@@ -46,11 +48,8 @@ UIWidget* UIWidgetMatrix::NextSelectableVertical(bool bDownwards)
 			return pCurrent;
 		}
 		// Otherwise go vertical and try again
-		else
-		{
-			bDownwards ? Down() : Up();
-			iter = GetCurrentVec().GetIter();
-		}
+		bDownwards ? Down() : Up();
+		iter = GetCurrentVec().GetIter();
 	}
 
 	// Back to start (iter == start now)
@@ -77,17 +76,15 @@ UIWidget* UIWidgetMatrix::NextSelectableHorizontal(bool bRightwards)
 			return pCurrent;
 		}
 		// Otherwise find next selectable
-		else
+
+		pCurrent = NextSelectableVertical(true);
+		if (pCurrent)
 		{
-			pCurrent = NextSelectableVertical(true);
-			if (pCurrent)
-			{
-				return pCurrent;
-			}
-			// No selectable in column, proceed to next
-			bRightwards ? Right() : Left();
-			horzIter = m_matrix.GetIter();
+			return pCurrent;
 		}
+		// No selectable in column, proceed to next
+		bRightwards ? Right() : Left();
+		horzIter = m_matrix.GetIter();
 	}
 	return nullptr;
 }
@@ -96,20 +93,26 @@ void UIWidgetMatrix::Up()
 {
 	CVec& vec = GetCurrentVec();
 	if (!vec.IsEmpty())
+	{
 		vec.Decrement();
+	}
 }
 
 void UIWidgetMatrix::Down()
 {
 	CVec& vec = GetCurrentVec();
 	if (!vec.IsEmpty())
+	{
 		vec.Increment();
+	}
 }
 
 void UIWidgetMatrix::Left()
 {
 	if (m_matrix.Size() < 2)
+	{
 		return;
+	}
 	m_matrix.Decrement();
 	GetCurrentVec().Reset();
 }
@@ -117,7 +120,9 @@ void UIWidgetMatrix::Left()
 void UIWidgetMatrix::Right()
 {
 	if (m_matrix.Size() < 2)
+	{
 		return;
+	}
 	m_matrix.Increment();
 	GetCurrentVec().Reset();
 }
@@ -125,9 +130,13 @@ void UIWidgetMatrix::Right()
 void UIWidgetMatrix::Reset(bool bResetRows)
 {
 	if (m_matrix.IsEmpty() || GetCurrentVec().IsEmpty())
+	{
 		return;
+	}
 	if (bResetRows)
+	{
 		m_matrix.Reset();
+	}
 	GetCurrentVec().Reset();
 }
 

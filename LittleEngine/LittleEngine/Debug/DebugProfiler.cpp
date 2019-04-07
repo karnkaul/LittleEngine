@@ -29,12 +29,12 @@ struct Entry
 	Time startTime = Time::Zero;
 	Time endTime = Time::Zero;
 
-	Entry(const String& id, Colour colour, Time startTime);
+	Entry(String id, Colour colour, Time startTime);
 	Time Elapsed() const;
 };
 
-Entry::Entry(const String& id, Colour colour, Time startTime)
-	: progressBar(UIProgressBar(true)), labelElement(UIElement(true)), id(id), colour(colour), startTime(startTime)
+Entry::Entry(String id, Colour colour, Time startTime)
+	: progressBar(UIProgressBar(true)), labelElement(UIElement(true)), id(std::move(id)), colour(colour), startTime(startTime)
 {
 }
 Time Entry::Elapsed() const
@@ -115,7 +115,9 @@ void Renderer::CaptureProfile()
 	for (auto& entry : m_entries)
 	{
 		if (entry.second->endTime == Time::Zero)
+		{
 			entry.second->endTime = now;
+		}
 		f64 progress = static_cast<f64>(entry.second->Elapsed().AsMicroseconds()) /
 					   static_cast<f64>(maxDeltaTime.AsMicroseconds());
 		entry.second->progressBar.SetProgress(Fixed(progress));
@@ -213,31 +215,41 @@ void Cleanup()
 void Tick(Time dt)
 {
 	if (uRenderer)
+	{
 		uRenderer->Tick(dt);
+	}
 }
 
 void Render()
 {
 	if (bEnabled && uRenderer)
+	{
 		uRenderer->CaptureProfile();
+	}
 }
 
 void Reset()
 {
 	if (uRenderer)
+	{
 		uRenderer->Clear();
+	}
 }
 
 void Start(const String& id, Colour colour)
 {
 	if (uRenderer)
+	{
 		uRenderer->Start(id, colour, bEnabled);
+	}
 }
 
 void Stop(const String& id)
 {
 	if (uRenderer)
+	{
 		uRenderer->Stop(id);
+	}
 }
 #pragma endregion
 } // namespace Profiler

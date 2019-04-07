@@ -13,9 +13,7 @@ UMap<u32, SpecialInputType> asciiIgnoreMap = {
 
 const KeyMod KeyMod::Default = KeyMod();
 
-KeyMod::KeyMod() : bControl(false), bAlt(false), bShift(false)
-{
-}
+KeyMod::KeyMod() = default;
 KeyMod::KeyMod(bool bControl, bool bAlt, bool bShift)
 	: bControl(bControl), bAlt(bAlt), bShift(bShift)
 {
@@ -124,11 +122,15 @@ void SFInputStateMachine::ClearTextInput()
 void SFInputStateMachine::OnTextInput(u32 unicode)
 {
 	if (unicode < 5 || unicode >= 128)
+	{
 		return;
+	}
 
 	auto iter = asciiIgnoreMap.find(unicode);
 	if (iter == asciiIgnoreMap.end())
+	{
 		m_textInput.text += static_cast<char>(unicode);
+	}
 }
 
 void SFInputStateMachine::StoreNonASCIISpecialInput(KeyCode key)

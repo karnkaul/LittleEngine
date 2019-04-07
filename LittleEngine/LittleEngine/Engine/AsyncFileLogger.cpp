@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <thread>
-#include <time.h>
+#include <ctime>
 #include "FileRW.h"
 #include "Logger.h"
 #include "AsyncFileLogger.h"
@@ -27,7 +27,7 @@ String GetPrologue()
 } // namespace
 using Lock = std::lock_guard<std::mutex>;
 
-AsyncFileLogger::AsyncFileLogger(const String& path) : m_filePath(path)
+AsyncFileLogger::AsyncFileLogger(String path) : m_filePath(std::move(path))
 {
 	Core::g_OnLogStr = std::bind(&AsyncFileLogger::OnLogStr, this, std::placeholders::_1);
 	m_bStopLogging.store(false, std::memory_order_relaxed);
@@ -40,7 +40,9 @@ AsyncFileLogger::~AsyncFileLogger()
 	// Freeze m_cache and terminate thread
 	m_bStopLogging.store(true, std::memory_order_relaxed);
 	if (m_sFileLogJobHandle)
+	{
 		m_sFileLogJobHandle->Wait();
+	}
 	Core::g_OnLogStr = nullptr;
 }
 

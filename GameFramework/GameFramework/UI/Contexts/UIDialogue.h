@@ -24,7 +24,7 @@ private:
 
 public:
 	UIDialogue();
-	UIDialogue(const String& name);
+	UIDialogue(String name);
 
 	UIDialogue* SetContent(const UIText& text, const Colour* pBackground = nullptr, const Vector2* pSize = nullptr);
 	UIDialogue* SetHeader(const UIText& text, const Colour* pBackground = nullptr);
@@ -37,6 +37,6 @@ public:
 											bool bSelect = true);
 
 protected:
-	virtual void OnInitContext() override;
+	void OnInitContext() override;
 };
 } // namespace LittleEngine

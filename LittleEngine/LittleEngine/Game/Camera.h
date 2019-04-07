@@ -23,7 +23,7 @@ public:
 	Camera();
 	virtual ~Camera();
 
-	virtual void Shake(const Fixed& intensity = Fixed(5), Time duration = Time::Seconds(0.5f));
+	virtual void Shake(Fixed intensity = Fixed(5), Time duration = Time::Seconds(0.5f));
 
 protected:
 	virtual void Tick(Time dt);

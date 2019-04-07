@@ -57,7 +57,7 @@ LoadingUI::~LoadingUI()
 	LOG_D("[Loading UI] destroyed");
 }
 
-void LoadingUI::Tick(Time dt, const Fixed& progress)
+void LoadingUI::Tick(Time dt, Fixed progress)
 {
 	progressTarget = progress;
 	if (progressTarget == Fixed::One)
@@ -76,7 +76,9 @@ void LoadingUI::Tick(Time dt, const Fixed& progress)
 		m_elapsed = Time::Zero;
 		m_ellipsis += ". ";
 		if (m_ellipsis.size() > MAX_ELLIPSIS_SIZE)
+		{
 			m_ellipsis = ". ";
+		}
 		m_uEllipsis->SetText(UIText(m_ellipsis, 40, Colour::White));
 	}
 

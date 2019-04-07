@@ -14,12 +14,12 @@ private:
 	Array<RenderLayer, _LAYER_COUNT> layerArray;
 
 public:
-	static bool IsOutOfBounds(const Vector2& position, const Rect2& objectBounds, const Vector2& worldBounds);
+	static bool IsOutOfBounds(Vector2 position, const Rect2& objectBounds, Vector2 worldBounds);
 
 	GFXDataFrame(Vec<SFPrimitive>&& primitives);
 
 private:
-	void Cull(const Vector2& cullBounds);
+	void Cull(Vector2 cullBounds);
 	Vec<SFPrimitive> CollapseAndMove();
 
 	friend class GFXBuffer;
@@ -42,7 +42,7 @@ public:
 	~GFXBuffer();
 
 	Time GetLastSwapTime() const;
-	void Lock_Swap(GFXDataFrame&& newFrame, const Vector2& cullBounds);
+	void Lock_Swap(GFXDataFrame&& newFrame, Vector2 cullBounds);
 	void Lock_Traverse(const std::function<void(Vec<SFPrimitive>& vec)>& Procedure);
 
 private:

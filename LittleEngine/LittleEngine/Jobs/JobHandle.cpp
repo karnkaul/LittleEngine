@@ -16,7 +16,9 @@ s64 JobHandle::GetID() const
 void JobHandle::Wait()
 {
 	if (m_future.valid())
+	{
 		m_future.get();
+	}
 }
 
 bool JobHandle::HasCompleted() const

@@ -6,12 +6,12 @@ namespace LittleEngine
 const AABBData AABBData::One = AABBData(Vector2::One);
 const CircleData CircleData::One = CircleData(Fixed::One, Vector2(0, 0));
 
-AABBData::AABBData(const Vector2& lowerBound, const Vector2& upperBound)
-	: lowerBound(lowerBound), upperBound(upperBound)
+AABBData::AABBData(Vector2 lowerBound, const Vector2 upperBound)
+	: lowerBound(std::move(lowerBound)), upperBound(std::move(upperBound))
 {
 }
 
-AABBData::AABBData(const Vector2& size) : AABBData(-Fixed::OneHalf * size, Fixed::OneHalf * size)
+AABBData::AABBData(Vector2 size) : AABBData(-Fixed::OneHalf * size, Fixed::OneHalf * size)
 {
 }
 
@@ -25,14 +25,14 @@ bool AABBData::Intersecting(const AABBData& other) const
 	return xIntersects && yIntersects;
 }
 
-bool AABBData::IsPointInRect(const Vector2& point) const
+bool AABBData::IsPointInRect(Vector2 point) const
 {
 	// Compare coordinates directly
 	return point.x >= lowerBound.x && point.x <= upperBound.x && point.y >= lowerBound.y &&
 		   point.y <= upperBound.y;
 }
 
-CircleData::CircleData(const Fixed& radius, const Vector2& centre) : centre(centre), radius(radius)
+CircleData::CircleData(Fixed radius, Vector2 centre) : centre(centre), radius(radius)
 {
 }
 
@@ -44,7 +44,7 @@ bool CircleData::IsIntersecting(const CircleData& other) const
 	return radiiDist >= centreDist;
 }
 
-bool CircleData::IsPointInCircle(const Vector2& point) const
+bool CircleData::IsPointInCircle(Vector2 point) const
 {
 	// Compare radii and distance
 	Fixed distance = (point - centre).Magnitude();

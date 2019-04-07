@@ -82,7 +82,9 @@ void RemoveChars(String& outInput, InitList<char> toRemove)
 		for (const auto& x : toRemove)
 		{
 			if (c == x)
+			{
 				return true;
+			}
 		}
 		return false;
 	});
@@ -95,7 +97,7 @@ void RemoveWhitespace(String& outInput)
 	RemoveChars(outInput, {' '});
 }
 
-Vec<String> Tokenise(const String& s, const char delimiter, InitList<Pair<char>> escape)
+Vec<String> Tokenise(const String& s, char delimiter, InitList<Pair<char>> escape)
 {
 	auto end = s.cend();
 	auto start = end;
@@ -108,7 +110,9 @@ Vec<String> Tokenise(const String& s, const char delimiter, InitList<Pair<char>>
 		if (*it != delimiter || escaping)
 		{
 			if (start == end)
+			{
 				start = it;
+			}
 			for (auto e : escape)
 			{
 				if (*it == e.first)
@@ -117,7 +121,7 @@ Vec<String> Tokenise(const String& s, const char delimiter, InitList<Pair<char>>
 					escapeStack.push(e);
 					break;
 				}
-				else if (*it == e.second)
+				if (*it == e.second)
 				{
 					if (e.first == escapeStack.top().first)
 					{

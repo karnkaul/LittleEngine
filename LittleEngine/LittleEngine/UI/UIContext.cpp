@@ -15,7 +15,7 @@ UIContext::UIContext() : UIObject("Untitled")
 	SetName("", "UIContext");
 }
 
-UIContext::UIContext(const String& name) : UIObject(name)
+UIContext::UIContext(String name) : UIObject(std::move(name))
 {
 	SetName("", "UIContext");
 }
@@ -64,7 +64,9 @@ void UIContext::SetActive(bool bActive, bool bResetSelection)
 	if (bActive)
 	{
 		if (bResetSelection)
+		{
 			ResetSelection();
+		}
 		Tick(Time::Zero);
 		m_inputTokens.push_back(Services::Engine()->Input()->Register(std::bind(&UIContext::OnInput, this, _1)));
 	}
@@ -75,7 +77,9 @@ void UIContext::ResetSelection()
 	m_uUIWidgets->Reset(true);
 	m_uUIWidgets->ForEach([](UPtr<UIWidget>& uWidget) {
 		if (uWidget->m_state != UIWidgetState::Uninteractable)
+		{
 			uWidget->OnDeselected();
+		}
 	});
 	UIWidget* pSelected = GetSelected();
 	if (pSelected && pSelected->IsInteractable())
@@ -110,7 +114,9 @@ void UIContext::Destruct()
 void UIContext::Tick(Time dt)
 {
 	if (m_bDestroyed)
+	{
 		return;
+	}
 	for (auto& uElement : m_uiElements)
 	{
 		uElement->Tick(dt);
@@ -129,29 +135,47 @@ void UIContext::OnDestroying()
 bool UIContext::OnInput(const EngineInput::Frame& frame)
 {
 	if (m_bDestroyed)
+	{
 		return false;
+	}
 
 	if (frame.IsPressed(GameInputType::Enter))
+	{
 		OnEnterPressed();
+	}
 	if (frame.IsReleased(GameInputType::Enter))
+	{
 		OnEnterReleased(m_bInteracting);
+	}
 	if (frame.IsReleased(GameInputType::Back))
+	{
 		OnBackReleased();
+	}
 	if (frame.IsReleased(GameInputType::Up))
+	{
 		OnUp();
+	}
 	if (frame.IsReleased(GameInputType::Down))
+	{
 		OnDown();
+	}
 	if (frame.IsReleased(GameInputType::Left))
+	{
 		OnLeft();
+	}
 	if (frame.IsReleased(GameInputType::Right))
+	{
 		OnRight();
+	}
 	return true;
 }
 
 void UIContext::OnUp()
 {
 	if (m_bInteracting || m_uUIWidgets->CurrentVecCount() < 2)
+	{
 		return;
+	}
 	UIWidget* pSelected = GetSelected();
 	if (pSelected && pSelected->IsInteractable())
 	{
@@ -169,7 +193,9 @@ void UIContext::OnUp()
 void UIContext::OnDown()
 {
 	if (m_bInteracting || m_uUIWidgets->CurrentVecCount() < 2)
+	{
 		return;
+	}
 	UIWidget* pWidget = GetSelected();
 	if (pWidget && pWidget->IsInteractable())
 	{
@@ -187,7 +213,9 @@ void UIContext::OnDown()
 void UIContext::OnLeft()
 {
 	if (m_bInteracting || m_uUIWidgets->NumColumns() < 2)
+	{
 		return;
+	}
 	UIWidget* pWidget = GetSelected();
 	if (pWidget && pWidget->IsInteractable())
 	{
@@ -205,7 +233,9 @@ void UIContext::OnLeft()
 void UIContext::OnRight()
 {
 	if (m_bInteracting || m_uUIWidgets->NumColumns() < 2)
+	{
 		return;
+	}
 	UIWidget* pWidget = GetSelected();
 	if (pWidget && pWidget->IsInteractable())
 	{

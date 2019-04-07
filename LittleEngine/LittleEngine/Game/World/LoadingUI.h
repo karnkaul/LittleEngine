@@ -18,7 +18,7 @@ public:
 	LoadingUI();
 	~LoadingUI();
 
-	void Tick(Time dt, const Fixed& progress);
+	void Tick(Time dt, Fixed progress);
 	void Reset();
 
 private:

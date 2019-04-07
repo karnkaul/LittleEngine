@@ -5,10 +5,10 @@
 
 namespace LittleEngine
 {
-f32 Cast(const Fixed& fixed);
+f32 Cast(Fixed fixed);
 Fixed Cast(f32 value);
 
-sf::Vector2f Cast(const Vector2& vec2);
+sf::Vector2f Cast(Vector2 vec2);
 Vector2 Cast(const sf::Vector2f& vec2);
 Vector2 Cast(const sf::Vector2i& vec2);
 

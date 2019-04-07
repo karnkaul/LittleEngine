@@ -3,20 +3,24 @@
 
 namespace LittleEngine
 {
-Inheritable::Inheritable(const String& name, const String& className)
-	: m_name(name), m_className(className)
+Inheritable::Inheritable(String name, String className)
+	: m_name(std::move(name)), m_className(std::move(className))
 {
 	RegenerateLogNameStr();
 }
 
 Inheritable::~Inheritable() = default;
 
-void Inheritable::SetName(const String& name, const String& className)
+void Inheritable::SetName(String name, String className)
 {
 	if (!name.empty())
-		m_name = name;
+	{
+		m_name = std::move(name);
+	}
 	if (!className.empty())
-		m_className = className;
+	{
+		m_className = std::move(className);
+	}
 	RegenerateLogNameStr();
 }
 

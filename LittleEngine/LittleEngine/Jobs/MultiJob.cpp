@@ -8,20 +8,22 @@
 
 namespace LittleEngine
 {
-MultiJob::SubJob::SubJob(const String& name, const std::function<void()>& job)
-	: name(name), job(job)
+MultiJob::SubJob::SubJob(String name, std::function<void()> job)
+	: name(std::move(name)), job(std::move(job))
 {
 }
 
-MultiJob::MultiJob(const String& name) : m_logName("[" + name + " (MultiJob)]")
+MultiJob::MultiJob(String name) : m_logName("[" + std::move(name) + " (MultiJob)]")
 {
 }
 
-void MultiJob::AddJob(const std::function<void()>& job, const String& name)
+void MultiJob::AddJob(const std::function<void()>& job, String name)
 {
 	String n = name;
 	if (name.empty())
+	{
 		n = "MultiJob_" + Strings::ToString(m_subJobs.size());
+	}
 	m_subJobs.emplace_back(n, job);
 }
 

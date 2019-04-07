@@ -15,14 +15,18 @@ UIElement::UIElement(bool bSilent) : UIObject("Untitled"), m_bSilent(bSilent)
 {
 	Construct();
 	if (!bSilent)
+	{
 		LOG_D("%s constructed", LogNameStr());
+	}
 }
 
-UIElement::UIElement(const String& name, bool bSilent) : UIObject(name), m_bSilent(bSilent)
+UIElement::UIElement(String name, bool bSilent) : UIObject(std::move(name)), m_bSilent(bSilent)
 {
 	Construct();
 	if (!bSilent)
+	{
 		LOG_D("%s constructed", LogNameStr());
+	}
 }
 
 UIElement::~UIElement()
@@ -30,7 +34,9 @@ UIElement::~UIElement()
 	Services::RHeap()->Destroy(m_pPrimitive);
 	Services::RHeap()->Destroy(m_pText);
 	if (!m_bSilent)
+	{
 		LOG_D("%s destroyed", LogNameStr());
+	}
 }
 
 void UIElement::InitElement(UITransform* pParent)
@@ -58,7 +64,7 @@ void UIElement::SetPanel(UByte r, UByte g, UByte b, UByte a)
 	SetPanel(colour);
 }
 
-void UIElement::SetPanel(Colour fill, const Fixed& border, Colour outline)
+void UIElement::SetPanel(Colour fill, Fixed border, Colour outline)
 {
 	m_bPanel = true;
 	m_pPrimitive->SetPrimaryColour(fill);
@@ -99,15 +105,21 @@ SFPrimitive* UIElement::GetText() const
 void UIElement::Tick(Time)
 {
 	if (m_bDestroyed)
+	{
 		return;
+	}
 	if (m_transform.bAutoPad)
+	{
 		m_transform.SetAutoPadNPosition(m_transform.nPosition);
+	}
 	m_transform.anchor.x = Maths::Clamp_11(m_transform.anchor.x);
 	m_transform.anchor.y = Maths::Clamp_11(m_transform.anchor.y);
 	m_pPrimitive->SetPivot(m_transform.anchor);
 	m_pText->SetPivot(m_transform.anchor);
 	if (m_bPanel)
+	{
 		m_pPrimitive->SetSize(m_transform.size, SFShapeType::Rectangle);
+	}
 	m_pPrimitive->SetLayer(m_layer);
 	m_pText->SetLayer(static_cast<LayerID>(m_layer + 1));
 	m_pPrimitive->SetScale(Vector2::One, true);

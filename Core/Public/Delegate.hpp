@@ -23,7 +23,7 @@ private:
 		Callback callback;
 		WToken wToken;
 
-		Wrapper(const Callback& callback, Token token) : callback(callback), wToken(token)
+		Wrapper(Callback callback, Token token) : callback(std::move(callback)), wToken(token)
 		{
 		}
 	};

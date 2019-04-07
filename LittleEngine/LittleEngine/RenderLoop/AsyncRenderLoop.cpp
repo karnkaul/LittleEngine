@@ -27,7 +27,9 @@ AsyncRenderLoop::~AsyncRenderLoop()
 {
 	m_bRendering.store(false, std::memory_order_relaxed);
 	if (m_pRenderJobHandle)
+	{
 		m_pRenderJobHandle->Wait();
+	}
 }
 
 void AsyncRenderLoop::Run()

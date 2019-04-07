@@ -5,7 +5,7 @@
 
 namespace LittleEngine
 {
-WorldObject::WorldObject(const String& name, const String& baseClass) : Inheritable(name, baseClass)
+WorldObject::WorldObject(String name, String baseClass) : Inheritable(std::move(name), std::move(baseClass))
 {
 }
 

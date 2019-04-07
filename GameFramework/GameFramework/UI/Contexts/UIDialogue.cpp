@@ -15,7 +15,7 @@ const Fixed footerHeight = 80;
 UIDialogue::UIDialogue() : UIContext("Dialogue")
 {
 }
-UIDialogue::UIDialogue(const String& name) : UIContext(name + "_Dialogue")
+UIDialogue::UIDialogue(String name) : UIContext(std::move(name) + "_Dialogue")
 {
 }
 

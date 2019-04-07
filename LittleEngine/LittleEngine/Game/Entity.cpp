@@ -8,7 +8,7 @@
 
 namespace LittleEngine
 {
-Entity::Entity(const String& name) : WorldObject(name, "Entity")
+Entity::Entity(String name) : WorldObject(std::move(name), "Entity")
 {
 	Camera* pWorldCam = Services::WorldCamera();
 	if (pWorldCam)
@@ -42,7 +42,7 @@ void Entity::Destruct()
 	m_bDestroyed = true;
 }
 
-void Entity::Tick(Time)
+void Entity::Tick(Time /*dt*/)
 {
 	Core::CleanVector<Component*>(m_pComponents,
 								  [](Component* pComponent) { return pComponent->m_bDestroyed; });

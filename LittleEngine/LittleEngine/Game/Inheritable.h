@@ -11,11 +11,11 @@ private:
 	String m_className;
 
 public:
-	Inheritable(const String& name, const String& className = "");
+	Inheritable(String name, String className = "");
 	virtual ~Inheritable();
 
 public:
-	void SetName(const String& name, const String& className = "");
+	void SetName(String name, String className = "");
 	const char* GetNameStr() const;
 	const char* LogNameStr() const;
 

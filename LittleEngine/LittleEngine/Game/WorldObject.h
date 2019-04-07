@@ -12,8 +12,8 @@ private:
 	Core::TokenHandler<EngineInput::Token> m_tokenHandler;
 
 public:
-	WorldObject(const String& name, const String& baseClass = "");
-	virtual ~WorldObject();
+	WorldObject(String name, String baseClass = "");
+	~WorldObject() override;
 
 protected:
 	void BindInput(const EngineInput::Delegate& Callback);

@@ -18,7 +18,7 @@ struct CircleLocus
 	CircleLocus(CircleLocus&&) = default;
 	CircleLocus& operator=(CircleLocus&&) = default;
 
-	bool IsPointIn(const Vector2& point)
+	bool IsPointIn(Vector2 point)
 	{
 		return topLeft.IsPointInCircle(point) || topRight.IsPointInCircle(point) ||
 			   bottomLeft.IsPointInCircle(point) || bottomRight.IsPointInCircle(point) ||
@@ -72,7 +72,7 @@ CircleCollider::CircleCollider(const String& ownerName)
 	m_name = prefix + "CircleCollider";
 }
 
-void CircleCollider::SetCircle(const Fixed& radius)
+void CircleCollider::SetCircle(Fixed radius)
 {
 	m_circle.radius = radius;
 }

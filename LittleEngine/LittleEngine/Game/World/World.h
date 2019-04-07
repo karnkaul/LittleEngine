@@ -21,10 +21,10 @@ protected:
 
 public:
 	World(const String& name);
-	virtual ~World();
+	~World() override;
 
-	void PlaySFX(class SoundAsset* pSound, const Fixed& volume, const Fixed& direction, bool bLoop);
-	void PlayMusic(const String& path, const Fixed& volume, Time fadeTime, bool bLoop);
+	void PlaySFX(class SoundAsset* pSound, Fixed volume, Fixed direction, bool bLoop);
+	void PlayMusic(const String& path, Fixed volume, Time fadeTime, bool bLoop);
 	void BindInput(const EngineInput::Delegate& Callback);
 	bool LoadWorld(WorldID id);
 	void Quit();

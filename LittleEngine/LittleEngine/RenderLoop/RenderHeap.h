@@ -14,7 +14,7 @@ private:
 
 public:
 	RenderHeap(GFXBuffer& buffer);
-	~RenderHeap();
+	~RenderHeap() override;
 
 public:
 	SFPrimitive* New();

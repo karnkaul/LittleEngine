@@ -25,11 +25,11 @@ private:
 
 public:
 	UIElement(bool bSilent = false);
-	UIElement(const String& name, bool bSilent = false);
-	virtual ~UIElement();
+	UIElement(String name, bool bSilent = false);
+	~UIElement() override;
 
 	void SetPanel(UByte r = 255, UByte g = 255, UByte b = 255, UByte a = 128);
-	void SetPanel(Colour fill, const Fixed& border = Fixed::Zero, Colour outline = Colour::Transparent);
+	void SetPanel(Colour fill, Fixed border = Fixed::Zero, Colour outline = Colour::Transparent);
 	void SetImage(class TextureAsset& texture, Colour colour = Colour::White);
 	void SetText(const struct UIText& uiText);
 	void SetFont(class FontAsset& font);
@@ -37,7 +37,7 @@ public:
 	SFPrimitive* GetPrimitive() const;
 	SFPrimitive* GetText() const;
 
-	virtual void Tick(Time dt) override;
+	void Tick(Time dt) override;
 
 public:
 	void InitElement(UITransform* pParent = nullptr);

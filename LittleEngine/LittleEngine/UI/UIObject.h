@@ -11,8 +11,8 @@ protected:
 	bool m_bDestroyed = false;
 
 public:
-	UIObject(const String& name);
-	virtual ~UIObject();
+	UIObject(String name);
+	~UIObject() override;
 
 	virtual void Tick(Time dt) = 0;
 

@@ -11,7 +11,7 @@ UIButton::UIButton() : UIWidget("Untitled")
 	SetName("", "UIButton");
 }
 
-UIButton::UIButton(const String& name) : UIWidget(name)
+UIButton::UIButton(String name) : UIWidget(std::move(name))
 {
 	SetName("", "UIButton");
 }

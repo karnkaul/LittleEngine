@@ -62,7 +62,7 @@ AssetIDContainer::AssetIDContainer(const String& pathPrefix, u32 count, const St
 
 String AssetIDContainer::GetRandom() const
 {
-	size_t index = Maths::Random::Range((size_t)0, assetIDs.size());
+	size_t index = Maths::Random::Range(static_cast<size_t>(0), assetIDs.size());
 	return assetIDs[index];
 }
 
@@ -162,14 +162,16 @@ void AssetManifestData::Deserialise(const String& serialised)
 	}
 }
 
-Asset::Asset(const String& id, AssetType type) : m_id(id), m_type(type)
+Asset::Asset(String id, AssetType type) : m_id(std::move(id)), m_type(type)
 {
 }
 
 Asset::~Asset()
 {
 	if (!m_bError)
+	{
 		LOG_I("%s [%s] destroyed", g_szAssetType[ToIdx(m_type)], m_id.c_str());
+	}
 }
 
 const char* Asset::GetID() const
@@ -187,8 +189,8 @@ AssetType Asset::GetType() const
 	return m_type;
 }
 
-TextureAsset::TextureAsset(const String& id, const String& pathPrefix)
-	: Asset(id, AssetType::Texture)
+TextureAsset::TextureAsset(String id, const String& pathPrefix)
+	: Asset(std::move(id), AssetType::Texture)
 {
 	if (!m_sfTexture.loadFromFile(GetFilesystemPath(id, pathPrefix)))
 	{
@@ -197,7 +199,7 @@ TextureAsset::TextureAsset(const String& id, const String& pathPrefix)
 	}
 }
 
-TextureAsset::TextureAsset(const String& id, const Vec<u8>& buffer) : Asset(id, AssetType::Texture)
+TextureAsset::TextureAsset(String id, Vec<u8> buffer) : Asset(std::move(id), AssetType::Texture)
 {
 	if (buffer.empty() || !m_sfTexture.loadFromMemory(buffer.data(), buffer.size()))
 	{
@@ -206,7 +208,7 @@ TextureAsset::TextureAsset(const String& id, const Vec<u8>& buffer) : Asset(id, 
 	}
 }
 
-FontAsset::FontAsset(const String& id, const String& pathPrefix) : Asset(id, AssetType::Font)
+FontAsset::FontAsset(String id, const String& pathPrefix) : Asset(std::move(id), AssetType::Font)
 {
 	if (!m_sfFont.loadFromFile(GetFilesystemPath(id, pathPrefix)))
 	{
@@ -215,18 +217,18 @@ FontAsset::FontAsset(const String& id, const String& pathPrefix) : Asset(id, Ass
 	}
 }
 
-FontAsset::FontAsset(const String& id, const Vec<u8>& buffer)
-	: Asset(id, AssetType::Font), m_fontBuffer(buffer)
+FontAsset::FontAsset(String id, Vec<u8> buffer)
+	: Asset(std::move(id), AssetType::Font), m_fontBuffer(std::move(buffer))
 {
-	if (buffer.empty() || !m_sfFont.loadFromMemory(m_fontBuffer.data(), m_fontBuffer.size()))
+	if (m_fontBuffer.empty() || !m_sfFont.loadFromMemory(m_fontBuffer.data(), m_fontBuffer.size()))
 	{
 		LOG_E("Could not load Font from buffer [%s]!", m_id.c_str());
 		m_bError = true;
 	}
 }
 
-SoundAsset::SoundAsset(const String& id, const String& pathPrefix, const Fixed& volumeScale)
-	: Asset(id, AssetType::Sound), m_volumeScale(Maths::Clamp01(volumeScale))
+SoundAsset::SoundAsset(String id, const String& pathPrefix, Fixed volumeScale)
+	: Asset(std::move(id), AssetType::Sound), m_volumeScale(Maths::Clamp01(volumeScale))
 {
 	if (!m_sfSoundBuffer.loadFromFile(GetFilesystemPath(id, pathPrefix)))
 	{
@@ -234,8 +236,8 @@ SoundAsset::SoundAsset(const String& id, const String& pathPrefix, const Fixed& 
 		m_bError = true;
 	}
 }
-SoundAsset::SoundAsset(const String& id, const Vec<u8>& buffer, const Fixed& volumeScale)
-	: Asset(id, AssetType::Sound), m_volumeScale(Maths::Clamp01(volumeScale))
+SoundAsset::SoundAsset(String id, Vec<u8> buffer, Fixed volumeScale)
+	: Asset(std::move(id), AssetType::Sound), m_volumeScale(Maths::Clamp01(volumeScale))
 {
 	if (buffer.empty() || !m_sfSoundBuffer.loadFromMemory(buffer.data(), buffer.size()))
 	{
@@ -244,7 +246,7 @@ SoundAsset::SoundAsset(const String& id, const Vec<u8>& buffer, const Fixed& vol
 	}
 }
 
-TextAsset::TextAsset(const String& id, const String& pathPrefix) : Asset(id, AssetType::Text)
+TextAsset::TextAsset(String id, const String& pathPrefix) : Asset(std::move(id), AssetType::Text)
 {
 	String prefix = pathPrefix.empty() ? "" : pathPrefix + "/";
 	FileRW file(prefix + id);
@@ -259,7 +261,7 @@ TextAsset::TextAsset(const String& id, const String& pathPrefix) : Asset(id, Ass
 	}
 }
 
-TextAsset::TextAsset(const String& id, const Vec<u8>& buffer) : Asset(id, AssetType::Text)
+TextAsset::TextAsset(String id, Vec<u8> buffer) : Asset(std::move(id), AssetType::Text)
 {
 	if (buffer.empty())
 	{

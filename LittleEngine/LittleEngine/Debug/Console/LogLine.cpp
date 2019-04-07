@@ -7,7 +7,7 @@ namespace LittleEngine
 {
 namespace Debug
 {
-LogLine::LogLine(const String& text, Colour colour) : text(text), colour(colour)
+LogLine::LogLine(String text, Colour colour) : text(std::move(text)), colour(colour)
 {
 }
 
@@ -36,7 +36,9 @@ void LogBook::Reset()
 void LogBook::PageUp()
 {
 	if (m_logLines.size() < m_lineCount)
+	{
 		return;
+	}
 	for (u32 line = 0; line < m_lineCount - 1 && m_top != m_logLines.rend(); ++line)
 	{
 		++m_top;
@@ -47,7 +49,9 @@ void LogBook::PageUp()
 void LogBook::PageDown()
 {
 	if (m_logLines.size() < m_lineCount)
+	{
 		return;
+	}
 	for (u32 line = 0; line < m_lineCount - 1 && m_bottom != m_logLines.rbegin(); ++line)
 	{
 		--m_top;

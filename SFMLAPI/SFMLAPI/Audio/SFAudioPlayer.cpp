@@ -43,7 +43,9 @@ AudioPlayer::Status AudioPlayer::Cast(sf::Sound::Status status)
 SoundPlayer::SoundPlayer(SoundAsset* pSoundAsset)
 {
 	if (pSoundAsset)
+	{
 		SetSoundAsset(*pSoundAsset);
+	}
 }
 
 SoundPlayer::~SoundPlayer()
@@ -60,7 +62,7 @@ bool SoundPlayer::SetSoundAsset(SoundAsset& soundAsset)
 	return true;
 }
 
-void SoundPlayer::SetDirection(const Fixed& direction)
+void SoundPlayer::SetDirection(Fixed direction)
 {
 	m_sfSound.setPosition(Maths::Clamp_11(-direction).ToF32(), 0, 0);
 }
@@ -116,7 +118,7 @@ bool SoundPlayer::IsPlaying() const
 	return m_pSoundAsset && m_sfSound.getStatus() == sf::SoundSource::Status::Playing;
 }
 
-void SoundPlayer::Tick(Time)
+void SoundPlayer::Tick(Time /*dt*/)
 {
 	m_status = m_pSoundAsset ? Cast(m_sfSound.getStatus()) : Status::NoMedia;
 	ApplyParams();
@@ -171,7 +173,7 @@ bool MusicPlayer::IsFading() const
 	return m_bFadingIn || m_bFadingOut;
 }
 
-void MusicPlayer::FadeIn(Time time, const Fixed& targetVolume)
+void MusicPlayer::FadeIn(Time time, Fixed targetVolume)
 {
 	m_bFadingOut = false;
 	m_bFadingIn = true;
@@ -180,7 +182,7 @@ void MusicPlayer::FadeIn(Time time, const Fixed& targetVolume)
 	BeginFade();
 }
 
-void MusicPlayer::FadeOut(Time time, const Fixed& targetVolume)
+void MusicPlayer::FadeOut(Time time, Fixed targetVolume)
 {
 	m_bFadingIn = false;
 	m_bFadingOut = true;
@@ -225,7 +227,9 @@ void MusicPlayer::Pause()
 void MusicPlayer::Resume()
 {
 	if (m_status == AudioPlayer::Status::Paused)
+	{
 		m_uSFMusic->play();
+	}
 }
 
 void MusicPlayer::Reset(Time time)

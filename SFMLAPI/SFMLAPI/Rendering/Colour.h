@@ -17,7 +17,7 @@ public:
 	static const Colour Cyan;
 	static const Colour Transparent;
 
-	static Colour Lerp(const Colour& min, const Colour& max, const Fixed& alpha);
+	static Colour Lerp(Colour min, Colour max, Fixed alpha);
 
 	UByte r;
 	UByte g;
@@ -35,8 +35,8 @@ public:
 
 Colour operator+(Colour lhs, Colour rhs);
 Colour operator-(Colour lhs, Colour rhs);
-Colour& operator*=(const Fixed& nCoefficient, Colour& colour);
-Colour operator*(const Fixed& nCoefficient, const Colour& colour);
+Colour& operator*=(Fixed nCoefficient, Colour& colour);
+Colour operator*(Fixed nCoefficient, Colour colour);
 
 bool operator==(Colour lhs, Colour rhs);
 bool operator!=(Colour lhs, Colour rhs);

@@ -12,7 +12,7 @@ private:
 	Vec<String> m_lines;
 
 public:
-	FileRW(const String& path);
+	FileRW(String path);
 
 	bool Exists() const;
 	String ReadAll(bool bDiscardNewLines = true);

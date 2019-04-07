@@ -29,7 +29,7 @@ void Component::SetEnabled(bool bEnabled)
 	m_bEnabled = bEnabled;
 }
 
-void Component::Tick(Time)
+void Component::Tick(Time /*dt*/)
 {
 	Assert(m_pOwner, "Component Owner is null!");
 }

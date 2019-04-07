@@ -14,7 +14,7 @@ namespace Debug
 {
 namespace Profiler
 {
-void Init(std::thread::id engineLoopThreadID);
+void Init(std::thread::id eventThreadID);
 void Toggle(bool bEnable);
 void Cleanup();
 

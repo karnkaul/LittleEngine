@@ -18,7 +18,7 @@ private:
 
 public:
 	EngineService();
-	~EngineService();
+	~EngineService() override;
 
 	WorldStateMachine* Worlds() const;
 	EngineRepository* Repository() const;

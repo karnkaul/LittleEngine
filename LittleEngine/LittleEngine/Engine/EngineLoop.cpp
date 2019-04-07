@@ -32,7 +32,9 @@ void EngineLoop::PreRun()
 	SFEventLoop::PreRun();
 
 	if (!m_bInit)
+	{
 		Init();
+	}
 	m_uAsyncRenderLoop = MakeUnique<AsyncRenderLoop>(*m_uSFWindow, m_gfxBuffer, m_tickRate, m_bRenderThread);
 	m_uEngineService->m_pRenderLoop = m_uAsyncRenderLoop.get();
 	m_uRenderHeap = MakeUnique<RenderHeap>(m_gfxBuffer);
@@ -83,9 +85,13 @@ void EngineLoop::OnPause(bool bPause)
 	SFEventLoop::OnPause(bPause);
 
 	if (bPause)
+	{
 		m_uEngineService->Audio()->PauseAll();
+	}
 	else
+	{
 		m_uEngineService->Audio()->ResumeAll();
+	}
 }
 
 UPtr<EngineLoop> LittleEngine::EngineLoop::Create()
@@ -168,11 +174,10 @@ void EngineLoop::Init()
 	GameSettings* gameSettings = GameSettings::Instance();
 	m_tickRate = Time::Seconds(1.0f / static_cast<f32>(m_uConfig->GetTicksPerSecond()));
 	m_maxFrameTime = Time::Milliseconds(m_uConfig->GetMaxTickTimeMS());
-	m_uSFWindowData->title = m_uConfig->GetWindowTitle();
-	m_uSFWindowData->viewSize = m_uConfig->GetViewSize();
 	u32 windowHeight = gameSettings->GetWindowHeight();
 	u32 windowWidth = (m_uSFWindowData->viewSize.x.ToU32() * windowHeight) / m_uSFWindowData->viewSize.y.ToU32();
-	m_uSFWindowData->windowSize = SFWindowSize(windowWidth, windowHeight);
+	m_uSFWindowData = MakeUnique<SFWindowData>(SFWindowSize(windowWidth, windowHeight),
+											   m_uConfig->GetViewSize(), m_uConfig->GetWindowTitle());
 	m_uSFWindowData->sfStyle = gameSettings->IsBordlerless() ? sf::Style::None : sf::Style::Close;
 	m_uEngineService = MakeUnique<EngineService>();
 	m_bInit = true;

@@ -8,7 +8,7 @@ namespace LittleEngine
 UITransform::UITransform() : size(GFX::GetViewSize())
 {
 }
-UITransform::UITransform(const Vector2& size, const Vector2& nPosition, const Vector2& anchor, const Vector2& pixelPad)
+UITransform::UITransform(Vector2 size, Vector2 nPosition, Vector2 anchor, Vector2 pixelPad)
 	: size(size), nPosition(nPosition), anchor(anchor), padding(pixelPad)
 {
 }
@@ -16,11 +16,15 @@ UITransform::UITransform(const Vector2& size, const Vector2& nPosition, const Ve
 UITransform::~UITransform()
 {
 	if (pParent)
+	{
 		pParent->RemoveChild(*this);
+	}
 	for (auto child : children)
 	{
 		if (child)
+		{
 			child->pParent = nullptr;
+		}
 	}
 }
 
@@ -33,11 +37,13 @@ void UITransform::SetParent(UITransform& parent)
 void UITransform::UnsetParent()
 {
 	if (pParent)
+	{
 		pParent->RemoveChild(*this);
+	}
 	pParent = nullptr;
 }
 
-void UITransform::SetAutoPadNPosition(const Vector2& nPosition, bool bClamp)
+void UITransform::SetAutoPadNPosition(Vector2 nPosition, bool bClamp)
 {
 	padding = -Fixed::OneHalf * size;
 	if (bClamp)

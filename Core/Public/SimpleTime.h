@@ -6,7 +6,7 @@ namespace LittleEngine
 struct Time
 {
 private:
-	s64 microSeconds;
+	s64 microSeconds = 0;
 
 public:
 	static const Time Zero;
@@ -22,7 +22,7 @@ public:
 	explicit Time(s64 microSeconds);
 	explicit Time(sf::Time& sfTime);
 
-	Time& Scale(const Fixed& magnitude);
+	Time& Scale(Fixed magnitude);
 
 	Time& operator-();
 	Time& operator+=(const Time& rhs);

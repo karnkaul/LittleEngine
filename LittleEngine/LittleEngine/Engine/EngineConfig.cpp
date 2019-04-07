@@ -30,7 +30,9 @@ Core::LogSeverity ParseLogLevel(const String& str)
 	for (const auto& severity : severityMap)
 	{
 		if (severity.second == str)
+		{
 			return severity.first;
+		}
 	}
 	return Core::LogSeverity::Info;
 }
@@ -38,7 +40,9 @@ Core::LogSeverity ParseLogLevel(const String& str)
 void SetStringIfEmpty(GData& data, const String& key, const String& value)
 {
 	if (data.GetString(key, "NULL") == "NULL")
+	{
 		data.SetString(key, value);
+	}
 }
 } // namespace
 
@@ -165,7 +169,7 @@ bool EngineConfig::SetColliderBorderWidth(u32 shapeWidth)
 	return m_bDirty = m_uData->SetString(COLLIDER_SHAPE_WIDTH_KEY, Strings::ToString(shapeWidth));
 }
 
-bool EngineConfig::SetViewSize(const Vector2& viewSize)
+bool EngineConfig::SetViewSize(Vector2 viewSize)
 {
 	GData gData;
 	gData.SetString("x", viewSize.x.ToString());
@@ -184,7 +188,9 @@ void EngineConfig::Verify()
 	SetStringIfEmpty(*m_uData, NUM_GAME_THREADS_KEY, Strings::ToString(6));
 	SetStringIfEmpty(*m_uData, PAUSE_ON_FOCUS_LOSS_KEY, Strings::ToString(s_bPauseOnFocusLoss));
 	if (m_uData->GetString(VIEW_SIZE_KEY).empty())
+	{
 		SetViewSize(Vector2(1920, 1080));
+	}
 	m_bDirty = false;
 }
 } // namespace LittleEngine

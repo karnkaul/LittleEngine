@@ -11,11 +11,11 @@ String EngineInput::Frame::GetClipboard()
 	return SFInputDataFrame::GetClipboard();
 }
 
-EngineInput::Frame::Frame(const Vec<GameInputType>& pressed,
-						  const Vec<GameInputType>& held,
-						  const Vec<GameInputType>& released,
-						  const TextInput& textInput)
-	: pressed(pressed), held(held), released(released), textInput(textInput)
+EngineInput::Frame::Frame(Vec<GameInputType> pressed, Vec<GameInputType> held, Vec<GameInputType> released, TextInput textInput)
+	: pressed(std::move(pressed)),
+	  held(std::move(held)),
+	  released(std::move(released)),
+	  textInput(std::move(textInput))
 {
 }
 
@@ -40,8 +40,8 @@ bool EngineInput::Frame::HasData() const
 		   !textInput.text.empty();
 }
 
-EngineInput::InputContext::InputContext(const Delegate& Callback, Token& sToken)
-	: Callback(Callback), wToken(sToken)
+EngineInput::InputContext::InputContext(Delegate callback, Token& sToken)
+	: callback(std::move(callback)), wToken(sToken)
 {
 }
 
@@ -77,7 +77,9 @@ void EngineInput::TakeSnapshot(const SFInputDataFrame& frameData)
 		{
 			auto duplicate = Core::VectorSearch(m_currentSnapshot, input);
 			if (duplicate == m_currentSnapshot.end())
+			{
 				m_currentSnapshot.push_back(input);
+			}
 		}
 	}
 }
@@ -105,7 +107,9 @@ void EngineInput::FireCallbacks()
 		return Core::VectorSearch(held, type) != held.end();
 	});
 	if (m_uSudoContext && m_uSudoContext->wToken.expired())
+	{
 		m_uSudoContext = nullptr;
+	}
 
 	Frame dataFrame(pressed, held, released, m_textInput);
 	if (dataFrame.HasData())
@@ -115,11 +119,13 @@ void EngineInput::FireCallbacks()
 			m_contexts, [](InputContext& context) { return context.wToken.expired(); });
 		size_t curr = m_contexts.size();
 		if (curr != prev)
+		{
 			LOG_D("[EngineInput] Deleted %d stale contexts", prev - curr);
+		}
 
 		if (m_uSudoContext)
 		{
-			if (m_uSudoContext->Callback(dataFrame))
+			if (m_uSudoContext->callback(dataFrame))
 			{
 				return;
 			}
@@ -127,7 +133,7 @@ void EngineInput::FireCallbacks()
 
 		for (auto iter = m_contexts.rbegin(); iter != m_contexts.rend(); ++iter)
 		{
-			if (iter->Callback(dataFrame))
+			if (iter->callback(dataFrame))
 			{
 				return;
 			}

@@ -20,7 +20,7 @@ struct UIWidgetStyle
 	UIStyle selected;
 	UIStyle interacting;
 	Vector2 widgetSize;
-	LayerID baseLayer;
+	LayerID baseLayer = LAYER_UI;
 	Colour background;
 
 	static UIWidgetStyle GetDefault0(UIWidgetStyle* pReplace = nullptr);

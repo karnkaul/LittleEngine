@@ -60,7 +60,7 @@ RenderStatsRenderer::RenderStatsRenderer()
 
 RenderStatsRenderer::~RenderStatsRenderer() = default;
 
-void RenderStatsRenderer::Tick(Time)
+void RenderStatsRenderer::Tick(Time /*dt*/)
 {
 	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uPrimitiveCount, "Primitives: ", g_renderData.primitiveCount);
 	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uFPS, "FPS: ", g_renderData.framesPerSecond);

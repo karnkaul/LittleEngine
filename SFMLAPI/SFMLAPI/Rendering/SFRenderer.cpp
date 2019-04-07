@@ -73,7 +73,9 @@ void SFRenderer::Render(GFXBuffer& buffer)
 #if ENABLED(RENDER_STATS)
 				++g_renderData.primitiveCount;
 				if (primitive.m_bStatic)
+				{
 					++g_renderData.staticCount;
+				}
 #endif
 			}
 
@@ -96,6 +98,8 @@ void SFRenderer::Display()
 void SFRenderer::SetWindowSize(const SFWindowSize& size)
 {
 	if (m_pSFWindow)
+	{
 		m_pSFWindow->SetSize(size);
+	}
 }
 } // namespace LittleEngine

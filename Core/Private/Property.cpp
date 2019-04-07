@@ -31,10 +31,10 @@ bool Property::Persistor::Load(const String& filePath)
 	Vec<String> lines = Strings::Tokenise(text, '\n', {});
 	for (const auto& line : lines)
 	{
-		if (line.length() <= 0)
+		if (line.length() <= 0 || line.c_str()[0] == '#')
+		{
 			continue;
-		if (line.c_str()[0] == '#')
-			continue; // Ignore comments
+		}
 
 		Vec<String> tokens = Strings::Tokenise(line, '=', {});
 		if (tokens.size() > 1)

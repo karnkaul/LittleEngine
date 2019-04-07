@@ -14,7 +14,7 @@ struct TRange
 	TRange(T min, T max);
 
 	bool IsFuzzy() const;
-	T Lerp(const Fixed& alpha) const;
+	T Lerp(Fixed alpha) const;
 	void Reset(T current);
 	void Update(T current);
 };
@@ -36,7 +36,7 @@ bool TRange<T>::IsFuzzy() const
 }
 
 template <typename T>
-T TRange<T>::Lerp(const Fixed& alpha) const
+T TRange<T>::Lerp(Fixed alpha) const
 {
 	return Maths::template Lerp<T>(min, max, alpha);
 }

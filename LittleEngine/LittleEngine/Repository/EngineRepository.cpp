@@ -8,8 +8,8 @@
 
 namespace LittleEngine
 {
-EngineRepository::EngineRepository(const String& archivePath, const String& rootDir)
-	: m_rootDir(rootDir)
+EngineRepository::EngineRepository(String archivePath, String rootDir)
+	: m_rootDir(std::move(rootDir)), m_pDefaultFont(nullptr)
 {
 	m_uCooked = MakeUnique<Core::ArchiveReader>();
 	String fontID = "Fonts/main.ttf";

@@ -11,13 +11,13 @@ class PlatformData final
 private:
 	SFWindowSize m_maxWindowSize;
 	const u32 m_cpuThreadCount;
-	s32 m_spareThreadCount;
-	s32 m_userWorkerCount;
-	s32 m_systemWorkerCount;
+	s32 m_spareThreadCount = 0;
+	s32 m_userWorkerCount = 0;
+	s32 m_systemWorkerCount = 0;
 
 	// System Thread Flags
-	bool m_bWillCreateRenderThread;
-	bool m_bWillCreateLoggerThread;
+	bool m_bWillCreateRenderThread = false;
+	bool m_bWillCreateLoggerThread = false;
 
 public:
 	PlatformData();
