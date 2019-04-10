@@ -136,8 +136,7 @@ void EngineLoop::ReconcileRenderStates()
 void EngineLoop::SwapGFXBuffer()
 {
 	Vector2 cullBounds(m_uSFWindowData->windowSize.width, m_uSFWindowData->windowSize.height);
-	GFXDataFrame dataFrame = Services::RHeap()->ConstructDataFrame();
-	m_gfxBuffer.Lock_Swap(dataFrame.CollapseAndMove(), cullBounds);
+	m_gfxBuffer.Lock_Swap(Services::RHeap()->ConstructDataFrame(), cullBounds);
 }
 
 void EngineLoop::Init()

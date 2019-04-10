@@ -10,7 +10,7 @@ class GData;
 namespace LittleEngine
 {
 using GData = Core::GData;
-template<typename T>
+template <typename T>
 using TRange = Core::TRange<T>;
 
 struct ParticleSpawnData
@@ -66,6 +66,8 @@ struct ParticleSystemData
 {
 	Vec<EmitterData> emitterDatas;
 	ParticleSystemData(const GData& psGData);
+	ParticleSystemData(ParticleSystemData&&) = default;
+	ParticleSystemData& operator=(ParticleSystemData&&) = default;
 };
 
 class ParticleSystem : public Entity
@@ -78,7 +80,7 @@ public:
 	ParticleSystem(String name); // Cannot default/inline impl, due to forward declared unique_ptr
 	~ParticleSystem() override;
 
-	void InitParticleSystem(ParticleSystemData&& data);
+	void InitParticleSystem(ParticleSystemData data);
 	void Start();
 	void Stop();
 	inline bool IsPlaying() const

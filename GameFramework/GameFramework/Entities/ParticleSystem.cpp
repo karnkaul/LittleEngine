@@ -443,7 +443,7 @@ ParticleSystem::ParticleSystem(String name) : Entity(std::move(name))
 
 ParticleSystem::~ParticleSystem() = default;
 
-void ParticleSystem::InitParticleSystem(ParticleSystemData&& data)
+void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 {
 	Vec<EmitterData>& emitters = data.emitterDatas;
 	String particles;

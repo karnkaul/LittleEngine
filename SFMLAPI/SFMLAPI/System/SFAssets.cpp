@@ -27,16 +27,16 @@ String GetFilesystemPath(const String& id, const String& pathPrefix)
 
 const char* g_szAssetType[4] = {"TextureAsset", "FontAsset", "SoundAsset", "TextAsset"};
 
-AssetIDContainer::AssetIDContainer(const String& assetPath)
+AssetIDContainer::AssetIDContainer(String assetPath)
 {
-	assetIDs.push_back(assetPath);
+	assetIDs.emplace_back(std::move(assetPath));
 }
 
 AssetIDContainer::AssetIDContainer(InitList<String> assetPaths)
 {
 	for (const auto& path : assetPaths)
 	{
-		this->assetIDs.push_back(path);
+		this->assetIDs.emplace_back(path);
 	}
 }
 
@@ -56,7 +56,7 @@ AssetIDContainer::AssetIDContainer(const String& pathPrefix, u32 count, const St
 	{
 		String suffix = (i < 10) ? "0" + Strings::ToString(i) : Strings::ToString(i);
 		suffix += assetSuffix;
-		this->assetIDs.push_back(prefix + assetPrefix + suffix);
+		this->assetIDs.emplace_back(prefix + assetPrefix + suffix);
 	}
 }
 
@@ -66,12 +66,22 @@ String AssetIDContainer::GetRandom() const
 	return assetIDs[index];
 }
 
-void AssetManifest::AddDefinition(AssetDefinition&& definition)
+AssetDefinition::AssetDefinition(AssetType type, AssetIDContainer assetIDs)
+	: assetIDs(std::move(assetIDs)), type(type)
 {
-	definitions.push_back(std::move(definition));
 }
 
-void AssetManifest::AddDefinition(const AssetType& type, AssetIDContainer&& resourcePaths)
+AssetManifest::AssetManifest(Vec<AssetDefinition> assetDefinitions)
+	: definitions(std::move(assetDefinitions))
+{
+}
+
+void AssetManifest::AddDefinition(AssetDefinition definition)
+{
+	definitions.emplace_back(std::move(definition));
+}
+
+void AssetManifest::AddDefinition(AssetType type, AssetIDContainer resourcePaths)
 {
 	definitions.emplace_back(type, std::move(resourcePaths));
 }
@@ -81,11 +91,11 @@ void AssetManifest::Clear()
 	definitions.clear();
 }
 
-void AssetManifest::ForEach(const std::function<void(const AssetDefinition& definition)>& Callback) const
+void AssetManifest::ForEach(const std::function<void(const AssetDefinition& definition)>& callback) const
 {
 	for (const auto& definition : definitions)
 	{
-		Callback(definition);
+		callback(definition);
 	}
 }
 
@@ -94,15 +104,15 @@ AssetManifest& AssetManifestData::GetManifest()
 	return manifest;
 }
 
-void AssetManifestData::Load(const String& amfPath)
+void AssetManifestData::Load(String amfPath)
 {
-	FileRW reader(amfPath);
+	FileRW reader(std::move(amfPath));
 	Deserialise(reader.ReadAll(true));
 }
 
-void AssetManifestData::Deserialise(const String& serialised)
+void AssetManifestData::Deserialise(String serialised)
 {
-	GData data(serialised);
+	GData data(std::move(serialised));
 	manifest.Clear();
 	auto textures = data.GetVector("textures");
 	if (!textures.empty())

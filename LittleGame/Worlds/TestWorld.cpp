@@ -217,9 +217,8 @@ void StartTests()
 	String path = bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
 	auto* pText = pTestWorld->Repository()->Load<TextAsset>(path);
 	GData psGData(pText->GetText());
-	ParticleSystemData psData(psGData);
 	pParticleSystem0 = pTestWorld->Game()->NewEntity<ParticleSystem>("Fire0");
-	pParticleSystem0->InitParticleSystem(std::move(psData));
+	pParticleSystem0->InitParticleSystem(ParticleSystemData(psGData));
 	pParticleSystem0->m_transform.localScale = {Fixed(2.0f), Fixed(2.0f)};
 	pParticleSystem0->Stop();
 

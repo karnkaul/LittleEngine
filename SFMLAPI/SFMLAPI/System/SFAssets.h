@@ -23,7 +23,7 @@ struct AssetIDContainer
 
 	AssetIDContainer(AssetIDContainer&&) = default;
 	// Single asset's path
-	AssetIDContainer(const String& assetPath);
+	AssetIDContainer(String assetPath);
 	// Multiple assets' paths
 	AssetIDContainer(InitList<String> assetPaths);
 	// Multiple assets' paths with a prefix for each
@@ -44,10 +44,7 @@ struct AssetDefinition
 	AssetDefinition(AssetDefinition&&) = default;
 	AssetDefinition(const AssetDefinition&) = delete;
 	// Create an AssetDefinition given a resource type and its AssetPaths
-	AssetDefinition(const AssetType& type, AssetIDContainer&& assetIDs)
-		: assetIDs(std::move(assetIDs)), type(type)
-	{
-	}
+	AssetDefinition(AssetType type, AssetIDContainer assetIDs);
 };
 
 // \brief Collection of AssetDefinitions
@@ -58,18 +55,15 @@ public:
 
 public:
 	AssetManifest() = default;
-	AssetManifest(Vec<AssetDefinition>&& assetDefinitions)
-		: definitions(std::move(assetDefinitions))
-	{
-	}
+	AssetManifest(Vec<AssetDefinition> assetDefinitions);
 
 	// Add definition to the manifest
-	void AddDefinition(AssetDefinition&& definition);
+	void AddDefinition(AssetDefinition definition);
 	// Create and add an AssetDefinition to the manifest
-	void AddDefinition(const AssetType& type, AssetIDContainer&& resourcePaths);
+	void AddDefinition(AssetType type, AssetIDContainer resourcePaths);
 	void Clear();
 	// Convenience callback that iterates through each AssetDefinition
-	void ForEach(const std::function<void(const AssetDefinition& definition)>& Callback) const;
+	void ForEach(const std::function<void(const AssetDefinition& definition)>& callback) const;
 };
 
 // \brief Generates AssetManifest from serialised data loaded from a file, given its path
@@ -82,8 +76,8 @@ public:
 	// \brief Note: this is not a const function! Manifests are designed to move their data
 	AssetManifest& GetManifest();
 	// \brief Pass the path to the asset manifest file (.amf)
-	void Load(const String& amfPath);
-	void Deserialise(const String& serialised);
+	void Load(String amfPath);
+	void Deserialise(String serialised);
 };
 
 // \brief An Asset represents live data in memory that's ready to be used

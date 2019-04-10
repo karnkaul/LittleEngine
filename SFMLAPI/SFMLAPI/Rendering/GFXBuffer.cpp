@@ -63,7 +63,7 @@ Vec<SFPrimitive>& GFXBuffer::ReferenceActiveBuffer()
 	return source;
 }
 
-void GFXBuffer::Lock_Swap(GFXDataFrame&& newFrame, Vector2 cullBounds)
+void GFXBuffer::Lock_Swap(GFXDataFrame newFrame, Vector2 cullBounds)
 {
 	newFrame.Cull(cullBounds);
 	Vec<SFPrimitive>* inactive = GetInactiveBuffer();

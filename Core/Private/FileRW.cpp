@@ -33,7 +33,7 @@ String FileRW::ReadAll(bool bDiscardNewLines)
 const Vec<String>& FileRW::ReadLines()
 {
 	m_lines.clear();
-	Read([&](String&& line) { m_lines.push_back(std::move(line)); });
+	Read([&](String&& line) { m_lines.emplace_back(std::move(line)); });
 	return m_lines;
 }
 

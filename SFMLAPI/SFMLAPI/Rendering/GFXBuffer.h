@@ -42,7 +42,7 @@ public:
 	~GFXBuffer();
 
 	Time GetLastSwapTime() const;
-	void Lock_Swap(GFXDataFrame&& newFrame, Vector2 cullBounds);
+	void Lock_Swap(GFXDataFrame newFrame, Vector2 cullBounds);
 	void Lock_Traverse(const std::function<void(Vec<SFPrimitive>& vec)>& Procedure);
 
 private:
