@@ -145,14 +145,14 @@ void UIWidgetMatrix::Clear()
 	m_matrix.Clear();
 }
 
-void UIWidgetMatrix::ForEach(const std::function<void(UPtr<UIWidget>&)>& Callback)
+void UIWidgetMatrix::ForEach(std::function<void(UPtr<UIWidget>&)> callback)
 {
-	m_matrix.ForEach([&Callback](CVec& vec) { vec.ForEach(Callback); });
+	m_matrix.ForEach([&callback](CVec& vec) { vec.ForEach(callback); });
 }
 
-void UIWidgetMatrix::ForEach(const std::function<void(const UPtr<UIWidget>&)>& Callback) const
+void UIWidgetMatrix::ForEach(std::function<void(const UPtr<UIWidget>&)> callback) const
 {
-	m_matrix.ForEach([&Callback](const CVec& vec) { vec.ForEach(Callback); });
+	m_matrix.ForEach([&callback](const CVec& vec) { vec.ForEach(callback); });
 }
 
 size_t UIWidgetMatrix::TotalCount() const

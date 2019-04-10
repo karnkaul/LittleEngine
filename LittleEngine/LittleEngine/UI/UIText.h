@@ -14,5 +14,7 @@ struct UIText
 	UIText(const char* text);
 	UIText(String text);
 	UIText(String text, u32 pixelSize, Colour colour);
+	UIText(UIText&&) = default;
+	UIText& operator=(UIText&&) = default;
 };
 } // namespace LittleEngine

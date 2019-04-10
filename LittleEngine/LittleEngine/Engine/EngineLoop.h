@@ -42,5 +42,7 @@ private:
 	void SwapGFXBuffer();
 	void Init();
 	void Uninit();
+
+	friend class EngineService;
 };
 } // namespace LittleEngine

@@ -46,7 +46,7 @@ u32 GameSettings::GetWindowHeight()
 	return static_cast<u32>(height);
 }
 
-bool GameSettings::IsBordlerless()
+bool GameSettings::IsBorderless()
 {
 	return Strings::ToBool(m_borderless.stringValue);
 }
@@ -60,9 +60,9 @@ void GameSettings::SetWindowHeight(u32 height)
 	}
 }
 
-void GameSettings::SetBorderless(bool bBordlerless)
+void GameSettings::SetBorderless(bool bBorderless)
 {
-	m_borderless.stringValue = Strings::ToString(bBordlerless);
+	m_borderless.stringValue = Strings::ToString(bBorderless);
 	if (m_bAutoSave)
 	{
 		SaveAll();

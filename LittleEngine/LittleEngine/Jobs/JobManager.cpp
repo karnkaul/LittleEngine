@@ -78,16 +78,16 @@ JobManager::~JobManager()
 	LOG_I("[JobManager] destroyed");
 }
 
-SPtr<JobHandle> JobManager::Enqueue(const std::function<void()>& Task, String name, bool bSilent)
+SPtr<JobHandle> JobManager::Enqueue(std::function<void()> task, String name, bool bSilent)
 {
-	UPtr<Job> uJob = MakeUnique<Job>(++m_nextGameJobID, Task, std::move(name), bSilent);
+	UPtr<Job> uJob = MakeUnique<Job>(++m_nextGameJobID, std::move(task), std::move(name), bSilent);
 	return Lock_Enqueue(std::move(uJob), m_gameJobQueue);
 }
 
-SPtr<JobHandle> JobManager::EnqueueEngine(const std::function<void()>& Task, String name)
+SPtr<JobHandle> JobManager::EnqueueEngine(std::function<void()> task, String name)
 {
 	Assert(AvailableEngineThreads() > 0, "!DEADLOCK! No available engine workers!");
-	UPtr<Job> uJob = MakeUnique<Job>(++m_nextEngineJobID, Task, std::move(name), false);
+	UPtr<Job> uJob = MakeUnique<Job>(++m_nextEngineJobID, std::move(task), std::move(name), false);
 	return Lock_Enqueue(std::move(uJob), m_engineJobQueue);
 }
 

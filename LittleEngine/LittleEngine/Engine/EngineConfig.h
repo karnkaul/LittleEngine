@@ -32,9 +32,9 @@ public:
 	~EngineConfig();
 
 	// Load config file from path and replace cache values if valid
-	bool Load(const String& path);
+	bool Load(String path);
 	// Save cache to config file at path; loadFirst will call Load() before saving
-	bool Save(const String& path);
+	bool Save(String path);
 
 	bool ShouldCreateRenderThread() const;
 	bool ShouldPauseOnFocusLoss() const;
@@ -51,7 +51,7 @@ public:
 	bool SetNumGameThreads(u32 numThreads);
 	bool SetTicksPerSecond(u32 ticksPerSecond);
 	bool SetMaxTimeMS(u32 maxTickTimeMS);
-	bool SetWindowTitle(const String& windowTitle);
+	bool SetWindowTitle(String windowTitle);
 	bool SetLogLevel(LogSeverity level);
 	bool SetColliderBorderWidth(u32 shapeWidth);
 	bool SetViewSize(Vector2 viewSize);

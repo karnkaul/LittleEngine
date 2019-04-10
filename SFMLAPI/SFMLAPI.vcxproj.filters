@@ -67,6 +67,9 @@
     <ClInclude Include="SFMLAPI\Rendering\SFLayerID.h">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="SFMLAPI\System\SFAssetType.h">
+      <Filter>SFMLAPI\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SFMLAPI\Rendering\Colour.cpp">

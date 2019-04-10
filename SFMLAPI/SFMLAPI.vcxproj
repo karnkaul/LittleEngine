@@ -36,6 +36,7 @@
     <ClInclude Include="SFMLAPI\SFSystem.h" />
     <ClInclude Include="SFMLAPI\SFWindowing.h" />
     <ClInclude Include="SFMLAPI\System\SFAssets.h" />
+    <ClInclude Include="SFMLAPI\System\SFAssetType.h" />
     <ClInclude Include="SFMLAPI\System\SFGameClock.h" />
     <ClInclude Include="SFMLAPI\System\SFTypes.h" />
     <ClInclude Include="SFMLAPI\Windowing\SFEventLoop.h" />

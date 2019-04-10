@@ -13,11 +13,12 @@ private:
 	UPtr<class EngineAudio> m_uEngineAudio;
 	UPtr<class WorldStateMachine> m_uWorldStateMachine;
 	UPtr<class AsyncFileLogger> m_uFileLogger;
+	class EngineLoop* m_pEngineLoop = nullptr;
 	class AsyncRenderLoop* m_pRenderLoop = nullptr;
 	bool m_bTerminate;
 
 public:
-	EngineService();
+	EngineService(EngineLoop& engineLoop);
 	~EngineService() override;
 
 	WorldStateMachine* Worlds() const;

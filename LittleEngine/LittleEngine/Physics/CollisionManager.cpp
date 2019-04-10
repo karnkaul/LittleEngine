@@ -52,17 +52,17 @@ void CollisionManager::Tick(Time /*dt*/)
 	}
 }
 
-CircleCollider* CollisionManager::CreateCircleCollider(const String& ownerName)
+CircleCollider* CollisionManager::CreateCircleCollider(String ownerName)
 {
-	auto uCollider = MakeUnique<CircleCollider>(ownerName);
+	auto uCollider = MakeUnique<CircleCollider>(std::move(ownerName));
 	CircleCollider* pCollider = uCollider.get();
 	m_colliders.emplace_back(std::move(uCollider));
 	return pCollider;
 }
 
-AABBCollider* CollisionManager::CreateAABBCollider(const String& ownerName)
+AABBCollider* CollisionManager::CreateAABBCollider(String ownerName)
 {
-	auto uCollider = MakeUnique<AABBCollider>(ownerName);
+	auto uCollider = MakeUnique<AABBCollider>(std::move(ownerName));
 	AABBCollider* pCollider = uCollider.get();
 	m_colliders.emplace_back(std::move(uCollider));
 	return pCollider;

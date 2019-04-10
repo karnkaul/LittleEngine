@@ -1,6 +1,7 @@
 #pragma once
 #include "Delegate.hpp"
 #include "LittleEngine/UI/UIWidget.h"
+#include "LittleEngine/UI/UIText.h"
 
 namespace LittleEngine
 {
@@ -31,11 +32,11 @@ public:
 	~UIToggle() override;
 
 	UIToggle* SetOn(bool bOn);
-	UIToggle* SetText(const struct UIText& text);
+	UIToggle* SetText(UIText text);
 	UIToggle* SetOnColour(Colour onColour);
 	UIToggle* SetOffColour(Colour offColour);
 	UIToggle* SetBoxSize(Vector2 size);
-	OnChanged::Token AddCallback(const OnChanged::Callback& callback);
+	OnChanged::Token AddCallback(OnChanged::Callback callback);
 
 	UIElement* GetRoot() const;
 

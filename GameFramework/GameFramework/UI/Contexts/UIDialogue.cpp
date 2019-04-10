@@ -18,6 +18,7 @@ UIDialogue::UIDialogue() : UIContext("Dialogue")
 UIDialogue::UIDialogue(String name) : UIContext(std::move(name) + "_Dialogue")
 {
 }
+UIDialogue::~UIDialogue() = default;
 
 void UIDialogue::OnInitContext()
 {
@@ -39,7 +40,7 @@ void UIDialogue::OnInitContext()
 	m_pContent->SetPanel(m_data.contentBG);
 }
 
-UIDialogue* UIDialogue::SetContent(const UIText& text, const Colour* pBackground, const Vector2* pSize)
+UIDialogue* UIDialogue::SetContent(UIText text, const Colour* pBackground, const Vector2* pSize)
 {
 	if (pSize)
 	{
@@ -57,11 +58,11 @@ UIDialogue* UIDialogue::SetContent(const UIText& text, const Colour* pBackground
 		m_pContent->SetPanel(m_data.contentBG);
 	}
 
-	m_pContent->SetText(text);
+	m_pContent->SetText(std::move(text));
 	return this;
 }
 
-UIDialogue* UIDialogue::SetHeader(const UIText& text, const Colour* pBackground)
+UIDialogue* UIDialogue::SetHeader(UIText text, const Colour* pBackground)
 {
 	if (pBackground)
 	{
@@ -69,12 +70,12 @@ UIDialogue* UIDialogue::SetHeader(const UIText& text, const Colour* pBackground)
 		m_pHeader->SetPanel(m_data.headerBG);
 	}
 
-	m_pHeader->SetText(text);
+	m_pHeader->SetText(std::move(text));
 	return this;
 }
 
-UIButton::OnClick::Token UIDialogue::AddMainButton(const UIText& text,
-												   const UIButton::OnClick::Callback& onMainButton,
+UIButton::OnClick::Token UIDialogue::AddMainButton(UIText text,
+												   UIButton::OnClick::Callback onMainButton,
 												   bool bDismissOnBack)
 {
 	if (m_pMainButton)
@@ -89,15 +90,15 @@ UIButton::OnClick::Token UIDialogue::AddMainButton(const UIText& text,
 	m_pFooter->m_transform.nPosition = {0, -1};
 
 	m_pMainButton = AddWidget<UIButton>(String(GetNameStr()) + " Button 0");
-	m_pMainButton->SetText(text);
+	m_pMainButton->SetText(std::move(text));
 	UIElement* pButtonEl = m_pMainButton->GetButtonElement();
 	pButtonEl->m_transform.SetParent(m_pFooter->m_transform);
 	m_bAutoDestroyOnCancel = bDismissOnBack;
-	return m_pMainButton->AddCallback(onMainButton);
+	return m_pMainButton->AddCallback(std::move(onMainButton));
 }
 
-UIButton::OnClick::Token UIDialogue::AddOtherButton(const UIText& otherButtonUIText,
-													const UIButton::OnClick::Callback& OnOtherButton,
+UIButton::OnClick::Token UIDialogue::AddOtherButton(UIText otherButtonUIText,
+													UIButton::OnClick::Callback onOtherButton,
 													bool bSelect)
 {
 	if (m_pOtherButton)
@@ -107,7 +108,7 @@ UIButton::OnClick::Token UIDialogue::AddOtherButton(const UIText& otherButtonUIT
 		return nullptr;
 	}
 	m_pOtherButton = AddWidget<UIButton>("Dialog Button 0", nullptr, true);
-	m_pOtherButton->SetText(otherButtonUIText);
+	m_pOtherButton->SetText(std::move(otherButtonUIText));
 	UIElement* pOtherButtonEl = m_pOtherButton->GetButtonElement();
 	pOtherButtonEl->m_transform.SetParent(m_pFooter->m_transform);
 	pOtherButtonEl->m_transform.nPosition = {Fixed::OneHalf, 0};
@@ -120,6 +121,6 @@ UIButton::OnClick::Token UIDialogue::AddOtherButton(const UIText& otherButtonUIT
 	if (!bSelect)
 		OnLeft();
 
-	return m_pOtherButton->AddCallback(OnOtherButton);
+	return m_pOtherButton->AddCallback(std::move(onOtherButton));
 }
 } // namespace LittleEngine

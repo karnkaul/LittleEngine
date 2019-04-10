@@ -149,7 +149,7 @@ MusicPlayer::~MusicPlayer()
 	}
 }
 
-bool MusicPlayer::SetTrack(const String& path)
+bool MusicPlayer::SetTrack(String path)
 {
 	return m_uSFMusic->openFromFile(path);
 }

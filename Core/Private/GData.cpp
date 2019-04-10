@@ -9,7 +9,7 @@ namespace
 InitList<Strings::Pair<char>> gDataEscapes = {{'{', '}'}, {'[', ']'}, '\"'};
 
 template <typename T>
-T Get(const UMap<String, String>& table, const String& key, T (*Adaptor)(const String&, T), const T& defaultValue)
+T Get(const UMap<String, String>& table, const String& key, T (*Adaptor)(String, T), const T& defaultValue)
 {
 	auto search = table.find(key);
 	if (search != table.end())

@@ -11,7 +11,7 @@ protected:
 	bool m_bDestroyed = false;
 
 public:
-	UIObject(String name);
+	UIObject(String name, bool bSilent = false);
 	~UIObject() override;
 
 	virtual void Tick(Time dt) = 0;

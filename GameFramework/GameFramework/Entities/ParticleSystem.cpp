@@ -111,7 +111,7 @@ public:
 	Fixed m_w;
 	Time m_ttl;
 	Time m_t;
-	LayerID m_layer;
+	LayerID m_layer = LAYER_FX;
 	Colour m_c;
 
 private:
@@ -206,7 +206,7 @@ public:
 	bool m_bEnabled = true;
 
 public:
-	Emitter(const EmitterData& data, bool bSetEnabled = true);
+	Emitter(EmitterData data, bool bSetEnabled = true);
 	~Emitter();
 
 	void Reset(bool bSetEnabled);
@@ -222,8 +222,8 @@ private:
 	void TickInternal(Time dt);
 };
 
-Emitter::Emitter(const EmitterData& data, bool bSetEnabled)
-	: m_data(data), m_pParent(data.pParent), m_bEnabled(bSetEnabled)
+Emitter::Emitter(EmitterData data, bool bSetEnabled)
+	: m_data(std::move(data)), m_pParent(data.pParent), m_bEnabled(bSetEnabled)
 {
 	m_particles.reserve(data.spawnData.numParticles);
 	for (size_t i = 0; i < data.spawnData.numParticles; ++i)
@@ -328,7 +328,9 @@ Vec<Particle*> Emitter::ProvisionLot(u32 count)
 	while (iter != m_particles.end() && total < count)
 	{
 		if (!iter->m_bInUse)
+		{
 			ret.push_back(&*iter);
+		}
 		++iter;
 		++total;
 	}
@@ -447,12 +449,12 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 {
 	Vec<EmitterData>& emitters = data.emitterDatas;
 	String particles;
-	for (EmitterData& data : emitters)
+	for (EmitterData& eData : emitters)
 	{
-		data.pParent = &m_transform;
-		UPtr<Emitter> emitter = MakeUnique<Emitter>(data, false);
-		particles += (Strings::ToString(data.spawnData.numParticles) + ", ");
-		m_emitters.push_back(std::move(emitter));
+		eData.pParent = &m_transform;
+		particles += (Strings::ToString(eData.spawnData.numParticles) + ", ");
+		UPtr<Emitter> emitter = MakeUnique<Emitter>(std::move(eData), false);
+		m_emitters.emplace_back(std::move(emitter));
 	}
 	Core::LogSeverity logSeverity =
 		particles.empty() || emitters.empty() ? Core::LogSeverity::Warning : Core::LogSeverity::Debug;

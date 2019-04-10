@@ -9,15 +9,15 @@ namespace LittleEngine
 {
 namespace
 {
-const String RENDER_THREAD_KEY = "renderThread";
-const String PAUSE_ON_FOCUS_LOSS_KEY = "bPauseOnFocusLoss";
-const String NUM_GAME_THREADS_KEY = "numGameThreads";
-const String TICKS_PER_SECOND_KEY = "ticksPerSecond";
-const String MAX_TICK_TIME_MS = "maxTickTimeMS";
-const String WINDOW_TITLE_KEY = "windowTitle";
-const String LOG_LEVEL_KEY = "logLevel";
-const String VIEW_SIZE_KEY = "viewSize";
-const String COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
+const char* RENDER_THREAD_KEY = "renderThread";
+const char* PAUSE_ON_FOCUS_LOSS_KEY = "bPauseOnFocusLoss";
+const char* NUM_GAME_THREADS_KEY = "numGameThreads";
+const char* TICKS_PER_SECOND_KEY = "ticksPerSecond";
+const char* MAX_TICK_TIME_MS = "maxTickTimeMS";
+const char* WINDOW_TITLE_KEY = "windowTitle";
+const char* LOG_LEVEL_KEY = "logLevel";
+const char* VIEW_SIZE_KEY = "viewSize";
+const char* COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
 
 UMap<Core::LogSeverity, String> severityMap = {{Core::LogSeverity::Error, "Error"},
 											   {Core::LogSeverity::Warning, "Warning"},
@@ -25,7 +25,7 @@ UMap<Core::LogSeverity, String> severityMap = {{Core::LogSeverity::Error, "Error
 											   {Core::LogSeverity::Debug, "Debug"},
 											   {Core::LogSeverity::HOT, "HOT"}};
 
-Core::LogSeverity ParseLogLevel(const String& str)
+Core::LogSeverity ParseLogLevel(String str)
 {
 	for (const auto& severity : severityMap)
 	{
@@ -37,11 +37,11 @@ Core::LogSeverity ParseLogLevel(const String& str)
 	return Core::LogSeverity::Info;
 }
 
-void SetStringIfEmpty(GData& data, const String& key, const String& value)
+void SetStringIfEmpty(GData& data, String key, String value)
 {
 	if (data.GetString(key, "NULL") == "NULL")
 	{
-		data.SetString(key, value);
+		data.SetString(key, std::move(value));
 	}
 }
 } // namespace
@@ -57,19 +57,19 @@ EngineConfig::EngineConfig()
 
 EngineConfig::~EngineConfig() = default;
 
-bool EngineConfig::Load(const String& path)
+bool EngineConfig::Load(String path)
 {
 	m_bDirty = true;
-	FileRW file(path);
+	FileRW file(std::move(path));
 	m_uData->Marshall(file.ReadAll(true));
 	bool success = m_uData->NumFields() > 0;
 	Verify();
 	return success;
 }
 
-bool EngineConfig::Save(const String& path)
+bool EngineConfig::Save(String path)
 {
-	FileRW file(path);
+	FileRW file(std::move(path));
 	if (m_bDirty || !file.Exists())
 	{
 		return file.Write(m_uData->Unmarshall());
@@ -154,9 +154,9 @@ bool EngineConfig::SetMaxTimeMS(u32 maxTickTimeMS)
 	return m_bDirty = m_uData->SetString(MAX_TICK_TIME_MS, Strings::ToString(maxTickTimeMS));
 }
 
-bool EngineConfig::SetWindowTitle(const String& windowTitle)
+bool EngineConfig::SetWindowTitle(String windowTitle)
 {
-	return m_bDirty = m_uData->SetString(WINDOW_TITLE_KEY, windowTitle);
+	return m_bDirty = m_uData->SetString(WINDOW_TITLE_KEY, std::move(windowTitle));
 }
 
 bool EngineConfig::SetLogLevel(LogSeverity level)

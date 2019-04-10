@@ -17,10 +17,7 @@ UIWidget::UIWidget(String name) : UIObject(std::move(name))
 	SetName("", "UIWidget");
 }
 
-UIWidget::~UIWidget()
-{
-	LOG_D("%s destroyed", LogNameStr());
-}
+UIWidget::~UIWidget() = default;
 
 void UIWidget::InitWidget(UIContext& owner, UIWidgetStyle* pStyleToCopy)
 {

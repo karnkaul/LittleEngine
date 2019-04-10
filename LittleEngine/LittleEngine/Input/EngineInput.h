@@ -61,10 +61,10 @@ public:
 	EngineInput();
 
 public:
-	Token Register(const Delegate& Callback);
+	Token Register(Delegate callback);
 
 private:
-	Token RegisterSudo(const Delegate& Callback);
+	Token RegisterSudo(Delegate callback);
 	void TakeSnapshot(const struct SFInputDataFrame& frameData);
 	void FireCallbacks();
 	void BindDefaults();

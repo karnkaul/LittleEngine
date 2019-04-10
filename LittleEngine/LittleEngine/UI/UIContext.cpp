@@ -25,7 +25,6 @@ UIContext::~UIContext()
 	SetActive(false);
 	m_uUIWidgets->Clear();
 	m_uiElements.clear();
-	LOG_D("%s destroyed", LogNameStr());
 }
 
 void UIContext::InitContext(LayerID rootLayer)
@@ -99,10 +98,10 @@ UIElement* UIContext::GetRootElement() const
 	return m_pRootElement;
 }
 
-UIContext::OnCancelled::Token UIContext::SetOnCancelled(const OnCancelled::Callback& Callback, bool bAutoDestroy)
+UIContext::OnCancelled::Token UIContext::SetOnCancelled(OnCancelled::Callback callback, bool bAutoDestroy)
 {
 	m_bAutoDestroyOnCancel = bAutoDestroy;
-	return m_onCancelledDelegate.Register(Callback);
+	return m_onCancelledDelegate.Register(std::move(callback));
 }
 
 void UIContext::Destruct()

@@ -20,12 +20,12 @@ protected:
 	UPtr<class GameManager> m_uGame;
 
 public:
-	World(const String& name);
+	World(String name);
 	~World() override;
 
 	void PlaySFX(class SoundAsset* pSound, Fixed volume, Fixed direction, bool bLoop);
-	void PlayMusic(const String& path, Fixed volume, Time fadeTime, bool bLoop);
-	void BindInput(const EngineInput::Delegate& Callback);
+	void PlayMusic(String path, Fixed volume, Time fadeTime, bool bLoop);
+	void BindInput(EngineInput::Delegate callback);
 	bool LoadWorld(WorldID id);
 	void Quit();
 

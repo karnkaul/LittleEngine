@@ -18,36 +18,25 @@ UISelection::UISelection(String name) : UIButton(std::move(name))
 	SetName("", "UISelection");
 }
 
-UISelection::~UISelection()
+UISelection::OnChanged::Token UISelection::RegisterOnChanged(OnChanged::Callback callback)
 {
-	LOG_D("%s destroyed", LogNameStr());
+	return m_onChanged.Register(std::move(callback));
 }
 
-UISelection::OnChanged::Token UISelection::RegisterOnChanged(const OnChanged::Callback& callback)
+UISelection* UISelection::SetValue(String text)
 {
-	return m_onChanged.Register(callback);
-}
-
-UISelection* UISelection::SetValue(const String& text)
-{
-	m_value = text;
+	m_value = std::move(text);
 	SetText(m_value);
 	return this;
 }
 
-UISelection* UISelection::AddOption(const String& option)
+UISelection* UISelection::AddOption(String option)
 {
-	m_options.push_back(option);
+	m_options.emplace_back(std::move(option));
 	return this;
 }
 
-UISelection* UISelection::AddOptions(const Vec<String>& options)
-{
-	m_options = options;
-	return this;
-}
-
-UISelection* UISelection::AddOptions(Vec<String>&& options)
+UISelection* UISelection::AddOptions(Vec<String> options)
 {
 	m_options = std::move(options);
 	return this;

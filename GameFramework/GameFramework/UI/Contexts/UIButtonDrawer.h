@@ -3,6 +3,7 @@
 #include "TRange.hpp"
 #include "LittleEngine/UI/UIContext.h"
 #include "LittleEngine/UI/UIStyle.h"
+#include "LittleEngine/UI/UIText.h"
 #include "GameFramework/UI/Widgets/UIButton.h"
 
 namespace LittleEngine
@@ -26,12 +27,13 @@ private:
 public:
 	UIButtonDrawer();
 	UIButtonDrawer(String name);
+	~UIButtonDrawer() override;
 
 	// Returns false if any button already added - will be vertical
 	bool SetHorizontal(bool bHorizontal = true);
-	UIButtonDrawer* SetPanel(const UIStyle& panelStyle);
-	UIButton::OnClick::Token AddButton(const UIText& buttonText,
-									   const UIButton::OnClick::Callback& OnInteracted,
+	UIButtonDrawer* SetPanel(UIStyle panelStyle);
+	UIButton::OnClick::Token AddButton(UIText buttonText,
+									   UIButton::OnClick::Callback onInteracted,
 									   UIButton** ppButton = nullptr);
 
 protected:

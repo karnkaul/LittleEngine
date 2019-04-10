@@ -85,7 +85,7 @@ public:
 	MusicPlayer();
 	~MusicPlayer() override;
 
-	bool SetTrack(const String& path);
+	bool SetTrack(String path);
 	Time GetDuration() const;
 	Time GetElapsed() const;
 	bool IsFading() const;

@@ -8,6 +8,7 @@
 #include "LittleEngine/Debug/Console/DebugConsole.h"
 #include "LittleEngine/Engine/EngineLoop.h"
 #include "LittleEngine/Engine/OS.h"
+#include "LittleEngine/Game/GameSettings.h"
 #include "LittleEngine/Game/World/WorldStateMachine.h"
 #include "LittleEngine/GFX/GFX.h"
 #include "LittleEngine/Input/EngineInput.h"
@@ -28,7 +29,7 @@ SFWindowSize* pNewWindowSize = nullptr;
 bool bChangeResolution = false;
 } // namespace
 
-EngineService::EngineService()
+EngineService::EngineService(EngineLoop& engineLoop) : m_pEngineLoop(&engineLoop)
 {
 	if (!OS::Platform()->CanCreateSystemThread() || Services::Jobs()->AvailableEngineThreads() < 1)
 	{
@@ -86,6 +87,20 @@ EngineAudio* EngineService::Audio() const
 	return m_uEngineAudio.get();
 }
 
+void EngineService::TrySetWindowSize(u32 height)
+{
+	SFWindowSize* pSize = GFX::TryGetWindowSize(height);
+	if (pSize)
+	{
+		pNewWindowSize = pSize;
+		bChangeResolution = true;
+	}
+	else
+	{
+		LOG_W("[EngineService] No resolution that matches given height: %d", height);
+	}
+}
+
 void EngineService::Terminate()
 {
 	m_bTerminate = true;
@@ -132,8 +147,8 @@ void EngineService::PostTick()
 #endif
 	if (bChangeResolution && pNewWindowSize)
 	{
-		Assert(m_pRenderLoop, "Render Loop is null!");
 		m_pRenderLoop->SetWindowSize(*pNewWindowSize);
+		GameSettings::Instance()->SetWindowHeight(pNewWindowSize->height);
 		LOG_I("Set Resolution to: %dx%d", pNewWindowSize->width,
 			  pNewWindowSize->height);
 		bChangeResolution = false;
@@ -143,19 +158,5 @@ void EngineService::PostTick()
 void EngineService::PostBufferSwap()
 {
 	m_uWorldStateMachine->PostBufferSwap();
-}
-
-void EngineService::TrySetWindowSize(u32 height)
-{
-	SFWindowSize* pSize = GFX::TryGetWindowSize(height);
-	if (pSize)
-	{
-		pNewWindowSize = pSize;
-		bChangeResolution = true;
-	}
-	else
-	{
-		LOG_W("[EngineService] No resolution that matches given height: %d", height);
-	}
 }
 } // namespace LittleEngine

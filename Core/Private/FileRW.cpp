@@ -25,7 +25,7 @@ String FileRW::ReadAll(bool bDiscardNewLines)
 		{
 			ret += '\n';
 		}
-		m_lines.push_back(std::move(line));
+		m_lines.emplace_back(std::move(line));
 	});
 	return ret;
 }
@@ -37,14 +37,14 @@ const Vec<String>& FileRW::ReadLines()
 	return m_lines;
 }
 
-bool FileRW::Write(const String& contents, bool append)
+bool FileRW::Write(String contents, bool append)
 {
 	try
 	{
 		s32 mode = std::ofstream::out;
 		mode |= (append) ? std::ofstream::app : std::ofstream::trunc;
 		std::ofstream file(m_path, mode);
-		file << contents;
+		file << std::move(contents);
 		file.close();
 		return true;
 	}
@@ -55,12 +55,12 @@ bool FileRW::Write(const String& contents, bool append)
 	}
 }
 
-bool FileRW::Append(const String& contents)
+bool FileRW::Append(String contents)
 {
-	return Write(contents, true);
+	return Write(std::move(contents), true);
 }
 
-void FileRW::Read(const std::function<void(String&& line)>& Procedure)
+void FileRW::Read(std::function<void(String line)> procedure)
 {
 	std::ifstream file(m_path);
 	if (!file.good())
@@ -71,7 +71,7 @@ void FileRW::Read(const std::function<void(String&& line)>& Procedure)
 	String line;
 	while (std::getline(file, line))
 	{
-		Procedure(std::move(line));
+		procedure(std::move(line));
 	}
 	file.close();
 }

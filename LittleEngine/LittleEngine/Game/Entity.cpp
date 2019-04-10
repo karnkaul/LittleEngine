@@ -20,7 +20,6 @@ Entity::Entity(String name) : WorldObject(std::move(name), "Entity")
 Entity::~Entity()
 {
 	m_pComponents.clear();
-	LOG_D("%s destroyed", LogNameStr());
 }
 
 void Entity::SetEnabled(bool bEnabled)

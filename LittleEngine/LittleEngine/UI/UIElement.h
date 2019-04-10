@@ -4,6 +4,7 @@
 #include "SFMLAPI/Rendering/SFLayerID.h"
 #include "UIObject.h"
 #include "UITransform.h"
+#include "UIText.h"
 
 namespace LittleEngine
 {
@@ -21,7 +22,6 @@ protected:
 private:
 	class World* m_pWorld;
 	bool m_bPanel = false;
-	bool m_bSilent;
 
 public:
 	UIElement(bool bSilent = false);
@@ -31,7 +31,7 @@ public:
 	void SetPanel(UByte r = 255, UByte g = 255, UByte b = 255, UByte a = 128);
 	void SetPanel(Colour fill, Fixed border = Fixed::Zero, Colour outline = Colour::Transparent);
 	void SetImage(class TextureAsset& texture, Colour colour = Colour::White);
-	void SetText(const struct UIText& uiText);
+	void SetText(UIText uiText);
 	void SetFont(class FontAsset& font);
 
 	SFPrimitive* GetPrimitive() const;

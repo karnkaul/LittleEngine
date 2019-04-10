@@ -212,7 +212,7 @@ void StartTests()
 	auto* pTexture = pTestWorld->Game()->Repository()->Load<TextureAsset>("Textures/Ship.png");
 	PlayerData data(
 		*pTexture, {PlayerCollider(AABBData({120, 60}), {0, -15}), PlayerCollider(AABBData({60, 80}))});
-	pPlayer->InitPlayer(data);
+	pPlayer->InitPlayer(std::move(data));
 
 	String path = bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
 	auto* pText = pTestWorld->Repository()->Load<TextAsset>(path);

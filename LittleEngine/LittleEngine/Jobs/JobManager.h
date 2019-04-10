@@ -53,8 +53,8 @@ public:
 	~JobManager() override;
 
 public:
-	SPtr<JobHandle> Enqueue(const std::function<void()>& Task, String name = "", bool bSilent = false);
-	SPtr<JobHandle> EnqueueEngine(const std::function<void()>& Task, String name);
+	SPtr<JobHandle> Enqueue(std::function<void()> task, String name = "", bool bSilent = false);
+	SPtr<JobHandle> EnqueueEngine(std::function<void()> task, String name);
 	MultiJob* CreateMultiJob(String name);
 
 private:

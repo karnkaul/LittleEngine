@@ -11,19 +11,19 @@
 
 namespace LittleEngine
 {
-UIElement::UIElement(bool bSilent) : UIObject("Untitled"), m_bSilent(bSilent)
+UIElement::UIElement(bool bSilent) : UIObject("Untitled", bSilent)
 {
 	Construct();
-	if (!bSilent)
+	if (!m_bSilent)
 	{
 		LOG_D("%s constructed", LogNameStr());
 	}
 }
 
-UIElement::UIElement(String name, bool bSilent) : UIObject(std::move(name)), m_bSilent(bSilent)
+UIElement::UIElement(String name, bool bSilent) : UIObject(std::move(name), bSilent)
 {
 	Construct();
-	if (!bSilent)
+	if (!m_bSilent)
 	{
 		LOG_D("%s constructed", LogNameStr());
 	}
@@ -33,10 +33,6 @@ UIElement::~UIElement()
 {
 	Services::RHeap()->Destroy(m_pPrimitive);
 	Services::RHeap()->Destroy(m_pText);
-	if (!m_bSilent)
-	{
-		LOG_D("%s destroyed", LogNameStr());
-	}
 }
 
 void UIElement::InitElement(UITransform* pParent)
@@ -79,10 +75,10 @@ void UIElement::SetImage(TextureAsset& texture, Colour colour)
 	m_pPrimitive->SetPrimaryColour(colour);
 }
 
-void UIElement::SetText(const UIText& uiText)
+void UIElement::SetText(UIText uiText)
 {
 	m_pText->SetFont(*Repository()->GetDefaultFont());
-	m_pText->SetText(uiText.text);
+	m_pText->SetText(std::move(uiText.text));
 	m_pText->SetPrimaryColour(uiText.colour);
 	m_pText->SetTextSize(uiText.pixelSize);
 }

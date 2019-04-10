@@ -216,7 +216,7 @@ SFPrimitive* SFPrimitive::SetTextSize(u32 pixelSize)
 	return this;
 }
 
-SFPrimitive* SFPrimitive::SetText(const String& text)
+SFPrimitive* SFPrimitive::SetText(String text)
 {
 	m_text.setString(text);
 	return this;

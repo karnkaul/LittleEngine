@@ -13,12 +13,12 @@ using Lock = std::lock_guard<std::mutex>;
 
 #if !SHIPPING
 ManifestLoader::ManifestLoader(EngineRepository& repository,
-								   const String& manifestPath,
+								   String manifestPath,
 								   std::function<void()> onDone)
 	: m_onDone(std::move(onDone)), m_pRepository(&repository)
 {
 	AssetManifestData data;
-	data.Load(manifestPath);
+	data.Load(std::move(manifestPath));
 	AssetManifest& manifest = data.GetManifest();
 	for (auto& definition : manifest.definitions)
 	{
@@ -26,25 +26,25 @@ ManifestLoader::ManifestLoader(EngineRepository& repository,
 		{
 		case AssetType::Texture:
 		{
-			AddTextureIDs(definition.assetIDs);
+			AddTextureIDs(std::move(definition.assetIDs));
 			break;
 		}
 
 		case AssetType::Font:
 		{
-			AddFontIDs(definition.assetIDs);
+			AddFontIDs(std::move(definition.assetIDs));
 			break;
 		}
 
 		case AssetType::Sound:
 		{
-			AddSoundIDs(definition.assetIDs);
+			AddSoundIDs(std::move(definition.assetIDs));
 			break;
 		}
 
 		case AssetType::Text:
 		{
-			AddTextIDs(definition.assetIDs);
+			AddTextIDs(std::move(definition.assetIDs));
 			break;
 		}
 
@@ -86,17 +86,16 @@ ManifestLoader::ManifestLoader(EngineRepository& repository,
 #endif
 
 ManifestLoader::ManifestLoader(EngineRepository& repository,
-								   const String& archivePath,
-								   const String& manifestPath,
+								   String archivePath,
+								   String manifestPath,
 								   std::function<void()> onDone)
 	: m_onDone(std::move(onDone)), m_pRepository(&repository)
 {
 	m_uArchiveReader = MakeUnique<Core::ArchiveReader>();
 	m_uArchiveReader->Load(archivePath.c_str());
-	Vec<u8> manifestBuffer = m_uArchiveReader->Decompress(manifestPath.c_str());
-	String manifestText = m_uArchiveReader->ToText(manifestBuffer);
+	String manifestText = m_uArchiveReader->ToText(m_uArchiveReader->Decompress(manifestPath.c_str()));
 	AssetManifestData data;
-	data.Deserialise(manifestText);
+	data.Deserialise(std::move(manifestText));
 
 	AssetManifest& manifest = data.GetManifest();
 	for (auto& definition : manifest.definitions)
@@ -105,25 +104,25 @@ ManifestLoader::ManifestLoader(EngineRepository& repository,
 		{
 		case AssetType::Texture:
 		{
-			AddTextureIDs(definition.assetIDs);
+			AddTextureIDs(std::move(definition.assetIDs));
 			break;
 		}
 
 		case AssetType::Font:
 		{
-			AddFontIDs(definition.assetIDs);
+			AddFontIDs(std::move(definition.assetIDs));
 			break;
 		}
 
 		case AssetType::Sound:
 		{
-			AddSoundIDs(definition.assetIDs);
+			AddSoundIDs(std::move(definition.assetIDs));
 			break;
 		}
 
 		case AssetType::Text:
 		{
-			AddTextIDs(definition.assetIDs);
+			AddTextIDs(std::move(definition.assetIDs));
 			break;
 		}
 
@@ -224,9 +223,9 @@ void ManifestLoader::Tick(Time /*dt*/)
 	}
 }
 
-void ManifestLoader::AddTextureIDs(const AssetIDContainer& IDs)
+void ManifestLoader::AddTextureIDs(AssetIDContainer IDs)
 {
-	for (auto& id : IDs.assetIDs)
+	for (const auto& id : IDs.assetIDs)
 	{
 		if (!m_pRepository->IsLoaded(id))
 		{
@@ -235,9 +234,9 @@ void ManifestLoader::AddTextureIDs(const AssetIDContainer& IDs)
 	}
 }
 
-void ManifestLoader::AddFontIDs(const AssetIDContainer& IDs)
+void ManifestLoader::AddFontIDs(AssetIDContainer IDs)
 {
-	for (auto& id : IDs.assetIDs)
+	for (const auto& id : IDs.assetIDs)
 	{
 		if (!m_pRepository->IsLoaded(id))
 		{
@@ -246,9 +245,9 @@ void ManifestLoader::AddFontIDs(const AssetIDContainer& IDs)
 	}
 }
 
-void ManifestLoader::AddSoundIDs(const AssetIDContainer& IDs)
+void ManifestLoader::AddSoundIDs(AssetIDContainer IDs)
 {
-	for (auto& id : IDs.assetIDs)
+	for (const auto& id : IDs.assetIDs)
 	{
 		if (!m_pRepository->IsLoaded(id))
 		{
@@ -257,9 +256,9 @@ void ManifestLoader::AddSoundIDs(const AssetIDContainer& IDs)
 	}
 }
 
-void ManifestLoader::AddTextIDs(const AssetIDContainer& IDs)
+void ManifestLoader::AddTextIDs(AssetIDContainer IDs)
 {
-	for (auto& id : IDs.assetIDs)
+	for (const auto& id : IDs.assetIDs)
 	{
 		if (!m_pRepository->IsLoaded(id))
 		{

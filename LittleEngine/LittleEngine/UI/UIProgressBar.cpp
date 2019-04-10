@@ -14,10 +14,7 @@ UIProgressBar::UIProgressBar(String name, bool bSilent) : UIElement(std::move(na
 	SetName("", "UIProgressBar");
 }
 
-UIProgressBar::~UIProgressBar()
-{
-	LOG_D("%s %s", LogNameStr(), "destroyed");
-}
+UIProgressBar::~UIProgressBar() = default;
 
 void UIProgressBar::InitProgressBar(Vector2 size, Colour colour, Fixed initProgress)
 {

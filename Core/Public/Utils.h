@@ -11,13 +11,13 @@ namespace Core
 // Erase all elements of a vector that qualify provided Predicate
 // Vector and T are passed by reference
 template <typename T>
-void CleanVector(Vec<T>& vec, const std::function<bool(T& t)>& Predicate);
+void CleanVector(Vec<T>& vec, std::function<bool(T& t)> predicate);
 
 template <typename K, typename V>
-void CleanMap(UMap<K, V>& map, const std::function<bool(V& v)>& Predicate);
+void CleanMap(UMap<K, V>& map, std::function<bool(V& v)> predicate);
 
 template <typename K, typename V>
-void CleanMap(Map<K, V>& map, const std::function<bool(V& v)>& Predicate);
+void CleanMap(Map<K, V>& map, std::function<bool(V& v)> predicate);
 
 // Given a Vec<weak_ptr<T>>, erase all elements where t.lock() == nullptr
 template <typename T>
@@ -36,12 +36,12 @@ namespace Strings
 {
 using Fixed = Core::Fixed;
 // ASCII only
-String ToLower(const String& lhs);
+void ToLower(String& outString);
 
-bool ToBool(const String& input, bool defaultValue = false);
-s32 ToS32(const String& input, s32 defaultValue = -1);
-f32 ToF32(const String& input, f32 defaultValue = -1.0f);
-f64 ToF64(const String& input, f64 defaultValue = -1.0);
+bool ToBool(String input, bool defaultValue = false);
+s32 ToS32(String input, s32 defaultValue = -1);
+f32 ToF32(String input, f32 defaultValue = -1.0f);
+f64 ToF64(String input, f64 defaultValue = -1.0);
 
 template <typename T>
 String ToString(T input);
@@ -85,18 +85,18 @@ bool IsCharEnclosedIn(const String& str, size_t idx, Strings::Pair<char> wrapper
 namespace Core
 {
 template <typename T>
-void CleanVector(Vec<T>& vec, const std::function<bool(T& t)>& Predicate)
+void CleanVector(Vec<T>& vec, std::function<bool(T& t)> predicate)
 {
-	auto iter = std::remove_if(vec.begin(), vec.end(), Predicate);
+	auto iter = std::remove_if(vec.begin(), vec.end(), predicate);
 	vec.erase(iter, vec.end());
 }
 
 template <typename K, typename V>
-void CleanMap(UMap<K, V>& map, const std::function<bool(V& v)>& Predicate)
+void CleanMap(UMap<K, V>& map, std::function<bool(V& v)> predicate)
 {
 	for (auto iter = map.begin(); iter != map.end();)
 	{
-		if (Predicate(iter->second))
+		if (predicate(iter->second))
 		{
 			iter = map.erase(iter);
 		}
@@ -108,11 +108,11 @@ void CleanMap(UMap<K, V>& map, const std::function<bool(V& v)>& Predicate)
 }
 
 template <typename K, typename V>
-void CleanMap(Map<K, V>& map, const std::function<bool(V& v)>& Predicate)
+void CleanMap(Map<K, V>& map, std::function<bool(V& v)> predicate)
 {
 	for (auto iter = map.begin(); iter != map.end();)
 	{
-		if (Predicate(iter->second))
+		if (predicate(iter->second))
 		{
 			iter = map.erase(iter);
 		}

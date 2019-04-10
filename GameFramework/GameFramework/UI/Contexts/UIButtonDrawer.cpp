@@ -17,6 +17,7 @@ UIButtonDrawer::UIButtonDrawer() : UIContext("ButtonDrawer")
 UIButtonDrawer::UIButtonDrawer(String name) : UIContext(std::move(name) + "_ButtonDrawer")
 {
 }
+UIButtonDrawer::~UIButtonDrawer() = default;
 
 bool UIButtonDrawer::SetHorizontal(bool bHorizontal)
 {
@@ -29,25 +30,26 @@ bool UIButtonDrawer::SetHorizontal(bool bHorizontal)
 	return false;
 }
 
-UIButtonDrawer* UIButtonDrawer::SetPanel(const UIStyle& panelStyle)
+UIButtonDrawer* UIButtonDrawer::SetPanel(UIStyle panelStyle)
 {
-	m_data.panelStyle = panelStyle;
+	m_data.panelStyle = std::move(panelStyle);
 	m_pRootElement->m_transform.size = m_data.panelStyle.size;
 	m_pRootElement->SetPanel(m_data.panelStyle.fill, m_data.panelStyle.border, m_data.panelStyle.outline);
 	return this;
 }
 
-UIButton::OnClick::Token UIButtonDrawer::AddButton(const UIText& buttonText,
-												   const UIButton::OnClick::Callback& OnInteracted, UIButton** ppButton)
+UIButton::OnClick::Token UIButtonDrawer::AddButton(UIText buttonText,
+												   UIButton::OnClick::Callback onInteracted,
+												   UIButton** ppButton)
 {
 	String buttonName = "Button" + Strings::ToString(m_uiButtons.size());
 	UIButton* pButton = AddWidget<UIButton>(buttonName, nullptr, m_data.bHorizontal);
-	pButton->SetText(buttonText);
+	pButton->SetText(std::move(buttonText));
 	m_uiButtons.push_back(pButton);
 	SetButtonPositions();
 	if (ppButton)
 		*ppButton = pButton;
-	return pButton->AddCallback(OnInteracted);
+	return pButton->AddCallback(std::move(onInteracted));
 }
 
 void UIButtonDrawer::OnInitContext()

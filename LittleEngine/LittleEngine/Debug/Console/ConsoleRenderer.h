@@ -35,8 +35,8 @@ public:
 	~ConsoleRenderer();
 
 	void Tick(Time dt);
-	void SetLiveString(const String& text);
-	void UpdateLog(const Vec<LogLine>& logLines);
+	void SetLiveString(String text);
+	void UpdateLog(Vec<LogLine> logLines);
 };
 } // namespace Debug
 } // namespace LittleEngine

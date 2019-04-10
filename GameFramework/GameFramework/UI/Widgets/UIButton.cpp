@@ -16,19 +16,16 @@ UIButton::UIButton(String name) : UIWidget(std::move(name))
 	SetName("", "UIButton");
 }
 
-UIButton::~UIButton()
+UIButton::~UIButton() = default;
+
+void UIButton::SetText(UIText uiText)
 {
-	LOG_D("%s destroyed", LogNameStr());
+	m_pRoot->SetText(std::move(uiText));
 }
 
-void UIButton::SetText(const UIText& uiText)
+UIButton::OnClick::Token UIButton::AddCallback(UIButton::OnClick::Callback callback)
 {
-	m_pRoot->SetText(uiText);
-}
-
-UIButton::OnClick::Token UIButton::AddCallback(const UIButton::OnClick::Callback& Callback)
-{
-	return m_OnInteracted.Register(Callback);
+	return m_OnInteracted.Register(std::move(callback));
 }
 
 UIElement* UIButton::GetButtonElement() const

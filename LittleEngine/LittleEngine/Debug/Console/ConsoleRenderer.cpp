@@ -103,12 +103,12 @@ void ConsoleRenderer::Tick(Time dt)
 	}
 }
 
-void ConsoleRenderer::SetLiveString(const String& text)
+void ConsoleRenderer::SetLiveString(String text)
 {
-	m_uLiveText->SetText(UIText(text, m_textSize, m_liveTextColour));
+	m_uLiveText->SetText(UIText(std::move(text), m_textSize, m_liveTextColour));
 }
 
-void ConsoleRenderer::UpdateLog(const Vec<LogLine>& logLines)
+void ConsoleRenderer::UpdateLog(Vec<LogLine> logLines)
 {
 	auto iter = logLines.begin();
 	for (auto& uLogText : m_uLogTexts)

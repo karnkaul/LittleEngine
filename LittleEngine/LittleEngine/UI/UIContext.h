@@ -41,7 +41,7 @@ public:
 	void ResetSelection();
 	UIWidget* GetSelected();
 	UIElement* GetRootElement() const;
-	OnCancelled::Token SetOnCancelled(const OnCancelled::Callback& Callback, bool bAutoDestroy);
+	OnCancelled::Token SetOnCancelled(OnCancelled::Callback callback, bool bAutoDestroy);
 	void Destruct();
 
 	void Tick(Time dt) override;

@@ -39,7 +39,7 @@ public:
 
 public:
 	template <typename T>
-	T* NewEntity(const String& name, Vector2 position = Vector2::Zero, Fixed orientation = Fixed::Zero);
+	T* NewEntity(String name, Vector2 position = Vector2::Zero, Fixed orientation = Fixed::Zero);
 	template <typename T>
 	T* NewComponent(Entity& owner);
 
@@ -52,10 +52,10 @@ private:
 };
 
 template <typename T>
-T* GameManager::NewEntity(const String& name, Vector2 position, Fixed orientation)
+T* GameManager::NewEntity(String name, Vector2 position, Fixed orientation)
 {
 	static_assert(IsDerived<Entity, T>(), "T must derive from Entity");
-	UPtr<T> uT = MakeUnique<T>(name);
+	UPtr<T> uT = MakeUnique<T>(std::move(name));
 	T* pT = uT.get();
 	m_uEntities.emplace_back(std::move(uT));
 	pT->m_transform.localPosition = position;

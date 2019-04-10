@@ -40,7 +40,7 @@ private:
 	CircleData m_circle = CircleData::One;
 
 public:
-	CircleCollider(const String& ownerName = "");
+	CircleCollider(String ownerName = "");
 
 	void SetCircle(Fixed radius);
 	CircleData GetWorldCircle() const;
@@ -61,7 +61,7 @@ private:
 	AABBData m_aabb;
 
 public:
-	AABBCollider(const String& ownerName = "");
+	AABBCollider(String ownerName = "");
 
 	void SetAABB(const AABBData& aabb);
 	AABBData GetWorldAABB() const;

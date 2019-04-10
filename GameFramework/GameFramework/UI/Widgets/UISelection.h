@@ -26,13 +26,11 @@ private:
 public:
 	UISelection();
 	UISelection(String name);
-	~UISelection() override;
 
-	OnChanged::Token RegisterOnChanged(const OnChanged::Callback& callback);
-	UISelection* SetValue(const String& text);
-	UISelection* AddOption(const String& option);
-	UISelection* AddOptions(const Vec<String>& options);
-	UISelection* AddOptions(Vec<String>&& options);
+	OnChanged::Token RegisterOnChanged(OnChanged::Callback callback);
+	UISelection* SetValue(String text);
+	UISelection* AddOption(String option);
+	UISelection* AddOptions(Vec<String> options);
 	UISelection* SetPanelSize(Vector2 size);
 	UISelection* SetPanelColour(Colour colour);
 

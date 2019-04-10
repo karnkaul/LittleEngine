@@ -1,6 +1,7 @@
 #pragma once
 #include "Delegate.hpp"
 #include "LittleEngine/UI/UIWidget.h"
+#include "LittleEngine/UI/UIText.h"
 
 namespace LittleEngine
 {
@@ -18,8 +19,8 @@ public:
 	UIButton(String name);
 	~UIButton() override;
 
-	void SetText(const struct UIText& uiText);
-	OnClick::Token AddCallback(const OnClick::Callback& Callback);
+	void SetText(UIText uiText);
+	OnClick::Token AddCallback(OnClick::Callback callback);
 	UIElement* GetButtonElement() const;
 
 public:

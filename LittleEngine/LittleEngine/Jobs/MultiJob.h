@@ -19,15 +19,15 @@ private:
 	Vec<SubJob> m_subJobs;
 	List<SPtr<class JobHandle>> m_pendingJobs;
 	List<SPtr<JobHandle>> m_completedJobs;
-	std::function<void()> m_OnComplete = nullptr;
+	std::function<void()> m_onComplete = nullptr;
 	Time m_startTime;
 	bool m_bCompleted = false;
 
 public:
 	MultiJob(String name);
 
-	void AddJob(const std::function<void()>& job, String name = "");
-	void StartJobs(const std::function<void()>& OnComplete);
+	void AddJob(std::function<void()> job, String name = "");
+	void StartJobs(std::function<void()> onComplete);
 	Fixed GetProgress() const;
 
 private:

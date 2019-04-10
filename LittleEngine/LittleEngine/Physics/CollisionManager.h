@@ -16,8 +16,8 @@ public:
 
 	void Tick(Time dt);
 
-	class CircleCollider* CreateCircleCollider(const String& ownerName);
-	class AABBCollider* CreateAABBCollider(const String& ownerName);
+	class CircleCollider* CreateCircleCollider(String ownerName);
+	class AABBCollider* CreateAABBCollider(String ownerName);
 
 #if DEBUGGING
 	void ToggleDebugShapes(bool bShow);

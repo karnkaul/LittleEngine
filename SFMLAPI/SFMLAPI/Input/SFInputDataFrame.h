@@ -21,7 +21,7 @@ public:
 	KeyState(KeyCode keyCode, const char* szName = "Unknown");
 
 	KeyCode GetKeyCode() const;
-	const String& GetName() const;
+	const char* GetNameStr() const;
 };
 
 // \brief Enum to detect special keyboard input (mainly for Console etc)

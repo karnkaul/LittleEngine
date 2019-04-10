@@ -50,6 +50,7 @@ struct EmitterData
 	class SoundAsset* pSound;
 
 	EmitterData(class TextureAsset& texture, u32 numParticles, SoundAsset* pSound = nullptr);
+	EmitterData(EmitterData&&) = default;
 
 	void Deserialise(const GData& gData);
 

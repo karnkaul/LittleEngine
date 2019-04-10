@@ -3,6 +3,7 @@
 #include "Utils.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "EngineRepository.h"
+#include "LoadHelpers.h"
 #include "ManifestLoader.h"
 #include "LittleEngine/Services/Services.h"
 
@@ -57,21 +58,21 @@ FontAsset* EngineRepository::GetDefaultFont() const
 }
 
 #if !SHIPPING
-ManifestLoader* EngineRepository::LoadAsync(const String& manifestPath, const std::function<void()>& onComplete)
+ManifestLoader* EngineRepository::LoadAsync(String manifestPath, std::function<void()> onComplete)
 {
-	UPtr<ManifestLoader> uAsyncLoader = MakeUnique<ManifestLoader>(*this, manifestPath, onComplete);
+	UPtr<ManifestLoader> uAsyncLoader = MakeUnique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete));
 	ManifestLoader* pLoader = uAsyncLoader.get();
 	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
 	return pLoader;
 }
 #endif
 
-ManifestLoader* EngineRepository::LoadAsync(const String& archivePath,
-											  const String& manifestPath,
-											  const std::function<void()>& onComplete)
+ManifestLoader* EngineRepository::LoadAsync(String archivePath,
+											  String manifestPath,
+											  std::function<void()> onComplete)
 {
 	UPtr<ManifestLoader> uAsyncLoader =
-		MakeUnique<ManifestLoader>(*this, archivePath, manifestPath, onComplete);
+		MakeUnique<ManifestLoader>(*this, std::move(archivePath), std::move(manifestPath), std::move(onComplete));
 	ManifestLoader* pLoader = uAsyncLoader.get();
 	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
 	return pLoader;

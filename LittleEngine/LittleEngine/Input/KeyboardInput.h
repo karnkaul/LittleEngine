@@ -8,7 +8,7 @@ struct LiveLine
 {
 	String liveString;
 
-	void Append(const String& newInput);
+	void Append(String newInput);
 	void Backspace();
 	void Clear();
 };

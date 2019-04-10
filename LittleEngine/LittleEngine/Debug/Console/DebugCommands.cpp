@@ -10,6 +10,7 @@
 #include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Debug/DebugProfiler.h"
 #include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/Game/GameSettings.h"
 #include "LittleEngine/Game/GameManager.h"
 #include "LittleEngine/Game/World/World.h"
 #include "LittleEngine/Game/World/WorldStateMachine.h"
@@ -45,11 +46,11 @@ public:
 
 	virtual ~Command() = default;
 
-	Vec<LogLine> Execute(const String& params)
+	Vec<LogLine> Execute(String params)
 	{
 		String suffix = params.empty() ? "" : " " + params;
 		executeResult.emplace_back(name + suffix, g_liveHistoryColour);
-		FillExecuteResult(params);
+		FillExecuteResult(std::move(params));
 		return std::move(executeResult);
 	}
 
@@ -65,14 +66,14 @@ protected:
 	{
 	}
 
-	virtual void FillExecuteResult(const String& params) = 0;
+	virtual void FillExecuteResult(String params) = 0;
 };
 
 // Commands that take a fixed number and constant values of parameters as options
 class ParameterisedCommand : public Command
 {
 public:
-	void FillExecuteResult(const String& params) final
+	void FillExecuteResult(String params) final
 	{
 		if (params.empty())
 		{
@@ -124,7 +125,7 @@ public:
 	{
 	}
 
-	void FillExecuteResult(const String& /*query*/) override
+	void FillExecuteResult(String /*params*/) override
 	{
 		executeResult = GetAllCommands();
 	}
@@ -270,7 +271,7 @@ public:
 	{
 	}
 
-	void FillExecuteResult(const String& /*query*/) override
+	void FillExecuteResult(String /*params*/) override
 	{
 		if (WorldStateMachine::s_bReady)
 		{
@@ -293,7 +294,7 @@ public:
 		bTakesCustomParam = true;
 	}
 
-	void FillExecuteResult(const String& params) override
+	void FillExecuteResult(String params) override
 	{
 		if (params.empty())
 		{
@@ -317,6 +318,47 @@ public:
 		}
 	}
 };
+
+//class BorderlessCommand : public ParameterisedCommand
+//{
+//public:
+//	BorderlessCommand() : ParameterisedCommand("borderless")
+//	{
+//		paramCallbackMap.emplace("true", 
+//		[](Vec<LogLine>& executeResult) 
+//		{
+//			if (!GameSettings::Instance()->IsBorderless())
+//			{
+//				GameSettings::Instance()->SetBorderless(true);
+//				Services::Engine()->RecreateWindow();
+//				executeResult.emplace_back("Borderless activated", g_logTextColour);
+//			}
+//			else
+//			{
+//				executeResult.emplace_back("Window is already borderless", g_logTextColour);
+//			}
+//		}
+//		);
+//		paramCallbackMap.emplace("false", [](Vec<LogLine>& executeResult) {
+//			if (GameSettings::Instance()->IsBorderless())
+//			{
+//				GameSettings::Instance()->SetBorderless(false);
+//				Services::Engine()->RecreateWindow();
+//				executeResult.emplace_back("Borderless deactivated", g_logTextColour);
+//			}
+//			else
+//			{
+//				executeResult.emplace_back("Window already has a border", g_logTextColour);
+//			}
+//		});
+//	}
+//
+//protected:
+//	LogLine OnEmptyParams() override
+//	{
+//		return LogLine("Enter \"true\" or \"false\"", g_logTextColour);
+//	}
+//};
 #pragma endregion
 #pragma region Local Namespace Impl
 namespace
@@ -371,13 +413,13 @@ void SplitQuery(String& outQuery, String& outCommand, String& outParams)
 	}
 }
 
-Vec<LogLine> ExecuteQuery(const String& command, const String& params)
+Vec<LogLine> ExecuteQuery(const String& command, String params)
 {
 	Vec<LogLine> ret;
 	auto search = commands.find(command);
 	if (search != commands.end())
 	{
-		ret = search->second->Execute(params);
+		ret = search->second->Execute(std::move(params));
 	}
 	return ret;
 }
@@ -411,6 +453,7 @@ void Init()
 	commands.emplace("loadworld", MakeUnique<LoadWorldCommand>());
 	commands.emplace("resolution", MakeUnique<ResolutionCommand>());
 	commands.emplace("loglevel", MakeUnique<LogLevelCommand>());
+	//commands.emplace("borderless", MakeUnique<BorderlessCommand>());
 }
 
 Vec<LogLine> Execute(const String& query)
@@ -422,7 +465,7 @@ Vec<LogLine> Execute(const String& query)
 	Vec<LogLine> ret;
 	if (!cleanedQuery.empty())
 	{
-		ret = Commands::ExecuteQuery(command, params);
+		ret = Commands::ExecuteQuery(command, std::move(params));
 		if (ret.empty())
 		{
 			ret.emplace_back("Unrecognised command: " + command, g_logWarningColour);
@@ -469,7 +512,7 @@ AutoCompleteResults AutoComplete(const String& incompleteQuery)
 				for (const auto& p : matchedParams)
 				{
 					String suffix = p.empty() ? "" : " " + p;
-					results.queries.push_back(command->name + suffix);
+					results.queries.emplace_back(command->name + suffix);
 				}
 			}
 		}

@@ -7,9 +7,11 @@
 
 namespace LittleEngine
 {
-UIObject::UIObject(String name) : Inheritable(std::move(name), "UIObject")
+UIObject::UIObject(String name, bool bSilent)
+	: Inheritable(std::move(name), "UIObject", bSilent)
 {
 }
+
 UIObject::~UIObject() = default;
 
 EngineRepository* UIObject::Repository() const

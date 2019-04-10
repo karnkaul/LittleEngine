@@ -54,7 +54,7 @@ void EngineLoop::Tick(Time dt)
 void EngineLoop::PostTick()
 {
 	SFEventLoop::PostTick();
-
+	
 	m_uEngineService->PostTick();
 	SwapGFXBuffer();
 	m_uEngineService->PostBufferSwap();
@@ -177,8 +177,8 @@ void EngineLoop::Init()
 	u32 windowWidth = (m_uSFWindowData->viewSize.x.ToU32() * windowHeight) / m_uSFWindowData->viewSize.y.ToU32();
 	m_uSFWindowData = MakeUnique<SFWindowData>(SFWindowSize(windowWidth, windowHeight),
 											   m_uConfig->GetViewSize(), m_uConfig->GetWindowTitle());
-	m_uSFWindowData->sfStyle = gameSettings->IsBordlerless() ? sf::Style::None : sf::Style::Close;
-	m_uEngineService = MakeUnique<EngineService>();
+	m_uSFWindowData->sfStyle = gameSettings->IsBorderless() ? sf::Style::None : sf::Style::Close;
+	m_uEngineService = MakeUnique<EngineService>(*this);
 	m_bInit = true;
 }
 

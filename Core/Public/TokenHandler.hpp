@@ -13,7 +13,7 @@ public:
 	template <typename T>
 	void AddToken(T token)
 	{
-		tokens.push_back(token);
+		tokens.emplace_back(std::move(token));
 	}
 
 	void Clear()

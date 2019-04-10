@@ -13,9 +13,9 @@ KeyCode KeyState::GetKeyCode() const
 	return keyCode;
 }
 
-const String& KeyState::GetName() const
+const char* KeyState::GetNameStr() const
 {
-	return name;
+	return name.c_str();
 }
 
 bool TextInput::Contains(char c) const

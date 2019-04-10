@@ -19,10 +19,7 @@ UITextInput::UITextInput(String name) : UIWidget(std::move(name))
 	SetName("", "UITextInput");
 }
 
-UITextInput::~UITextInput()
-{
-	LOG_D("%s destroyed", LogNameStr());
-}
+UITextInput::~UITextInput() = default;
 
 UITextInput* UITextInput::SetTextColour(Colour text)
 {
@@ -30,15 +27,15 @@ UITextInput* UITextInput::SetTextColour(Colour text)
 	return this;
 }
 
-UITextInput* UITextInput::SetTextStyle(const UIText& uiText)
+UITextInput* UITextInput::SetTextStyle(UIText uiText)
 {
-	m_data.textStyle = uiText;
+	m_data.textStyle = std::move(uiText);
 	return this;
 }
 
-UITextInput::OnEditComplete::Token UITextInput::SetOnEditComplete(const OnEditComplete::Callback& callback)
+UITextInput::OnEditComplete::Token UITextInput::SetOnEditComplete(OnEditComplete::Callback callback)
 {
-	return m_onEditComplete.Register(callback);
+	return m_onEditComplete.Register(std::move(callback));
 }
 
 void UITextInput::SetInteractable(bool bInteractable)

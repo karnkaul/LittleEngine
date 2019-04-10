@@ -37,8 +37,8 @@ public:
 	~UITextInput() override;
 
 	UITextInput* SetTextColour(Colour text);
-	UITextInput* SetTextStyle(const UIText& uiText);
-	OnEditComplete::Token SetOnEditComplete(const OnEditComplete::Callback& callback);
+	UITextInput* SetTextStyle(UIText uiText);
+	OnEditComplete::Token SetOnEditComplete(OnEditComplete::Callback callback);
 
 public:
 	void SetInteractable(bool bInteractable) override;

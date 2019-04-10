@@ -17,21 +17,21 @@ MultiJob::MultiJob(String name) : m_logName("[" + std::move(name) + " (MultiJob)
 {
 }
 
-void MultiJob::AddJob(const std::function<void()>& job, String name)
+void MultiJob::AddJob(std::function<void()> job, String name)
 {
 	String n = name;
 	if (name.empty())
 	{
 		n = "MultiJob_" + Strings::ToString(m_subJobs.size());
 	}
-	m_subJobs.emplace_back(n, job);
+	m_subJobs.emplace_back(n, std::move(job));
 }
 
-void MultiJob::StartJobs(const std::function<void()>& OnComplete)
+void MultiJob::StartJobs(std::function<void()> onComplete)
 {
 	LOG_I("%s started. Running and monitoring %d jobs", LogNameStr(), m_pendingJobs.size());
 	JobManager* pJobs = Services::Jobs();
-	m_OnComplete = OnComplete;
+	m_onComplete = onComplete;
 	m_bCompleted = false;
 	m_startTime = Time::Now();
 	for (auto& job : m_subJobs)
@@ -67,10 +67,10 @@ void MultiJob::Update()
 
 	if (m_pendingJobs.empty() && !m_bCompleted)
 	{
-		if (m_OnComplete)
+		if (m_onComplete)
 		{
-			m_OnComplete();
-			m_OnComplete = nullptr;
+			m_onComplete();
+			m_onComplete = nullptr;
 		}
 		m_bCompleted = true;
 		f32 secs = (Time::Now() - m_startTime).AsSeconds();

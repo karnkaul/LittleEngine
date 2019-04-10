@@ -11,7 +11,7 @@ namespace Core
 using Lock = std::lock_guard<std::mutex>;
 
 LogSeverity g_MinLogSeverity = LogSeverity::Info;
-std::function<void(const String&)> g_OnLogCallback = nullptr;
+std::function<void(const char*)> g_OnLogStr;
 
 namespace
 {
@@ -22,7 +22,6 @@ char logBuffer[BUFFER_SIZE];
 const char* prefixes[5] = {"[H] ", "[D] ", "[I] ", "[W] ", "[E] "};
 } // namespace
 
-std::function<void(const char*)> g_OnLogStr;
 
 void LogInternal(const char* pText, u32 severityIndex, va_list argList)
 {

@@ -5,7 +5,7 @@
 
 namespace LittleEngine
 {
-Component::Component() : WorldObject("Untitled", "Component")
+Component::Component() : WorldObject("Untitled", "Component", true)
 {
 }
 

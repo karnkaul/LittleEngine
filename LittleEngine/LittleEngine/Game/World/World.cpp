@@ -14,7 +14,7 @@
 
 namespace LittleEngine
 {
-World::World(const String& name) : Inheritable(name, "World")
+World::World(String name) : Inheritable(std::move(name), "World")
 {
 	m_uWorldClock = MakeUnique<GameClock>();
 }
@@ -29,14 +29,14 @@ void World::PlaySFX(SoundAsset* pSound, Fixed volume, Fixed direction, bool bLoo
 	}
 }
 
-void World::PlayMusic(const String& path, Fixed volume, Time fadeTime, bool bLoop)
+void World::PlayMusic(String path, Fixed volume, Time fadeTime, bool bLoop)
 {
 	Services::Engine()->Audio()->PlayMusic(path, volume, fadeTime, bLoop);
 }
 
-void World::BindInput(const EngineInput::Delegate& Callback)
+void World::BindInput(EngineInput::Delegate callback)
 {
-	m_tokenHandler.AddToken(Services::Engine()->Input()->Register(Callback));
+	m_tokenHandler.AddToken(Services::Engine()->Input()->Register(std::move(callback)));
 }
 
 bool World::LoadWorld(WorldID id)

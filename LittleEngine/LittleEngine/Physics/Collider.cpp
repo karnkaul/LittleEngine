@@ -66,7 +66,7 @@ void Collider::OnHit(const Collider&)
 }
 #endif
 
-CircleCollider::CircleCollider(const String& ownerName)
+CircleCollider::CircleCollider(String ownerName)
 {
 	String prefix = ownerName.empty() ? "" : ownerName + "-";
 	m_name = prefix + "CircleCollider";
@@ -101,7 +101,7 @@ bool CircleCollider::IsIntersectCircle(const CircleCollider& other) const
 	return self.IsIntersecting(rhs);
 }
 
-AABBCollider::AABBCollider(const String& ownerName)
+AABBCollider::AABBCollider(String ownerName)
 {
 	String prefix = ownerName.empty() ? "" : ownerName + "-";
 	m_name = prefix + "AABBCollider";

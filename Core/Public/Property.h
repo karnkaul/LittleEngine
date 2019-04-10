@@ -11,10 +11,10 @@ struct Property
 	class Persistor
 	{
 	public:
-		bool Load(const String& filePath);
-		bool Save(const String& filePath) const;
-		Property GetProp(const String& key) const;
-		void SetProp(const Property& property);
+		bool Load(String filePath);
+		bool Save(String filePath) const;
+		Property GetProp(String key) const;
+		void SetProp(Property property);
 
 	private:
 		// Vector instead of sets/maps to preserve order of insertion
@@ -25,7 +25,11 @@ struct Property
 	String stringValue;
 
 	Property();
-	Property(const String& key, const String& value);
+	Property(String key, String value);
+	Property(Property&&) = default;
+	Property& operator=(Property&&) = default;
+	Property(const Property&) = default;
+	Property& operator=(const Property&) = default;
 
 	s32 ToS32(s32 defaultValue = -1) const;
 	f32 ToF32(f32 defaultValue = -1) const;

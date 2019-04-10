@@ -28,10 +28,10 @@ public:
 	void Right();
 	void Reset(bool bResetRows);
 	void Clear();
-	void ForEach(const std::function<void(UPtr<UIWidget>&)>& Callback);
-	void ForEach(const std::function<void(const UPtr<UIWidget>&)>& Callback) const;
+	void ForEach(std::function<void(UPtr<UIWidget>&)> callback);
+	void ForEach(std::function<void(const UPtr<UIWidget>&)> callback) const;
 
-		size_t TotalCount() const;
+	size_t TotalCount() const;
 	size_t CurrentVecCount();
 	size_t NumColumns() const;
 

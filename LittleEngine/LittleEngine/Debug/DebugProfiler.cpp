@@ -61,8 +61,8 @@ public:
 	void SetEnabled(bool bEnabled);
 	void Tick(Time dt);
 	void CaptureProfile();
-	void Start(const String& id, Colour colour, bool bEnabled);
-	void Stop(const String& id);
+	void Start(String id, Colour colour, bool bEnabled);
+	void Stop(String id);
 	void Clear();
 
 private:
@@ -125,7 +125,7 @@ void Renderer::CaptureProfile()
 	}
 }
 
-void Renderer::Start(const String& id, Colour colour, bool bEnabled)
+void Renderer::Start(String id, Colour colour, bool bEnabled)
 {
 	Assert(std::this_thread::get_id() == safeThreadID,
 		   "Can only use Profiler on Engine Loop thread!");
@@ -138,11 +138,11 @@ void Renderer::Start(const String& id, Colour colour, bool bEnabled)
 	{
 		UPtr<Entry> uNewEntry = MakeUnique<Entry>(id, colour, Time::Now());
 		SetupNewEntry(m_entries.size(), *uNewEntry, colour, bEnabled);
-		m_entries.emplace(id, std::move(uNewEntry));
+		m_entries.emplace(std::move(id), std::move(uNewEntry));
 	}
 }
 
-void Renderer::Stop(const String& id)
+void Renderer::Stop(String id)
 {
 	Assert(std::this_thread::get_id() == safeThreadID,
 		   "Can only use Profiler on Engine Loop thread!");
@@ -236,19 +236,19 @@ void Reset()
 	}
 }
 
-void Start(const String& id, Colour colour)
+void Start(String id, Colour colour)
 {
 	if (uRenderer)
 	{
-		uRenderer->Start(id, colour, bEnabled);
+		uRenderer->Start(std::move(id), colour, bEnabled);
 	}
 }
 
-void Stop(const String& id)
+void Stop(String id)
 {
 	if (uRenderer)
 	{
-		uRenderer->Stop(id);
+		uRenderer->Stop(std::move(id));
 	}
 }
 #pragma endregion

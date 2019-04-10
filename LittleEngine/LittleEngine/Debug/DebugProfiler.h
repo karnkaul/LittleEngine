@@ -23,9 +23,9 @@ void Render();
 void Reset();
 
 // Returns ID of profiling instance; call EndProfile with it
-void Start(const String& id, Colour colour);
+void Start(String id, Colour colour);
 // Pass ID returned by ProfileStart; returns false if invalid ID
-void Stop(const String& id);
+void Stop(String id);
 } // namespace Profiler
 } // namespace Debug
 } // namespace LittleEngine

@@ -50,18 +50,18 @@ EngineInput::EngineInput()
 	BindDefaults();
 }
 
-EngineInput::Token EngineInput::Register(const Delegate& Callback)
+EngineInput::Token EngineInput::Register(Delegate callback)
 {
 	Token token = CreateToken();
-	InputContext newTop(Callback, token);
+	InputContext newTop(std::move(callback), token);
 	m_contexts.emplace_back(newTop);
 	return token;
 }
 
-EngineInput::Token EngineInput::RegisterSudo(const Delegate& Callback)
+EngineInput::Token EngineInput::RegisterSudo(Delegate callback)
 {
 	Token token = CreateToken();
-	m_uSudoContext = MakeUnique<InputContext>(Callback, token);
+	m_uSudoContext = MakeUnique<InputContext>(std::move(callback), token);
 	return token;
 }
 

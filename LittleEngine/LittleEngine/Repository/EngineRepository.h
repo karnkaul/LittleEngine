@@ -31,16 +31,16 @@ public:
 
 	// Loads Asset at path. T must derive from Asset!
 	template <typename T>
-	T* Load(const String& id);
+	T* Load(String id);
 	template <typename T>
 	std::future<T*> LoadAsync(String id);
 
 #if !SHIPPING
-	ManifestLoader* LoadAsync(const String& manifestPath, const std::function<void()>& onComplete = nullptr);
+	ManifestLoader* LoadAsync(String manifestPath, std::function<void()> onComplete = nullptr);
 #endif
-	ManifestLoader* LoadAsync(const String& archivePath,
-							  const String& manifestPath,
-							  const std::function<void()>& onComplete = nullptr);
+	ManifestLoader* LoadAsync(String archivePath,
+							  String manifestPath,
+							  std::function<void()> onComplete = nullptr);
 
 	FontAsset* GetDefaultFont() const;
 
@@ -78,7 +78,7 @@ private:
 };
 
 template <typename T>
-T* EngineRepository::Load(const String& id)
+T* EngineRepository::Load(String id)
 {
 	static_assert(IsDerived<Asset, T>(),
 				  "T must derive from Asset: check Output window for erroneous call");
@@ -188,7 +188,7 @@ UPtr<T> EngineRepository::CreateAsset(const String& id, Vec<u8> buffer)
 {
 	struct enable_smart : public T
 	{
-		enable_smart(const String& id, Vec<u8> buffer) : T(id, std::move(buffer))
+		enable_smart(String id, Vec<u8> buffer) : T(std::move(id), std::move(buffer))
 		{
 		}
 	};
@@ -209,7 +209,7 @@ UPtr<T> EngineRepository::FetchAsset(const String& id)
 {
 	struct enable_smart : public T
 	{
-		enable_smart(const String& id, const String& pathPrefix) : T(id, pathPrefix)
+		enable_smart(String id, const String& pathPrefix) : T(std::move(id), pathPrefix)
 		{
 		}
 	};

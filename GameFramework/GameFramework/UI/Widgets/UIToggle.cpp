@@ -17,14 +17,11 @@ UIToggle::UIToggle(String name) : UIWidget(std::move(name))
 	SetName("", "UIToggle");
 }
 
-UIToggle::~UIToggle()
-{
-	LOG_D("%s destroyed", LogNameStr());
-}
+UIToggle::~UIToggle() = default;
 
-UIToggle* UIToggle::SetText(const UIText& text)
+UIToggle* UIToggle::SetText(UIText text)
 {
-	m_pLabel->SetText(text);
+	m_pLabel->SetText(std::move(text));
 	return this;
 }
 
@@ -56,9 +53,9 @@ UIToggle* UIToggle::SetOn(bool bOn)
 	return this;
 }
 
-UIToggle::OnChanged::Token UIToggle::AddCallback(const UIToggle::OnChanged::Callback& callback)
+UIToggle::OnChanged::Token UIToggle::AddCallback(UIToggle::OnChanged::Callback callback)
 {
-	return m_delegate.Register(callback);
+	return m_delegate.Register(std::move(callback));
 }
 
 UIElement* UIToggle::GetRoot() const

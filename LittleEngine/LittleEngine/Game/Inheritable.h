@@ -9,9 +9,13 @@ private:
 	String m_logName;
 	String m_name;
 	String m_className;
+protected:
+	// Will LOG_D destruction unless m_bSilent
+	bool m_bSilent = false;
 
 public:
-	Inheritable(String name, String className = "");
+	// Will LOG_D destruction unless bSilent
+	Inheritable(String name, String className = "", bool bSilent = false);
 	virtual ~Inheritable();
 
 public:

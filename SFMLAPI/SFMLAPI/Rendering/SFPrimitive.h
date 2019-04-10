@@ -78,7 +78,7 @@ public:
 	// Text
 	SFPrimitive* SetFont(const class FontAsset& font);
 	SFPrimitive* SetTextSize(u32 pixelSize);
-	SFPrimitive* SetText(const String& text);
+	SFPrimitive* SetText(String text);
 
 	Rect2 GetBounds() const;
 	Rect2 GetShapeBounds() const;

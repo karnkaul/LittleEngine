@@ -5,7 +5,7 @@
 
 namespace LittleEngine
 {
-void LiveLine::Append(const String& newInput)
+void LiveLine::Append(String newInput)
 {
 	if (!newInput.empty())
 	{
