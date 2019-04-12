@@ -19,8 +19,8 @@ private:
 		bool bFadingOldTrack = false;
 		bool bFadingNewTrack = false;
 
-		SwitchTrackRequest(const String& newTrackPath, Time fadeTime, const Fixed& targetVolume)
-			: fadeTime(fadeTime), targetVolume(targetVolume), newTrackPath(newTrackPath)
+		SwitchTrackRequest(String  newTrackPath, Time fadeTime, Fixed  targetVolume)
+			: fadeTime(fadeTime), targetVolume(std::move(targetVolume)), newTrackPath(std::move(newTrackPath))
 		{
 		}
 	};
@@ -31,30 +31,30 @@ private:
 	Vec<UPtr<SoundPlayer>> m_sfxPlayers;
 	UPtr<SwitchTrackRequest> m_uSwitchTrackRequest;
 	bool m_bSideA = true;
-	const char* m_szRootMusicDir = "GameMusic";
+	const String m_rootMusicDir = "GameMusic";
 
 public:
 	EngineAudio();
 	~EngineAudio();
 
 	// Returns nullptr if asset could not be loaded
-	SoundPlayer* PlaySFX(const String& id,
-						 const Fixed& volume = Fixed::One,
-						 const Fixed& direction = Fixed::Zero,
+	SoundPlayer* PlaySFX(String id,
+						 Fixed volume = Fixed::One,
+						 Fixed direction = Fixed::Zero,
 						 bool bLoop = false);
-	SoundPlayer* PlaySFX(SoundAsset& sound,
-						 const Fixed& volume = Fixed::One,
-						 const Fixed& direction = Fixed::Zero,
+	SoundPlayer* PlaySFX(class SoundAsset& sound,
+						 Fixed volume = Fixed::One,
+						 Fixed direction = Fixed::Zero,
 						 bool bLoop = false);
 	bool IsSFXPlaying() const;
 
 	// Returns true if asset is loaded successfully
-	bool PlayMusic(const String& id, const Fixed& volume = Fixed::One, Time fadeTime = Time::Seconds(1), bool bLoop = true);
+	bool PlayMusic(String id, Fixed volume = Fixed::One, Time fadeTime = Time::Seconds(1), bool bLoop = true);
 	bool IsMusicPlaying() const;
 	void StopMusic(Time fadeTime = Time::Zero);
-	bool ResumeMusic(Time fadeTime = Time::Zero, const Fixed& volume = Fixed::One);
-	void SwitchTrack(const String& id, const Fixed& volume = Fixed::One, Time fadeTime = Time::Seconds(1));
-	void SetMusicVolume(const Fixed& volume);
+	bool ResumeMusic(Time fadeTime = Time::Zero, Fixed volume = Fixed::One);
+	void SwitchTrack(String id, Fixed volume = Fixed::One, Time fadeTime = Time::Seconds(1));
+	void SetMusicVolume(Fixed volume);
 
 	void PauseAll();
 	void ResumeAll();
@@ -72,7 +72,7 @@ private:
 
 	// Engine to call
 	void Tick(Time dt);
-	String GetPath(const String& id) const;
+	String GetPath(String id) const;
 
 	friend class EngineService;
 };

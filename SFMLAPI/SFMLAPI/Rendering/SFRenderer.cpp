@@ -5,7 +5,7 @@
 #include "SFRenderer.h"
 #include "SFRenderState.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
-#include "SFMLAPI/SFSystem.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
 #include "SFML/Graphics.hpp"
 
 namespace LittleEngine
@@ -46,6 +46,8 @@ SFRenderer::SFRenderer(SFWindow& sfWindow, Time tickRate)
 	m_bRendering.store(true, std::memory_order_relaxed);
 }
 
+SFRenderer::~SFRenderer() = default;
+
 void SFRenderer::Render(GFXBuffer& buffer)
 {
 	if (m_bRendering.load(std::memory_order_relaxed))
@@ -71,7 +73,9 @@ void SFRenderer::Render(GFXBuffer& buffer)
 #if ENABLED(RENDER_STATS)
 				++g_renderData.primitiveCount;
 				if (primitive.m_bStatic)
+				{
 					++g_renderData.staticCount;
+				}
 #endif
 			}
 
@@ -94,6 +98,8 @@ void SFRenderer::Display()
 void SFRenderer::SetWindowSize(const SFWindowSize& size)
 {
 	if (m_pSFWindow)
+	{
 		m_pSFWindow->SetSize(size);
+	}
 }
 } // namespace LittleEngine

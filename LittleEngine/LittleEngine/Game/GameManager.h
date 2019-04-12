@@ -1,9 +1,8 @@
 #pragma once
-#include "Entity.h"
-#include "Component.h"
+#include "Logger.h"
+#include "SimpleTime.h"
 #include "Version.h"
-#include "LittleEngine/UI/UIManager.h"
-#include "LittleEngine/Physics/CollisionManager.h"
+#include "ComponentTimingType.h"
 #include "LittleEngine/Services/IService.h"
 
 namespace LittleEngine
@@ -16,10 +15,11 @@ private:
 
 private:
 	String m_logName;
-	Vec<UPtr<Entity>> m_uEntities;
-	Array<Vec<UPtr<Component>>, COMPONENT_LINES> m_uComponents;
-	UPtr<UIManager> m_uUIManager;
-	UPtr<CollisionManager> m_uCollisionManager;
+	Vec<UPtr<class Entity>> m_uEntities;
+	Array<Vec<UPtr<class Component>>, COMPONENT_LINES> m_uComponents;
+	UPtr<class UIManager> m_uUIManager;
+	UPtr<class CollisionManager> m_uCollisionManager;
+	UPtr<class Camera> m_uWorldCamera;
 
 public:
 	static void SetGameVersion(const Core::Version& version);
@@ -27,18 +27,19 @@ public:
 
 public:
 	GameManager();
-	~GameManager();
+	~GameManager() override;
 
 	UIManager* UI() const;
-	EngineInput* Input() const;
+	class EngineInput* Input() const;
 	class EngineAudio* Audio() const;
 	class EngineRepository* Repository() const;
 	class WorldStateMachine* Worlds() const;
+	Camera* WorldCamera() const;
 	CollisionManager* Physics() const;
 
 public:
 	template <typename T>
-	T* NewEntity(const String& name, const Vector2& position = Vector2::Zero, const Fixed& orientation = Fixed::Zero);
+	T* NewEntity(String name, Vector2 position = Vector2::Zero, Fixed orientation = Fixed::Zero);
 	template <typename T>
 	T* NewComponent(Entity& owner);
 
@@ -51,10 +52,10 @@ private:
 };
 
 template <typename T>
-T* GameManager::NewEntity(const String& name, const Vector2& position, const Fixed& orientation)
+T* GameManager::NewEntity(String name, Vector2 position, Fixed orientation)
 {
 	static_assert(IsDerived<Entity, T>(), "T must derive from Entity");
-	UPtr<T> uT = MakeUnique<T>(name);
+	UPtr<T> uT = MakeUnique<T>(std::move(name));
 	T* pT = uT.get();
 	m_uEntities.emplace_back(std::move(uT));
 	pT->m_transform.localPosition = position;

@@ -1,15 +1,18 @@
 #include "stdafx.h"
 #include <thread>
-#include "JobManager.h"
 #include "Logger.h"
 #include "Utils.h"
-#include "LittleEngine/Services/Services.h"
+#include "JobHandle.h"
+#include "JobManager.h"
+#include "JobWorker.h"
+#include "MultiJob.h"
 #include "LittleEngine/Engine/OS.h"
+#include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
 {
-JobManager::Job::Job(s32 id, const std::function<void()>& task, String name, bool bSilent)
-	: m_task(task), m_id(id), m_bSilent(bSilent)
+JobManager::Job::Job(s32 id, std::function<void()> task, String name, bool bSilent)
+	: m_task(std::move(task)), m_id(id), m_bSilent(bSilent)
 {
 	String suffix = name.empty() ? "" : "-" + name;
 	logName = "[" + Strings::ToString(id) + suffix + "]";
@@ -75,22 +78,22 @@ JobManager::~JobManager()
 	LOG_I("[JobManager] destroyed");
 }
 
-SPtr<JobHandle> JobManager::Enqueue(const std::function<void()>& Task, const String& name, bool bSilent)
+SPtr<JobHandle> JobManager::Enqueue(std::function<void()> task, String name, bool bSilent)
 {
-	UPtr<Job> uJob = MakeUnique<Job>(++m_nextGameJobID, Task, name, bSilent);
+	UPtr<Job> uJob = MakeUnique<Job>(++m_nextGameJobID, std::move(task), std::move(name), bSilent);
 	return Lock_Enqueue(std::move(uJob), m_gameJobQueue);
 }
 
-SPtr<JobHandle> JobManager::EnqueueEngine(const std::function<void()>& Task, const String& name)
+SPtr<JobHandle> JobManager::EnqueueEngine(std::function<void()> task, String name)
 {
 	Assert(AvailableEngineThreads() > 0, "!DEADLOCK! No available engine workers!");
-	UPtr<Job> uJob = MakeUnique<Job>(++m_nextEngineJobID, Task, name, false);
+	UPtr<Job> uJob = MakeUnique<Job>(++m_nextEngineJobID, std::move(task), std::move(name), false);
 	return Lock_Enqueue(std::move(uJob), m_engineJobQueue);
 }
 
-MultiJob* JobManager::CreateMultiJob(const String& name)
+MultiJob* JobManager::CreateMultiJob(String name)
 {
-	m_uMultiJobs.emplace_back(MakeUnique<MultiJob>(name));
+	m_uMultiJobs.emplace_back(MakeUnique<MultiJob>(std::move(name)));
 	return m_uMultiJobs.back().get();
 }
 
@@ -100,12 +103,14 @@ s32 JobManager::AvailableEngineThreads() const
 	for (auto& engineWorker : m_engineWorkers)
 	{
 		if (engineWorker->GetState() == JobWorker::State::WORKING)
+		{
 			--count;
+		}
 	}
 	return count;
 }
 
-void JobManager::Tick(Time)
+void JobManager::Tick(Time /*dt*/)
 {
 	auto iter = m_uMultiJobs.begin();
 	while (iter != m_uMultiJobs.end())
@@ -121,10 +126,10 @@ void JobManager::Tick(Time)
 	}
 }
 
-UPtr<JobManager::Job> JobManager::Lock_PopJob(bool bEngineJob)
+UPtr<JobManager::Job> JobManager::Lock_PopJob(bool bEngineQueue)
 {
 	Lock lock(m_mutex);
-	List<UPtr<Job>>& jobList = bEngineJob ? m_engineJobQueue : m_gameJobQueue;
+	List<UPtr<Job>>& jobList = bEngineQueue ? m_engineJobQueue : m_gameJobQueue;
 	if (!jobList.empty())
 	{
 		UPtr<Job> uJob = std::move(jobList.back());

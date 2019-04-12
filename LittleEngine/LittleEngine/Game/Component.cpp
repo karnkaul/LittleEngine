@@ -1,10 +1,11 @@
 #include "stdafx.h"
+#include "Logger.h"
 #include "Component.h"
 #include "Entity.h"
 
 namespace LittleEngine
 {
-Component::Component() : WorldObject("Untitled", "Component")
+Component::Component() : WorldObject("Untitled", "Component", true)
 {
 }
 
@@ -28,7 +29,7 @@ void Component::SetEnabled(bool bEnabled)
 	m_bEnabled = bEnabled;
 }
 
-void Component::Tick(Time)
+void Component::Tick(Time /*dt*/)
 {
 	Assert(m_pOwner, "Component Owner is null!");
 }

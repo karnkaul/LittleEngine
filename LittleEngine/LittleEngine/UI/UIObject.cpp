@@ -1,14 +1,17 @@
 #include "stdafx.h"
 #include "UIObject.h"
+#include "SFMLAPI/System/SFAssets.h"
+#include "LittleEngine/Engine/EngineService.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/Repository/EngineRepository.h"
-#include "LittleEngine/Engine/EngineService.h"
 
 namespace LittleEngine
 {
-UIObject::UIObject(const String& name) : Inheritable(name, "UIObject")
+UIObject::UIObject(String name, bool bSilent)
+	: Inheritable(std::move(name), "UIObject", bSilent)
 {
 }
+
 UIObject::~UIObject() = default;
 
 EngineRepository* UIObject::Repository() const

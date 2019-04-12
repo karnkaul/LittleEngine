@@ -1,17 +1,12 @@
 #pragma once
 #include "CoreTypes.h"
 
-namespace sf
-{
-class Time;
-}
-
 namespace LittleEngine
 {
 struct Time
 {
 private:
-	s64 microSeconds;
+	s64 microSeconds = 0;
 
 public:
 	static const Time Zero;
@@ -21,13 +16,13 @@ public:
 	static Time Seconds(f32 seconds);
 	static Time Now();
 	static Time Clamp(Time val, Time min, Time max);
-	static void RestartRealtimeClock();
-
+	static void Reset();
+	
 	Time();
 	explicit Time(s64 microSeconds);
 	explicit Time(sf::Time& sfTime);
 
-	Time& Scale(const Fixed& magnitude);
+	Time& Scale(Fixed magnitude);
 
 	Time& operator-();
 	Time& operator+=(const Time& rhs);

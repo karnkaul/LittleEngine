@@ -72,10 +72,14 @@ ParticleSystem* pParticleSystem0 = nullptr;
 void OnSelect()
 {
 	if (!pParticleSystem0)
+	{
 		return;
+	}
 
 	if (pParticleSystem0->IsPlaying())
+	{
 		pParticleSystem0->Stop();
+	}
 	else
 	{
 		// pParticleSystem0->SetEnabled(true);
@@ -84,6 +88,7 @@ void OnSelect()
 		Vector2 worldPos = GFX::Project({x, y}, false);
 		pParticleSystem0->m_transform.localPosition = worldPos;
 		pParticleSystem0->Start();
+		pTestWorld->Game()->WorldCamera()->Shake();
 	}
 }
 
@@ -156,6 +161,18 @@ bool OnInput(const EngineInput::Frame& frame)
 		Assert(false, "Test Assert");
 	}
 
+	if (frame.IsHeld(GameInputType::Left) && frame.IsHeld(GameInputType::RB))
+	{
+		pTestWorld->Game()->WorldCamera()->m_transform.localPosition.x -= Fixed::Three;
+		return true;
+	}
+
+	if (frame.IsHeld(GameInputType::Right) && frame.IsHeld(GameInputType::RB))
+	{
+		pTestWorld->Game()->WorldCamera()->m_transform.localPosition.x += Fixed::Three;
+		return true;
+	}
+
 	return false;
 }
 
@@ -167,8 +184,8 @@ void SpawnColliderMinefield()
 		for (Fixed y = -350; y < 500; y += 200)
 		{
 			String name = "ColliderMine_" + Strings::ToString(id++);
-			Entity* pE = pTestWorld->Game()->NewEntity<Entity>(name, Vector2(x, y));
-			CollisionComponent* pCC = pE->AddComponent<CollisionComponent>();
+			auto* pE = pTestWorld->Game()->NewEntity<Entity>(name, Vector2(x, y));
+			auto* pCC = pE->AddComponent<CollisionComponent>();
 			pCC->AddAABB(AABBData({100, 100}));
 		}
 	}
@@ -192,23 +209,23 @@ void StartTests()
 		->SetEnabled(true);
 
 	pPlayer = pTestWorld->Game()->NewEntity<Player>("Player0", {0, -300});
-	TextureAsset* pTexture =
-		pTestWorld->Game()->Repository()->Load<TextureAsset>("Textures/Ship.png");
+	auto* pTexture = pTestWorld->Game()->Repository()->Load<TextureAsset>("Textures/Ship.png");
 	PlayerData data(
 		*pTexture, {PlayerCollider(AABBData({120, 60}), {0, -15}), PlayerCollider(AABBData({60, 80}))});
-	pPlayer->InitPlayer(data);
+	pPlayer->InitPlayer(std::move(data));
 
 	String path = bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
-	TextAsset* pText = pTestWorld->Repository()->Load<TextAsset>(path);
+	auto* pText = pTestWorld->Repository()->Load<TextAsset>(path);
 	GData psGData(pText->GetText());
-	ParticleSystemData psData(psGData);
 	pParticleSystem0 = pTestWorld->Game()->NewEntity<ParticleSystem>("Fire0");
-	pParticleSystem0->InitParticleSystem(std::move(psData));
+	pParticleSystem0->InitParticleSystem(ParticleSystemData(psGData));
 	pParticleSystem0->m_transform.localScale = {Fixed(2.0f), Fixed(2.0f)};
 	pParticleSystem0->Stop();
 
 	if (bSpawnColliderMinefield)
+	{
 		SpawnColliderMinefield();
+	}
 }
 
 UIButtonDrawer* pButtonDrawer = nullptr;
@@ -226,8 +243,7 @@ Time elapsed = Time::Zero;
 
 void SpawnDialogue()
 {
-	LayerID dialogueLayer = static_cast<LayerID>(LAYER_UI + 2);
-	pDialogue = pTestWorld->Game()->UI()->PushContext<UIDialogue>(dialogueLayer);
+	pDialogue = pTestWorld->Game()->UI()->PushContext<UIDialogue>();
 	pDialogue->SetHeader(UIText("Title", 25, Colour::Black));
 	pDialogue->SetContent(UIText("Content goes here", 15, Colour::Black), &Colour::White);
 	debugTokens.push_back(pDialogue->AddMainButton("OK", []() { LOG_D("OK pressed!"); }, false));
@@ -240,14 +256,13 @@ void SpawnToggle()
 {
 	Fixed x = 300;
 	Fixed y = 200;
-	LayerID toggleLayer = static_cast<LayerID>(LAYER_UI + 2);
-	UIContext* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>(toggleLayer);
+	auto* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>();
 	pParent->GetRootElement()->m_transform.size = {x, y};
 	UIWidgetStyle toggleStyle = UIWidgetStyle::GetDefault0();
 	toggleStyle.widgetSize = {x, y * Fixed::OneHalf};
 	toggleStyle.background = Colour::Yellow;
-	UIToggle* pToggle0 = pParent->AddWidget<UIToggle>("Toggle0", &toggleStyle);
-	UIToggle* pToggle1 = pParent->AddWidget<UIToggle>("Toggle1", &toggleStyle);
+	auto* pToggle0 = pParent->AddWidget<UIToggle>("Toggle0", &toggleStyle);
+	auto* pToggle1 = pParent->AddWidget<UIToggle>("Toggle1", &toggleStyle);
 
 	debugTokens.push_back(pToggle0->AddCallback([](bool bVal) { LOG_W("Toggle0 changed! %d", bVal); }));
 	pToggle0->GetRoot()->m_transform.bAutoPad = true;
@@ -296,8 +311,10 @@ void TestTick(Time dt)
 		debugTokens.push_back(pButtonDrawer->AddButton("Toggle", &SpawnToggle));
 		debugTokens.push_back(pButtonDrawer->AddButton("Dialogue", []() { bToSpawnDialogue = true; }));
 		if (bModal)
+		{
 			debugTokens.push_back(
 				pButtonDrawer->AddButton("Cancel", []() { pButtonDrawer->Destruct(); }));
+		}
 		pButtonDrawer->SetActive(true);
 	}
 
@@ -308,10 +325,10 @@ void TestTick(Time dt)
 		pSelectionContext->m_bAutoDestroyOnCancel = true;
 
 		pSelection = pSelectionContext->AddWidget<UISelection>("Selection");
-		pSelection->AddOption("One")->AddOption("Two")->AddOption("Three")->SetValue("Two");
+		pSelection->AddOptions({"One", "Two", "Three", "Four"})->SetValue("Two");
 #if DEBUG_LOGGING
-		selectionToken = pSelection->SetOnChanged([](const UISelection::Option& selected) {
-			LOG_D("Selected: %d, %s", selected.idx, selected.value.c_str());
+		selectionToken = pSelection->RegisterOnChanged([](std::pair<size_t, String> selected) {
+			LOG_D("Selected: %d, %s", selected.first, selected.second.c_str());
 		});
 #endif
 
@@ -410,9 +427,13 @@ void Cleanup()
 	bSpawnedDrawer = false;
 
 	if (uProgressBar)
+	{
 		uProgressBar = nullptr;
+	}
 	if (uProgressBG)
+	{
 		uProgressBG = nullptr;
+	}
 	debugTokens.clear();
 
 	uArchivedTexture = nullptr;
@@ -433,8 +454,8 @@ TestWorld::TestWorld() : World("Test")
 void TestWorld::OnActivated()
 {
 	pTestWorld = this;
-	BindInput(&OnInput);
 	StartTests();
+	BindInput(&OnInput);
 }
 
 void TestWorld::Tick(Time dt)

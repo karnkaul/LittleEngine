@@ -1,7 +1,6 @@
 #pragma once
 #include <functional>
 #include "Gamepad.h"
-#include "SFMLAPI/Input/SFInputStateMachine.h"
 
 namespace LittleEngine
 {
@@ -25,10 +24,10 @@ public:
 		
 		static String GetClipboard();
 
-		Frame(const Vec<GameInputType>& pressed,
-			  const Vec<GameInputType>& held,
-			  const Vec<GameInputType>& released,
-			  const TextInput& special);
+		Frame(Vec<GameInputType> pressed,
+			  Vec<GameInputType> held,
+			  Vec<GameInputType> released,
+			  TextInput textInput);
 
 		bool IsPressed(GameInputType keyCode) const;
 		bool IsHeld(GameInputType keyCode) const;
@@ -44,10 +43,10 @@ private:
 
 	struct InputContext
 	{
-		Delegate Callback;
+		Delegate callback;
 		WToken wToken;
 
-		InputContext(Delegate Callback, Token& sToken);
+		InputContext(Delegate callback, Token& sToken);
 	};
 
 private:
@@ -62,11 +61,11 @@ public:
 	EngineInput();
 
 public:
-	Token Register(Delegate Callback);
+	Token Register(Delegate callback);
 
 private:
-	Token RegisterSudo(Delegate Callback);
-	void TakeSnapshot(const SFInputDataFrame& frameData);
+	Token RegisterSudo(Delegate callback);
+	void TakeSnapshot(const struct SFInputDataFrame& frameData);
 	void FireCallbacks();
 	void BindDefaults();
 

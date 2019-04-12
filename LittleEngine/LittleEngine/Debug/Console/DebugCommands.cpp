@@ -6,15 +6,18 @@
 #include "DebugConsole.h"
 #include "RenderStatsRenderer.h"
 #include "Logger.h"
+#include "LogLine.h"
+#include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Debug/DebugProfiler.h"
 #include "LittleEngine/Engine/EngineService.h"
-#include "LittleEngine/Repository/EngineRepository.h"
+#include "LittleEngine/Game/GameSettings.h"
 #include "LittleEngine/Game/GameManager.h"
 #include "LittleEngine/Game/World/World.h"
 #include "LittleEngine/Game/World/WorldStateMachine.h"
 #include "LittleEngine/GFX/GFX.h"
-#include "LittleEngine/Services/Services.h"
 #include "LittleEngine/Physics/CollisionManager.h"
+#include "LittleEngine/Repository/EngineRepository.h"
+#include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
 {
@@ -41,19 +44,17 @@ public:
 	// Set to true to include space when autocompleting this Command
 	bool bTakesCustomParam = false;
 
-	virtual ~Command()
-	{
-	}
+	virtual ~Command() = default;
 
-	Vec<LogLine> Execute(const String& params)
+	Vec<LogLine> Execute(String params)
 	{
 		String suffix = params.empty() ? "" : " " + params;
 		executeResult.emplace_back(name + suffix, g_liveHistoryColour);
-		FillExecuteResult(params);
+		FillExecuteResult(std::move(params));
 		return std::move(executeResult);
 	}
 
-	virtual Vec<String> AutoCompleteParams(const String&)
+	virtual Vec<String> AutoCompleteParams(const String& /*query*/)
 	{
 		return Vec<String>();
 	}
@@ -65,14 +66,14 @@ protected:
 	{
 	}
 
-	virtual void FillExecuteResult(const String& params) = 0;
+	virtual void FillExecuteResult(String params) = 0;
 };
 
 // Commands that take a fixed number and constant values of parameters as options
 class ParameterisedCommand : public Command
 {
 public:
-	virtual void FillExecuteResult(const String& params) override final
+	void FillExecuteResult(String params) final
 	{
 		if (params.empty())
 		{
@@ -93,7 +94,7 @@ public:
 		}
 	}
 
-	virtual Vec<String> AutoCompleteParams(const String& incompleteParams) override final
+	Vec<String> AutoCompleteParams(const String& incompleteParams) final
 	{
 		Vec<String> params;
 		for (const auto& p : paramCallbackMap)
@@ -124,7 +125,7 @@ public:
 	{
 	}
 
-	virtual void FillExecuteResult(const String&) override
+	void FillExecuteResult(String /*params*/) override
 	{
 		executeResult = GetAllCommands();
 	}
@@ -159,7 +160,7 @@ public:
 	}
 
 protected:
-	virtual LogLine OnEmptyParams() override
+	LogLine OnEmptyParams() override
 	{
 		return LogLine("show what?", g_logTextColour);
 	}
@@ -193,7 +194,7 @@ public:
 	}
 
 protected:
-	virtual LogLine OnEmptyParams() override
+	LogLine OnEmptyParams() override
 	{
 		return LogLine("hide what?", g_logTextColour);
 	}
@@ -209,17 +210,19 @@ public:
 		{
 			const auto& windowSize = kvp.second;
 			String windowSizeText = Strings::ToString(windowSize.height) + "p";
-			paramCallbackMap.emplace(windowSizeText, [windowSize](Vec<LogLine>& executeResult) {
-				Services::Engine()->TrySetWindowSize(windowSize.height);
+			paramCallbackMap.emplace(windowSizeText, 
+			[w = windowSize.width, h = windowSize.height ](Vec<LogLine>& executeResult) 
+			{
+				Services::Engine()->TrySetWindowSize(h);
 				String sizeText =
-					Strings::ToString(windowSize.width) + "x" + Strings::ToString(windowSize.height);
+					Strings::ToString(w) + "x" + Strings::ToString(h);
 				executeResult.emplace_back("Set Resolution to: " + sizeText, g_logTextColour);
 			});
 		}
 	}
 
 protected:
-	virtual LogLine OnEmptyParams()
+	LogLine OnEmptyParams() override
 	{
 		return LogLine("set resolution to what height?", g_logTextColour);
 	}
@@ -255,7 +258,7 @@ public:
 	}
 
 protected:
-	virtual LogLine OnEmptyParams() override
+	LogLine OnEmptyParams() override
 	{
 		return LogLine("set g_MinLogSeverity to what?", g_logTextColour);
 	}
@@ -268,7 +271,7 @@ public:
 	{
 	}
 
-	virtual void FillExecuteResult(const String&) override
+	void FillExecuteResult(String /*params*/) override
 	{
 		if (WorldStateMachine::s_bReady)
 		{
@@ -291,7 +294,7 @@ public:
 		bTakesCustomParam = true;
 	}
 
-	virtual void FillExecuteResult(const String& params) override
+	void FillExecuteResult(String params) override
 	{
 		if (params.empty())
 		{
@@ -315,6 +318,47 @@ public:
 		}
 	}
 };
+
+//class BorderlessCommand : public ParameterisedCommand
+//{
+//public:
+//	BorderlessCommand() : ParameterisedCommand("borderless")
+//	{
+//		paramCallbackMap.emplace("true", 
+//		[](Vec<LogLine>& executeResult) 
+//		{
+//			if (!GameSettings::Instance()->IsBorderless())
+//			{
+//				GameSettings::Instance()->SetBorderless(true);
+//				Services::Engine()->RecreateWindow();
+//				executeResult.emplace_back("Borderless activated", g_logTextColour);
+//			}
+//			else
+//			{
+//				executeResult.emplace_back("Window is already borderless", g_logTextColour);
+//			}
+//		}
+//		);
+//		paramCallbackMap.emplace("false", [](Vec<LogLine>& executeResult) {
+//			if (GameSettings::Instance()->IsBorderless())
+//			{
+//				GameSettings::Instance()->SetBorderless(false);
+//				Services::Engine()->RecreateWindow();
+//				executeResult.emplace_back("Borderless deactivated", g_logTextColour);
+//			}
+//			else
+//			{
+//				executeResult.emplace_back("Window already has a border", g_logTextColour);
+//			}
+//		});
+//	}
+//
+//protected:
+//	LogLine OnEmptyParams() override
+//	{
+//		return LogLine("Enter \"true\" or \"false\"", g_logTextColour);
+//	}
+//};
 #pragma endregion
 #pragma region Local Namespace Impl
 namespace
@@ -369,13 +413,13 @@ void SplitQuery(String& outQuery, String& outCommand, String& outParams)
 	}
 }
 
-Vec<LogLine> ExecuteQuery(const String& command, const String& params)
+Vec<LogLine> ExecuteQuery(const String& command, String params)
 {
 	Vec<LogLine> ret;
 	auto search = commands.find(command);
 	if (search != commands.end())
 	{
-		ret = search->second->Execute(params);
+		ret = search->second->Execute(std::move(params));
 	}
 	return ret;
 }
@@ -389,7 +433,9 @@ Vec<Command*> FindCommands(const String& incompleteCommand, bool bFirstCharMustM
 		if (name.find(incompleteCommand) != String::npos)
 		{
 			if (!bFirstCharMustMatch || command.second->name[0] == incompleteCommand[0])
+			{
 				results.push_back(command.second.get());
+			}
 		}
 	}
 	return results;
@@ -407,6 +453,7 @@ void Init()
 	commands.emplace("loadworld", MakeUnique<LoadWorldCommand>());
 	commands.emplace("resolution", MakeUnique<ResolutionCommand>());
 	commands.emplace("loglevel", MakeUnique<LogLevelCommand>());
+	//commands.emplace("borderless", MakeUnique<BorderlessCommand>());
 }
 
 Vec<LogLine> Execute(const String& query)
@@ -418,7 +465,7 @@ Vec<LogLine> Execute(const String& query)
 	Vec<LogLine> ret;
 	if (!cleanedQuery.empty())
 	{
-		ret = Commands::ExecuteQuery(command, params);
+		ret = Commands::ExecuteQuery(command, std::move(params));
 		if (ret.empty())
 		{
 			ret.emplace_back("Unrecognised command: " + command, g_logWarningColour);
@@ -465,7 +512,7 @@ AutoCompleteResults AutoComplete(const String& incompleteQuery)
 				for (const auto& p : matchedParams)
 				{
 					String suffix = p.empty() ? "" : " " + p;
-					results.queries.push_back(command->name + suffix);
+					results.queries.emplace_back(command->name + suffix);
 				}
 			}
 		}

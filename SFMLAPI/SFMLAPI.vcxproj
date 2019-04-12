@@ -21,9 +21,11 @@
   <ItemGroup>
     <ClInclude Include="SFMLAPI\Audio\SFAudioPlayer.h" />
     <ClInclude Include="SFMLAPI\Input\SFEventHandler.h" />
+    <ClInclude Include="SFMLAPI\Input\SFInputDataFrame.h" />
     <ClInclude Include="SFMLAPI\Input\SFInputStateMachine.h" />
     <ClInclude Include="SFMLAPI\Rendering\Colour.h" />
     <ClInclude Include="SFMLAPI\Rendering\GFXBuffer.h" />
+    <ClInclude Include="SFMLAPI\Rendering\SFLayerID.h" />
     <ClInclude Include="SFMLAPI\Rendering\SFPrimitive.h" />
     <ClInclude Include="SFMLAPI\Rendering\SFRenderer.h" />
     <ClInclude Include="SFMLAPI\Rendering\SFRenderState.h" />
@@ -34,8 +36,8 @@
     <ClInclude Include="SFMLAPI\SFSystem.h" />
     <ClInclude Include="SFMLAPI\SFWindowing.h" />
     <ClInclude Include="SFMLAPI\System\SFAssets.h" />
+    <ClInclude Include="SFMLAPI\System\SFAssetType.h" />
     <ClInclude Include="SFMLAPI\System\SFGameClock.h" />
-    <ClInclude Include="SFMLAPI\System\SFTime.h" />
     <ClInclude Include="SFMLAPI\System\SFTypes.h" />
     <ClInclude Include="SFMLAPI\Windowing\SFEventLoop.h" />
     <ClInclude Include="SFMLAPI\Windowing\SFWindow.h" />
@@ -44,6 +46,7 @@
   <ItemGroup>
     <ClCompile Include="SFMLAPI\Audio\SFAudioPlayer.cpp" />
     <ClCompile Include="SFMLAPI\Input\SFEventHandler.cpp" />
+    <ClCompile Include="SFMLAPI\Input\SFInputDataFrame.cpp" />
     <ClCompile Include="SFMLAPI\Input\SFInputStateMachine.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\Colour.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\GFXBuffer.cpp" />
@@ -52,7 +55,6 @@
     <ClCompile Include="SFMLAPI\Rendering\SFRenderState.cpp" />
     <ClCompile Include="SFMLAPI\System\SFAssets.cpp" />
     <ClCompile Include="SFMLAPI\System\SFGameClock.cpp" />
-    <ClCompile Include="SFMLAPI\System\SFTime.cpp" />
     <ClCompile Include="SFMLAPI\System\SFTypes.cpp" />
     <ClCompile Include="SFMLAPI\Windowing\SFEventLoop.cpp" />
     <ClCompile Include="SFMLAPI\Windowing\SFWindow.cpp" />

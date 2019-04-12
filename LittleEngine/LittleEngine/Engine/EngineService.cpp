@@ -1,14 +1,21 @@
 #include "stdafx.h"
-#include "EngineService.h"
 #include "AsyncFileLogger.h"
+#include "SFMLAPI/Input/SFInputStateMachine.h"
+#include "SFMLAPI/System/SFAssets.h"
+#include "EngineService.h"
+#include "LittleEngine/Audio/EngineAudio.h"
 #include "LittleEngine/Debug/DebugProfiler.h"
 #include "LittleEngine/Debug/Console/DebugConsole.h"
 #include "LittleEngine/Engine/EngineLoop.h"
 #include "LittleEngine/Engine/OS.h"
+#include "LittleEngine/Game/GameSettings.h"
+#include "LittleEngine/Game/World/WorldStateMachine.h"
 #include "LittleEngine/GFX/GFX.h"
+#include "LittleEngine/Input/EngineInput.h"
+#include "LittleEngine/Jobs/JobManager.h"
 #include "LittleEngine/RenderLoop/AsyncRenderLoop.h"
+#include "LittleEngine/Repository/EngineRepository.h"
 #include "LittleEngine/Services/Services.h"
-#include "SFMLAPI/Input/SFInputStateMachine.h"
 
 namespace LittleEngine
 {
@@ -18,24 +25,11 @@ using namespace Debug;
 
 namespace
 {
-struct ChangeResolutionRequest
-{
-	SFWindowSize windowSize;
-	bool bActive = false;
-
-	ChangeResolutionRequest() = default;
-	ChangeResolutionRequest(const SFWindowSize& size);
-};
-
-ChangeResolutionRequest::ChangeResolutionRequest(const SFWindowSize& size)
-	: windowSize(size), bActive(true)
-{
-}
-
-ChangeResolutionRequest changeResolutionRequest;
+SFWindowSize* pNewWindowSize = nullptr;
+bool bChangeResolution = false;
 } // namespace
 
-EngineService::EngineService()
+EngineService::EngineService(EngineLoop& engineLoop) : m_pEngineLoop(&engineLoop)
 {
 	if (!OS::Platform()->CanCreateSystemThread() || Services::Jobs()->AvailableEngineThreads() < 1)
 	{
@@ -52,6 +46,7 @@ EngineService::EngineService()
 	m_uEngineRepository = MakeUnique<EngineRepository>("GameAssets.cooked", "GameAssets");
 	m_uWorldStateMachine = MakeUnique<WorldStateMachine>();
 	m_uEngineAudio = MakeUnique<EngineAudio>();
+	Time::Reset();
 	Services::ProvideEngine(*this);
 }
 
@@ -90,6 +85,20 @@ EngineInput* EngineService::Input() const
 EngineAudio* EngineService::Audio() const
 {
 	return m_uEngineAudio.get();
+}
+
+void EngineService::TrySetWindowSize(u32 height)
+{
+	SFWindowSize* pSize = GFX::TryGetWindowSize(height);
+	if (pSize)
+	{
+		pNewWindowSize = pSize;
+		bChangeResolution = true;
+	}
+	else
+	{
+		LOG_W("[EngineService] No resolution that matches given height: %d", height);
+	}
 }
 
 void EngineService::Terminate()
@@ -136,31 +145,18 @@ void EngineService::PostTick()
 #if ENABLED(PROFILER)
 	Profiler::Render();
 #endif
-	if (changeResolutionRequest.bActive)
+	if (bChangeResolution && pNewWindowSize)
 	{
-		Assert(m_pRenderLoop, "Render Loop is null!");
-		m_pRenderLoop->SetWindowSize(changeResolutionRequest.windowSize);
-		LOG_I("Set Resolution to: %dx%d", changeResolutionRequest.windowSize.width,
-			  changeResolutionRequest.windowSize.height);
-		changeResolutionRequest = {};
+		m_pRenderLoop->SetWindowSize(*pNewWindowSize);
+		GameSettings::Instance()->SetWindowHeight(pNewWindowSize->height);
+		LOG_I("Set Resolution to: %dx%d", pNewWindowSize->width,
+			  pNewWindowSize->height);
+		bChangeResolution = false;
 	}
 }
 
 void EngineService::PostBufferSwap()
 {
 	m_uWorldStateMachine->PostBufferSwap();
-}
-
-void EngineService::TrySetWindowSize(u32 height)
-{
-	SFWindowSize* pSize = GFX::TryGetWindowSize(height);
-	if (pSize)
-	{
-		changeResolutionRequest = ChangeResolutionRequest(*pSize);
-	}
-	else
-	{
-		LOG_W("[EngineService] No resolution that matches given height: %d", height);
-	}
 }
 } // namespace LittleEngine

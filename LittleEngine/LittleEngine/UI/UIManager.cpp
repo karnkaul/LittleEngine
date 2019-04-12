@@ -1,7 +1,8 @@
 #include "stdafx.h"
+#include "Logger.h"
+#include "UIContext.h"
 #include "UIManager.h"
 #include "LittleEngine/Game/World/World.h"
-#include "Logger.h"
 
 namespace LittleEngine
 {
@@ -31,7 +32,9 @@ void UIManager::Tick(Time dt)
 		{
 			m_uContexts.pop_back();
 			if (!m_uContexts.empty())
+			{
 				m_uContexts.back()->SetActive(true, false);
+			}
 		}
 	}
 }

@@ -20,6 +20,6 @@ public:
 
 public:
 	static void UnInit();
-	static String ToText(const Vec<u8>& rawBuffer);
+	static String ToText(Vec<u8> rawBuffer);
 };
 } // namespace Core

@@ -2,8 +2,12 @@
 #include <mutex>
 #include <future>
 #include "CoreTypes.h"
-#include "ArchiveReader.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "Logger.h"
+
+namespace Core
+{
+class ArchiveReader;
+}
 
 namespace LittleEngine
 {
@@ -13,39 +17,41 @@ class EngineRepository final
 private:
 	using Lock = std::lock_guard<std::mutex>;
 
-	Core::ArchiveReader m_cooked;
+private:
+	UPtr<Core::ArchiveReader> m_uCooked;
 	List<UPtr<class ManifestLoader>> m_uAsyncLoaders;
 	std::mutex m_mutex;
 	UMap<String, Asset::Ptr> m_loaded;
 	String m_rootDir;
-	FontAsset* m_pDefaultFont;
+	class FontAsset* m_pDefaultFont;
 
 public:
-	EngineRepository(const String& archivePath, const String& rootDir = "");
+	EngineRepository(String archivePath, String rootDir = "");
 	~EngineRepository();
 
 	// Loads Asset at path. T must derive from Asset!
 	template <typename T>
-	T* Load(const String& id);
+	T* Load(String id);
 	template <typename T>
-	std::future<T*> LoadAsync(const String& id);
+	std::future<T*> LoadAsync(String id);
 
 #if !SHIPPING
-	ManifestLoader* LoadAsync(const String& manifestPath, const std::function<void()>& onComplete = nullptr);
+	ManifestLoader* LoadAsync(String manifestPath, std::function<void()> onComplete = nullptr);
 #endif
-	ManifestLoader* LoadAsync(const String& archivePath,
-								const String& manifestPath,
-								const std::function<void()>& onComplete = nullptr);
+	ManifestLoader* LoadAsync(String archivePath,
+							  String manifestPath,
+							  std::function<void()> onComplete = nullptr);
 
 	FontAsset* GetDefaultFont() const;
 
 	// Unload all assets
 	void UnloadAll(bool bUnloadDefaultFont);
 
-private:
+public:
 	EngineRepository(const EngineRepository&) = delete;
 	EngineRepository& operator=(const EngineRepository&) = delete;
 
+private:
 	template <typename T>
 	T* GetLoaded(const String& id);
 	template <typename T>
@@ -56,7 +62,7 @@ private:
 #endif
 
 	template <typename T>
-	UPtr<T> CreateAsset(const String& id, const Vec<u8>& buffer);
+	UPtr<T> CreateAsset(const String& id, Vec<u8> buffer);
 
 #if !SHIPPING
 	template <typename T>
@@ -72,32 +78,34 @@ private:
 };
 
 template <typename T>
-T* EngineRepository::Load(const String& id)
+T* EngineRepository::Load(String id)
 {
 	static_assert(IsDerived<Asset, T>(),
 				  "T must derive from Asset: check Output window for erroneous call");
 
 	T* pT = GetLoaded<T>(id);
 	if (pT)
+	{
 		return pT;
+	}
 
 	LOG_W("[EngineRepository] Orphaned asset (not loaded by manifest) requested at runtime [%s]", id.c_str());
-	if (m_cooked.IsPresent(id.c_str()))
+	if (m_uCooked->IsPresent(id.c_str()))
 	{
-		pT = LoadFromArchive<T>(id.c_str());
+		pT = LoadFromArchive<T>(id);
 	}
 #if !SHIPPING
 	if (!pT)
 	{
 		LOG_W("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
-		pT = LoadFromFilesystem<T>(id.c_str());
+		pT = LoadFromFilesystem<T>(id);
 	}
 #endif
 	return pT;
 }
 
 template <typename T>
-std::future<T*> EngineRepository::LoadAsync(const String& id)
+std::future<T*> EngineRepository::LoadAsync(String id)
 {
 	static_assert(IsDerived<Asset, T>(),
 				  "T must derive from Asset: check Output window for erroneous call");
@@ -111,17 +119,17 @@ std::future<T*> EngineRepository::LoadAsync(const String& id)
 		return sPromise->get_future();
 	}
 
-	if (m_cooked.IsPresent(id.c_str()))
+	if (m_uCooked->IsPresent(id.c_str()))
 	{
 		Services::Jobs()->Enqueue(
-			[this, id, sPromise]() { sPromise->set_value(LoadFromArchive<T>(id.c_str())); }, "", true);
+			[this, id, sPromise]() { sPromise->set_value(LoadFromArchive<T>(id)); }, "", true);
 	}
 	else
 	{
 		LOG_W("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
 #if !SHIPPING
 		Services::Jobs()->Enqueue(
-			[this, id, sPromise]() { sPromise->set_value(LoadFromFilesystem<T>(id.c_str())); }, "", true);
+			[this, id, sPromise]() { sPromise->set_value(LoadFromFilesystem<T>(id)); }, "", true);
 #else
 		sPromise->set_value(nullptr);
 #endif
@@ -149,7 +157,7 @@ template <typename T>
 T* EngineRepository::LoadFromArchive(const String& id)
 {
 	T* pT = nullptr;
-	UPtr<T> uT = CreateAsset<T>(id, m_cooked.Decompress(id.c_str()));
+	UPtr<T> uT = CreateAsset<T>(id, m_uCooked->Decompress(id.c_str()));
 	if (uT)
 	{
 		pT = uT.get();
@@ -176,19 +184,21 @@ T* EngineRepository::LoadFromFilesystem(const String& id)
 #endif
 
 template <typename T>
-UPtr<T> EngineRepository::CreateAsset(const String& id, const Vec<u8>& buffer)
+UPtr<T> EngineRepository::CreateAsset(const String& id, Vec<u8> buffer)
 {
 	struct enable_smart : public T
 	{
-		enable_smart(const String& id, const Vec<u8>& buffer) : T(id, buffer)
+		enable_smart(String id, Vec<u8> buffer) : T(std::move(id), std::move(buffer))
 		{
 		}
 	};
 
 	UPtr<enable_smart> uT;
-	uT = MakeUnique<enable_smart>(id, buffer);
+	uT = MakeUnique<enable_smart>(id, std::move(buffer));
 	if (!uT || uT->IsError())
+	{
 		return nullptr;
+	}
 	LOG_I("[EngineRepository] Decompressed %s [%s]", g_szAssetType[ToIdx(uT->GetType())], id.c_str());
 	return std::move(uT);
 }
@@ -199,7 +209,7 @@ UPtr<T> EngineRepository::FetchAsset(const String& id)
 {
 	struct enable_smart : public T
 	{
-		enable_smart(const String& id, const String& pathPrefix) : T(id, pathPrefix)
+		enable_smart(String id, const String& pathPrefix) : T(std::move(id), pathPrefix)
 		{
 		}
 	};
@@ -207,7 +217,9 @@ UPtr<T> EngineRepository::FetchAsset(const String& id)
 	UPtr<enable_smart> uT;
 	uT = MakeUnique<enable_smart>(id, m_rootDir);
 	if (!uT || uT->IsError())
+	{
 		return nullptr;
+	}
 	LOG_I("[EngineRepository] Loaded %s from filesystem [%s]", g_szAssetType[ToIdx(uT->GetType())], id.c_str());
 	return std::move(uT);
 }

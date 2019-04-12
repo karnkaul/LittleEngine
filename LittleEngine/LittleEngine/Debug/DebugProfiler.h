@@ -2,8 +2,8 @@
 #include "CoreTypes.h"
 #if ENABLED(PROFILER)
 #include <thread>
+#include "SimpleTime.h"
 #include "SFMLAPI/Rendering/Colour.h"
-#include "SFMLAPI/System/SFTime.h"
 
 #define PROFILE_START(id, colour) LittleEngine::Debug::Profiler::Start(id, colour)
 #define PROFILE_STOP(id) LittleEngine::Debug::Profiler::Stop(id)
@@ -14,7 +14,7 @@ namespace Debug
 {
 namespace Profiler
 {
-void Init(std::thread::id engineLoopThreadID);
+void Init(std::thread::id eventThreadID);
 void Toggle(bool bEnable);
 void Cleanup();
 
@@ -23,9 +23,9 @@ void Render();
 void Reset();
 
 // Returns ID of profiling instance; call EndProfile with it
-void Start(const String& id, Colour colour);
+void Start(String id, Colour colour);
 // Pass ID returned by ProfileStart; returns false if invalid ID
-void Stop(const String& id);
+void Stop(String id);
 } // namespace Profiler
 } // namespace Debug
 } // namespace LittleEngine

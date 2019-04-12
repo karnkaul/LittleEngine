@@ -1,16 +1,25 @@
 #include "stdafx.h"
+#include "Logger.h"
+#include "Camera.h"
+#include "Component.h"
 #include "Entity.h"
+#include "Camera.h"
+#include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
 {
-Entity::Entity(const String& name) : WorldObject(name, "Entity")
+Entity::Entity(String name) : WorldObject(std::move(name), "Entity")
 {
+	Camera* pWorldCam = Services::WorldCamera();
+	if (pWorldCam)
+	{
+		m_transform.SetParent(pWorldCam->m_transform);
+	}
 }
 
 Entity::~Entity()
 {
 	m_pComponents.clear();
-	LOG_D("%s destroyed", LogNameStr());
 }
 
 void Entity::SetEnabled(bool bEnabled)
@@ -32,7 +41,7 @@ void Entity::Destruct()
 	m_bDestroyed = true;
 }
 
-void Entity::Tick(Time)
+void Entity::Tick(Time /*dt*/)
 {
 	Core::CleanVector<Component*>(m_pComponents,
 								  [](Component* pComponent) { return pComponent->m_bDestroyed; });

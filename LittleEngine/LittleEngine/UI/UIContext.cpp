@@ -1,8 +1,12 @@
 #include "stdafx.h"
-#include "UIContext.h"
-#include "LittleEngine/Game/World/World.h"
-#include "LittleEngine/Engine/EngineService.h"
 #include "Logger.h"
+#include "UIContext.h"
+#include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/Game/World/World.h"
+#include "LittleEngine/Services/Services.h"
+#include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIWidget.h"
+#include "LittleEngine/UI/UIWidgetMatrix.h"
 
 namespace LittleEngine
 {
@@ -11,7 +15,7 @@ UIContext::UIContext() : UIObject("Untitled")
 	SetName("", "UIContext");
 }
 
-UIContext::UIContext(const String& name) : UIObject(name)
+UIContext::UIContext(String name) : UIObject(std::move(name))
 {
 	SetName("", "UIContext");
 }
@@ -19,17 +23,38 @@ UIContext::UIContext(const String& name) : UIObject(name)
 UIContext::~UIContext()
 {
 	SetActive(false);
-	m_uiWidgets.Clear();
+	m_uUIWidgets->Clear();
 	m_uiElements.clear();
-	LOG_D("%s destroyed", LogNameStr());
 }
 
 void UIContext::InitContext(LayerID rootLayer)
 {
+	m_uUIWidgets = MakeUnique<UIWidgetMatrix>();
 	m_pRootElement = AddElement<UIElement>(String(GetNameStr()) + " Root");
 	m_pRootElement->m_layer = rootLayer;
 	OnInitContext();
 	SetActive(true);
+}
+
+LayerID UIContext::GetMaxLayer() const
+{
+	LayerID maxLayer = m_pRootElement->m_layer;
+	for (const auto& uElement : m_uiElements)
+	{
+		if (uElement->m_layer > maxLayer)
+		{
+			maxLayer = uElement->m_layer;
+		}
+	}
+	m_uUIWidgets->ForEach([&maxLayer](const UPtr<UIWidget>& uWidget) 
+	{
+		if (uWidget->GetMaxLayer() > maxLayer)
+		{
+			maxLayer = uWidget->GetMaxLayer();
+		}
+	}
+	);
+	return maxLayer;
 }
 
 void UIContext::SetActive(bool bActive, bool bResetSelection)
@@ -38,7 +63,9 @@ void UIContext::SetActive(bool bActive, bool bResetSelection)
 	if (bActive)
 	{
 		if (bResetSelection)
+		{
 			ResetSelection();
+		}
 		Tick(Time::Zero);
 		m_inputTokens.push_back(Services::Engine()->Input()->Register(std::bind(&UIContext::OnInput, this, _1)));
 	}
@@ -46,10 +73,12 @@ void UIContext::SetActive(bool bActive, bool bResetSelection)
 
 void UIContext::ResetSelection()
 {
-	m_uiWidgets.Reset(true);
-	m_uiWidgets.ForEach([](UPtr<UIWidget>& uWidget) {
+	m_uUIWidgets->Reset(true);
+	m_uUIWidgets->ForEach([](UPtr<UIWidget>& uWidget) {
 		if (uWidget->m_state != UIWidgetState::Uninteractable)
+		{
 			uWidget->OnDeselected();
+		}
 	});
 	UIWidget* pSelected = GetSelected();
 	if (pSelected && pSelected->IsInteractable())
@@ -61,7 +90,7 @@ void UIContext::ResetSelection()
 
 UIWidget* UIContext::GetSelected()
 {
-	return m_uiWidgets.Current();
+	return m_uUIWidgets->Current();
 }
 
 UIElement* UIContext::GetRootElement() const
@@ -69,10 +98,10 @@ UIElement* UIContext::GetRootElement() const
 	return m_pRootElement;
 }
 
-UIContext::OnCancelled::Token UIContext::SetOnCancelled(const OnCancelled::Callback& Callback, bool bAutoDestroy)
+UIContext::OnCancelled::Token UIContext::SetOnCancelled(OnCancelled::Callback callback, bool bAutoDestroy)
 {
 	m_bAutoDestroyOnCancel = bAutoDestroy;
-	return m_onCancelledDelegate.Register(Callback);
+	return m_onCancelledDelegate.Register(std::move(callback));
 }
 
 void UIContext::Destruct()
@@ -84,12 +113,14 @@ void UIContext::Destruct()
 void UIContext::Tick(Time dt)
 {
 	if (m_bDestroyed)
+	{
 		return;
+	}
 	for (auto& uElement : m_uiElements)
 	{
 		uElement->Tick(dt);
 	}
-	m_uiWidgets.ForEach([dt](UIContext::UUIWidget& uUIWidget) { uUIWidget->Tick(dt); });
+	m_uUIWidgets->ForEach([dt](UIContext::UUIWidget& uUIWidget) { uUIWidget->Tick(dt); });
 }
 
 void UIContext::OnInitContext()
@@ -103,36 +134,54 @@ void UIContext::OnDestroying()
 bool UIContext::OnInput(const EngineInput::Frame& frame)
 {
 	if (m_bDestroyed)
+	{
 		return false;
+	}
 
 	if (frame.IsPressed(GameInputType::Enter))
+	{
 		OnEnterPressed();
+	}
 	if (frame.IsReleased(GameInputType::Enter))
+	{
 		OnEnterReleased(m_bInteracting);
+	}
 	if (frame.IsReleased(GameInputType::Back))
+	{
 		OnBackReleased();
+	}
 	if (frame.IsReleased(GameInputType::Up))
+	{
 		OnUp();
+	}
 	if (frame.IsReleased(GameInputType::Down))
+	{
 		OnDown();
+	}
 	if (frame.IsReleased(GameInputType::Left))
+	{
 		OnLeft();
+	}
 	if (frame.IsReleased(GameInputType::Right))
+	{
 		OnRight();
+	}
 	return true;
 }
 
 void UIContext::OnUp()
 {
-	if (m_bInteracting || m_uiWidgets.CurrentVecCount() < 2)
+	if (m_bInteracting || m_uUIWidgets->CurrentVecCount() < 2)
+	{
 		return;
+	}
 	UIWidget* pSelected = GetSelected();
 	if (pSelected && pSelected->IsInteractable())
 	{
 		pSelected->SetState(UIWidgetState::NotSelected);
 		pSelected->OnDeselected();
 	}
-	pSelected = m_uiWidgets.NextSelectableVertical(false);
+	pSelected = m_uUIWidgets->NextSelectableVertical(false);
 	if (pSelected)
 	{
 		pSelected->SetState(UIWidgetState::Selected);
@@ -142,15 +191,17 @@ void UIContext::OnUp()
 
 void UIContext::OnDown()
 {
-	if (m_bInteracting || m_uiWidgets.CurrentVecCount() < 2)
+	if (m_bInteracting || m_uUIWidgets->CurrentVecCount() < 2)
+	{
 		return;
+	}
 	UIWidget* pWidget = GetSelected();
 	if (pWidget && pWidget->IsInteractable())
 	{
 		pWidget->SetState(UIWidgetState::NotSelected);
 		pWidget->OnDeselected();
 	}
-	pWidget = m_uiWidgets.NextSelectableVertical(true);
+	pWidget = m_uUIWidgets->NextSelectableVertical(true);
 	if (pWidget)
 	{
 		pWidget->SetState(UIWidgetState::Selected);
@@ -160,15 +211,17 @@ void UIContext::OnDown()
 
 void UIContext::OnLeft()
 {
-	if (m_bInteracting || m_uiWidgets.NumColumns() < 2)
+	if (m_bInteracting || m_uUIWidgets->NumColumns() < 2)
+	{
 		return;
+	}
 	UIWidget* pWidget = GetSelected();
 	if (pWidget && pWidget->IsInteractable())
 	{
 		pWidget->SetState(UIWidgetState::NotSelected);
 		pWidget->OnDeselected();
 	}
-	pWidget = m_uiWidgets.NextSelectableHorizontal(false);
+	pWidget = m_uUIWidgets->NextSelectableHorizontal(false);
 	if (pWidget)
 	{
 		pWidget->SetState(UIWidgetState::Selected);
@@ -178,15 +231,17 @@ void UIContext::OnLeft()
 
 void UIContext::OnRight()
 {
-	if (m_bInteracting || m_uiWidgets.NumColumns() < 2)
+	if (m_bInteracting || m_uUIWidgets->NumColumns() < 2)
+	{
 		return;
+	}
 	UIWidget* pWidget = GetSelected();
 	if (pWidget && pWidget->IsInteractable())
 	{
 		pWidget->SetState(UIWidgetState::NotSelected);
 		pWidget->OnDeselected();
 	}
-	pWidget = m_uiWidgets.NextSelectableHorizontal(true);
+	pWidget = m_uUIWidgets->NextSelectableHorizontal(true);
 	if (pWidget)
 	{
 		pWidget->SetState(UIWidgetState::Selected);

@@ -1,8 +1,9 @@
 #include "stdafx.h"
-#include "RenderComponent.h"
+#include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "LittleEngine/Game/Entity.h"
-#include "LittleEngine/Services/Services.h"
 #include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/Services/Services.h"
+#include "RenderComponent.h"
 
 namespace LittleEngine
 {
@@ -30,7 +31,7 @@ void RenderComponent::SetEnabled(bool bEnabled)
 	m_pSFPrimitive->SetEnabled(bEnabled);
 }
 
-void RenderComponent::Tick(Time)
+void RenderComponent::Tick(Time /*dt*/)
 {
 	UpdatePrimitive();
 }

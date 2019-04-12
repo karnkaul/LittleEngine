@@ -1,21 +1,27 @@
 #include "stdafx.h"
 #include "Logger.h"
+#include "Utils.h"
+#include "SFMLAPI/Windowing/SFWindow.h"
+#include "EngineConfig.h"
 #include "EngineLoop.h"
 #include "EngineService.h"
 #include "OS.h"
+#include "LittleEngine/Audio/EngineAudio.h"
+#include "LittleEngine/Input/EngineInput.h"
+#include "LittleEngine/Game/GameSettings.h"
 #include "LittleEngine/GFX/GFX.h"
+#include "LittleEngine/Jobs/JobManager.h"
+#include "LittleEngine/RenderLoop/AsyncRenderLoop.h"
 #include "LittleEngine/RenderLoop/RenderHeap.h"
 #include "LittleEngine/Services/Services.h"
-#include "LittleEngine/Game/GameSettings.h"
 #if DEBUGGING
 #include "LittleEngine/Physics/Collider.h"
 #endif
-#include "SFMLAPI/Windowing/SFWindow.h"
-#include "Utils.h"
-#include "Logger.h"
 
 namespace LittleEngine
 {
+EngineLoop::~EngineLoop() = default;
+
 void EngineLoop::StopTicking()
 {
 	m_bStopTicking = true;
@@ -26,7 +32,9 @@ void EngineLoop::PreRun()
 	SFEventLoop::PreRun();
 
 	if (!m_bInit)
+	{
 		Init();
+	}
 	m_uAsyncRenderLoop = MakeUnique<AsyncRenderLoop>(*m_uSFWindow, m_gfxBuffer, m_tickRate, m_bRenderThread);
 	m_uEngineService->m_pRenderLoop = m_uAsyncRenderLoop.get();
 	m_uRenderHeap = MakeUnique<RenderHeap>(m_gfxBuffer);
@@ -46,7 +54,7 @@ void EngineLoop::Tick(Time dt)
 void EngineLoop::PostTick()
 {
 	SFEventLoop::PostTick();
-
+	
 	m_uEngineService->PostTick();
 	SwapGFXBuffer();
 	m_uEngineService->PostBufferSwap();
@@ -77,9 +85,13 @@ void EngineLoop::OnPause(bool bPause)
 	SFEventLoop::OnPause(bPause);
 
 	if (bPause)
+	{
 		m_uEngineService->Audio()->PauseAll();
+	}
 	else
+	{
 		m_uEngineService->Audio()->ResumeAll();
+	}
 }
 
 UPtr<EngineLoop> LittleEngine::EngineLoop::Create()
@@ -123,25 +135,24 @@ void EngineLoop::ReconcileRenderStates()
 
 void EngineLoop::SwapGFXBuffer()
 {
-	// Swap buffers etc
-	Vector2 cullBounds(m_windowData.windowSize.width, m_windowData.windowSize.height);
-	GFXDataFrame dataFrame = Services::RHeap()->ConstructDataFrame();
-	m_gfxBuffer.Lock_Swap(dataFrame.CollapseAndMove(), cullBounds);
+	Vector2 cullBounds(m_uSFWindowData->windowSize.width, m_uSFWindowData->windowSize.height);
+	m_gfxBuffer.Lock_Swap(Services::RHeap()->ConstructDataFrame(), cullBounds);
 }
 
 void EngineLoop::Init()
 {
+	m_uConfig = MakeUnique<EngineConfig>();
 #if !SHIPPING
 	LOG_I("[EngineLoop] Initialising engine, loading config...");
-	m_config.Load("_config.gd");
+	m_uConfig->Load("_config.gd");
 #endif
-	Core::g_MinLogSeverity = m_config.GetLogLevel();
-	m_bPauseOnFocusLoss = m_config.ShouldPauseOnFocusLoss();
-	OS::Platform()->SetDesiredWorkerCount(m_config.GetNumGameThreads());
+	Core::g_MinLogSeverity = m_uConfig->GetLogLevel();
+	m_bPauseOnFocusLoss = m_uConfig->ShouldPauseOnFocusLoss();
+	OS::Platform()->SetDesiredWorkerCount(m_uConfig->GetNumGameThreads());
 
 	m_uJobManager = MakeUnique<JobManager>();
 
-	if (m_config.ShouldCreateRenderThread())
+	if (m_uConfig->ShouldCreateRenderThread())
 	{
 		if (!OS::Platform()->CanCreateSystemThread())
 		{
@@ -157,25 +168,24 @@ void EngineLoop::Init()
 	}
 
 #if DEBUGGING
-	Collider::s_debugShapeWidth = m_config.GetColliderBorderWidth();
+	Collider::s_debugShapeWidth = m_uConfig->GetColliderBorderWidth();
 #endif
 	GameSettings* gameSettings = GameSettings::Instance();
-	m_tickRate = Time::Seconds(1.0f / static_cast<f32>(m_config.GetTicksPerSecond()));
-	m_maxFrameTime = Time::Milliseconds(m_config.GetMaxTickTimeMS());
-	m_windowData.title = m_config.GetWindowTitle();
-	m_windowData.viewSize = m_config.GetViewSize();
+	m_tickRate = Time::Seconds(1.0f / static_cast<f32>(m_uConfig->GetTicksPerSecond()));
+	m_maxFrameTime = Time::Milliseconds(m_uConfig->GetMaxTickTimeMS());
 	u32 windowHeight = gameSettings->GetWindowHeight();
-	u32 windowWidth = (m_windowData.viewSize.x.ToU32() * windowHeight) / m_windowData.viewSize.y.ToU32();
-	m_windowData.windowSize = SFWindowSize(windowWidth, windowHeight);
-	m_windowData.sfStyle = gameSettings->IsBordlerless() ? sf::Style::None : sf::Style::Close;
-	m_uEngineService = MakeUnique<EngineService>();
+	u32 windowWidth = (m_uSFWindowData->viewSize.x.ToU32() * windowHeight) / m_uSFWindowData->viewSize.y.ToU32();
+	m_uSFWindowData = MakeUnique<SFWindowData>(SFWindowSize(windowWidth, windowHeight),
+											   m_uConfig->GetViewSize(), m_uConfig->GetWindowTitle());
+	m_uSFWindowData->sfStyle = gameSettings->IsBorderless() ? sf::Style::None : sf::Style::Close;
+	m_uEngineService = MakeUnique<EngineService>(*this);
 	m_bInit = true;
 }
 
 void EngineLoop::Uninit()
 {
 #if !SHIPPING
-	m_config.Save("_config.gd");
+	m_uConfig->Save("_config.gd");
 #endif
 	m_uEngineService = nullptr;
 	m_uJobManager = nullptr;

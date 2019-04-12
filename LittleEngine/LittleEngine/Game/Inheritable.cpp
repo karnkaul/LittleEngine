@@ -1,22 +1,33 @@
 #include "stdafx.h"
+#include "Logger.h"
 #include "Inheritable.h"
 
 namespace LittleEngine
 {
-Inheritable::Inheritable(const String& name, const String& className)
-	: m_name(name), m_className(className)
+Inheritable::Inheritable(String name, String className, bool bSilent)
+	: m_name(std::move(name)), m_className(std::move(className)), m_bSilent(bSilent)
 {
 	RegenerateLogNameStr();
 }
 
-Inheritable::~Inheritable() = default;
+Inheritable::~Inheritable()
+{
+	if (!m_bSilent)
+	{
+		LOG_D("%s destroyed", LogNameStr());
+	}
+}
 
-void Inheritable::SetName(const String& name, const String& className)
+void Inheritable::SetName(String name, String className)
 {
 	if (!name.empty())
-		m_name = name;
+	{
+		m_name = std::move(name);
+	}
 	if (!className.empty())
-		m_className = className;
+	{
+		m_className = std::move(className);
+	}
 	RegenerateLogNameStr();
 }
 

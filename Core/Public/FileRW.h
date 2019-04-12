@@ -12,15 +12,15 @@ private:
 	Vec<String> m_lines;
 
 public:
-	FileRW(const String& path);
+	FileRW(String path);
 
 	bool Exists() const;
 	String ReadAll(bool bDiscardNewLines = true);
 	const Vec<String>& ReadLines();
-	bool Write(const String& contents, bool bAppend = false);
-	bool Append(const String& contents);
+	bool Write(String contents, bool bAppend = false);
+	bool Append(String contents);
 
 private:
-	void Read(const std::function<void(String&& line)>& Procedure);
+	void Read(std::function<void(String line)> procedure);
 };
 } // namespace Core

@@ -1,7 +1,11 @@
 #include "stdafx.h"
+#include "Logger.h"
+#include "SFMLAPI/System/SFAssets.h"
+#include "LoadingUI.h"
 #include "WorldStateMachine.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/Repository/EngineRepository.h"
 #include "LittleEngine/Repository/ManifestLoader.h"
 #include "LittleEngine/Engine/EngineService.h"
 
@@ -26,7 +30,9 @@ WorldStateMachine::WorldStateMachine()
 WorldStateMachine::~WorldStateMachine()
 {
 	if (m_pActiveState)
+	{
 		m_pActiveState->Deactivate();
+	}
 	m_uCreatedStates.clear();
 	LOG_I("[WorldStateMachine] destroyed");
 }
@@ -56,28 +62,28 @@ bool WorldStateMachine::LoadState(WorldID id)
 	return false;
 }
 
-void WorldStateMachine::Start(const String& manifestPath, const String& archivePath)
+void WorldStateMachine::Start(String manifestPath, String archivePath)
 {
-#if DEBUGGING
-	m_manifestPath = manifestPath;
-	m_archivePath = archivePath;
-#endif
+	m_manifestPath = std::move(manifestPath);
+	m_archivePath = std::move(archivePath);
 	m_bLoading = true;
-	if (!manifestPath.empty())
+	if (!m_manifestPath.empty())
 	{
 		// LoadAsync all assets in manifest
 #if !SHIPPING
-		if (archivePath.empty())
+		if (m_archivePath.empty())
 		{
 			LOG_D("[WorldStateMachine] Loading assets from filesystem using manifest at [%s]...",
-				  manifestPath.c_str());
-			m_pAssetLoader = Services::Engine()->Repository()->LoadAsync(manifestPath, [&]() {
+				  m_manifestPath.c_str());
+			m_pAssetLoader = Services::Engine()->Repository()->LoadAsync(m_manifestPath, [&]() {
 				m_bLoaded = true;
 				m_pAssetLoader = nullptr;
 			});
 			loadTime = Time::Zero;
 			if (!m_uLoadingUI)
+			{
 				m_uLoadingUI = MakeUnique<LoadingUI>();
+			}
 		}
 		else
 #endif
@@ -85,14 +91,16 @@ void WorldStateMachine::Start(const String& manifestPath, const String& archiveP
 			LOG_D(
 				"[WorldStateMachine] Loading cooked assets from archive at [%s] using manifest "
 				"[%s]...",
-				archivePath.c_str(), manifestPath.c_str());
-			m_pAssetLoader = Services::Engine()->Repository()->LoadAsync(archivePath, manifestPath, [&]() {
+				m_archivePath.c_str(), m_manifestPath.c_str());
+			m_pAssetLoader = Services::Engine()->Repository()->LoadAsync(m_archivePath, m_manifestPath, [&]() {
 				m_bLoaded = true;
 				m_pAssetLoader = nullptr;
 			});
 			loadTime = Time::Zero;
 			if (!m_uLoadingUI)
+			{
 				m_uLoadingUI = MakeUnique<LoadingUI>();
+			}
 		}
 	}
 	else
@@ -154,7 +162,9 @@ void WorldStateMachine::LoadingTick(Time dt)
 void WorldStateMachine::GameTick(Time dt)
 {
 	if (m_pActiveState)
+	{
 		m_pActiveState->Tick(dt);
+	}
 
 	if (m_pNextState != m_pActiveState)
 	{

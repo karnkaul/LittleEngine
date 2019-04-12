@@ -1,12 +1,13 @@
 #include "stdafx.h"
-#include "AsyncRenderLoop.h"
-#include "RenderHeap.h"
-#include "LittleEngine/Services/Services.h"
 #include "Asserts.h"
 #include "Logger.h"
 #include "SFMLAPI/Rendering/GFXBuffer.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
-#include "SFML/Graphics.hpp"
+#include "AsyncRenderLoop.h"
+#include "RenderHeap.h"
+#include "LittleEngine/Jobs/JobHandle.h"
+#include "LittleEngine/Jobs/JobManager.h"
+#include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
 {
@@ -26,7 +27,9 @@ AsyncRenderLoop::~AsyncRenderLoop()
 {
 	m_bRendering.store(false, std::memory_order_relaxed);
 	if (m_pRenderJobHandle)
+	{
 		m_pRenderJobHandle->Wait();
+	}
 }
 
 void AsyncRenderLoop::Run()

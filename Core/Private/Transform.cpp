@@ -15,7 +15,9 @@ Transform::Transform()
 Transform::~Transform()
 {
 	if (pParent)
+	{
 		pParent->RemoveChild(*this);
+	}
 	for (auto pChild : pChildren)
 	{
 		if (pChild)
@@ -58,15 +60,19 @@ Vector2 Transform::Position() const
 {
 	Vector2 position = localPosition;
 	if (pParent)
+	{
 		position += pParent->Position();
+	}
 	return position;
 }
 
 Fixed Transform::Orientation() const
 {
-	Fixed orientation = localOrientation % Fixed(360);
+	Fixed orientation = localOrientation;
 	if (pParent)
+	{
 		orientation += pParent->Orientation();
+	}
 	return orientation;
 }
 

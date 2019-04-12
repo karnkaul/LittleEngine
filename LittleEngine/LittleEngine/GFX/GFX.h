@@ -11,7 +11,7 @@ namespace GFX
 void Init(const SFWindow& sfWindow);
 void Cleanup();
 
-Vector2 Project(const Vector2& nPos, bool bPreClamp);
+Vector2 Project(Vector2 nPos, bool bPreClamp);
 Vector2 GetViewSize();
 
 const Map<u32, SFWindowSize>& GetValidWindowSizes();

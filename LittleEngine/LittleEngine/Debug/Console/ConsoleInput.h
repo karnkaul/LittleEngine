@@ -2,7 +2,6 @@
 #include "CoreTypes.h"
 #if ENABLED(CONSOLE)
 #include "CircularList.hpp"
-#include "LogLine.h"
 #include "LittleEngine/Input/EngineInput.h"
 #include "LittleEngine/Input/KeyboardInput.h"
 

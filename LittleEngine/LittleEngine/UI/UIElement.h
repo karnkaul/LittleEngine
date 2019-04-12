@@ -1,9 +1,10 @@
 #pragma once
 #include "CoreTypes.h"
+#include "SFMLAPI/Rendering/Colour.h"
+#include "SFMLAPI/Rendering/SFLayerID.h"
 #include "UIObject.h"
 #include "UITransform.h"
 #include "UIText.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
 
 namespace LittleEngine
 {
@@ -15,29 +16,28 @@ public:
 	LayerID m_layer = LAYER_UI;
 
 protected:
-	SFPrimitive* m_pPrimitive;
+	class SFPrimitive* m_pPrimitive;
 	SFPrimitive* m_pText;
 
 private:
 	class World* m_pWorld;
 	bool m_bPanel = false;
-	bool m_bSilent;
 
 public:
 	UIElement(bool bSilent = false);
-	UIElement(const String& name, bool bSilent = false);
-	virtual ~UIElement();
+	UIElement(String name, bool bSilent = false);
+	~UIElement() override;
 
 	void SetPanel(UByte r = 255, UByte g = 255, UByte b = 255, UByte a = 128);
-	void SetPanel(Colour fill, const Fixed& border = Fixed::Zero, Colour outline = Colour::Transparent);
+	void SetPanel(Colour fill, Fixed border = Fixed::Zero, Colour outline = Colour::Transparent);
 	void SetImage(class TextureAsset& texture, Colour colour = Colour::White);
-	void SetText(const UIText& uiText);
+	void SetText(UIText uiText);
 	void SetFont(class FontAsset& font);
 
 	SFPrimitive* GetPrimitive() const;
 	SFPrimitive* GetText() const;
 
-	virtual void Tick(Time dt) override;
+	void Tick(Time dt) override;
 
 public:
 	void InitElement(UITransform* pParent = nullptr);

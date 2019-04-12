@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "JobWorker.h"
-#include "JobManager.h"
 #include "Logger.h"
 #include "Utils.h"
+#include "JobWorker.h"
+#include "JobManager.h"
 
 namespace LittleEngine
 {
@@ -56,13 +56,17 @@ void JobWorker::Run()
 
 			String suffix = m_bEngineWorker ? " Engine Job " : " Job ";
 			if (!uJob->m_bSilent)
+			{
 				LOG_D("%s Starting %s %s", m_logName.c_str(),
 					  m_bEngineWorker ? "Engine Job" : "Job", uJob->ToStr());
+			} 
 			// TODO: Retrieve and defer any exceptions thrown
 			uJob->Run();
 			if (!uJob->m_bSilent)
+			{
 				LOG_D("%s Completed %s %s", m_logName.c_str(),
 					  m_bEngineWorker ? "Engine Job" : "Job", uJob->ToStr());
+			}
 			uJob->Fulfil();
 		}
 	}

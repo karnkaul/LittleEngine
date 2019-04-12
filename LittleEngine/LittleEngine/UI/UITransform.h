@@ -19,10 +19,10 @@ private:
 
 public:
 	UITransform();
-	UITransform(const Vector2& size,
-				const Vector2& nPosition = Vector2::Zero,
-				const Vector2& anchor = Vector2::Zero,
-				const Vector2& pixelPad = Vector2(2, 2));
+	UITransform(Vector2 size,
+				Vector2 nPosition = Vector2::Zero,
+				Vector2 anchor = Vector2::Zero,
+				Vector2 pixelPad = Vector2(2, 2));
 	~UITransform();
 
 	void SetParent(UITransform& parent);
@@ -32,7 +32,7 @@ public:
 	Vector2 GetWorldPosition() const;
 
 private:
-	void SetAutoPadNPosition(const Vector2& nPosition, bool bClamp = true);
+	void SetAutoPadNPosition(Vector2 nPosition, bool bClamp = true);
 
 	void AddChild(UITransform& child);
 	bool RemoveChild(UITransform& child);

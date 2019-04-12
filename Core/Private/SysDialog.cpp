@@ -19,17 +19,23 @@ s32 LaunchMessageBox(const DialogueData& data)
 	{
 	case IDCANCEL:
 		if (data.OnButton0)
+		{
 			data.OnButton0();
+		}
 		break;
 
 	case IDTRYAGAIN:
 		if (data.OnButton1)
+		{
 			data.OnButton1();
+		}
 		break;
 
 	case IDCONTINUE:
 		if (data.OnButton2)
+		{
 			data.OnButton2();
+		}
 		break;
 	}
 	return id;

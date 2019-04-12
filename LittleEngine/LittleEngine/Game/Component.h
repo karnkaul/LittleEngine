@@ -1,22 +1,14 @@
 #pragma once
+#include "SimpleTime.h"
+#include "ComponentTimingType.h"
 #include "WorldObject.h"
-#include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {
-enum class TimingType
-{
-	FIRST = 0,
-	PRE = 1,
-	DEFAULT = 2,
-	POST = 3,
-	LAST = 4,
-};
-
 class Component : public WorldObject
 {
 protected:
-	class Entity* m_pOwner;
+	class Entity* m_pOwner = nullptr;
 	bool m_bDestroyed = false;
 
 public:
@@ -24,7 +16,7 @@ public:
 
 public:
 	Component();
-	virtual ~Component();
+	~Component() override;
 
 	virtual TimingType GetComponentTiming() const;
 	virtual void OnCreated();

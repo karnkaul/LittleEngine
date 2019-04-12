@@ -1,7 +1,5 @@
 #pragma once
 #include "LittleEngine/Game/Component.h"
-#include "LittleEngine/Physics/Physics.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
 
 namespace LittleEngine
 {
@@ -14,14 +12,14 @@ protected:
 	struct ColliderData
 	{
 		Vector2 offset;
-		Collider* pCollider;
+		class Collider* pCollider;
 #if DEBUGGING
-		SFPrimitive* pSFPrimitive;
+		class SFPrimitive* pSFPrimitive = nullptr;
 #endif
 
-		ColliderData(Collider* pCollider, const Vector2& offset);
+		ColliderData(Collider* pCollider, Vector2 offset);
 #if DEBUGGING
-		ColliderData(Collider* pCollider, SFPrimitive* pSFPrimitive, const Vector2& offset);
+		ColliderData(Collider* pCollider, SFPrimitive* pSFPrimitive, Vector2 offset);
 #endif
 	};
 
@@ -30,13 +28,13 @@ protected:
 
 public:
 	CollisionComponent();
-	~CollisionComponent();
+	~CollisionComponent() override;
 
-	void AddCircle(const Fixed& radius, const Vector2& offset = Vector2::Zero);
-	void AddAABB(const AABBData& aabbData, const Vector2& offset = Vector2::Zero);
+	void AddCircle(Fixed radius, Vector2 offset = Vector2::Zero);
+	void AddAABB(const struct AABBData& aabbData, Vector2 offset = Vector2::Zero);
 
-	virtual TimingType GetComponentTiming() const override;
-	virtual void Tick(Time dt) override;
-	virtual void SetEnabled(bool bEnabled) override;
+	TimingType GetComponentTiming() const override;
+	void Tick(Time dt) override;
+	void SetEnabled(bool bEnabled) override;
 };
 } // namespace LittleEngine

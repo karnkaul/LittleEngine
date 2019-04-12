@@ -1,6 +1,9 @@
 #include "stdafx.h"
-#include "UIToggle.h"
+#include "Logger.h"
 #include "LittleEngine/UI/UIContext.h"
+#include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIText.h"
+#include "UIToggle.h"
 
 namespace LittleEngine
 {
@@ -9,19 +12,16 @@ UIToggle::UIToggle() : UIWidget("Untitled")
 	SetName("", "UIToggle");
 }
 
-UIToggle::UIToggle(const String& name) : UIWidget(name)
+UIToggle::UIToggle(String name) : UIWidget(std::move(name))
 {
 	SetName("", "UIToggle");
 }
 
-UIToggle::~UIToggle()
-{
-	LOG_D("%s destroyed", LogNameStr());
-}
+UIToggle::~UIToggle() = default;
 
-UIToggle* UIToggle::SetText(const UIText& text)
+UIToggle* UIToggle::SetText(UIText text)
 {
-	m_pLabel->SetText(text);
+	m_pLabel->SetText(std::move(text));
 	return this;
 }
 
@@ -37,7 +37,7 @@ UIToggle* UIToggle::SetOffColour(Colour offColour)
 	return this;
 }
 
-UIToggle* UIToggle::SetBoxSize(const Vector2& size)
+UIToggle* UIToggle::SetBoxSize(Vector2 size)
 {
 	m_data.boxSize = size;
 	m_pToggle->m_transform.size = m_data.boxSize;
@@ -53,9 +53,9 @@ UIToggle* UIToggle::SetOn(bool bOn)
 	return this;
 }
 
-UIToggle::OnChanged::Token UIToggle::AddCallback(const UIToggle::OnChanged::Callback& callback)
+UIToggle::OnChanged::Token UIToggle::AddCallback(UIToggle::OnChanged::Callback callback)
 {
-	return m_delegate.Register(callback);
+	return m_delegate.Register(std::move(callback));
 }
 
 UIElement* UIToggle::GetRoot() const
@@ -99,11 +99,15 @@ void UIToggle::OnInteractStart()
 void UIToggle::OnInteractEnd(bool bInteract)
 {
 	if (bInteract)
+	{
 		m_bOn = !m_bOn;
+	}
 	Colour fill = m_bOn ? m_data.onColour : m_data.offColour;
 	m_pToggle->SetPanel(fill, m_style.selected.border, m_style.selected.outline);
 	if (bInteract)
+	{
 		m_delegate(m_bOn);
+	}
 }
 
 void UIToggle::SetInteractable(bool bInteractable)

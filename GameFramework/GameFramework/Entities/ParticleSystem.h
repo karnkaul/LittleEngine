@@ -1,10 +1,17 @@
 #pragma once
-#include "GData.h"
+#include "TRange.hpp"
 #include "LittleEngine/Game/Entity.h"
+
+namespace Core
+{
+class GData;
+}
 
 namespace LittleEngine
 {
 using GData = Core::GData;
+template <typename T>
+using TRange = Core::TRange<T>;
 
 struct ParticleSpawnData
 {
@@ -40,9 +47,10 @@ struct EmitterData
 	Fixed startDelaySecs = Fixed::Zero;
 	s32 layerDelta = 0;
 	Transform* pParent;
-	SoundAsset* pSound;
+	class SoundAsset* pSound;
 
-	EmitterData(TextureAsset& texture, u32 numParticles, SoundAsset* pSound = nullptr);
+	EmitterData(class TextureAsset& texture, u32 numParticles, SoundAsset* pSound = nullptr);
+	EmitterData(EmitterData&&) = default;
 
 	void Deserialise(const GData& gData);
 
@@ -59,6 +67,8 @@ struct ParticleSystemData
 {
 	Vec<EmitterData> emitterDatas;
 	ParticleSystemData(const GData& psGData);
+	ParticleSystemData(ParticleSystemData&&) = default;
+	ParticleSystemData& operator=(ParticleSystemData&&) = default;
 };
 
 class ParticleSystem : public Entity
@@ -68,10 +78,10 @@ protected:
 	bool m_bIsPlaying = false;
 
 public:
-	ParticleSystem(const String& name); // Cannot default/inline impl, due to forward declared unique_ptr
-	virtual ~ParticleSystem();
+	ParticleSystem(String name); // Cannot default/inline impl, due to forward declared unique_ptr
+	~ParticleSystem() override;
 
-	void InitParticleSystem(ParticleSystemData&& data);
+	void InitParticleSystem(ParticleSystemData data);
 	void Start();
 	void Stop();
 	inline bool IsPlaying() const
@@ -79,6 +89,6 @@ public:
 		return m_bIsPlaying;
 	}
 
-	void Tick(Time dt);
+	void Tick(Time dt) override;
 };
 } // namespace LittleEngine

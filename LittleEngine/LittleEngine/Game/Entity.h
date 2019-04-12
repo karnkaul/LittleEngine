@@ -1,17 +1,13 @@
 #pragma once
+#include "SimpleTime.h"
 #include "WorldObject.h"
-#include "Component.h"
-#include "LittleEngine/Services/Services.h"
-#include "LittleEngine/Game/GameManager.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
-#include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {
 class Entity : public WorldObject
 {
 private:
-	Vec<Component*> m_pComponents;
+	Vec<class Component*> m_pComponents;
 
 protected:
 	bool m_bDestroyed = false;
@@ -22,8 +18,8 @@ public:
 	bool m_bReset = true;
 
 public:
-	Entity(const String& name);
-	virtual ~Entity();
+	Entity(String name);
+	~Entity() override;
 
 	virtual void Destruct();
 	virtual void SetEnabled(bool bEnabled);
@@ -53,7 +49,9 @@ T* Entity::GetComponent()
 	{
 		T* t = dynamic_cast<T*>(pComponent);
 		if (t)
+		{
 			return t;
+		}
 	}
 	return nullptr;
 }

@@ -1,7 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
 #include <functional>
-#include <vector>
 
 namespace Core
 {

@@ -1,32 +1,42 @@
 #include "stdafx.h"
 #include "World.h"
 #include "Utils.h"
-#include "LittleEngine/Services/Services.h"
+#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/SFGameClock.h"
+#include "WorldStateMachine.h"
+#include "LittleEngine/Audio/EngineAudio.h"
 #include "LittleEngine/Engine/EngineService.h"
-#include "LittleEngine/UI/UIManager.h"
+#include "LittleEngine/Game/Camera.h"
 #include "LittleEngine/Game/GameManager.h"
+#include "LittleEngine/Repository/EngineRepository.h"
+#include "LittleEngine/Services/Services.h"
+#include "LittleEngine/UI/UIManager.h"
 
 namespace LittleEngine
 {
-World::World(const String& name) : Inheritable(name, "World")
+World::World(String name) : Inheritable(std::move(name), "World")
 {
+	m_uWorldClock = MakeUnique<GameClock>();
 }
+
 World::~World() = default;
 
-void World::PlaySFX(SoundAsset* pSound, const Fixed& volume, const Fixed& direction, bool bLoop)
+void World::PlaySFX(SoundAsset* pSound, Fixed volume, Fixed direction, bool bLoop)
 {
 	if (pSound)
+	{
 		Services::Engine()->Audio()->PlaySFX(*pSound, volume, direction, bLoop);
+	}
 }
 
-void World::PlayMusic(const String& path, const Fixed& volume, Time fadeTime, bool bLoop)
+void World::PlayMusic(String path, Fixed volume, Time fadeTime, bool bLoop)
 {
 	Services::Engine()->Audio()->PlayMusic(path, volume, fadeTime, bLoop);
 }
 
-void World::BindInput(EngineInput::Delegate Callback)
+void World::BindInput(EngineInput::Delegate callback)
 {
-	m_tokenHandler.AddToken(Services::Engine()->Input()->Register(Callback));
+	m_tokenHandler.AddToken(Services::Engine()->Input()->Register(std::move(callback)));
 }
 
 bool World::LoadWorld(WorldID id)
@@ -41,7 +51,7 @@ void World::Quit()
 
 Time World::GetWorldTime() const
 {
-	return m_worldClock.GetElapsed();
+	return m_uWorldClock->GetElapsed();
 }
 
 EngineRepository* World::Repository() const
@@ -71,7 +81,7 @@ void World::OnClearing()
 void World::Activate()
 {
 	LOG_D("%s Activated.", LogNameStr());
-	m_worldClock.Restart();
+	m_uWorldClock->Restart();
 	m_uGame = MakeUnique<GameManager>();
 	OnActivated();
 }

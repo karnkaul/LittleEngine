@@ -1,22 +1,27 @@
 #include "stdafx.h"
+#include "ArchiveReader.h"
+#include "Utils.h"
+#include "SFMLAPI/System/SFAssets.h"
 #include "EngineRepository.h"
+#include "LoadHelpers.h"
 #include "ManifestLoader.h"
 #include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
 {
-EngineRepository::EngineRepository(const String& archivePath, const String& rootDir)
-	: m_rootDir(rootDir)
+EngineRepository::EngineRepository(String archivePath, String rootDir)
+	: m_rootDir(std::move(rootDir)), m_pDefaultFont(nullptr)
 {
+	m_uCooked = MakeUnique<Core::ArchiveReader>();
 	String fontID = "Fonts/main.ttf";
-	m_cooked.Load(archivePath.c_str());
-	if (!m_cooked.IsPresent(fontID.c_str()))
+	m_uCooked->Load(archivePath.c_str());
+	if (!m_uCooked->IsPresent(fontID.c_str()))
 	{
 		LOG_E("[EngineRepository] Cooked assets does not contain %s!", fontID.c_str());
 	}
 	else
 	{
-		UPtr<FontAsset> uDefaultFont = CreateAsset<FontAsset>(fontID, m_cooked.Decompress(fontID.c_str()));
+		UPtr<FontAsset> uDefaultFont = CreateAsset<FontAsset>(fontID, m_uCooked->Decompress(fontID.c_str()));
 		if (uDefaultFont)
 		{
 			m_pDefaultFont = uDefaultFont.get();
@@ -53,21 +58,21 @@ FontAsset* EngineRepository::GetDefaultFont() const
 }
 
 #if !SHIPPING
-ManifestLoader* EngineRepository::LoadAsync(const String& manifestPath, const std::function<void()>& onComplete)
+ManifestLoader* EngineRepository::LoadAsync(String manifestPath, std::function<void()> onComplete)
 {
-	UPtr<ManifestLoader> uAsyncLoader = MakeUnique<ManifestLoader>(*this, manifestPath, onComplete);
+	UPtr<ManifestLoader> uAsyncLoader = MakeUnique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete));
 	ManifestLoader* pLoader = uAsyncLoader.get();
 	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
 	return pLoader;
 }
 #endif
 
-ManifestLoader* EngineRepository::LoadAsync(const String& archivePath,
-											  const String& manifestPath,
-											  const std::function<void()>& onComplete)
+ManifestLoader* EngineRepository::LoadAsync(String archivePath,
+											  String manifestPath,
+											  std::function<void()> onComplete)
 {
 	UPtr<ManifestLoader> uAsyncLoader =
-		MakeUnique<ManifestLoader>(*this, archivePath, manifestPath, onComplete);
+		MakeUnique<ManifestLoader>(*this, std::move(archivePath), std::move(manifestPath), std::move(onComplete));
 	ManifestLoader* pLoader = uAsyncLoader.get();
 	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
 	return pLoader;

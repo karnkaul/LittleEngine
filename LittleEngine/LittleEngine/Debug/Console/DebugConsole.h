@@ -1,14 +1,15 @@
 #pragma once
 #include "StdTypes.h"
 #if ENABLED(CONSOLE)
-#include "LogLine.h"
-#include "SFMLAPI/System/SFTime.h"
+#include "SimpleTime.h"
 #include "SFMLAPI/Rendering/Colour.h"
 
 namespace LittleEngine
 {
 namespace Debug
 {
+class LogBook;
+
 extern UByte g_logTextAlpha;
 extern Colour g_logTextColour;
 extern Colour g_logWarningColour;

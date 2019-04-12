@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "SFAudioPlayer.h"
 #include "Utils.h"
+#include "Logger.h"
+#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/SFGameClock.h"
+#include "SFML/Audio.hpp"
 
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "openal32.lib")
@@ -39,7 +43,9 @@ AudioPlayer::Status AudioPlayer::Cast(sf::Sound::Status status)
 SoundPlayer::SoundPlayer(SoundAsset* pSoundAsset)
 {
 	if (pSoundAsset)
+	{
 		SetSoundAsset(*pSoundAsset);
+	}
 }
 
 SoundPlayer::~SoundPlayer()
@@ -56,7 +62,7 @@ bool SoundPlayer::SetSoundAsset(SoundAsset& soundAsset)
 	return true;
 }
 
-void SoundPlayer::SetDirection(const Fixed& direction)
+void SoundPlayer::SetDirection(Fixed direction)
 {
 	m_sfSound.setPosition(Maths::Clamp_11(-direction).ToF32(), 0, 0);
 }
@@ -112,7 +118,7 @@ bool SoundPlayer::IsPlaying() const
 	return m_pSoundAsset && m_sfSound.getStatus() == sf::SoundSource::Status::Playing;
 }
 
-void SoundPlayer::Tick(Time)
+void SoundPlayer::Tick(Time /*dt*/)
 {
 	m_status = m_pSoundAsset ? Cast(m_sfSound.getStatus()) : Status::NoMedia;
 	ApplyParams();
@@ -129,31 +135,35 @@ bool SoundPlayer::ApplyParams()
 	return false;
 }
 
-MusicPlayer::MusicPlayer() = default;
+MusicPlayer::MusicPlayer()
+{
+	m_uClock = MakeUnique<GameClock>();
+	m_uSFMusic = MakeUnique<sf::Music>();
+}
 
 MusicPlayer::~MusicPlayer()
 {
 	if (IsPlaying())
 	{
-		m_sfMusic.stop();
+		m_uSFMusic->stop();
 	}
 }
 
-bool MusicPlayer::SetTrack(const String& path)
+bool MusicPlayer::SetTrack(String path)
 {
-	return m_sfMusic.openFromFile(path);
+	return m_uSFMusic->openFromFile(path);
 }
 
 Time MusicPlayer::GetDuration() const
 {
-	return Time::Microseconds(m_sfMusic.getDuration().asMicroseconds());
+	return Time::Microseconds(m_uSFMusic->getDuration().asMicroseconds());
 }
 
 Time MusicPlayer::GetElapsed() const
 {
 	if (IsPlaying())
 	{
-		return m_clock.GetElapsed();
+		return m_uClock->GetElapsed();
 	}
 	return Time::Zero;
 }
@@ -163,7 +173,7 @@ bool MusicPlayer::IsFading() const
 	return m_bFadingIn || m_bFadingOut;
 }
 
-void MusicPlayer::FadeIn(Time time, const Fixed& targetVolume)
+void MusicPlayer::FadeIn(Time time, Fixed targetVolume)
 {
 	m_bFadingOut = false;
 	m_bFadingIn = true;
@@ -172,7 +182,7 @@ void MusicPlayer::FadeIn(Time time, const Fixed& targetVolume)
 	BeginFade();
 }
 
-void MusicPlayer::FadeOut(Time time, const Fixed& targetVolume)
+void MusicPlayer::FadeOut(Time time, Fixed targetVolume)
 {
 	m_bFadingIn = false;
 	m_bFadingOut = true;
@@ -198,42 +208,44 @@ bool MusicPlayer::IsPaused() const
 
 void MusicPlayer::Play()
 {
-	m_clock.Restart();
+	m_uClock->Restart();
 	ApplyParams();
-	m_sfMusic.play();
+	m_uSFMusic->play();
 }
 
 void MusicPlayer::Stop()
 {
-	m_sfMusic.stop();
+	m_uSFMusic->stop();
 }
 
 void MusicPlayer::Pause()
 {
-	m_sfMusic.pause();
+	m_uSFMusic->pause();
 	m_status = AudioPlayer::Status::Paused;
 }
 
 void MusicPlayer::Resume()
 {
 	if (m_status == AudioPlayer::Status::Paused)
-		m_sfMusic.play();
+	{
+		m_uSFMusic->play();
+	}
 }
 
 void MusicPlayer::Reset(Time time)
 {
-	m_clock.Restart();
-	m_sfMusic.setPlayingOffset(sf::milliseconds(time.AsMilliseconds()));
+	m_uClock->Restart();
+	m_uSFMusic->setPlayingOffset(sf::milliseconds(time.AsMilliseconds()));
 }
 
 bool MusicPlayer::IsPlaying() const
 {
-	return m_sfMusic.getStatus() == sf::SoundSource::Status::Playing;
+	return m_uSFMusic->getStatus() == sf::SoundSource::Status::Playing;
 }
 
 void MusicPlayer::Tick(Time dt)
 {
-	m_status = Cast(m_sfMusic.getStatus());
+	m_status = Cast(m_uSFMusic->getStatus());
 
 	// Process Fade
 	if (IsFading())
@@ -276,8 +288,8 @@ void MusicPlayer::BeginFade()
 
 bool MusicPlayer::ApplyParams()
 {
-	m_sfMusic.setVolume(Maths::Clamp01(m_volume).ToF32() * 100);
-	m_sfMusic.setLoop(m_bLooping);
+	m_uSFMusic->setVolume(Maths::Clamp01(m_volume).ToF32() * 100);
+	m_uSFMusic->setLoop(m_bLooping);
 	return true;
 }
 } // namespace LittleEngine

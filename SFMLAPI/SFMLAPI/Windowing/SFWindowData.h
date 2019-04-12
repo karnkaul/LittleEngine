@@ -1,17 +1,23 @@
 #pragma once
 #include "CoreTypes.h"
 #include "SFML/Config.hpp"
-#include "SFML/Window/WindowStyle.hpp"
+
+namespace sf
+{
+typedef unsigned char Uint8;
+}
 
 namespace LittleEngine
 {
 struct SFWindowSize
 {
-	u32 width;
-	u32 height;
+	u32 width = 0;
+	u32 height = 0;
 
 	SFWindowSize();
 	SFWindowSize(u32 width, u32 height);
+	SFWindowSize(SFWindowSize&&) = default;
+	SFWindowSize& operator=(SFWindowSize&&) = default;
 };
 
 struct SFWindowData
@@ -22,6 +28,6 @@ struct SFWindowData
 	sf::Uint8 sfStyle;
 
 	SFWindowData();
-	SFWindowData(const SFWindowSize& size, const Vector2& viewSize, const String& title);
+	SFWindowData(SFWindowSize size, Vector2 viewSize, String title);
 };
 } // namespace LittleEngine

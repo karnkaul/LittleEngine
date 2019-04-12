@@ -1,14 +1,13 @@
 #pragma once
 #include "CoreTypes.h"
-#include "Collider.h"
-#include "SFMLAPI/System/SFTime.h"
+#include "SimpleTime.h"
 
 namespace LittleEngine
 {
 class CollisionManager final
 {
 private:
-	Vec<UPtr<Collider>> m_colliders;
+	Vec<UPtr<class Collider>> m_colliders;
 	String m_logName;
 
 public:
@@ -17,8 +16,8 @@ public:
 
 	void Tick(Time dt);
 
-	CircleCollider* CreateCircleCollider(const String& ownerName);
-	AABBCollider* CreateAABBCollider(const String& ownerName);
+	class CircleCollider* CreateCircleCollider(String ownerName);
+	class AABBCollider* CreateAABBCollider(String ownerName);
 
 #if DEBUGGING
 	void ToggleDebugShapes(bool bShow);

@@ -1,9 +1,12 @@
 #include "stdafx.h"
+#include "ArchiveReader.h"
+#include "Logger.h"
+#include "Utils.h"
+#include "SFMLAPI/System/SFAssets.h"
 #include "EngineAudio.h"
-#include "LittleEngine/Services/Services.h"
 #include "LittleEngine/Engine/EngineService.h"
 #include "LittleEngine/Repository/EngineRepository.h"
-#include "Utils.h"
+#include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
 {
@@ -18,13 +21,13 @@ EngineAudio::~EngineAudio()
 	LOG_D("[EngineAudio] destroyed");
 }
 
-SoundPlayer* EngineAudio::PlaySFX(const String& path, const Fixed& volume, const Fixed& direction, bool bLoop)
+SoundPlayer* EngineAudio::PlaySFX(String id, Fixed volume, Fixed direction, bool bLoop)
 {
 	SoundPlayer& sfxPlayer = GetOrCreateSFXPlayer();
-	SoundAsset* asset = GetRepository().Load<SoundAsset>(path);
-	if (asset)
+	auto pAsset = GetRepository().Load<SoundAsset>(std::move(id));
+	if (pAsset)
 	{
-		sfxPlayer.SetSoundAsset(*asset);
+		sfxPlayer.SetSoundAsset(*pAsset);
 		sfxPlayer.m_volume = volume;
 		sfxPlayer.m_bLooping = bLoop;
 		sfxPlayer.SetDirection(direction);
@@ -34,7 +37,7 @@ SoundPlayer* EngineAudio::PlaySFX(const String& path, const Fixed& volume, const
 	return nullptr;
 }
 
-SoundPlayer* EngineAudio::PlaySFX(SoundAsset& sound, const Fixed& volume, const Fixed& direction, bool bLoop)
+SoundPlayer* EngineAudio::PlaySFX(SoundAsset& sound, Fixed volume, Fixed direction, bool bLoop)
 {
 	SoundPlayer& sfxPlayer = GetOrCreateSFXPlayer();
 	sfxPlayer.SetSoundAsset(sound);
@@ -57,7 +60,7 @@ bool EngineAudio::IsSFXPlaying() const
 	return false;
 }
 
-bool EngineAudio::PlayMusic(const String& id, const Fixed& volume, Time fadeTime, bool bLoop)
+bool EngineAudio::PlayMusic(String id, Fixed volume, Time fadeTime, bool bLoop)
 {
 	m_uSwitchTrackRequest = nullptr;
 	MusicPlayer& active = GetActivePlayer();
@@ -66,7 +69,7 @@ bool EngineAudio::PlayMusic(const String& id, const Fixed& volume, Time fadeTime
 	{
 		active.Stop();
 	}
-	active.SetTrack(GetPath(id));
+	active.SetTrack(GetPath(std::move(id)));
 	if (fadeTime.AsSeconds() > 0)
 	{
 		active.FadeIn(fadeTime, volume);
@@ -90,7 +93,7 @@ void EngineAudio::StopMusic(Time fadeTime)
 	GetStandbyPlayer().Stop();
 }
 
-bool EngineAudio::ResumeMusic(Time fadeTime, const Fixed& volume)
+bool EngineAudio::ResumeMusic(Time fadeTime, Fixed volume)
 {
 	MusicPlayer& player = GetActivePlayer();
 	if (player.IsPaused())
@@ -109,9 +112,9 @@ bool EngineAudio::ResumeMusic(Time fadeTime, const Fixed& volume)
 	return false;
 }
 
-void EngineAudio::SwitchTrack(const String& id, const Fixed& volume, Time fadeTime)
+void EngineAudio::SwitchTrack(String id, Fixed volume, Time fadeTime)
 {
-	m_uSwitchTrackRequest = MakeUnique<SwitchTrackRequest>(GetPath(id), fadeTime, volume);
+	m_uSwitchTrackRequest = MakeUnique<SwitchTrackRequest>(GetPath(std::move(id)), fadeTime, volume);
 	if (IsMusicPlaying())
 	{
 		GetActivePlayer().FadeOut(fadeTime.Scale(Fixed::OneHalf));
@@ -120,7 +123,7 @@ void EngineAudio::SwitchTrack(const String& id, const Fixed& volume, Time fadeTi
 	}
 }
 
-void EngineAudio::SetMusicVolume(const Fixed& volume)
+void EngineAudio::SetMusicVolume(Fixed volume)
 {
 	if (m_uSwitchTrackRequest != nullptr)
 	{
@@ -167,8 +170,10 @@ void EngineAudio::Tick(Time dt)
 	if (m_uSwitchTrackRequest != nullptr && !active.IsFading())
 	{
 		if (active.IsPlaying())
+		{
 			active.Stop();
-		active.SetTrack(m_uSwitchTrackRequest->newTrackPath);
+		}
+		active.SetTrack(std::move(m_uSwitchTrackRequest->newTrackPath));
 		active.FadeIn(m_uSwitchTrackRequest->fadeTime, m_uSwitchTrackRequest->targetVolume);
 		m_uSwitchTrackRequest = nullptr;
 	}
@@ -180,10 +185,9 @@ void EngineAudio::Tick(Time dt)
 	}
 }
 
-String EngineAudio::GetPath(const String& id) const
+String EngineAudio::GetPath(String id) const
 {
-	String rootDir(m_szRootMusicDir);
-	String prefix = rootDir.empty() ? "" : rootDir + "/";
+	String prefix = m_rootMusicDir.empty() ? "" : m_rootMusicDir + "/";
 	return prefix + id;
 }
 

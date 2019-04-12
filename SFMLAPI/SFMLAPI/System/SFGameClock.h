@@ -1,12 +1,12 @@
 #pragma once
-#include "SFTime.h"
+#include "SimpleTime.h"
 #include "CoreTypes.h"
 
 namespace LittleEngine
 {
 // \brief Use to measure game time
 // Note: This DOES NOT run on its own, requires SFEventLoop to call Tick()!
-class GameClock
+class GameClock final
 {
 private:
 	// Base game time maintained by SFEventLoop
@@ -19,6 +19,7 @@ public:
 	static String ToString(Time time);
 
 	GameClock();
+	~GameClock();
 
 	void Restart();
 	Time GetElapsed() const;

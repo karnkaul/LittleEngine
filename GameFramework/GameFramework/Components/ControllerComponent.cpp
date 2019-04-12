@@ -1,24 +1,34 @@
 #include "stdafx.h"
+#include "Logger.h"
+#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "LittleEngine/Game/Entity.h"
+#include "LittleEngine/GFX/GFX.h"
 #include "ControllerComponent.h"
 #include "RenderComponent.h"
-#include "LittleEngine/GFX/GFX.h"
-#include "LittleEngine/Game/Entity.h"
 
 namespace LittleEngine
 {
 namespace
 {
-void ClampPosition(Vector2& outPosition, const Vector2& padding)
+void ClampPosition(Vector2& outPosition, Vector2 padding)
 {
 	Vector2 worldSize = GFX::GetViewSize() * Fixed::OneHalf;
 	if (outPosition.x + padding.x > worldSize.x)
+	{
 		outPosition.x = (worldSize.x - padding.x);
+	}
 	else if (outPosition.x - padding.x < -worldSize.x)
+	{
 		outPosition.x = -(worldSize.x - padding.x);
+	}
 	if (outPosition.y + padding.y > worldSize.y)
+	{
 		outPosition.y = (worldSize.y - padding.y);
+	}
 	else if (outPosition.y - padding.y < -worldSize.y)
+	{
 		outPosition.y = -(worldSize.y - padding.y);
+	}
 }
 } // namespace
 
@@ -38,7 +48,9 @@ void ControllerComponent::OnCreated()
 	SetName("Controller");
 	m_pRenderComponent = m_pOwner->GetComponent<RenderComponent>();
 	if (!m_pRenderComponent)
+	{
 		LOG_E("%s : %s has ControllerComponent but no RenderComponent!", LogNameStr(), m_pOwner->LogNameStr());
+	}
 	BindInput(std::bind(&ControllerComponent::OnInput, this, _1));
 	Reset();
 }
@@ -54,21 +66,24 @@ void ControllerComponent::Tick(Time dt)
 		m_pOwner->m_transform.localPosition += (m_displacement * m_linearSpeed * dt.AsMilliseconds());
 	}
 	if (m_pRenderComponent)
+	{
 		ClampPosition(m_pOwner->m_transform.localPosition,
 					  m_pRenderComponent->m_pSFPrimitive->GetBounds().GetSize() * Fixed::OneHalf);
+	}
 }
 
 void ControllerComponent::SetEnabled(bool bEnabled)
 {
 	Component::SetEnabled(bEnabled);
-
 	Reset();
 }
 
 bool ControllerComponent::OnInput(const EngineInput::Frame& frame)
 {
 	if (!m_bEnabled)
+	{
 		return false;
+	}
 
 	bool bModifier = frame.IsHeld(GameInputType::LB);
 	m_rotation = Fixed::Zero;
@@ -79,17 +94,25 @@ bool ControllerComponent::OnInput(const EngineInput::Frame& frame)
 		if (frame.IsHeld(GameInputType::Left))
 		{
 			if (bModifier)
+			{
 				m_rotation = 1;
+			}
 			else
+			{
 				m_displacement.x = -1;
+			}
 		}
 
 		else if (frame.IsHeld(GameInputType::Right))
 		{
 			if (bModifier)
+			{
 				m_rotation = -1;
+			}
 			else
+			{
 				m_displacement.x = 1;
+			}
 		}
 	}
 
@@ -107,7 +130,9 @@ bool ControllerComponent::OnInput(const EngineInput::Frame& frame)
 	}
 
 	if (m_displacement.SqrMagnitude() > 0.0)
+	{
 		m_displacement.Normalise();
+	}
 	return false;
 }
 } // namespace LittleEngine

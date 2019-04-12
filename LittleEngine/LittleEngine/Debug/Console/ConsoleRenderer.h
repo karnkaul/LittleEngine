@@ -2,13 +2,17 @@
 #include "CoreTypes.h"
 #if ENABLED(CONSOLE)
 #include "DebugConsole.h"
-#include "LittleEngine/UI/UIElement.h"
 #include "SFMLAPI/Rendering/Colour.h"
 
 namespace LittleEngine
 {
+class UIElement;
+class FontAsset;
+
 namespace Debug
 {
+struct LogLine;
+
 class ConsoleRenderer final
 {
 public:
@@ -24,14 +28,15 @@ public:
 	Colour m_liveTextColour = Colour(255, 255, 255, g_logTextAlpha);
 	Colour m_bgColour = Colour(100, 50, 100, 100);
 	FontAsset* m_pFont;
-	u32 m_textSize = LogLine::TEXT_SIZE;
+	u32 m_textSize;
 	u32 m_logLinesCount;
 
 	ConsoleRenderer();
+	~ConsoleRenderer();
 
 	void Tick(Time dt);
-	void SetLiveString(const String& text);
-	void UpdateLog(const Vec<LogLine>& logLines);
+	void SetLiveString(String text);
+	void UpdateLog(Vec<LogLine> logLines);
 };
 } // namespace Debug
 } // namespace LittleEngine

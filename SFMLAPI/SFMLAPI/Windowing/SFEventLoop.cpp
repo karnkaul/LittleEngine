@@ -1,17 +1,27 @@
 #include "stdafx.h"
 #include "SFEventLoop.h"
 #include "SFWindow.h"
-#include "SFMLAPI/System/SFGameClock.h"
+#include "SFWindowData.h"
 #include "Logger.h"
+#include "SFMLAPI/Input/SFEventHandler.h"
+#include "SFMLAPI/Input/SFInputDataFrame.h"
+#include "SFMLAPI/System/SFGameClock.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
 
 namespace LittleEngine
 {
+SFEventLoop::SFEventLoop()
+{
+	m_uSFWindowData = MakeUnique<SFWindowData>();
+	m_uSFEventHandler = MakeUnique<SFEventHandler>();
+}
+
 SFEventLoop::~SFEventLoop() = default;
 
 s32 SFEventLoop::Run()
 {
 	// Construct Window
-	m_uSFWindow = MakeUnique<SFWindow>(m_windowData);
+	m_uSFWindow = MakeUnique<SFWindow>(*m_uSFWindowData);
 	LOG_I("[SFEventLoop] Running");
 
 	PreRun();
@@ -25,14 +35,18 @@ s32 SFEventLoop::Run()
 		// Break and exit if Window closed
 		PollEvents();
 		if (m_bStopTicking)
+		{
 			continue;
+		}
 
 		Time tickDT;
 		if (!m_bPauseTicking)
 		{
 			Tick(currentTime, accumulator);
 			if (m_bStopTicking)
+			{
 				continue;
+			}
 
 			PostTick();
 			tickDT = Time::Now() - currentTime;
@@ -57,12 +71,12 @@ s32 SFEventLoop::Run()
 
 SFInputDataFrame SFEventLoop::GetInputDataFrame() const
 {
-	return m_sfEventHandler.GetFrameInputData();
+	return m_uSFEventHandler->GetFrameInputData();
 }
 
 void SFEventLoop::PollEvents()
 {
-	SFWindowEventType windowEvent = m_sfEventHandler.PollEvents(*m_uSFWindow);
+	SFWindowEventType windowEvent = m_uSFEventHandler->PollEvents(*m_uSFWindow);
 	switch (windowEvent)
 	{
 	case SFWindowEventType::Closed:
@@ -71,12 +85,16 @@ void SFEventLoop::PollEvents()
 
 	case SFWindowEventType::LostFocus:
 		if (m_bPauseOnFocusLoss)
+		{
 			OnPause(true);
+		}
 		break;
 
 	case SFWindowEventType::GainedFocus:
 		if (m_bPauseOnFocusLoss)
+		{
 			OnPause(false);
+		}
 		break;
 
 	default:
@@ -97,7 +115,9 @@ void SFEventLoop::Tick(Time& outCurrentTime, Time& outAccumulator)
 		GameClock::Tick(dt);
 		Tick(dt);
 		if (m_bStopTicking)
+		{
 			return;
+		}
 		m_elapsed += dt;
 		outAccumulator -= dt;
 	}
@@ -106,15 +126,9 @@ void SFEventLoop::Tick(Time& outCurrentTime, Time& outAccumulator)
 void SFEventLoop::SleepForRestOfFrame(Time frameTime)
 {
 	s32 surplus = (m_tickRate - frameTime).AsMilliseconds();
-	if (Core::g_MinLogSeverity >= Core::LogSeverity::HOT)
+	if (surplus > 0)
 	{
-		StringStream s;
-		s << "[SFEventLoop] Frame Update Complete. Time taken: " << frameTime.AsMilliseconds()
-		  << " Surplus: " << surplus;
-		//LOG_H("[SFEventLoop] Frame Update Complete. Time taken: %d Surplus: %d",
-			  //frameTime.AsMilliseconds(), surplus);
-		if (surplus > 0)
-			sf::sleep(sf::milliseconds(surplus));
+		sf::sleep(sf::milliseconds(surplus));
 	}
 }
 
@@ -132,7 +146,7 @@ void SFEventLoop::PostRun()
 void SFEventLoop::PostWindowDestruct()
 {
 }
-void SFEventLoop::Tick(Time)
+void SFEventLoop::Tick(Time /*dt*/)
 {
 }
 void SFEventLoop::PostTick()

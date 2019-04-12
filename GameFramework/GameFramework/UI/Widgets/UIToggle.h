@@ -1,7 +1,7 @@
 #pragma once
 #include "Delegate.hpp"
 #include "LittleEngine/UI/UIWidget.h"
-#include "LittleEngine/UI/UIStyle.h"
+#include "LittleEngine/UI/UIText.h"
 
 namespace LittleEngine
 {
@@ -28,27 +28,27 @@ private:
 
 public:
 	UIToggle();
-	UIToggle(const String& name);
-	~UIToggle();
+	UIToggle(String name);
+	~UIToggle() override;
 
 	UIToggle* SetOn(bool bOn);
-	UIToggle* SetText(const UIText& text);
+	UIToggle* SetText(UIText text);
 	UIToggle* SetOnColour(Colour onColour);
 	UIToggle* SetOffColour(Colour offColour);
-	UIToggle* SetBoxSize(const Vector2& size);
-	OnChanged::Token AddCallback(const OnChanged::Callback& callback);
+	UIToggle* SetBoxSize(Vector2 size);
+	OnChanged::Token AddCallback(OnChanged::Callback callback);
 
 	UIElement* GetRoot() const;
 
 public:
-	virtual void SetInteractable(bool bInteractable) override;
+	void SetInteractable(bool bInteractable) override;
 
 protected:
-	virtual void OnInitWidget() override;
-	virtual void OnSelected() override;
-	virtual void OnDeselected() override;
-	virtual void OnInteractStart() override;
-	virtual void OnInteractEnd(bool bInteract) override;
-	virtual void Tick(Time dt) override;
+	void OnInitWidget() override;
+	void OnSelected() override;
+	void OnDeselected() override;
+	void OnInteractStart() override;
+	void OnInteractEnd(bool bInteract) override;
+	void Tick(Time dt) override;
 };
 } // namespace LittleEngine

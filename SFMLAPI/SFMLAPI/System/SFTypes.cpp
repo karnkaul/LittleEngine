@@ -3,7 +3,7 @@
 
 namespace LittleEngine
 {
-f32 Cast(const Fixed& fixed)
+f32 Cast(Fixed fixed)
 {
 	return fixed.ToF32();
 }
@@ -13,7 +13,7 @@ Fixed Cast(f32 value)
 	return Fixed(value);
 }
 
-sf::Vector2f Cast(const Vector2& vec2)
+sf::Vector2f Cast(Vector2 vec2)
 {
 	return sf::Vector2f(vec2.x.ToF32(), vec2.y.ToF32());
 }

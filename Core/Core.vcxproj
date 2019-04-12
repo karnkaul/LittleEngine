@@ -179,6 +179,7 @@
     <ClCompile Include="Private\Property.cpp" />
     <ClCompile Include="Private\Maths.cpp" />
     <ClCompile Include="Private\Rect2.cpp" />
+    <ClCompile Include="Private\SimpleTime.cpp" />
     <ClCompile Include="Private\SysDialog.cpp" />
     <ClCompile Include="Private\Transform.cpp" />
     <ClCompile Include="Private\UByte.cpp" />
@@ -189,6 +190,7 @@
   <ItemGroup>
     <ClInclude Include="Public\ArchiveReader.h" />
     <ClInclude Include="Public\Asserts.h" />
+    <ClInclude Include="Public\CircularList.hpp" />
     <ClInclude Include="Public\CircularVector.hpp" />
     <ClInclude Include="Public\CoreTypes.h" />
     <ClInclude Include="Public\Delegate.hpp" />
@@ -200,6 +202,7 @@
     <ClInclude Include="Public\Property.h" />
     <ClInclude Include="Public\Maths.h" />
     <ClInclude Include="Public\Rect2.h" />
+    <ClInclude Include="Public\SimpleTime.h" />
     <ClInclude Include="Public\StdTypes.h" />
     <ClInclude Include="Public\SysDialog.h" />
     <ClInclude Include="Public\TokenHandler.hpp" />

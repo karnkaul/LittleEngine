@@ -1,21 +1,15 @@
 #include "stdafx.h"
-#include "SFTime.h"
+#include <chrono>
+#include "SimpleTime.h"
 #include "Utils.h"
-#include "SFML/System/Time.hpp"
-#include "SFML/System/Clock.hpp"
-
-#pragma comment(lib, "winmm.lib")
-#if defined(_DEBUG)
-#pragma comment(lib, "sfml-system-s-d.lib")
-#else
-#pragma comment(lib, "sfml-system-s.lib")
-#endif
 
 namespace LittleEngine
 {
 namespace
 {
-sf::Clock realTimeClock;
+using namespace std::chrono;
+
+time_point epoch = high_resolution_clock::now();
 }
 
 const Time Time::Zero = Time(0);
@@ -25,15 +19,21 @@ String Time::ToString(Time time)
 	String hours;
 	s32 h = time.AsSeconds() / 60 / 60;
 	if (h > 0)
+	{
 		hours = Strings::ToString(h) + ":";
+	}
 	String mins;
 	s32 m = (time.AsSeconds() / 60) - (h * 60);
 	if (m > 0)
+	{
 		mins = Strings::ToString(m) + ":";
+	}
 	String secs;
 	f32 s = (static_cast<f32>(time.AsMilliseconds()) / 1000.0f) - (h * 60 * 60) - (m * 60);
 	if (s > 0)
+	{
 		secs = Strings::ToString(s);
+	}
 	return "[" + hours + mins + secs + "]";
 }
 
@@ -49,31 +49,36 @@ Time Time::Milliseconds(s32 milliSeconds)
 
 Time Time::Seconds(f32 seconds)
 {
-	return Time(static_cast<s64>(seconds * 1000.0f * 1000.0f));
+	seconds = seconds * 1000.0f * 1000.0f;
+	return Time(static_cast<s64>(seconds));
 }
 
 Time Time::Now()
 {
-	return Time(static_cast<s64>(realTimeClock.getElapsedTime().asMicroseconds()));
+	using namespace std::chrono;
+	return Time(duration_cast<microseconds>(high_resolution_clock::now() - epoch).count());
 }
 
 Time Time::Clamp(Time val, Time min, Time max)
 {
 	if (val.microSeconds < min.microSeconds)
+	{
 		return min;
+	}
 	if (val.microSeconds > max.microSeconds)
+	{
 		return max;
+	}
 	return val;
 }
 
-void Time::RestartRealtimeClock()
+void Time::Reset()
 {
-	realTimeClock.restart();
+	epoch = std::chrono::high_resolution_clock::now();
 }
 
-Time::Time() : microSeconds(0)
-{
-}
+Time::Time() = default;
+
 Time::Time(s64 microSeconds) : microSeconds(microSeconds)
 {
 }
@@ -83,7 +88,7 @@ Time::Time(sf::Time& sfTime)
 	microSeconds = sfTime.asMicroseconds();
 }
 
-LittleEngine::Time& Time::Scale(const Fixed& magnitude)
+LittleEngine::Time& Time::Scale(Fixed magnitude)
 {
 	microSeconds *= magnitude.ToF32();
 	return *this;

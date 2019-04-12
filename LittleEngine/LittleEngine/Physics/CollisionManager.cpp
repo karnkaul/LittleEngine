@@ -1,8 +1,9 @@
 #include "stdafx.h"
+#include "Logger.h"
+#include "Utils.h"
+#include "Collider.h"
 #include "CollisionManager.h"
 #include "LittleEngine/Services/Services.h"
-#include "Utils.h"
-#include "Logger.h"
 
 namespace LittleEngine
 {
@@ -24,7 +25,7 @@ CollisionManager::~CollisionManager()
 	LOG_D("[CollisionManager] destroyed", m_logName.c_str());
 }
 
-void CollisionManager::Tick(Time)
+void CollisionManager::Tick(Time /*dt*/)
 {
 	Scrub();
 
@@ -32,12 +33,16 @@ void CollisionManager::Tick(Time)
 	{
 		auto& lhs = m_colliders[i];
 		if (!lhs->m_bEnabled)
+		{
 			return;
+		}
 		for (size_t j = i + 1; j < m_colliders.size(); ++j)
 		{
 			auto& rhs = m_colliders[j];
 			if (!rhs->m_bEnabled || IgnoreSignatures(lhs->m_ignoreSig, rhs->m_ignoreSig))
+			{
 				continue;
+			}
 			if (lhs->IsIntersecting(*rhs))
 			{
 				lhs->OnHit(*rhs);
@@ -47,17 +52,17 @@ void CollisionManager::Tick(Time)
 	}
 }
 
-CircleCollider* CollisionManager::CreateCircleCollider(const String& ownerName)
+CircleCollider* CollisionManager::CreateCircleCollider(String ownerName)
 {
-	auto uCollider = MakeUnique<CircleCollider>(ownerName);
+	auto uCollider = MakeUnique<CircleCollider>(std::move(ownerName));
 	CircleCollider* pCollider = uCollider.get();
 	m_colliders.emplace_back(std::move(uCollider));
 	return pCollider;
 }
 
-AABBCollider* CollisionManager::CreateAABBCollider(const String& ownerName)
+AABBCollider* CollisionManager::CreateAABBCollider(String ownerName)
 {
-	auto uCollider = MakeUnique<AABBCollider>(ownerName);
+	auto uCollider = MakeUnique<AABBCollider>(std::move(ownerName));
 	AABBCollider* pCollider = uCollider.get();
 	m_colliders.emplace_back(std::move(uCollider));
 	return pCollider;

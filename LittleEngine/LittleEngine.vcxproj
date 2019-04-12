@@ -32,6 +32,7 @@
     <ClCompile Include="LittleEngine\Engine\EngineService.cpp" />
     <ClCompile Include="LittleEngine\Engine\AsyncFileLogger.cpp" />
     <ClCompile Include="LittleEngine\Engine\OS.cpp" />
+    <ClCompile Include="LittleEngine\Game\Camera.cpp" />
     <ClCompile Include="LittleEngine\Game\Component.cpp" />
     <ClCompile Include="LittleEngine\Game\Entity.cpp" />
     <ClCompile Include="LittleEngine\Game\GameManager.cpp" />
@@ -54,6 +55,7 @@
     <ClCompile Include="LittleEngine\Physics\CollisionManager.cpp" />
     <ClCompile Include="LittleEngine\RenderLoop\AsyncRenderLoop.cpp" />
     <ClCompile Include="LittleEngine\RenderLoop\RenderHeap.cpp" />
+    <ClCompile Include="LittleEngine\Repository\LoadHelpers.cpp" />
     <ClCompile Include="LittleEngine\Repository\ManifestLoader.cpp" />
     <ClCompile Include="LittleEngine\Repository\EngineRepository.cpp" />
     <ClCompile Include="LittleEngine\Services\Services.cpp" />
@@ -70,7 +72,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Audio\EngineAudio.h" />
-    <ClInclude Include="LittleEngine\Debug\Console\CircularList.hpp" />
     <ClInclude Include="LittleEngine\Debug\Console\ConsoleInput.h" />
     <ClInclude Include="LittleEngine\Debug\Console\ConsoleRenderer.h" />
     <ClInclude Include="LittleEngine\Debug\Console\DebugConsole.h" />
@@ -83,7 +84,9 @@
     <ClInclude Include="LittleEngine\Engine\EngineService.h" />
     <ClInclude Include="LittleEngine\Engine\AsyncFileLogger.h" />
     <ClInclude Include="LittleEngine\Engine\OS.h" />
+    <ClInclude Include="LittleEngine\Game\Camera.h" />
     <ClInclude Include="LittleEngine\Game\Component.h" />
+    <ClInclude Include="LittleEngine\Game\ComponentTimingType.h" />
     <ClInclude Include="LittleEngine\Game\Entity.h" />
     <ClInclude Include="LittleEngine\Game\Game.h" />
     <ClInclude Include="LittleEngine\Game\GameManager.h" />
@@ -108,6 +111,7 @@
     <ClInclude Include="LittleEngine\Physics\Physics.h" />
     <ClInclude Include="LittleEngine\RenderLoop\AsyncRenderLoop.h" />
     <ClInclude Include="LittleEngine\RenderLoop\RenderHeap.h" />
+    <ClInclude Include="LittleEngine\Repository\LoadHelpers.h" />
     <ClInclude Include="LittleEngine\Repository\ManifestLoader.h" />
     <ClInclude Include="LittleEngine\Repository\EngineRepository.h" />
     <ClInclude Include="LittleEngine\Services\IService.h" />
@@ -134,9 +138,6 @@
     <ProjectReference Include="..\SFMLAPI\SFMLAPI.vcxproj">
       <Project>{927b2d28-14e8-4d17-a0fb-5d637cf4ea3c}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -9,7 +9,7 @@ namespace
 InitList<Strings::Pair<char>> gDataEscapes = {{'{', '}'}, {'[', ']'}, '\"'};
 
 template <typename T>
-T Get(const UMap<String, String>& table, const String& key, T (*Adaptor)(const String&, T), const T& defaultValue)
+T Get(const UMap<String, String>& table, const String& key, T (*Adaptor)(String, T), const T& defaultValue)
 {
 	auto search = table.find(key);
 	if (search != table.end())
@@ -20,23 +20,25 @@ T Get(const UMap<String, String>& table, const String& key, T (*Adaptor)(const S
 }
 } // namespace
 
-GData::GData(const String& serialised)
+GData::GData(String serialised)
 {
 	if (!serialised.empty())
 	{
-		Marshall(serialised);
+		Marshall(std::move(serialised));
 	}
 }
 
-bool GData::Marshall(const String& serialised)
+GData::GData() = default;
+GData::~GData() = default;
+
+bool GData::Marshall(String serialised)
 {
-	String temp(serialised);
-	Strings::RemoveWhitespace(temp);
-	Strings::RemoveChars(temp, {'"'});
-	if (temp[0] == '{' && temp[temp.size() - 1] == '}')
+	Strings::RemoveWhitespace(serialised);
+	Strings::RemoveChars(serialised, {'"'});
+	if (serialised[0] == '{' && serialised[serialised.size() - 1] == '}')
 	{
 		Clear();
-		String rawText = temp.substr(1, temp.size() - 2);
+		String rawText = serialised.substr(1, serialised.size() - 2);
 		Vec<String> tokens = Strings::Tokenise(rawText, ',', gDataEscapes);
 		for (const auto& token : tokens)
 		{
@@ -61,7 +63,9 @@ String GData::Unmarshall() const
 		String value = kvp.second;
 		auto space = value.find(' ');
 		if (Strings::IsCharEnclosedIn(value, space, '\"'))
+		{
 			value = '\"' + value + '\"';
+		}
 		ret += (kvp.first + ':' + value + ',');
 		slice = 1;
 	}
@@ -73,7 +77,7 @@ void GData::Clear()
 	m_fieldMap.clear();
 }
 
-String GData::GetString(const String& key, const String& defaultValue) const
+String GData::GetString(const String& key, String defaultValue) const
 {
 	auto search = m_fieldMap.find(key);
 	if (search != m_fieldMap.end())
@@ -83,9 +87,9 @@ String GData::GetString(const String& key, const String& defaultValue) const
 	return defaultValue;
 }
 
-String GData::GetString(const String& key, const char spaceDelimiter, const String& defaultValue) const
+String GData::GetString(const String& key, char spaceDelimiter, String defaultValue) const
 {
-	String ret = defaultValue;
+	String ret = std::move(defaultValue);
 	auto search = m_fieldMap.find(key);
 	if (search != m_fieldMap.end())
 	{
@@ -168,11 +172,11 @@ bool GData::AddField(const String& key, GData& gData)
 	return SetString(key, value);
 }
 
-bool GData::SetString(const String& key, const String& value)
+bool GData::SetString(const String& key, String value)
 {
 	if (!key.empty() && !value.empty())
 	{
-		m_fieldMap[key] = value;
+		m_fieldMap[key] = std::move(value);
 		return true;
 	}
 	return false;

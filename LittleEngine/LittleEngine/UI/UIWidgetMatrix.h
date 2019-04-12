@@ -21,14 +21,15 @@ public:
 	UIWidget* Current();
 	UIWidget* NextSelectableVertical(bool bDownwards);
 	UIWidget* NextSelectableHorizontal(bool bRightwards);
-	
+
 	void Up();
 	void Down();
 	void Left();
 	void Right();
 	void Reset(bool bResetRows);
 	void Clear();
-	void ForEach(const std::function<void(UPtr<UIWidget>&)>& Callback);
+	void ForEach(std::function<void(UPtr<UIWidget>&)> callback);
+	void ForEach(std::function<void(const UPtr<UIWidget>&)> callback) const;
 
 	size_t TotalCount() const;
 	size_t CurrentVecCount();

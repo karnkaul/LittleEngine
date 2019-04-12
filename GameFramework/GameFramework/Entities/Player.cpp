@@ -1,34 +1,31 @@
 #include "stdafx.h"
+#include "Logger.h"
+#include "SFMLAPI/Rendering/SFLayerID.h"
+#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/System/SFAssets.h"
+#include "LittleEngine/Game/GameManager.h"
+#include "LittleEngine/Services/Services.h"
 #include "Player.h"
 #include "GameFramework/Components/Components.h"
 
 namespace LittleEngine
 {
-PlayerCollider::PlayerCollider(const AABBData& bounds, const Vector2& offset)
-	: bounds(bounds), offset(offset)
+PlayerCollider::PlayerCollider(AABBData bounds, Vector2 offset)
+	: bounds(std::move(bounds)), offset(offset)
 {
 }
 
-PlayerData::PlayerData(TextureAsset& mainTexture, InitList<PlayerCollider> colliders)
-	: pMainTexture(&mainTexture)
-{
-	for (auto& aabbData : colliders)
-	{
-		this->colliders.push_back(aabbData);
-	}
-}
-
-PlayerData::PlayerData(TextureAsset& mainTexture, const Vec<PlayerCollider>& colliders)
-	: pMainTexture(&mainTexture), colliders(colliders)
+PlayerData::PlayerData(TextureAsset& mainTexture, Vec<PlayerCollider> colliders)
+	: pMainTexture(&mainTexture), colliders(std::move(colliders))
 {
 }
 
-Player::Player(const String& name) : Entity(name)
+Player::Player(String name) : Entity(std::move(name))
 {
 	SetName(name, "Player");
 }
 
-void Player::InitPlayer(const PlayerData& data)
+void Player::InitPlayer(PlayerData data)
 {
 	auto pRenderComponent = AddComponent<RenderComponent>();
 	LayerID layer = static_cast<LayerID>(LAYER_LIVE + 5);

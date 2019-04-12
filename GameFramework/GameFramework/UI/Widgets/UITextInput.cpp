@@ -1,7 +1,11 @@
 #include "stdafx.h"
-#include "UITextInput.h"
-#include "LittleEngine/Services/Services.h"
+#include "Logger.h"
+#include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/Input/KeyboardInput.h"
+#include "LittleEngine/Services/Services.h"
+#include "LittleEngine/UI/UIElement.h"
+#include "UITextInput.h"
 
 namespace LittleEngine
 {
@@ -10,15 +14,12 @@ UITextInput::UITextInput() : UIWidget("Untitled")
 	SetName("", "UITextInput");
 }
 
-UITextInput::UITextInput(const String& name) : UIWidget(name)
+UITextInput::UITextInput(String name) : UIWidget(std::move(name))
 {
 	SetName("", "UITextInput");
 }
 
-UITextInput::~UITextInput()
-{
-	LOG_D("%s destroyed", LogNameStr());
-}
+UITextInput::~UITextInput() = default;
 
 UITextInput* UITextInput::SetTextColour(Colour text)
 {
@@ -26,15 +27,15 @@ UITextInput* UITextInput::SetTextColour(Colour text)
 	return this;
 }
 
-UITextInput* UITextInput::SetTextStyle(const UIText& uiText)
+UITextInput* UITextInput::SetTextStyle(UIText uiText)
 {
-	m_data.textStyle = uiText;
+	m_data.textStyle = std::move(uiText);
 	return this;
 }
 
-UITextInput::OnEditComplete::Token UITextInput::SetOnEditComplete(const OnEditComplete::Callback& callback)
+UITextInput::OnEditComplete::Token UITextInput::SetOnEditComplete(OnEditComplete::Callback callback)
 {
-	return m_onEditComplete.Register(callback);
+	return m_onEditComplete.Register(std::move(callback));
 }
 
 void UITextInput::SetInteractable(bool bInteractable)
@@ -50,7 +51,8 @@ void UITextInput::SetInteractable(bool bInteractable)
 
 void UITextInput::OnInitWidget()
 {
-	m_keyboard.m_bClearOnEscape = false;
+	m_uKeyboard = MakeUnique<KeyboardInput>();
+	m_uKeyboard->m_bClearOnEscape = false;
 	m_style = UIWidgetStyle::GetDefault1(&m_style);
 	
 	m_pRoot = AddElement<UIElement>("TextInputRoot");
@@ -94,8 +96,8 @@ void UITextInput::OnInteractEnd(bool bInteract)
 	if (!m_bWriting)
 	{
 		m_pText->SetText(
-			UIText(m_keyboard.GetLiveString(), m_data.textStyle.pixelSize, m_data.textStyle.colour));
-		m_onEditComplete(m_keyboard.GetLiveString());
+			UIText(m_uKeyboard->GetLiveString(), m_data.textStyle.pixelSize, m_data.textStyle.colour));
+		m_onEditComplete(m_uKeyboard->GetLiveString());
 	}
 }
 
@@ -110,7 +112,7 @@ void UITextInput::Tick(Time dt)
 			m_bShowCursor = !m_bShowCursor;
 		}
 		String suffix = m_bShowCursor ? "_" : "";
-		m_pText->SetText(UIText(m_keyboard.GetLiveString() + suffix, m_data.textStyle.pixelSize,
+		m_pText->SetText(UIText(m_uKeyboard->GetLiveString() + suffix, m_data.textStyle.pixelSize,
 								m_data.textStyle.colour));
 	}
 
@@ -123,18 +125,18 @@ bool UITextInput::OnInput(const EngineInput::Frame& frame)
 	{
 		if (frame.IsReleased(GameInputType::Enter))
 		{
-			m_prevText = m_keyboard.GetLiveString();
+			m_prevText = m_uKeyboard->GetLiveString();
 			OnInteractEnd(true);
 			return true;
 		}
 		if (frame.IsReleased(GameInputType::Back))
 		{
-			m_keyboard.m_liveLine.liveString = m_prevText;
+			m_uKeyboard->m_liveLine.liveString = m_prevText;
 			OnInteractEnd(true);
 			return true;
 		}
 	}
-	m_keyboard.Update(frame);
+	m_uKeyboard->Update(frame);
 	return true;
 }
 } // namespace LittleEngine

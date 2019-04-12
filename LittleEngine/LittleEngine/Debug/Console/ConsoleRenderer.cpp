@@ -1,14 +1,20 @@
 #include "stdafx.h"
 #include "ConsoleRenderer.h"
 #if ENABLED(CONSOLE)
-#include "LittleEngine/Services/Services.h"
+#include "Utils.h"
+#include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/Repository/EngineRepository.h"
+#include "LittleEngine/Services/Services.h"
+#include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIText.h"
+#include "LogLine.h"
 
 namespace LittleEngine
 {
 namespace Debug
 {
-ConsoleRenderer::ConsoleRenderer()
+ConsoleRenderer::ConsoleRenderer() : m_textSize(LogLine::TEXT_SIZE)
 {
 	m_pFont = Services::Engine()->Repository()->GetDefaultFont();
 
@@ -61,22 +67,32 @@ ConsoleRenderer::ConsoleRenderer()
 	}
 }
 
+ConsoleRenderer::~ConsoleRenderer() = default;
+
 void ConsoleRenderer::Tick(Time dt)
 {
 	Fixed dy(dt.AsMilliseconds() * 2);
 	if (Console::g_bEnabled)
 	{
 		if (m_uBG->m_transform.padding.y > minPadding.y)
+		{
 			m_uBG->m_transform.padding.y -= dy;
+		}
 		if (m_uBG->m_transform.padding.y < minPadding.y)
+		{
 			m_uBG->m_transform.padding.y = minPadding.y;
+		}
 	}
 	if (!Console::g_bEnabled)
 	{
 		if (m_uBG->m_transform.padding.y < maxPadding.y)
+		{
 			m_uBG->m_transform.padding.y += dy;
+		}
 		if (m_uBG->m_transform.padding.y > maxPadding.y)
+		{
 			m_uBG->m_transform.padding.y = maxPadding.y;
+		}
 	}
 	m_uBG->Tick(dt);
 	m_uSeparator->Tick(dt);
@@ -87,18 +103,20 @@ void ConsoleRenderer::Tick(Time dt)
 	}
 }
 
-void ConsoleRenderer::SetLiveString(const String& text)
+void ConsoleRenderer::SetLiveString(String text)
 {
-	m_uLiveText->SetText(UIText(text, m_textSize, m_liveTextColour));
+	m_uLiveText->SetText(UIText(std::move(text), m_textSize, m_liveTextColour));
 }
 
-void ConsoleRenderer::UpdateLog(const Vec<LogLine>& logLines)
+void ConsoleRenderer::UpdateLog(Vec<LogLine> logLines)
 {
 	auto iter = logLines.begin();
 	for (auto& uLogText : m_uLogTexts)
 	{
 		if (iter == logLines.end())
+		{
 			break;
+		}
 		uLogText->SetText(iter->ToUIText());
 		++iter;
 	}

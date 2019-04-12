@@ -12,7 +12,7 @@ ArchiveReader::ArchiveReader()
 	if (!s_bInit)
 	{
 		s32 success = PHYSFS_init(nullptr);
-		if (!success)
+		if (success == 0)
 		{
 			throw DependencyException();
 		}
@@ -43,7 +43,7 @@ void ArchiveReader::Load(InitList<const char*> archivePaths)
 
 bool ArchiveReader::IsPresent(const char* szPathInArchive) const
 {
-	return PHYSFS_exists(szPathInArchive);
+	return PHYSFS_exists(szPathInArchive) != 0;
 }
 
 Vec<u8> ArchiveReader::Decompress(const char* szPathInArchive) const
@@ -67,7 +67,7 @@ void ArchiveReader::UnInit()
 	PHYSFS_deinit();
 }
 
-String ArchiveReader::ToText(const Vec<u8>& rawBuffer)
+String ArchiveReader::ToText(Vec<u8> rawBuffer)
 {
 	Vec<char> charBuffer(rawBuffer.size() + 1, 0);
 	for (size_t i = 0; i < rawBuffer.size(); ++i)

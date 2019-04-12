@@ -1,7 +1,7 @@
 #pragma once
 #include "Delegate.hpp"
 #include "LittleEngine/UI/UIWidget.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "LittleEngine/UI/UIText.h"
 
 namespace LittleEngine
 {
@@ -16,21 +16,21 @@ private:
 
 public:
 	UIButton();
-	UIButton(const String& name);
-	virtual ~UIButton();
+	UIButton(String name);
+	~UIButton() override;
 
-	void SetText(const UIText& uiText);
-	OnClick::Token AddCallback(const OnClick::Callback& Callback);
+	void SetText(UIText uiText);
+	OnClick::Token AddCallback(OnClick::Callback callback);
 	UIElement* GetButtonElement() const;
 
 public:
-	virtual void SetInteractable(bool bInteractable) override;
+	void SetInteractable(bool bInteractable) override;
 
 protected:
-	virtual void OnInitWidget() override;
-	virtual void OnSelected() override;
-	virtual void OnDeselected() override;
-	virtual void OnInteractStart() override;
-	virtual void OnInteractEnd(bool bInteract) override;
+	void OnInitWidget() override;
+	void OnSelected() override;
+	void OnDeselected() override;
+	void OnInteractStart() override;
+	void OnInteractEnd(bool bInteract) override;
 };
 } // namespace LittleEngine

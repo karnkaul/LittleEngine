@@ -1,19 +1,23 @@
 #include "stdafx.h"
-#include "CollisionComponent.h"
 #include "Utils.h"
-#include "LittleEngine/Services/Services.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "LittleEngine/Game/Entity.h"
 #include "LittleEngine/Game/GameManager.h"
+#include "LittleEngine/Physics/Collider.h"
+#include "LittleEngine/Physics/CollisionManager.h"
+#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/Services/Services.h"
+#include "CollisionComponent.h"
 
 namespace LittleEngine
 {
-CollisionComponent::ColliderData::ColliderData(Collider* pCollider, const Vector2& offset)
+CollisionComponent::ColliderData::ColliderData(Collider* pCollider, Vector2 offset)
 	: offset(offset), pCollider(pCollider)
 {
 }
 
 #if DEBUGGING
-CollisionComponent::ColliderData::ColliderData(Collider* pCollider, SFPrimitive* pSFPrimitive, const Vector2& offset)
+CollisionComponent::ColliderData::ColliderData(Collider* pCollider, SFPrimitive* pSFPrimitive, Vector2 offset)
 	: offset(offset), pCollider(pCollider), pSFPrimitive(pSFPrimitive)
 {
 }
@@ -36,7 +40,7 @@ CollisionComponent::~CollisionComponent()
 	}
 }
 
-void CollisionComponent::AddCircle(const Fixed& radius, const Vector2& offset)
+void CollisionComponent::AddCircle(Fixed radius, Vector2 offset)
 {
 	CircleCollider* pCollider = Services::Game()->Physics()->CreateCircleCollider(m_pOwner->GetNameStr());
 	pCollider->m_ignoreSig = m_signature;
@@ -56,7 +60,7 @@ void CollisionComponent::AddCircle(const Fixed& radius, const Vector2& offset)
 #endif
 }
 
-void CollisionComponent::AddAABB(const AABBData& aabbData, const Vector2& offset)
+void CollisionComponent::AddAABB(const AABBData& aabbData, Vector2 offset)
 {
 	AABBCollider* pCollider = Services::Game()->Physics()->CreateAABBCollider(m_pOwner->GetNameStr());
 	pCollider->m_ignoreSig = m_signature;
@@ -81,7 +85,7 @@ TimingType CollisionComponent::GetComponentTiming() const
 	return TimingType::LAST;
 }
 
-void CollisionComponent::Tick(Time)
+void CollisionComponent::Tick(Time /*dt*/)
 {
 	for (auto& data : m_pColliders)
 	{

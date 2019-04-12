@@ -1,17 +1,17 @@
 #include "stdafx.h"
 #include "DebugConsole.h"
 #if ENABLED(CONSOLE)
-#include "DebugCommands.h"
+#include "Logger.h"
+#include "CircularList.hpp"
 #include "ConsoleInput.h"
 #include "ConsoleRenderer.h"
-#include "RenderStatsRenderer.h"
-#include "CircularList.hpp"
+#include "DebugCommands.h"
 #include "LogLine.h"
+#include "RenderStatsRenderer.h"
+#include "SFMLAPI/Rendering/SFRenderer.h"
 #include "LittleEngine/Input/EngineInput.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/Engine/EngineService.h"
-#include "SFMLAPI/Rendering/SFRenderer.h"
-#include "Logger.h"
 
 namespace LittleEngine
 {
@@ -51,7 +51,7 @@ private:
 
 	Time m_elapsed;
 	s32 m_cursorFrequencyMS = 200;
-	bool m_bShowCursor;
+	bool m_bShowCursor = true;
 
 public:
 	ConsoleImpl();
@@ -103,9 +103,13 @@ void Console::Init()
 void Console::Tick(Time dt)
 {
 	if (bQuit)
+	{
 		Services::Engine()->Terminate();
+	}
 	if (uConsole)
+	{
 		uConsole->Tick(dt);
+	}
 }
 
 void Console::Cleanup()

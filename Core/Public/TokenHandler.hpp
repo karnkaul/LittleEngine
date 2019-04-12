@@ -1,7 +1,5 @@
 #pragma once
-#include "Delegate.hpp"
 #include "StdTypes.h"
-#include <vector>
 
 namespace Core
 {
@@ -15,7 +13,7 @@ public:
 	template <typename T>
 	void AddToken(T token)
 	{
-		tokens.push_back(token);
+		tokens.emplace_back(std::move(token));
 	}
 
 	void Clear()

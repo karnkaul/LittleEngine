@@ -6,9 +6,9 @@ namespace Core
 struct Version
 {
 private:
-	u32 major;
-	u32 minor;
-	u32 patch;
+	u32 major = 0;
+	u32 minor = 0;
+	u32 patch = 0;
 
 public:
 	Version();

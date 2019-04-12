@@ -19,9 +19,9 @@ String PropertiesToString(const Vec<Property>& vec)
 }
 } // namespace
 
-bool Property::Persistor::Load(const String& filePath)
+bool Property::Persistor::Load(String filePath)
 {
-	FileRW fileRW(filePath);
+	FileRW fileRW(std::move(filePath));
 	if (!fileRW.Exists())
 	{
 		return false;
@@ -31,10 +31,10 @@ bool Property::Persistor::Load(const String& filePath)
 	Vec<String> lines = Strings::Tokenise(text, '\n', {});
 	for (const auto& line : lines)
 	{
-		if (line.length() <= 0)
+		if (line.length() <= 0 || line.c_str()[0] == '#')
+		{
 			continue;
-		if (line.c_str()[0] == '#')
-			continue; // Ignore comments
+		}
 
 		Vec<String> tokens = Strings::Tokenise(line, '=', {});
 		if (tokens.size() > 1)
@@ -45,13 +45,13 @@ bool Property::Persistor::Load(const String& filePath)
 	return true;
 }
 
-bool Property::Persistor::Save(const String& filePath) const
+bool Property::Persistor::Save(String filePath) const
 {
-	FileRW file(filePath);
+	FileRW file(std::move(filePath));
 	return file.Write(PropertiesToString(properties));
 }
 
-Property Property::Persistor::GetProp(const String& key) const
+Property Property::Persistor::GetProp(String key) const
 {
 	for (auto& prop : properties)
 	{
@@ -63,7 +63,7 @@ Property Property::Persistor::GetProp(const String& key) const
 	return Property();
 }
 
-void Property::Persistor::SetProp(const Property& property)
+void Property::Persistor::SetProp(Property property)
 {
 	for (auto& prop : properties)
 	{
@@ -73,18 +73,13 @@ void Property::Persistor::SetProp(const Property& property)
 			return;
 		}
 	}
-	properties.push_back(property);
+	properties.emplace_back(std::move(property));
 }
 
-Property::Property()
-{
-	key = stringValue = "";
-}
+Property::Property() = default;
 
-Property::Property(const String& key, const String& value)
+Property::Property(String key, String value) : key(std::move(key)), stringValue(std::move(value))
 {
-	this->key = key;
-	this->stringValue = value;
 }
 
 s32 Property::ToS32(s32 defaultValue) const

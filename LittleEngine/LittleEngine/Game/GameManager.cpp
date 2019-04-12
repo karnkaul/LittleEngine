@@ -1,8 +1,14 @@
 #include "stdafx.h"
-#include "GameManager.h"
-#include "LittleEngine/Services/Services.h"
-#include "LittleEngine/Engine/EngineService.h"
 #include "Logger.h"
+#include "Utils.h"
+#include "Component.h"
+#include "Entity.h"
+#include "GameManager.h"
+#include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/Game/Camera.h"
+#include "LittleEngine/Physics/CollisionManager.h"
+#include "LittleEngine/Services/Services.h"
+#include "LittleEngine/UI/UIManager.h"
 
 namespace LittleEngine
 {
@@ -22,6 +28,7 @@ GameManager::GameManager() : m_logName("GameManager")
 {
 	m_uUIManager = MakeUnique<UIManager>();
 	m_uCollisionManager = MakeUnique<CollisionManager>();
+	m_uWorldCamera = MakeUnique<Camera>();
 	Services::ProvideGameManager(*this);
 }
 
@@ -35,6 +42,7 @@ GameManager::~GameManager()
 	m_uCollisionManager = nullptr;
 	m_uEntities.clear();
 	m_uUIManager = nullptr;
+	m_uWorldCamera = nullptr;
 }
 
 UIManager* GameManager::UI() const
@@ -60,6 +68,11 @@ EngineRepository* GameManager::Repository() const
 WorldStateMachine* GameManager::Worlds() const
 {
 	return Services::Engine()->Worlds();
+}
+
+Camera* GameManager::WorldCamera() const
+{
+	return m_uWorldCamera.get();
 }
 
 CollisionManager* GameManager::Physics() const
@@ -90,5 +103,6 @@ void GameManager::Tick(Time dt)
 		uEntity->Tick(dt);
 	}
 	m_uUIManager->Tick(dt);
+	m_uWorldCamera->Tick(dt);
 }
 } // namespace LittleEngine

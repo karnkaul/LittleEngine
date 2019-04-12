@@ -2,11 +2,11 @@
 #include "CoreTypes.h"
 #if ENABLED(CONSOLE)
 #include "DebugConsole.h"
-#include "LittleEngine/UI/UIElement.h"
-#include "SFMLAPI/Rendering/Colour.h"
 
 namespace LittleEngine
 {
+class UIElement;
+
 namespace Debug
 {
 class RenderStatsRenderer
@@ -22,6 +22,8 @@ private:
 
 public:
 	RenderStatsRenderer();
+	~RenderStatsRenderer();
+	
 	void Tick(Time dt);
 };
 
@@ -34,6 +36,7 @@ private:
 
 public:
 	VersionRenderer();
+	~VersionRenderer();
 };
 #endif
 } // namespace Debug

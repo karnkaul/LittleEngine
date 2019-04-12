@@ -1,9 +1,6 @@
 #pragma once
-#include "EngineConfig.h"
-#include "LittleEngine/Jobs/JobManager.h"
-#include "LittleEngine/RenderLoop/AsyncRenderLoop.h"
-#include "SFMLAPI/SFWindowing.h"
-#include "SFMLAPI/SFRendering.h"
+#include "SFMLAPI/Rendering/GFXBuffer.h"
+#include "SFMLAPI/Windowing/SFEventLoop.h"
 
 namespace LittleEngine
 {
@@ -12,16 +9,19 @@ class EngineLoop final : public SFEventLoop
 {
 private:
 	GFXBuffer m_gfxBuffer;
-	EngineConfig m_config;
-	UPtr<JobManager> m_uJobManager;
+	UPtr<class EngineConfig> m_uConfig;
+	UPtr<class JobManager> m_uJobManager;
 	UPtr<class RenderHeap> m_uRenderHeap;
-	UPtr<AsyncRenderLoop> m_uAsyncRenderLoop;
+	UPtr<class AsyncRenderLoop> m_uAsyncRenderLoop;
 	UPtr<class EngineService> m_uEngineService;
-	bool m_bRenderThread;
+	bool m_bRenderThread = true;
 	bool m_bInit = false;
 
 public:
 	static UPtr<EngineLoop> Create();
+
+public:
+	~EngineLoop() override;
 
 	void Start();
 	void StopTicking();
@@ -42,5 +42,7 @@ private:
 	void SwapGFXBuffer();
 	void Init();
 	void Uninit();
+
+	friend class EngineService;
 };
 } // namespace LittleEngine

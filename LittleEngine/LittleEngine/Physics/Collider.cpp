@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "Collider.h"
 #include "Logger.h"
+#include "Collider.h"
 
 namespace LittleEngine
 {
@@ -18,7 +18,7 @@ struct CircleLocus
 	CircleLocus(CircleLocus&&) = default;
 	CircleLocus& operator=(CircleLocus&&) = default;
 
-	bool IsPointIn(const Vector2& point)
+	bool IsPointIn(Vector2 point)
 	{
 		return topLeft.IsPointInCircle(point) || topRight.IsPointInCircle(point) ||
 			   bottomLeft.IsPointInCircle(point) || bottomRight.IsPointInCircle(point) ||
@@ -66,13 +66,13 @@ void Collider::OnHit(const Collider&)
 }
 #endif
 
-CircleCollider::CircleCollider(const String& ownerName)
+CircleCollider::CircleCollider(String ownerName)
 {
 	String prefix = ownerName.empty() ? "" : ownerName + "-";
 	m_name = prefix + "CircleCollider";
 }
 
-void CircleCollider::SetCircle(const Fixed& radius)
+void CircleCollider::SetCircle(Fixed radius)
 {
 	m_circle.radius = radius;
 }
@@ -101,7 +101,7 @@ bool CircleCollider::IsIntersectCircle(const CircleCollider& other) const
 	return self.IsIntersecting(rhs);
 }
 
-AABBCollider::AABBCollider(const String& ownerName)
+AABBCollider::AABBCollider(String ownerName)
 {
 	String prefix = ownerName.empty() ? "" : ownerName + "-";
 	m_name = prefix + "AABBCollider";

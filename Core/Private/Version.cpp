@@ -4,24 +4,27 @@
 
 namespace Core
 {
-Version::Version() : major(0), minor(0), patch(0)
+namespace
 {
+u32 Parse(const Vec<String>& vec, size_t idx)
+{
+	return (vec.size() > idx) ? static_cast<u32>(Strings::ToS32(vec[idx], 0)) : 0;
 }
+}
+
+Version::Version() = default;
 
 Version::Version(u32 major, u32 minor, u32 patch) : major(major), minor(minor), patch(patch)
 {
 }
 
-Version::Version(const char* szZerialised) : major(0), minor(0), patch(0)
+Version::Version(const char* szSerialised)
 {
-	String serialised(szZerialised);
+	String serialised(szSerialised);
 	Vec<String> tokens = Strings::Tokenise(serialised, '.', {});
-	if (tokens.size() > 0)
-		major = static_cast<u32>(Strings::ToS32(tokens[0], 0));
-	if (tokens.size() > 1)
-		minor = static_cast<u32>(Strings::ToS32(tokens[1], 0));
-	if (tokens.size() > 2)
-		patch = static_cast<u32>(Strings::ToS32(tokens[2], 0));
+	major = Parse(tokens, 0);
+	minor = Parse(tokens, 1);
+	patch = Parse(tokens, 2);
 }
 
 u32 Version::Major() const

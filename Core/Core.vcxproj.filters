@@ -54,6 +54,9 @@
     <ClCompile Include="Private\Version.cpp">
       <Filter>Private</Filter>
     </ClCompile>
+    <ClCompile Include="Private\SimpleTime.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Public\CoreTypes.h">
@@ -120,6 +123,12 @@
       <Filter>Public</Filter>
     </ClInclude>
     <ClInclude Include="Public\Version.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\SimpleTime.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\CircularList.hpp">
       <Filter>Public</Filter>
     </ClInclude>
   </ItemGroup>

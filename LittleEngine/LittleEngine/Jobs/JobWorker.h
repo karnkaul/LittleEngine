@@ -2,7 +2,6 @@
 #include <atomic>
 #include <thread>
 #include "CoreTypes.h"
-#include "JobHandle.h"
 
 namespace LittleEngine
 {
@@ -16,11 +15,11 @@ public:
 	};
 
 private:
-	u8 id;
-	class JobManager* m_pManager;
+	u8 id = 0;
+	class JobManager* m_pManager = nullptr;
 	std::thread m_thread;
 	std::atomic<bool> m_bWork;
-	State m_state;
+	State m_state = State::IDLE;
 	const bool m_bEngineWorker;
 
 public:

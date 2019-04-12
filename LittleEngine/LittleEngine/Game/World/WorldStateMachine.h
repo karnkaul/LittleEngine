@@ -1,7 +1,5 @@
 #pragma once
 #include "World.h"
-#include "LoadingUI.h"
-#include "LittleEngine/UI/UIElement.h"
 
 namespace LittleEngine
 {
@@ -12,17 +10,17 @@ public:
 
 private:
 	Vec<UPtr<World>> m_uCreatedStates;
-	UPtr<LoadingUI> m_uLoadingUI;
+	UPtr<class LoadingUI> m_uLoadingUI;
 	World* m_pActiveState = nullptr;
 	World* m_pNextState = nullptr;
 	class ManifestLoader* m_pAssetLoader = nullptr;
 	bool m_bToActivateState = false;
 	bool m_bLoading = false;
 	bool m_bLoaded = false;
-#if DEBUGGING
-public:
 	String m_manifestPath;
 	String m_archivePath;
+#if DEBUGGING
+public:
 	static bool s_bTEST_infiniteLoad;
 #endif
 
@@ -37,7 +35,7 @@ public:
 	bool LoadState(WorldID id);
 
 private:
-	void Start(const String& manifestPath = "", const String& archivePath = "");
+	void Start(String manifestPath = "", String archivePath = "");
 	void Tick(Time dt);
 	void PostBufferSwap();
 

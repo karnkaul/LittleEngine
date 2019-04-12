@@ -1,7 +1,11 @@
 #pragma once
 #include "CoreTypes.h"
-#include "SFMLAPI/SFSystem.h"
-#include "SFML/Audio.hpp"
+#include "SimpleTime.h"
+
+namespace sf
+{
+class Music;
+}
 
 namespace LittleEngine
 {
@@ -19,8 +23,8 @@ public:
 
 public:
 	Fixed m_volume = Fixed(80, 100);
-	Status m_status;
-	bool m_bLooping;
+	Status m_status = Status::NoMedia;
+	bool m_bLooping = false;
 
 public:
 	virtual ~AudioPlayer();
@@ -43,25 +47,25 @@ class SoundPlayer : public AudioPlayer
 {
 private:
 	sf::Sound m_sfSound;
-	SoundAsset* m_pSoundAsset = nullptr;
+	class SoundAsset* m_pSoundAsset = nullptr;
 
 public:
 	SoundPlayer(SoundAsset* pSoundAsset = nullptr);
-	~SoundPlayer();
+	~SoundPlayer() override;
 
 	bool SetSoundAsset(SoundAsset& soundAsset);
-	void SetDirection(const Fixed& direction);
+	void SetDirection(Fixed direction);
 
-	virtual void Play() override;
-	virtual void Stop() override;
-	virtual void Pause() override;
-	virtual void Resume() override;
-	virtual void Reset(Time time = Time::Zero) override;
-	virtual bool IsPlaying() const override;
-	virtual void Tick(Time dt) override;
+	void Play() override;
+	void Stop() override;
+	void Pause() override;
+	void Resume() override;
+	void Reset(Time time = Time::Zero) override;
+	bool IsPlaying() const override;
+	void Tick(Time dt) override;
 
 private:
-	virtual bool ApplyParams() override;
+	bool ApplyParams() override;
 };
 
 // \brief Concrete class for Music playback (uses streamed MusicAsset)
@@ -72,36 +76,36 @@ private:
 	Time m_elapsedTime;
 	Fixed m_targetVolume = Fixed::One;
 	Fixed m_startVolume = Fixed::One;
-	GameClock m_clock;
-	sf::Music m_sfMusic;
+	UPtr<class GameClock> m_uClock;
+	UPtr<sf::Music> m_uSFMusic;
 	bool m_bFadingIn = false;
 	bool m_bFadingOut = false;
 
 public:
 	MusicPlayer();
-	~MusicPlayer();
+	~MusicPlayer() override;
 
-	bool SetTrack(const String& path);
+	bool SetTrack(String path);
 	Time GetDuration() const;
 	Time GetElapsed() const;
 	bool IsFading() const;
-	void FadeIn(Time time, const Fixed& targetVolume = Fixed::One);
-	void FadeOut(Time time, const Fixed& targetVolume = Fixed::Zero);
+	void FadeIn(Time time, Fixed targetVolume = Fixed::One);
+	void FadeOut(Time time, Fixed targetVolume = Fixed::Zero);
 	void EndFade();
 
 	bool IsPaused() const;
-	virtual void Play() override;
-	virtual void Stop() override;
-	virtual void Pause() override;
-	virtual void Resume() override;
-	virtual void Reset(Time time = Time::Zero) override;
-	virtual bool IsPlaying() const override;
-	virtual void Tick(Time dt) override;
+	void Play() override;
+	void Stop() override;
+	void Pause() override;
+	void Resume() override;
+	void Reset(Time time = Time::Zero) override;
+	bool IsPlaying() const override;
+	void Tick(Time dt) override;
 
 private:
 	void BeginFade();
 
-	virtual bool ApplyParams() override;
+	bool ApplyParams() override;
 
 	friend class EngineAudio;
 };

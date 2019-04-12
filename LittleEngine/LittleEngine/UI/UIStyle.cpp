@@ -18,7 +18,9 @@ UIWidgetStyle UIWidgetStyle::GetDefault0(UIWidgetStyle* pReplace)
 {
 	UIWidgetStyle ret;
 	if (pReplace)
+	{
 		ret.baseLayer = pReplace->baseLayer;
+	}
 	ret.widgetSize = {200, 60};
 
 	ret.uninteractable.fill = {150, 150, 150, 255};
@@ -38,7 +40,9 @@ LittleEngine::UIWidgetStyle UIWidgetStyle::GetDefault1(UIWidgetStyle* pReplace)
 {
 	UIWidgetStyle ret;
 	if (pReplace)
+	{
 		ret.baseLayer = pReplace->baseLayer;
+	}
 	ret.widgetSize = {200, 60};
 
 	ret.uninteractable.fill = {150, 150, 150, 255};

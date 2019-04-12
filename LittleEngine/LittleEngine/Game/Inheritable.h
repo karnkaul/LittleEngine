@@ -9,13 +9,17 @@ private:
 	String m_logName;
 	String m_name;
 	String m_className;
+protected:
+	// Will LOG_D destruction unless m_bSilent
+	bool m_bSilent = false;
 
 public:
-	Inheritable(const String& name, const String& className = "");
+	// Will LOG_D destruction unless bSilent
+	Inheritable(String name, String className = "", bool bSilent = false);
 	virtual ~Inheritable();
 
 public:
-	void SetName(const String& name, const String& className = "");
+	void SetName(String name, String className = "");
 	const char* GetNameStr() const;
 	const char* LogNameStr() const;
 

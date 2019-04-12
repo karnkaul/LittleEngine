@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "RenderStatsRenderer.h"
 #if ENABLED(CONSOLE)
-#include "LittleEngine/GFX/GFX.h"
+#include "SFMLAPI/Rendering/SFRenderer.h"
 #include "LittleEngine/Engine/EngineConfig.h"
 #include "LittleEngine/Game/GameManager.h"
-#include "SFMLAPI/Rendering/SFRenderer.h"
+#include "LittleEngine/GFX/GFX.h"
+#include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIText.h"
 
 namespace LittleEngine
 {
@@ -56,7 +58,9 @@ RenderStatsRenderer::RenderStatsRenderer()
 		->SetEnabled(false);
 }
 
-void RenderStatsRenderer::Tick(Time)
+RenderStatsRenderer::~RenderStatsRenderer() = default;
+
+void RenderStatsRenderer::Tick(Time /*dt*/)
 {
 	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uPrimitiveCount, "Primitives: ", g_renderData.primitiveCount);
 	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uFPS, "FPS: ", g_renderData.framesPerSecond);
@@ -86,6 +90,8 @@ VersionRenderer::VersionRenderer()
 		->SetPosition(GFX::Project({-Fixed(0.99f), -Fixed(0.95f)}, false))
 		->SetEnabled(true);
 }
+
+VersionRenderer::~VersionRenderer() = default;
 #endif
 } // namespace Debug
 } // namespace LittleEngine

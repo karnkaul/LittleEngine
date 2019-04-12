@@ -1,4 +1,5 @@
 #pragma once
+#include "ArchiveReader.h"
 #include "SFMLAPI/SFMLAPI.h"
 #include "Audio/EngineAudio.h"
 #include "Engine/EngineLoop.h"
@@ -12,5 +13,6 @@
 #include "GFX/GFX.h"
 #include "Physics/Physics.h"
 #include "RenderLoop/RenderHeap.h"
+#include "Repository/EngineRepository.h"
 #include "Services/Services.h"
 #include "UI/UI.h"

@@ -12,10 +12,10 @@ private:
 	Core::TokenHandler<EngineInput::Token> m_tokenHandler;
 
 public:
-	WorldObject(const String& name, const String& baseClass = "");
-	virtual ~WorldObject();
+	WorldObject(String name, String baseClass = "", bool bSilent = false);
+	~WorldObject() override;
 
 protected:
-	void BindInput(EngineInput::Delegate Callback);
+	void BindInput(EngineInput::Delegate callback);
 };
 } // namespace LittleEngine

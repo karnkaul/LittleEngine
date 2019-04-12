@@ -2,7 +2,6 @@
 #include "CoreTypes.h"
 #include "Colour.h"
 #include "SFRenderState.h"
-#include "SFMLAPI/System/SFAssets.h"
 #include "SFML/Graphics.hpp"
 
 namespace LittleEngine
@@ -25,8 +24,8 @@ struct SFPrimitiveData
 	String text;
 	Colour primary;
 	Colour secondary;
-	TextureAsset* texture = nullptr;
-	FontAsset* font = nullptr;
+	class TextureAsset* texture = nullptr;
+	class FontAsset* font = nullptr;
 };
 
 class SFPrimitive final
@@ -47,10 +46,10 @@ private:
 	bool m_bMakeStatic = false;
 
 public:
-	static Vector2 WorldToScreen(const Vector2& worldPoint);
-	static Fixed WorldToScreen(const Fixed& worldOrientation);
-	static Vector2 ScreenToWorld(const Vector2& screenPoint);
-	static Fixed ScreenToWorld(const Fixed& screenOrientation);
+	static Vector2 WorldToScreen(Vector2 worldPoint);
+	static Fixed WorldToScreen(Fixed worldOrientation);
+	static Vector2 ScreenToWorld(Vector2 screenPoint);
+	static Fixed ScreenToWorld(Fixed screenOrientation);
 
 	SFPrimitive();
 	SFPrimitive(const SFPrimitiveData& data);
@@ -59,27 +58,27 @@ public:
 	// Interpolated States
 	SFPrimitive* SetEnabled(bool bEnabled);
 	SFPrimitive* SetLayer(LayerID layer);
-	SFPrimitive* SetPosition(const Vector2& sfPosition, bool bImmediate = false);
-	SFPrimitive* SetOrientation(const Fixed& sfOrientation, bool bImmediate = false);
-	SFPrimitive* SetScale(const Vector2& sfScale, bool bImmediate = false);
-	SFPrimitive* SetPivot(const Vector2& pivot = Vector2::Zero);
+	SFPrimitive* SetPosition(Vector2 sfPosition, bool bImmediate = false);
+	SFPrimitive* SetOrientation(Fixed sfOrientation, bool bImmediate = false);
+	SFPrimitive* SetScale(Vector2 sfScale, bool bImmediate = false);
+	SFPrimitive* SetPivot(Vector2 pivot = Vector2::Zero);
 	SFPrimitive* SetPrimaryColour(Colour sfColour, bool bImmediate = false);
 	SFPrimitive* SetSecondaryColour(Colour sfColour, bool bImmediate = false);
 
 	// Shapes and Text
-	SFPrimitive* SetOutline(const Fixed& thickness);
+	SFPrimitive* SetOutline(Fixed thickness);
 
 	// Shapes
-	SFPrimitive* SetSize(const Vector2& size, SFShapeType onShape);
+	SFPrimitive* SetSize(Vector2 size, SFShapeType onShape);
 
 	// Sprite
-	SFPrimitive* SetTexture(const TextureAsset& texture);
+	SFPrimitive* SetTexture(const class TextureAsset & texture);
 	SFPrimitive* Crop(const Rect2& rect);
 
 	// Text
-	SFPrimitive* SetFont(const FontAsset& font);
+	SFPrimitive* SetFont(const class FontAsset& font);
 	SFPrimitive* SetTextSize(u32 pixelSize);
-	SFPrimitive* SetText(const String& text);
+	SFPrimitive* SetText(String text);
 
 	Rect2 GetBounds() const;
 	Rect2 GetShapeBounds() const;
@@ -100,7 +99,7 @@ public:
 
 private:
 	void UpdatePivot();
-	void UpdateRenderState(const Fixed& alpha);
+	void UpdateRenderState(Fixed alpha);
 
 	friend class GFXBuffer;
 	friend struct GFXDataFrame;

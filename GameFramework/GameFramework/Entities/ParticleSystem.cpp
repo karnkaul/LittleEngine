@@ -1,10 +1,15 @@
 #include "stdafx.h"
-#include "ParticleSystem.h"
-#include "LittleEngine/Services/Services.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "ArchiveReader.h"
+#include "GData.h"
+#include "SFMLAPI/Rendering/Colour.h"
+#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Audio/EngineAudio.h"
 #include "LittleEngine/Game/GameManager.h"
+#include "LittleEngine/RenderLoop/RenderHeap.h"
 #include "LittleEngine/Repository/EngineRepository.h"
+#include "LittleEngine/Services/Services.h"
+#include "ParticleSystem.h"
 
 namespace LittleEngine
 {
@@ -23,19 +28,19 @@ Vector2 GetRandom(TRange<Vector2> tRange)
 							: tRange.min;
 }
 
-Fixed Lerp(TRange<Fixed> tRange, const Fixed& t)
+Fixed Lerp(TRange<Fixed> tRange, Fixed t)
 {
 	return Maths::Lerp(tRange.min, tRange.max, t);
 }
 
-UByte Lerp(TRange<UByte> tRange, const Fixed& alpha)
+UByte Lerp(TRange<UByte> tRange, Fixed alpha)
 {
 	float _t = (Fixed::One - alpha).ToF32();
 	float t = alpha.ToF32();
 	return _t * tRange.min + t * tRange.max;
 }
 
-TRange<Fixed> GetTRangeF(const GData& minMax, const Fixed& defaultMin, const Fixed& defaultMax)
+TRange<Fixed> GetTRangeF(const GData& minMax, Fixed defaultMin, Fixed defaultMax)
 {
 	return TRange<Fixed>(Fixed(minMax.GetF64("min", defaultMin.ToF32())),
 						 Fixed(minMax.GetF64("max", defaultMax.ToF32())));
@@ -106,7 +111,7 @@ public:
 	Fixed m_w;
 	Time m_ttl;
 	Time m_t;
-	LayerID m_layer;
+	LayerID m_layer = LAYER_FX;
 	Colour m_c;
 
 private:
@@ -120,10 +125,10 @@ public:
 	Particle& operator=(const Particle& copy) = delete;
 	~Particle();
 
-	void Init(const Vector2& u,
+	void Init(Vector2 u,
 			  const Time& ttl,
 			  const Transform& transform = Transform::IDENTITY,
-			  const Fixed& w = Fixed::Zero,
+			  Fixed w = Fixed::Zero,
 			  Colour c = Colour::White,
 			  s32 layerDelta = 0);
 
@@ -148,7 +153,7 @@ Particle::~Particle()
 	Services::RHeap()->Destroy(m_pSFPrimitive);
 }
 
-void Particle::Init(const Vector2& u, const Time& ttl, const Transform& transform, const Fixed& w, Colour c, s32 layerDelta)
+void Particle::Init(Vector2 u, const Time& ttl, const Transform& transform, Fixed w, Colour c, s32 layerDelta)
 {
 	m_bInUse = true;
 	this->m_ttl = ttl;
@@ -193,15 +198,15 @@ private:
 	Time m_elapsed;
 	Transform* m_pParent = nullptr;
 	SoundPlayer* m_pSoundPlayer = nullptr;
-	bool m_bSpawnNewParticles;
-	bool m_bWaiting;
-	bool m_bSoundPlayed;
+	bool m_bSpawnNewParticles = true;
+	bool m_bWaiting = false;
+	bool m_bSoundPlayed = false;
 
 public:
 	bool m_bEnabled = true;
 
 public:
-	Emitter(const EmitterData& data, bool bSetEnabled = true);
+	Emitter(EmitterData data, bool bSetEnabled = true);
 	~Emitter();
 
 	void Reset(bool bSetEnabled);
@@ -217,8 +222,8 @@ private:
 	void TickInternal(Time dt);
 };
 
-Emitter::Emitter(const EmitterData& data, bool bSetEnabled)
-	: m_data(data), m_pParent(data.pParent), m_bEnabled(bSetEnabled)
+Emitter::Emitter(EmitterData data, bool bSetEnabled)
+	: m_data(std::move(data)), m_pParent(data.pParent), m_bEnabled(bSetEnabled)
 {
 	m_particles.reserve(data.spawnData.numParticles);
 	for (size_t i = 0; i < data.spawnData.numParticles; ++i)
@@ -323,7 +328,9 @@ Vec<Particle*> Emitter::ProvisionLot(u32 count)
 	while (iter != m_particles.end() && total < count)
 	{
 		if (!iter->m_bInUse)
+		{
 			ret.push_back(&*iter);
+		}
 		++iter;
 		++total;
 	}
@@ -431,23 +438,23 @@ ParticleSystemData::ParticleSystemData(const GData& psGData)
 	}
 }
 
-ParticleSystem::ParticleSystem(const String& name) : Entity(name)
+ParticleSystem::ParticleSystem(String name) : Entity(std::move(name))
 {
 	SetName(name, "ParticleSystem");
 }
 
 ParticleSystem::~ParticleSystem() = default;
 
-void ParticleSystem::InitParticleSystem(ParticleSystemData&& data)
+void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 {
 	Vec<EmitterData>& emitters = data.emitterDatas;
 	String particles;
-	for (EmitterData& data : emitters)
+	for (EmitterData& eData : emitters)
 	{
-		data.pParent = &m_transform;
-		UPtr<Emitter> emitter = MakeUnique<Emitter>(data, false);
-		particles += (Strings::ToString(data.spawnData.numParticles) + ", ");
-		m_emitters.push_back(std::move(emitter));
+		eData.pParent = &m_transform;
+		particles += (Strings::ToString(eData.spawnData.numParticles) + ", ");
+		UPtr<Emitter> emitter = MakeUnique<Emitter>(std::move(eData), false);
+		m_emitters.emplace_back(std::move(emitter));
 	}
 	Core::LogSeverity logSeverity =
 		particles.empty() || emitters.empty() ? Core::LogSeverity::Warning : Core::LogSeverity::Debug;

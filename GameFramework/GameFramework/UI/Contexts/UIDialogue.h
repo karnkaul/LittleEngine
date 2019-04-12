@@ -1,5 +1,6 @@
 #pragma once
 #include "LittleEngine/UI/UIContext.h"
+#include "LittleEngine/UI/UIText.h"
 #include "GameFramework/UI/Widgets/UIButton.h"
 
 namespace LittleEngine
@@ -24,19 +25,20 @@ private:
 
 public:
 	UIDialogue();
-	UIDialogue(const String& name);
+	UIDialogue(String name);
+	~UIDialogue() override;
 
-	UIDialogue* SetContent(const UIText& text, const Colour* pBackground = nullptr, const Vector2* pSize = nullptr);
-	UIDialogue* SetHeader(const UIText& text, const Colour* pBackground = nullptr);
+	UIDialogue* SetContent(UIText text, const Colour* pBackground = nullptr, const Vector2* pSize = nullptr);
+	UIDialogue* SetHeader(UIText text, const Colour* pBackground = nullptr);
 
-	UIButton::OnClick::Token AddMainButton(const UIText& text,
-										   const UIButton::OnClick::Callback& onMainButton,
+	UIButton::OnClick::Token AddMainButton(UIText text,
+										   UIButton::OnClick::Callback onMainButton,
 										   bool bDismissOnBack);
-	UIButton::OnClick::Token AddOtherButton(const UIText& text,
-											const UIButton::OnClick::Callback& OnOtherButton,
+	UIButton::OnClick::Token AddOtherButton(UIText text,
+											UIButton::OnClick::Callback onOtherButton,
 											bool bSelect = true);
 
 protected:
-	virtual void OnInitContext() override;
+	void OnInitContext() override;
 };
 } // namespace LittleEngine

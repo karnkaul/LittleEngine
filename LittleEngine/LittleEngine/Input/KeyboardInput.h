@@ -1,6 +1,5 @@
 #pragma once
 #include "StdTypes.h"
-#include "Delegate.hpp"
 #include "LittleEngine/Input/EngineInput.h"
 
 namespace LittleEngine
@@ -9,7 +8,7 @@ struct LiveLine
 {
 	String liveString;
 
-	void Append(const String& newInput);
+	void Append(String newInput);
 	void Backspace();
 	void Clear();
 };
@@ -25,4 +24,4 @@ public:
 	void Clear();
 	String GetLiveString() const;
 };
-}
+} // namespace LittleEngine

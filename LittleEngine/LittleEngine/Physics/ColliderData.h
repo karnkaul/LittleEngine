@@ -17,11 +17,11 @@ struct AABBData
 	AABBData(AABBData&&) = default;
 	AABBData& operator=(const AABBData&) = default;
 	AABBData& operator=(AABBData&&) = default;
-	AABBData(const Vector2& size);
-	AABBData(const Vector2& lowerBound, const Vector2& upperBound);
+	AABBData(Vector2 size);
+	AABBData(Vector2 lowerBound, Vector2 upperBound);
 
 	bool Intersecting(const AABBData& other) const;
-	bool IsPointInRect(const Vector2& point) const;
+	bool IsPointInRect(Vector2 point) const;
 };
 
 // \brief Wrapper for Circle Collider data.
@@ -34,13 +34,13 @@ struct CircleData
 	Fixed radius;
 
 	CircleData() = default;
-	CircleData(const Fixed& radius, const Vector2& centre);
+	CircleData(Fixed radius, Vector2 centre);
 	CircleData(const CircleData&) = default;
 	CircleData(CircleData&&) = default;
 	CircleData& operator=(const CircleData&) = default;
 	CircleData& operator=(CircleData&&) = default;
 
 	bool IsIntersecting(const CircleData& other) const;
-	bool IsPointInCircle(const Vector2& point) const;
+	bool IsPointInCircle(Vector2 point) const;
 };
 } // namespace LittleEngine

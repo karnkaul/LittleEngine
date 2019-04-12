@@ -1,12 +1,15 @@
 #pragma once
 #include "CoreTypes.h"
-#include "GData.h"
 #include "Logger.h" // Logger::Severity
 #include "Version.h"
 
+namespace Core
+{
+class GData;
+}
+
 namespace LittleEngine
 {
-using GData = Core::GData;
 using LogSeverity = Core::LogSeverity;
 using Version = Core::Version;
 
@@ -18,7 +21,7 @@ private:
 	static const bool s_bPauseOnFocusLoss;
 	static const Version s_engineVersion;
 
-	GData m_data;
+	UPtr<Core::GData> m_uData;
 	bool m_bDirty = false;
 
 public:
@@ -26,11 +29,12 @@ public:
 
 public:
 	EngineConfig();
+	~EngineConfig();
 
 	// Load config file from path and replace cache values if valid
-	bool Load(const String& path);
+	bool Load(String path);
 	// Save cache to config file at path; loadFirst will call Load() before saving
-	bool Save(const String& path);
+	bool Save(String path);
 
 	bool ShouldCreateRenderThread() const;
 	bool ShouldPauseOnFocusLoss() const;
@@ -47,10 +51,10 @@ public:
 	bool SetNumGameThreads(u32 numThreads);
 	bool SetTicksPerSecond(u32 ticksPerSecond);
 	bool SetMaxTimeMS(u32 maxTickTimeMS);
-	bool SetWindowTitle(const String& windowTitle);
+	bool SetWindowTitle(String windowTitle);
 	bool SetLogLevel(LogSeverity level);
 	bool SetColliderBorderWidth(u32 shapeWidth);
-	bool SetViewSize(const Vector2& viewSize);
+	bool SetViewSize(Vector2 viewSize);
 
 private:
 	void Verify();

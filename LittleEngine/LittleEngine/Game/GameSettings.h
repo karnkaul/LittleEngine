@@ -24,10 +24,10 @@ public:
 	~GameSettings();
 
 	u32 GetWindowHeight();
-	bool IsBordlerless();
+	bool IsBorderless();
 
 	void SetWindowHeight(u32 height);
-	void SetBorderless(bool bBordlerless);
+	void SetBorderless(bool bBorderless);
 
 private:
 	void SetDefaults();

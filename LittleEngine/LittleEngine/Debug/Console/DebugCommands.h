@@ -1,12 +1,12 @@
 #pragma once
 #include "CoreTypes.h"
 #if ENABLED(CONSOLE)
-#include "LogLine.h"
-
 namespace LittleEngine
 {
 namespace Debug
 {
+struct LogLine;
+
 namespace Commands
 {
 struct AutoCompleteResults

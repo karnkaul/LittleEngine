@@ -193,6 +193,12 @@
     <ClCompile Include="LittleEngine\Input\KeyboardInput.cpp">
       <Filter>LittleEngine\Input</Filter>
     </ClCompile>
+    <ClCompile Include="LittleEngine\Game\Camera.cpp">
+      <Filter>LittleEngine\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="LittleEngine\Repository\LoadHelpers.cpp">
+      <Filter>LittleEngine\Repository</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Input\EngineInput.h">
@@ -279,9 +285,6 @@
     <ClInclude Include="LittleEngine\Debug\Console\LogLine.h">
       <Filter>LittleEngine\Debug\Console</Filter>
     </ClInclude>
-    <ClInclude Include="LittleEngine\Debug\Console\CircularList.hpp">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClInclude>
     <ClInclude Include="LittleEngine\Debug\Console\ConsoleInput.h">
       <Filter>LittleEngine\Debug\Console</Filter>
     </ClInclude>
@@ -357,8 +360,14 @@
     <ClInclude Include="LittleEngine\Input\KeyboardInput.h">
       <Filter>LittleEngine\Input</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
+    <ClInclude Include="LittleEngine\Game\ComponentTimingType.h">
+      <Filter>LittleEngine\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Game\Camera.h">
+      <Filter>LittleEngine\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Repository\LoadHelpers.h">
+      <Filter>LittleEngine\Repository</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

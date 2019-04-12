@@ -1,8 +1,14 @@
 #include "stdafx.h"
+#include "Logger.h"
 #include "LoadingUI.h"
-#include "LittleEngine/Services/Services.h"
-#include "LittleEngine/GFX/GFX.h"
+#include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/GFX/GFX.h"
+#include "LittleEngine/Repository/EngineRepository.h"
+#include "LittleEngine/Services/Services.h"
+#include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIProgressBar.h"
+#include "LittleEngine/UI/UIText.h"
 
 namespace LittleEngine
 {
@@ -51,7 +57,7 @@ LoadingUI::~LoadingUI()
 	LOG_D("[Loading UI] destroyed");
 }
 
-void LoadingUI::Tick(Time dt, const Fixed& progress)
+void LoadingUI::Tick(Time dt, Fixed progress)
 {
 	progressTarget = progress;
 	if (progressTarget == Fixed::One)
@@ -70,7 +76,9 @@ void LoadingUI::Tick(Time dt, const Fixed& progress)
 		m_elapsed = Time::Zero;
 		m_ellipsis += ". ";
 		if (m_ellipsis.size() > MAX_ELLIPSIS_SIZE)
+		{
 			m_ellipsis = ". ";
+		}
 		m_uEllipsis->SetText(UIText(m_ellipsis, 40, Colour::White));
 	}
 

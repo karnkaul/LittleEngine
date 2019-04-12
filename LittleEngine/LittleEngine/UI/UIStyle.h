@@ -1,7 +1,6 @@
 #pragma once
-#include "LittleEngine/UI/UIText.h"
 #include "SFMLAPI/Rendering/Colour.h"
-#include "SFMLAPI/Rendering/SFRenderState.h"
+#include "SFMLAPI/Rendering/SFLayerID.h"
 
 namespace LittleEngine
 {
@@ -21,7 +20,7 @@ struct UIWidgetStyle
 	UIStyle selected;
 	UIStyle interacting;
 	Vector2 widgetSize;
-	LayerID baseLayer;
+	LayerID baseLayer = LAYER_UI;
 	Colour background;
 
 	static UIWidgetStyle GetDefault0(UIWidgetStyle* pReplace = nullptr);

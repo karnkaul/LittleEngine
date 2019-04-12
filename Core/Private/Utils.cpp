@@ -6,23 +6,22 @@
 
 namespace Strings
 {
-void ToLower(String& lhs)
+void ToLower(String& outString)
 {
-	std::transform(lhs.begin(), lhs.end(), lhs.begin(), ::tolower);
+	std::transform(outString.begin(), outString.end(), outString.begin(), ::tolower);
 }
 
-bool ToBool(const String& input, bool bDefaultValue)
+bool ToBool(String input, bool bDefaultValue)
 {
-	String inputLower(input);
-	ToLower(inputLower);
-	if (inputLower == "true" || inputLower == "1")
+	ToLower(input);
+	if (input == "true" || input == "1")
 	{
 		return true;
 	}
 	return bDefaultValue;
 }
 
-s32 ToS32(const String& input, s32 defaultValue)
+s32 ToS32(String input, s32 defaultValue)
 {
 	s32 ret;
 	try
@@ -36,7 +35,7 @@ s32 ToS32(const String& input, s32 defaultValue)
 	return ret;
 }
 
-f32 ToF32(const String& input, f32 defaultValue)
+f32 ToF32(String input, f32 defaultValue)
 {
 	f32 ret;
 	try
@@ -50,7 +49,7 @@ f32 ToF32(const String& input, f32 defaultValue)
 	return ret;
 }
 
-f64 ToF64(const String& input, f64 defaultValue)
+f64 ToF64(String input, f64 defaultValue)
 {
 	f64 ret;
 	try
@@ -82,7 +81,9 @@ void RemoveChars(String& outInput, InitList<char> toRemove)
 		for (const auto& x : toRemove)
 		{
 			if (c == x)
+			{
 				return true;
+			}
 		}
 		return false;
 	});
@@ -95,7 +96,7 @@ void RemoveWhitespace(String& outInput)
 	RemoveChars(outInput, {' '});
 }
 
-Vec<String> Tokenise(const String& s, const char delimiter, InitList<Pair<char>> escape)
+Vec<String> Tokenise(const String& s, char delimiter, InitList<Pair<char>> escape)
 {
 	auto end = s.cend();
 	auto start = end;
@@ -108,7 +109,9 @@ Vec<String> Tokenise(const String& s, const char delimiter, InitList<Pair<char>>
 		if (*it != delimiter || escaping)
 		{
 			if (start == end)
+			{
 				start = it;
+			}
 			for (auto e : escape)
 			{
 				if (*it == e.first)
@@ -117,7 +120,7 @@ Vec<String> Tokenise(const String& s, const char delimiter, InitList<Pair<char>>
 					escapeStack.push(e);
 					break;
 				}
-				else if (*it == e.second)
+				if (*it == e.second)
 				{
 					if (e.first == escapeStack.top().first)
 					{

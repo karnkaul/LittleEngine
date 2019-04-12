@@ -1,14 +1,10 @@
 #pragma once
-#include <atomic>
 #include <mutex>
 #include <functional>
 #include <future>
 #include "CoreTypes.h"
-#include "JobHandle.h"
-#include "JobWorker.h"
-#include "MultiJob.h"
+#include "SimpleTime.h"
 #include "LittleEngine/Services/IService.h"
-#include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {
@@ -26,14 +22,14 @@ private:
 		std::promise<void> m_promise;
 		String logName;
 	public:
-		SPtr<JobHandle> m_sHandle;
+		SPtr<class JobHandle> m_sHandle;
 		std::function<void()> m_task;
 		s32 m_id;
 		bool m_bSilent = false;
 
 	public:
 		Job() = default;
-		Job(s32 id, const std::function<void()>& task, String name, bool bSilent);
+		Job(s32 id, std::function<void()> task, String name, bool bSilent);
 
 		const char* ToStr() const;
 
@@ -44,7 +40,7 @@ private:
 private:
 	Vec<UPtr<class JobWorker>> m_gameWorkers;
 	Vec<UPtr<class JobWorker>> m_engineWorkers;
-	List<UPtr<MultiJob>> m_uMultiJobs;
+	List<UPtr<class MultiJob>> m_uMultiJobs;
 	List<UPtr<Job>> m_gameJobQueue;
 	List<UPtr<Job>> m_engineJobQueue;
 	std::mutex m_mutex;
@@ -54,12 +50,12 @@ private:
 
 public:
 	JobManager();
-	~JobManager();
+	~JobManager() override;
 
 public:
-	SPtr<JobHandle> Enqueue(const std::function<void()>& Task, const String& name = "", bool bSilent = false);
-	SPtr<JobHandle> EnqueueEngine(const std::function<void()>& Task, const String& name);
-	MultiJob* CreateMultiJob(const String& name);
+	SPtr<JobHandle> Enqueue(std::function<void()> task, String name = "", bool bSilent = false);
+	SPtr<JobHandle> EnqueueEngine(std::function<void()> task, String name);
+	MultiJob* CreateMultiJob(String name);
 
 private:
 	s32 AvailableEngineThreads() const;

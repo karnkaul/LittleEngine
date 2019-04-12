@@ -1,8 +1,12 @@
 #pragma once
 #include <atomic>
 #include <mutex>
-#include "FileRW.h"
-#include "LittleEngine/Jobs/JobManager.h"
+#include "CoreTypes.h"
+
+namespace Core
+{
+class FileRW;
+}
 
 namespace LittleEngine
 {
@@ -11,13 +15,13 @@ class AsyncFileLogger final
 private:
 	String m_filePath;
 	String m_cache;
-	UPtr<FileRW> m_uWriter;
+	UPtr<Core::FileRW> m_uWriter;
 	std::atomic<bool> m_bStopLogging;
 	std::mutex m_mutex;
-	SPtr<JobHandle> m_sFileLogJobHandle;
+	SPtr<class JobHandle> m_sFileLogJobHandle;
 
 public:
-	AsyncFileLogger(const String& filePath);
+	AsyncFileLogger(String filePath);
 	~AsyncFileLogger();
 
 private:

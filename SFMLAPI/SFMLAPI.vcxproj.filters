@@ -46,9 +46,6 @@
     <ClInclude Include="SFMLAPI\System\SFGameClock.h">
       <Filter>SFMLAPI\System</Filter>
     </ClInclude>
-    <ClInclude Include="SFMLAPI\System\SFTime.h">
-      <Filter>SFMLAPI\System</Filter>
-    </ClInclude>
     <ClInclude Include="SFMLAPI\System\SFTypes.h">
       <Filter>SFMLAPI\System</Filter>
     </ClInclude>
@@ -63,6 +60,15 @@
     </ClInclude>
     <ClInclude Include="SFMLAPI\Rendering\GFXBuffer.h">
       <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Input\SFInputDataFrame.h">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\SFLayerID.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\System\SFAssetType.h">
+      <Filter>SFMLAPI\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -93,9 +99,6 @@
     <ClCompile Include="SFMLAPI\System\SFGameClock.cpp">
       <Filter>SFMLAPI\System</Filter>
     </ClCompile>
-    <ClCompile Include="SFMLAPI\System\SFTime.cpp">
-      <Filter>SFMLAPI\System</Filter>
-    </ClCompile>
     <ClCompile Include="SFMLAPI\System\SFTypes.cpp">
       <Filter>SFMLAPI\System</Filter>
     </ClCompile>
@@ -110,6 +113,9 @@
     </ClCompile>
     <ClCompile Include="SFMLAPI\Rendering\GFXBuffer.cpp">
       <Filter>SFMLAPI\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Input\SFInputDataFrame.cpp">
+      <Filter>SFMLAPI\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

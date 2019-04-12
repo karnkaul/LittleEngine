@@ -31,7 +31,7 @@ size_t Random::Range(size_t min, size_t max)
 	return static_cast<size_t>(Range(static_cast<s32>(min), static_cast<s32>(max)));
 }
 
-Fixed Random::Range(const Fixed& min, const Fixed& max, u32 precision)
+Fixed Random::Range(Fixed min, Fixed max, u32 precision)
 {
 	s32 random = Range((precision * min).ToS32(), (precision * max).ToS32());
 	return Fixed(random, precision);

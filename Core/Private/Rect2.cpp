@@ -3,10 +3,7 @@
 
 namespace Core
 {
-// Rect2::Rect2(const Vector2 &halfSize) : lower(-halfSize), upper(halfSize) {}
-// Rect2::Rect2(const Vector2 & lower, const Vector2 & upper) : lower(lower), upper(upper) {}
-
-Rect2 Rect2::CentreSize(const Vector2& size, const Vector2& centre)
+Rect2 Rect2::CentreSize(Vector2 size, Vector2 centre)
 {
 	Rect2 ret;
 	Vector2 halfSize = Fixed::OneHalf * size;
@@ -15,7 +12,7 @@ Rect2 Rect2::CentreSize(const Vector2& size, const Vector2& centre)
 	return ret;
 }
 
-Rect2 Rect2::BLTR(const Vector2& bottomLeft, const Vector2& topRight)
+Rect2 Rect2::BLTR(Vector2 bottomLeft, Vector2 topRight)
 {
 	Rect2 ret;
 	ret.bottomLeft = bottomLeft;
@@ -23,7 +20,7 @@ Rect2 Rect2::BLTR(const Vector2& bottomLeft, const Vector2& topRight)
 	return ret;
 }
 
-Rect2 Rect2::TLSize(const Vector2& size, const Vector2& topLeft)
+Rect2 Rect2::TLSize(Vector2 size, Vector2 topLeft)
 {
 	Rect2 ret;
 	ret.bottomLeft = Vector2(topLeft.x, topLeft.y - size.y);

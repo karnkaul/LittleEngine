@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreTypes.h"
+#include "SimpleTime.h"
 #include "LittleEngine/Game/Inheritable.h"
-#include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {
@@ -11,8 +11,8 @@ protected:
 	bool m_bDestroyed = false;
 
 public:
-	UIObject(const String& name);
-	virtual ~UIObject();
+	UIObject(String name, bool bSilent = false);
+	~UIObject() override;
 
 	virtual void Tick(Time dt) = 0;
 

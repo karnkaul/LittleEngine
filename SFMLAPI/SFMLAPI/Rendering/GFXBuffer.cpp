@@ -16,7 +16,7 @@ GFXDataFrame::GFXDataFrame(Vec<SFPrimitive>&& primitives)
 	}
 }
 
-bool GFXDataFrame::IsOutOfBounds(const Vector2& position, const Rect2& objectBounds, const Vector2& worldBounds)
+bool GFXDataFrame::IsOutOfBounds(Vector2 position, const Rect2& objectBounds, Vector2 worldBounds)
 {
 	Vector2 tr = position + objectBounds.GetTopRight();
 	Vector2 bl = position + objectBounds.GetBottomLeft();
@@ -24,7 +24,7 @@ bool GFXDataFrame::IsOutOfBounds(const Vector2& position, const Rect2& objectBou
 			bl.y > worldBounds.y);
 }
 
-void GFXDataFrame::Cull(const Vector2& cullBounds)
+void GFXDataFrame::Cull(Vector2 cullBounds)
 {
 	for (auto& layer : layerArray)
 	{
@@ -50,6 +50,8 @@ GFXBuffer::GFXBuffer()
 	m_bufferIdx = 0;
 }
 
+GFXBuffer::~GFXBuffer() = default;
+
 Time GFXBuffer::GetLastSwapTime() const
 {
 	return m_lastSwapTime;
@@ -61,7 +63,7 @@ Vec<SFPrimitive>& GFXBuffer::ReferenceActiveBuffer()
 	return source;
 }
 
-void GFXBuffer::Lock_Swap(GFXDataFrame&& newFrame, const Vector2& cullBounds)
+void GFXBuffer::Lock_Swap(GFXDataFrame newFrame, Vector2 cullBounds)
 {
 	newFrame.Cull(cullBounds);
 	Vec<SFPrimitive>* inactive = GetInactiveBuffer();
@@ -73,11 +75,11 @@ void GFXBuffer::Lock_Swap(GFXDataFrame&& newFrame, const Vector2& cullBounds)
 	}
 }
 
-void GFXBuffer::Lock_Traverse(const std::function<void(Vec<SFPrimitive>& vec)>& Procedure)
+void GFXBuffer::Lock_Traverse(std::function<void(Vec<SFPrimitive>& vec)> procedure)
 {
 	Lock lock(m_bufferMutex);
 	Vec<SFPrimitive>& active = ReferenceActiveBuffer();
-	Procedure(active);
+	procedure(active);
 }
 
 Vec<SFPrimitive>* GFXBuffer::GetInactiveBuffer()

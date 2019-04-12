@@ -1,8 +1,7 @@
 #pragma once
 #include <atomic>
+#include "SimpleTime.h"
 #include "GFXBuffer.h"
-#include "SFMLAPI/Windowing/SFWindowData.h"
-#include "SFMLAPI/System/SFTime.h"
 
 namespace LittleEngine
 {
@@ -31,10 +30,11 @@ protected:
 
 public:
 	SFRenderer(SFWindow& sfWindow, Time tickRate);
+	virtual ~SFRenderer();
 
 	void Render(GFXBuffer& buffer);
 	void Display();
 
-	void SetWindowSize(const SFWindowSize& size);
+	void SetWindowSize(const struct SFWindowSize& size);
 };
 } // namespace LittleEngine
