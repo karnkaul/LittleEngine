@@ -29,8 +29,6 @@ void EngineLoop::StopTicking()
 
 void EngineLoop::PreRun()
 {
-	SFEventLoop::PreRun();
-
 	if (!m_bInit)
 	{
 		Init();
@@ -44,8 +42,6 @@ void EngineLoop::PreRun()
 
 void EngineLoop::Tick(Time dt)
 {
-	SFEventLoop::Tick(dt);
-
 	UpdateInput();
 	ReconcileRenderStates();
 	Integrate(dt);
@@ -53,8 +49,6 @@ void EngineLoop::Tick(Time dt)
 
 void EngineLoop::PostTick()
 {
-	SFEventLoop::PostTick();
-	
 	m_uEngineService->PostTick();
 	SwapGFXBuffer();
 	m_uEngineService->PostBufferSwap();
@@ -70,8 +64,6 @@ void EngineLoop::PostTick()
 
 void EngineLoop::PostRun()
 {
-	SFEventLoop::PostRun();
-
 	// Block this thread until Rendering thread joins and AsyncRenderLoop gets destroyed
 	m_uAsyncRenderLoop = nullptr;
 
@@ -82,7 +74,7 @@ void EngineLoop::PostRun()
 
 void EngineLoop::OnPause(bool bPause)
 {
-	SFEventLoop::OnPause(bPause);
+	ASFEventLoop::OnPause(bPause);
 
 	if (bPause)
 	{
@@ -135,8 +127,7 @@ void EngineLoop::ReconcileRenderStates()
 
 void EngineLoop::SwapGFXBuffer()
 {
-	Vector2 cullBounds(m_uSFWindowData->windowSize.width, m_uSFWindowData->windowSize.height);
-	m_gfxBuffer.Lock_Swap(Services::RHeap()->ConstructDataFrame(), cullBounds);
+	m_gfxBuffer.Lock_Swap(Services::RHeap()->ConstructDataFrame(), m_cullBounds);
 }
 
 void EngineLoop::Init()
@@ -170,14 +161,13 @@ void EngineLoop::Init()
 #if DEBUGGING
 	Collider::s_debugShapeWidth = m_uConfig->GetColliderBorderWidth();
 #endif
+	Vector2 viewSize = m_uConfig->GetViewSize();
 	GameSettings* gameSettings = GameSettings::Instance();
 	m_tickRate = Time::Seconds(1.0f / static_cast<f32>(m_uConfig->GetTicksPerSecond()));
 	m_maxFrameTime = Time::Milliseconds(m_uConfig->GetMaxTickTimeMS());
-	u32 windowHeight = gameSettings->GetWindowHeight();
-	u32 windowWidth = (m_uSFWindowData->viewSize.x.ToU32() * windowHeight) / m_uSFWindowData->viewSize.y.ToU32();
-	m_uSFWindowData = MakeUnique<SFWindowData>(SFWindowSize(windowWidth, windowHeight),
-											   m_uConfig->GetViewSize(), m_uConfig->GetWindowTitle());
-	m_uSFWindowData->sfStyle = gameSettings->IsBorderless() ? sf::Style::None : sf::Style::Close;
+	m_cullBounds = gameSettings->GetCullBounds(viewSize);
+	m_uSFWindow->SetData(SFWindowData(gameSettings->GetWindowSize(viewSize), viewSize,
+									  m_uConfig->GetWindowTitle(), gameSettings->GetWindowStyle()));
 	m_uEngineService = MakeUnique<EngineService>(*this);
 	m_bInit = true;
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreTypes.h"
 #include "SFMLAPI/Rendering/SFRenderer.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
 
 namespace LittleEngine
 {
@@ -11,12 +12,17 @@ class AsyncRenderLoop final : public SFRenderer
 private:
 	SPtr<class JobHandle> m_pRenderJobHandle;
 	class GFXBuffer* m_pBuffer;
+	bool m_bRunThread = false;
 
 public:
 	AsyncRenderLoop(SFWindow& sfWindow, GFXBuffer& gfxBuffer, Time tickRate, bool bStartThread);
 	~AsyncRenderLoop() override;
 
+	void RecreateWindow(SFWindowRecreateData data);
+	
 private:
-	void Run();
+	void Start();
+	void Stop();
+	void Async_Run();
 };
 } // namespace LittleEngine

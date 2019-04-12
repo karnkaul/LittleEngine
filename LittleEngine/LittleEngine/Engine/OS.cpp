@@ -6,6 +6,10 @@
 
 namespace LittleEngine
 {
+namespace
+{
+std::thread::id mainThreadID;
+}
 namespace OS
 {
 PlatformData::PlatformData() : m_cpuThreadCount(std::thread::hardware_concurrency())
@@ -51,6 +55,7 @@ PlatformData::PlatformData() : m_cpuThreadCount(std::thread::hardware_concurrenc
 
 	m_userWorkerCount = m_spareThreadCount - m_systemWorkerCount;
 	m_maxWindowSize = SFWindow::GetMaxWindowSize();
+	mainThreadID = std::this_thread::get_id();
 }
 
 u32 PlatformData::TotalThreadCount() const
@@ -115,6 +120,11 @@ void PlatformData::SetDesiredWorkerCount(u32 workerCount)
 	{
 		m_userWorkerCount = workerCount;
 	}
+}
+
+bool IsMainThread()
+{
+	return std::this_thread::get_id() == mainThreadID;
 }
 
 PlatformData* Platform()

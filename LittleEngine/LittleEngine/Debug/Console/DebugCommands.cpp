@@ -319,46 +319,43 @@ public:
 	}
 };
 
-//class BorderlessCommand : public ParameterisedCommand
-//{
-//public:
-//	BorderlessCommand() : ParameterisedCommand("borderless")
-//	{
-//		paramCallbackMap.emplace("true", 
-//		[](Vec<LogLine>& executeResult) 
-//		{
-//			if (!GameSettings::Instance()->IsBorderless())
-//			{
-//				GameSettings::Instance()->SetBorderless(true);
-//				Services::Engine()->RecreateWindow();
-//				executeResult.emplace_back("Borderless activated", g_logTextColour);
-//			}
-//			else
-//			{
-//				executeResult.emplace_back("Window is already borderless", g_logTextColour);
-//			}
-//		}
-//		);
-//		paramCallbackMap.emplace("false", [](Vec<LogLine>& executeResult) {
-//			if (GameSettings::Instance()->IsBorderless())
-//			{
-//				GameSettings::Instance()->SetBorderless(false);
-//				Services::Engine()->RecreateWindow();
-//				executeResult.emplace_back("Borderless deactivated", g_logTextColour);
-//			}
-//			else
-//			{
-//				executeResult.emplace_back("Window already has a border", g_logTextColour);
-//			}
-//		});
-//	}
-//
-//protected:
-//	LogLine OnEmptyParams() override
-//	{
-//		return LogLine("Enter \"true\" or \"false\"", g_logTextColour);
-//	}
-//};
+class BorderlessCommand : public ParameterisedCommand
+{
+public:
+	BorderlessCommand() : ParameterisedCommand("borderless")
+	{
+		paramCallbackMap.emplace("true", [](Vec<LogLine>& executeResult) {
+			if (!GameSettings::Instance()->IsBorderless())
+			{
+				GameSettings::Instance()->SetBorderless(true);
+				Services::Engine()->SetWindowStyle(SFWindowStyle::Bordlerless);
+				executeResult.emplace_back("Borderless activated", g_logTextColour);
+			}
+			else
+			{
+				executeResult.emplace_back("Window is already borderless", g_logTextColour);
+			}
+		});
+		paramCallbackMap.emplace("false", [](Vec<LogLine>& executeResult) {
+			if (GameSettings::Instance()->IsBorderless())
+			{
+				GameSettings::Instance()->SetBorderless(false);
+				Services::Engine()->SetWindowStyle(SFWindowStyle::Default);
+				executeResult.emplace_back("Borderless deactivated", g_logTextColour);
+			}
+			else
+			{
+				executeResult.emplace_back("Window already has a border", g_logTextColour);
+			}
+		});
+	}
+
+protected:
+	LogLine OnEmptyParams() override
+	{
+		return LogLine("Enter \"true\" or \"false\"", g_logTextColour);
+	}
+};
 #pragma endregion
 #pragma region Local Namespace Impl
 namespace
@@ -453,7 +450,7 @@ void Init()
 	commands.emplace("loadworld", MakeUnique<LoadWorldCommand>());
 	commands.emplace("resolution", MakeUnique<ResolutionCommand>());
 	commands.emplace("loglevel", MakeUnique<LogLevelCommand>());
-	//commands.emplace("borderless", MakeUnique<BorderlessCommand>());
+	commands.emplace("borderless", MakeUnique<BorderlessCommand>());
 }
 
 Vec<LogLine> Execute(const String& query)

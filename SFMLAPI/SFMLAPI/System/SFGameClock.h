@@ -30,6 +30,6 @@ private:
 	// On App Reload etc
 	static void Reset();
 
-	friend class SFEventLoop;
+	friend class ASFEventLoop;
 };
 } // namespace LittleEngine

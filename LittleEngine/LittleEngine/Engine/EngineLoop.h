@@ -5,10 +5,11 @@
 namespace LittleEngine
 {
 // \brief: Core Game Loop that also manages an Asynchronous Render Loop
-class EngineLoop final : public SFEventLoop
+class EngineLoop final : public ASFEventLoop
 {
 private:
 	GFXBuffer m_gfxBuffer;
+	Vector2 m_cullBounds;
 	UPtr<class EngineConfig> m_uConfig;
 	UPtr<class JobManager> m_uJobManager;
 	UPtr<class RenderHeap> m_uRenderHeap;
@@ -26,7 +27,7 @@ public:
 	void Start();
 	void StopTicking();
 
-protected:
+private:
 	void PreRun() override;
 	void Tick(Time dt) override;
 	void PostTick() override;

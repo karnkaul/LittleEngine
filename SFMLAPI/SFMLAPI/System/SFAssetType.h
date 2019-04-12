@@ -11,4 +11,4 @@ enum class AssetType
 };
 
 extern const char* g_szAssetType[4];
-}
+} // namespace LittleEngine

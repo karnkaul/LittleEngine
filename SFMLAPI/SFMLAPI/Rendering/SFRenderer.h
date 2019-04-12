@@ -2,6 +2,7 @@
 #include <atomic>
 #include "SimpleTime.h"
 #include "GFXBuffer.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
 
 namespace LittleEngine
 {
@@ -34,7 +35,5 @@ public:
 
 	void Render(GFXBuffer& buffer);
 	void Display();
-
-	void SetWindowSize(const struct SFWindowSize& size);
 };
 } // namespace LittleEngine

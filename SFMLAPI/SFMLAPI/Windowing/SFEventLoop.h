@@ -6,10 +6,9 @@ namespace LittleEngine
 {
 // \brief: Base class that runs Event Loop on this thread (blocking)
 // Derived classes provide custom game loops
-class SFEventLoop
+class ASFEventLoop
 {
 protected:
-	UPtr<struct SFWindowData> m_uSFWindowData;
 	UPtr<class SFEventHandler> m_uSFEventHandler;
 	UPtr<class SFWindow> m_uSFWindow;
 	// Events will be polled and Tick() called at this rate
@@ -24,8 +23,8 @@ private:
 	bool m_bPauseTicking = false;
 
 public:
-	SFEventLoop();
-	virtual ~SFEventLoop();
+	ASFEventLoop();
+	virtual ~ASFEventLoop();
 
 	// Blocks current thread and starts event loop on it
 	s32 Run();
@@ -40,17 +39,16 @@ private:
 	void SleepForRestOfFrame(Time frameTime);
 
 protected:
-	// Called after Window creation, before starting event loop
-	virtual void PreRun();
-	// Called after event loop, before Window destruction
-	virtual void PostRun();
-	// Called after event loop, after Window destruction
-	virtual void PostWindowDestruct();
-	// Fixed time slice Tick
-	virtual void Tick(Time dt);
-	// Called once per frame; use to swap buffers etc
-	virtual void PostTick();
-
 	virtual void OnPause(bool bPaused);
+
+private:
+	// Called after Window creation, before starting event loop
+	virtual void PreRun() = 0;
+	// Called after event loop, before Window destruction
+	virtual void PostRun() = 0;
+	// Fixed time slice Tick
+	virtual void Tick(Time dt) = 0;
+	// Called once per frame; use to swap buffers etc
+	virtual void PostTick() = 0;
 };
 } // namespace LittleEngine

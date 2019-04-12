@@ -94,12 +94,4 @@ void SFRenderer::Display()
 		m_pSFWindow->display();
 	}
 }
-
-void SFRenderer::SetWindowSize(const SFWindowSize& size)
-{
-	if (m_pSFWindow)
-	{
-		m_pSFWindow->SetSize(size);
-	}
-}
 } // namespace LittleEngine

@@ -1,7 +1,8 @@
 #pragma once
 #include "CoreTypes.h"
-#include "SFMLAPI/Rendering/Colour.h"
 #include "SFML/Graphics.hpp"
+#include "SFMLAPI/Rendering/Colour.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
 
 namespace LittleEngine
 {
@@ -14,4 +15,6 @@ Vector2 Cast(const sf::Vector2i& vec2);
 
 sf::Color Cast(Colour colour);
 Colour Cast(const sf::Color& sfColor);
+
+sf::Uint8 Cast(SFWindowStyle style);
 } // namespace LittleEngine

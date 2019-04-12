@@ -36,5 +36,7 @@ public:
 };
 
 PlatformData* Platform();
+
+bool IsMainThread();
 } // namespace OS
 } // namespace LittleEngine

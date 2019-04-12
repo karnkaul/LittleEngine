@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <thread>
 #include "SFEventLoop.h"
 #include "SFWindow.h"
 #include "SFWindowData.h"
@@ -10,18 +11,18 @@
 
 namespace LittleEngine
 {
-SFEventLoop::SFEventLoop()
+ASFEventLoop::ASFEventLoop()
 {
-	m_uSFWindowData = MakeUnique<SFWindowData>();
 	m_uSFEventHandler = MakeUnique<SFEventHandler>();
+	m_uSFWindow = MakeUnique<SFWindow>();
 }
 
-SFEventLoop::~SFEventLoop() = default;
+ASFEventLoop::~ASFEventLoop() = default;
 
-s32 SFEventLoop::Run()
+s32 ASFEventLoop::Run()
 {
 	// Construct Window
-	m_uSFWindow = MakeUnique<SFWindow>(*m_uSFWindowData);
+	m_uSFWindow->CreateWindow();
 	LOG_I("[SFEventLoop] Running");
 
 	PreRun();
@@ -59,22 +60,19 @@ s32 SFEventLoop::Run()
 	}
 
 	PostRun();
-	LOG_I("[SFEventLoop] Activating SFWindow on this thread, destroying SFWindow");
+	LOG_I("[SFEventLoop] Event Loop terminated. Destroying SFWindow");
 
-	m_uSFWindow->setActive(true);
-	m_uSFWindow->close();
 	m_uSFWindow = nullptr;
-	PostWindowDestruct();
-
+	
 	return 0;
 }
 
-SFInputDataFrame SFEventLoop::GetInputDataFrame() const
+SFInputDataFrame ASFEventLoop::GetInputDataFrame() const
 {
 	return m_uSFEventHandler->GetFrameInputData();
 }
 
-void SFEventLoop::PollEvents()
+void ASFEventLoop::PollEvents()
 {
 	SFWindowEventType windowEvent = m_uSFEventHandler->PollEvents(*m_uSFWindow);
 	switch (windowEvent)
@@ -102,7 +100,7 @@ void SFEventLoop::PollEvents()
 	}
 }
 
-void SFEventLoop::Tick(Time& outCurrentTime, Time& outAccumulator)
+void ASFEventLoop::Tick(Time& outCurrentTime, Time& outAccumulator)
 {
 	Time dt = m_tickRate;
 	Time newTime = Time::Now();
@@ -123,36 +121,20 @@ void SFEventLoop::Tick(Time& outCurrentTime, Time& outAccumulator)
 	}
 }
 
-void SFEventLoop::SleepForRestOfFrame(Time frameTime)
+void ASFEventLoop::SleepForRestOfFrame(Time frameTime)
 {
-	s32 surplus = (m_tickRate - frameTime).AsMilliseconds();
-	if (surplus > 0)
+	Sleep(m_tickRate - frameTime);
+}
+
+void ASFEventLoop::Sleep(Time time)
+{
+	if (time.AsMilliseconds() > 0)
 	{
-		sf::sleep(sf::milliseconds(surplus));
+		std::this_thread::sleep_for(std::chrono::milliseconds(time.AsMilliseconds()));
 	}
 }
 
-void SFEventLoop::Sleep(Time time)
-{
-	sf::sleep(sf::milliseconds(time.AsMilliseconds()));
-}
-
-void SFEventLoop::PreRun()
-{
-}
-void SFEventLoop::PostRun()
-{
-}
-void SFEventLoop::PostWindowDestruct()
-{
-}
-void SFEventLoop::Tick(Time /*dt*/)
-{
-}
-void SFEventLoop::PostTick()
-{
-}
-void SFEventLoop::OnPause(bool bPaused)
+void ASFEventLoop::OnPause(bool bPaused)
 {
 	m_bPauseTicking = bPaused;
 }
