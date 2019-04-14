@@ -7,23 +7,15 @@
 
 namespace LittleEngine
 {
-UIWidget::UIWidget() : UIObject("Untitled")
-{
-	SetName("", "UIWidget");
-}
-
-UIWidget::UIWidget(String name) : UIObject(std::move(name))
-{
-	SetName("", "UIWidget");
-}
-
+UIWidget::UIWidget() = default;
 UIWidget::~UIWidget() = default;
 
-void UIWidget::InitWidget(UIContext& owner, UIWidgetStyle* pStyleToCopy)
+void UIWidget::OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCopy)
 {
+	SetName(std::move(name), "UIWidget");
 	m_pOwner = &owner;
 	m_style = pStyleToCopy ? *pStyleToCopy : UIWidgetStyle::GetDefault0();
-	OnInitWidget();
+	OnCreated();
 	SetInteractable(true);
 }
 
@@ -36,7 +28,6 @@ void UIWidget::SetStyle(const UIWidgetStyle& style)
 {
 	m_style = style;
 }
-
 
 bool UIWidget::IsInteractable() const
 {
@@ -61,13 +52,13 @@ void UIWidget::SetState(UIWidgetState state)
 	m_state = state;
 }
 
-void UIWidget::InitElement(UIElement* pNewElement, UITransform* pParent)
+void UIWidget::InitElement(String name, UIElement* pNewElement, UITransform* pParent)
 {
 	if (!pParent)
 	{
 		pParent = m_pOwner ? &m_pOwner->GetRootElement()->m_transform : nullptr;
 	}
-	pNewElement->InitElement(pParent);
+	pNewElement->OnCreate(std::move(name), pParent);
 	pNewElement->m_layer = m_style.baseLayer;
 }
 
@@ -84,7 +75,7 @@ LayerID UIWidget::GetMaxLayer() const
 	return maxLayer;
 }
 
-void UIWidget::OnInitWidget()
+void UIWidget::OnCreated()
 {
 }
 } // namespace LittleEngine

@@ -4,6 +4,10 @@
 
 namespace LittleEngine
 {
+Inheritable::Inheritable(bool bSilent) : m_bSilent(bSilent)
+{
+}
+
 Inheritable::Inheritable(String name, String className, bool bSilent)
 	: m_name(std::move(name)), m_className(std::move(className)), m_bSilent(bSilent)
 {
@@ -43,7 +47,7 @@ const char* Inheritable::LogNameStr() const
 
 void Inheritable::RegenerateLogNameStr()
 {
-	String suffix = m_className.empty() ? "" : " (" + m_className + ")";
+	String suffix = m_className.empty() ? "" : "/" + m_className;
 	m_logName = "[" + m_name + suffix + "]";
 }
 } // namespace LittleEngine

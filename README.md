@@ -80,7 +80,10 @@ At the end of each `Tick()` cycle, the current state of all primitives will be c
 - [x] Debug-only engine-settings file
 - [x] In-memory Asset Loads (through a cooked/compressed archive)
 - [x] UI Framework
-- [ ] Gameplay UI classes
+- [x] Gameplay UI classes
+- [x] Gameplay Camera (root `Transform` for all `Entity`s)
+- [x] Runtime configurable/recreatable Render Window
+- [ ] Options Menu
 - [ ] Animation system
 - [ ] Collision Resolution
 

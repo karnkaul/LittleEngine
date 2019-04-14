@@ -11,7 +11,7 @@ BootWorld::BootWorld() : World("Boot")
 void BootWorld::OnActivated()
 {
 	m_pLogoFont = Repository()->Load<FontAsset>("Fonts/Sunscreen.otf");
-	if ((m_pLogoDrawer = Game()->UI()->PushContext<UIButtonDrawer>()))
+	if ((m_pLogoDrawer = Game()->UI()->PushContext<UIButtonDrawer>("MainMenu")))
 	{
 		m_pLogoHeader = m_pLogoDrawer->AddElement<UIElement>("Logo Header");
 		m_pLogoHeader->SetText(UIText("Little Engine", 80, Colour::White));

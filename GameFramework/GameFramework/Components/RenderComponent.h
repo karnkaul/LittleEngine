@@ -3,7 +3,7 @@
 
 namespace LittleEngine
 {
-class RenderComponent : public Component
+class RenderComponent : public AComponent
 {
 public:
 	class SFPrimitive* m_pSFPrimitive = nullptr;

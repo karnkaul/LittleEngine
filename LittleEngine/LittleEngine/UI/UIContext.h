@@ -29,7 +29,6 @@ private:
 
 public:
 	UIContext();
-	UIContext(String name);
 	~UIContext() override;
 
 	template <typename T>
@@ -47,7 +46,7 @@ public:
 	void Tick(Time dt) override;
 
 protected:
-	virtual void OnInitContext();
+	virtual void OnCreated();
 	virtual void OnDestroying();
 
 	bool OnInput(const EngineInput::Frame& frame);
@@ -62,7 +61,7 @@ protected:
 	void Discard();
 
 private:
-	void InitContext(LayerID rootLayer);
+	void OnCreate(String name, LayerID rootLayer);
 	LayerID GetMaxLayer() const;
 
 	friend class UIManager;
@@ -72,7 +71,7 @@ template <typename T>
 T* UIContext::AddWidget(String name, UIWidgetStyle* pStyleToCopy, bool bNewColumn)
 {
 	static_assert(std::is_base_of<UIWidget, T>::value, "T must derive from UIWidget.");
-	UPtr<T> uT = MakeUnique<T>(std::move(name));
+	UPtr<T> uT = MakeUnique<T>();
 	T* pT = uT.get();
 	UIWidgetStyle defaultStyle = UIWidgetStyle::GetDefault0();
 	if (!pStyleToCopy)
@@ -80,9 +79,9 @@ T* UIContext::AddWidget(String name, UIWidgetStyle* pStyleToCopy, bool bNewColum
 		pStyleToCopy = &defaultStyle;
 	}
 	pStyleToCopy->baseLayer = static_cast<LayerID>(m_pRootElement->m_layer + 1);
-	uT->InitWidget(*this, pStyleToCopy);
+	uT->OnCreate(std::move(name), *this, pStyleToCopy);
 	m_uUIWidgets->EmplaceWidget(std::move(uT), bNewColumn);
-	LOG_D("%s %s", pT->LogNameStr(), "constructed");
+	LOG_D("%s constructed", pT->LogNameStr());
 	return pT;
 }
 
@@ -90,19 +89,19 @@ template <typename T>
 T* UIContext::AddElement(String name, UITransform* pParent)
 {
 	static_assert(std::is_base_of<UIElement, T>::value, "T must derive from UIWidget!");
-	UPtr<T> uT = MakeUnique<T>(std::move(name), true);
+	UPtr<T> uT = MakeUnique<T>(false);
 	if (!pParent && m_pRootElement)
 	{
 		pParent = &m_pRootElement->m_transform;
 	}
-	uT->InitElement(pParent);
+	uT->OnCreate(std::move(name), pParent);
 	if (m_pRootElement)
 	{
 		uT->m_layer = static_cast<LayerID>(m_pRootElement->m_layer + 1);
 	}
 	T* pT = uT.get();
+	LOG_D("%s constructed", pT->LogNameStr());
 	m_uiElements.push_back(std::move(uT));
-	LOG_D("%s %s", pT->LogNameStr(), "constructed");
 	return pT;
 }
 } // namespace LittleEngine

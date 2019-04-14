@@ -8,16 +8,6 @@
 
 namespace LittleEngine
 {
-UISelection::UISelection() : UIButton("Untitled")
-{
-	SetName("", "UISelection");
-}
-
-UISelection::UISelection(String name) : UIButton(std::move(name))
-{
-	SetName("", "UISelection");
-}
-
 UISelection::OnChanged::Token UISelection::RegisterOnChanged(OnChanged::Callback callback)
 {
 	return m_onChanged.Register(std::move(callback));
@@ -64,12 +54,12 @@ Vec<String>& UISelection::GetOptions()
 	return m_options;
 }
 
-void UISelection::OnInitWidget()
+void UISelection::OnCreated()
 {
 	m_style = UIWidgetStyle::GetDefault1(&m_style);
+	UIButton::OnCreated();
 	
-	UIButton::OnInitWidget();
-
+	SetName("", "UISelection");
 	m_buttonToken = AddCallback(std::bind(&UISelection::OnSpawnDrawer, this));
 }
 

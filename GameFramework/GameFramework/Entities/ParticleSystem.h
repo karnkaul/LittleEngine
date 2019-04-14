@@ -78,9 +78,10 @@ protected:
 	bool m_bIsPlaying = false;
 
 public:
-	ParticleSystem(String name); // Cannot default/inline impl, due to forward declared unique_ptr
+	ParticleSystem();
 	~ParticleSystem() override;
 
+	void OnCreated() override;
 	void InitParticleSystem(ParticleSystemData data);
 	void Start();
 	void Stop();

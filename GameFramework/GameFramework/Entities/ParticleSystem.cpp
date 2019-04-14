@@ -438,12 +438,13 @@ ParticleSystemData::ParticleSystemData(const GData& psGData)
 	}
 }
 
-ParticleSystem::ParticleSystem(String name) : Entity(std::move(name))
-{
-	SetName(name, "ParticleSystem");
-}
-
+ParticleSystem::ParticleSystem() = default;
 ParticleSystem::~ParticleSystem() = default;
+
+void ParticleSystem::OnCreated()
+{
+	SetName("", "ParticleSystem");
+}
 
 void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 {

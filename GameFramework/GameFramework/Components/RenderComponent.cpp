@@ -26,7 +26,7 @@ void RenderComponent::OnCreated()
 
 void RenderComponent::SetEnabled(bool bEnabled)
 {
-	Component::SetEnabled(bEnabled);
+	AComponent::SetEnabled(bEnabled);
 
 	m_pSFPrimitive->SetEnabled(bEnabled);
 }

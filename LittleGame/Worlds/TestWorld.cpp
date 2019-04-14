@@ -243,7 +243,7 @@ Time elapsed = Time::Zero;
 
 void SpawnDialogue()
 {
-	pDialogue = pTestWorld->Game()->UI()->PushContext<UIDialogue>();
+	pDialogue = pTestWorld->Game()->UI()->PushContext<UIDialogue>("TestUIDialogue");
 	pDialogue->SetHeader(UIText("Title", 25, Colour::Black));
 	pDialogue->SetContent(UIText("Content goes here", 15, Colour::Black), &Colour::White);
 	debugTokens.push_back(pDialogue->AddMainButton("OK", []() { LOG_D("OK pressed!"); }, false));
@@ -256,7 +256,7 @@ void SpawnToggle()
 {
 	Fixed x = 300;
 	Fixed y = 200;
-	auto* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>();
+	auto* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>("TestToggleUIC");
 	pParent->GetRootElement()->m_transform.size = {x, y};
 	UIWidgetStyle toggleStyle = UIWidgetStyle::GetDefault0();
 	toggleStyle.widgetSize = {x, y * Fixed::OneHalf};
@@ -290,7 +290,7 @@ void TestTick(Time dt)
 	if (elapsed.AsSeconds() >= 1 && !bSpawnedDrawer)
 	{
 		bSpawnedDrawer = true;
-		pButtonDrawer = pTestWorld->Game()->UI()->PushContext<UIButtonDrawer>();
+		pButtonDrawer = pTestWorld->Game()->UI()->PushContext<UIButtonDrawer>("TestUIButtonDrawer");
 		pButtonDrawer->m_bAutoDestroyOnCancel = !bModal;
 		UIStyle panelStyle;
 		panelStyle.size = {500, 600};
@@ -321,7 +321,7 @@ void TestTick(Time dt)
 	if (elapsed.AsSeconds() >= 3 && !bSpawnedSelection)
 	{
 		bSpawnedSelection = true;
-		pSelectionContext = pTestWorld->Game()->UI()->PushContext<UIContext>();
+		pSelectionContext = pTestWorld->Game()->UI()->PushContext<UIContext>("TestSelectionUIC");
 		pSelectionContext->m_bAutoDestroyOnCancel = true;
 
 		pSelection = pSelectionContext->AddWidget<UISelection>("Selection");
@@ -340,7 +340,7 @@ void TestTick(Time dt)
 	static UITextInput* pTextInput = nullptr;
 	if (elapsed.AsSeconds() >= 5 && !bSpawnedTextInput)
 	{
-		pTextContext = pTestWorld->Game()->UI()->PushContext<UIContext>();
+		pTextContext = pTestWorld->Game()->UI()->PushContext<UIContext>("TestTextInputUIC");
 		pTextInput = pTextContext->AddWidget<UITextInput>("TextInput");
 		pTextContext->m_bAutoDestroyOnCancel = true;
 		pTextContext->SetActive(true);

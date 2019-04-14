@@ -6,18 +6,6 @@
 
 namespace LittleEngine
 {
-UIButton::UIButton() : UIWidget("Untitled")
-{
-	SetName("", "UIButton");
-}
-
-UIButton::UIButton(String name) : UIWidget(std::move(name))
-{
-	SetName("", "UIButton");
-}
-
-UIButton::~UIButton() = default;
-
 void UIButton::SetText(UIText uiText)
 {
 	m_pRoot->SetText(std::move(uiText));
@@ -33,8 +21,9 @@ UIElement* UIButton::GetButtonElement() const
 	return m_pRoot;
 }
 
-void UIButton::OnInitWidget()
+void UIButton::OnCreated()
 {
+	SetName("", "UIButton");
 	m_pRoot = AddElement<UIElement>(String(GetNameStr()) + " Panel");
 	m_pRoot->m_transform.size = m_style.widgetSize;
 }

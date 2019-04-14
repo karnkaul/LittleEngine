@@ -12,16 +12,9 @@ const Fixed headerHeight = 80;
 const Fixed footerHeight = 80;
 } // namespace
 
-UIDialogue::UIDialogue() : UIContext("Dialogue")
+void UIDialogue::OnCreated()
 {
-}
-UIDialogue::UIDialogue(String name) : UIContext(std::move(name) + "_Dialogue")
-{
-}
-UIDialogue::~UIDialogue() = default;
-
-void UIDialogue::OnInitContext()
-{
+	SetName("", "UIDialogue");
 	const Fixed contentHeight = m_data.size.y - (headerHeight + footerHeight);
 	m_bAutoDestroyOnCancel = true;
 	m_pRootElement->m_transform.size = {m_data.size.x, m_data.size.y};

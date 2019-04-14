@@ -24,9 +24,6 @@ private:
 	String m_value;
 
 public:
-	UISelection();
-	UISelection(String name);
-
 	OnChanged::Token RegisterOnChanged(OnChanged::Callback callback);
 	UISelection* SetValue(String text);
 	UISelection* AddOption(String option);
@@ -38,7 +35,7 @@ public:
 	Vec<String>& GetOptions();
 
 protected:
-	void OnInitWidget() override;
+	void OnCreated() override;
 
 private:
 	void OnSpawnDrawer();

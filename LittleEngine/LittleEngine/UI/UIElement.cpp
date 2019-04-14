@@ -14,19 +14,11 @@ namespace LittleEngine
 UIElement::UIElement(bool bSilent) : UIObject("Untitled", bSilent)
 {
 	Construct();
-	if (!m_bSilent)
-	{
-		LOG_D("%s constructed", LogNameStr());
-	}
 }
 
-UIElement::UIElement(String name, bool bSilent) : UIObject(std::move(name), bSilent)
+UIElement::UIElement(String name, bool bSilent /*= false*/) : UIObject(std::move(name), bSilent)
 {
 	Construct();
-	if (!m_bSilent)
-	{
-		LOG_D("%s constructed", LogNameStr());
-	}
 }
 
 UIElement::~UIElement()
@@ -35,17 +27,26 @@ UIElement::~UIElement()
 	Services::RHeap()->Destroy(m_pText);
 }
 
-void UIElement::InitElement(UITransform* pParent)
+void UIElement::SetParent(UITransform& parent)
 {
+	m_transform.SetParent(parent);
+}
+
+void UIElement::OnCreate(String name, UITransform* pParent)
+{
+	SetName(std::move(name), "UIElement");
 	if (pParent)
 	{
 		m_transform.SetParent(*pParent);
 	}
 }
 
+void UIElement::OnCreated()
+{
+}
+
 void UIElement::Construct()
 {
-	SetName("", "UIElement");
 	m_pPrimitive = Services::RHeap()->New();
 	m_pText = Services::RHeap()->New();
 	m_pPrimitive->SetEnabled(true);

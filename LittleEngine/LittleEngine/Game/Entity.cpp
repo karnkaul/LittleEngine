@@ -8,7 +8,7 @@
 
 namespace LittleEngine
 {
-Entity::Entity(String name) : WorldObject(std::move(name), "Entity")
+Entity::Entity()
 {
 	Camera* pWorldCam = Services::WorldCamera();
 	if (pWorldCam)
@@ -20,6 +20,12 @@ Entity::Entity(String name) : WorldObject(std::move(name), "Entity")
 Entity::~Entity()
 {
 	m_pComponents.clear();
+}
+
+void Entity::OnCreate(String name)
+{
+	SetName(std::move(name), "Entity");
+	OnCreated();
 }
 
 void Entity::SetEnabled(bool bEnabled)
@@ -43,7 +49,12 @@ void Entity::Destruct()
 
 void Entity::Tick(Time /*dt*/)
 {
-	Core::CleanVector<Component*>(m_pComponents,
-								  [](Component* pComponent) { return pComponent->m_bDestroyed; });
+	Core::CleanVector<AComponent*>(m_pComponents,
+								  [](AComponent* pComponent) { return pComponent->m_bDestroyed; });
 }
+
+void Entity::OnCreated()
+{
+}
+
 } // namespace LittleEngine

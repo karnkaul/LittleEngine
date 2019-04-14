@@ -11,12 +11,7 @@ UIButtonDrawer::UIButtonDrawerData::UIButtonDrawerData()
 	panelStyle.size = {600, 500};
 }
 
-UIButtonDrawer::UIButtonDrawer() : UIContext("ButtonDrawer")
-{
-}
-UIButtonDrawer::UIButtonDrawer(String name) : UIContext(std::move(name) + "_ButtonDrawer")
-{
-}
+UIButtonDrawer::UIButtonDrawer() = default;
 UIButtonDrawer::~UIButtonDrawer() = default;
 
 bool UIButtonDrawer::SetHorizontal(bool bHorizontal)
@@ -52,8 +47,9 @@ UIButton::OnClick::Token UIButtonDrawer::AddButton(UIText buttonText,
 	return pButton->AddCallback(std::move(onInteracted));
 }
 
-void UIButtonDrawer::OnInitContext()
+void UIButtonDrawer::OnCreated()
 {
+	SetName("", "UIButtonDrawer");
 	m_pRootElement->m_transform.size = m_data.panelStyle.size;
 	m_pRootElement->SetPanel(m_data.panelStyle.fill, m_data.panelStyle.border, m_data.panelStyle.outline);
 }

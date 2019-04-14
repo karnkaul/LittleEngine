@@ -23,12 +23,6 @@ CollisionComponent::ColliderData::ColliderData(Collider* pCollider, SFPrimitive*
 }
 #endif
 
-CollisionComponent::CollisionComponent()
-{
-	SetName("Collision");
-	m_signature = Maths::Random::Range(1, 10000);
-}
-
 CollisionComponent::~CollisionComponent()
 {
 	for (auto& data : m_pColliders)
@@ -38,6 +32,13 @@ CollisionComponent::~CollisionComponent()
 #endif
 		data.pCollider->m_bDestroyed = true;
 	}
+}
+
+
+void CollisionComponent::OnCreated()
+{
+	SetName("Collision");
+	m_signature = Maths::Random::Range(1, 10000);
 }
 
 void CollisionComponent::AddCircle(Fixed radius, Vector2 offset)
@@ -100,7 +101,7 @@ void CollisionComponent::Tick(Time /*dt*/)
 
 void CollisionComponent::SetEnabled(bool bEnabled)
 {
-	Component::SetEnabled(bEnabled);
+	AComponent::SetEnabled(bEnabled);
 
 	for (auto& data : m_pColliders)
 	{

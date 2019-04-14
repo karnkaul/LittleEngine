@@ -25,7 +25,6 @@ protected:
 
 public:
 	UIWidget();
-	UIWidget(String name);
 	~UIWidget() override;
 
 	template <typename T>
@@ -49,11 +48,11 @@ protected:
 	void Tick(Time dt) override;
 
 private:
-	void InitWidget(UIContext& owner, UIWidgetStyle* pStyleToCopy);
-	void InitElement(UIElement* pNewElement, UITransform* pParent);
+	void OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCopy);
+	void InitElement(String name, UIElement* pNewElement, UITransform* pParent);
 	LayerID GetMaxLayer() const;
 
-	virtual void OnInitWidget();
+	virtual void OnCreated();
 
 	friend class UIContext;
 };
@@ -63,10 +62,10 @@ UIElement* UIWidget::AddElement(String name, UITransform* pParent)
 {
 	static_assert(std::is_base_of<UIElement, T>::value,
 				  "T must derive from UIElement. Check Output Window for erroneous call");
-	UPtr<T> uT = MakeUnique<T>(std::move(name));
+	UPtr<T> uT = MakeUnique<T>();
 	T* pT = uT.get();
-	InitElement(pT, pParent);
 	m_uiElements.push_back(std::move(uT));
+	InitElement(std::move(name), pT, pParent);
 	return pT;
 }
 } // namespace LittleEngine

@@ -20,9 +20,9 @@ PlayerData::PlayerData(TextureAsset& mainTexture, Vec<PlayerCollider> colliders)
 {
 }
 
-Player::Player(String name) : Entity(std::move(name))
+void Player::OnCreated()
 {
-	SetName(name, "Player");
+	SetName("", "Player");
 }
 
 void Player::InitPlayer(PlayerData data)

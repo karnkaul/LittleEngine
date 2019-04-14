@@ -7,7 +7,7 @@ namespace LittleEngine
 class Entity : public WorldObject
 {
 private:
-	Vec<class Component*> m_pComponents;
+	Vec<class AComponent*> m_pComponents;
 
 protected:
 	bool m_bDestroyed = false;
@@ -18,9 +18,10 @@ public:
 	bool m_bReset = true;
 
 public:
-	Entity(String name);
+	Entity();
 	~Entity() override;
 
+	void OnCreate(String name);
 	virtual void Destruct();
 	virtual void SetEnabled(bool bEnabled);
 	virtual void Tick(Time dt);
@@ -31,9 +32,12 @@ public:
 	template <typename T>
 	T* GetComponent();
 
+protected:
+	virtual void OnCreated();
+
 private:
 	friend class GameManager;
-	friend class Component;
+	friend class AComponent;
 };
 
 template <typename T>

@@ -24,10 +24,6 @@ private:
 	UIButton* m_pOtherButton = nullptr;
 
 public:
-	UIDialogue();
-	UIDialogue(String name);
-	~UIDialogue() override;
-
 	UIDialogue* SetContent(UIText text, const Colour* pBackground = nullptr, const Vector2* pSize = nullptr);
 	UIDialogue* SetHeader(UIText text, const Colour* pBackground = nullptr);
 
@@ -39,6 +35,6 @@ public:
 											bool bSelect = true);
 
 protected:
-	void OnInitContext() override;
+	void OnCreated() override;
 };
 } // namespace LittleEngine

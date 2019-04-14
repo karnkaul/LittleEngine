@@ -7,18 +7,6 @@
 
 namespace LittleEngine
 {
-UIToggle::UIToggle() : UIWidget("Untitled")
-{
-	SetName("", "UIToggle");
-}
-
-UIToggle::UIToggle(String name) : UIWidget(std::move(name))
-{
-	SetName("", "UIToggle");
-}
-
-UIToggle::~UIToggle() = default;
-
 UIToggle* UIToggle::SetText(UIText text)
 {
 	m_pLabel->SetText(std::move(text));
@@ -63,8 +51,9 @@ UIElement* UIToggle::GetRoot() const
 	return m_pRoot;
 }
 
-void UIToggle::OnInitWidget()
+void UIToggle::OnCreated()
 {
+	SetName("", "UIToggle");
 	m_pRoot = AddElement<UIElement>("ToggleRoot");
 	m_pRoot->SetPanel(m_style.background);
 	m_pRoot->m_transform.size = m_style.widgetSize;

@@ -27,10 +27,6 @@ private:
 	bool m_bOn = false;
 
 public:
-	UIToggle();
-	UIToggle(String name);
-	~UIToggle() override;
-
 	UIToggle* SetOn(bool bOn);
 	UIToggle* SetText(UIText text);
 	UIToggle* SetOnColour(Colour onColour);
@@ -44,7 +40,7 @@ public:
 	void SetInteractable(bool bInteractable) override;
 
 protected:
-	void OnInitWidget() override;
+	void OnCreated() override;
 	void OnSelected() override;
 	void OnDeselected() override;
 	void OnInteractStart() override;

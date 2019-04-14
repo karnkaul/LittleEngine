@@ -5,7 +5,12 @@
 
 namespace LittleEngine
 {
-WorldObject::WorldObject(String name, String baseClass, bool bSilent) : Inheritable(std::move(name), std::move(baseClass), bSilent)
+WorldObject::WorldObject(bool bSilent) : Inheritable(bSilent)
+{
+}
+
+WorldObject::WorldObject(String name, String baseClass, bool bSilent)
+	: Inheritable(std::move(name), std::move(baseClass), bSilent)
 {
 }
 

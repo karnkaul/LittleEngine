@@ -11,6 +11,7 @@ protected:
 	bool m_bDestroyed = false;
 
 public:
+	UIObject(bool bSilent = false);
 	UIObject(String name, bool bSilent = false);
 	~UIObject() override;
 

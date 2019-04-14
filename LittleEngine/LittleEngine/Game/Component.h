@@ -5,7 +5,7 @@
 
 namespace LittleEngine
 {
-class Component : public WorldObject
+class AComponent : public WorldObject
 {
 protected:
 	class Entity* m_pOwner = nullptr;
@@ -15,11 +15,12 @@ public:
 	bool m_bEnabled = true;
 
 public:
-	Component();
-	~Component() override;
-
+	AComponent();
+	~AComponent() override;
+	
+	virtual void OnCreated() = 0;
+	
 	virtual TimingType GetComponentTiming() const;
-	virtual void OnCreated();
 	virtual void SetEnabled(bool bEnabled);
 	virtual void Tick(Time dt);
 

@@ -14,6 +14,7 @@ protected:
 	bool m_bSilent = false;
 
 public:
+	Inheritable(bool bSilent = false);
 	// Will LOG_D destruction unless bSilent
 	Inheritable(String name, String className = "", bool bSilent = false);
 	virtual ~Inheritable();

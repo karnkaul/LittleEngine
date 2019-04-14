@@ -28,6 +28,7 @@ public:
 	UIElement(String name, bool bSilent = false);
 	~UIElement() override;
 
+	void SetParent(UITransform& parent);
 	void SetPanel(UByte r = 255, UByte g = 255, UByte b = 255, UByte a = 128);
 	void SetPanel(Colour fill, Fixed border = Fixed::Zero, Colour outline = Colour::Transparent);
 	void SetImage(class TextureAsset& texture, Colour colour = Colour::White);
@@ -37,10 +38,11 @@ public:
 	SFPrimitive* GetPrimitive() const;
 	SFPrimitive* GetText() const;
 
+	void OnCreate(String name, UITransform* pParent = nullptr);
 	void Tick(Time dt) override;
 
-public:
-	void InitElement(UITransform* pParent = nullptr);
+protected:
+	virtual void OnCreated();
 
 private:
 	void Construct();

@@ -10,10 +10,11 @@ protected:
 
 public:
 	UIProgressBar(bool bSilent = false);
-	UIProgressBar(String name, bool bSilent = false);
-	~UIProgressBar() override;
-
+	
 	void InitProgressBar(Vector2 size, Colour colour, Fixed initProgress = Fixed::Zero);
 	void SetProgress(Fixed progress);
+
+protected:
+	void OnCreated() override;
 };
 } // namespace LittleEngine
