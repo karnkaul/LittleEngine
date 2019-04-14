@@ -24,6 +24,9 @@ public:
 	virtual void SetEnabled(bool bEnabled);
 	virtual void Tick(Time dt);
 
+protected:
+	void RegenerateLogNameStr() override;
+
 private:
 	void Destruct();
 	void SetOwner(Entity& owner);

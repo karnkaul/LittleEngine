@@ -1,5 +1,5 @@
 #pragma once
-#include "LittleEngine/LittleEngine.h"
+#include "LittleEngine/Game/World/World.h"
 
 namespace LittleEngine
 {

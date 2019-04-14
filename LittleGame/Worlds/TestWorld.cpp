@@ -1,7 +1,8 @@
 #include "stdafx.h"
-#include "TestWorld.h"
-#include "GameFramework/GameFramework.h"
 #include "ArchiveReader.h"
+#include "GameFramework/GameFramework.h"
+#include "TestWorld.h"
+#include "UI/OptionsUI.h"
 
 namespace LittleEngine
 {
@@ -14,8 +15,6 @@ TestWorld* pTestWorld = nullptr;
 Entity *pEntity0 = nullptr, *pEntity1 = nullptr;
 Entity *pEntity2 = nullptr, *pEntity3 = nullptr;
 Entity* pEntity4 = nullptr;
-
-UPtr<TextureAsset> uArchivedTexture;
 
 void OnEnter()
 {
@@ -49,16 +48,11 @@ void OnEnter()
 
 	if (!pEntity4)
 	{
-		if (!uArchivedTexture)
-		{
-			Core::ArchiveReader reader;
-			reader.Load("GameAssets.cooked");
-			uArchivedTexture = MakeUnique<TextureAsset>("ARCHIVE_TEST_Ship_old.png",
-														reader.Decompress("Textures/Ship_old.png"));
-		}
-		pEntity4 = pTestWorld->Game()->NewEntity<Entity>("Archive texture");
+		pEntity4 = pTestWorld->Game()->NewEntity<Entity>("SpriteSheetTest");
+		pEntity4->m_transform.localPosition = {-200, -200};
 		auto rc4 = pEntity4->AddComponent<RenderComponent>();
-		rc4->m_pSFPrimitive->SetTexture(*uArchivedTexture);
+		rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)));
+		//rc4->SetSpriteSheet(SpriteSheet(std::move(data), pTexture, Time::Seconds(1.0f)));
 	}
 	else
 	{
@@ -127,15 +121,8 @@ void OnY()
 	}
 }
 
-bool OnInput(const EngineInput::Frame& frame)
+bool Test_OnInput(const EngineInput::Frame& frame)
 {
-	if (frame.IsReleased(GameInputType::Back) && pTestWorld)
-	{
-		if (pTestWorld->LoadWorld(0))
-		{
-		}
-	}
-
 	if (frame.IsReleased(GameInputType::Enter))
 	{
 		OnEnter();
@@ -277,13 +264,6 @@ void SpawnToggle()
 	pParent->SetActive(true);
 }
 
-bool bSpawnedSelection = false;
-UIContext* pSelectionContext = nullptr;
-UISelection* pSelection = nullptr;
-#if DEBUG_LOGGING
-UISelection::OnChanged::Token selectionToken;
-#endif
-
 void TestTick(Time dt)
 {
 	elapsed += dt;
@@ -299,8 +279,8 @@ void TestTick(Time dt)
 		UIButton* pButton1 = nullptr;
 		debugTokens.push_back(
 			pButtonDrawer->AddButton("Button 0", []() { LOG_D("Button 0 pressed!"); }));
-		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 1", []() { LOG_D("Button 1 pressed!"); }, &pButton1));
+		debugTokens.push_back(pButtonDrawer->AddButton(
+			"Options", []() { Services::Game()->UI()->PushContext<OptionsUI>("Options"); }, &pButton1));
 		pButton1->SetInteractable(false);
 		debugTokens.push_back(pButtonDrawer->AddButton("Toggle B1", [pButton1]() {
 			pButton1->SetInteractable(!pButton1->IsInteractable());
@@ -318,27 +298,10 @@ void TestTick(Time dt)
 		pButtonDrawer->SetActive(true);
 	}
 
-	if (elapsed.AsSeconds() >= 3 && !bSpawnedSelection)
-	{
-		bSpawnedSelection = true;
-		pSelectionContext = pTestWorld->Game()->UI()->PushContext<UIContext>("TestSelectionUIC");
-		pSelectionContext->m_bAutoDestroyOnCancel = true;
-
-		pSelection = pSelectionContext->AddWidget<UISelection>("Selection");
-		pSelection->AddOptions({"One", "Two", "Three", "Four"})->SetValue("Two");
-#if DEBUG_LOGGING
-		selectionToken = pSelection->RegisterOnChanged([](std::pair<size_t, String> selected) {
-			LOG_D("Selected: %d, %s", selected.first, selected.second.c_str());
-		});
-#endif
-
-		pSelectionContext->SetActive(true);
-	}
-
 	static bool bSpawnedTextInput = false;
 	static UIContext* pTextContext = nullptr;
 	static UITextInput* pTextInput = nullptr;
-	if (elapsed.AsSeconds() >= 5 && !bSpawnedTextInput)
+	if (elapsed.AsSeconds() >= 2 && !bSpawnedTextInput)
 	{
 		pTextContext = pTestWorld->Game()->UI()->PushContext<UIContext>("TestTextInputUIC");
 		pTextInput = pTextContext->AddWidget<UITextInput>("TextInput");
@@ -435,15 +398,6 @@ void Cleanup()
 		uProgressBG = nullptr;
 	}
 	debugTokens.clear();
-
-	uArchivedTexture = nullptr;
-
-	bSpawnedSelection = false;
-	pSelectionContext = nullptr;
-	pSelection = nullptr;
-#if DEBUG_LOGGING
-	selectionToken = nullptr;
-#endif
 }
 } // namespace
 
@@ -455,7 +409,8 @@ void TestWorld::OnActivated()
 {
 	pTestWorld = this;
 	StartTests();
-	BindInput(&OnInput);
+	BindInput(std::bind(&TestWorld::OnInput, this, _1));
+	BindInput(&Test_OnInput);
 }
 
 void TestWorld::Tick(Time dt)
@@ -469,4 +424,15 @@ void TestWorld::OnDeactivating()
 {
 	Cleanup();
 }
+
+bool TestWorld::OnInput(const EngineInput::Frame& frame)
+{
+	if (frame.IsReleased(GameInputType::Back))
+	{
+		Services::Game()->UI()->PushContext<OptionsUI>("Options");
+		return true;
+	}
+	return false;
+}
+
 } // namespace LittleEngine

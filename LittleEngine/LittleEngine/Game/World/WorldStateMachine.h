@@ -32,6 +32,7 @@ public:
 	WorldID CreateWorld();
 	World* GetActiveState() const;
 	WorldID GetActiveStateID() const;
+	Vec<WorldID> GetAllStateIDs() const;
 	bool LoadState(WorldID id);
 
 private:

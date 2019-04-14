@@ -19,14 +19,6 @@ SFPrimitive* RenderHeap::New()
 	return pPrimitive;
 }
 
-SFPrimitive* RenderHeap::New(const SFPrimitiveData& data)
-{
-	UPtr<SFPrimitive> uPrimitive = MakeUnique<SFPrimitive>(data);
-	SFPrimitive* pPrimitive = uPrimitive.get();
-	m_uPrimitives.emplace_back(std::move(uPrimitive));
-	return pPrimitive;
-}
-
 GFXDataFrame RenderHeap::ConstructDataFrame()
 {
 	Vec<SFPrimitive> primitives;

@@ -25,16 +25,16 @@ SFWindowData::SFWindowData(SFWindowSize windowSize, Vector2 viewSize, String tit
 
 SFWindowRecreateData::SFWindowRecreateData(SFWindowSize size)
 {
-	windowSize.emplace(std::move(size));
+	oWindowSize.emplace(std::move(size));
 }
 
 SFWindowRecreateData::SFWindowRecreateData(SFWindowStyle style)
 {
-	this->style.emplace(style);
+	this->oSstyle.emplace(style);
 }
 
 SFWindowRecreateData::SFWindowRecreateData(String title)
 {
-	this->title.emplace(std::move(title));
+	this->oTitle.emplace(std::move(title));
 }
 } // namespace LittleEngine

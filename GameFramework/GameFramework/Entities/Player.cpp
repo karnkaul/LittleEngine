@@ -29,7 +29,7 @@ void Player::InitPlayer(PlayerData data)
 {
 	auto pRenderComponent = AddComponent<RenderComponent>();
 	LayerID layer = static_cast<LayerID>(LAYER_LIVE + 5);
-	pRenderComponent->m_pSFPrimitive->SetTexture(*data.pMainTexture)->SetLayer(layer);
+	pRenderComponent->SetSprite(*data.pMainTexture)->m_pSFPrimitive->SetLayer(layer);
 
 	auto pCollisionComponent = AddComponent<CollisionComponent>();
 	for (auto& collider : data.colliders)

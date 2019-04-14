@@ -18,7 +18,6 @@ public:
 
 public:
 	SFPrimitive* New();
-	SFPrimitive* New(const struct SFPrimitiveData& data);
 	struct GFXDataFrame ConstructDataFrame();
 	bool Destroy(SFPrimitive* pPrimitive);
 	void Destroy(InitList<SFPrimitive*> pPrimitives);

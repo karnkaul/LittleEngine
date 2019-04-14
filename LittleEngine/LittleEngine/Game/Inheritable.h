@@ -5,7 +5,7 @@ namespace LittleEngine
 {
 class Inheritable
 {
-private:
+protected:
 	String m_logName;
 	String m_name;
 	String m_className;
@@ -25,6 +25,6 @@ public:
 	const char* LogNameStr() const;
 
 protected:
-	void RegenerateLogNameStr();
+	virtual void RegenerateLogNameStr();
 };
 } // namespace LittleEngine

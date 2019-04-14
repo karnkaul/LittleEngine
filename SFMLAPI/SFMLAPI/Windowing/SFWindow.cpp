@@ -76,17 +76,17 @@ void SFWindow::DestroyWindow()
 
 void SFWindow::OverrideData(SFWindowRecreateData data)
 {
-	if (data.style)
+	if (data.oSstyle)
 	{
-		m_data.style = *data.style;
+		m_data.style = *data.oSstyle;
 	}
-	if (data.title)
+	if (data.oTitle)
 	{
-		m_data.title = *data.title;
+		m_data.title = *data.oTitle;
 	}
-	if (data.windowSize)
+	if (data.oWindowSize)
 	{
-		m_data.windowSize = std::move(*data.windowSize);
+		m_data.windowSize = std::move(*data.oWindowSize);
 	}
 }
 

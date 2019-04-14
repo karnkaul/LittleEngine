@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="UI\OptionsUI.cpp" />
     <ClCompile Include="Worlds\BootWorld.cpp" />
     <ClCompile Include="Worlds\TestWorld.cpp" />
   </ItemGroup>
@@ -41,6 +42,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="UI\OptionsUI.h" />
     <ClInclude Include="Worlds\BootWorld.h" />
     <ClInclude Include="Worlds\TestWorld.h" />
   </ItemGroup>

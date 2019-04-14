@@ -6,6 +6,23 @@
 
 namespace LittleEngine
 {
+SFTexCoords::SFTexCoords(u32 x, u32 y)
+	: x(x), y(y)
+{
+}
+
+SFTexRect::SFTexRect(SFTexCoords min, SFTexCoords max)
+	: min(min), max(max)
+{
+}
+
+sf::IntRect SFTexRect::Cast() const
+{
+	u32 x = max.x - min.x;
+	u32 y = max.y - min.y;
+	return sf::IntRect(min.x, min.y, x, y);
+}
+
 Vector2 SFPrimitive::WorldToScreen(Vector2 worldPoint)
 {
 	return Vector2(worldPoint.x, -worldPoint.y);
@@ -28,26 +45,6 @@ Fixed SFPrimitive::ScreenToWorld(Fixed screenOrientation)
 
 SFPrimitive::SFPrimitive()
 {
-	SetPivot(Vector2::Zero);
-}
-
-SFPrimitive::SFPrimitive(const SFPrimitiveData& data)
-{
-	SetPrimaryColour(data.primary);
-	SetSecondaryColour(data.secondary);
-	if (data.texture)
-	{
-		SetTexture(*data.texture);
-	}
-	if (data.font)
-	{
-		SetFont(*data.font);
-	}
-	if (!data.text.empty())
-	{
-		SetText(data.text);
-		SetTextSize(DEFAULT_TEXT_SIZE);
-	}
 	SetPivot(Vector2::Zero);
 }
 
@@ -196,11 +193,17 @@ SFPrimitive* SFPrimitive::SetTexture(const TextureAsset& texture)
 	return this;
 }
 
-SFPrimitive* SFPrimitive::Crop(const Rect2& rect)
+SFPrimitive* SFPrimitive::CropTexture(const Rect2& rect)
 {
 	sf::IntRect textureRect(rect.GetTopLeft().x.ToS32(), rect.GetTopLeft().y.ToS32(),
 							rect.GetSize().x.ToS32(), rect.GetSize().y.ToS32());
 	m_sprite.setTextureRect(textureRect);
+	return this;
+}
+
+SFPrimitive* SFPrimitive::CropTexture(SFTexRect textureRect)
+{
+	m_sprite.setTextureRect(textureRect.Cast());
 	return this;
 }
 

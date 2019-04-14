@@ -30,6 +30,13 @@ void AComponent::Tick(Time /*dt*/)
 	Assert(m_pOwner, "Component Owner is null!");
 }
 
+void AComponent::RegenerateLogNameStr()
+{
+	String suffix = m_className.empty() ? "" : "/" + m_className;
+	suffix += "=>" + m_pOwner->m_name;
+	m_logName = "[" + m_name + suffix + "]";
+}
+
 void AComponent::Destruct()
 {
 	m_bDestroyed = true;

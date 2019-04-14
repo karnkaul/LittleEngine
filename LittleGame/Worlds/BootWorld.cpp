@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "BootWorld.h"
 #include "GameFramework/GameFramework.h"
+#include "BootWorld.h"
+#include "UI/OptionsUI.h"
 
 namespace LittleEngine
 {
@@ -22,6 +23,9 @@ void BootWorld::OnActivated()
 		m_pLogoHeader->m_transform.UnsetParent();
 		m_pLogoHeader->m_transform.nPosition = {0, Fixed(0.8f)};
 		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton("Start", std::bind(&BootWorld::OnLoadNextWorld, this)));
+		m_tokenHandler
+			.AddToken(m_pLogoDrawer->AddButton(
+				"Options", []() { Services::Game()->UI()->PushContext<OptionsUI>(); }));
 		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton("Quit", std::bind(&World::Quit, this)));
 		m_pLogoDrawer->SetActive(true);
 	}

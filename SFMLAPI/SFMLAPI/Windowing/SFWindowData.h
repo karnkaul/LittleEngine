@@ -36,9 +36,9 @@ struct SFWindowData
 
 struct SFWindowRecreateData
 {
-	std::optional<SFWindowSize> windowSize;
-	std::optional<SFWindowStyle> style;
-	std::optional<String> title;
+	std::optional<SFWindowSize> oWindowSize;
+	std::optional<SFWindowStyle> oSstyle;
+	std::optional<String> oTitle;
 
 	SFWindowRecreateData(SFWindowSize size);
 	SFWindowRecreateData(SFWindowStyle style);

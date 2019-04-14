@@ -76,7 +76,7 @@ T* GameManager::NewComponent(Entity& owner)
 	uT->SetOwner(owner);
 	T* pT = uT.get();
 	componentVec.emplace_back(std::move(uT));
-	LOG_D("%s constructed and attached to %s", pT->LogNameStr(), owner.LogNameStr());
+	LOG_D("%s spawned", pT->LogNameStr());
 	return pT;
 }
 } // namespace LittleEngine

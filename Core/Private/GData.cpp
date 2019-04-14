@@ -186,4 +186,9 @@ u32 GData::NumFields() const
 {
 	return static_cast<s32>(m_fieldMap.size());
 }
+
+bool GData::Contains(const String& id) const
+{
+	return m_fieldMap.find(id) != m_fieldMap.end();
+}
 } // namespace Core

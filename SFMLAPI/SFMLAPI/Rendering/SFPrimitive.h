@@ -6,26 +6,34 @@
 
 namespace LittleEngine
 {
-template <typename T>
-using TRange = Core::TRange<T>;
-using SFPosition = TRange<Vector2>;
-using SFOrientation = TRange<Fixed>;
-using SFScale = TRange<Vector2>;
-using SFColour = TRange<Colour>;
-
 enum class SFShapeType
 {
 	Rectangle,
 	Circle,
 };
 
-struct SFPrimitiveData
+// Origin at top-left of texture; +X right, +Y down
+struct SFTexCoords
 {
-	String text;
-	Colour primary;
-	Colour secondary;
-	class TextureAsset* texture = nullptr;
-	class FontAsset* font = nullptr;
+	u32 x = 0;
+	u32 y = 0;
+
+	SFTexCoords() = default;
+	//+X right, +Y down
+	SFTexCoords(u32 x, u32 y);
+};
+
+// Origin at top-left of texture; +X right, +Y down
+struct SFTexRect
+{
+	SFTexCoords min;
+	SFTexCoords max;
+
+	SFTexRect() = default;
+	//+X right, +Y down
+	SFTexRect(SFTexCoords min, SFTexCoords max);
+
+	sf::IntRect Cast() const;
 };
 
 class SFPrimitive final
@@ -52,8 +60,7 @@ public:
 	static Fixed ScreenToWorld(Fixed screenOrientation);
 
 	SFPrimitive();
-	SFPrimitive(const SFPrimitiveData& data);
-
+	
 public:
 	// Interpolated States
 	SFPrimitive* SetEnabled(bool bEnabled);
@@ -73,7 +80,8 @@ public:
 
 	// Sprite
 	SFPrimitive* SetTexture(const class TextureAsset & texture);
-	SFPrimitive* Crop(const Rect2& rect);
+	SFPrimitive* CropTexture(const Rect2& rect);
+	SFPrimitive* CropTexture(SFTexRect textureRect);
 
 	// Text
 	SFPrimitive* SetFont(const class FontAsset& font);
@@ -101,7 +109,6 @@ private:
 	void UpdatePivot();
 	void UpdateRenderState(Fixed alpha);
 
-	friend class GFXBuffer;
 	friend struct GFXDataFrame;
 	friend class SFRenderer;
 };

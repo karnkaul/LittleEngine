@@ -178,4 +178,15 @@ void WorldStateMachine::GameTick(Time dt)
 		Services::RHeap()->Reconcile();
 	}
 }
+
+Vec<WorldID> WorldStateMachine::GetAllStateIDs() const
+{
+	Vec<WorldID> ret;
+	for (const auto& uState : m_uCreatedStates)
+	{
+		ret.push_back(uState->m_id);
+	}
+	return ret;
+}
+
 } // namespace LittleEngine
