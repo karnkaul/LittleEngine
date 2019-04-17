@@ -5,6 +5,7 @@
 #include "Utils.h"
 #include "DebugConsole.h"
 #include "RenderStatsRenderer.h"
+#include "Tweakable.h"
 #include "Logger.h"
 #include "LogLine.h"
 #include "SFMLAPI/System/SFAssets.h"
@@ -118,6 +119,21 @@ protected:
 	virtual LogLine OnEmptyParams() = 0;
 };
 
+class BooleanCommand : public ParameterisedCommand
+{
+public:
+	BooleanCommand(const char* name) : ParameterisedCommand(name)
+	{
+		paramCallbackMap.emplace("true", [&](Vec<LogLine>& executeResult) { OnTrue(executeResult); });
+		paramCallbackMap.emplace("false",
+								 [&](Vec<LogLine>& executeResult) { OnFalse(executeResult); });
+	}
+
+protected:
+	virtual void OnTrue(Vec<LogLine>& executeResult) = 0;
+	virtual void OnFalse(Vec<LogLine>& executeResult) = 0;
+};
+
 class HelpCommand : public Command
 {
 public:
@@ -131,100 +147,58 @@ public:
 	}
 };
 
-class ShowCommand : public ParameterisedCommand
+class LoadWorldCommand : public Command
 {
 public:
-	ShowCommand() : ParameterisedCommand("show")
+	LoadWorldCommand() : Command("loadworld")
 	{
-		paramCallbackMap.emplace("colliders", [](Vec<LogLine>& executeResult) {
-#if DEBUGGING
-			Services::Game()->Physics()->ToggleDebugShapes(true);
-			executeResult.emplace_back("Turned on Debug Colliders", g_logTextColour);
-#else
-		executeResult.emplace_back("Collider Debug shapes not available", g_logTextColour);
-#endif
-		});
-
-		paramCallbackMap.emplace("profiler", [](Vec<LogLine>& executeResult) {
-#if ENABLED(PROFILER)
-			Profiler::Toggle(true);
-			executeResult.emplace_back("Turned on Profiler", g_logTextColour);
-#else
-		executeResult.emplace_back("Profiler not enabled", g_logTextColour);
-#endif
-		});
-		paramCallbackMap.emplace("renderStats", [](Vec<LogLine>& executeResult) {
-			RenderStatsRenderer::s_bConsoleRenderStatsEnabled = true;
-			executeResult.emplace_back("Turned on Render Stats", g_logTextColour);
-		});
+		bTakesCustomParam = true;
 	}
 
-protected:
-	LogLine OnEmptyParams() override
+	void FillExecuteResult(String params) override
 	{
-		return LogLine("show what?", g_logTextColour);
-	}
-};
-
-class HideCommand : public ParameterisedCommand
-{
-public:
-	HideCommand() : ParameterisedCommand("hide")
-	{
-		paramCallbackMap.emplace("colliders", [](Vec<LogLine>& executeResult) {
-#if DEBUGGING
-			Services::Game()->Physics()->ToggleDebugShapes(false);
-			executeResult.emplace_back("Turned off Debug Colliders", g_logTextColour);
-#else
-			executeResult.emplace_back("Collider Debug shapes not available", g_logTextColour);
-#endif
-		});
-		paramCallbackMap.emplace("profiler", [](Vec<LogLine>& executeResult) {
-#if ENABLED(PROFILER)
-			Profiler::Toggle(false);
-			executeResult.emplace_back("Turned off Profiler", g_logTextColour);
-#else
-			executeResult.emplace_back("Profiler not enabled", g_logTextColour);
-#endif
-		});
-		paramCallbackMap.emplace("renderStats", [](Vec<LogLine>& executeResult) {
-			RenderStatsRenderer::s_bConsoleRenderStatsEnabled = false;
-			executeResult.emplace_back("Turned off RenderStats", g_logTextColour);
-		});
-	}
-
-protected:
-	LogLine OnEmptyParams() override
-	{
-		return LogLine("hide what?", g_logTextColour);
-	}
-};
-
-class ResolutionCommand : public ParameterisedCommand
-{
-public:
-	ResolutionCommand() : ParameterisedCommand("resolution")
-	{
-		const Map<u32, SFWindowSize>& windowSizes = GFX::GetValidWindowSizes();
-		for (const auto& kvp : windowSizes)
+		if (params.empty())
 		{
-			const auto& windowSize = kvp.second;
-			String windowSizeText = Strings::ToString(windowSize.height) + "p";
-			paramCallbackMap.emplace(windowSizeText, 
-			[w = windowSize.width, h = windowSize.height ](Vec<LogLine>& executeResult) 
-			{
-				Services::Engine()->TrySetWindowSize(h);
-				String sizeText =
-					Strings::ToString(w) + "x" + Strings::ToString(h);
-				executeResult.emplace_back("Set Resolution to: " + sizeText, g_logTextColour);
-			});
+			executeResult.emplace_back("Syntax: loadworld <id>", g_logTextColour);
+			return;
+		}
+
+		s32 worldID = Strings::ToS32(params);
+		bool success = false;
+		if (worldID >= 0)
+		{
+			success = Services::Engine()->Worlds()->LoadState(worldID);
+		}
+		if (success)
+		{
+			executeResult.emplace_back("Loading World ID: " + Strings::ToString(worldID), g_logTextColour);
+		}
+		else
+		{
+			executeResult.emplace_back("Invalid WorldID " + params, g_logWarningColour);
 		}
 	}
+};
 
-protected:
-	LogLine OnEmptyParams() override
+class QuitCommand : public Command
+{
+public:
+	QuitCommand() : Command("quit")
 	{
-		return LogLine("set resolution to what height?", g_logTextColour);
+	}
+
+	void FillExecuteResult(String /*params*/) override
+	{
+		if (WorldStateMachine::s_bReady)
+		{
+			executeResult.emplace_back("Quitting instantly", g_logWarningColour);
+			Console::Quit();
+		}
+		else
+		{
+			executeResult.emplace_back(
+				"Cannot quit until WorldStateMachine's load jobs are complete!", g_logWarningColour);
+		}
 	}
 };
 
@@ -264,98 +238,115 @@ protected:
 	}
 };
 
-class QuitCommand : public Command
+#if ENABLED(PROFILER)
+class ProfilerCommand : public BooleanCommand
 {
 public:
-	QuitCommand() : Command("quit")
+	ProfilerCommand() : BooleanCommand("profiler")
 	{
 	}
 
-	void FillExecuteResult(String /*params*/) override
+	void OnTrue(Vec<LogLine>& executeResult) override
 	{
-		if (WorldStateMachine::s_bReady)
+		Profiler::Toggle(true);
+		executeResult.emplace_back("Profiler enabled", g_logTextColour);
+	}
+
+	void OnFalse(Vec<LogLine>& executeResult) override
+	{
+		Profiler::Toggle(false);
+		executeResult.emplace_back("Profiler disabled", g_logTextColour);
+	}
+
+protected:
+	LogLine OnEmptyParams() override
+	{
+		return LogLine("Syntax: <" + name + "> <true/false>", g_logTextColour);
+	}
+};
+#endif
+
+class ResolutionCommand : public ParameterisedCommand
+{
+public:
+	ResolutionCommand() : ParameterisedCommand("resolution")
+	{
+		const Map<u32, SFWindowSize>& windowSizes = GFX::GetValidWindowSizes();
+		for (const auto& kvp : windowSizes)
 		{
-			executeResult.emplace_back("Quitting instantly", g_logWarningColour);
-			Console::Quit();
+			const auto& windowSize = kvp.second;
+			String windowSizeText = Strings::ToString(windowSize.height) + "p";
+			paramCallbackMap.emplace(
+				windowSizeText, [w = windowSize.width, h = windowSize.height](Vec<LogLine>& executeResult) {
+					Services::Engine()->TrySetWindowSize(h);
+					String sizeText = Strings::ToString(w) + "x" + Strings::ToString(h);
+					executeResult.emplace_back("Set Resolution to: " + sizeText, g_logTextColour);
+				});
 		}
-		else
-		{
-			executeResult.emplace_back(
-				"Cannot quit until WorldStateMachine's load jobs are complete!", g_logWarningColour);
-		}
+	}
+
+protected:
+	LogLine OnEmptyParams() override
+	{
+		return LogLine("set resolution to what height?", g_logTextColour);
 	}
 };
 
-class LoadWorldCommand : public Command
+#if ENABLED(TWEAKABLES)
+class SetCommand : public Command
 {
 public:
-	LoadWorldCommand() : Command("loadworld")
+	SetCommand() : Command("set")
 	{
 		bTakesCustomParam = true;
 	}
 
 	void FillExecuteResult(String params) override
 	{
-		if (params.empty())
+		Vec<String> tokens = Strings::Tokenise(params, ' ', {});
+		if (tokens.empty())
 		{
-			executeResult.emplace_back("Syntax: loadworld <id>", g_logTextColour);
+			executeResult.emplace_back("Syntax: set <id> <value>", g_logTextColour);
 			return;
 		}
 
-		s32 worldID = Strings::ToS32(params);
-		bool success = false;
-		if (worldID >= 0)
+		String id;
+		if (tokens.size() >= 1)
 		{
-			success = Services::Engine()->Worlds()->LoadState(worldID);
+			id = std::move(tokens[0]);
 		}
-		if (success)
+		auto& tweakables = TweakManager::Instance()->m_tweakables;
+		auto iter = tweakables.find(id);
+		if (iter == tweakables.end())
 		{
-			executeResult.emplace_back("Loading World ID: " + Strings::ToString(worldID), g_logTextColour);
+			executeResult.emplace_back("Unknown Tweakable: " + id, g_logWarningColour);
+			return;
 		}
-		else
+		if (tokens.size() < 2)
 		{
-			executeResult.emplace_back("Invalid WorldID " + params, g_logWarningColour);
+			executeResult.emplace_back("Syntax: set " + id + " <value>", g_logTextColour);
+			return;
 		}
-	}
-};
-
-class BorderlessCommand : public ParameterisedCommand
-{
-public:
-	BorderlessCommand() : ParameterisedCommand("borderless")
-	{
-		paramCallbackMap.emplace("true", [](Vec<LogLine>& executeResult) {
-			if (!GameSettings::Instance()->IsBorderless())
-			{
-				GameSettings::Instance()->SetBorderless(true);
-				Services::Engine()->SetWindowStyle(SFWindowStyle::Bordlerless);
-				executeResult.emplace_back("Borderless activated", g_logTextColour);
-			}
-			else
-			{
-				executeResult.emplace_back("Window is already borderless", g_logTextColour);
-			}
-		});
-		paramCallbackMap.emplace("false", [](Vec<LogLine>& executeResult) {
-			if (GameSettings::Instance()->IsBorderless())
-			{
-				GameSettings::Instance()->SetBorderless(false);
-				Services::Engine()->SetWindowStyle(SFWindowStyle::Default);
-				executeResult.emplace_back("Borderless deactivated", g_logTextColour);
-			}
-			else
-			{
-				executeResult.emplace_back("Window already has a border", g_logTextColour);
-			}
-		});
+		Tweakable* pTweakable = iter->second;
+		pTweakable->Set(tokens[1]);
+		executeResult.emplace_back("Set " + pTweakable->m_id + " = " + pTweakable->m_value, g_logTextColour);
 	}
 
-protected:
-	LogLine OnEmptyParams() override
+	Vec<String> AutoCompleteParams(const String& incompleteParams) override
 	{
-		return LogLine("Enter \"true\" or \"false\"", g_logTextColour);
+		Vec<String> matches;
+		auto& tweakables = TweakManager::Instance()->m_tweakables;
+		for (const auto& kvp : tweakables)
+		{
+			if (kvp.first.find(incompleteParams) != String::npos)
+			{
+				matches.emplace_back(kvp.first);
+			}
+		}
+		return matches;
 	}
 };
+#endif
 #pragma endregion
 #pragma region Local Namespace Impl
 namespace
@@ -444,13 +435,16 @@ Vec<Command*> FindCommands(const String& incompleteCommand, bool bFirstCharMustM
 void Init()
 {
 	commands.emplace("help", MakeUnique<HelpCommand>());
-	commands.emplace("show", MakeUnique<ShowCommand>());
-	commands.emplace("hide", MakeUnique<HideCommand>());
-	commands.emplace("quit", MakeUnique<QuitCommand>());
 	commands.emplace("loadworld", MakeUnique<LoadWorldCommand>());
-	commands.emplace("resolution", MakeUnique<ResolutionCommand>());
+	commands.emplace("quit", MakeUnique<QuitCommand>());
 	commands.emplace("loglevel", MakeUnique<LogLevelCommand>());
-	commands.emplace("borderless", MakeUnique<BorderlessCommand>());
+#if ENABLED(PROFILER)
+	commands.emplace("profiler", MakeUnique<ProfilerCommand>());
+#endif
+	commands.emplace("resolution", MakeUnique<ResolutionCommand>());
+#if ENABLED(TWEAKABLES)
+	commands.emplace("set", MakeUnique<SetCommand>());
+#endif
 }
 
 Vec<LogLine> Execute(const String& query)

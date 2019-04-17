@@ -68,13 +68,6 @@ AABBCollider* CollisionManager::CreateAABBCollider(String ownerName)
 	return pCollider;
 }
 
-#if DEBUGGING
-void CollisionManager::ToggleDebugShapes(bool bShow)
-{
-	Collider::s_bShowDebugShape = bShow;
-}
-#endif
-
 void CollisionManager::Scrub()
 {
 	Core::CleanVector<UPtr<Collider>>(

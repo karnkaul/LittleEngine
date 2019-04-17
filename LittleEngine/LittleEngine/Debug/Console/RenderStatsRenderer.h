@@ -1,6 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
-#if ENABLED(CONSOLE)
+#if ENABLED(RENDER_STATS)
 #include "DebugConsole.h"
 
 namespace LittleEngine

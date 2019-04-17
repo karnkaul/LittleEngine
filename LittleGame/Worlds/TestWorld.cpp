@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ArchiveReader.h"
+#include "LittleEngine/Debug/Console/Tweakable.h"
 #include "GameFramework/GameFramework.h"
 #include "TestWorld.h"
 #include "UI/OptionsUI.h"
@@ -220,7 +221,6 @@ bool bModal = true;
 bool bSpawnedDrawer = false;
 Vec<EngineInput::Token> debugTokens;
 
-bool bToSpawnDialogue = false;
 UIDialogue* pDialogue = nullptr;
 
 // Fixed progress;
@@ -236,7 +236,6 @@ void SpawnDialogue()
 	debugTokens.push_back(pDialogue->AddMainButton("OK", []() { LOG_D("OK pressed!"); }, false));
 	debugTokens.push_back(pDialogue->AddOtherButton("Cancel", []() { pDialogue->Destruct(); }, false));
 	pDialogue->SetActive(true);
-	bToSpawnDialogue = false;
 }
 
 void SpawnToggle()
@@ -289,7 +288,7 @@ void TestTick(Time dt)
 		/*debugTokens.push_back(
 			pButtonDrawer->AddButton("Button 3", []() { LOG_D("Button 3 pressed!"); }));*/
 		debugTokens.push_back(pButtonDrawer->AddButton("Toggle", &SpawnToggle));
-		debugTokens.push_back(pButtonDrawer->AddButton("Dialogue", []() { bToSpawnDialogue = true; }));
+		debugTokens.push_back(pButtonDrawer->AddButton("Dialogue", []() { SpawnDialogue(); }));
 		if (bModal)
 		{
 			debugTokens.push_back(
@@ -309,72 +308,6 @@ void TestTick(Time dt)
 		pTextContext->SetActive(true);
 		bSpawnedTextInput = true;
 	}
-
-	if (bToSpawnDialogue)
-	{
-		SpawnDialogue();
-	}
-
-	static bool bLoadedAsyncAsset = false;
-	static std::future<TextureAsset*> future0;
-	static std::future<TextAsset*> future1;
-	static u8 frame = 0;
-
-	static bool bLoaded0 = false;
-	static bool bLoaded1 = false;
-	static bool bLoadAsyncComplete = false;
-	if (bLoadedAsyncAsset && !bLoadAsyncComplete)
-	{
-		++frame;
-		if (future0._Is_ready())
-		{
-#if ENABLED(DEBUG_LOGGING)
-			TextureAsset* pTexture = future0.get();
-#endif
-			LOG_D("Texture loaded on frame %d", frame);
-			bLoaded0 = true;
-		}
-
-		if (future1._Is_ready())
-		{
-#if ENABLED(DEBUG_LOGGING)
-			TextAsset* pText = future1.get();
-#endif
-			LOG_D("Text loaded on frame %d", frame);
-			bLoaded1 = true;
-		}
-
-		bLoadAsyncComplete = bLoaded0 && bLoaded1;
-		if (!bLoadAsyncComplete)
-		{
-			LOG_D("Waiting for Async Load. Frame %d", frame);
-		}
-	}
-
-	if (elapsed.AsSeconds() >= 3 && !bLoadedAsyncAsset)
-	{
-		bLoadedAsyncAsset = true;
-		future0 = pTestWorld->Repository()->LoadAsync<TextureAsset>("Misc/06.png");
-		future1 = pTestWorld->Repository()->LoadAsync<TextAsset>("Misc/BinaryText.txt");
-		LOG_D("Loading assets async. Frame %d", frame);
-	}
-
-	/*if (elapsed.AsSeconds() >= 2 && progress < Fixed(1.5f))
-	{
-		progress += Fixed(dt.AsSeconds());
-		if (!uProgressBar)
-		{
-			uProgressBG = MakeUnique<UIElement>("Test ProgressBar BG");
-			uProgressBG->m_transform.size = {500, 50};
-			uProgressBG->SetPanel(Colour(255, 200, 100, 100));
-			uProgressBar = MakeUnique<UIProgressBar>("Test ProgressBar");
-			uProgressBar->InitProgressBar({500, 10}, Colour::Magenta);
-			uProgressBar->m_transform.SetParent(uProgressBG->m_transform);
-		}
-		uProgressBar->SetProgress(progress);
-		uProgressBar->Tick(dt);
-		uProgressBG->Tick(dt);
-	}*/
 }
 
 void Cleanup()

@@ -29,11 +29,13 @@
 #define ASSERTS 1
 #define CONSOLE 1
 #define RENDER_STATS 1
+#define TWEAKABLES 1
 #else
 #define PROFILER 0
 #define ASSERTS 0
 #define CONSOLE 0
 #define RENDER_STATS 0
+#define TWEAKABLES 0
 #endif
 
 #if !SHIPPING

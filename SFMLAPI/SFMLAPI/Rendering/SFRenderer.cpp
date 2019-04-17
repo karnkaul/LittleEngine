@@ -10,34 +10,8 @@
 
 namespace LittleEngine
 {
-void RenderData::Reset()
-{
-	primitiveCount = staticCount = dynamicCount = framesPerSecond = 0;
-	lastRenderTime = Time::Zero;
-}
-
-RenderData g_renderData;
-
 #if ENABLED(RENDER_STATS)
-namespace
-{
-Time fpsTime;
-u32 frameCount = 0;
-u32 fps = 0;
-
-void UpdateFPS()
-{
-	++frameCount;
-	g_renderData.lastRenderTime = Time::Now();
-	if (Maths::Abs((fpsTime - g_renderData.lastRenderTime).AsSeconds()) >= 1.0f)
-	{
-		fpsTime = g_renderData.lastRenderTime;
-		fps = frameCount;
-		frameCount = 0;
-	}
-	g_renderData.framesPerSecond = fps;
-}
-} // namespace
+RenderData g_renderData;
 #endif
 
 SFRenderer::SFRenderer(SFWindow& sfWindow, Time tickRate)
@@ -59,7 +33,10 @@ void SFRenderer::Render(GFXBuffer& buffer)
 		Fixed alpha = Maths::Clamp01(renderDT / tickRate);
 		buffer.Lock_Traverse([&](Vec<SFPrimitive>& active) {
 #if ENABLED(RENDER_STATS)
-			g_renderData.Reset();
+			static Time fpsTime;
+			static u32 frameCount = 0;
+			u32 statics = 0;
+			u32 primitives = 0;
 #endif
 
 			for (auto& primitive : active)
@@ -71,17 +48,29 @@ void SFRenderer::Render(GFXBuffer& buffer)
 				m_pSFWindow->draw(primitive.m_text);
 
 #if ENABLED(RENDER_STATS)
-				++g_renderData.primitiveCount;
+				++primitives;
 				if (primitive.m_bStatic)
 				{
-					++g_renderData.staticCount;
+					++statics;
 				}
 #endif
 			}
 
 #if ENABLED(RENDER_STATS)
+			g_renderData.staticCount = statics;
+			g_renderData.primitiveCount = primitives;
 			g_renderData.dynamicCount = g_renderData.primitiveCount - g_renderData.staticCount;
-			UpdateFPS();
+			// Update FPS
+			{
+				++frameCount;
+				g_renderData.lastRenderTime = Time::Now();
+				if (Maths::Abs((fpsTime - g_renderData.lastRenderTime).AsSeconds()) >= 1.0f)
+				{
+					fpsTime = g_renderData.lastRenderTime;
+					g_renderData.framesPerSecond = frameCount;
+					frameCount = 0;
+				}
+			}
 #endif
 		});
 	}

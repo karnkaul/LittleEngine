@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "RenderStatsRenderer.h"
-#if ENABLED(CONSOLE)
+#if ENABLED(RENDER_STATS)
 #include "SFMLAPI/Rendering/SFRenderer.h"
+#include "LittleEngine/Debug/Console/Tweakable.h"
 #include "LittleEngine/Engine/EngineConfig.h"
 #include "LittleEngine/Game/GameManager.h"
 #include "LittleEngine/GFX/GFX.h"
@@ -26,6 +27,7 @@ void UpdateRenderStat(bool bEnabled, UIElement& element, const char* prefix, u32
 } // namespace
 
 bool RenderStatsRenderer::s_bConsoleRenderStatsEnabled = false;
+TweakBool(renderStats, &RenderStatsRenderer::s_bConsoleRenderStatsEnabled);
 
 RenderStatsRenderer::RenderStatsRenderer()
 {

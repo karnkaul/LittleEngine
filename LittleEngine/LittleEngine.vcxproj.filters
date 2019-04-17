@@ -199,6 +199,9 @@
     <ClCompile Include="LittleEngine\Repository\LoadHelpers.cpp">
       <Filter>LittleEngine\Repository</Filter>
     </ClCompile>
+    <ClCompile Include="LittleEngine\Debug\Console\Tweakable.cpp">
+      <Filter>LittleEngine\Debug\Console</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Input\EngineInput.h">
@@ -368,6 +371,9 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\Repository\LoadHelpers.h">
       <Filter>LittleEngine\Repository</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Debug\Console\Tweakable.h">
+      <Filter>LittleEngine\Debug\Console</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

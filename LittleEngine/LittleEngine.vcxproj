@@ -26,6 +26,7 @@
     <ClCompile Include="LittleEngine\Debug\Console\DebugCommands.cpp" />
     <ClCompile Include="LittleEngine\Debug\Console\LogLine.cpp" />
     <ClCompile Include="LittleEngine\Debug\Console\RenderStatsRenderer.cpp" />
+    <ClCompile Include="LittleEngine\Debug\Console\Tweakable.cpp" />
     <ClCompile Include="LittleEngine\Debug\DebugProfiler.cpp" />
     <ClCompile Include="LittleEngine\Engine\EngineConfig.cpp" />
     <ClCompile Include="LittleEngine\Engine\EngineLoop.cpp" />
@@ -78,6 +79,7 @@
     <ClInclude Include="LittleEngine\Debug\Console\DebugCommands.h" />
     <ClInclude Include="LittleEngine\Debug\Console\LogLine.h" />
     <ClInclude Include="LittleEngine\Debug\Console\RenderStatsRenderer.h" />
+    <ClInclude Include="LittleEngine\Debug\Console\Tweakable.h" />
     <ClInclude Include="LittleEngine\Debug\DebugProfiler.h" />
     <ClInclude Include="LittleEngine\Engine\EngineConfig.h" />
     <ClInclude Include="LittleEngine\Engine\EngineLoop.h" />
