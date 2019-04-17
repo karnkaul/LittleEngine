@@ -15,6 +15,7 @@ struct LogLine
 	Colour colour;
 	static constexpr u32 TEXT_SIZE = 19;
 
+	LogLine() = default;
 	LogLine(String text, Colour colour);
 	UIText ToUIText() const;
 };
@@ -37,7 +38,7 @@ public:
 
 	Vec<LogLine> GetLogPage() const;
 	void Append(Vec<LogLine>&& move);
-	void Append(const LogLine& logLine);
+	void Append(LogLine logLine);
 };
 } // namespace Debug
 } // namespace LittleEngine

@@ -41,18 +41,18 @@ Vec<LogLine> GetAllCommands();
 class Command
 {
 public:
-	String name;
+	String m_name;
 	// Set to true to include space when autocompleting this Command
-	bool bTakesCustomParam = false;
+	bool m_bTakesCustomParam = false;
 
 	virtual ~Command() = default;
 
 	Vec<LogLine> Execute(String params)
 	{
 		String suffix = params.empty() ? "" : " " + params;
-		executeResult.emplace_back(name + suffix, g_liveHistoryColour);
+		m_executeResult.emplace_back(m_name + suffix, g_liveHistoryColour);
 		FillExecuteResult(std::move(params));
-		return std::move(executeResult);
+		return std::move(m_executeResult);
 	}
 
 	virtual Vec<String> AutoCompleteParams(const String& /*query*/)
@@ -61,9 +61,9 @@ public:
 	}
 
 protected:
-	Vec<LogLine> executeResult;
+	Vec<LogLine> m_executeResult;
 
-	Command(const char* name) : name(name)
+	Command(const char* name) : m_name(name)
 	{
 	}
 
@@ -78,19 +78,19 @@ public:
 	{
 		if (params.empty())
 		{
-			executeResult.emplace_back(OnEmptyParams());
+			m_executeResult.emplace_back(OnEmptyParams());
 		}
 
 		else
 		{
-			auto search = paramCallbackMap.find(params);
-			if (search != paramCallbackMap.end())
+			auto search = m_paramCallbackMap.find(params);
+			if (search != m_paramCallbackMap.end())
 			{
-				search->second(executeResult);
+				search->second(m_executeResult);
 			}
 			else
 			{
-				executeResult.emplace_back("Unknown parameters: " + params, g_logWarningColour);
+				m_executeResult.emplace_back("Unknown parameters: " + params, g_logWarningColour);
 			}
 		}
 	}
@@ -98,7 +98,7 @@ public:
 	Vec<String> AutoCompleteParams(const String& incompleteParams) final
 	{
 		Vec<String> params;
-		for (const auto& p : paramCallbackMap)
+		for (const auto& p : m_paramCallbackMap)
 		{
 			if (incompleteParams.empty() ||
 				(p.first.find(incompleteParams) != String::npos && incompleteParams[0] == p.first[0]))
@@ -110,13 +110,16 @@ public:
 	}
 
 protected:
-	Map<String, std::function<void(Vec<LogLine>&)>> paramCallbackMap;
+	Map<String, std::function<void(Vec<LogLine>&)>> m_paramCallbackMap;
 
 	ParameterisedCommand(const char* name) : Command(name)
 	{
 	}
 
-	virtual LogLine OnEmptyParams() = 0;
+	virtual LogLine OnEmptyParams()
+	{
+		return LogLine("Syntax: " + m_name + "<params>", g_logTextColour);
+	}
 };
 
 class BooleanCommand : public ParameterisedCommand
@@ -124,9 +127,10 @@ class BooleanCommand : public ParameterisedCommand
 public:
 	BooleanCommand(const char* name) : ParameterisedCommand(name)
 	{
-		paramCallbackMap.emplace("true", [&](Vec<LogLine>& executeResult) { OnTrue(executeResult); });
-		paramCallbackMap.emplace("false",
-								 [&](Vec<LogLine>& executeResult) { OnFalse(executeResult); });
+		m_paramCallbackMap.emplace("true",
+								   [&](Vec<LogLine>& executeResult) { OnTrue(executeResult); });
+		m_paramCallbackMap.emplace("false",
+								   [&](Vec<LogLine>& executeResult) { OnFalse(executeResult); });
 	}
 
 protected:
@@ -134,32 +138,32 @@ protected:
 	virtual void OnFalse(Vec<LogLine>& executeResult) = 0;
 };
 
-class HelpCommand : public Command
+class Help : public Command
 {
 public:
-	HelpCommand() : Command("help")
+	Help() : Command("help")
 	{
 	}
 
 	void FillExecuteResult(String /*params*/) override
 	{
-		executeResult = GetAllCommands();
+		m_executeResult = GetAllCommands();
 	}
 };
 
-class LoadWorldCommand : public Command
+class LoadWorld : public Command
 {
 public:
-	LoadWorldCommand() : Command("loadworld")
+	LoadWorld() : Command("loadWorld")
 	{
-		bTakesCustomParam = true;
+		m_bTakesCustomParam = true;
 	}
 
 	void FillExecuteResult(String params) override
 	{
 		if (params.empty())
 		{
-			executeResult.emplace_back("Syntax: loadworld <id>", g_logTextColour);
+			m_executeResult.emplace_back("Syntax: " + m_name + " <id>", g_logTextColour);
 			return;
 		}
 
@@ -171,19 +175,19 @@ public:
 		}
 		if (success)
 		{
-			executeResult.emplace_back("Loading World ID: " + Strings::ToString(worldID), g_logTextColour);
+			m_executeResult.emplace_back("Loading World ID: " + Strings::ToString(worldID), g_logTextColour);
 		}
 		else
 		{
-			executeResult.emplace_back("Invalid WorldID " + params, g_logWarningColour);
+			m_executeResult.emplace_back("Invalid WorldID " + params, g_logWarningColour);
 		}
 	}
 };
 
-class QuitCommand : public Command
+class Quit : public Command
 {
 public:
-	QuitCommand() : Command("quit")
+	Quit() : Command("quit")
 	{
 	}
 
@@ -191,92 +195,58 @@ public:
 	{
 		if (WorldStateMachine::s_bReady)
 		{
-			executeResult.emplace_back("Quitting instantly", g_logWarningColour);
+			m_executeResult.emplace_back("Quitting instantly", g_logWarningColour);
 			Console::Quit();
 		}
 		else
 		{
-			executeResult.emplace_back(
+			m_executeResult.emplace_back(
 				"Cannot quit until WorldStateMachine's load jobs are complete!", g_logWarningColour);
 		}
 	}
 };
 
-class LogLevelCommand : public ParameterisedCommand
+class LogLevel : public ParameterisedCommand
 {
 public:
-	LogLevelCommand() : ParameterisedCommand("loglevel")
+	LogLevel() : ParameterisedCommand("logLevel")
 	{
-		paramCallbackMap.emplace("HOT", [](Vec<LogLine>& executeResult) {
+		m_paramCallbackMap.emplace("HOT", [](Vec<LogLine>& executeResult) {
 			Core::g_MinLogSeverity = Core::LogSeverity::HOT;
 			executeResult.emplace_back("Set LogLevel to [HOT]", g_logTextColour);
 		});
-		paramCallbackMap.emplace("Error", [](Vec<LogLine>& executeResult) {
+		m_paramCallbackMap.emplace("Error", [](Vec<LogLine>& executeResult) {
 			Core::g_MinLogSeverity = Core::LogSeverity::Error;
 			executeResult.emplace_back("Set LogLevel to [Error]", g_logTextColour);
 		});
-		paramCallbackMap.emplace("Warning", [](Vec<LogLine>& executeResult) {
+		m_paramCallbackMap.emplace("Warning", [](Vec<LogLine>& executeResult) {
 			Core::g_MinLogSeverity = Core::LogSeverity::Warning;
 			executeResult.emplace_back("Set LogLevel to [Warning]", g_logTextColour);
 		});
-		paramCallbackMap.emplace("Info", [](Vec<LogLine>& executeResult) {
+		m_paramCallbackMap.emplace("Info", [](Vec<LogLine>& executeResult) {
 			Core::g_MinLogSeverity = Core::LogSeverity::Info;
 			executeResult.emplace_back("Set LogLevel to [Info]", g_logTextColour);
 		});
 #if DEBUG_LOGGING
-		paramCallbackMap.emplace("Debug", [](Vec<LogLine>& executeResult) {
+		m_paramCallbackMap.emplace("Debug", [](Vec<LogLine>& executeResult) {
 			Core::g_MinLogSeverity = Core::LogSeverity::Debug;
 			executeResult.emplace_back("Set LogLevel to [Debug]", g_logTextColour);
 		});
 #endif
 	}
-
-protected:
-	LogLine OnEmptyParams() override
-	{
-		return LogLine("set g_MinLogSeverity to what?", g_logTextColour);
-	}
 };
 
-#if ENABLED(PROFILER)
-class ProfilerCommand : public BooleanCommand
+class Resolution : public ParameterisedCommand
 {
 public:
-	ProfilerCommand() : BooleanCommand("profiler")
-	{
-	}
-
-	void OnTrue(Vec<LogLine>& executeResult) override
-	{
-		Profiler::Toggle(true);
-		executeResult.emplace_back("Profiler enabled", g_logTextColour);
-	}
-
-	void OnFalse(Vec<LogLine>& executeResult) override
-	{
-		Profiler::Toggle(false);
-		executeResult.emplace_back("Profiler disabled", g_logTextColour);
-	}
-
-protected:
-	LogLine OnEmptyParams() override
-	{
-		return LogLine("Syntax: <" + name + "> <true/false>", g_logTextColour);
-	}
-};
-#endif
-
-class ResolutionCommand : public ParameterisedCommand
-{
-public:
-	ResolutionCommand() : ParameterisedCommand("resolution")
+	Resolution() : ParameterisedCommand("resolution")
 	{
 		const Map<u32, SFWindowSize>& windowSizes = GFX::GetValidWindowSizes();
 		for (const auto& kvp : windowSizes)
 		{
 			const auto& windowSize = kvp.second;
 			String windowSizeText = Strings::ToString(windowSize.height) + "p";
-			paramCallbackMap.emplace(
+			m_paramCallbackMap.emplace(
 				windowSizeText, [w = windowSize.width, h = windowSize.height](Vec<LogLine>& executeResult) {
 					Services::Engine()->TrySetWindowSize(h);
 					String sizeText = Strings::ToString(w) + "x" + Strings::ToString(h);
@@ -284,21 +254,15 @@ public:
 				});
 		}
 	}
-
-protected:
-	LogLine OnEmptyParams() override
-	{
-		return LogLine("set resolution to what height?", g_logTextColour);
-	}
 };
 
 #if ENABLED(TWEAKABLES)
-class SetCommand : public Command
+class Set : public Command
 {
 public:
-	SetCommand() : Command("set")
+	Set() : Command("set")
 	{
-		bTakesCustomParam = true;
+		m_bTakesCustomParam = true;
 	}
 
 	void FillExecuteResult(String params) override
@@ -306,7 +270,7 @@ public:
 		Vec<String> tokens = Strings::Tokenise(params, ' ', {});
 		if (tokens.empty())
 		{
-			executeResult.emplace_back("Syntax: set <id> <value>", g_logTextColour);
+			m_executeResult.emplace_back("Syntax: " + m_name + " <id> <value>", g_logTextColour);
 			return;
 		}
 
@@ -319,17 +283,24 @@ public:
 		auto iter = tweakables.find(id);
 		if (iter == tweakables.end())
 		{
-			executeResult.emplace_back("Unknown Tweakable: " + id, g_logWarningColour);
+			m_executeResult.emplace_back("Unknown Tweakable: " + id, g_logWarningColour);
 			return;
 		}
 		if (tokens.size() < 2)
 		{
-			executeResult.emplace_back("Syntax: set " + id + " <value>", g_logTextColour);
+			m_executeResult.emplace_back("Syntax: " + m_name + " " + id + " <value>", g_logTextColour);
 			return;
 		}
+
 		Tweakable* pTweakable = iter->second;
-		pTweakable->Set(tokens[1]);
-		executeResult.emplace_back("Set " + pTweakable->m_id + " = " + pTweakable->m_value, g_logTextColour);
+		if (tokens[1] == "?")
+		{
+			m_executeResult.emplace_back("\t" + pTweakable->m_id + " = " + pTweakable->m_value, g_logTextColour);
+			return;
+		}
+
+		pTweakable->Set(std::move(tokens[1]));
+		m_executeResult.emplace_back("\t" + pTweakable->m_id + " = " + pTweakable->m_value, g_logTextColour);
 	}
 
 	Vec<String> AutoCompleteParams(const String& incompleteParams) override
@@ -351,15 +322,25 @@ public:
 #pragma region Local Namespace Impl
 namespace
 {
-Map<String, UPtr<Command>> commands;
+List<UPtr<Command>> commands;
+
+template <typename T>
+void Add()
+{
+	static_assert(IsDerived<Command, T>(), "T must derive from Command");
+	UPtr<T> uT = MakeUnique<T>();
+	auto iter = std::find_if(commands.begin(), commands.end(),
+							 [&uT](const UPtr<Command>& uC) { return uT->m_name < uC->m_name; });
+	commands.insert(iter, std::move(uT));
+}
 
 Vec<LogLine> GetAllCommands()
 {
 	Vec<LogLine> result;
 	result.emplace_back("Registered commands:", g_logTextColour);
-	for (auto& command : commands)
+	for (auto& uCommand : commands)
 	{
-		result.emplace_back("\t" + command.second->name, g_logTextColour);
+		result.emplace_back("\t" + uCommand->m_name, g_logTextColour);
 	}
 	return result;
 }
@@ -404,10 +385,12 @@ void SplitQuery(String& outQuery, String& outCommand, String& outParams)
 Vec<LogLine> ExecuteQuery(const String& command, String params)
 {
 	Vec<LogLine> ret;
-	auto search = commands.find(command);
+	auto search = std::find_if(commands.begin(), commands.end(), [&command](const UPtr<Command>& uCommand) {
+		return uCommand->m_name == command;
+	});
 	if (search != commands.end())
 	{
-		ret = search->second->Execute(std::move(params));
+		ret = (*search)->Execute(std::move(params));
 	}
 	return ret;
 }
@@ -415,14 +398,14 @@ Vec<LogLine> ExecuteQuery(const String& command, String params)
 Vec<Command*> FindCommands(const String& incompleteCommand, bool bFirstCharMustMatch)
 {
 	Vec<Command*> results;
-	for (auto& command : commands)
+	for (auto& uCommand : commands)
 	{
-		String name = command.second->name;
+		String name = uCommand->m_name;
 		if (name.find(incompleteCommand) != String::npos)
 		{
-			if (!bFirstCharMustMatch || command.second->name[0] == incompleteCommand[0])
+			if (!bFirstCharMustMatch || uCommand->m_name[0] == incompleteCommand[0])
 			{
-				results.push_back(command.second.get());
+				results.push_back(uCommand.get());
 			}
 		}
 	}
@@ -434,16 +417,13 @@ Vec<Command*> FindCommands(const String& incompleteCommand, bool bFirstCharMustM
 #pragma region Implementation
 void Init()
 {
-	commands.emplace("help", MakeUnique<HelpCommand>());
-	commands.emplace("loadworld", MakeUnique<LoadWorldCommand>());
-	commands.emplace("quit", MakeUnique<QuitCommand>());
-	commands.emplace("loglevel", MakeUnique<LogLevelCommand>());
-#if ENABLED(PROFILER)
-	commands.emplace("profiler", MakeUnique<ProfilerCommand>());
-#endif
-	commands.emplace("resolution", MakeUnique<ResolutionCommand>());
+	Add<Help>();
+	Add<LoadWorld>();
+	Add<Quit>();
+	Add<LogLevel>();
+	Add<Resolution>();
 #if ENABLED(TWEAKABLES)
-	commands.emplace("set", MakeUnique<SetCommand>());
+	Add<Set>();
 #endif
 }
 
@@ -484,7 +464,7 @@ AutoCompleteResults AutoComplete(const String& incompleteQuery)
 			{
 				results.params.emplace_back(std::move(p));
 			}
-			results.bCustomParam = matchedCommands[0]->bTakesCustomParam;
+			results.bCustomParam = matchedCommands[0]->m_bTakesCustomParam;
 		}
 
 		// If no params, return matchedCommands
@@ -492,7 +472,7 @@ AutoCompleteResults AutoComplete(const String& incompleteQuery)
 		{
 			for (auto command : matchedCommands)
 			{
-				results.queries.emplace_back(command->name);
+				results.queries.emplace_back(command->m_name);
 			}
 		}
 		else
@@ -503,7 +483,7 @@ AutoCompleteResults AutoComplete(const String& incompleteQuery)
 				for (const auto& p : matchedParams)
 				{
 					String suffix = p.empty() ? "" : " " + p;
-					results.queries.emplace_back(command->name + suffix);
+					results.queries.emplace_back(command->m_name + suffix);
 				}
 			}
 		}

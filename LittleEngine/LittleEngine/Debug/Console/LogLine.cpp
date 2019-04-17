@@ -7,6 +7,8 @@ namespace LittleEngine
 {
 namespace Debug
 {
+extern Colour g_logTextColour;
+
 LogLine::LogLine(String text, Colour colour) : text(std::move(text)), colour(colour)
 {
 }
@@ -72,9 +74,9 @@ void LogBook::Append(Vec<LogLine>&& move)
 	Reset();
 }
 
-void LogBook::Append(const LogLine& logLine)
+void LogBook::Append(LogLine logLine)
 {
-	m_logLines.emplace_back(logLine);
+	m_logLines.emplace_back(std::move(logLine));
 	Reset();
 }
 } // namespace Debug

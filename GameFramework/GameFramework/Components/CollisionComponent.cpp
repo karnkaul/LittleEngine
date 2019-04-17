@@ -53,7 +53,7 @@ void CollisionComponent::AddCircle(Fixed radius, Vector2 offset)
 		->SetPrimaryColour(Colour::Transparent)
 		->SetSecondaryColour(Colour::Green)
 		->SetOutline(Collider::s_debugShapeWidth)
-		->SetLayer(LAYER_TOP)
+		->SetLayer(static_cast<LayerID>(LAYER_UI - 10))
 		->SetEnabled(Collider::s_bShowDebugShape);
 	m_pColliders.emplace_back(pCollider, pPrimitive, offset);
 #else
@@ -73,7 +73,7 @@ void CollisionComponent::AddAABB(const AABBData& aabbData, Vector2 offset)
 		->SetPrimaryColour(Colour::Transparent)
 		->SetSecondaryColour(Colour::Green)
 		->SetOutline(Collider::s_debugShapeWidth)
-		->SetLayer(LAYER_TOP)
+		->SetLayer(static_cast<LayerID>(LAYER_UI - 10))
 		->SetEnabled(Collider::s_bShowDebugShape);
 	m_pColliders.emplace_back(pCollider, pPrimitive, offset);
 #else

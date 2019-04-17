@@ -3,6 +3,7 @@
 #if ENABLED(PROFILER)
 #include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/System/SFGameClock.h"
+#include "LittleEngine/Debug/Console/Tweakable.h"
 #include "LittleEngine/GFX/GFX.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/UI/UIElement.h"
@@ -184,6 +185,7 @@ bool bEnabled = false;
 #pragma endregion
 
 #pragma region Interface
+TweakBool(profiler, nullptr);
 void Init(std::thread::id eventThreadID)
 {
 	safeThreadID = eventThreadID;
@@ -195,6 +197,10 @@ void Init(std::thread::id eventThreadID)
 	progressBarSize = Vector2(screenWidth - textWidth - 10, 10);
 	uRenderer = MakeUnique<Renderer>();
 	Toggle(false);
+
+#if ENABLED(TWEAKABLES)
+	profiler.BindCallback([](const String& toggle) { Toggle(Strings::ToBool(toggle)); });
+#endif
 }
 
 void Toggle(bool bEnable)

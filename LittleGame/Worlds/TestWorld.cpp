@@ -179,6 +179,12 @@ void SpawnColliderMinefield()
 	}
 }
 
+//TweakBool(test0, nullptr);
+//TweakBool(testLongAssNameTweakable0, nullptr);
+//TweakBool(test1, nullptr);
+//TweakS32(test2, nullptr);
+//TweakF32(testLongAssNameTweakable1, nullptr);
+//TweakString(test3, nullptr);
 void StartTests()
 {
 	pEntity0 = pTestWorld->Game()->NewEntity<Entity>("Entity0", {300, 200});

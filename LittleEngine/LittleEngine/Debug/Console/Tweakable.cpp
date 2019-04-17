@@ -7,7 +7,7 @@ namespace LittleEngine
 namespace Debug
 {
 Tweakable::Tweakable(String id, TweakType type, String value /* = "" */, void* pTarget /* = nullptr */)
-	: m_value(std::move(value)), m_type(type), m_pTarget(pTarget)
+	: m_pTarget(pTarget), m_value(std::move(value)), m_type(type)
 {
 	static String suffix[4] = {"", "_f32", "_s32", "_b"};
 	m_id = std::move(id) + suffix[m_type];
@@ -40,11 +40,20 @@ void Tweakable::Set(String stringValue)
 		SyncBool(std::move(stringValue));
 		break;
 	}
+	if (m_callback)
+	{
+		m_callback(m_value);
+	}
 }
 
 void Tweakable::Bind(void* pVar)
 {
 	m_pTarget = pVar;
+}
+
+void Tweakable::BindCallback(std::function<void(const String&)> callback)
+{
+	m_callback = std::move(callback);
 }
 
 void Tweakable::SyncString(String rawValue)

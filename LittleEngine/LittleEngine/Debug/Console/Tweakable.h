@@ -31,12 +31,14 @@ enum TweakType
 
 class Tweakable final
 {
+private:
+	void* m_pTarget = nullptr;
+	std::function<void(const String&)> m_callback;
 public:
 	String m_id;
 	String m_value;
 	TweakType m_type = TweakType::STRING;
-	void* m_pTarget = nullptr;
-
+	
 public:
 	Tweakable(String id, TweakType type, String value = "", void* pTarget = nullptr);
 	~Tweakable();
@@ -45,6 +47,7 @@ public:
 
 	void Set(String stringValue);
 	void Bind(void* pVar);
+	void BindCallback(std::function<void(const String&)> callback);
 
 private:
 	void SyncString(String rawValue);
