@@ -30,12 +30,12 @@ struct Entry
 	Time startTime = Time::Zero;
 	Time endTime = Time::Zero;
 
-	Entry(String id, Colour colour, Time startTime);
+	Entry(String id, Colour colour, Time startTime, LayerID layer);
 	Time Elapsed() const;
 };
 
-Entry::Entry(String id, Colour colour, Time startTime)
-	: progressBar(UIProgressBar(true)), labelElement(UIElement(true)), id(std::move(id)), colour(colour), startTime(startTime)
+Entry::Entry(String id, Colour colour, Time startTime, LayerID layer)
+	: progressBar(UIProgressBar(layer, true)), labelElement(UIElement(layer, true)), id(std::move(id)), colour(colour), startTime(startTime)
 {
 }
 Time Entry::Elapsed() const
@@ -72,17 +72,15 @@ private:
 
 Renderer::Renderer()
 {
-	m_uLabelRoot = MakeUnique<UIElement>("Profiler Labels Root", true);
+	m_uLabelRoot = MakeUnique<UIElement>("Profiler Labels Root", LAYER_TOP, true);
 	m_uLabelRoot->m_transform.size = {textWidth, profilerHeight};
 	m_uLabelRoot->m_transform.bAutoPad = true;
 	m_uLabelRoot->m_transform.nPosition = {-1, -1};
-	m_uLabelRoot->m_layer = LAYER_TOP;
 	// m_uLabelRoot->SetPanel(Colour(100, 100, 100, 100));
-	m_uBarRoot = MakeUnique<UIElement>("Profiler Bars Root", true);
+	m_uBarRoot = MakeUnique<UIElement>("Profiler Bars Root", LAYER_TOP, true);
 	m_uBarRoot->m_transform.size = Vector2(progressBarSize.x, profilerHeight);
 	m_uBarRoot->m_transform.bAutoPad = true;
 	m_uBarRoot->m_transform.nPosition = {1, -1};
-	m_uBarRoot->m_layer = LAYER_TOP;
 	// m_uBarRoot->SetPanel(Colour(100, 100, 100, 100));
 }
 
@@ -135,7 +133,7 @@ void Renderer::Start(String id, Colour colour, bool bEnabled)
 	}
 	else
 	{
-		UPtr<Entry> uNewEntry = MakeUnique<Entry>(id, colour, Time::Now());
+		UPtr<Entry> uNewEntry = MakeUnique<Entry>(id, colour, Time::Now(), LAYER_TOP);
 		SetupNewEntry(m_entries.size(), *uNewEntry, colour, bEnabled);
 		m_entries.emplace(std::move(id), std::move(uNewEntry));
 	}
@@ -165,13 +163,11 @@ void Renderer::SetupNewEntry(u32 numEntries, Entry& newEntry, Colour colour, boo
 	colour.a = globalAlpha;
 	newEntry.progressBar.SetParent(m_uBarRoot->m_transform);
 	newEntry.progressBar.InitProgressBar(progressBarSize, colour);
-	newEntry.progressBar.m_layer = LAYER_TOP;
 	newEntry.progressBar.m_transform.anchor = {-1, 0};
 	newEntry.progressBar.m_transform.nPosition = {-1, nY};
 	newEntry.progressBar.GetPrimitive()->SetEnabled(bEnabled);
 	newEntry.labelElement.SetParent(m_uLabelRoot->m_transform);
 	newEntry.labelElement.SetText(UIText(newEntry.id, 20, newEntry.colour));
-	newEntry.labelElement.m_layer = LAYER_TOP;
 	newEntry.labelElement.m_transform.anchor = {1, 0};
 	newEntry.labelElement.m_transform.nPosition = {1, nY};
 	newEntry.labelElement.GetText()->SetEnabled(bEnabled);

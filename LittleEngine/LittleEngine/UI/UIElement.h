@@ -13,19 +13,19 @@ class UIElement : public UIObject
 {
 public:
 	UITransform m_transform;
-	LayerID m_layer = LAYER_UI;
-
+	
 protected:
 	class SFPrimitive* m_pPrimitive;
 	SFPrimitive* m_pText;
 
 private:
+	LayerID m_layer;
 	class World* m_pWorld;
 	bool m_bPanel = false;
 
 public:
-	UIElement(bool bSilent = false);
-	UIElement(String name, bool bSilent = false);
+	UIElement(LayerID layer = LAYER_UI, bool bSilent = false);
+	UIElement(String name, LayerID layer = LAYER_UI, bool bSilent = false);
 	~UIElement() override;
 
 	void SetParent(UITransform& parent);
@@ -41,11 +41,13 @@ public:
 	void OnCreate(String name, UITransform* pParent = nullptr);
 	void Tick(Time dt) override;
 
+	LayerID GetLayer() const;
+
 protected:
 	virtual void OnCreated();
 
 private:
-	void Construct();
+	void Construct(LayerID layer);
 
 	friend class UIManager;
 	friend class UIWidget;

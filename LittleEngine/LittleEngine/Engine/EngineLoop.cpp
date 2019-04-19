@@ -12,7 +12,7 @@
 #include "LittleEngine/GFX/GFX.h"
 #include "LittleEngine/Jobs/JobManager.h"
 #include "LittleEngine/RenderLoop/AsyncRenderLoop.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/RenderLoop/RenderFactory.h"
 #include "LittleEngine/Services/Services.h"
 #if DEBUGGING
 #include "LittleEngine/Physics/Collider.h"
@@ -33,9 +33,9 @@ void EngineLoop::PreRun()
 	{
 		Init();
 	}
-	m_uAsyncRenderLoop = MakeUnique<AsyncRenderLoop>(*m_uSFWindow, m_gfxBuffer, m_tickRate, m_bRenderThread);
+	m_uRenderFactory = MakeUnique<RenderFactory>();
+	m_uAsyncRenderLoop = MakeUnique<AsyncRenderLoop>(*m_uSFWindow, *m_uRenderFactory, m_tickRate, m_bRenderThread);
 	m_uEngineService->m_pRenderLoop = m_uAsyncRenderLoop.get();
-	m_uRenderHeap = MakeUnique<RenderHeap>(m_gfxBuffer);
 	GFX::Init(*m_uSFWindow);
 	m_uEngineService->PreRun();
 }
@@ -43,19 +43,21 @@ void EngineLoop::PreRun()
 void EngineLoop::Tick(Time dt)
 {
 	UpdateInput();
-	ReconcileRenderStates();
+	ReconcileGameStates();
 	Integrate(dt);
 }
 
-void EngineLoop::PostTick()
+void EngineLoop::PostTicks()
 {
-	m_uEngineService->PostTick();
-	SwapGFXBuffer();
+	m_uEngineService->PreBufferSwap();
+	SwapGameStates();
 	m_uEngineService->PostBufferSwap();
 
 	if (!m_bRenderThread)
 	{
-		m_uAsyncRenderLoop->Render(m_gfxBuffer);
+		Time renderDT = Time::Now() - m_uRenderFactory->GetLastSwapTime();
+		Fixed alpha = Maths::ComputeAlpha(renderDT, m_tickRate);
+		m_uAsyncRenderLoop->Render(*m_uRenderFactory, alpha);
 		m_uAsyncRenderLoop->Display();
 	}
 
@@ -116,18 +118,17 @@ void EngineLoop::Integrate(Time dt)
 void EngineLoop::RenderCleanup()
 {
 	GFX::Cleanup();
-	Services::RHeap()->DestroyAll();
-	m_uRenderHeap = nullptr;
+	m_uRenderFactory = nullptr;
 }
 
-void EngineLoop::ReconcileRenderStates()
+void EngineLoop::ReconcileGameStates()
 {
-	Services::RHeap()->Reconcile();
+	m_uRenderFactory->Reconcile();
 }
 
-void EngineLoop::SwapGFXBuffer()
+void EngineLoop::SwapGameStates()
 {
-	m_gfxBuffer.Lock_Swap(Services::RHeap()->ConstructDataFrame(), m_cullBounds);
+	m_uRenderFactory->Lock_Swap();
 }
 
 void EngineLoop::Init()

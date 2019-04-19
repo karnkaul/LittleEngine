@@ -28,7 +28,7 @@ public:
 	~UIWidget() override;
 
 	template <typename T>
-	UIElement* AddElement(String name = "", struct UITransform* pParent = nullptr);
+	UIElement* AddElement(String name = "", struct UITransform* pParent = nullptr, s32 layerDelta = 0);
 
 	UIWidgetStyle& GetStyle();
 
@@ -58,11 +58,11 @@ private:
 };
 
 template <typename T>
-UIElement* UIWidget::AddElement(String name, UITransform* pParent)
+UIElement* UIWidget::AddElement(String name, UITransform* pParent, s32 layerDelta)
 {
 	static_assert(std::is_base_of<UIElement, T>::value,
 				  "T must derive from UIElement. Check Output Window for erroneous call");
-	UPtr<T> uT = MakeUnique<T>();
+	UPtr<T> uT = MakeUnique<T>(static_cast<LayerID>(m_style.baseLayer + layerDelta));
 	T* pT = uT.get();
 	m_uiElements.push_back(std::move(uT));
 	InitElement(std::move(name), pT, pParent);

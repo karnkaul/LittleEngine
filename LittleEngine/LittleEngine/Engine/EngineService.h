@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreTypes.h"
-#include "SimpleTime.h"
 #include "SFMLAPI/Windowing/SFWindowData.h"
 #include "LittleEngine/Services/IService.h"
 
@@ -35,7 +34,7 @@ private:
 	void PreRun();
 	void UpdateInput(const struct SFInputDataFrame& inputDataFrame);
 	void Tick(Time dt);
-	void PostTick();
+	void PreBufferSwap();
 	void PostBufferSwap();
 
 	friend class EngineLoop;

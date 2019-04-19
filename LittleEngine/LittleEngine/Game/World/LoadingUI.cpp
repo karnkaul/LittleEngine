@@ -32,8 +32,7 @@ LoadingUI::LoadingUI()
 	LOG_D("[Loading UI] constructed");
 	m_uBG = MakeUnique<UIElement>("Loading BG");
 	m_uBG->SetPanel(Colour(80, 30, 100, 150));
-	m_uTitle = MakeUnique<UIElement>("Loading Title");
-	m_uTitle->m_layer = static_cast<LayerID>(m_uBG->m_layer + 1);
+	m_uTitle = MakeUnique<UIElement>("Loading Title", static_cast<LayerID>(m_uBG->GetLayer() + 1));
 	m_uTitle->SetFont(*pFont);
 	m_uTitle->SetText(UIText(titleText, titleSize, Colour::White));
 	m_uTitle->m_transform.nPosition = {0, Fixed(0.1f)};
@@ -41,7 +40,7 @@ LoadingUI::LoadingUI()
 	m_uEllipsis->SetFont(*pFont);
 	m_uEllipsis->SetText(UIText(m_ellipsis, 40, Colour::White));
 	m_uEllipsis->m_transform.nPosition = {0, -Fixed(0.10f)};
-	m_uProgressBar = MakeUnique<UIProgressBar>("Asset Load Progress");
+	m_uProgressBar = MakeUnique<UIProgressBar>(LAYER_UI, "Asset Load Progress");
 	Vector2 size(GFX::GetViewSize().x, 10);
 	m_uProgressBar->InitProgressBar(size, Colour::White);
 	m_uProgressBar->m_transform.padding = {0, size.y * Fixed::OneHalf};

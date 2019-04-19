@@ -6,65 +6,44 @@
 
 namespace LittleEngine
 {
-enum class SFShapeType
-{
-	Rectangle,
-	Circle,
-};
-
-// Origin at top-left of texture; +X right, +Y down
-struct SFTexCoords
-{
-	u32 x = 0;
-	u32 y = 0;
-
-	SFTexCoords() = default;
-	//+X right, +Y down
-	SFTexCoords(u32 x, u32 y);
-};
-
-// Origin at top-left of texture; +X right, +Y down
-struct SFTexRect
-{
-	SFTexCoords min;
-	SFTexCoords max;
-
-	SFTexRect() = default;
-	//+X right, +Y down
-	SFTexRect(SFTexCoords min, SFTexCoords max);
-
-	sf::IntRect Cast() const;
-};
-
 class SFPrimitive final
 {
 #if DEBUGGING
 public:
 	bool bDebugThisPrimitive = false;
 #endif
+public:
+	bool m_bDestroyed = false;
+
 private:
 	static constexpr u32 DEFAULT_TEXT_SIZE = 25;
 
-	SFRenderState m_state;
+	SFRenderState m_gameState;
+	SFRenderState m_renderState;
 	sf::CircleShape m_circle;
 	sf::RectangleShape m_rectangle;
 	sf::Sprite m_sprite;
 	sf::Text m_text;
+	sf::Vector2f m_prevScale;
+	bool m_bWasDisabled = false;
 	bool m_bStatic = false;
 	bool m_bMakeStatic = false;
-
+	bool m_bRendered = false;
+	
 public:
 	static Vector2 WorldToScreen(Vector2 worldPoint);
 	static Fixed WorldToScreen(Fixed worldOrientation);
 	static Vector2 ScreenToWorld(Vector2 screenPoint);
 	static Fixed ScreenToWorld(Fixed screenOrientation);
 
-	SFPrimitive();
+	SFPrimitive(LayerID layer);
+	SFPrimitive(const SFPrimitive& toCopy) = delete;
+
+	void SwapState();
 	
 public:
 	// Interpolated States
 	SFPrimitive* SetEnabled(bool bEnabled);
-	SFPrimitive* SetLayer(LayerID layer);
 	SFPrimitive* SetPosition(Vector2 sfPosition, bool bImmediate = false);
 	SFPrimitive* SetOrientation(Fixed sfOrientation, bool bImmediate = false);
 	SFPrimitive* SetScale(Vector2 sfScale, bool bImmediate = false);
@@ -80,7 +59,6 @@ public:
 
 	// Sprite
 	SFPrimitive* SetTexture(const class TextureAsset & texture);
-	SFPrimitive* CropTexture(const Rect2& rect);
 	SFPrimitive* CropTexture(SFTexRect textureRect);
 
 	// Text
@@ -88,6 +66,8 @@ public:
 	SFPrimitive* SetTextSize(u32 pixelSize);
 	SFPrimitive* SetText(String text);
 
+	SFPrimitive* SetStatic(bool bStatic);
+	
 	Rect2 GetBounds() const;
 	Rect2 GetShapeBounds() const;
 	Rect2 GetSpriteBounds() const;
@@ -103,10 +83,12 @@ public:
 	LayerID GetLayer() const;
 
 	void ReconcileState();
-	void SetStatic(bool bStatic);
+	void Destroy();
 
 private:
 	void UpdatePivot();
+//TODO: Make private
+public:
 	void UpdateRenderState(Fixed alpha);
 
 	friend struct GFXDataFrame;

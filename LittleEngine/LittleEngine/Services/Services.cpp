@@ -2,7 +2,7 @@
 #include "Utils.h"
 #include "LittleEngine/Jobs/JobManager.h"
 #include "LittleEngine/Engine/EngineService.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/RenderLoop/RenderFactory.h"
 #include "LittleEngine/Game/Camera.h"
 #include "LittleEngine/Game/GameManager.h"
 #include "LittleEngine/Game/World/WorldStateMachine.h"
@@ -12,7 +12,7 @@ namespace LittleEngine
 {
 Vec<IService*> Services::s_pServices;
 EngineService* Services::s_pEngine = nullptr;
-RenderHeap* Services::s_pRenderHeap = nullptr;
+RenderFactory* Services::s_pRenderFactory = nullptr;
 JobManager* Services::s_pJobManager = nullptr;
 GameManager* Services::s_pGameManager = nullptr;
 
@@ -22,10 +22,10 @@ EngineService* Services::Engine()
 	return s_pEngine;
 }
 
-RenderHeap* Services::RHeap()
+RenderFactory* Services::RFactory()
 {
-	Assert(s_pRenderHeap, "Services: [RenderHeap] is null!");
-	return s_pRenderHeap;
+	Assert(s_pRenderFactory, "Services: [RenderHeap] is null!");
+	return s_pRenderFactory;
 }
 
 JobManager* Services::Jobs()
@@ -41,7 +41,7 @@ GameManager* Services::Game()
 }
 
 
-LittleEngine::Camera* Services::WorldCamera()
+Camera* Services::WorldCamera()
 {
 	return s_pGameManager ? s_pGameManager->WorldCamera() : nullptr;
 }
@@ -60,18 +60,19 @@ void Services::UnprovideEngine(EngineService& engine)
 	s_pEngine = nullptr;
 }
 
-void Services::ProvideRenderHeap(RenderHeap& renderHeap)
+void Services::ProvideRenderFactory(RenderFactory& renderFactory)
 {
-	LOG_I("[Services] [RenderHeap] Service Provided");
-	Provide(renderHeap);
-	s_pRenderHeap = &renderHeap;
+	LOG_I("[Services] [RenderFactory] Service provided");
+	Provide(renderFactory);
+	s_pRenderFactory = &renderFactory;
 }
 
-void Services::UnprovideRenderHeap(RenderHeap& renderHeap)
+
+void Services::UnprovideRenderFactory(RenderFactory& renderFactory)
 {
-	Unprovide(renderHeap);
-	LOG_I("[Services] [RenderHeap] Service Unprovided");
-	s_pRenderHeap = nullptr;
+	Unprovide(renderFactory);
+	LOG_I("[Services] [RenderFactory] Service Unprovided");
+	s_pRenderFactory = nullptr;
 }
 
 void Services::ProvideJobManager(JobManager& jobManager)

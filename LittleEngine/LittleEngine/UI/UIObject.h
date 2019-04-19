@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreTypes.h"
-#include "SimpleTime.h"
 #include "LittleEngine/Game/Inheritable.h"
 
 namespace LittleEngine

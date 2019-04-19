@@ -3,7 +3,6 @@
 #include <functional>
 #include <future>
 #include "CoreTypes.h"
-#include "SimpleTime.h"
 #include "LittleEngine/Services/IService.h"
 
 namespace LittleEngine

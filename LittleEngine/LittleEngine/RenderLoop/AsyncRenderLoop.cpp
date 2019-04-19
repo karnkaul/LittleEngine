@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "Asserts.h"
 #include "Logger.h"
-#include "SFMLAPI/Rendering/GFXBuffer.h"
+#include "SFMLAPI/Rendering/ISFRenderBuffer.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
 #include "AsyncRenderLoop.h"
-#include "RenderHeap.h"
 #include "LittleEngine/Engine/OS.h"
 #include "LittleEngine/Jobs/JobHandle.h"
 #include "LittleEngine/Jobs/JobManager.h"
@@ -12,8 +11,8 @@
 
 namespace LittleEngine
 {
-AsyncRenderLoop::AsyncRenderLoop(SFWindow& sfWindow, GFXBuffer& gfxBuffer, Time tickRate, bool bStartThread)
-	: SFRenderer(sfWindow, tickRate), m_pBuffer(&gfxBuffer), m_bRunThread(bStartThread)
+AsyncRenderLoop::AsyncRenderLoop(SFWindow& sfWindow, IRenderBuffer& renderBuffer, Time tickRate, bool bStartThread)
+	: SFRenderer(sfWindow), m_tickRate(tickRate), m_pBuffer(&renderBuffer), m_bRunThread(bStartThread)
 {
 	Start();
 }
@@ -66,7 +65,9 @@ void AsyncRenderLoop::Async_Run()
 	while (m_bRendering.load(std::memory_order_relaxed))
 	{
 		Assert(m_pSFWindow, "[AsyncRenderLoop] SFML RenderWindow is nullptr!");
-		Render(*m_pBuffer);
+		Time renderDT = Time::Now() - m_pBuffer->GetLastSwapTime();
+		Fixed alpha = Maths::ComputeAlpha(renderDT, m_tickRate);
+		Render(*m_pBuffer, alpha);
 		Display();
 	}
 	m_pSFWindow->setActive(false);

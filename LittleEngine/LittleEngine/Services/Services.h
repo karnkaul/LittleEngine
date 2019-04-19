@@ -9,7 +9,7 @@ class Services
 private:
 	static Vec<IService*> s_pServices;
 	static class EngineService* s_pEngine;
-	static class RenderHeap* s_pRenderHeap;
+	static class RenderFactory* s_pRenderFactory;
 	static class JobManager* s_pJobManager;
 	static class GameManager* s_pGameManager;
 
@@ -20,7 +20,7 @@ public:
 	static T* Locate();
 
 	static EngineService* Engine();
-	static RenderHeap* RHeap();
+	static RenderFactory* RFactory();
 	static JobManager* Jobs();
 	static GameManager* Game();
 	static class Camera* WorldCamera();
@@ -31,8 +31,8 @@ public:
 private:
 	static void ProvideEngine(EngineService& engine);
 	static void UnprovideEngine(EngineService& engine);
-	static void ProvideRenderHeap(RenderHeap& renderHeap);
-	static void UnprovideRenderHeap(RenderHeap& renderHeap);
+	static void ProvideRenderFactory(RenderFactory& renderFactory);
+	static void UnprovideRenderFactory(RenderFactory& renderFactory);
 	static void ProvideJobManager(JobManager& jobManager);
 	static void UnprovideJobManager(JobManager& jobManager);
 	static void ProvideGameManager(GameManager& gameManager);
@@ -42,6 +42,7 @@ private:
 	friend class JobManager;
 	friend class EngineService;
 	friend class RenderHeap;
+	friend class RenderFactory;
 };
 
 template <typename T>

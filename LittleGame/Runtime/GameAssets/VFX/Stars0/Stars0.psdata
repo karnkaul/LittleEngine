@@ -8,7 +8,7 @@
 				spawnSpeed: { min: 0.01, max: 0.1 },
 				spawnAngularSpeed: { min: 0.00, max: 0.00 },
 				preWarmNumTicks: 10,
-				numParticles: 300,
+				numParticles: 500,
 				bPreWarm: true,
 				bFireOnce: false
 			},
@@ -19,7 +19,8 @@
 			},
 			texturePath: VFX/Stars0/00.png,
 			startDelaySecs: 0.00,
-			layerDelta: -250
+			layerDelta: 0,
+			bStatic: true
 		}
 	]
 }

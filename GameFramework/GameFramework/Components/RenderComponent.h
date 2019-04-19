@@ -70,8 +70,9 @@ public:
 	void SetEnabled(bool bEnabled) override;
 	void Tick(Time dt) override;
 
-	RenderComponent* SetSprite(TextureAsset& texture);
-	RenderComponent* SetSpriteSheet(SpriteSheet sheet);
+	RenderComponent* SetShape(LayerID layer);
+	RenderComponent* SetSprite(TextureAsset& texture, LayerID layer);
+	RenderComponent* SetSpriteSheet(SpriteSheet sheet, LayerID layer);
 	RenderComponent* UnsetSpriteSheet();
 	RenderComponent* SetSpriteFlip(bool bFlip);
 

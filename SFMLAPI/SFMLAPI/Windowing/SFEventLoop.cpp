@@ -43,14 +43,35 @@ s32 ASFEventLoop::Run()
 		Time tickDT;
 		if (!m_bPauseTicking)
 		{
-			Tick(currentTime, accumulator);
+			DoTicks(currentTime, accumulator);
 			if (m_bStopTicking)
 			{
 				continue;
 			}
 
-			PostTick();
+			PostTicks();
 			tickDT = Time::Now() - currentTime;
+#if DEBUGGING
+			static const u8 MAX_STRIKES = 5;
+			static u8 strikes = 0;
+			static Time logTime = Time::Now() - Time::Milliseconds(300);
+			if (tickDT > m_maxFrameTime)
+			{
+				++strikes;
+				if ((Time::Now() - logTime).AsMilliseconds() > 250 && strikes > MAX_STRIKES)
+				{
+					f32 max = m_maxFrameTime.AsSeconds() * 1000.0f;
+					f32 taken = tickDT.AsSeconds() * 1000.0f;
+					LOG_E(
+						"Tick/PostTick taking too long! Game time is inaccurate (slowed down) "
+						"[max: "
+						"%.2fms taken: %.2fms]",
+						max, taken);
+					logTime = Time::Now();
+					strikes = 0;
+				}
+			}
+#endif
 		}
 		else
 		{
@@ -63,7 +84,7 @@ s32 ASFEventLoop::Run()
 	LOG_I("[SFEventLoop] Event Loop terminated. Destroying SFWindow");
 
 	m_uSFWindow = nullptr;
-	
+
 	return 0;
 }
 
@@ -100,7 +121,7 @@ void ASFEventLoop::PollEvents()
 	}
 }
 
-void ASFEventLoop::Tick(Time& outCurrentTime, Time& outAccumulator)
+void ASFEventLoop::DoTicks(Time& outCurrentTime, Time& outAccumulator)
 {
 	Time dt = m_tickRate;
 	Time newTime = Time::Now();

@@ -4,6 +4,7 @@
 #include "Logger.h"
 #include "SFRenderer.h"
 #include "SFRenderState.h"
+#include "ISFRenderBuffer.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
 #include "SFMLAPI/Windowing/SFWindowData.h"
 #include "SFML/Graphics.hpp"
@@ -14,24 +15,21 @@ namespace LittleEngine
 RenderData g_renderData;
 #endif
 
-SFRenderer::SFRenderer(SFWindow& sfWindow, Time tickRate)
-	: m_pSFWindow(&sfWindow), m_tickRate(tickRate)
+SFRenderer::SFRenderer(SFWindow& sfWindow)
+	: m_pSFWindow(&sfWindow)
 {
 	m_bRendering.store(true, std::memory_order_relaxed);
 }
 
 SFRenderer::~SFRenderer() = default;
 
-void SFRenderer::Render(GFXBuffer& buffer)
+void SFRenderer::Render(IRenderBuffer& buffer, Fixed alpha)
 {
 	if (m_bRendering.load(std::memory_order_relaxed))
 	{
 		m_pSFWindow->clear();
 
-		Fixed renderDT = Time::Now().AsMilliseconds() - buffer.GetLastSwapTime().AsMilliseconds();
-		Fixed tickRate = m_tickRate.AsMilliseconds();
-		Fixed alpha = Maths::Clamp01(renderDT / tickRate);
-		buffer.Lock_Traverse([&](Vec<SFPrimitive>& active) {
+		buffer.Lock_Traverse([&](Vec<SFPrimitive*> active) {
 #if ENABLED(RENDER_STATS)
 			static Time fpsTime;
 			static u32 frameCount = 0;
@@ -39,17 +37,17 @@ void SFRenderer::Render(GFXBuffer& buffer)
 			u32 primitives = 0;
 #endif
 
-			for (auto& primitive : active)
+			for (auto& pPrimitive : active)
 			{
-				primitive.UpdateRenderState(alpha);
-				m_pSFWindow->draw(primitive.m_circle);
-				m_pSFWindow->draw(primitive.m_rectangle);
-				m_pSFWindow->draw(primitive.m_sprite);
-				m_pSFWindow->draw(primitive.m_text);
+				pPrimitive->UpdateRenderState(alpha);
+				m_pSFWindow->draw(pPrimitive->m_circle);
+				m_pSFWindow->draw(pPrimitive->m_rectangle);
+				m_pSFWindow->draw(pPrimitive->m_sprite);
+				m_pSFWindow->draw(pPrimitive->m_text);
 
 #if ENABLED(RENDER_STATS)
 				++primitives;
-				if (primitive.m_bStatic)
+				if (pPrimitive->m_bStatic)
 				{
 					++statics;
 				}

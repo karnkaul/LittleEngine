@@ -1,5 +1,4 @@
 #pragma once
-#include "SFMLAPI/Rendering/GFXBuffer.h"
 #include "SFMLAPI/Windowing/SFEventLoop.h"
 
 namespace LittleEngine
@@ -8,11 +7,10 @@ namespace LittleEngine
 class EngineLoop final : public ASFEventLoop
 {
 private:
-	GFXBuffer m_gfxBuffer;
 	Vector2 m_cullBounds;
 	UPtr<class EngineConfig> m_uConfig;
 	UPtr<class JobManager> m_uJobManager;
-	UPtr<class RenderHeap> m_uRenderHeap;
+	UPtr<class RenderFactory> m_uRenderFactory;
 	UPtr<class AsyncRenderLoop> m_uAsyncRenderLoop;
 	UPtr<class EngineService> m_uEngineService;
 	bool m_bRenderThread = true;
@@ -30,7 +28,7 @@ public:
 private:
 	void PreRun() override;
 	void Tick(Time dt) override;
-	void PostTick() override;
+	void PostTicks() override;
 	void PostRun() override;
 	void OnPause(bool bPause) override;
 
@@ -39,8 +37,8 @@ private:
 	void RenderCleanup();
 
 private:
-	void ReconcileRenderStates();
-	void SwapGFXBuffer();
+	void ReconcileGameStates();
+	void SwapGameStates();
 	void Init();
 	void Uninit();
 

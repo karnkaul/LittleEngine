@@ -4,7 +4,7 @@
 #include "LoadingUI.h"
 #include "WorldStateMachine.h"
 #include "LittleEngine/Services/Services.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/RenderLoop/RenderFactory.h"
 #include "LittleEngine/Repository/EngineRepository.h"
 #include "LittleEngine/Repository/ManifestLoader.h"
 #include "LittleEngine/Engine/EngineService.h"
@@ -175,7 +175,7 @@ void WorldStateMachine::GameTick(Time dt)
 		}
 		m_pActiveState = m_pNextState;
 		m_bToActivateState = true;
-		Services::RHeap()->Reconcile();
+		Services::RFactory()->Reconcile();
 	}
 }
 

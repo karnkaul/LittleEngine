@@ -5,7 +5,7 @@
 
 namespace LittleEngine
 {
-UIProgressBar::UIProgressBar(bool bSilent) : UIElement("Progress Bar", bSilent)
+UIProgressBar::UIProgressBar(LayerID layer, bool bSilent) : UIElement("Progress Bar", layer, bSilent)
 {
 	SetName("", "UIProgressBar");
 }

@@ -8,6 +8,11 @@ bool IsNearlyEqual(f32 lhs, f32 rhs, f32 epsilon)
 	return Abs(lhs - rhs) < epsilon;
 }
 
+Fixed ComputeAlpha(Time dt, Time totalTime)
+{
+	return Clamp01(dt.AsMilliseconds() / totalTime.AsMilliseconds());
+}
+
 Random::Random(s32 min, s32 max) : m_detMt(1729), m_distribution(min, max)
 {
 	m_NDetMt = std::mt19937(m_randomDevice());

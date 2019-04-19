@@ -150,7 +150,7 @@ void EngineService::Tick(Time dt)
 #endif
 }
 
-void EngineService::PostTick()
+void EngineService::PreBufferSwap()
 {
 #if ENABLED(PROFILER)
 	Profiler::Render();

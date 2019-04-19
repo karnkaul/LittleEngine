@@ -6,21 +6,9 @@
 
 namespace LittleEngine
 {
-SFTexCoords::SFTexCoords(u32 x, u32 y)
-	: x(x), y(y)
+namespace
 {
-}
-
-SFTexRect::SFTexRect(SFTexCoords min, SFTexCoords max)
-	: min(min), max(max)
-{
-}
-
-sf::IntRect SFTexRect::Cast() const
-{
-	u32 x = max.x - min.x;
-	u32 y = max.y - min.y;
-	return sf::IntRect(min.x, min.y, x, y);
+const sf::Vector2f ZERO = sf::Vector2f(0, 0);
 }
 
 Vector2 SFPrimitive::WorldToScreen(Vector2 worldPoint)
@@ -43,20 +31,21 @@ Fixed SFPrimitive::ScreenToWorld(Fixed screenOrientation)
 	return -screenOrientation;
 }
 
-SFPrimitive::SFPrimitive()
+SFPrimitive::SFPrimitive(LayerID layer)
 {
+	m_gameState.layer = layer;
+	m_renderState.layer = layer;
 	SetPivot(Vector2::Zero);
+}
+
+void SFPrimitive::SwapState()
+{
+	m_renderState = m_gameState;
 }
 
 SFPrimitive* SFPrimitive::SetEnabled(bool bEnabled)
 {
-	m_state.bEnabled = bEnabled;
-	return this;
-}
-
-SFPrimitive* SFPrimitive::SetLayer(LayerID layer)
-{
-	m_state.layer = layer;
+	m_gameState.bEnabled = bEnabled;
 	return this;
 }
 
@@ -64,11 +53,11 @@ SFPrimitive* SFPrimitive::SetPosition(Vector2 sfPosition, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_state.sfPosition.Reset(WorldToScreen(sfPosition));
+		m_gameState.sfPosition.Reset(WorldToScreen(sfPosition));
 	}
 	else
 	{
-		m_state.sfPosition.Update(WorldToScreen(sfPosition));
+		m_gameState.sfPosition.Update(WorldToScreen(sfPosition));
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -83,11 +72,11 @@ SFPrimitive* SFPrimitive::SetOrientation(Fixed sfOrientation, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_state.sfOrientation.Reset(WorldToScreen(sfOrientation));
+		m_gameState.sfOrientation.Reset(WorldToScreen(sfOrientation));
 	}
 	else
 	{
-		m_state.sfOrientation.Update(WorldToScreen(sfOrientation));
+		m_gameState.sfOrientation.Update(WorldToScreen(sfOrientation));
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -102,11 +91,11 @@ SFPrimitive* SFPrimitive::SetScale(Vector2 sfScale, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_state.sfScale.Reset(sfScale);
+		m_gameState.sfScale.Reset(sfScale);
 	}
 	else
 	{
-		m_state.sfScale.Update(sfScale);
+		m_gameState.sfScale.Update(sfScale);
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -119,7 +108,7 @@ SFPrimitive* SFPrimitive::SetScale(Vector2 sfScale, bool bImmediate)
 
 SFPrimitive* SFPrimitive::SetPivot(Vector2 pivot)
 {
-	m_state.pivot = pivot;
+	m_gameState.pivot = pivot;
 	return this;
 }
 
@@ -127,11 +116,11 @@ SFPrimitive* SFPrimitive::SetPrimaryColour(Colour sfColour, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_state.sfPrimaryColour.Reset(sfColour);
+		m_gameState.sfPrimaryColour.Reset(sfColour);
 	}
 	else
 	{
-		m_state.sfPrimaryColour.Update(sfColour);
+		m_gameState.sfPrimaryColour.Update(sfColour);
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -146,11 +135,11 @@ SFPrimitive* SFPrimitive::SetSecondaryColour(Colour sfColour, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_state.sfSecondaryColour.Reset(sfColour);
+		m_gameState.sfSecondaryColour.Reset(sfColour);
 	}
 	else
 	{
-		m_state.sfSecondaryColour.Update(sfColour);
+		m_gameState.sfSecondaryColour.Update(sfColour);
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -163,7 +152,7 @@ SFPrimitive* SFPrimitive::SetSecondaryColour(Colour sfColour, bool bImmediate)
 
 SFPrimitive* SFPrimitive::SetOutline(Fixed thickness)
 {
-	m_state.outlineThickness = thickness;
+	m_gameState.outlineThickness = thickness;
 	if (m_bStatic || m_bMakeStatic)
 	{
 		ReconcileState();
@@ -175,53 +164,58 @@ SFPrimitive* SFPrimitive::SetOutline(Fixed thickness)
 
 SFPrimitive* SFPrimitive::SetSize(Vector2 size, SFShapeType onShape)
 {
-	sf::Vector2f s = Cast(size);
-	if (onShape == SFShapeType::Circle)
+	m_gameState.shape = onShape;
+	m_gameState.shapeSize = size;
+	if (m_bStatic)
 	{
-		m_circle.setRadius(s.x);
-	}
-	else
-	{
-		m_rectangle.setSize(s);
+		m_bStatic = false;
+		m_bMakeStatic = true;
 	}
 	return this;
 }
 
 SFPrimitive* SFPrimitive::SetTexture(const TextureAsset& texture)
 {
-	m_sprite.setTexture(texture.m_sfTexture);
-	return this;
-}
-
-SFPrimitive* SFPrimitive::CropTexture(const Rect2& rect)
-{
-	sf::IntRect textureRect(rect.GetTopLeft().x.ToS32(), rect.GetTopLeft().y.ToS32(),
-							rect.GetSize().x.ToS32(), rect.GetSize().y.ToS32());
-	m_sprite.setTextureRect(textureRect);
+	m_gameState.pTexture = &texture;
+	m_sprite.setTexture(m_gameState.pTexture->m_sfTexture);
 	return this;
 }
 
 SFPrimitive* SFPrimitive::CropTexture(SFTexRect textureRect)
 {
-	m_sprite.setTextureRect(textureRect.Cast());
+	m_gameState.texRect = textureRect;
+	m_sprite.setTextureRect(m_gameState.texRect.Cast());
 	return this;
 }
 
 SFPrimitive* SFPrimitive::SetFont(const FontAsset& font)
 {
-	m_text.setFont(font.m_sfFont);
+	m_gameState.pFont = &font;
+	m_text.setFont(m_gameState.pFont->m_sfFont);
 	return this;
 }
 
 SFPrimitive* SFPrimitive::SetTextSize(u32 pixelSize)
 {
-	m_text.setCharacterSize(pixelSize);
+	m_gameState.textSize = pixelSize;
+	m_gameState.bTextSet = true;
+	if (m_bStatic)
+	{
+		m_bStatic = false;
+		m_bMakeStatic = true;
+	}
 	return this;
 }
 
 SFPrimitive* SFPrimitive::SetText(String text)
 {
-	m_text.setString(text);
+	m_gameState.text = std::move(text);
+	m_gameState.bTextSet = true;
+	if (m_bStatic)
+	{
+		m_bStatic = false;
+		m_bMakeStatic = true;
+	}
 	return this;
 }
 
@@ -277,7 +271,7 @@ Rect2 SFPrimitive::GetTextBounds() const
 
 bool SFPrimitive::IsEnabled() const
 {
-	return m_state.bEnabled;
+	return m_gameState.bEnabled;
 }
 
 bool SFPrimitive::IsStatic() const
@@ -287,40 +281,40 @@ bool SFPrimitive::IsStatic() const
 
 Vector2 SFPrimitive::GetPosition() const
 {
-	return ScreenToWorld(m_state.sfPosition.max);
+	return ScreenToWorld(m_gameState.sfPosition.max);
 }
 
 Fixed SFPrimitive::GetOrientation() const
 {
-	return ScreenToWorld(m_state.sfOrientation.max);
+	return ScreenToWorld(m_gameState.sfOrientation.max);
 }
 
 Vector2 SFPrimitive::GetScale() const
 {
-	return m_state.sfScale.max;
+	return m_gameState.sfScale.max;
 }
 
 Colour SFPrimitive::GetPrimaryColour() const
 {
-	return m_state.sfPrimaryColour.max;
+	return m_gameState.sfPrimaryColour.max;
 }
 
 Colour SFPrimitive::GetSecondaryColour() const
 {
-	return m_state.sfSecondaryColour.max;
+	return m_gameState.sfSecondaryColour.max;
 }
 
 LayerID SFPrimitive::GetLayer() const
 {
-	return m_state.layer;
+	return m_gameState.layer;
 }
 
 void SFPrimitive::ReconcileState()
 {
-	m_state.Reconcile();
+	m_gameState.Reconcile();
 }
 
-void SFPrimitive::SetStatic(bool bStatic)
+SFPrimitive* SFPrimitive::SetStatic(bool bStatic)
 {
 	if (bStatic)
 	{
@@ -331,12 +325,13 @@ void SFPrimitive::SetStatic(bool bStatic)
 	{
 		m_bMakeStatic = m_bStatic = false;
 	}
+	return this;
 }
 
 void SFPrimitive::UpdatePivot()
 {
 	Vector2 offset = Fixed::OneHalf * GetBounds().GetSize();
-	Vector2 pivot = Vector2(offset.x * m_state.pivot.x, offset.y * m_state.pivot.y);
+	Vector2 pivot = Vector2(offset.x * m_gameState.pivot.x, offset.y * m_gameState.pivot.y);
 	sf::Vector2f v = Cast(WorldToScreen(pivot) + offset);
 	m_circle.setOrigin(v);
 	m_rectangle.setOrigin(v);
@@ -346,20 +341,73 @@ void SFPrimitive::UpdatePivot()
 
 void SFPrimitive::UpdateRenderState(Fixed alpha)
 {
-	if (m_bStatic)
+	if (!m_bRendered)
+	{
+		m_renderState = m_gameState;
+		m_circle.setRadius(0);
+		m_rectangle.setSize(sf::Vector2f(0, 0));
+		m_text.setString("");
+		m_sprite.setScale(ZERO);
+	}
+	if (!m_bWasDisabled && !m_renderState.bEnabled)
+	{
+		m_bWasDisabled = true;
+		m_prevScale = Cast(m_renderState.sfScale.max);
+		m_circle.setScale(ZERO);
+		m_rectangle.setScale(ZERO);
+		m_text.setString("");
+		m_sprite.setScale(ZERO);
+	}
+	if (m_bWasDisabled && m_renderState.bEnabled)
+	{
+		m_bWasDisabled = false;
+		m_circle.setScale(m_prevScale);
+		m_rectangle.setScale(m_prevScale);
+		m_text.setString(m_renderState.text);
+		m_text.setCharacterSize(m_renderState.textSize);
+		m_sprite.setScale(m_prevScale);
+	}
+	m_bRendered = true;
+	if (m_bStatic || !m_renderState.bEnabled)
 	{
 		return;
 	}
 
-	UpdatePivot();
-	sf::Vector2f scale = Cast(m_state.sfScale.Lerp(alpha));
-	f32 orientation = Cast(m_state.sfOrientation.Lerp(alpha));
-	sf::Vector2f position = Cast(m_state.sfPosition.Lerp(alpha));
-	sf::Color fill = Cast(Colour::Lerp(m_state.sfPrimaryColour.min, m_state.sfPrimaryColour.max, alpha));
-	sf::Color outline =
-		Cast(Colour::Lerp(m_state.sfSecondaryColour.min, m_state.sfSecondaryColour.max, alpha));
-	f32 outlineThickness = Cast(m_state.outlineThickness);
+	sf::Vector2f shapeSize = Cast(m_renderState.shapeSize);
 
+	switch (m_renderState.shape)
+	{
+	default:
+		break;
+
+	case SFShapeType::Circle:
+		m_circle.setRadius(shapeSize.x);
+		break;
+
+	case SFShapeType::Rectangle:
+		m_rectangle.setSize(shapeSize);
+		break;
+	}
+	
+	if (m_renderState.bTextSet)
+	{
+		sf::String text = m_renderState.text;
+		u32 textSize = m_renderState.textSize;
+		m_text.setString(text);
+		m_text.setCharacterSize(textSize);
+	}
+	
+	UpdatePivot();
+
+	sf::Vector2f scale = Cast(m_renderState.sfScale.Lerp(alpha));
+	f32 orientation = Cast(m_renderState.sfOrientation.Lerp(alpha));
+	sf::Vector2f position = Cast(m_renderState.sfPosition.Lerp(alpha));
+	sf::Color fill =
+		Cast(Colour::Lerp(m_renderState.sfPrimaryColour.min, m_renderState.sfPrimaryColour.max, alpha));
+	sf::Color outline =
+		Cast(Colour::Lerp(m_renderState.sfSecondaryColour.min, m_renderState.sfSecondaryColour.max, alpha));
+	f32 outlineThickness = Cast(m_renderState.outlineThickness);
+	
 	m_circle.setScale(scale);
 	m_circle.setRotation(orientation);
 	m_circle.setPosition(position);
@@ -390,5 +438,10 @@ void SFPrimitive::UpdateRenderState(Fixed alpha)
 		m_bStatic = true;
 		m_bMakeStatic = false;
 	}
+}
+
+void SFPrimitive::Destroy()
+{
+	m_bDestroyed = true;
 }
 } // namespace LittleEngine

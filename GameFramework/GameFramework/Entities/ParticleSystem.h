@@ -48,6 +48,7 @@ struct EmitterData
 	s32 layerDelta = 0;
 	Transform* pParent;
 	class SoundAsset* pSound;
+	bool bStatic = false;
 
 	EmitterData(class TextureAsset& texture, u32 numParticles, SoundAsset* pSound = nullptr);
 	EmitterData(EmitterData&&) = default;

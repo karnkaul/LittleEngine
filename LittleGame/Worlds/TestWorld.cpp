@@ -5,6 +5,9 @@
 #include "TestWorld.h"
 #include "UI/OptionsUI.h"
 
+// TODO: Remove
+#include "LittleEngine/RenderLoop/RenderFactory.h"
+
 namespace LittleEngine
 {
 namespace
@@ -25,7 +28,7 @@ void OnEnter()
 		if (pEntity2)
 		{
 			auto rc0 = pEntity2->AddComponent<RenderComponent>();
-			rc0->m_pSFPrimitive->SetSize({100, 100}, SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow);
+			rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({100, 100}, SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow);
 			auto t0 = pEntity2->AddComponent<CollisionComponent>();
 			t0->AddCircle(100);
 		}
@@ -34,7 +37,7 @@ void OnEnter()
 		if (pEntity3)
 		{
 			auto rc1 = pEntity3->AddComponent<RenderComponent>();
-			rc1->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)->SetPrimaryColour(Colour::Blue);
+			rc1->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)->SetPrimaryColour(Colour::Blue);
 			auto t1 = pEntity3->AddComponent<CollisionComponent>();
 			t1->AddAABB(AABBData({600, 100}));
 		}
@@ -52,7 +55,7 @@ void OnEnter()
 		pEntity4 = pTestWorld->Game()->NewEntity<Entity>("SpriteSheetTest");
 		pEntity4->m_transform.localPosition = {-200, -200};
 		auto rc4 = pEntity4->AddComponent<RenderComponent>();
-		rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)));
+		rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)), LAYER_FX);
 		//rc4->SetSpriteSheet(SpriteSheet(std::move(data), pTexture, Time::Seconds(1.0f)));
 	}
 	else
@@ -62,7 +65,7 @@ void OnEnter()
 	}
 }
 
-bool bLoopingPS = false;
+//bool bLoopingPS = false;
 ParticleSystem* pParticleSystem0 = nullptr;
 void OnSelect()
 {
@@ -78,12 +81,12 @@ void OnSelect()
 	else
 	{
 		// pParticleSystem0->SetEnabled(true);
-		Fixed x = Maths::Random::Range(-Fixed::One, Fixed::One);
-		Fixed y = Maths::Random::Range(-Fixed::One, Fixed::One);
-		Vector2 worldPos = GFX::Project({x, y}, false);
+		//Fixed x = Maths::Random::Range(-Fixed::One, Fixed::One);
+		//Fixed y = Maths::Random::Range(-Fixed::One, Fixed::One);
+		//Vector2 worldPos = GFX::Project({x, y}, false);
 		//pParticleSystem0->m_transform.localPosition = worldPos;
 		pParticleSystem0->Start();
-		pTestWorld->Game()->WorldCamera()->Shake();
+		//pTestWorld->Game()->WorldCamera()->Shake();
 	}
 }
 
@@ -189,14 +192,14 @@ void StartTests()
 {
 	pEntity0 = pTestWorld->Game()->NewEntity<Entity>("Entity0", {300, 200});
 	auto rc0 = pEntity0->AddComponent<RenderComponent>();
-	rc0->m_pSFPrimitive->SetSize({300, 100}, SFShapeType::Rectangle)
+	rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({300, 100}, SFShapeType::Rectangle)
 		->SetPrimaryColour(Colour::Magenta)
 		->SetEnabled(true);
 
 	pEntity1 = pTestWorld->Game()->NewEntity<Entity>("Entity1", GFX::Project({0, Fixed(0.9f)}, false));
 	auto rc1 = pEntity1->AddComponent<RenderComponent>();
 	FontAsset* font = pTestWorld->Game()->Repository()->GetDefaultFont();
-	rc1->m_pSFPrimitive->SetText("Hello World!")
+	rc1->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetText("Hello World!")
 		->SetFont(*font)
 		->SetTextSize(50)
 		->SetPrimaryColour(Colour(200, 150, 50))
@@ -209,7 +212,11 @@ void StartTests()
 	pPlayer->InitPlayer(std::move(data));
 
 	//String path = bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
+#if SHIPPING
+	String path = "VFX/Stars0/Stars0.psdata.min";
+#else
 	String path = "VFX/Stars0/Stars0.psdata";
+#endif
 	auto* pText = pTestWorld->Repository()->Load<TextAsset>(path);
 	GData psGData(pText->GetText());
 	pParticleSystem0 = pTestWorld->Game()->NewEntity<ParticleSystem>("Fire0");

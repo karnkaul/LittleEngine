@@ -8,5 +8,6 @@
 **/*.vcxproj.user
 **/SourceArt/*
 **/Redist/*
+**/GameAssets.cooked
 debug.log
 Settings.ini
