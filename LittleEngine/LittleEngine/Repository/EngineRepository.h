@@ -44,6 +44,7 @@ public:
 
 	FontAsset* GetDefaultFont() const;
 
+	bool Unload(String id);
 	// Unload all assets
 	void UnloadAll(bool bUnloadDefaultFont);
 

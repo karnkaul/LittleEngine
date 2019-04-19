@@ -390,11 +390,5 @@ void SFPrimitive::UpdateRenderState(Fixed alpha)
 		m_bStatic = true;
 		m_bMakeStatic = false;
 	}
-#if DEBUGGING
-	if (bDebugThisPrimitive)
-	{
-		LOG_W("Enabled: %d", m_state.bEnabled);
-	}
-#endif
 }
 } // namespace LittleEngine

@@ -317,6 +317,34 @@ public:
 		return matches;
 	}
 };
+
+class Unload : public Command
+{
+public:
+	Unload() : Command("unload")
+	{
+		m_bTakesCustomParam = true;
+	}
+
+	void FillExecuteResult(String params)
+	{
+		if (params.empty())
+		{
+			m_executeResult.emplace_back("Syntax: " + m_name + "<assetID>", g_logTextColour);
+		}
+		else
+		{
+			if (Services::Game()->Repository()->Unload(params)) 
+			{
+				m_executeResult.emplace_back("Unloaded " + params + " from Repository", g_logTextColour);
+			}
+			else
+			{
+				m_executeResult.emplace_back(params + " not loaded in Repository", g_logTextColour);
+			}
+		}
+	}
+};
 #endif
 #pragma endregion
 #pragma region Local Namespace Impl
@@ -425,6 +453,7 @@ void Init()
 #if ENABLED(TWEAKABLES)
 	Add<Set>();
 #endif
+	Add<Unload>();
 }
 
 Vec<LogLine> Execute(const String& query)

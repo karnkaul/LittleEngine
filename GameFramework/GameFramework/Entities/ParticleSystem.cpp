@@ -4,6 +4,7 @@
 #include "SFMLAPI/Rendering/Colour.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/System/SFAssets.h"
+#include "LittleEngine/Debug/DebugProfiler.h"
 #include "LittleEngine/Audio/EngineAudio.h"
 #include "LittleEngine/Game/GameManager.h"
 #include "LittleEngine/RenderLoop/RenderHeap.h"
@@ -167,6 +168,7 @@ void Particle::Init(Vector2 u, const Time& ttl, const Transform& transform, Fixe
 	m_pSFPrimitive->SetLayer(m_layer)
 		->SetPosition(transform.Position(), true)
 		->SetOrientation(transform.Orientation(), true)
+		->SetScale(transform.Scale(), true)
 		->SetTexture(*m_pTexture)
 		->SetEnabled(true);
 }
@@ -258,11 +260,15 @@ void Emitter::Reset(bool bSetEnabled)
 
 void Emitter::PreWarm(u32 numTicks)
 {
-	Time dt = Time::Seconds(m_data.lifetimeData.ttlSecs.min.ToF32());
+	Fixed minDT = m_data.lifetimeData.ttlSecs.min * Fixed::OneThird;
+	TRange<Fixed> dtRange(minDT, minDT * 3);
 	bool bTemp = m_bSpawnNewParticles;
 	m_bSpawnNewParticles = true;
 	for (u32 i = 0; i < numTicks; ++i)
+	{
+		Time dt = Time::Seconds(GetRandom<Fixed>(dtRange).ToF32());
 		TickInternal(dt);
+	}
 	m_bSpawnNewParticles = bTemp;
 }
 
@@ -355,8 +361,11 @@ void Emitter::InitParticle(Particle& p)
 	if (m_pParent)
 		transform.SetParent(*m_pParent);
 	transform.localPosition = GetRandom(m_data.spawnData.spawnPosition);
+	Fixed scale = m_data.lifetimeData.scaleOverTime.min;
+	transform.localScale = {scale, scale};
 	p.Init(velocity, Time::Seconds(GetRandom(m_data.lifetimeData.ttlSecs).ToF32()), transform,
 		   GetRandom(m_data.spawnData.spawnAngularSpeed), Colour::White, m_data.layerDelta);
+	p.m_pSFPrimitive->bDebugThisPrimitive = true;
 }
 
 void Emitter::InitParticles()
@@ -491,6 +500,7 @@ void ParticleSystem::Stop()
 
 void ParticleSystem::Tick(Time dt)
 {
+	PROFILE_START(m_name, Colour::Yellow);
 	Entity::Tick(dt);
 
 	bool bAnyPlaying = false;
@@ -500,5 +510,6 @@ void ParticleSystem::Tick(Time dt)
 		bAnyPlaying |= emitter->m_bEnabled;
 	}
 	m_bIsPlaying = bAnyPlaying;
+	PROFILE_STOP(m_name);
 }
 } // namespace LittleEngine

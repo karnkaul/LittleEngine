@@ -81,7 +81,7 @@ void OnSelect()
 		Fixed x = Maths::Random::Range(-Fixed::One, Fixed::One);
 		Fixed y = Maths::Random::Range(-Fixed::One, Fixed::One);
 		Vector2 worldPos = GFX::Project({x, y}, false);
-		pParticleSystem0->m_transform.localPosition = worldPos;
+		//pParticleSystem0->m_transform.localPosition = worldPos;
 		pParticleSystem0->Start();
 		pTestWorld->Game()->WorldCamera()->Shake();
 	}
@@ -208,12 +208,13 @@ void StartTests()
 		*pTexture, {PlayerCollider(AABBData({120, 60}), {0, -15}), PlayerCollider(AABBData({60, 80}))});
 	pPlayer->InitPlayer(std::move(data));
 
-	String path = bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
+	//String path = bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
+	String path = "VFX/Stars0/Stars0.psdata";
 	auto* pText = pTestWorld->Repository()->Load<TextAsset>(path);
 	GData psGData(pText->GetText());
 	pParticleSystem0 = pTestWorld->Game()->NewEntity<ParticleSystem>("Fire0");
 	pParticleSystem0->InitParticleSystem(ParticleSystemData(psGData));
-	pParticleSystem0->m_transform.localScale = {Fixed(2.0f), Fixed(2.0f)};
+	//pParticleSystem0->m_transform.localScale = {Fixed(2.0f), Fixed(2.0f)};
 	pParticleSystem0->Stop();
 
 	if (bSpawnColliderMinefield)

@@ -1,0 +1,25 @@
+{
+	emitters: [
+		{
+			spawnData: {
+				spawnPosition: { min: { x: -960, y: 540 }, max: { x: 960, y: 800} },
+				spreadAngle: { min: 180.00, max: 180.00 },
+				emitterAngle: { min: 0.00, max: 0.00 },
+				spawnSpeed: { min: 0.01, max: 0.1 },
+				spawnAngularSpeed: { min: 0.00, max: 0.00 },
+				preWarmNumTicks: 10,
+				numParticles: 300,
+				bPreWarm: true,
+				bFireOnce: false
+			},
+			lifetimeData: {
+				ttlSecs: { min: 10, max: 20 },
+				scaleOverTime: { min: 0.2, max: 0.1 },
+				alphaOverTime: { min: 255, max: 150 }
+			},
+			texturePath: VFX/Stars0/00.png,
+			startDelaySecs: 0.00,
+			layerDelta: -250
+		}
+	]
+}

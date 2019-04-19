@@ -78,6 +78,11 @@ ManifestLoader* EngineRepository::LoadAsync(String archivePath,
 	return pLoader;
 }
 
+bool EngineRepository::Unload(String id)
+{
+	return m_loaded.erase(id);
+}
+
 void EngineRepository::UnloadAll(bool bUnloadDefaultFont)
 {
 	if (bUnloadDefaultFont || !m_pDefaultFont)
