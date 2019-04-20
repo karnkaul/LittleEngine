@@ -2,8 +2,8 @@
 	numGameThreads: 6,
 	renderThread: true,
 	viewSize: {
-		x: 1920.000000,
-		y: 1080.000000
+		x: 1920,
+		y: 1080
 	},
 	logLevel: Debug,
 	windowTitle: Async_Little_Engine,

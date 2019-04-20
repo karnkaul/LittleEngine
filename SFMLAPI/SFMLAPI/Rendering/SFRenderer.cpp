@@ -2,104 +2,83 @@
 #include <mutex>
 #include "Utils.h"
 #include "Logger.h"
+#include "SFPrimitive.h"
 #include "SFRenderer.h"
 #include "SFRenderState.h"
+#include "ISFRenderBuffer.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
 #include "SFMLAPI/Windowing/SFWindowData.h"
 #include "SFML/Graphics.hpp"
 
 namespace LittleEngine
 {
-void RenderData::Reset()
-{
-	primitiveCount = staticCount = dynamicCount = framesPerSecond = 0;
-	lastRenderTime = Time::Zero;
-}
-
-RenderData g_renderData;
-
 #if ENABLED(RENDER_STATS)
-namespace
-{
-Time fpsTime;
-u32 frameCount = 0;
-u32 fps = 0;
-
-void UpdateFPS()
-{
-	++frameCount;
-	g_renderData.lastRenderTime = Time::Now();
-	if (Maths::Abs((fpsTime - g_renderData.lastRenderTime).AsSeconds()) >= 1.0f)
-	{
-		fpsTime = g_renderData.lastRenderTime;
-		fps = frameCount;
-		frameCount = 0;
-	}
-	g_renderData.framesPerSecond = fps;
-}
-} // namespace
+RenderData g_renderData;
 #endif
 
-SFRenderer::SFRenderer(SFWindow& sfWindow, Time tickRate)
-	: m_pSFWindow(&sfWindow), m_tickRate(tickRate)
+SFRenderer::SFRenderer(SFWindow& sfWindow)
+	: m_pSFWindow(&sfWindow)
 {
 	m_bRendering.store(true, std::memory_order_relaxed);
 }
 
 SFRenderer::~SFRenderer() = default;
 
-void SFRenderer::Render(GFXBuffer& buffer)
+void SFRenderer::Render(IRenderBuffer& buffer, Fixed alpha)
 {
 	if (m_bRendering.load(std::memory_order_relaxed))
 	{
 		m_pSFWindow->clear();
 
-		Fixed renderDT = Time::Now().AsMilliseconds() - buffer.GetLastSwapTime().AsMilliseconds();
-		Fixed tickRate = m_tickRate.AsMilliseconds();
-		Fixed alpha = Maths::Clamp01(renderDT / tickRate);
-		buffer.Lock_Traverse([&](Vec<SFPrimitive>& active) {
+		buffer.Lock_Traverse([&](Vec<SFPrimitive*> active) {
 #if ENABLED(RENDER_STATS)
-			g_renderData.Reset();
+			static Time fpsTime;
+			static u32 frameCount = 0;
+			u32 statics = 0;
+			u32 disabled = 0;
+			u32 primitives = 0;
 #endif
 
-			for (auto& primitive : active)
+			for (auto& pPrimitive : active)
 			{
-				primitive.UpdateRenderState(alpha);
-				m_pSFWindow->draw(primitive.m_circle);
-				m_pSFWindow->draw(primitive.m_rectangle);
-				m_pSFWindow->draw(primitive.m_sprite);
-				m_pSFWindow->draw(primitive.m_text);
+				pPrimitive->UpdateRenderState(alpha);
+				m_pSFWindow->draw(pPrimitive->m_circle);
+				m_pSFWindow->draw(pPrimitive->m_rectangle);
+				m_pSFWindow->draw(pPrimitive->m_sprite);
+				m_pSFWindow->draw(pPrimitive->m_text);
 
 #if ENABLED(RENDER_STATS)
-				++g_renderData.primitiveCount;
-				if (primitive.m_bStatic)
+				++primitives;
+				if (!pPrimitive->m_renderState.bEnabled)
 				{
-					++g_renderData.staticCount;
+					++disabled;
+				}
+				if (pPrimitive->m_bStatic)
+				{
+					++statics;
 				}
 #endif
 			}
 
 #if ENABLED(RENDER_STATS)
-			g_renderData.dynamicCount = g_renderData.primitiveCount - g_renderData.staticCount;
-			UpdateFPS();
+			g_renderData.staticCount = statics;
+			g_renderData.disabledCount = disabled;
+			g_renderData.primitiveCount = primitives;
+			g_renderData.dynamicCount = primitives - statics - disabled;
+			// Update FPS
+			{
+				++frameCount;
+				g_renderData.lastRenderTime = Time::Now();
+				if (Maths::Abs((fpsTime - g_renderData.lastRenderTime).AsSeconds()) >= 1.0f)
+				{
+					fpsTime = g_renderData.lastRenderTime;
+					g_renderData.framesPerSecond = frameCount;
+					frameCount = 0;
+				}
+			}
 #endif
 		});
-	}
-}
-
-void SFRenderer::Display()
-{
-	if (m_bRendering.load(std::memory_order_relaxed))
-	{
 		m_pSFWindow->display();
-	}
-}
-
-void SFRenderer::SetWindowSize(const SFWindowSize& size)
-{
-	if (m_pSFWindow)
-	{
-		m_pSFWindow->SetSize(size);
 	}
 }
 } // namespace LittleEngine

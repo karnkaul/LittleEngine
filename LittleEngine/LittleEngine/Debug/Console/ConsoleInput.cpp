@@ -69,7 +69,6 @@ void ConsoleInput::UpdateLiveLine(const EngineInput::Frame& frame)
 
 	else if (textInput.Contains(SpecialInputType::Tab))
 	{
-		static String previousLogText;
 		if (!m_keyboard.m_liveLine.liveString.empty())
 		{
 			Commands::AutoCompleteResults search = Commands::AutoComplete(m_keyboard.m_liveLine.liveString);
@@ -86,25 +85,40 @@ void ConsoleInput::UpdateLiveLine(const EngineInput::Frame& frame)
 				m_keyboard.m_liveLine.liveString = search.queries[0] + (bSpace ? " " : "");
 			}
 
-			String logOutput;
-			if (!search.params.empty())
+			const Vec<String>& vec = search.params.empty() ? search.queries : search.params;
+			static const u8 columns = 3;
+			static const u8 columnWidth = 20;
+			String line;
+			Vec<LogLine> logLines;
+			u8 column = 0;
+			for (const auto& autoCompleted : vec)
 			{
-				for (const auto& params : search.params)
+				u8 pad = 0;
+				u8 span = (autoCompleted.size() + 1) / columnWidth;
+				u8 overflow = span > 0 ? autoCompleted.size() % columnWidth : autoCompleted.size();
+				pad = columnWidth - overflow;
+				column += span;
+				line += (autoCompleted + String(pad, ' '));
+				++column;
+				if (column >= columns)
 				{
-					logOutput += ("\t" + params);
+					line = "\t" + std::move(line);
+					logLines.emplace_back(std::move(line), g_logTextColour);
+					column = 0;
 				}
 			}
-			else
+			if (!line.empty())
 			{
-				for (const auto& query : search.queries)
-				{
-					logOutput += ("\t" + query);
-				}
+				line = "\t" + std::move(line);
+				logLines.emplace_back(std::move(line), g_logTextColour);
 			}
-			if (!logOutput.empty() && logOutput != previousLogText)
+			if (!logLines.empty())
 			{
-				previousLogText = logOutput;
-				Console::g_uLogBook->Append(LogLine(logOutput, g_logTextColour));
+				Console::g_uLogBook->Append(LogLine());
+				for (const auto& logLine : logLines)
+				{
+					Console::g_uLogBook->Append(std::move(logLine));
+				}
 			}
 		}
 	}

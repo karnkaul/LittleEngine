@@ -27,17 +27,32 @@ SFWindowSize SFWindow::GetMaxWindowSize()
 	return SFWindowSize(desktopMode.width, desktopMode.height);
 }
 
-SFWindow::SFWindow(const SFWindowData& data)
-	: RenderWindow(sf::VideoMode(data.windowSize.width, data.windowSize.height), data.title, data.sfStyle)
+SFWindow::SFWindow() = default;
+
+SFWindow::~SFWindow()
 {
-	m_viewBounds = Rect2::CentreSize(data.viewSize);
+	DestroyWindow();
+}
+
+void SFWindow::SetData(SFWindowData data)
+{
+	Assert(!isOpen(), "Attempt to set Window Data when window already open");
+	m_data = std::move(data);
+}
+
+void SFWindow::CreateWindow()
+{
+	Assert(!isOpen(), "Duplicate call to SFWindow::Create()!");
+	create(sf::VideoMode(m_data.windowSize.width, m_data.windowSize.height), m_data.title,
+		   Cast(m_data.style));
+	m_viewBounds = Rect2::CentreSize(m_data.viewSize);
 	Vector2 viewSize = m_viewBounds.GetSize();
 	Fixed worldAspect = viewSize.x / viewSize.y;
-	Fixed screenAspect(data.windowSize.width, data.windowSize.height);
+	Fixed screenAspect(m_data.windowSize.width, m_data.windowSize.height);
 	if (!Maths::IsNearlyEqual(worldAspect.ToF32(), screenAspect.ToF32()))
 	{
-		String screenSizeStr = "[" + Strings::ToString(data.windowSize.width) + "x" +
-							   Strings::ToString(data.windowSize.height) + "]";
+		String screenSizeStr = "[" + Strings::ToString(m_data.windowSize.width) + "x" +
+							   Strings::ToString(m_data.windowSize.height) + "]";
 		LOG_W(
 			"[SFWindow] World view's aspect ratio %s"
 			" is significantly different from screen's aspect ratio %s"
@@ -51,7 +66,29 @@ SFWindow::SFWindow(const SFWindowData& data)
 	setView(view);
 }
 
-SFWindow::~SFWindow() = default;
+void SFWindow::DestroyWindow()
+{
+	if (isOpen())
+	{
+		close();
+	}
+}
+
+void SFWindow::OverrideData(SFWindowRecreateData data)
+{
+	if (data.oSstyle)
+	{
+		m_data.style = *data.oSstyle;
+	}
+	if (data.oTitle)
+	{
+		m_data.title = *data.oTitle;
+	}
+	if (data.oWindowSize)
+	{
+		m_data.windowSize = std::move(*data.oWindowSize);
+	}
+}
 
 Vector2 SFWindow::GetViewSize() const
 {
@@ -68,16 +105,5 @@ Vector2 SFWindow::Project(Vector2 nPos, bool bPreClamp) const
 	}
 	Vector2 s = m_viewBounds.topRight;
 	return Vector2(p.x * s.x, p.y * s.y);
-}
-
-void SFWindow::SetSize(const SFWindowSize& size)
-{
-	sf::Vector2u fullSize = getSize();
-	sf::Vector2i halfSize(fullSize.x / 2, fullSize.y / 2);
-	sf::Vector2i position = getPosition() + halfSize;
-	setSize({size.width, size.height});
-	halfSize = sf::Vector2i(size.width / 2, size.height / 2);
-	position -= halfSize;
-	setPosition(position);
 }
 } // namespace LittleEngine

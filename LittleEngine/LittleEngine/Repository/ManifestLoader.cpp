@@ -54,7 +54,7 @@ ManifestLoader::ManifestLoader(EngineRepository& repository,
 	}
 
 	m_bCompleted = m_bIdle = false;
-	m_pMultiJob = Services::Jobs()->CreateMultiJob("Async Load: " + manifestPath);
+	m_pMultiJob = Services::Jobs()->CreateMultiJob("Load " + manifestPath);
 	m_pMultiJob->AddJob(
 		[&]() {
 			for (auto& sound : m_newSounds)
@@ -132,7 +132,7 @@ ManifestLoader::ManifestLoader(EngineRepository& repository,
 	}
 
 	m_bCompleted = m_bIdle = false;
-	m_pMultiJob = Services::Jobs()->CreateMultiJob("Async Decompress: " + archivePath);
+	m_pMultiJob = Services::Jobs()->CreateMultiJob("Decompress " + archivePath);
 	m_pMultiJob->AddJob(
 		[&]() {
 			for (auto& sound : m_newSounds)

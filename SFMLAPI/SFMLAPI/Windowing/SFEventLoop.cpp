@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <thread>
 #include "SFEventLoop.h"
 #include "SFWindow.h"
 #include "SFWindowData.h"
@@ -10,18 +11,51 @@
 
 namespace LittleEngine
 {
-SFEventLoop::SFEventLoop()
+#if DEBUGGING
+namespace
 {
-	m_uSFWindowData = MakeUnique<SFWindowData>();
+inline void ProfileFrameTime(Time& frameElapsed, Time& maxFrameTime)
+{
+	static const Time DILATED_TIME = Time::Milliseconds(250);
+	static const u8 MAX_CONSECUTIVE = 2;
+	static Time logTime = Time::Now() - Time::Milliseconds(300);
+	static u8 consecutive = 0;
+	if (frameElapsed > maxFrameTime)
+	{
+		++consecutive;
+		if ((Time::Now() - logTime) > DILATED_TIME && consecutive > MAX_CONSECUTIVE)
+		{
+			f32 max = maxFrameTime.AsSeconds() * 1000.0f;
+			f32 taken = frameElapsed.AsSeconds() * 1000.0f;
+			LOG_E(
+				"Game Loop is taking too long! Game time is inaccurate (slowed down) "
+				"[max: "
+				"%.2fms taken: %.2fms]",
+				max, taken);
+			logTime = Time::Now();
+			consecutive = 0;
+		}
+	}
+	else
+	{
+		consecutive = 0;
+	}
+}
+} // namespace
+#endif
+
+ASFEventLoop::ASFEventLoop()
+{
 	m_uSFEventHandler = MakeUnique<SFEventHandler>();
+	m_uSFWindow = MakeUnique<SFWindow>();
 }
 
-SFEventLoop::~SFEventLoop() = default;
+ASFEventLoop::~ASFEventLoop() = default;
 
-s32 SFEventLoop::Run()
+s32 ASFEventLoop::Run()
 {
 	// Construct Window
-	m_uSFWindow = MakeUnique<SFWindow>(*m_uSFWindowData);
+	m_uSFWindow->CreateWindow();
 	LOG_I("[SFEventLoop] Running");
 
 	PreRun();
@@ -32,49 +66,49 @@ s32 SFEventLoop::Run()
 	Time currentTime = Time::Now();
 	while (m_uSFWindow && !m_bStopTicking)
 	{
-		// Break and exit if Window closed
+		Time frameElapsed;
 		PollEvents();
+		// Break and exit if Window closed
 		if (m_bStopTicking)
 		{
 			continue;
 		}
 
-		Time tickDT;
 		if (!m_bPauseTicking)
 		{
-			Tick(currentTime, accumulator);
+			Integrate(currentTime, accumulator);
 			if (m_bStopTicking)
 			{
-				continue;
+				break;
 			}
-
-			PostTick();
-			tickDT = Time::Now() - currentTime;
+			FinishFrame();
+#if DEBUGGING
+			frameElapsed = Time::Now() - currentTime;
+			ProfileFrameTime(frameElapsed, m_tickRate);
+#endif
+			frameElapsed = Time::Now() - currentTime;
 		}
 		else
 		{
-			tickDT = Time::Milliseconds(m_tickRate.AsMilliseconds() * 0.25f);
+			frameElapsed = Time::Milliseconds(m_tickRate.AsMilliseconds() * 0.25f);
 		}
-		SleepForRestOfFrame(tickDT);
+		Sleep(m_tickRate - frameElapsed);
 	}
 
 	PostRun();
-	LOG_I("[SFEventLoop] Activating SFWindow on this thread, destroying SFWindow");
+	LOG_I("[SFEventLoop] Event Loop terminated. Destroying SFWindow");
 
-	m_uSFWindow->setActive(true);
-	m_uSFWindow->close();
 	m_uSFWindow = nullptr;
-	PostWindowDestruct();
 
 	return 0;
 }
 
-SFInputDataFrame SFEventLoop::GetInputDataFrame() const
+SFInputDataFrame ASFEventLoop::GetInputDataFrame() const
 {
 	return m_uSFEventHandler->GetFrameInputData();
 }
 
-void SFEventLoop::PollEvents()
+void ASFEventLoop::PollEvents()
 {
 	SFWindowEventType windowEvent = m_uSFEventHandler->PollEvents(*m_uSFWindow);
 	switch (windowEvent)
@@ -102,7 +136,7 @@ void SFEventLoop::PollEvents()
 	}
 }
 
-void SFEventLoop::Tick(Time& outCurrentTime, Time& outAccumulator)
+void ASFEventLoop::Integrate(Time& outCurrentTime, Time& outAccumulator)
 {
 	Time dt = m_tickRate;
 	Time newTime = Time::Now();
@@ -110,6 +144,10 @@ void SFEventLoop::Tick(Time& outCurrentTime, Time& outAccumulator)
 	outCurrentTime = newTime;
 
 	outAccumulator += frameTime;
+	if (outAccumulator >= dt)
+	{
+		PreTick();
+	}
 	while (outAccumulator >= dt)
 	{
 		GameClock::Tick(dt);
@@ -123,36 +161,15 @@ void SFEventLoop::Tick(Time& outCurrentTime, Time& outAccumulator)
 	}
 }
 
-void SFEventLoop::SleepForRestOfFrame(Time frameTime)
+void ASFEventLoop::Sleep(Time time)
 {
-	s32 surplus = (m_tickRate - frameTime).AsMilliseconds();
-	if (surplus > 0)
+	if (time.AsMilliseconds() > 0)
 	{
-		sf::sleep(sf::milliseconds(surplus));
+		std::this_thread::sleep_for(std::chrono::milliseconds(time.AsMilliseconds()));
 	}
 }
 
-void SFEventLoop::Sleep(Time time)
-{
-	sf::sleep(sf::milliseconds(time.AsMilliseconds()));
-}
-
-void SFEventLoop::PreRun()
-{
-}
-void SFEventLoop::PostRun()
-{
-}
-void SFEventLoop::PostWindowDestruct()
-{
-}
-void SFEventLoop::Tick(Time /*dt*/)
-{
-}
-void SFEventLoop::PostTick()
-{
-}
-void SFEventLoop::OnPause(bool bPaused)
+void ASFEventLoop::OnPause(bool bPaused)
 {
 	m_bPauseTicking = bPaused;
 }

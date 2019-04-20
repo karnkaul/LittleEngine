@@ -3,7 +3,7 @@
 
 namespace LittleEngine
 {
-class ControllerComponent : public Component
+class ControllerComponent : public AComponent
 {
 public:
 	Fixed m_angularSpeed = Fixed::OneThird;

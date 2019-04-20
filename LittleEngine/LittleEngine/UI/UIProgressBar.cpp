@@ -5,16 +5,10 @@
 
 namespace LittleEngine
 {
-UIProgressBar::UIProgressBar(bool bSilent) : UIElement("Progress Bar", bSilent)
+UIProgressBar::UIProgressBar(LayerID layer, bool bSilent) : UIElement("Progress Bar", layer, bSilent)
 {
 	SetName("", "UIProgressBar");
 }
-UIProgressBar::UIProgressBar(String name, bool bSilent) : UIElement(std::move(name), bSilent)
-{
-	SetName("", "UIProgressBar");
-}
-
-UIProgressBar::~UIProgressBar() = default;
 
 void UIProgressBar::InitProgressBar(Vector2 size, Colour colour, Fixed initProgress)
 {
@@ -31,5 +25,10 @@ void UIProgressBar::SetProgress(Fixed progress)
 {
 	Fixed width = m_size.x * Maths::Clamp01(progress);
 	m_transform.size.x = width;
+}
+
+void UIProgressBar::OnCreated()
+{
+	SetName("", "UIProgressBar");
 }
 } // namespace LittleEngine

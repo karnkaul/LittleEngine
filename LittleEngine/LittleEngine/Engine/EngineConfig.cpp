@@ -47,7 +47,7 @@ void SetStringIfEmpty(GData& data, String key, String value)
 } // namespace
 
 const bool EngineConfig::s_bPauseOnFocusLoss = false;
-const Version EngineConfig::s_engineVersion = "0.1.4";
+const Version EngineConfig::s_engineVersion = "0.1.5";
 
 EngineConfig::EngineConfig()
 {
@@ -120,7 +120,7 @@ Core::LogSeverity EngineConfig::GetLogLevel() const
 Vector2 EngineConfig::GetViewSize() const
 {
 	GData vec2 = m_uData->GetGData(VIEW_SIZE_KEY);
-	return Vector2(Fixed(vec2.GetF64("x")), Fixed(vec2.GetF64("y")));
+	return Vector2(Fixed(vec2.GetS32("x")), Fixed(vec2.GetS32("y")));
 }
 
 const Version& EngineConfig::GetEngineVersion()
@@ -169,11 +169,11 @@ bool EngineConfig::SetColliderBorderWidth(u32 shapeWidth)
 	return m_bDirty = m_uData->SetString(COLLIDER_SHAPE_WIDTH_KEY, Strings::ToString(shapeWidth));
 }
 
-bool EngineConfig::SetViewSize(Vector2 viewSize)
+bool EngineConfig::SetViewSize(u32 width, u32 height)
 {
 	GData gData;
-	gData.SetString("x", viewSize.x.ToString());
-	gData.SetString("y", viewSize.y.ToString());
+	gData.SetString("x", Strings::ToString(width));
+	gData.SetString("y", Strings::ToString(height));
 	return m_bDirty = m_uData->AddField(VIEW_SIZE_KEY, gData);
 }
 
@@ -189,7 +189,7 @@ void EngineConfig::Verify()
 	SetStringIfEmpty(*m_uData, PAUSE_ON_FOCUS_LOSS_KEY, Strings::ToString(s_bPauseOnFocusLoss));
 	if (m_uData->GetString(VIEW_SIZE_KEY).empty())
 	{
-		SetViewSize(Vector2(1920, 1080));
+		SetViewSize(1920, 1080);
 	}
 	m_bDirty = false;
 }

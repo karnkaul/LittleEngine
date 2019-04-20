@@ -34,7 +34,7 @@ GameSettings::~GameSettings()
 	SaveAll();
 }
 
-u32 GameSettings::GetWindowHeight()
+u32 GameSettings::GetWindowHeight() const
 {
 	String heightStr = m_windowHeight.stringValue.substr(0, m_windowHeight.stringValue.size() - 1);
 	s32 height = Strings::ToS32(heightStr);
@@ -46,7 +46,7 @@ u32 GameSettings::GetWindowHeight()
 	return static_cast<u32>(height);
 }
 
-bool GameSettings::IsBorderless()
+bool GameSettings::IsBorderless() const
 {
 	return Strings::ToBool(m_borderless.stringValue);
 }
@@ -67,6 +67,29 @@ void GameSettings::SetBorderless(bool bBorderless)
 	{
 		SaveAll();
 	}
+}
+
+SFWindowStyle GameSettings::GetWindowStyle() const
+{
+	SFWindowStyle ret = SFWindowStyle::Default;
+	if (IsBorderless())
+	{
+		ret = SFWindowStyle::Bordlerless;
+	}
+	return ret;
+}
+
+SFWindowSize GameSettings::GetWindowSize(Vector2 viewSize) const
+{
+	u32 windowHeight = GetWindowHeight();
+	u32 windowWidth = (viewSize.x.ToU32() * windowHeight) / viewSize.y.ToU32();
+	return SFWindowSize(windowWidth, windowHeight);
+}
+
+Vector2 GameSettings::GetCullBounds(Vector2 viewSize) const
+{
+	SFWindowSize windowSize = GetWindowSize(viewSize);
+	return Vector2(windowSize.height, windowSize.height);
 }
 
 void GameSettings::SetDefaults()

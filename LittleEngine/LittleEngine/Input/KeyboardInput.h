@@ -8,6 +8,8 @@ struct LiveLine
 {
 	String liveString;
 
+	LiveLine();
+
 	void Append(String newInput);
 	void Backspace();
 	void Clear();

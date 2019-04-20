@@ -90,8 +90,8 @@ void GameManager::Tick(Time dt)
 	m_uCollisionManager->Tick(dt);
 	for (auto& componentVec : m_uComponents)
 	{
-		Core::CleanVector<UPtr<Component>>(componentVec,
-										   [](UPtr<Component>& uC) { return uC->m_bDestroyed; });
+		Core::CleanVector<UPtr<AComponent>>(componentVec,
+										   [](UPtr<AComponent>& uC) { return uC->m_bDestroyed; });
 		for (auto& uComponent : componentVec)
 		{
 			uComponent->Tick(dt);

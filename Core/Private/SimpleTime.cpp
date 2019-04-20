@@ -3,7 +3,7 @@
 #include "SimpleTime.h"
 #include "Utils.h"
 
-namespace LittleEngine
+namespace Core
 {
 namespace
 {
@@ -88,7 +88,7 @@ Time::Time(sf::Time& sfTime)
 	microSeconds = sfTime.asMicroseconds();
 }
 
-LittleEngine::Time& Time::Scale(Fixed magnitude)
+Time& Time::Scale(Fixed magnitude)
 {
 	microSeconds *= magnitude.ToF32();
 	return *this;

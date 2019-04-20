@@ -46,6 +46,8 @@ f64 ToF64(String input, f64 defaultValue = -1.0);
 template <typename T>
 String ToString(T input);
 String ToString(bool bInput);
+template <typename T>
+Vec<String> ToString(const Vec<T>& vec, String prefix = "", String suffix = "");
 
 template <typename T>
 struct Pair
@@ -155,5 +157,16 @@ template <typename T>
 String ToString(T input)
 {
 	return std::to_string(input);
+}
+
+template <typename T>
+Vec<String> ToString(const Vec<T>& vec, String prefix, String suffix)
+{
+	Vec<String> ret;
+	for (const auto& t : vec)
+	{
+		ret.emplace_back(prefix + ToString(t) + suffix);
+	}
+	return ret;
 }
 } // namespace Strings

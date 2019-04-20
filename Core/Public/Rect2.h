@@ -11,6 +11,7 @@ public:
 	Vector2 topRight;
 
 public:
+	static const Rect2 Zero;
 	// Constructs Rect via Centre and Size (w x h)
 	static Rect2 CentreSize(Vector2 size, Vector2 centre = Vector2::Zero);
 	// Constructs Rect via Bottom-Left and Top-Right points

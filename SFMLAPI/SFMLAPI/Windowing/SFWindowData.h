@@ -1,14 +1,15 @@
 #pragma once
+#include <optional>
 #include "CoreTypes.h"
-#include "SFML/Config.hpp"
-
-namespace sf
-{
-typedef unsigned char Uint8;
-}
 
 namespace LittleEngine
 {
+enum class SFWindowStyle
+{
+	Default,
+	Bordlerless
+};
+
 struct SFWindowSize
 {
 	u32 width = 0;
@@ -25,9 +26,24 @@ struct SFWindowData
 	SFWindowSize windowSize;
 	Vector2 viewSize;
 	String title;
-	sf::Uint8 sfStyle;
+	SFWindowStyle style = SFWindowStyle::Default;
 
 	SFWindowData();
-	SFWindowData(SFWindowSize size, Vector2 viewSize, String title);
+	SFWindowData(SFWindowSize size, Vector2 viewSize, String title, SFWindowStyle style);
+	SFWindowData(SFWindowData&&) = default;
+	SFWindowData& operator=(SFWindowData&&) = default;
+};
+
+struct SFWindowRecreateData
+{
+	std::optional<SFWindowSize> oWindowSize;
+	std::optional<SFWindowStyle> oSstyle;
+	std::optional<String> oTitle;
+
+	SFWindowRecreateData(SFWindowSize size);
+	SFWindowRecreateData(SFWindowStyle style);
+	SFWindowRecreateData(String title);
+	SFWindowRecreateData(SFWindowRecreateData&&) = default;
+	SFWindowRecreateData& operator=(SFWindowRecreateData&&) = default;
 };
 } // namespace LittleEngine

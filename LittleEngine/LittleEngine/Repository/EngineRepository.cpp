@@ -6,6 +6,7 @@
 #include "LoadHelpers.h"
 #include "ManifestLoader.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/Jobs/JobManager.h"
 
 namespace LittleEngine
 {
@@ -76,6 +77,20 @@ ManifestLoader* EngineRepository::LoadAsync(String archivePath,
 	ManifestLoader* pLoader = uAsyncLoader.get();
 	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
 	return pLoader;
+}
+
+bool EngineRepository::Unload(String id)
+{
+	bool bPresent = m_loaded.find(id) != m_loaded.end();
+	if (bPresent)
+	{
+		Services::Jobs()->Enqueue([&, id]() { 
+			Lock lock(m_mutex);
+			m_loaded.erase(id);
+		}, "", true);
+	}
+	return bPresent;
+	//return m_loaded.erase(id);
 }
 
 void EngineRepository::UnloadAll(bool bUnloadDefaultFont)

@@ -7,7 +7,7 @@ namespace LittleEngine
 {
 class UIDialogue : public UIContext
 {
-private:
+protected:
 	struct UIDialogueData
 	{
 		Vector2 size = {600, 300};
@@ -15,8 +15,10 @@ private:
 		Colour contentBG = Colour::White;
 	};
 
-private:
+protected:
 	UIDialogueData m_data;
+
+private:
 	UIElement* m_pContent = nullptr;
 	UIElement* m_pHeader = nullptr;
 	UIElement* m_pFooter = nullptr;
@@ -24,21 +26,13 @@ private:
 	UIButton* m_pOtherButton = nullptr;
 
 public:
-	UIDialogue();
-	UIDialogue(String name);
-	~UIDialogue() override;
-
 	UIDialogue* SetContent(UIText text, const Colour* pBackground = nullptr, const Vector2* pSize = nullptr);
 	UIDialogue* SetHeader(UIText text, const Colour* pBackground = nullptr);
 
-	UIButton::OnClick::Token AddMainButton(UIText text,
-										   UIButton::OnClick::Callback onMainButton,
-										   bool bDismissOnBack);
-	UIButton::OnClick::Token AddOtherButton(UIText text,
-											UIButton::OnClick::Callback onOtherButton,
-											bool bSelect = true);
+	UIButton::OnClick::Token AddMainButton(UIText text, UIButton::OnClick::Callback onMainButton, bool bDismissOnBack);
+	UIButton::OnClick::Token AddOtherButton(UIText text, UIButton::OnClick::Callback onOtherButton, bool bSelect = true);
 
 protected:
-	void OnInitContext() override;
+	void OnCreated() override;
 };
 } // namespace LittleEngine

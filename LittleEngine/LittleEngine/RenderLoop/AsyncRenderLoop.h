@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreTypes.h"
 #include "SFMLAPI/Rendering/SFRenderer.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
 
 namespace LittleEngine
 {
@@ -8,15 +9,23 @@ namespace LittleEngine
 // \warning: Ensure GLWindow remains alive until destruction is complete!
 class AsyncRenderLoop final : public SFRenderer
 {
+public:
+	std::atomic<bool> m_bPauseRendering = false; // Used to reduce inexplicable lock contention on main thread
 private:
 	SPtr<class JobHandle> m_pRenderJobHandle;
-	class GFXBuffer* m_pBuffer;
+	Time m_tickRate;
+	class IRenderBuffer* m_pBuffer;
+	bool m_bRunThread = false;
 
 public:
-	AsyncRenderLoop(SFWindow& sfWindow, GFXBuffer& gfxBuffer, Time tickRate, bool bStartThread);
+	AsyncRenderLoop(SFWindow& sfWindow, Time tickRate, bool bStartThread);
 	~AsyncRenderLoop() override;
 
+	void RecreateWindow(SFWindowRecreateData data);
+
 private:
-	void Run();
+	void Start();
+	void Stop();
+	void Async_Run();
 };
 } // namespace LittleEngine

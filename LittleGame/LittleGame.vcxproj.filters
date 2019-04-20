@@ -4,6 +4,9 @@
     <Filter Include="Worlds">
       <UniqueIdentifier>{b3ad8a2e-bd84-4816-a559-f52e029777b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{939ce821-94a6-4a1a-ba0b-f6c2ed7e0d22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -13,6 +16,9 @@
     <ClCompile Include="Worlds\TestWorld.cpp">
       <Filter>Worlds</Filter>
     </ClCompile>
+    <ClCompile Include="UI\OptionsUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Worlds\BootWorld.h">
@@ -20,6 +26,9 @@
     </ClInclude>
     <ClInclude Include="Worlds\TestWorld.h">
       <Filter>Worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\OptionsUI.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

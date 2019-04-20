@@ -1,7 +1,12 @@
 #include "stdafx.h"
-#include "TestWorld.h"
-#include "GameFramework/GameFramework.h"
 #include "ArchiveReader.h"
+#include "LittleEngine/Debug/Console/Tweakable.h"
+#include "GameFramework/GameFramework.h"
+#include "TestWorld.h"
+#include "UI/OptionsUI.h"
+
+// TODO: Remove
+#include "LittleEngine/RenderLoop/RenderFactory.h"
 
 namespace LittleEngine
 {
@@ -15,8 +20,6 @@ Entity *pEntity0 = nullptr, *pEntity1 = nullptr;
 Entity *pEntity2 = nullptr, *pEntity3 = nullptr;
 Entity* pEntity4 = nullptr;
 
-UPtr<TextureAsset> uArchivedTexture;
-
 void OnEnter()
 {
 	if (!pEntity2 && !pEntity3)
@@ -25,7 +28,7 @@ void OnEnter()
 		if (pEntity2)
 		{
 			auto rc0 = pEntity2->AddComponent<RenderComponent>();
-			rc0->m_pSFPrimitive->SetSize({100, 100}, SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow);
+			rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({100, 100}, SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow);
 			auto t0 = pEntity2->AddComponent<CollisionComponent>();
 			t0->AddCircle(100);
 		}
@@ -34,7 +37,7 @@ void OnEnter()
 		if (pEntity3)
 		{
 			auto rc1 = pEntity3->AddComponent<RenderComponent>();
-			rc1->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)->SetPrimaryColour(Colour::Blue);
+			rc1->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)->SetPrimaryColour(Colour::Blue);
 			auto t1 = pEntity3->AddComponent<CollisionComponent>();
 			t1->AddAABB(AABBData({600, 100}));
 		}
@@ -49,16 +52,11 @@ void OnEnter()
 
 	if (!pEntity4)
 	{
-		if (!uArchivedTexture)
-		{
-			Core::ArchiveReader reader;
-			reader.Load("GameAssets.cooked");
-			uArchivedTexture = MakeUnique<TextureAsset>("ARCHIVE_TEST_Ship_old.png",
-														reader.Decompress("Textures/Ship_old.png"));
-		}
-		pEntity4 = pTestWorld->Game()->NewEntity<Entity>("Archive texture");
+		pEntity4 = pTestWorld->Game()->NewEntity<Entity>("SpriteSheetTest");
+		pEntity4->m_transform.localPosition = {-200, -200};
 		auto rc4 = pEntity4->AddComponent<RenderComponent>();
-		rc4->m_pSFPrimitive->SetTexture(*uArchivedTexture);
+		rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)), LAYER_FX);
+		//rc4->SetSpriteSheet(SpriteSheet(std::move(data), pTexture, Time::Seconds(1.0f)));
 	}
 	else
 	{
@@ -67,7 +65,7 @@ void OnEnter()
 	}
 }
 
-bool bLoopingPS = false;
+//bool bLoopingPS = false;
 ParticleSystem* pParticleSystem0 = nullptr;
 void OnSelect()
 {
@@ -83,12 +81,12 @@ void OnSelect()
 	else
 	{
 		// pParticleSystem0->SetEnabled(true);
-		Fixed x = Maths::Random::Range(-Fixed::One, Fixed::One);
-		Fixed y = Maths::Random::Range(-Fixed::One, Fixed::One);
-		Vector2 worldPos = GFX::Project({x, y}, false);
-		pParticleSystem0->m_transform.localPosition = worldPos;
+		//Fixed x = Maths::Random::Range(-Fixed::One, Fixed::One);
+		//Fixed y = Maths::Random::Range(-Fixed::One, Fixed::One);
+		//Vector2 worldPos = GFX::Project({x, y}, false);
+		//pParticleSystem0->m_transform.localPosition = worldPos;
 		pParticleSystem0->Start();
-		pTestWorld->Game()->WorldCamera()->Shake();
+		//pTestWorld->Game()->WorldCamera()->Shake();
 	}
 }
 
@@ -127,15 +125,8 @@ void OnY()
 	}
 }
 
-bool OnInput(const EngineInput::Frame& frame)
+bool Test_OnInput(const EngineInput::Frame& frame)
 {
-	if (frame.IsReleased(GameInputType::Back) && pTestWorld)
-	{
-		if (pTestWorld->LoadWorld(0))
-		{
-		}
-	}
-
 	if (frame.IsReleased(GameInputType::Enter))
 	{
 		OnEnter();
@@ -191,18 +182,24 @@ void SpawnColliderMinefield()
 	}
 }
 
+//TweakBool(test0, nullptr);
+//TweakBool(testLongAssNameTweakable0, nullptr);
+//TweakBool(test1, nullptr);
+//TweakS32(test2, nullptr);
+//TweakF32(testLongAssNameTweakable1, nullptr);
+//TweakString(test3, nullptr);
 void StartTests()
 {
 	pEntity0 = pTestWorld->Game()->NewEntity<Entity>("Entity0", {300, 200});
 	auto rc0 = pEntity0->AddComponent<RenderComponent>();
-	rc0->m_pSFPrimitive->SetSize({300, 100}, SFShapeType::Rectangle)
-		->SetPrimaryColour(Colour::Magenta)
+	rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({300, 100}, SFShapeType::Rectangle)
+		->SetPrimaryColour(Colour::Cyan)
 		->SetEnabled(true);
 
 	pEntity1 = pTestWorld->Game()->NewEntity<Entity>("Entity1", GFX::Project({0, Fixed(0.9f)}, false));
 	auto rc1 = pEntity1->AddComponent<RenderComponent>();
 	FontAsset* font = pTestWorld->Game()->Repository()->GetDefaultFont();
-	rc1->m_pSFPrimitive->SetText("Hello World!")
+	rc1->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetText("Hello World!")
 		->SetFont(*font)
 		->SetTextSize(50)
 		->SetPrimaryColour(Colour(200, 150, 50))
@@ -214,12 +211,13 @@ void StartTests()
 		*pTexture, {PlayerCollider(AABBData({120, 60}), {0, -15}), PlayerCollider(AABBData({60, 80}))});
 	pPlayer->InitPlayer(std::move(data));
 
-	String path = bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
+	//String path = bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
+	String path = !OS::IsSHIPPING() && OS::IsDebuggerAttached() ? "VFX/Stars0/Stars0.psdata" : "VFX/Stars0/Stars0.psdata.min"; 
 	auto* pText = pTestWorld->Repository()->Load<TextAsset>(path);
 	GData psGData(pText->GetText());
 	pParticleSystem0 = pTestWorld->Game()->NewEntity<ParticleSystem>("Fire0");
 	pParticleSystem0->InitParticleSystem(ParticleSystemData(psGData));
-	pParticleSystem0->m_transform.localScale = {Fixed(2.0f), Fixed(2.0f)};
+	//pParticleSystem0->m_transform.localScale = {Fixed(2.0f), Fixed(2.0f)};
 	pParticleSystem0->Stop();
 
 	if (bSpawnColliderMinefield)
@@ -233,7 +231,6 @@ bool bModal = true;
 bool bSpawnedDrawer = false;
 Vec<EngineInput::Token> debugTokens;
 
-bool bToSpawnDialogue = false;
 UIDialogue* pDialogue = nullptr;
 
 // Fixed progress;
@@ -243,20 +240,19 @@ Time elapsed = Time::Zero;
 
 void SpawnDialogue()
 {
-	pDialogue = pTestWorld->Game()->UI()->PushContext<UIDialogue>();
+	pDialogue = pTestWorld->Game()->UI()->PushContext<UIDialogue>("TestUIDialogue");
 	pDialogue->SetHeader(UIText("Title", 25, Colour::Black));
 	pDialogue->SetContent(UIText("Content goes here", 15, Colour::Black), &Colour::White);
 	debugTokens.push_back(pDialogue->AddMainButton("OK", []() { LOG_D("OK pressed!"); }, false));
 	debugTokens.push_back(pDialogue->AddOtherButton("Cancel", []() { pDialogue->Destruct(); }, false));
 	pDialogue->SetActive(true);
-	bToSpawnDialogue = false;
 }
 
 void SpawnToggle()
 {
 	Fixed x = 300;
 	Fixed y = 200;
-	auto* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>();
+	auto* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>("TestToggleUIC");
 	pParent->GetRootElement()->m_transform.size = {x, y};
 	UIWidgetStyle toggleStyle = UIWidgetStyle::GetDefault0();
 	toggleStyle.widgetSize = {x, y * Fixed::OneHalf};
@@ -277,20 +273,13 @@ void SpawnToggle()
 	pParent->SetActive(true);
 }
 
-bool bSpawnedSelection = false;
-UIContext* pSelectionContext = nullptr;
-UISelection* pSelection = nullptr;
-#if DEBUG_LOGGING
-UISelection::OnChanged::Token selectionToken;
-#endif
-
 void TestTick(Time dt)
 {
 	elapsed += dt;
 	if (elapsed.AsSeconds() >= 1 && !bSpawnedDrawer)
 	{
 		bSpawnedDrawer = true;
-		pButtonDrawer = pTestWorld->Game()->UI()->PushContext<UIButtonDrawer>();
+		pButtonDrawer = pTestWorld->Game()->UI()->PushContext<UIButtonDrawer>("TestUIButtonDrawer");
 		pButtonDrawer->m_bAutoDestroyOnCancel = !bModal;
 		UIStyle panelStyle;
 		panelStyle.size = {500, 600};
@@ -299,8 +288,8 @@ void TestTick(Time dt)
 		UIButton* pButton1 = nullptr;
 		debugTokens.push_back(
 			pButtonDrawer->AddButton("Button 0", []() { LOG_D("Button 0 pressed!"); }));
-		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 1", []() { LOG_D("Button 1 pressed!"); }, &pButton1));
+		debugTokens.push_back(pButtonDrawer->AddButton(
+			"Options", []() { Services::Game()->UI()->PushContext<OptionsUI>("Options"); }, &pButton1));
 		pButton1->SetInteractable(false);
 		debugTokens.push_back(pButtonDrawer->AddButton("Toggle B1", [pButton1]() {
 			pButton1->SetInteractable(!pButton1->IsInteractable());
@@ -309,7 +298,7 @@ void TestTick(Time dt)
 		/*debugTokens.push_back(
 			pButtonDrawer->AddButton("Button 3", []() { LOG_D("Button 3 pressed!"); }));*/
 		debugTokens.push_back(pButtonDrawer->AddButton("Toggle", &SpawnToggle));
-		debugTokens.push_back(pButtonDrawer->AddButton("Dialogue", []() { bToSpawnDialogue = true; }));
+		debugTokens.push_back(pButtonDrawer->AddButton("Dialogue", []() { SpawnDialogue(); }));
 		if (bModal)
 		{
 			debugTokens.push_back(
@@ -318,100 +307,17 @@ void TestTick(Time dt)
 		pButtonDrawer->SetActive(true);
 	}
 
-	if (elapsed.AsSeconds() >= 3 && !bSpawnedSelection)
-	{
-		bSpawnedSelection = true;
-		pSelectionContext = pTestWorld->Game()->UI()->PushContext<UIContext>();
-		pSelectionContext->m_bAutoDestroyOnCancel = true;
-
-		pSelection = pSelectionContext->AddWidget<UISelection>("Selection");
-		pSelection->AddOptions({"One", "Two", "Three", "Four"})->SetValue("Two");
-#if DEBUG_LOGGING
-		selectionToken = pSelection->RegisterOnChanged([](std::pair<size_t, String> selected) {
-			LOG_D("Selected: %d, %s", selected.first, selected.second.c_str());
-		});
-#endif
-
-		pSelectionContext->SetActive(true);
-	}
-
 	static bool bSpawnedTextInput = false;
 	static UIContext* pTextContext = nullptr;
 	static UITextInput* pTextInput = nullptr;
-	if (elapsed.AsSeconds() >= 5 && !bSpawnedTextInput)
+	if (elapsed.AsSeconds() >= 2 && !bSpawnedTextInput)
 	{
-		pTextContext = pTestWorld->Game()->UI()->PushContext<UIContext>();
+		pTextContext = pTestWorld->Game()->UI()->PushContext<UIContext>("TestTextInputUIC");
 		pTextInput = pTextContext->AddWidget<UITextInput>("TextInput");
 		pTextContext->m_bAutoDestroyOnCancel = true;
 		pTextContext->SetActive(true);
 		bSpawnedTextInput = true;
 	}
-
-	if (bToSpawnDialogue)
-	{
-		SpawnDialogue();
-	}
-
-	static bool bLoadedAsyncAsset = false;
-	static std::future<TextureAsset*> future0;
-	static std::future<TextAsset*> future1;
-	static u8 frame = 0;
-
-	static bool bLoaded0 = false;
-	static bool bLoaded1 = false;
-	static bool bLoadAsyncComplete = false;
-	if (bLoadedAsyncAsset && !bLoadAsyncComplete)
-	{
-		++frame;
-		if (future0._Is_ready())
-		{
-#if ENABLED(DEBUG_LOGGING)
-			TextureAsset* pTexture = future0.get();
-#endif
-			LOG_D("Texture loaded on frame %d", frame);
-			bLoaded0 = true;
-		}
-
-		if (future1._Is_ready())
-		{
-#if ENABLED(DEBUG_LOGGING)
-			TextAsset* pText = future1.get();
-#endif
-			LOG_D("Text loaded on frame %d", frame);
-			bLoaded1 = true;
-		}
-
-		bLoadAsyncComplete = bLoaded0 && bLoaded1;
-		if (!bLoadAsyncComplete)
-		{
-			LOG_D("Waiting for Async Load. Frame %d", frame);
-		}
-	}
-
-	if (elapsed.AsSeconds() >= 3 && !bLoadedAsyncAsset)
-	{
-		bLoadedAsyncAsset = true;
-		future0 = pTestWorld->Repository()->LoadAsync<TextureAsset>("Misc/06.png");
-		future1 = pTestWorld->Repository()->LoadAsync<TextAsset>("Misc/BinaryText.txt");
-		LOG_D("Loading assets async. Frame %d", frame);
-	}
-
-	/*if (elapsed.AsSeconds() >= 2 && progress < Fixed(1.5f))
-	{
-		progress += Fixed(dt.AsSeconds());
-		if (!uProgressBar)
-		{
-			uProgressBG = MakeUnique<UIElement>("Test ProgressBar BG");
-			uProgressBG->m_transform.size = {500, 50};
-			uProgressBG->SetPanel(Colour(255, 200, 100, 100));
-			uProgressBar = MakeUnique<UIProgressBar>("Test ProgressBar");
-			uProgressBar->InitProgressBar({500, 10}, Colour::Magenta);
-			uProgressBar->m_transform.SetParent(uProgressBG->m_transform);
-		}
-		uProgressBar->SetProgress(progress);
-		uProgressBar->Tick(dt);
-		uProgressBG->Tick(dt);
-	}*/
 }
 
 void Cleanup()
@@ -435,15 +341,6 @@ void Cleanup()
 		uProgressBG = nullptr;
 	}
 	debugTokens.clear();
-
-	uArchivedTexture = nullptr;
-
-	bSpawnedSelection = false;
-	pSelectionContext = nullptr;
-	pSelection = nullptr;
-#if DEBUG_LOGGING
-	selectionToken = nullptr;
-#endif
 }
 } // namespace
 
@@ -455,7 +352,8 @@ void TestWorld::OnActivated()
 {
 	pTestWorld = this;
 	StartTests();
-	BindInput(&OnInput);
+	BindInput(std::bind(&TestWorld::OnInput, this, _1));
+	BindInput(&Test_OnInput);
 }
 
 void TestWorld::Tick(Time dt)
@@ -469,4 +367,15 @@ void TestWorld::OnDeactivating()
 {
 	Cleanup();
 }
+
+bool TestWorld::OnInput(const EngineInput::Frame& frame)
+{
+	if (frame.IsReleased(GameInputType::Back))
+	{
+		Services::Game()->UI()->PushContext<OptionsUI>("Options");
+		return true;
+	}
+	return false;
+}
+
 } // namespace LittleEngine

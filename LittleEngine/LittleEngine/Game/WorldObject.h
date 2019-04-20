@@ -12,6 +12,7 @@ private:
 	Core::TokenHandler<EngineInput::Token> m_tokenHandler;
 
 public:
+	WorldObject(bool bSilent = false);
 	WorldObject(String name, String baseClass = "", bool bSilent = false);
 	~WorldObject() override;
 

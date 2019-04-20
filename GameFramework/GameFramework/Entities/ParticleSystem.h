@@ -48,6 +48,7 @@ struct EmitterData
 	s32 layerDelta = 0;
 	Transform* pParent;
 	class SoundAsset* pSound;
+	bool bStatic = false;
 
 	EmitterData(class TextureAsset& texture, u32 numParticles, SoundAsset* pSound = nullptr);
 	EmitterData(EmitterData&&) = default;
@@ -78,9 +79,10 @@ protected:
 	bool m_bIsPlaying = false;
 
 public:
-	ParticleSystem(String name); // Cannot default/inline impl, due to forward declared unique_ptr
+	ParticleSystem();
 	~ParticleSystem() override;
 
+	void OnCreated() override;
 	void InitParticleSystem(ParticleSystemData data);
 	void Start();
 	void Stop();

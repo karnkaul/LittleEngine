@@ -1,5 +1,5 @@
 #pragma once
-#include "LittleEngine/LittleEngine.h"
+#include "LittleEngine/Game/World/World.h"
 
 namespace LittleEngine
 {
@@ -12,5 +12,7 @@ private:
 	void OnActivated() override;
 	void Tick(Time dt) override;
 	void OnDeactivating() override;
+
+	bool OnInput(const EngineInput::Frame& frame);
 };
 } // namespace LittleEngine

@@ -1,5 +1,6 @@
 #pragma once
 #include <utility>
+#include "SimpleTime.h"
 #include "StdTypes.h"
 #include "UByte.h"
 #include "Fixed.h"
@@ -15,3 +16,4 @@ using Vector2 = Core::Vector2;
 using Rect2 = Core::Rect2;
 using FileRW = Core::FileRW;
 using Transform = Core::Transform;
+using Time = Core::Time;

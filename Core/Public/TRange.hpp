@@ -45,13 +45,12 @@ template <typename T>
 void TRange<T>::Reset(T current)
 {
 	min = current;
-	max = current;
+	max = std::move(current);
 }
 
 template <typename T>
 void TRange<T>::Update(T current)
 {
-	min = max;
 	max = std::move(current);
 }
 } // namespace Core

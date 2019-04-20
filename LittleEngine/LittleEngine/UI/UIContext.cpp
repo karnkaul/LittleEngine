@@ -10,15 +10,7 @@
 
 namespace LittleEngine
 {
-UIContext::UIContext() : UIObject("Untitled")
-{
-	SetName("", "UIContext");
-}
-
-UIContext::UIContext(String name) : UIObject(std::move(name))
-{
-	SetName("", "UIContext");
-}
+UIContext::UIContext() = default;
 
 UIContext::~UIContext()
 {
@@ -27,12 +19,13 @@ UIContext::~UIContext()
 	m_uiElements.clear();
 }
 
-void UIContext::InitContext(LayerID rootLayer)
+void UIContext::OnCreate(String name, LayerID rootLayer)
 {
+	SetName(std::move(name), "UIContext");
 	m_uUIWidgets = MakeUnique<UIWidgetMatrix>();
-	m_pRootElement = AddElement<UIElement>(String(GetNameStr()) + " Root");
-	m_pRootElement->m_layer = rootLayer;
-	OnInitContext();
+	s32 layerDelta = rootLayer - LAYER_UI;
+	m_pRootElement = AddElement<UIElement>(String(GetNameStr()) + "_Root", nullptr, layerDelta);
+	OnCreated();
 	SetActive(true);
 }
 
@@ -123,7 +116,7 @@ void UIContext::Tick(Time dt)
 	m_uUIWidgets->ForEach([dt](UIContext::UUIWidget& uUIWidget) { uUIWidget->Tick(dt); });
 }
 
-void UIContext::OnInitContext()
+void UIContext::OnCreated()
 {
 }
 

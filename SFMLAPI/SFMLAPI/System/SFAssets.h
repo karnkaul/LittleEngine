@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreTypes.h"
-#include "SimpleTime.h"
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
 #include "SFAssetType.h"

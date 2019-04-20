@@ -14,7 +14,7 @@ public:
 	// Pass serialised data to marhshall and load fields
 	GData(String serialised);
 	GData(const GData& rhs) = default;
-	GData(GData&&) = default;
+ 	GData(GData&&) = default;
 	GData& operator=(const GData&) = default;
 	GData& operator=(GData&&) = default;
 	~GData();
@@ -40,5 +40,6 @@ public:
 	bool SetString(const String& key, String value);
 
 	u32 NumFields() const;
+	bool Contains(const String& id) const;
 };
 } // namespace Core

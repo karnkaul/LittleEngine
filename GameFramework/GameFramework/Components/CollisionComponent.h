@@ -3,7 +3,7 @@
 
 namespace LittleEngine
 {
-class CollisionComponent : public Component
+class CollisionComponent : public AComponent
 {
 public:
 	static constexpr TimingType TIMING = TimingType::LAST;
@@ -27,8 +27,9 @@ protected:
 	s32 m_signature = 0;
 
 public:
-	CollisionComponent();
 	~CollisionComponent() override;
+
+	void OnCreated() override;
 
 	void AddCircle(Fixed radius, Vector2 offset = Vector2::Zero);
 	void AddAABB(const struct AABBData& aabbData, Vector2 offset = Vector2::Zero);

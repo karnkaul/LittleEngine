@@ -74,7 +74,7 @@ void ControllerComponent::Tick(Time dt)
 
 void ControllerComponent::SetEnabled(bool bEnabled)
 {
-	Component::SetEnabled(bEnabled);
+	AComponent::SetEnabled(bEnabled);
 	Reset();
 }
 

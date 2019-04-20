@@ -1,17 +1,16 @@
 #pragma once
-#include "SFMLAPI/Rendering/GFXBuffer.h"
 #include "SFMLAPI/Windowing/SFEventLoop.h"
 
 namespace LittleEngine
 {
 // \brief: Core Game Loop that also manages an Asynchronous Render Loop
-class EngineLoop final : public SFEventLoop
+class EngineLoop final : public ASFEventLoop
 {
 private:
-	GFXBuffer m_gfxBuffer;
+	Vector2 m_cullBounds;
 	UPtr<class EngineConfig> m_uConfig;
 	UPtr<class JobManager> m_uJobManager;
-	UPtr<class RenderHeap> m_uRenderHeap;
+	UPtr<class RenderFactory> m_uRenderFactory;
 	UPtr<class AsyncRenderLoop> m_uAsyncRenderLoop;
 	UPtr<class EngineService> m_uEngineService;
 	bool m_bRenderThread = true;
@@ -24,22 +23,16 @@ public:
 	~EngineLoop() override;
 
 	void Start();
-	void StopTicking();
-
-protected:
+	
+private:
 	void PreRun() override;
+	void PreTick() override;
 	void Tick(Time dt) override;
-	void PostTick() override;
+	void FinishFrame() override;
 	void PostRun() override;
 	void OnPause(bool bPause) override;
 
-	void UpdateInput();
-	void Integrate(Time dt);
-	void RenderCleanup();
-
 private:
-	void ReconcileRenderStates();
-	void SwapGFXBuffer();
 	void Init();
 	void Uninit();
 

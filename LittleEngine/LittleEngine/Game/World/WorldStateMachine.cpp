@@ -4,7 +4,6 @@
 #include "LoadingUI.h"
 #include "WorldStateMachine.h"
 #include "LittleEngine/Services/Services.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
 #include "LittleEngine/Repository/EngineRepository.h"
 #include "LittleEngine/Repository/ManifestLoader.h"
 #include "LittleEngine/Engine/EngineService.h"
@@ -120,16 +119,6 @@ void WorldStateMachine::Tick(Time dt)
 	GameTick(dt);
 }
 
-void WorldStateMachine::PostBufferSwap()
-{
-	if (m_bToActivateState)
-	{
-		m_pActiveState->Activate();
-		m_bToActivateState = false;
-		LOG_I("[WorldStateMachine] ...Loaded %s", m_pNextState->LogNameStr());
-	}
-}
-
 void WorldStateMachine::LoadingTick(Time dt)
 {
 	if (m_uLoadingUI)
@@ -161,6 +150,13 @@ void WorldStateMachine::LoadingTick(Time dt)
 
 void WorldStateMachine::GameTick(Time dt)
 {
+	if (m_bToActivateState)
+	{
+		m_pActiveState->Activate();
+		m_bToActivateState = false;
+		LOG_I("[WorldStateMachine] ...Loaded %s", m_pNextState->LogNameStr());
+	}
+
 	if (m_pActiveState)
 	{
 		m_pActiveState->Tick(dt);
@@ -175,7 +171,17 @@ void WorldStateMachine::GameTick(Time dt)
 		}
 		m_pActiveState = m_pNextState;
 		m_bToActivateState = true;
-		Services::RHeap()->Reconcile();
 	}
 }
+
+Vec<WorldID> WorldStateMachine::GetAllStateIDs() const
+{
+	Vec<WorldID> ret;
+	for (const auto& uState : m_uCreatedStates)
+	{
+		ret.push_back(uState->m_id);
+	}
+	return ret;
+}
+
 } // namespace LittleEngine

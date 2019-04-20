@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Logger.h"
 #include "Collider.h"
+#include "LittleEngine/Debug/Console/Tweakable.h"
 
 namespace LittleEngine
 {
@@ -46,6 +47,7 @@ CircleLocus Intersect(const AABBData& bounds, const CircleData& circle)
 #if DEBUGGING
 u32 Collider::s_debugShapeWidth = 1;
 bool Collider::s_bShowDebugShape = false;
+TweakBool(colliders, &Collider::s_bShowDebugShape);
 #endif
 
 Collider::~Collider() = default;

@@ -5,7 +5,7 @@
 #include "LittleEngine/Game/GameManager.h"
 #include "LittleEngine/Physics/Collider.h"
 #include "LittleEngine/Physics/CollisionManager.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/RenderLoop/RenderFactory.h"
 #include "LittleEngine/Services/Services.h"
 #include "CollisionComponent.h"
 
@@ -23,21 +23,25 @@ CollisionComponent::ColliderData::ColliderData(Collider* pCollider, SFPrimitive*
 }
 #endif
 
-CollisionComponent::CollisionComponent()
-{
-	SetName("Collision");
-	m_signature = Maths::Random::Range(1, 10000);
-}
-
 CollisionComponent::~CollisionComponent()
 {
 	for (auto& data : m_pColliders)
 	{
 #if DEBUGGING
-		Services::RHeap()->Destroy(data.pSFPrimitive);
+		if (data.pSFPrimitive)
+		{
+			data.pSFPrimitive->Destroy();
+		}
 #endif
 		data.pCollider->m_bDestroyed = true;
 	}
+}
+
+
+void CollisionComponent::OnCreated()
+{
+	SetName("Collision");
+	m_signature = Maths::Random::Range(1, 10000);
 }
 
 void CollisionComponent::AddCircle(Fixed radius, Vector2 offset)
@@ -47,12 +51,11 @@ void CollisionComponent::AddCircle(Fixed radius, Vector2 offset)
 	pCollider->m_name += ("_" + Strings::ToString(m_pColliders.size()));
 	pCollider->SetCircle(radius);
 #if DEBUGGING
-	SFPrimitive* pPrimitive = Services::RHeap()->New();
+	SFPrimitive* pPrimitive = Services::RFactory()->New(static_cast<LayerID>(LAYER_UI - 10));
 	pPrimitive->SetSize({radius, radius}, SFShapeType::Circle)
 		->SetPrimaryColour(Colour::Transparent)
 		->SetSecondaryColour(Colour::Green)
 		->SetOutline(Collider::s_debugShapeWidth)
-		->SetLayer(LAYER_TOP)
 		->SetEnabled(Collider::s_bShowDebugShape);
 	m_pColliders.emplace_back(pCollider, pPrimitive, offset);
 #else
@@ -67,12 +70,11 @@ void CollisionComponent::AddAABB(const AABBData& aabbData, Vector2 offset)
 	pCollider->m_name += ("_" + Strings::ToString(m_pColliders.size()));
 	pCollider->SetAABB(aabbData);
 #if DEBUGGING
-	SFPrimitive* pPrimitive = Services::RHeap()->New();
+	SFPrimitive* pPrimitive = Services::RFactory()->New(static_cast<LayerID>(LAYER_UI - 10));
 	pPrimitive->SetSize(2 * aabbData.upperBound, SFShapeType::Rectangle)
 		->SetPrimaryColour(Colour::Transparent)
 		->SetSecondaryColour(Colour::Green)
 		->SetOutline(Collider::s_debugShapeWidth)
-		->SetLayer(LAYER_TOP)
 		->SetEnabled(Collider::s_bShowDebugShape);
 	m_pColliders.emplace_back(pCollider, pPrimitive, offset);
 #else
@@ -100,7 +102,7 @@ void CollisionComponent::Tick(Time /*dt*/)
 
 void CollisionComponent::SetEnabled(bool bEnabled)
 {
-	Component::SetEnabled(bEnabled);
+	AComponent::SetEnabled(bEnabled);
 
 	for (auto& data : m_pColliders)
 	{

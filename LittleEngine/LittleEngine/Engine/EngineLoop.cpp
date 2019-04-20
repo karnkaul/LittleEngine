@@ -7,12 +7,13 @@
 #include "EngineService.h"
 #include "OS.h"
 #include "LittleEngine/Audio/EngineAudio.h"
+#include "LittleEngine/Debug/DebugProfiler.h"
 #include "LittleEngine/Input/EngineInput.h"
 #include "LittleEngine/Game/GameSettings.h"
 #include "LittleEngine/GFX/GFX.h"
 #include "LittleEngine/Jobs/JobManager.h"
 #include "LittleEngine/RenderLoop/AsyncRenderLoop.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/RenderLoop/RenderFactory.h"
 #include "LittleEngine/Services/Services.h"
 #if DEBUGGING
 #include "LittleEngine/Physics/Collider.h"
@@ -20,49 +21,48 @@
 
 namespace LittleEngine
 {
-EngineLoop::~EngineLoop() = default;
+Time g_maxFrameTime;
 
-void EngineLoop::StopTicking()
-{
-	m_bStopTicking = true;
-}
+EngineLoop::~EngineLoop() = default;
 
 void EngineLoop::PreRun()
 {
-	SFEventLoop::PreRun();
-
 	if (!m_bInit)
 	{
 		Init();
 	}
-	m_uAsyncRenderLoop = MakeUnique<AsyncRenderLoop>(*m_uSFWindow, m_gfxBuffer, m_tickRate, m_bRenderThread);
+	m_uRenderFactory = MakeUnique<RenderFactory>();
+	m_uAsyncRenderLoop = MakeUnique<AsyncRenderLoop>(*m_uSFWindow, m_tickRate, m_bRenderThread);
 	m_uEngineService->m_pRenderLoop = m_uAsyncRenderLoop.get();
-	m_uRenderHeap = MakeUnique<RenderHeap>(m_gfxBuffer);
 	GFX::Init(*m_uSFWindow);
 	m_uEngineService->PreRun();
 }
 
-void EngineLoop::Tick(Time dt)
+void EngineLoop::PreTick()
 {
-	SFEventLoop::Tick(dt);
-
-	UpdateInput();
-	ReconcileRenderStates();
-	Integrate(dt);
+	m_uRenderFactory->Reconcile();
+	m_uEngineService->UpdateInput(GetInputDataFrame());
 }
 
-void EngineLoop::PostTick()
+void EngineLoop::Tick(Time dt)
 {
-	SFEventLoop::PostTick();
-	
-	m_uEngineService->PostTick();
-	SwapGFXBuffer();
-	m_uEngineService->PostBufferSwap();
+	PROFILE_START("Tick", Colour(127, 0, 255, 255));
+	m_uEngineService->Tick(dt);
+	PROFILE_STOP("Tick");
+}
 
+void EngineLoop::FinishFrame()
+{
+	m_uEngineService->PreFinishFrame();
+	m_uAsyncRenderLoop->m_bPauseRendering.store(true, std::memory_order_release);
+	m_uRenderFactory->Lock_Swap();
+	m_uAsyncRenderLoop->m_bPauseRendering.store(false, std::memory_order_release);
+	
 	if (!m_bRenderThread)
 	{
-		m_uAsyncRenderLoop->Render(m_gfxBuffer);
-		m_uAsyncRenderLoop->Display();
+		Time renderElapsed = Time::Now() - m_uRenderFactory->GetLastSwapTime();
+		Fixed alpha = Maths::ComputeAlpha(renderElapsed, m_tickRate);
+		m_uAsyncRenderLoop->Render(*m_uRenderFactory, alpha);
 	}
 
 	m_bStopTicking = m_uEngineService->m_bTerminate;
@@ -70,19 +70,17 @@ void EngineLoop::PostTick()
 
 void EngineLoop::PostRun()
 {
-	SFEventLoop::PostRun();
-
 	// Block this thread until Rendering thread joins and AsyncRenderLoop gets destroyed
 	m_uAsyncRenderLoop = nullptr;
 
 	Services::Clear();
 	Uninit();
-	RenderCleanup();
+	m_uRenderFactory = nullptr;
 }
 
 void EngineLoop::OnPause(bool bPause)
 {
-	SFEventLoop::OnPause(bPause);
+	ASFEventLoop::OnPause(bPause);
 
 	if (bPause)
 	{
@@ -94,7 +92,7 @@ void EngineLoop::OnPause(bool bPause)
 	}
 }
 
-UPtr<EngineLoop> LittleEngine::EngineLoop::Create()
+UPtr<EngineLoop> EngineLoop::Create()
 {
 	UPtr<EngineLoop> uEngine = MakeUnique<EngineLoop>();
 	uEngine->Start();
@@ -111,34 +109,6 @@ void EngineLoop::Start()
 	Init();
 }
 
-void EngineLoop::UpdateInput()
-{
-	m_uEngineService->UpdateInput(GetInputDataFrame());
-}
-
-void EngineLoop::Integrate(Time dt)
-{
-	m_uEngineService->Tick(dt);
-}
-
-void EngineLoop::RenderCleanup()
-{
-	GFX::Cleanup();
-	Services::RHeap()->DestroyAll();
-	m_uRenderHeap = nullptr;
-}
-
-void EngineLoop::ReconcileRenderStates()
-{
-	Services::RHeap()->Reconcile();
-}
-
-void EngineLoop::SwapGFXBuffer()
-{
-	Vector2 cullBounds(m_uSFWindowData->windowSize.width, m_uSFWindowData->windowSize.height);
-	m_gfxBuffer.Lock_Swap(Services::RHeap()->ConstructDataFrame(), cullBounds);
-}
-
 void EngineLoop::Init()
 {
 	m_uConfig = MakeUnique<EngineConfig>();
@@ -151,34 +121,35 @@ void EngineLoop::Init()
 	OS::Platform()->SetDesiredWorkerCount(m_uConfig->GetNumGameThreads());
 
 	m_uJobManager = MakeUnique<JobManager>();
-
-	if (m_uConfig->ShouldCreateRenderThread())
+	m_bRenderThread = m_uConfig->ShouldCreateRenderThread();
+	if (m_bRenderThread)
 	{
 		if (!OS::Platform()->CanCreateSystemThread())
 		{
 			LOG_W(
 				"Insufficient threads to create render thread!\n!ERROR! Async Renderer not "
 				"available!");
+			m_bRenderThread = false;
 		}
 		else
 		{
 			OS::Platform()->SetCreatingRenderThread();
-			m_bRenderThread = true;
 		}
 	}
 
 #if DEBUGGING
 	Collider::s_debugShapeWidth = m_uConfig->GetColliderBorderWidth();
 #endif
+	Vector2 viewSize = m_uConfig->GetViewSize();
 	GameSettings* gameSettings = GameSettings::Instance();
 	m_tickRate = Time::Seconds(1.0f / static_cast<f32>(m_uConfig->GetTicksPerSecond()));
 	m_maxFrameTime = Time::Milliseconds(m_uConfig->GetMaxTickTimeMS());
-	u32 windowHeight = gameSettings->GetWindowHeight();
-	u32 windowWidth = (m_uSFWindowData->viewSize.x.ToU32() * windowHeight) / m_uSFWindowData->viewSize.y.ToU32();
-	m_uSFWindowData = MakeUnique<SFWindowData>(SFWindowSize(windowWidth, windowHeight),
-											   m_uConfig->GetViewSize(), m_uConfig->GetWindowTitle());
-	m_uSFWindowData->sfStyle = gameSettings->IsBorderless() ? sf::Style::None : sf::Style::Close;
+	m_cullBounds = gameSettings->GetCullBounds(viewSize);
+	m_uSFWindow->SetData(SFWindowData(gameSettings->GetWindowSize(viewSize), viewSize,
+									  m_uConfig->GetWindowTitle(), gameSettings->GetWindowStyle()));
 	m_uEngineService = MakeUnique<EngineService>(*this);
+
+	g_maxFrameTime = m_maxFrameTime;
 	m_bInit = true;
 }
 
@@ -187,6 +158,7 @@ void EngineLoop::Uninit()
 #if !SHIPPING
 	m_uConfig->Save("_config.gd");
 #endif
+	GFX::Cleanup();
 	m_uEngineService = nullptr;
 	m_uJobManager = nullptr;
 	m_bInit = false;

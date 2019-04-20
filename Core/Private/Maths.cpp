@@ -8,6 +8,11 @@ bool IsNearlyEqual(f32 lhs, f32 rhs, f32 epsilon)
 	return Abs(lhs - rhs) < epsilon;
 }
 
+Fixed ComputeAlpha(Time dt, Time totalTime)
+{
+	return Clamp01(dt.AsMilliseconds() / totalTime.AsMilliseconds());
+}
+
 Random::Random(s32 min, s32 max) : m_detMt(1729), m_distribution(min, max)
 {
 	m_NDetMt = std::mt19937(m_randomDevice());
@@ -33,7 +38,9 @@ size_t Random::Range(size_t min, size_t max)
 
 Fixed Random::Range(Fixed min, Fixed max, u32 precision)
 {
-	s32 random = Range((precision * min).ToS32(), (precision * max).ToS32());
+	s32 sMin = static_cast<s32>(min.ToF32() * precision);
+	s32 sMax = static_cast<s32>(max.ToF32() * precision);
+	s32 random = Range(sMin, sMax);
 	return Fixed(random, precision);
 }
 

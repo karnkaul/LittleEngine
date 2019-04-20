@@ -1,5 +1,4 @@
 #pragma once
-#include "SimpleTime.h"
 #include "CoreTypes.h"
 
 namespace LittleEngine
@@ -30,6 +29,6 @@ private:
 	// On App Reload etc
 	static void Reset();
 
-	friend class SFEventLoop;
+	friend class ASFEventLoop;
 };
 } // namespace LittleEngine

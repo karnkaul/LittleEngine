@@ -33,7 +33,6 @@ private:
 
 public:
 	UITextInput();
-	UITextInput(String name);
 	~UITextInput() override;
 
 	UITextInput* SetTextColour(Colour text);
@@ -44,7 +43,7 @@ public:
 	void SetInteractable(bool bInteractable) override;
 
 protected:
-	void OnInitWidget() override;
+	void OnCreated() override;
 	void OnSelected() override;
 	void OnDeselected() override;
 	void OnInteractStart() override;

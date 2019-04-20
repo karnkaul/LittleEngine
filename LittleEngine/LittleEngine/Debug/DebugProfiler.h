@@ -5,8 +5,9 @@
 #include "SimpleTime.h"
 #include "SFMLAPI/Rendering/Colour.h"
 
-#define PROFILE_START(id, colour) LittleEngine::Debug::Profiler::Start(id, colour)
-#define PROFILE_STOP(id) LittleEngine::Debug::Profiler::Stop(id)
+#define PROFILE_START(id, colour) Debug::Profiler::StartTicked(id, colour)
+#define PROFILE_FRAME(id, colour) Debug::Profiler::StartFramed(id, colour)
+#define PROFILE_STOP(id) Debug::Profiler::Stop(id)
 
 namespace LittleEngine
 {
@@ -19,12 +20,10 @@ void Toggle(bool bEnable);
 void Cleanup();
 
 void Tick(Time dt);
-void Render();
 void Reset();
 
-// Returns ID of profiling instance; call EndProfile with it
-void Start(String id, Colour colour);
-// Pass ID returned by ProfileStart; returns false if invalid ID
+void StartTicked(String id, Colour colour);
+void StartFramed(String id, Colour colour);
 void Stop(String id);
 } // namespace Profiler
 } // namespace Debug
@@ -32,5 +31,6 @@ void Stop(String id);
 
 #else
 #define PROFILE_START(id, colour)
+#define PROFILE_FRAME(id, colour) 
 #define PROFILE_STOP(id)
 #endif

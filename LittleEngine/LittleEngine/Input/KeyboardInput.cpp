@@ -5,6 +5,11 @@
 
 namespace LittleEngine
 {
+LiveLine::LiveLine()
+{
+	liveString.reserve(2048);
+}
+
 void LiveLine::Append(String newInput)
 {
 	if (!newInput.empty())

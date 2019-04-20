@@ -25,7 +25,7 @@ struct PlayerData
 class Player final : public Entity
 {
 public:
-	Player(String name);
+	void OnCreated() override;
 
 	void InitPlayer(PlayerData data);
 };

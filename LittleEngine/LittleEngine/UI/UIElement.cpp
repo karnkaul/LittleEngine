@@ -6,48 +6,50 @@
 #include "UIText.h"
 #include "LittleEngine/Game/World/World.h"
 #include "LittleEngine/Services/Services.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/RenderLoop/RenderFactory.h"
 #include "LittleEngine/Repository/EngineRepository.h"
 
 namespace LittleEngine
 {
-UIElement::UIElement(bool bSilent) : UIObject("Untitled", bSilent)
+UIElement::UIElement(LayerID layer, bool bSilent) : UIObject("Untitled", bSilent)
 {
-	Construct();
-	if (!m_bSilent)
-	{
-		LOG_D("%s constructed", LogNameStr());
-	}
+	Construct(layer);
 }
 
-UIElement::UIElement(String name, bool bSilent) : UIObject(std::move(name), bSilent)
+UIElement::UIElement(String name, LayerID layer, bool bSilent /*= false*/) : UIObject(std::move(name), bSilent)
 {
-	Construct();
-	if (!m_bSilent)
-	{
-		LOG_D("%s constructed", LogNameStr());
-	}
+	Construct(layer);
 }
 
 UIElement::~UIElement()
 {
-	Services::RHeap()->Destroy(m_pPrimitive);
-	Services::RHeap()->Destroy(m_pText);
+	m_pPrimitive->Destroy();
+	m_pText->Destroy();
 }
 
-void UIElement::InitElement(UITransform* pParent)
+void UIElement::SetParent(UITransform& parent)
 {
+	m_transform.SetParent(parent);
+}
+
+void UIElement::OnCreate(String name, UITransform* pParent)
+{
+	SetName(std::move(name), "UIElement");
 	if (pParent)
 	{
 		m_transform.SetParent(*pParent);
 	}
 }
 
-void UIElement::Construct()
+void UIElement::OnCreated()
 {
-	SetName("", "UIElement");
-	m_pPrimitive = Services::RHeap()->New();
-	m_pText = Services::RHeap()->New();
+}
+
+void UIElement::Construct(LayerID layer)
+{
+	m_layer = layer;
+	m_pPrimitive = Services::RFactory()->New(layer);
+	m_pText = Services::RFactory()->New(static_cast<LayerID>(layer + 1));
 	m_pPrimitive->SetEnabled(true);
 	m_pText->SetEnabled(true);
 	m_pPrimitive->SetStatic(true);
@@ -116,13 +118,16 @@ void UIElement::Tick(Time)
 	{
 		m_pPrimitive->SetSize(m_transform.size, SFShapeType::Rectangle);
 	}
-	m_pPrimitive->SetLayer(m_layer);
-	m_pText->SetLayer(static_cast<LayerID>(m_layer + 1));
 	m_pPrimitive->SetScale(Vector2::One, true);
 	m_pText->SetScale(Vector2::One, true);
 	m_pPrimitive->SetOrientation(Fixed::Zero, true);
 	m_pText->SetOrientation(Fixed::Zero, true);
 	m_pPrimitive->SetPosition(m_transform.GetWorldPosition());
 	m_pText->SetPosition(m_transform.GetWorldPosition());
+}
+
+LayerID UIElement::GetLayer() const
+{
+	return m_layer;
 }
 } // namespace LittleEngine

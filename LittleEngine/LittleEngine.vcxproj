@@ -26,6 +26,7 @@
     <ClCompile Include="LittleEngine\Debug\Console\DebugCommands.cpp" />
     <ClCompile Include="LittleEngine\Debug\Console\LogLine.cpp" />
     <ClCompile Include="LittleEngine\Debug\Console\RenderStatsRenderer.cpp" />
+    <ClCompile Include="LittleEngine\Debug\Console\Tweakable.cpp" />
     <ClCompile Include="LittleEngine\Debug\DebugProfiler.cpp" />
     <ClCompile Include="LittleEngine\Engine\EngineConfig.cpp" />
     <ClCompile Include="LittleEngine\Engine\EngineLoop.cpp" />
@@ -54,7 +55,7 @@
     <ClCompile Include="LittleEngine\Physics\ColliderData.cpp" />
     <ClCompile Include="LittleEngine\Physics\CollisionManager.cpp" />
     <ClCompile Include="LittleEngine\RenderLoop\AsyncRenderLoop.cpp" />
-    <ClCompile Include="LittleEngine\RenderLoop\RenderHeap.cpp" />
+    <ClCompile Include="LittleEngine\RenderLoop\RenderFactory.cpp" />
     <ClCompile Include="LittleEngine\Repository\LoadHelpers.cpp" />
     <ClCompile Include="LittleEngine\Repository\ManifestLoader.cpp" />
     <ClCompile Include="LittleEngine\Repository\EngineRepository.cpp" />
@@ -78,6 +79,7 @@
     <ClInclude Include="LittleEngine\Debug\Console\DebugCommands.h" />
     <ClInclude Include="LittleEngine\Debug\Console\LogLine.h" />
     <ClInclude Include="LittleEngine\Debug\Console\RenderStatsRenderer.h" />
+    <ClInclude Include="LittleEngine\Debug\Console\Tweakable.h" />
     <ClInclude Include="LittleEngine\Debug\DebugProfiler.h" />
     <ClInclude Include="LittleEngine\Engine\EngineConfig.h" />
     <ClInclude Include="LittleEngine\Engine\EngineLoop.h" />
@@ -110,7 +112,7 @@
     <ClInclude Include="LittleEngine\Physics\CollisionManager.h" />
     <ClInclude Include="LittleEngine\Physics\Physics.h" />
     <ClInclude Include="LittleEngine\RenderLoop\AsyncRenderLoop.h" />
-    <ClInclude Include="LittleEngine\RenderLoop\RenderHeap.h" />
+    <ClInclude Include="LittleEngine\RenderLoop\RenderFactory.h" />
     <ClInclude Include="LittleEngine\Repository\LoadHelpers.h" />
     <ClInclude Include="LittleEngine\Repository\ManifestLoader.h" />
     <ClInclude Include="LittleEngine\Repository\EngineRepository.h" />

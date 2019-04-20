@@ -44,6 +44,7 @@ public:
 
 	FontAsset* GetDefaultFont() const;
 
+	bool Unload(String id);
 	// Unload all assets
 	void UnloadAll(bool bUnloadDefaultFont);
 
@@ -94,13 +95,15 @@ T* EngineRepository::Load(String id)
 	{
 		pT = LoadFromArchive<T>(id);
 	}
-#if !SHIPPING
 	if (!pT)
 	{
+#if !SHIPPING
 		LOG_W("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
 		pT = LoadFromFilesystem<T>(id);
-	}
+#else
+		LOG_E("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
 #endif
+	}
 	return pT;
 }
 
@@ -126,11 +129,12 @@ std::future<T*> EngineRepository::LoadAsync(String id)
 	}
 	else
 	{
-		LOG_W("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
 #if !SHIPPING
+		LOG_W("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
 		Services::Jobs()->Enqueue(
 			[this, id, sPromise]() { sPromise->set_value(LoadFromFilesystem<T>(id)); }, "", true);
 #else
+		LOG_E("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
 		sPromise->set_value(nullptr);
 #endif
 	}

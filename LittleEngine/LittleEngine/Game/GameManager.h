@@ -1,6 +1,6 @@
 #pragma once
+#include "CoreTypes.h"
 #include "Logger.h"
-#include "SimpleTime.h"
 #include "Version.h"
 #include "ComponentTimingType.h"
 #include "LittleEngine/Services/IService.h"
@@ -16,7 +16,7 @@ private:
 private:
 	String m_logName;
 	Vec<UPtr<class Entity>> m_uEntities;
-	Array<Vec<UPtr<class Component>>, COMPONENT_LINES> m_uComponents;
+	Array<Vec<UPtr<class AComponent>>, COMPONENT_LINES> m_uComponents;
 	UPtr<class UIManager> m_uUIManager;
 	UPtr<class CollisionManager> m_uCollisionManager;
 	UPtr<class Camera> m_uWorldCamera;
@@ -39,7 +39,7 @@ public:
 
 public:
 	template <typename T>
-	T* NewEntity(String name, Vector2 position = Vector2::Zero, Fixed orientation = Fixed::Zero);
+	T* NewEntity(String name = "Untitled", Vector2 position = Vector2::Zero, Fixed orientation = Fixed::Zero);
 	template <typename T>
 	T* NewComponent(Entity& owner);
 
@@ -55,9 +55,10 @@ template <typename T>
 T* GameManager::NewEntity(String name, Vector2 position, Fixed orientation)
 {
 	static_assert(IsDerived<Entity, T>(), "T must derive from Entity");
-	UPtr<T> uT = MakeUnique<T>(std::move(name));
+	UPtr<T> uT = MakeUnique<T>();
 	T* pT = uT.get();
 	m_uEntities.emplace_back(std::move(uT));
+	pT->OnCreate(std::move(name));
 	pT->m_transform.localPosition = position;
 	pT->m_transform.localOrientation = orientation;
 	LOG_D("%s spawned", pT->LogNameStr());
@@ -67,7 +68,7 @@ T* GameManager::NewEntity(String name, Vector2 position, Fixed orientation)
 template <typename T>
 T* GameManager::NewComponent(Entity& owner)
 {
-	static_assert(IsDerived<Component, T>(), "T must derive from Entity");
+	static_assert(IsDerived<AComponent, T>(), "T must derive from Entity");
 	UPtr<T> uT = MakeUnique<T>();
 	size_t idx = ToIdx(uT->GetComponentTiming());
 	Assert(m_uComponents.size() > idx, "Invalid Component Timing index!");
@@ -75,7 +76,7 @@ T* GameManager::NewComponent(Entity& owner)
 	uT->SetOwner(owner);
 	T* pT = uT.get();
 	componentVec.emplace_back(std::move(uT));
-	LOG_D("%s constructed and attached to %s", pT->LogNameStr(), owner.LogNameStr());
+	LOG_D("%s spawned", pT->LogNameStr());
 	return pT;
 }
 } // namespace LittleEngine

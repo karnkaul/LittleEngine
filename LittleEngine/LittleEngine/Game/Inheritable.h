@@ -5,7 +5,7 @@ namespace LittleEngine
 {
 class Inheritable
 {
-private:
+protected:
 	String m_logName;
 	String m_name;
 	String m_className;
@@ -14,6 +14,7 @@ protected:
 	bool m_bSilent = false;
 
 public:
+	Inheritable(bool bSilent = false);
 	// Will LOG_D destruction unless bSilent
 	Inheritable(String name, String className = "", bool bSilent = false);
 	virtual ~Inheritable();
@@ -24,6 +25,6 @@ public:
 	const char* LogNameStr() const;
 
 protected:
-	void RegenerateLogNameStr();
+	virtual void RegenerateLogNameStr();
 };
 } // namespace LittleEngine

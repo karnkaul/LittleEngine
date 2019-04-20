@@ -1,11 +1,18 @@
 #include "stdafx.h"
 #include <thread>
+#if _WIN32
+//#include <Windows.h>
+#endif
 #include "OS.h"
 #include "Asserts.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
 
 namespace LittleEngine
 {
+namespace
+{
+std::thread::id mainThreadID;
+}
 namespace OS
 {
 PlatformData::PlatformData() : m_cpuThreadCount(std::thread::hardware_concurrency())
@@ -51,6 +58,7 @@ PlatformData::PlatformData() : m_cpuThreadCount(std::thread::hardware_concurrenc
 
 	m_userWorkerCount = m_spareThreadCount - m_systemWorkerCount;
 	m_maxWindowSize = SFWindow::GetMaxWindowSize();
+	mainThreadID = std::this_thread::get_id();
 }
 
 u32 PlatformData::TotalThreadCount() const
@@ -115,6 +123,38 @@ void PlatformData::SetDesiredWorkerCount(u32 workerCount)
 	{
 		m_userWorkerCount = workerCount;
 	}
+}
+
+bool IsMainThread()
+{
+	return std::this_thread::get_id() == mainThreadID;
+}
+
+#if _MSC_VER
+#include <Windows.h>
+#endif
+bool IsDebuggerAttached()
+{
+#if _MSC_VER
+	return IsDebuggerPresent();
+#endif
+	return false;
+}
+
+bool IsDEBUGGING()
+{
+#if DEBUGGING
+	return true;
+#endif
+	return false;
+}
+
+bool IsSHIPPING()
+{
+#if SHIPPING
+	return true;
+#endif
+	return false;
 }
 
 PlatformData* Platform()

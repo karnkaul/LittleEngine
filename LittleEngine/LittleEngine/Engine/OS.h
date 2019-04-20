@@ -36,5 +36,10 @@ public:
 };
 
 PlatformData* Platform();
+
+bool IsMainThread();
+bool IsDebuggerAttached();
+bool IsDEBUGGING();
+bool IsSHIPPING();
 } // namespace OS
 } // namespace LittleEngine

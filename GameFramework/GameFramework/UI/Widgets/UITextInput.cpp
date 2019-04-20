@@ -9,16 +9,7 @@
 
 namespace LittleEngine
 {
-UITextInput::UITextInput() : UIWidget("Untitled")
-{
-	SetName("", "UITextInput");
-}
-
-UITextInput::UITextInput(String name) : UIWidget(std::move(name))
-{
-	SetName("", "UITextInput");
-}
-
+UITextInput::UITextInput() = default;
 UITextInput::~UITextInput() = default;
 
 UITextInput* UITextInput::SetTextColour(Colour text)
@@ -49,7 +40,7 @@ void UITextInput::SetInteractable(bool bInteractable)
 				  : UIWidgetState::Uninteractable;
 }
 
-void UITextInput::OnInitWidget()
+void UITextInput::OnCreated()
 {
 	m_uKeyboard = MakeUnique<KeyboardInput>();
 	m_uKeyboard->m_bClearOnEscape = false;

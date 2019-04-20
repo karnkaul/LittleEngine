@@ -32,13 +32,13 @@ public:
 	WorldID CreateWorld();
 	World* GetActiveState() const;
 	WorldID GetActiveStateID() const;
+	Vec<WorldID> GetAllStateIDs() const;
 	bool LoadState(WorldID id);
 
 private:
 	void Start(String manifestPath = "", String archivePath = "");
 	void Tick(Time dt);
-	void PostBufferSwap();
-
+	
 	void LoadingTick(Time dt);
 	void GameTick(Time dt);
 

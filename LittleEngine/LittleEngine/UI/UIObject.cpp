@@ -7,6 +7,10 @@
 
 namespace LittleEngine
 {
+UIObject::UIObject(bool bSilent) : Inheritable(bSilent)
+{
+}
+
 UIObject::UIObject(String name, bool bSilent)
 	: Inheritable(std::move(name), "UIObject", bSilent)
 {

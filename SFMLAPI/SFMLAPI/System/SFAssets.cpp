@@ -103,8 +103,7 @@ SoundAsset::SoundAsset(String id, Vec<u8> buffer, Fixed volumeScale)
 
 TextAsset::TextAsset(String id, const String& pathPrefix) : Asset(std::move(id), AssetType::Text)
 {
-	String prefix = pathPrefix.empty() ? "" : pathPrefix + "/";
-	FileRW file(prefix + id);
+	FileRW file(GetFilesystemPath(m_id, pathPrefix));
 	if (!file.Exists())
 	{
 		LOG_E("Could not load Text from filesystem [%s]!", m_id.c_str());
@@ -125,7 +124,7 @@ TextAsset::TextAsset(String id, Vec<u8> buffer) : Asset(std::move(id), AssetType
 	}
 	else
 	{
-		m_text = Core::ArchiveReader::ToText(buffer);
+		m_text = Core::ArchiveReader::ToText(std::move(buffer));
 	}
 }
 

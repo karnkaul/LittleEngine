@@ -1,6 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
-#include "SimpleTime.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
 #include "LittleEngine/Services/IService.h"
 
 namespace LittleEngine
@@ -27,14 +27,14 @@ public:
 	EngineAudio* Audio() const;
 
 	void TrySetWindowSize(u32 height);
+	void SetWindowStyle(SFWindowStyle newStyle);
 	void Terminate();
 
 private:
 	void PreRun();
 	void UpdateInput(const struct SFInputDataFrame& inputDataFrame);
 	void Tick(Time dt);
-	void PostTick();
-	void PostBufferSwap();
+	void PreFinishFrame();
 
 	friend class EngineLoop;
 };

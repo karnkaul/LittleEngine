@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "BootWorld.h"
 #include "GameFramework/GameFramework.h"
+#include "BootWorld.h"
+#include "UI/OptionsUI.h"
 
 namespace LittleEngine
 {
@@ -11,7 +12,7 @@ BootWorld::BootWorld() : World("Boot")
 void BootWorld::OnActivated()
 {
 	m_pLogoFont = Repository()->Load<FontAsset>("Fonts/Sunscreen.otf");
-	if ((m_pLogoDrawer = Game()->UI()->PushContext<UIButtonDrawer>()))
+	if ((m_pLogoDrawer = Game()->UI()->PushContext<UIButtonDrawer>("MainMenu")))
 	{
 		m_pLogoHeader = m_pLogoDrawer->AddElement<UIElement>("Logo Header");
 		m_pLogoHeader->SetText(UIText("Little Engine", 80, Colour::White));
@@ -22,6 +23,9 @@ void BootWorld::OnActivated()
 		m_pLogoHeader->m_transform.UnsetParent();
 		m_pLogoHeader->m_transform.nPosition = {0, Fixed(0.8f)};
 		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton("Start", std::bind(&BootWorld::OnLoadNextWorld, this)));
+		m_tokenHandler
+			.AddToken(m_pLogoDrawer->AddButton(
+				"Options", []() { Services::Game()->UI()->PushContext<OptionsUI>(); }));
 		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton("Quit", std::bind(&World::Quit, this)));
 		m_pLogoDrawer->SetActive(true);
 	}

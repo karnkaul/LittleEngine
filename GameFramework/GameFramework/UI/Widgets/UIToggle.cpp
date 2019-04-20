@@ -7,18 +7,6 @@
 
 namespace LittleEngine
 {
-UIToggle::UIToggle() : UIWidget("Untitled")
-{
-	SetName("", "UIToggle");
-}
-
-UIToggle::UIToggle(String name) : UIWidget(std::move(name))
-{
-	SetName("", "UIToggle");
-}
-
-UIToggle::~UIToggle() = default;
-
 UIToggle* UIToggle::SetText(UIText text)
 {
 	m_pLabel->SetText(std::move(text));
@@ -63,18 +51,19 @@ UIElement* UIToggle::GetRoot() const
 	return m_pRoot;
 }
 
-void UIToggle::OnInitWidget()
+void UIToggle::OnCreated()
 {
+	SetName("", "UIToggle");
 	m_pRoot = AddElement<UIElement>("ToggleRoot");
 	m_pRoot->SetPanel(m_style.background);
 	m_pRoot->m_transform.size = m_style.widgetSize;
 	Colour initColour = m_bOn ? m_data.onColour : m_data.offColour;
-	m_pToggle = AddElement<UIElement>("ToggleBox", &m_pRoot->m_transform);
+	m_pToggle = AddElement<UIElement>("ToggleBox", &m_pRoot->m_transform, 2);
 	m_pToggle->SetPanel(initColour, m_style.notSelected.border, m_style.notSelected.outline);
 	m_pToggle->m_transform.size = m_data.boxSize;
 	m_pToggle->m_transform.anchor = {-1, 0};
 	m_pToggle->m_transform.nPosition = {Fixed(-0.9f), 0};
-	m_pLabel = AddElement<UIElement>("ToggleLabel", &m_pRoot->m_transform);
+	m_pLabel = AddElement<UIElement>("ToggleLabel", &m_pRoot->m_transform, 2);
 	m_pLabel->m_transform.anchor = {1, 0};
 	m_pLabel->m_transform.nPosition = {Fixed(0.9f), 0};
 }

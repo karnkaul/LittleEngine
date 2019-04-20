@@ -2,6 +2,8 @@
 #include "AsyncFileLogger.h"
 #include "SFMLAPI/Input/SFInputStateMachine.h"
 #include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/Windowing/SFWindow.h"
+#include "SFMLAPI/Windowing/SFWindowData.h"
 #include "EngineService.h"
 #include "LittleEngine/Audio/EngineAudio.h"
 #include "LittleEngine/Debug/DebugProfiler.h"
@@ -27,6 +29,9 @@ namespace
 {
 SFWindowSize* pNewWindowSize = nullptr;
 bool bChangeResolution = false;
+
+SFWindowStyle newWindowStyle = SFWindowStyle::Default;
+bool bChangeWindowStyle = false;
 } // namespace
 
 EngineService::EngineService(EngineLoop& engineLoop) : m_pEngineLoop(&engineLoop)
@@ -89,16 +94,21 @@ EngineAudio* EngineService::Audio() const
 
 void EngineService::TrySetWindowSize(u32 height)
 {
-	SFWindowSize* pSize = GFX::TryGetWindowSize(height);
-	if (pSize)
+	pNewWindowSize = GFX::TryGetWindowSize(height);
+	if (pNewWindowSize)
 	{
-		pNewWindowSize = pSize;
 		bChangeResolution = true;
 	}
 	else
 	{
 		LOG_W("[EngineService] No resolution that matches given height: %d", height);
 	}
+}
+
+void EngineService::SetWindowStyle(SFWindowStyle newStyle)
+{
+	bChangeWindowStyle = true;
+	newWindowStyle = newStyle;
 }
 
 void EngineService::Terminate()
@@ -126,7 +136,6 @@ void EngineService::UpdateInput(const SFInputDataFrame& inputDataFrame)
 
 void EngineService::Tick(Time dt)
 {
-	PROFILE_START("Engine::Tick", Colour::Magenta);
 	Services::Jobs()->Tick(dt);
 	m_uEngineRepository->Tick(dt);
 	m_uWorldStateMachine->Tick(dt);
@@ -134,29 +143,27 @@ void EngineService::Tick(Time dt)
 #if ENABLED(CONSOLE)
 	Console::Tick(dt);
 #endif
-	PROFILE_STOP("Engine::Tick");
 #if ENABLED(PROFILER)
 	Profiler::Tick(dt);
 #endif
 }
 
-void EngineService::PostTick()
+void EngineService::PreFinishFrame()
 {
-#if ENABLED(PROFILER)
-	Profiler::Render();
-#endif
 	if (bChangeResolution && pNewWindowSize)
 	{
-		m_pRenderLoop->SetWindowSize(*pNewWindowSize);
 		GameSettings::Instance()->SetWindowHeight(pNewWindowSize->height);
 		LOG_I("Set Resolution to: %dx%d", pNewWindowSize->width,
 			  pNewWindowSize->height);
+		m_pRenderLoop->RecreateWindow(SFWindowRecreateData(std::move(*pNewWindowSize)));
 		bChangeResolution = false;
 	}
-}
 
-void EngineService::PostBufferSwap()
-{
-	m_uWorldStateMachine->PostBufferSwap();
+	if (bChangeWindowStyle)
+	{
+		GameSettings::Instance()->SetBorderless(newWindowStyle == SFWindowStyle::Bordlerless);
+		m_pRenderLoop->RecreateWindow(SFWindowRecreateData(newWindowStyle));
+		bChangeWindowStyle = false;
+	}
 }
 } // namespace LittleEngine

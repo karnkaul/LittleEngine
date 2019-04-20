@@ -4,9 +4,10 @@
 #include "SFMLAPI/Rendering/Colour.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/System/SFAssets.h"
+#include "LittleEngine/Debug/DebugProfiler.h"
 #include "LittleEngine/Audio/EngineAudio.h"
 #include "LittleEngine/Game/GameManager.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/RenderLoop/RenderFactory.h"
 #include "LittleEngine/Repository/EngineRepository.h"
 #include "LittleEngine/Services/Services.h"
 #include "ParticleSystem.h"
@@ -98,6 +99,7 @@ void EmitterData::Deserialise(const GData& gData)
 {
 	spawnData.Deserialise(gData.GetGData("spawnData"));
 	lifetimeData.Deserialise(gData.GetGData("lifetimeData"));
+	DESERIALISE_BOOL(gData, bStatic);
 	DESERIALISE_INT(gData, layerDelta);
 	DESERIALISE_FIXED(gData, startDelaySecs);
 	DESERIALISE_FIXED(gData, sfxVolume);
@@ -120,17 +122,14 @@ private:
 	bool m_bInUse = false;
 
 public:
-	Particle(const TextureAsset& texture);
-	Particle(const Particle& copy);
-	Particle& operator=(const Particle& copy) = delete;
+	Particle(const TextureAsset& texture, s32 layerDelta);
 	~Particle();
 
 	void Init(Vector2 u,
 			  const Time& ttl,
 			  const Transform& transform = Transform::IDENTITY,
 			  Fixed w = Fixed::Zero,
-			  Colour c = Colour::White,
-			  s32 layerDelta = 0);
+			  Colour c = Colour::White);
 
 	void Tick(Time dt);
 
@@ -138,22 +137,17 @@ private:
 	friend class Emitter;
 };
 
-Particle::Particle(const TextureAsset& texture) : m_pTexture(&texture)
+Particle::Particle(const TextureAsset& texture, s32 layerDelta) : m_pTexture(&texture)
 {
-	m_pSFPrimitive = Services::RHeap()->New();
-}
-
-Particle::Particle(const Particle& copy) : m_pTexture(copy.m_pTexture)
-{
-	m_pSFPrimitive = Services::RHeap()->New();
+	m_pSFPrimitive = Services::RFactory()->New(static_cast<LayerID>(LAYER_FX + layerDelta));
 }
 
 Particle::~Particle()
 {
-	Services::RHeap()->Destroy(m_pSFPrimitive);
+	m_pSFPrimitive->Destroy();
 }
 
-void Particle::Init(Vector2 u, const Time& ttl, const Transform& transform, Fixed w, Colour c, s32 layerDelta)
+void Particle::Init(Vector2 u, const Time& ttl, const Transform& transform, Fixed w, Colour c)
 {
 	m_bInUse = true;
 	this->m_ttl = ttl;
@@ -162,11 +156,10 @@ void Particle::Init(Vector2 u, const Time& ttl, const Transform& transform, Fixe
 	m_v = u;
 	this->m_w = w;
 	this->m_transform = transform;
-	m_layer = static_cast<LayerID>(LAYER_FX + layerDelta);
-
-	m_pSFPrimitive->SetLayer(m_layer)
-		->SetPosition(transform.Position(), true)
+	
+	m_pSFPrimitive->SetPosition(transform.Position(), true)
 		->SetOrientation(transform.Orientation(), true)
+		->SetScale(transform.Scale(), true)
 		->SetTexture(*m_pTexture)
 		->SetEnabled(true);
 }
@@ -229,7 +222,7 @@ Emitter::Emitter(EmitterData data, bool bSetEnabled)
 	for (size_t i = 0; i < data.spawnData.numParticles; ++i)
 	{
 		TextureAsset& texture = data.GetTexture();
-		m_particles.emplace_back(texture);
+		m_particles.emplace_back(texture, m_data.layerDelta);
 	}
 	Init();
 }
@@ -258,11 +251,15 @@ void Emitter::Reset(bool bSetEnabled)
 
 void Emitter::PreWarm(u32 numTicks)
 {
-	Time dt = Time::Seconds(m_data.lifetimeData.ttlSecs.min.ToF32());
+	Fixed minDT = m_data.lifetimeData.ttlSecs.min * Fixed::OneThird;
+	TRange<Fixed> dtRange(minDT, minDT * 3);
 	bool bTemp = m_bSpawnNewParticles;
 	m_bSpawnNewParticles = true;
 	for (u32 i = 0; i < numTicks; ++i)
+	{
+		Time dt = Time::Seconds(GetRandom<Fixed>(dtRange).ToF32());
 		TickInternal(dt);
+	}
 	m_bSpawnNewParticles = bTemp;
 }
 
@@ -355,8 +352,12 @@ void Emitter::InitParticle(Particle& p)
 	if (m_pParent)
 		transform.SetParent(*m_pParent);
 	transform.localPosition = GetRandom(m_data.spawnData.spawnPosition);
+	Fixed scale = m_data.lifetimeData.scaleOverTime.min;
+	transform.localScale = {scale, scale};
 	p.Init(velocity, Time::Seconds(GetRandom(m_data.lifetimeData.ttlSecs).ToF32()), transform,
-		   GetRandom(m_data.spawnData.spawnAngularSpeed), Colour::White, m_data.layerDelta);
+		   GetRandom(m_data.spawnData.spawnAngularSpeed), Colour::White);
+	p.m_pSFPrimitive->SetStatic(m_data.bStatic);
+	//p.m_pSFPrimitive->bDebugThisPrimitive = true;
 }
 
 void Emitter::InitParticles()
@@ -438,12 +439,13 @@ ParticleSystemData::ParticleSystemData(const GData& psGData)
 	}
 }
 
-ParticleSystem::ParticleSystem(String name) : Entity(std::move(name))
-{
-	SetName(name, "ParticleSystem");
-}
-
+ParticleSystem::ParticleSystem() = default;
 ParticleSystem::~ParticleSystem() = default;
+
+void ParticleSystem::OnCreated()
+{
+	SetName("", "ParticleSystem");
+}
 
 void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 {
@@ -490,6 +492,7 @@ void ParticleSystem::Stop()
 
 void ParticleSystem::Tick(Time dt)
 {
+	PROFILE_START(m_name, Colour::Yellow);
 	Entity::Tick(dt);
 
 	bool bAnyPlaying = false;
@@ -499,5 +502,6 @@ void ParticleSystem::Tick(Time dt)
 		bAnyPlaying |= emitter->m_bEnabled;
 	}
 	m_bIsPlaying = bAnyPlaying;
+	PROFILE_STOP(m_name);
 }
 } // namespace LittleEngine

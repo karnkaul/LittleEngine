@@ -85,9 +85,6 @@
     <ClCompile Include="LittleEngine\Jobs\JobWorker.cpp">
       <Filter>LittleEngine\Jobs</Filter>
     </ClCompile>
-    <ClCompile Include="LittleEngine\RenderLoop\RenderHeap.cpp">
-      <Filter>LittleEngine\RenderLoop</Filter>
-    </ClCompile>
     <ClCompile Include="LittleEngine\UI\UIElement.cpp">
       <Filter>LittleEngine\UI</Filter>
     </ClCompile>
@@ -199,6 +196,12 @@
     <ClCompile Include="LittleEngine\Repository\LoadHelpers.cpp">
       <Filter>LittleEngine\Repository</Filter>
     </ClCompile>
+    <ClCompile Include="LittleEngine\Debug\Console\Tweakable.cpp">
+      <Filter>LittleEngine\Debug\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="LittleEngine\RenderLoop\RenderFactory.cpp">
+      <Filter>LittleEngine\RenderLoop</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Input\EngineInput.h">
@@ -230,9 +233,6 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\Engine\EngineConfig.h">
       <Filter>LittleEngine\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\RenderLoop\RenderHeap.h">
-      <Filter>LittleEngine\RenderLoop</Filter>
     </ClInclude>
     <ClInclude Include="LittleEngine\RenderLoop\AsyncRenderLoop.h">
       <Filter>LittleEngine\RenderLoop</Filter>
@@ -368,6 +368,12 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\Repository\LoadHelpers.h">
       <Filter>LittleEngine\Repository</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Debug\Console\Tweakable.h">
+      <Filter>LittleEngine\Debug\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\RenderLoop\RenderFactory.h">
+      <Filter>LittleEngine\RenderLoop</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

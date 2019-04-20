@@ -1,6 +1,6 @@
 #pragma once
 #include <functional>
-#include "SimpleTime.h"
+#include "CoreTypes.h"
 #include "LoadHelpers.h"
 
 namespace Core

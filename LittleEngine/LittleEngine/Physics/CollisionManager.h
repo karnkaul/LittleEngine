@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreTypes.h"
-#include "SimpleTime.h"
 
 namespace LittleEngine
 {
@@ -18,10 +17,6 @@ public:
 
 	class CircleCollider* CreateCircleCollider(String ownerName);
 	class AABBCollider* CreateAABBCollider(String ownerName);
-
-#if DEBUGGING
-	void ToggleDebugShapes(bool bShow);
-#endif
 
 private:
 	void Scrub();

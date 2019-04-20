@@ -1,6 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
-#if ENABLED(CONSOLE)
+#if ENABLED(RENDER_STATS)
 #include "DebugConsole.h"
 
 namespace LittleEngine
@@ -16,6 +16,7 @@ public:
 
 private:
 	UPtr<UIElement> m_uPrimitiveCount;
+	UPtr<UIElement> m_uDisabledCount;
 	UPtr<UIElement> m_uStaticCount;
 	UPtr<UIElement> m_uDynamicCount;
 	UPtr<UIElement> m_uFPS;
