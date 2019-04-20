@@ -1,10 +1,12 @@
 #pragma once
 #include <random>
 #include "CoreTypes.h"
+#include "SimpleTime.h"
 
 namespace Maths
 {
 using Fixed = Core::Fixed;
+using Time = Core::Time;
 
 const Fixed PI = Fixed(3.14159265359);
 const Fixed DEG_TO_RAD = Fixed(PI / 180);
@@ -31,6 +33,8 @@ template <typename T>
 T Lerp(T min, T max, Fixed alpha);
 
 bool IsNearlyEqual(f32 lhs, f32 rhs, f32 epsilon = 0.01f);
+
+Fixed ComputeAlpha(Time dt, Time totalTime);
 
 class Random
 {

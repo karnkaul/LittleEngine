@@ -6,7 +6,7 @@
 #include "LittleEngine/Game/Entity.h"
 #include "LittleEngine/Game/GameManager.h"
 #include "LittleEngine/Repository/EngineRepository.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/RenderLoop/RenderFactory.h"
 #include "LittleEngine/Services/Services.h"
 #include "RenderComponent.h"
 
@@ -103,7 +103,10 @@ void SpriteSheet::Next()
 
 RenderComponent::~RenderComponent()
 {
-	Services::RHeap()->Destroy(m_pSFPrimitive);
+	if (m_pSFPrimitive)
+	{
+		m_pSFPrimitive->Destroy();
+	}
 }
 
 TimingType RenderComponent::GetComponentTiming() const
@@ -114,15 +117,16 @@ TimingType RenderComponent::GetComponentTiming() const
 void RenderComponent::OnCreated()
 {
 	SetName("Render");
-	m_pSFPrimitive = Services::RHeap()->New();
-	m_pSFPrimitive->SetEnabled(true);
 }
 
 void RenderComponent::SetEnabled(bool bEnabled)
 {
 	AComponent::SetEnabled(bEnabled);
 
-	m_pSFPrimitive->SetEnabled(bEnabled);
+	if (m_pSFPrimitive)
+	{
+		m_pSFPrimitive->SetEnabled(bEnabled);
+	}
 }
 
 void RenderComponent::Tick(Time dt)
@@ -130,22 +134,46 @@ void RenderComponent::Tick(Time dt)
 	UpdatePrimitive(dt);
 }
 
-RenderComponent* RenderComponent::SetSprite(TextureAsset& texture)
+RenderComponent* RenderComponent::SetShape(LayerID layer)
 {
-	m_pSFPrimitive->SetTexture(texture);
+	if (m_pSFPrimitive)
+	{
+		m_pSFPrimitive->Destroy();
+		m_pSFPrimitive = nullptr;
+	}
+	m_pSFPrimitive = Services::RFactory()->New(layer);
+	m_pSFPrimitive->SetEnabled(true);
 	return this;
 }
 
-RenderComponent* RenderComponent::SetSpriteSheet(SpriteSheet sheet)
+RenderComponent* RenderComponent::SetSprite(TextureAsset& texture, LayerID layer)
+{
+	if (m_pSFPrimitive)
+	{
+		m_pSFPrimitive->Destroy();
+		m_pSFPrimitive = nullptr;
+	}
+	m_pSFPrimitive = Services::RFactory()->New(layer);
+	m_pSFPrimitive->SetTexture(texture)->SetEnabled(true);
+	return this;
+}
+
+RenderComponent* RenderComponent::SetSpriteSheet(SpriteSheet sheet, LayerID layer)
 {
 	if (sheet.m_pTexture)
 	{
-		m_pSFPrimitive->SetTexture(*sheet.m_pTexture);
+		if (m_pSFPrimitive)
+		{
+			m_pSFPrimitive->Destroy();
+			m_pSFPrimitive = nullptr;
+		}
+		m_pSFPrimitive = Services::RFactory()->New(layer);
+		m_pSFPrimitive->SetTexture(*sheet.m_pTexture)->SetEnabled(true);
+		m_framePeriod = Time::Seconds(sheet.m_period.AsSeconds() / sheet.m_data.indices.size());
+		m_oSpriteSheet.emplace(std::move(sheet));
+		m_bFlippingSprites = true;
+		LOG_D("Set up SpriteSheet on %s", LogNameStr());
 	}
-	m_framePeriod = Time::Seconds(sheet.m_period.AsSeconds() / sheet.m_data.indices.size());
-	m_oSpriteSheet.emplace(std::move(sheet));
-	m_bFlippingSprites = true;
-	LOG_D("Set up SpriteSheet on %s", LogNameStr());
 	return this;
 }
 
@@ -186,12 +214,18 @@ void RenderComponent::UpdatePrimitive(Time dt)
 				m_oSpriteSheet->Next();
 			}
 		}
-		m_pSFPrimitive->CropTexture(m_oSpriteSheet->GetFrame());
+		if (m_pSFPrimitive)
+		{
+			m_pSFPrimitive->CropTexture(m_oSpriteSheet->GetFrame());
+		}
 	}
 
-	m_pSFPrimitive->SetScale(m_pOwner->m_transform.Scale(), m_pOwner->m_bReset);
-	m_pSFPrimitive->SetOrientation(m_pOwner->m_transform.Orientation(), m_pOwner->m_bReset);
-	m_pSFPrimitive->SetPosition(m_pOwner->m_transform.Position(), m_pOwner->m_bReset);
-	m_pOwner->m_bReset = false;
+	if (m_pSFPrimitive)
+	{
+		m_pSFPrimitive->SetScale(m_pOwner->m_transform.Scale(), m_pOwner->m_bResetRenderState);
+		m_pSFPrimitive->SetOrientation(m_pOwner->m_transform.Orientation(), m_pOwner->m_bResetRenderState);
+		m_pSFPrimitive->SetPosition(m_pOwner->m_transform.Position(), m_pOwner->m_bResetRenderState);
+		m_pOwner->m_bResetRenderState = false;
+	}
 }
 } // namespace LittleEngine

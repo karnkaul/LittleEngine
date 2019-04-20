@@ -58,12 +58,12 @@ void UIToggle::OnCreated()
 	m_pRoot->SetPanel(m_style.background);
 	m_pRoot->m_transform.size = m_style.widgetSize;
 	Colour initColour = m_bOn ? m_data.onColour : m_data.offColour;
-	m_pToggle = AddElement<UIElement>("ToggleBox", &m_pRoot->m_transform);
+	m_pToggle = AddElement<UIElement>("ToggleBox", &m_pRoot->m_transform, 2);
 	m_pToggle->SetPanel(initColour, m_style.notSelected.border, m_style.notSelected.outline);
 	m_pToggle->m_transform.size = m_data.boxSize;
 	m_pToggle->m_transform.anchor = {-1, 0};
 	m_pToggle->m_transform.nPosition = {Fixed(-0.9f), 0};
-	m_pLabel = AddElement<UIElement>("ToggleLabel", &m_pRoot->m_transform);
+	m_pLabel = AddElement<UIElement>("ToggleLabel", &m_pRoot->m_transform, 2);
 	m_pLabel->m_transform.anchor = {1, 0};
 	m_pLabel->m_transform.nPosition = {Fixed(0.9f), 0};
 }

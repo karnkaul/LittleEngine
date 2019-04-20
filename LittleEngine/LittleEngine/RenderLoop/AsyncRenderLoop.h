@@ -11,11 +11,12 @@ class AsyncRenderLoop final : public SFRenderer
 {
 private:
 	SPtr<class JobHandle> m_pRenderJobHandle;
-	class GFXBuffer* m_pBuffer;
+	Time m_tickRate;
+	class IRenderBuffer* m_pBuffer;
 	bool m_bRunThread = false;
 
 public:
-	AsyncRenderLoop(SFWindow& sfWindow, GFXBuffer& gfxBuffer, Time tickRate, bool bStartThread);
+	AsyncRenderLoop(SFWindow& sfWindow, IRenderBuffer& renderBuffer, Time tickRate, bool bStartThread);
 	~AsyncRenderLoop() override;
 
 	void RecreateWindow(SFWindowRecreateData data);

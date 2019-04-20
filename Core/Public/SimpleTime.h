@@ -1,10 +1,14 @@
 #pragma once
-#include "CoreTypes.h"
+#include "StdTypes.h"
+#include "Fixed.h"
 
-namespace LittleEngine
+namespace Core
 {
 struct Time
 {
+public:
+	using Fixed = Core::Fixed;
+
 private:
 	s64 microSeconds = 0;
 
@@ -13,7 +17,7 @@ public:
 	static String ToString(Time time);
 	static Time Microseconds(s64 microSeconds);
 	static Time Milliseconds(s32 milliSeconds);
-	static Time Seconds(f32 seconds);
+ 	static Time Seconds(f32 seconds);
 	static Time Now();
 	static Time Clamp(Time val, Time min, Time max);
 	static void Reset();

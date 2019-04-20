@@ -55,7 +55,7 @@
     <ClCompile Include="LittleEngine\Physics\ColliderData.cpp" />
     <ClCompile Include="LittleEngine\Physics\CollisionManager.cpp" />
     <ClCompile Include="LittleEngine\RenderLoop\AsyncRenderLoop.cpp" />
-    <ClCompile Include="LittleEngine\RenderLoop\RenderHeap.cpp" />
+    <ClCompile Include="LittleEngine\RenderLoop\RenderFactory.cpp" />
     <ClCompile Include="LittleEngine\Repository\LoadHelpers.cpp" />
     <ClCompile Include="LittleEngine\Repository\ManifestLoader.cpp" />
     <ClCompile Include="LittleEngine\Repository\EngineRepository.cpp" />
@@ -112,7 +112,7 @@
     <ClInclude Include="LittleEngine\Physics\CollisionManager.h" />
     <ClInclude Include="LittleEngine\Physics\Physics.h" />
     <ClInclude Include="LittleEngine\RenderLoop\AsyncRenderLoop.h" />
-    <ClInclude Include="LittleEngine\RenderLoop\RenderHeap.h" />
+    <ClInclude Include="LittleEngine\RenderLoop\RenderFactory.h" />
     <ClInclude Include="LittleEngine\Repository\LoadHelpers.h" />
     <ClInclude Include="LittleEngine\Repository\ManifestLoader.h" />
     <ClInclude Include="LittleEngine\Repository\EngineRepository.h" />

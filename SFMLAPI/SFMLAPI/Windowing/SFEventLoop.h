@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreTypes.h"
-#include "SimpleTime.h"
 
 namespace LittleEngine
 {
@@ -35,7 +34,7 @@ protected:
 
 private:
 	void PollEvents();
-	void Tick(Time& outCurrentTime, Time& outAccumulator);
+	void DoTicks(Time& outCurrentTime, Time& outAccumulator);
 	void SleepForRestOfFrame(Time frameTime);
 
 protected:
@@ -49,6 +48,6 @@ private:
 	// Fixed time slice Tick
 	virtual void Tick(Time dt) = 0;
 	// Called once per frame; use to swap buffers etc
-	virtual void PostTick() = 0;
+	virtual void PostTicks() = 0;
 };
 } // namespace LittleEngine

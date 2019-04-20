@@ -34,7 +34,7 @@ public:
 	template <typename T>
 	T* AddWidget(String name, struct UIWidgetStyle* pStyleToCopy = nullptr, bool bNewColumn = false);
 	template <typename T>
-	T* AddElement(String name, struct UITransform* pParent = nullptr);
+	T* AddElement(String name, struct UITransform* pParent = nullptr, s32 layerDelta = 0);
 
 	void SetActive(bool bActive, bool bResetSelection = true);
 	void ResetSelection();
@@ -86,19 +86,22 @@ T* UIContext::AddWidget(String name, UIWidgetStyle* pStyleToCopy, bool bNewColum
 }
 
 template <typename T>
-T* UIContext::AddElement(String name, UITransform* pParent)
+T* UIContext::AddElement(String name, UITransform* pParent, s32 layerDelta)
 {
+	LayerID layer = LAYER_UI;
 	static_assert(std::is_base_of<UIElement, T>::value, "T must derive from UIWidget!");
-	UPtr<T> uT = MakeUnique<T>(false);
+ 	if (m_pRootElement)
+	{
+		layer = static_cast<LayerID>(m_pRootElement->m_layer + 1);
+	}
+	layer = static_cast<LayerID>(layer + layerDelta);
+	UPtr<T> uT = MakeUnique<T>(layer, false);
 	if (!pParent && m_pRootElement)
 	{
 		pParent = &m_pRootElement->m_transform;
 	}
 	uT->OnCreate(std::move(name), pParent);
-	if (m_pRootElement)
-	{
-		uT->m_layer = static_cast<LayerID>(m_pRootElement->m_layer + 1);
-	}
+	
 	T* pT = uT.get();
 	LOG_D("%s constructed", pT->LogNameStr());
 	m_uiElements.push_back(std::move(uT));

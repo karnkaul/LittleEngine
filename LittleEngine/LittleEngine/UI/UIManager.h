@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreTypes.h"
-#include "SimpleTime.h"
 
 namespace LittleEngine
 {

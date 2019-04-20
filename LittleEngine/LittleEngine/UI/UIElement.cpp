@@ -6,25 +6,25 @@
 #include "UIText.h"
 #include "LittleEngine/Game/World/World.h"
 #include "LittleEngine/Services/Services.h"
-#include "LittleEngine/RenderLoop/RenderHeap.h"
+#include "LittleEngine/RenderLoop/RenderFactory.h"
 #include "LittleEngine/Repository/EngineRepository.h"
 
 namespace LittleEngine
 {
-UIElement::UIElement(bool bSilent) : UIObject("Untitled", bSilent)
+UIElement::UIElement(LayerID layer, bool bSilent) : UIObject("Untitled", bSilent)
 {
-	Construct();
+	Construct(layer);
 }
 
-UIElement::UIElement(String name, bool bSilent /*= false*/) : UIObject(std::move(name), bSilent)
+UIElement::UIElement(String name, LayerID layer, bool bSilent /*= false*/) : UIObject(std::move(name), bSilent)
 {
-	Construct();
+	Construct(layer);
 }
 
 UIElement::~UIElement()
 {
-	Services::RHeap()->Destroy(m_pPrimitive);
-	Services::RHeap()->Destroy(m_pText);
+	m_pPrimitive->Destroy();
+	m_pText->Destroy();
 }
 
 void UIElement::SetParent(UITransform& parent)
@@ -45,10 +45,11 @@ void UIElement::OnCreated()
 {
 }
 
-void UIElement::Construct()
+void UIElement::Construct(LayerID layer)
 {
-	m_pPrimitive = Services::RHeap()->New();
-	m_pText = Services::RHeap()->New();
+	m_layer = layer;
+	m_pPrimitive = Services::RFactory()->New(layer);
+	m_pText = Services::RFactory()->New(static_cast<LayerID>(layer + 1));
 	m_pPrimitive->SetEnabled(true);
 	m_pText->SetEnabled(true);
 	m_pPrimitive->SetStatic(true);
@@ -117,13 +118,16 @@ void UIElement::Tick(Time)
 	{
 		m_pPrimitive->SetSize(m_transform.size, SFShapeType::Rectangle);
 	}
-	m_pPrimitive->SetLayer(m_layer);
-	m_pText->SetLayer(static_cast<LayerID>(m_layer + 1));
 	m_pPrimitive->SetScale(Vector2::One, true);
 	m_pText->SetScale(Vector2::One, true);
 	m_pPrimitive->SetOrientation(Fixed::Zero, true);
 	m_pText->SetOrientation(Fixed::Zero, true);
 	m_pPrimitive->SetPosition(m_transform.GetWorldPosition());
 	m_pText->SetPosition(m_transform.GetWorldPosition());
+}
+
+LittleEngine::LayerID UIElement::GetLayer() const
+{
+	return m_layer;
 }
 } // namespace LittleEngine

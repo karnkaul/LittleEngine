@@ -3,6 +3,8 @@
 
 namespace Core
 {
+const Rect2 Rect2::Zero = Rect2::BLTR(Vector2::Zero, Vector2::Zero);
+
 Rect2 Rect2::CentreSize(Vector2 size, Vector2 centre)
 {
 	Rect2 ret;

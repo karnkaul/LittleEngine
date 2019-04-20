@@ -15,7 +15,7 @@ protected:
 public:
 	Transform m_transform;
 	bool m_bEnabled = true;
-	bool m_bReset = true;
+	bool m_bResetRenderState = true;
 
 public:
 	Entity();

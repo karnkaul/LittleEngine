@@ -1,6 +1,6 @@
 #pragma once
+#include "CoreTypes.h"
 #include "Logger.h"
-#include "SimpleTime.h"
 #include "Version.h"
 #include "ComponentTimingType.h"
 #include "LittleEngine/Services/IService.h"
