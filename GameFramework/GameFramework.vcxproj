@@ -19,17 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.vcxproj">
-      <Project>{af5b2e49-98bc-4c1b-8b53-0122876d47fa}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\LittleEngine\LittleEngine.vcxproj">
       <Project>{f47fda22-5053-4b11-a8d8-5281110c3b60}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\PCH\_PCH.vcxproj">
-      <Project>{176489df-3f22-43d5-a6f4-56ef4f2d4388}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\SFMLAPI\SFMLAPI.vcxproj">
-      <Project>{927b2d28-14e8-4d17-a0fb-5d637cf4ea3c}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

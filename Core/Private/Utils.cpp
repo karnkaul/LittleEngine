@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Utils.h"
 #include <algorithm>
-#include <ctime>
 #include <stack>
 
 namespace Strings

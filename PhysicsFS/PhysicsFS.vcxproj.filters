@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="physfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_archiver_7z.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_archiver_dir.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_archiver_grp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_archiver_hog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_archiver_iso9660.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_archiver_mvl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_archiver_qpak.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_archiver_slb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_archiver_unpacked.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_archiver_vdf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_archiver_wad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_archiver_zip.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_byteorder.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_platform_os2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_platform_posix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_platform_qnx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_platform_unix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_platform_windows.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_unicode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_platform_haiku.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physfs_platform_winrt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="physfs.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="physfs_casefolding.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="physfs_internal.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="physfs_lzmasdk.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="physfs_miniz.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="physfs_platforms.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

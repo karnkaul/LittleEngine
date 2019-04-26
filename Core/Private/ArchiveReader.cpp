@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ArchiveReader.h"
 #include "PhysicsFS/physfs.h"
-#pragma comment(lib, "PhysicsFS.lib")
 
 namespace Core
 {

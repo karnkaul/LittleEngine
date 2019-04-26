@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include <thread>
-#if _WIN32
-//#include <Windows.h>
-#endif
 #include "OS.h"
 #include "Asserts.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
+#if _WIN32
+#include <Windows.h>
+#endif
 
 namespace LittleEngine
 {
@@ -130,9 +130,6 @@ bool IsMainThread()
 	return std::this_thread::get_id() == mainThreadID;
 }
 
-#if _MSC_VER
-#include <Windows.h>
-#endif
 bool IsDebuggerAttached()
 {
 #if _MSC_VER
