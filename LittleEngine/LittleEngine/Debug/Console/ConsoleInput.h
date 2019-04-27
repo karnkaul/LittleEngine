@@ -24,7 +24,6 @@ public:
 
 	bool OnInput(const EngineInput::Frame& frame);
 	void Update();
-	String GetConsoleLiveLine(bool bShowCursor) const;
 
 private:
 	void UpdateLiveLine(const EngineInput::Frame& frame);

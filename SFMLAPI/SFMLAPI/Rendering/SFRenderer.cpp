@@ -30,16 +30,19 @@ void SFRenderer::Render(IRenderBuffer& buffer, Fixed alpha)
 	{
 		m_pSFWindow->clear();
 
-		buffer.Lock_Traverse([&](Vec<SFPrimitive*> active) {
+		// Lock mutex
+		buffer.m_mutex.lock();
+		auto& matrix = buffer.GetActiveRenderMatrix();
 #if ENABLED(RENDER_STATS)
-			static Time fpsTime;
-			static u32 frameCount = 0;
-			u32 statics = 0;
-			u32 disabled = 0;
-			u32 primitives = 0;
+		static Time fpsTime;
+		static u32 frameCount = 0;
+		u32 statics = 0;
+		u32 disabled = 0;
+		u32 primitives = 0;
 #endif
-
-			for (auto& pPrimitive : active)
+		for (auto& vec : matrix)
+		{
+			for (auto& pPrimitive : vec)
 			{
 				pPrimitive->UpdateRenderState(alpha);
 				m_pSFWindow->draw(pPrimitive->m_circle);
@@ -59,25 +62,35 @@ void SFRenderer::Render(IRenderBuffer& buffer, Fixed alpha)
 				}
 #endif
 			}
+		}
 
+		auto& vertArrs = buffer.m_vertArrs;
+		for (auto& vertArr : vertArrs)
+		{
+			m_pSFWindow->draw(vertArr.va, vertArr.rs);
+		}
 #if ENABLED(RENDER_STATS)
-			g_renderData.staticCount = statics;
-			g_renderData.disabledCount = disabled;
-			g_renderData.primitiveCount = primitives;
-			g_renderData.dynamicCount = primitives - statics - disabled;
-			// Update FPS
+		g_renderData.staticCount = statics;
+		g_renderData.disabledCount = disabled;
+		g_renderData.primitiveCount = primitives;
+		g_renderData.dynamicCount = primitives - statics - disabled;
+		// Update FPS
+		{
+			++frameCount;
+			g_renderData.lastRenderTime = Time::Now();
+			if (Maths::Abs((fpsTime - g_renderData.lastRenderTime).AsSeconds()) >= 1.0f)
 			{
-				++frameCount;
-				g_renderData.lastRenderTime = Time::Now();
-				if (Maths::Abs((fpsTime - g_renderData.lastRenderTime).AsSeconds()) >= 1.0f)
-				{
-					fpsTime = g_renderData.lastRenderTime;
-					g_renderData.framesPerSecond = frameCount;
-					frameCount = 0;
-				}
+				fpsTime = g_renderData.lastRenderTime;
+				g_renderData.framesPerSecond = frameCount;
+				frameCount = 0;
 			}
+		}
 #endif
-		});
+
+		// Release lock
+		buffer.m_mutex.unlock();
+		
+		// Wait for VSync
 		m_pSFWindow->display();
 	}
 }

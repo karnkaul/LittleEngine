@@ -99,7 +99,7 @@ s32 ASFEventLoop::Run()
 	LOG_I("[SFEventLoop] Event Loop terminated. Destroying SFWindow");
 
 	m_uSFWindow = nullptr;
-
+	
 	return 0;
 }
 

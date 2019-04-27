@@ -25,6 +25,7 @@ class SFInputStateMachine
 {
 private:
 	TextInput m_textInput;
+	MouseInput m_pointerInput;
 	Vec<KeyState> m_keyStates;
 
 public:
@@ -41,6 +42,7 @@ private:
 
 	void OnKeyDown(const sf::Event::KeyEvent& key);
 	void OnKeyUp(const sf::Event::KeyEvent& key);
+	void SetPointerState(MouseInput pointerInput);
 	void ResetKeyStates();
 	void ClearTextInput();
 	void OnTextInput(u32 unicode);

@@ -49,15 +49,15 @@ SFPrimitive* SFPrimitive::SetEnabled(bool bEnabled)
 	return this;
 }
 
-SFPrimitive* SFPrimitive::SetPosition(Vector2 sfPosition, bool bImmediate)
+SFPrimitive* SFPrimitive::SetPosition(Vector2 worldPosition, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.sfPosition.Reset(WorldToScreen(sfPosition));
+		m_gameState.sfPosition.Reset(WorldToScreen(worldPosition));
 	}
 	else
 	{
-		m_gameState.sfPosition.Update(WorldToScreen(sfPosition));
+		m_gameState.sfPosition.Update(WorldToScreen(worldPosition));
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -68,15 +68,15 @@ SFPrimitive* SFPrimitive::SetPosition(Vector2 sfPosition, bool bImmediate)
 	return this;
 }
 
-SFPrimitive* SFPrimitive::SetOrientation(Fixed sfOrientation, bool bImmediate)
+SFPrimitive* SFPrimitive::SetOrientation(Fixed worldOrientation, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.sfOrientation.Reset(WorldToScreen(sfOrientation));
+		m_gameState.sfOrientation.Reset(WorldToScreen(worldOrientation));
 	}
 	else
 	{
-		m_gameState.sfOrientation.Update(WorldToScreen(sfOrientation));
+		m_gameState.sfOrientation.Update(WorldToScreen(worldOrientation));
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -87,15 +87,15 @@ SFPrimitive* SFPrimitive::SetOrientation(Fixed sfOrientation, bool bImmediate)
 	return this;
 }
 
-SFPrimitive* SFPrimitive::SetScale(Vector2 sfScale, bool bImmediate)
+SFPrimitive* SFPrimitive::SetScale(Vector2 worldScale, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.sfScale.Reset(sfScale);
+		m_gameState.sfScale.Reset(worldScale);
 	}
 	else
 	{
-		m_gameState.sfScale.Update(sfScale);
+		m_gameState.sfScale.Update(worldScale);
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{

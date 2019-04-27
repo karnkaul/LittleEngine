@@ -24,11 +24,6 @@ Prim Construct(LayerID layer)
 	return {std::move(uP), pP};
 }
 
-inline SFPrimitive* Addr(Primitive& p)
-{
-	return p.get();
-}
-
 inline bool IsDestroyed(const Primitive& p)
 {
 	return p->m_bDestroyed;
@@ -67,6 +62,7 @@ RenderFactory::~RenderFactory()
 		count += vec.size();
 		vec.clear();
 	}
+	m_vertArrs.clear();
 	LOG_I("[RenderFactory] Destroyed %d primitives", count);
 	Services::UnprovideRenderFactory(*this);
 }
@@ -109,27 +105,6 @@ void RenderFactory::Lock_Swap()
 	PROFILE_STOP("Swap Frame");
 }
 
-void RenderFactory::Lock_Traverse(std::function<void(Vec<SFPrimitive*>)> procedure)
-{
-	Vec<SFPrimitive*> pVec;
-	pVec.reserve(m_active.size());
-	Lock lock(m_mutex);
-	for (auto& vec : m_active)
-	{
-		for (auto& p : vec)
-		{
-			pVec.push_back(Addr(p));
-		}
-	}
-	procedure(pVec);
-}
-
-void RenderFactory::Lock_TraverseMatrix(std::function<void(PrimMat&)> procedure)
-{
-	Lock lock(m_mutex);
-	procedure(m_active);
-}
-
 void RenderFactory::Reconcile()
 {
 	for (auto& p : m_standby)
@@ -143,5 +118,10 @@ void RenderFactory::Reconcile()
 			ReconcileState(p);
 		}
 	}
+}
+
+RenderFactory::PrimMat& RenderFactory::GetActiveRenderMatrix()
+{
+	return m_active;
 }
 } // namespace LittleEngine

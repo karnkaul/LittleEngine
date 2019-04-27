@@ -7,6 +7,8 @@
 
 // TODO: Remove
 #include "LittleEngine/RenderLoop/RenderFactory.h"
+#include "SFMLAPI/Windowing/SFWindow.h"
+#include "SFMLAPI/System/SFTypes.h"
 
 namespace LittleEngine
 {
@@ -163,7 +165,6 @@ bool Test_OnInput(const EngineInput::Frame& frame)
 		pTestWorld->Game()->WorldCamera()->m_transform.localPosition.x += Fixed::Three;
 		return true;
 	}
-
 	return false;
 }
 
@@ -180,6 +181,22 @@ void SpawnColliderMinefield()
 			pCC->AddAABB(AABBData({100, 100}));
 		}
 	}
+}
+
+sf::VertexArray va(sf::Quads, 4);
+void InitVertexArrayTests()
+{
+	va[0].position = Cast(SFPrimitive::WorldToScreen(Vector2(-100, 100)));
+	va[1].position = Cast(SFPrimitive::WorldToScreen(Vector2(100, 100)));
+	va[2].position = Cast(SFPrimitive::WorldToScreen(Vector2(100, -100)));
+	va[3].position = Cast(SFPrimitive::WorldToScreen(Vector2(-100, -100)));
+
+	va[0].color = Cast(Colour(200, 255, 100, 255));
+	va[1].color = Cast(Colour(200, 255, 100, 255));
+	va[2].color = Cast(Colour(200, 255, 100, 255));
+	va[3].color = Cast(Colour(200, 255, 100, 255));
+
+	//Services::RFactory()->m_vertArrs.emplace_back(va);
 }
 
 //TweakBool(test0, nullptr);
@@ -224,6 +241,8 @@ void StartTests()
 	{
 		SpawnColliderMinefield();
 	}
+
+	InitVertexArrayTests();
 }
 
 UIButtonDrawer* pButtonDrawer = nullptr;
@@ -340,6 +359,7 @@ void Cleanup()
 	{
 		uProgressBG = nullptr;
 	}
+
 	debugTokens.clear();
 }
 } // namespace

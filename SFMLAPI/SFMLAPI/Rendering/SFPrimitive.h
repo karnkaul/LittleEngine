@@ -44,9 +44,9 @@ public:
 public:
 	// Interpolated States
 	SFPrimitive* SetEnabled(bool bEnabled);
-	SFPrimitive* SetPosition(Vector2 sfPosition, bool bImmediate = false);
-	SFPrimitive* SetOrientation(Fixed sfOrientation, bool bImmediate = false);
-	SFPrimitive* SetScale(Vector2 sfScale, bool bImmediate = false);
+	SFPrimitive* SetPosition(Vector2 worldPosition, bool bImmediate = false);
+	SFPrimitive* SetOrientation(Fixed worldOrientation, bool bImmediate = false);
+	SFPrimitive* SetScale(Vector2 worldScale, bool bImmediate = false);
 	SFPrimitive* SetPivot(Vector2 pivot = Vector2::Zero);
 	SFPrimitive* SetPrimaryColour(Colour sfColour, bool bImmediate = false);
 	SFPrimitive* SetSecondaryColour(Colour sfColour, bool bImmediate = false);

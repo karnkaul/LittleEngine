@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ConsoleRenderer.h"
 #if ENABLED(CONSOLE)
+#include "Logger.h"
 #include "Utils.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
@@ -20,7 +21,7 @@ ConsoleRenderer::ConsoleRenderer() : m_textSize(LogLine::TEXT_SIZE)
 	m_pFont = Services::Engine()->Repository()->GetDefaultFont();
 
 	// BG
-	m_uBG = MakeUnique<UIElement>("Console BG", static_cast<LayerID>(LAYER_TOP - 5), true);
+	m_uBG = MakeUnique<UIElement>("ConsoleBG", static_cast<LayerID>(LAYER_TOP - 5), true);
 	m_uBG->SetPanel(m_bgColour);
 	Vector2 bgSize = m_uBG->m_transform.size;
 	bgSize.y *= Fixed::OneThird;
@@ -33,23 +34,34 @@ ConsoleRenderer::ConsoleRenderer() : m_textSize(LogLine::TEXT_SIZE)
 	m_uBG->m_transform.padding = maxPadding;
 
 	// Separator
-	m_uSeparator = MakeUnique<UIElement>("Console Separator", static_cast<LayerID>(LAYER_TOP - 3), true);
+	m_uSeparator = MakeUnique<UIElement>("ConsoleSeparator", static_cast<LayerID>(LAYER_TOP - 3), true);
 	m_uSeparator->SetPanel(Colour(255, 255, 255, 150));
 	m_uSeparator->m_transform.SetParent(m_uBG->m_transform);
 	m_uSeparator->m_transform.size = {bgSize.x, 2};
 	m_uSeparator->m_transform.nPosition = {0, -1};
 	m_uSeparator->m_transform.padding = {0, m_textSize + 5};
-
+	
+	// Carat
+	m_uCarat = MakeUnique<UIElement>("ConsoleCarat", LAYER_TOP, true);
+	m_uCarat->m_transform.SetParent(m_uBG->m_transform);
+	m_uCarat->m_transform.anchor = {-1, 1};
+	m_uCarat->m_transform.nPosition = {-1, -1};
+	s32 textPad = m_textSize * 1.3f;
+	m_uCarat->m_transform.padding = {0, textPad};
+	m_uCarat->SetText(UIText(">", m_textSize, m_liveTextColour));
+	
 	// Live Line
-	m_uLiveText = MakeUnique<UIElement>("Console LiveText", LAYER_TOP, true);
+	m_uLiveText = MakeUnique<UIElement>("ConsoleLiveText", LAYER_TOP, true);
 	m_uLiveText->m_transform.SetParent(m_uBG->m_transform);
 	m_uLiveText->m_transform.anchor = {-1, 1};
-	m_uLiveText->m_transform.nPosition = {-1, -1};
-	s32 textPad = m_textSize * 1.3f;
+	m_uLiveText->m_transform.nPosition = {-Fixed(0.99f), -1};
 	m_uLiveText->m_transform.padding = {0, textPad};
-	m_uLiveText->SetText(UIText(">", m_textSize, m_liveTextColour));
-	m_uLiveText->GetText()->bDebugThisPrimitive = true;
-
+	
+	// Cursor
+	m_uCursor = MakeUnique<UIElement>("ConsoleCursor", LAYER_TOP, true);
+	m_uCursor->SetText(UIText("|", m_textSize, m_liveTextColour));
+	m_uCursor->GetText()->SetEnabled(true);
+	
 	// Log Lines
 	s32 iPad = textPad + 2;
 	m_logLinesCount = (m_uBG->m_transform.size.y.ToU32() / textPad) - 1;
@@ -94,16 +106,26 @@ void ConsoleRenderer::Tick(Time dt)
 	}
 	m_uBG->Tick(dt);
 	m_uSeparator->Tick(dt);
+	m_uCarat->Tick(dt);
 	m_uLiveText->Tick(dt);
+	m_uCursor->Tick(dt);
+	
+	Vector2 cursorPosition = m_uLiveText->GetText()->GetPosition();
+	Fixed xOffset = m_cursorNPos * m_uLiveText->GetText()->GetBounds().GetSize().x;
+	cursorPosition.x += xOffset;
+	cursorPosition.y -= m_textSize / 2;
+	m_uCursor->GetText()->SetPosition(cursorPosition);
 	for (auto& uLogText : m_uLogTexts)
 	{
 		uLogText->Tick(dt);
 	}
 }
 
-void ConsoleRenderer::SetLiveString(String text)
+void ConsoleRenderer::SetLiveString(String text, Fixed cursorNPos, bool bShowCursor)
 {
+	m_cursorNPos = cursorNPos;
 	m_uLiveText->SetText(UIText(std::move(text), m_textSize, m_liveTextColour));
+	m_uCursor->GetText()->SetEnabled(bShowCursor);
 }
 
 void ConsoleRenderer::UpdateLog(Vec<LogLine> logLines)

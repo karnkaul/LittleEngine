@@ -44,12 +44,6 @@ void ConsoleInput::Update()
 	}
 }
 
-String ConsoleInput::GetConsoleLiveLine(bool bShowCursor) const
-{
-	String cursor = bShowCursor ? "_" : "";
-	return ">" + m_keyboard.GetLiveString() + cursor;
-}
-
 void ConsoleInput::UpdateLiveLine(const EngineInput::Frame& frame)
 {
 	const TextInput& textInput = frame.textInput;
@@ -82,7 +76,7 @@ void ConsoleInput::UpdateLiveLine(const EngineInput::Frame& frame)
 			if (search.queries.size() == 1)
 			{
 				bool bSpace = search.bCustomParam || !search.params.empty();
-				m_keyboard.m_liveLine.liveString = search.queries[0] + (bSpace ? " " : "");
+				m_keyboard.m_liveLine.Set(search.queries[0] + (bSpace ? " " : ""));
 			}
 
 			const Vec<String>& vec = search.params.empty() ? search.queries : search.params;
@@ -140,7 +134,7 @@ void ConsoleInput::UpdateLiveLine(const EngineInput::Frame& frame)
 			{
 				queryCache.Increment();
 			}
-			m_keyboard.m_liveLine.liveString = queryCache.Get();
+			m_keyboard.m_liveLine.Set(queryCache.Get());
 		}
 	}
 
@@ -157,7 +151,7 @@ void ConsoleInput::UpdateLiveLine(const EngineInput::Frame& frame)
 				bCyclingQueries = true;
 			}
 			queryCache.Decrement();
-			m_keyboard.m_liveLine.liveString = queryCache.Get();
+			m_keyboard.m_liveLine.Set(queryCache.Get());
 		}
 	}
 

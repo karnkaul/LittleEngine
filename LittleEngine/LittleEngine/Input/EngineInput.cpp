@@ -3,9 +3,26 @@
 #include "Utils.h"
 #include "SFMLAPI/Input/SFInputStateMachine.h"
 #include "EngineInput.h"
+#if DEBUGGING
+#include "LittleEngine/Debug/Console/Tweakable.h"
+#include "LittleEngine/GFX/GFX.h"
+#include "LittleEngine/Services/Services.h"
+#include "LittleEngine/RenderLoop/RenderFactory.h"
+#endif
 
 namespace LittleEngine
 {
+#if DEBUGGING
+namespace
+{
+const Colour MOUSE_LEFT_COLOUR = Colour(230, 0, 100, 255);
+const Colour MOUSE_RIGHT_COLOUR = Colour(0, 230, 100, 255);
+const Colour MOUSE_DEFAULT_COLOUR = Colour(100, 100, 100, 255);
+const u8 MOUSE_QUAD_WIDTH = 1;
+bool bShowCrosshair = false;
+} // namespace
+#endif
+
 String EngineInput::Frame::GetClipboard()
 {
 	return SFInputDataFrame::GetClipboard();
@@ -45,6 +62,10 @@ EngineInput::InputContext::InputContext(Delegate callback, Token& sToken)
 {
 }
 
+#if DEBUGGING
+TweakBool(mouseXY, &bShowCrosshair);
+#endif
+
 EngineInput::EngineInput()
 {
 	BindDefaults();
@@ -58,6 +79,11 @@ EngineInput::Token EngineInput::Register(Delegate callback)
 	return token;
 }
 
+MouseInput EngineInput::GetMouseState() const
+{
+	return m_mouseInput;
+}
+
 EngineInput::Token EngineInput::RegisterSudo(Delegate callback)
 {
 	Token token = CreateToken();
@@ -69,6 +95,7 @@ void EngineInput::TakeSnapshot(const SFInputDataFrame& frameData)
 {
 	m_previousSnapshot = m_currentSnapshot;
 	m_textInput = frameData.textInput;
+	m_mouseInput = frameData.mouseInput;
 	m_currentSnapshot.clear();
 	for (const auto& key : frameData.pressed)
 	{
@@ -82,6 +109,23 @@ void EngineInput::TakeSnapshot(const SFInputDataFrame& frameData)
 			}
 		}
 	}
+#if DEBUGGING
+	if (bShowCrosshair && !m_pMouseH)
+	{
+		CreateDebugPointer();
+	}
+	Colour c = m_mouseInput.bLeftPressed
+				   ? MOUSE_LEFT_COLOUR
+				   : m_mouseInput.bRightPressed ? MOUSE_RIGHT_COLOUR : MOUSE_DEFAULT_COLOUR;
+	if (m_pMouseH)
+	{
+		m_pMouseH->SetPosition({m_mouseInput.worldPosition.x, 0})->SetEnabled(bShowCrosshair)->SetPrimaryColour(c);
+	}
+	if (m_pMouseV)
+	{
+		m_pMouseV->SetPosition({0, m_mouseInput.worldPosition.y})->SetEnabled(bShowCrosshair)->SetPrimaryColour(c);
+	}
+#endif
 }
 
 void EngineInput::FireCallbacks()
@@ -158,6 +202,23 @@ void EngineInput::BindDefaults()
 
 	m_gamepad.Bind(GameInputType::Debug0, KeyCode::F12);
 }
+
+#if DEBUGGING
+void EngineInput::CreateDebugPointer()
+{
+	Vector2 viewSize = GFX::GetViewSize();
+	m_pMouseH = Services::RFactory()->New(LAYER_TOP);
+	m_pMouseV = Services::RFactory()->New(LAYER_TOP);
+	m_pMouseH->SetSize({MOUSE_QUAD_WIDTH, viewSize.y}, SFShapeType::Rectangle)
+		->SetStatic(true)
+		->SetPrimaryColour(MOUSE_DEFAULT_COLOUR)
+		->SetEnabled(true);
+	m_pMouseV->SetSize({viewSize.x, MOUSE_QUAD_WIDTH}, SFShapeType::Rectangle)
+		->SetStatic(true)
+		->SetPrimaryColour(MOUSE_DEFAULT_COLOUR)
+		->SetEnabled(true);
+}
+#endif
 
 EngineInput::Token EngineInput::CreateToken() const
 {

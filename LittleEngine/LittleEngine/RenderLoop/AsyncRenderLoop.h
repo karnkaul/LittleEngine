@@ -10,7 +10,7 @@ namespace LittleEngine
 class AsyncRenderLoop final : public SFRenderer
 {
 public:
-	std::atomic<bool> m_bPauseRendering = false; // Used to reduce inexplicable lock contention on main thread
+	std::atomic<bool> m_bPauseRendering = true; // Used to reduce inexplicable lock contention on main thread
 private:
 	SPtr<class JobHandle> m_pRenderJobHandle;
 	Time m_tickRate;

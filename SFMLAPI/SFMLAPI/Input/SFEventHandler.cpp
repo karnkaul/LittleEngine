@@ -9,6 +9,11 @@ SFWindowEventType SFEventHandler::PollEvents(SFWindow& sfWindow)
 {
 	sf::Event sfEvent;
 	m_inputSM.ClearTextInput();
+	MouseInput pointerInput;
+	pointerInput.worldPosition = sfWindow.ScreenToWorld(sf::Mouse::getPosition(sfWindow));
+	pointerInput.bLeftPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+	pointerInput.bRightPressed = sf::Mouse::isButtonPressed(sf::Mouse::Right);
+	m_inputSM.SetPointerState(pointerInput);
 	while (sfWindow.pollEvent(sfEvent))
 	{
 		switch (sfEvent.type)
