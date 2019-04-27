@@ -1,10 +1,13 @@
 #include "stdafx.h"
+#include <fstream>
 #include "ArchiveReader.h"
 #include "Utils.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "EngineRepository.h"
 #include "LoadHelpers.h"
 #include "ManifestLoader.h"
+#include "LittleEngine/Engine/FatalEngineException.h"
+#include "LittleEngine/Engine/OS.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/Jobs/JobManager.h"
 
@@ -13,6 +16,24 @@ namespace LittleEngine
 EngineRepository::EngineRepository(String archivePath, String rootDir)
 	: m_rootDir(std::move(rootDir)), m_pDefaultFont(nullptr)
 {
+	std::ifstream file(archivePath);
+	Assert(file.good(), "Cooked archive does not exist!");
+#if DEBUGGING
+	if (OS::IsDebuggerAttached())
+	{
+		// If you are debugging and have broken here, 
+		// no need to restart the session, just fix the 
+		// missing archive before continuing!
+		file = std::ifstream(archivePath);
+	}
+#endif
+	if (!file.good())
+	{
+		LOG_E("Cooked archive [%s] does not exist!", archivePath.c_str());
+#if !ENABLED(FILESYSTEM_ASSETS)
+		throw FatalEngineException();
+#endif
+	}
 	m_uCooked = MakeUnique<Core::ArchiveReader>();
 	String fontID = "Fonts/main.ttf";
 	m_uCooked->Load(archivePath.c_str());
@@ -22,7 +43,8 @@ EngineRepository::EngineRepository(String archivePath, String rootDir)
 	}
 	else
 	{
-		UPtr<FontAsset> uDefaultFont = CreateAsset<FontAsset>(fontID, m_uCooked->Decompress(fontID.c_str()));
+		UPtr<FontAsset> uDefaultFont =
+			CreateAsset<FontAsset>(fontID, m_uCooked->Decompress(fontID.c_str()));
 		if (uDefaultFont)
 		{
 			m_pDefaultFont = uDefaultFont.get();
@@ -34,7 +56,7 @@ EngineRepository::EngineRepository(String archivePath, String rootDir)
 		}
 	}
 
-#if !SHIPPING
+#if ENABLED(FILESYSTEM_ASSETS)
 	if (!m_pDefaultFont)
 	{
 		UPtr<FontAsset> uDefaultFont = FetchAsset<FontAsset>(fontID);
@@ -58,22 +80,21 @@ FontAsset* EngineRepository::GetDefaultFont() const
 	return m_pDefaultFont;
 }
 
-#if !SHIPPING
+#if ENABLED(FILESYSTEM_ASSETS)
 ManifestLoader* EngineRepository::LoadAsync(String manifestPath, std::function<void()> onComplete)
 {
-	UPtr<ManifestLoader> uAsyncLoader = MakeUnique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete));
+	UPtr<ManifestLoader> uAsyncLoader =
+		MakeUnique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete));
 	ManifestLoader* pLoader = uAsyncLoader.get();
 	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
 	return pLoader;
 }
 #endif
 
-ManifestLoader* EngineRepository::LoadAsync(String archivePath,
-											  String manifestPath,
-											  std::function<void()> onComplete)
+ManifestLoader* EngineRepository::LoadAsync(String archivePath, String manifestPath, std::function<void()> onComplete)
 {
-	UPtr<ManifestLoader> uAsyncLoader =
-		MakeUnique<ManifestLoader>(*this, std::move(archivePath), std::move(manifestPath), std::move(onComplete));
+	UPtr<ManifestLoader> uAsyncLoader = MakeUnique<ManifestLoader>(
+		*this, std::move(archivePath), std::move(manifestPath), std::move(onComplete));
 	ManifestLoader* pLoader = uAsyncLoader.get();
 	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
 	return pLoader;
@@ -84,13 +105,15 @@ bool EngineRepository::Unload(String id)
 	bool bPresent = m_loaded.find(id) != m_loaded.end();
 	if (bPresent)
 	{
-		Services::Jobs()->Enqueue([&, id]() { 
-			Lock lock(m_mutex);
-			m_loaded.erase(id);
-		}, "", true);
+		Services::Jobs()->Enqueue(
+			[&, id]() {
+				Lock lock(m_mutex);
+				m_loaded.erase(id);
+			},
+			"", true);
 	}
 	return bPresent;
-	//return m_loaded.erase(id);
+	// return m_loaded.erase(id);
 }
 
 void EngineRepository::UnloadAll(bool bUnloadDefaultFont)

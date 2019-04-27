@@ -375,5 +375,8 @@
     <ClInclude Include="LittleEngine\RenderLoop\RenderFactory.h">
       <Filter>LittleEngine\RenderLoop</Filter>
     </ClInclude>
+    <ClInclude Include="LittleEngine\Engine\FatalEngineException.h">
+      <Filter>LittleEngine\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

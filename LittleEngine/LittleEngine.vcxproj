@@ -85,6 +85,7 @@
     <ClInclude Include="LittleEngine\Engine\EngineLoop.h" />
     <ClInclude Include="LittleEngine\Engine\EngineService.h" />
     <ClInclude Include="LittleEngine\Engine\AsyncFileLogger.h" />
+    <ClInclude Include="LittleEngine\Engine\FatalEngineException.h" />
     <ClInclude Include="LittleEngine\Engine\OS.h" />
     <ClInclude Include="LittleEngine\Game\Camera.h" />
     <ClInclude Include="LittleEngine\Game\Component.h" />

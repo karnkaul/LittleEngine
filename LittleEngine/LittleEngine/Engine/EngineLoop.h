@@ -22,7 +22,8 @@ public:
 public:
 	~EngineLoop() override;
 
-	void Start();
+	bool Start();
+	class WorldStateMachine* Worlds() const;
 	
 private:
 	void PreRun() override;
@@ -33,7 +34,7 @@ private:
 	void OnPause(bool bPause) override;
 
 private:
-	void Init();
+	bool Init();
 	void Uninit();
 
 	friend class EngineService;
