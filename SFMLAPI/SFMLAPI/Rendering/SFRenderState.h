@@ -30,6 +30,8 @@ struct SFTexCoords
 	SFTexCoords(u32 x, u32 y);
 
 	static const SFTexCoords Zero;
+	
+	sf::Vector2f ToSFV2f() const;
 };
 
 // Origin at top-left of texture; +X right, +Y down
@@ -41,10 +43,11 @@ struct SFTexRect
 	SFTexRect() = default;
 	//+X right, +Y down
 	SFTexRect(SFTexCoords min, SFTexCoords max);
+	SFTexRect(u32 maxX, u32 maxY);
 
 	static const SFTexRect Zero;
 
-	sf::IntRect Cast() const;
+	sf::IntRect ToSFIntRect() const;
 	bool IsZero() const;
 };
 

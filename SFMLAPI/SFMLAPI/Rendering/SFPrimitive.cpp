@@ -11,26 +11,6 @@ namespace
 const sf::Vector2f ZERO = sf::Vector2f(0, 0);
 }
 
-Vector2 SFPrimitive::WorldToScreen(Vector2 worldPoint)
-{
-	return Vector2(worldPoint.x, -worldPoint.y);
-}
-
-Fixed SFPrimitive::WorldToScreen(Fixed worldOrientation)
-{
-	return -worldOrientation;
-}
-
-Vector2 SFPrimitive::ScreenToWorld(Vector2 screenPoint)
-{
-	return Vector2(screenPoint.x, -screenPoint.y);
-}
-
-Fixed SFPrimitive::ScreenToWorld(Fixed screenOrientation)
-{
-	return -screenOrientation;
-}
-
 SFPrimitive::SFPrimitive(LayerID layer)
 {
 	m_gameState.layer = layer;
@@ -184,7 +164,7 @@ SFPrimitive* SFPrimitive::SetTexture(const TextureAsset& texture)
 SFPrimitive* SFPrimitive::CropTexture(SFTexRect textureRect)
 {
 	m_gameState.texRect = textureRect;
-	m_sprite.setTextureRect(m_gameState.texRect.Cast());
+	m_sprite.setTextureRect(m_gameState.texRect.ToSFIntRect());
 	return this;
 }
 
@@ -326,6 +306,11 @@ SFPrimitive* SFPrimitive::SetStatic(bool bStatic)
 		m_bMakeStatic = m_bStatic = false;
 	}
 	return this;
+}
+
+SFQuadVec* SFPrimitive::GetQuadVec()
+{
+	return &m_quadVec;
 }
 
 void SFPrimitive::UpdatePivot()

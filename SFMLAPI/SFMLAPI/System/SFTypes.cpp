@@ -18,16 +18,6 @@ sf::Vector2f Cast(Vector2 vec2)
 	return sf::Vector2f(vec2.x.ToF32(), vec2.y.ToF32());
 }
 
-Vector2 Cast(const sf::Vector2f& vec2)
-{
-	return Vector2(Fixed(vec2.x), Fixed(vec2.y));
-}
-
-Vector2 Cast(const sf::Vector2i& vec2)
-{
-	return Vector2(vec2.x, vec2.y);
-}
-
 sf::Color Cast(Colour colour)
 {
 	return sf::Color(colour.r.ToUInt(), colour.g.ToUInt(), colour.b.ToUInt(), colour.a.ToUInt());
@@ -50,4 +40,23 @@ sf::Uint8 Cast(SFWindowStyle style)
 	}
 }
 
+Vector2 WorldToScreen(Vector2 worldPoint)
+{
+	return Vector2(worldPoint.x, -worldPoint.y);
+}
+
+Fixed WorldToScreen(Fixed worldOrientation)
+{
+	return -worldOrientation;
+}
+
+Vector2 ScreenToWorld(Vector2 screenPoint)
+{
+	return Vector2(screenPoint.x, -screenPoint.y);
+}
+
+Fixed ScreenToWorld(Fixed screenOrientation)
+{
+	return -screenOrientation;
+}
 } // namespace LittleEngine

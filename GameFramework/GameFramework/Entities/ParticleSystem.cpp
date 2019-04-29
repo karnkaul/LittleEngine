@@ -113,16 +113,15 @@ public:
 	Fixed m_w;
 	Time m_ttl;
 	Time m_t;
-	LayerID m_layer = LAYER_FX;
 	Colour m_c;
 
 private:
-	SFPrimitive* m_pSFPrimitive;
-	const TextureAsset* m_pTexture;
+	SFQuad* m_pQuad = nullptr;
 	bool m_bInUse = false;
+	bool m_bDraw = false;
 
 public:
-	Particle(const TextureAsset& texture, s32 layerDelta);
+	Particle(SFQuadVec& quadVec);
 	~Particle();
 
 	void Init(Vector2 u,
@@ -137,15 +136,13 @@ private:
 	friend class Emitter;
 };
 
-Particle::Particle(const TextureAsset& texture, s32 layerDelta) : m_pTexture(&texture)
+Particle::Particle(SFQuadVec& quadVec)
 {
-	m_pSFPrimitive = Services::RFactory()->New(static_cast<LayerID>(LAYER_FX + layerDelta));
+	m_pQuad = quadVec.AddQuad();
+	m_pQuad->SetEnabled(false);
 }
 
-Particle::~Particle()
-{
-	m_pSFPrimitive->Destroy();
-}
+Particle::~Particle() = default;
 
 void Particle::Init(Vector2 u, const Time& ttl, const Transform& transform, Fixed w, Colour c)
 {
@@ -156,22 +153,28 @@ void Particle::Init(Vector2 u, const Time& ttl, const Transform& transform, Fixe
 	m_v = u;
 	this->m_w = w;
 	this->m_transform = transform;
-	
-	m_pSFPrimitive->SetPosition(transform.Position(), true)
-		->SetOrientation(transform.Orientation(), true)
-		->SetScale(transform.Scale(), true)
-		->SetTexture(*m_pTexture)
-		->SetEnabled(true);
+
+	m_pQuad->SetScale(transform.Scale())
+		->SetLocalOrientation(transform.Orientation())
+		->SetPosition(transform.Position());
 }
 
 void Particle::Tick(Time dt)
 {
 	if (m_bInUse)
 	{
-		m_pSFPrimitive->SetPrimaryColour(m_c);
-		m_pSFPrimitive->SetScale(m_transform.Scale());
-		m_pSFPrimitive->SetOrientation(m_transform.Orientation());
-		m_pSFPrimitive->SetPosition(m_transform.Position());
+		if (m_w > Fixed::Zero)
+		{
+			m_pQuad->SetColour(m_c)
+				->SetPosition(Vector2::Zero)
+				->SetScale(m_transform.Scale())
+				->SetWorldOrientation(m_transform.Orientation())
+				->SetPosition(m_transform.Position());
+		}
+		else
+		{
+			m_pQuad->SetColour(m_c)->SetScale(m_transform.Scale())->SetPosition(m_transform.Position());
+		}
 
 		Fixed ms(dt.AsMilliseconds());
 		m_transform.localPosition += ms * m_v;
@@ -179,7 +182,7 @@ void Particle::Tick(Time dt)
 		m_t += dt;
 
 		m_bInUse = m_t < m_ttl;
-		m_pSFPrimitive->SetEnabled(m_bInUse);
+		m_pQuad->SetEnabled(m_bInUse && m_bDraw);
 	}
 }
 
@@ -190,6 +193,7 @@ private:
 	const EmitterData m_data;
 	Time m_elapsed;
 	Transform* m_pParent = nullptr;
+	SFPrimitive* m_pSFPrimitive = nullptr;
 	SoundPlayer* m_pSoundPlayer = nullptr;
 	bool m_bSpawnNewParticles = true;
 	bool m_bWaiting = false;
@@ -218,20 +222,25 @@ private:
 Emitter::Emitter(EmitterData data, bool bSetEnabled)
 	: m_data(std::move(data)), m_pParent(data.pParent), m_bEnabled(bSetEnabled)
 {
-	m_particles.reserve(data.spawnData.numParticles);
-	for (size_t i = 0; i < data.spawnData.numParticles; ++i)
+	m_particles.reserve(m_data.spawnData.numParticles);
+	m_pSFPrimitive = Services::RFactory()->New(static_cast<LayerID>(LAYER_FX + m_data.layerDelta));
+	SFQuadVec* quadVec = m_pSFPrimitive->GetQuadVec();
+	quadVec->SetTexture(m_data.GetTexture());
+	for (size_t i = 0; i < m_data.spawnData.numParticles; ++i)
 	{
-		TextureAsset& texture = data.GetTexture();
-		m_particles.emplace_back(texture, m_data.layerDelta);
+		m_particles.emplace_back(*quadVec);
 	}
-	Init();
+	//Init();
 }
 
 Emitter::~Emitter()
 {
 	if (m_pSoundPlayer)
+	{
 		m_pSoundPlayer->Stop();
+	}
 	m_particles.clear();
+	m_pSFPrimitive->Destroy();
 }
 
 void Emitter::Reset(bool bSetEnabled)
@@ -240,17 +249,27 @@ void Emitter::Reset(bool bSetEnabled)
 	{
 		m_particles[i].m_bInUse = false;
 		if (!bSetEnabled)
-			m_particles[i].m_pSFPrimitive->SetEnabled(false);
+		{
+			m_particles[i].m_pQuad->SetEnabled(false);
+		}
 	}
 	if (m_bSoundPlayed && !bSetEnabled && m_pSoundPlayer)
+	{
 		m_pSoundPlayer->Stop();
+	}
 	if (bSetEnabled)
+	{
 		Init();
+	}
 	m_bEnabled = bSetEnabled;
 }
 
 void Emitter::PreWarm(u32 numTicks)
 {
+	for (auto& particle : m_particles)
+	{
+		particle.m_bDraw = false;
+	}
 	Fixed minDT = m_data.lifetimeData.ttlSecs.min * Fixed::OneThird;
 	TRange<Fixed> dtRange(minDT, minDT * 3);
 	bool bTemp = m_bSpawnNewParticles;
@@ -300,6 +319,10 @@ void Emitter::Init()
 	if (m_data.spawnData.bPreWarm)
 	{
 		PreWarm(m_data.spawnData.preWarmNumTicks);
+	}
+	for (auto& particle : m_particles)
+	{
+		particle.m_bDraw = true;
 	}
 }
 
@@ -356,8 +379,6 @@ void Emitter::InitParticle(Particle& p)
 	transform.localScale = {scale, scale};
 	p.Init(velocity, Time::Seconds(GetRandom(m_data.lifetimeData.ttlSecs).ToF32()), transform,
 		   GetRandom(m_data.spawnData.spawnAngularSpeed), Colour::White);
-	p.m_pSFPrimitive->SetStatic(m_data.bStatic);
-	//p.m_pSFPrimitive->bDebugThisPrimitive = true;
 }
 
 void Emitter::InitParticles()
@@ -389,7 +410,7 @@ void Emitter::TickInternal(Time dt)
 			p.m_transform.localScale = Vector2(scale, scale);
 		}
 	}
-
+	
 	// Re provision if required
 	if (m_bSpawnNewParticles)
 	{

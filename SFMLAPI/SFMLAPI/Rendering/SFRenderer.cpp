@@ -39,41 +39,49 @@ void SFRenderer::Render(IRenderBuffer& buffer, Fixed alpha)
 		u32 statics = 0;
 		u32 disabled = 0;
 		u32 primitives = 0;
+		u32 quads = 0;
 #endif
 		for (auto& vec : matrix)
 		{
 			for (auto& pPrimitive : vec)
 			{
-				pPrimitive->UpdateRenderState(alpha);
-				m_pSFWindow->draw(pPrimitive->m_circle);
-				m_pSFWindow->draw(pPrimitive->m_rectangle);
-				m_pSFWindow->draw(pPrimitive->m_sprite);
-				m_pSFWindow->draw(pPrimitive->m_text);
+				if (pPrimitive->m_quadVec.IsPopulated())
+				{
+					sf::VertexArray va = pPrimitive->m_quadVec.ToSFVertexArray();
+					sf::RenderStates rs = pPrimitive->m_quadVec.ToSFRenderStates();
+#if ENABLED(RENDER_STATS)
+					quads += (va.getVertexCount() / 4);
+#endif
+					m_pSFWindow->draw(va, rs);
+				}
+				else
+				{
+					pPrimitive->UpdateRenderState(alpha);
+					m_pSFWindow->draw(pPrimitive->m_circle);
+					m_pSFWindow->draw(pPrimitive->m_rectangle);
+					m_pSFWindow->draw(pPrimitive->m_sprite);
+					m_pSFWindow->draw(pPrimitive->m_text);
 
 #if ENABLED(RENDER_STATS)
-				++primitives;
-				if (!pPrimitive->m_renderState.bEnabled)
-				{
-					++disabled;
-				}
-				if (pPrimitive->m_bStatic)
-				{
-					++statics;
-				}
+					++primitives;
+					if (!pPrimitive->m_renderState.bEnabled)
+					{
+						++disabled;
+					}
+					if (pPrimitive->m_bStatic)
+					{
+						++statics;
+					}
 #endif
+				}
 			}
-		}
-
-		auto& vertArrs = buffer.m_vertArrs;
-		for (auto& vertArr : vertArrs)
-		{
-			m_pSFWindow->draw(vertArr.va, vertArr.rs);
 		}
 #if ENABLED(RENDER_STATS)
 		g_renderData.staticCount = statics;
 		g_renderData.disabledCount = disabled;
 		g_renderData.primitiveCount = primitives;
 		g_renderData.dynamicCount = primitives - statics - disabled;
+		g_renderData.quadCount = quads;
 		// Update FPS
 		{
 			++frameCount;

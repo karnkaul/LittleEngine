@@ -62,7 +62,6 @@ RenderFactory::~RenderFactory()
 		count += vec.size();
 		vec.clear();
 	}
-	m_vertArrs.clear();
 	LOG_I("[RenderFactory] Destroyed %d primitives", count);
 	Services::UnprovideRenderFactory(*this);
 }

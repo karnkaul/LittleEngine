@@ -70,6 +70,9 @@
     <ClInclude Include="SFMLAPI\Rendering\ISFRenderBuffer.h">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\SFQuad.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SFMLAPI\Rendering\Colour.cpp">
@@ -113,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="SFMLAPI\Input\SFInputDataFrame.cpp">
       <Filter>SFMLAPI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\SFQuad.cpp">
+      <Filter>SFMLAPI\Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

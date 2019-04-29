@@ -233,7 +233,7 @@ TweakF32(pflr_maxFT, nullptr);
 void Init(std::thread::id eventThreadID)
 {
 	safeThreadID = eventThreadID;
-	maxTickDeltaTime = Time::Milliseconds(2);
+	maxTickDeltaTime = Time::Milliseconds(5);
 	maxFrameDeltaTime = g_maxFrameTime;
 	textWidth = 300;
 	Vector2 worldSize = GFX::GetViewSize();

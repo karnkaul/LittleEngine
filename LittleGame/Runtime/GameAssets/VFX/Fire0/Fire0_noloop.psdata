@@ -64,8 +64,6 @@
 				alphaOverTime: { min: 255, max: 50 }
 			},
 			texturePath: VFX/Fire0/02.png,
-			soundPath: ,
-			sfxVolume: 0.00,
 			startDelaySecs: 0.33
 		}
 	]

@@ -19,6 +19,7 @@ private:
 	UPtr<UIElement> m_uDisabledCount;
 	UPtr<UIElement> m_uStaticCount;
 	UPtr<UIElement> m_uDynamicCount;
+	UPtr<UIElement> m_uQuadCount;
 	UPtr<UIElement> m_uFPS;
 
 public:

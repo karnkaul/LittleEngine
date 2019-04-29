@@ -22,53 +22,77 @@ Entity *pEntity0 = nullptr, *pEntity1 = nullptr;
 Entity *pEntity2 = nullptr, *pEntity3 = nullptr;
 Entity* pEntity4 = nullptr;
 
+// bool bLoopingPS = false;
+ParticleSystem* pParticleSystem0 = nullptr;
+ParticleSystem* pParticleSystem1 = nullptr;
+
 void OnEnter()
 {
-	if (!pEntity2 && !pEntity3)
-	{
-		pEntity2 = pTestWorld->Game()->NewEntity<Entity>("Yellow Circle", Vector2(-300, 300));
-		if (pEntity2)
-		{
-			auto rc0 = pEntity2->AddComponent<RenderComponent>();
-			rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({100, 100}, SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow);
-			auto t0 = pEntity2->AddComponent<CollisionComponent>();
-			t0->AddCircle(100);
-		}
+	// if (!pEntity2 && !pEntity3)
+	//{
+	//	pEntity2 = pTestWorld->Game()->NewEntity<Entity>("Yellow Circle", Vector2(-300, 300));
+	//	if (pEntity2)
+	//	{
+	//		auto rc0 = pEntity2->AddComponent<RenderComponent>();
+	//		rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({100, 100},
+	//SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow); 		auto t0 =
+	//pEntity2->AddComponent<CollisionComponent>(); 		t0->AddCircle(100);
+	//	}
 
-		pEntity3 = pTestWorld->Game()->NewEntity<Entity>("Blue Rectangle", Vector2(500, -200));
-		if (pEntity3)
-		{
-			auto rc1 = pEntity3->AddComponent<RenderComponent>();
-			rc1->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)->SetPrimaryColour(Colour::Blue);
-			auto t1 = pEntity3->AddComponent<CollisionComponent>();
-			t1->AddAABB(AABBData({600, 100}));
-		}
+	//	pEntity3 = pTestWorld->Game()->NewEntity<Entity>("Blue Rectangle", Vector2(500, -200));
+	//	if (pEntity3)
+	//	{
+	//		auto rc1 = pEntity3->AddComponent<RenderComponent>();
+	//		rc1->SetShape(LAYER_DEFAULT)
+	//			->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)
+	//			->SetPrimaryColour(Colour::Blue);
+	//		auto t1 = pEntity3->AddComponent<CollisionComponent>();
+	//		t1->AddAABB(AABBData({600, 100}));
+	//	}
+	//}
+	// else
+	//{
+	//	pEntity2->Destruct();
+	//	pEntity2 = nullptr;
+	//	pEntity3->Destruct();
+	//	pEntity3 = nullptr;
+	//}
+
+	// if (!pEntity4)
+	//{
+	//	pEntity4 = pTestWorld->Game()->NewEntity<Entity>("SpriteSheetTest");
+	//	pEntity4->m_transform.localPosition = {-200, -200};
+	//	auto rc4 = pEntity4->AddComponent<RenderComponent>();
+	//	rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)), LAYER_FX);
+	//	// rc4->SetSpriteSheet(SpriteSheet(std::move(data), pTexture, Time::Seconds(1.0f)));
+	//}
+	// else
+	//{
+	//	pEntity4->Destruct();
+	//	pEntity4 = nullptr;
+	//}
+
+	if (!pParticleSystem1)
+	{
+		return;
 	}
+
+	if (pParticleSystem1->IsPlaying())
+	{
+		pParticleSystem1->Stop();
+	}
+
 	else
 	{
-		pEntity2->Destruct();
-		pEntity2 = nullptr;
-		pEntity3->Destruct();
-		pEntity3 = nullptr;
-	}
-
-	if (!pEntity4)
-	{
-		pEntity4 = pTestWorld->Game()->NewEntity<Entity>("SpriteSheetTest");
-		pEntity4->m_transform.localPosition = {-200, -200};
-		auto rc4 = pEntity4->AddComponent<RenderComponent>();
-		rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)), LAYER_FX);
-		//rc4->SetSpriteSheet(SpriteSheet(std::move(data), pTexture, Time::Seconds(1.0f)));
-	}
-	else
-	{
-		pEntity4->Destruct();
-		pEntity4 = nullptr;
+		Fixed k(0.9f);
+		Fixed x = Maths::Random::Range(-k, k);
+		Fixed y = Maths::Random::Range(-k, k);
+		Vector2 worldPos = GFX::Project({x, y}, false);
+		pParticleSystem1->m_transform.localPosition = worldPos;
+		pParticleSystem1->Start();
 	}
 }
 
-//bool bLoopingPS = false;
-ParticleSystem* pParticleSystem0 = nullptr;
 void OnSelect()
 {
 	if (!pParticleSystem0)
@@ -83,12 +107,12 @@ void OnSelect()
 	else
 	{
 		// pParticleSystem0->SetEnabled(true);
-		//Fixed x = Maths::Random::Range(-Fixed::One, Fixed::One);
-		//Fixed y = Maths::Random::Range(-Fixed::One, Fixed::One);
-		//Vector2 worldPos = GFX::Project({x, y}, false);
-		//pParticleSystem0->m_transform.localPosition = worldPos;
+		// Fixed x = Maths::Random::Range(-Fixed::One, Fixed::One);
+		// Fixed y = Maths::Random::Range(-Fixed::One, Fixed::One);
+		// Vector2 worldPos = GFX::Project({x, y}, false);
+		// pParticleSystem0->m_transform.localPosition = worldPos;
 		pParticleSystem0->Start();
-		//pTestWorld->Game()->WorldCamera()->Shake();
+		// pTestWorld->Game()->WorldCamera()->Shake();
 	}
 }
 
@@ -183,40 +207,37 @@ void SpawnColliderMinefield()
 	}
 }
 
-sf::VertexArray va(sf::Quads, 4);
+SFPrimitive* pQuadPrim = nullptr;
 void InitVertexArrayTests()
 {
-	va[0].position = Cast(SFPrimitive::WorldToScreen(Vector2(-100, 100)));
-	va[1].position = Cast(SFPrimitive::WorldToScreen(Vector2(100, 100)));
-	va[2].position = Cast(SFPrimitive::WorldToScreen(Vector2(100, -100)));
-	va[3].position = Cast(SFPrimitive::WorldToScreen(Vector2(-100, -100)));
-
-	va[0].color = Cast(Colour(200, 255, 100, 255));
-	va[1].color = Cast(Colour(200, 255, 100, 255));
-	va[2].color = Cast(Colour(200, 255, 100, 255));
-	va[3].color = Cast(Colour(200, 255, 100, 255));
-
-	//Services::RFactory()->m_vertArrs.emplace_back(va);
+	pQuadPrim = Services::RFactory()->New(LAYER_DEFAULT);
+	SFQuadVec* pQuadVec = pQuadPrim->GetQuadVec();
+	auto pTexture = pTestWorld->Repository()->Load<TextureAsset>("Textures/Ship_old.png");
+	pQuadVec->SetTexture(*pTexture);
+	SFQuad* pQ0 = pQuadVec->AddQuad();
+	pQ0->SetWorldOrientation(90)->SetPosition({-400, 300})->SetColour(Colour(255, 255, 255, 150));
 }
 
-//TweakBool(test0, nullptr);
-//TweakBool(testLongAssNameTweakable0, nullptr);
-//TweakBool(test1, nullptr);
-//TweakS32(test2, nullptr);
-//TweakF32(testLongAssNameTweakable1, nullptr);
-//TweakString(test3, nullptr);
+// TweakBool(test0, nullptr);
+// TweakBool(testLongAssNameTweakable0, nullptr);
+// TweakBool(test1, nullptr);
+// TweakS32(test2, nullptr);
+// TweakF32(testLongAssNameTweakable1, nullptr);
+// TweakString(test3, nullptr);
 void StartTests()
 {
 	pEntity0 = pTestWorld->Game()->NewEntity<Entity>("Entity0", {300, 200});
 	auto rc0 = pEntity0->AddComponent<RenderComponent>();
-	rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({300, 100}, SFShapeType::Rectangle)
+	rc0->SetShape(LAYER_DEFAULT)
+		->m_pSFPrimitive->SetSize({300, 100}, SFShapeType::Rectangle)
 		->SetPrimaryColour(Colour::Cyan)
 		->SetEnabled(true);
 
 	pEntity1 = pTestWorld->Game()->NewEntity<Entity>("Entity1", GFX::Project({0, Fixed(0.9f)}, false));
 	auto rc1 = pEntity1->AddComponent<RenderComponent>();
 	FontAsset* font = pTestWorld->Game()->Repository()->GetDefaultFont();
-	rc1->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetText("Hello World!")
+	rc1->SetShape(LAYER_DEFAULT)
+		->m_pSFPrimitive->SetText("Hello World!")
 		->SetFont(*font)
 		->SetTextSize(50)
 		->SetPrimaryColour(Colour(200, 150, 50))
@@ -228,14 +249,23 @@ void StartTests()
 		*pTexture, {PlayerCollider(AABBData({120, 60}), {0, -15}), PlayerCollider(AABBData({60, 80}))});
 	pPlayer->InitPlayer(std::move(data));
 
-	//String path = bLoopingPS ? "VFX/Fire0/Fire0_loop.psdata.min" : "VFX/Fire0/Fire0_noloop.psdata.min";
-	String path = !OS::IsSHIPPING() && OS::IsDebuggerAttached() ? "VFX/Stars0/Stars0.psdata" : "VFX/Stars0/Stars0.psdata.min"; 
+	// String psName = "Fire0";
+	// String path = "VFX/Fire0/Fire0_noloop.psdata.min";
+	String psName = "Stars0";
+	String path = !OS::IsSHIPPING() && OS::IsDebuggerAttached() ? "VFX/Stars0/Stars0.psdata"
+																: "VFX/Stars0/Stars0.psdata.min";
 	auto* pText = pTestWorld->Repository()->Load<TextAsset>(path);
 	GData psGData(pText->GetText());
-	pParticleSystem0 = pTestWorld->Game()->NewEntity<ParticleSystem>("Fire0");
+	pParticleSystem0 = pTestWorld->Game()->NewEntity<ParticleSystem>(std::move(psName));
 	pParticleSystem0->InitParticleSystem(ParticleSystemData(psGData));
-	//pParticleSystem0->m_transform.localScale = {Fixed(2.0f), Fixed(2.0f)};
+	// pParticleSystem0->m_transform.localScale = {Fixed(2.0f), Fixed(2.0f)};
 	pParticleSystem0->Stop();
+
+	pText = pTestWorld->Repository()->Load<TextAsset>("VFX/Fire0/Fire0_noloop.psdata.min");
+	pParticleSystem1 = pTestWorld->Game()->NewEntity<ParticleSystem>("Fire0");
+	pParticleSystem1->InitParticleSystem(ParticleSystemData(GData(pText->GetText())));
+	pParticleSystem1->m_transform.localScale = {Fixed::Two, Fixed::Two};
+	pParticleSystem1->Stop();
 
 	if (bSpawnColliderMinefield)
 	{
@@ -345,6 +375,7 @@ void Cleanup()
 	pTestWorld = nullptr;
 
 	pParticleSystem0 = nullptr;
+	pParticleSystem1 = nullptr;
 	pPlayer = nullptr;
 
 	pEntity0 = pEntity1 = pEntity2 = pEntity3 = pEntity4 = nullptr;
@@ -359,7 +390,8 @@ void Cleanup()
 	{
 		uProgressBG = nullptr;
 	}
-
+	pQuadPrim->Destroy();
+	pQuadPrim = nullptr;
 	debugTokens.clear();
 }
 } // namespace

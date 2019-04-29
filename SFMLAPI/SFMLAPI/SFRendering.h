@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Rendering/Colour.h"
-#include "Rendering/ISFRenderBuffer.h"
-#include "Rendering/SFRenderer.h"
-#include "Rendering/SFRenderState.h"
-#include "Rendering/SFPrimitive.h"
+#include "SFMLAPI/Rendering/Colour.h"
+#include "SFMLAPI/Rendering/ISFRenderBuffer.h"
+#include "SFMLAPI/Rendering/SFRenderer.h"
+#include "SFMLAPI/Rendering/SFRenderState.h"
+#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/Rendering/SFQuad.h"

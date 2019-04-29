@@ -27,10 +27,6 @@ public:
 	using PrimVec = Vec<UPtr<class SFPrimitive>>;
 	using PrimMat = Array<PrimVec, _LAYER_COUNT>;
 
-// TODO: Make proper API
-public:
-	Vec<SFVertArr> m_vertArrs;
-
 protected:
 	std::mutex m_mutex;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreTypes.h"
 #include "Colour.h"
+#include "SFQuad.h"
 #include "SFRenderState.h"
 #include "SFML/Graphics.hpp"
 
@@ -20,6 +21,7 @@ private:
 
 	SFRenderState m_gameState;
 	SFRenderState m_renderState;
+	SFQuadVec m_quadVec;
 	sf::CircleShape m_circle;
 	sf::RectangleShape m_rectangle;
 	sf::Sprite m_sprite;
@@ -31,11 +33,6 @@ private:
 	bool m_bRendered = false;
 	
 public:
-	static Vector2 WorldToScreen(Vector2 worldPoint);
-	static Fixed WorldToScreen(Fixed worldOrientation);
-	static Vector2 ScreenToWorld(Vector2 screenPoint);
-	static Fixed ScreenToWorld(Fixed screenOrientation);
-
 	SFPrimitive(LayerID layer);
 	SFPrimitive(const SFPrimitive& toCopy) = delete;
 
@@ -67,6 +64,8 @@ public:
 	SFPrimitive* SetText(String text);
 
 	SFPrimitive* SetStatic(bool bStatic);
+
+	SFQuadVec* GetQuadVec();
 	
 	Rect2 GetBounds() const;
 	Rect2 GetShapeBounds() const;

@@ -24,6 +24,7 @@
     <ClInclude Include="SFMLAPI\Input\SFInputDataFrame.h" />
     <ClInclude Include="SFMLAPI\Input\SFInputStateMachine.h" />
     <ClInclude Include="SFMLAPI\Rendering\Colour.h" />
+    <ClInclude Include="SFMLAPI\Rendering\SFQuad.h" />
     <ClInclude Include="SFMLAPI\Rendering\ISFRenderBuffer.h" />
     <ClInclude Include="SFMLAPI\Rendering\SFLayerID.h" />
     <ClInclude Include="SFMLAPI\Rendering\SFPrimitive.h" />
@@ -49,6 +50,7 @@
     <ClCompile Include="SFMLAPI\Input\SFInputDataFrame.cpp" />
     <ClCompile Include="SFMLAPI\Input\SFInputStateMachine.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\Colour.cpp" />
+    <ClCompile Include="SFMLAPI\Rendering\SFQuad.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\SFPrimitive.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\SFRenderer.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\SFRenderState.cpp" />
