@@ -55,9 +55,9 @@ public:
 	// Sets size and texCoords according to m_pTexture
 	SFQuad* AddQuad();
 	void SetTexture(TextureAsset& texture);
-	
+
 	bool IsPopulated() const;
 	sf::VertexArray ToSFVertexArray() const;
 	sf::RenderStates ToSFRenderStates() const;
 };
-}
+} // namespace LittleEngine

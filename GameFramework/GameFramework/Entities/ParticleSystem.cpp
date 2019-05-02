@@ -5,6 +5,7 @@
 #include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Debug/DebugProfiler.h"
+#include "LittleEngine/Debug/Console/Tweakable.h"
 #include "LittleEngine/Audio/EngineAudio.h"
 #include "LittleEngine/Game/GameManager.h"
 #include "LittleEngine/RenderLoop/RenderFactory.h"
@@ -78,7 +79,6 @@ void ParticleSpawnData::Deserialise(const GData& gData)
 	DESERIALISE_TFIXED(gData, spawnSpeed);
 	DESERIALISE_TFIXED(gData, spawnAngularSpeed);
 	DESERIALISE_INT(gData, numParticles);
-	DESERIALISE_INT(gData, preWarmNumTicks);
 	DESERIALISE_BOOL(gData, bPreWarm);
 	DESERIALISE_BOOL(gData, bFireOnce);
 }
@@ -110,10 +110,11 @@ class Particle final
 public:
 	Transform m_transform;
 	Vector2 m_v;
+	TRange<Fixed> m_sot = TRange<Fixed>(Fixed::One);
+	TRange<UByte> m_aot = TRange<UByte>(255);
 	Fixed m_w;
 	Time m_ttl;
 	Time m_t;
-	Colour m_c;
 
 private:
 	SFQuad* m_pQuad = nullptr;
@@ -125,10 +126,11 @@ public:
 	~Particle();
 
 	void Init(Vector2 u,
-			  const Time& ttl,
-			  const Transform& transform = Transform::IDENTITY,
+			  Time ttl,
+			  Transform transform = Transform::IDENTITY,
 			  Fixed w = Fixed::Zero,
-			  Colour c = Colour::White);
+			  TRange<UByte> alphaOverTime = TRange<UByte>(255),
+			  TRange<Fixed> scaleOverTime = TRange<Fixed>(Fixed::One));
 
 	void Tick(Time dt);
 
@@ -144,15 +146,16 @@ Particle::Particle(SFQuadVec& quadVec)
 
 Particle::~Particle() = default;
 
-void Particle::Init(Vector2 u, const Time& ttl, const Transform& transform, Fixed w, Colour c)
+void Particle::Init(Vector2 u, Time ttl, Transform transform, Fixed w, TRange<UByte> alphaOverTime, TRange<Fixed> scaleOverTime)
 {
 	m_bInUse = true;
-	this->m_ttl = ttl;
+	m_ttl = ttl;
 	m_t = Time::Zero;
-	m_c = c;
 	m_v = u;
-	this->m_w = w;
-	this->m_transform = transform;
+	m_w = w;
+	m_transform = transform;
+	m_aot = alphaOverTime;
+	m_sot = scaleOverTime;
 
 	m_pQuad->SetScale(transform.Scale())
 		->SetLocalOrientation(transform.Orientation())
@@ -163,17 +166,21 @@ void Particle::Tick(Time dt)
 {
 	if (m_bInUse)
 	{
-		if (m_w > Fixed::Zero)
+		Fixed t(m_t.AsMilliseconds(), m_ttl.AsMilliseconds());
+		Colour c = Colour::White;
+		Fixed s = Lerp(m_sot, t);
+		c.a = Lerp(m_aot, t);
+		if (m_w != Fixed::Zero)
 		{
-			m_pQuad->SetColour(m_c)
+			m_pQuad->SetColour(c)
 				->SetPosition(Vector2::Zero)
-				->SetScale(m_transform.Scale())
+				->SetScale({s, s})
 				->SetWorldOrientation(m_transform.Orientation())
 				->SetPosition(m_transform.Position());
 		}
 		else
 		{
-			m_pQuad->SetColour(m_c)->SetScale(m_transform.Scale())->SetPosition(m_transform.Position());
+			m_pQuad->SetColour(c)->SetScale({s, s})->SetPosition(m_transform.Position());
 		}
 
 		Fixed ms(dt.AsMilliseconds());
@@ -207,7 +214,7 @@ public:
 	~Emitter();
 
 	void Reset(bool bSetEnabled);
-	void PreWarm(u32 numTicks = 50);
+	void PreWarm();
 	void Tick(Time dt);
 
 private:
@@ -216,7 +223,7 @@ private:
 	Vec<Particle*> ProvisionLot(u32 count);
 	void InitParticle(Particle& p);
 	void InitParticles();
-	void TickInternal(Time dt);
+	void TickInternal(Time dt, bool bPreWarming = false);
 };
 
 Emitter::Emitter(EmitterData data, bool bSetEnabled)
@@ -230,7 +237,7 @@ Emitter::Emitter(EmitterData data, bool bSetEnabled)
 	{
 		m_particles.emplace_back(*quadVec);
 	}
-	//Init();
+	// Init();
 }
 
 Emitter::~Emitter()
@@ -264,21 +271,15 @@ void Emitter::Reset(bool bSetEnabled)
 	m_bEnabled = bSetEnabled;
 }
 
-void Emitter::PreWarm(u32 numTicks)
+void Emitter::PreWarm()
 {
 	for (auto& particle : m_particles)
 	{
 		particle.m_bDraw = false;
 	}
-	Fixed minDT = m_data.lifetimeData.ttlSecs.min * Fixed::OneThird;
-	TRange<Fixed> dtRange(minDT, minDT * 3);
 	bool bTemp = m_bSpawnNewParticles;
 	m_bSpawnNewParticles = true;
-	for (u32 i = 0; i < numTicks; ++i)
-	{
-		Time dt = Time::Seconds(GetRandom<Fixed>(dtRange).ToF32());
-		TickInternal(dt);
-	}
+	TickInternal(Time::Zero, true);
 	m_bSpawnNewParticles = bTemp;
 }
 
@@ -318,7 +319,7 @@ void Emitter::Init()
 	InitParticles();
 	if (m_data.spawnData.bPreWarm)
 	{
-		PreWarm(m_data.spawnData.preWarmNumTicks);
+		PreWarm();
 	}
 	for (auto& particle : m_particles)
 	{
@@ -373,12 +374,15 @@ void Emitter::InitParticle(Particle& p)
 	velocity *= GetRandom(m_data.spawnData.spawnSpeed);
 	Transform transform = Transform::IDENTITY;
 	if (m_pParent)
+	{
 		transform.SetParent(*m_pParent);
+	}
 	transform.localPosition = GetRandom(m_data.spawnData.spawnPosition);
-	Fixed scale = m_data.lifetimeData.scaleOverTime.min;
-	transform.localScale = {scale, scale};
-	p.Init(velocity, Time::Seconds(GetRandom(m_data.lifetimeData.ttlSecs).ToF32()), transform,
-		   GetRandom(m_data.spawnData.spawnAngularSpeed), Colour::White);
+	Time ttl = Time::Seconds(GetRandom(m_data.lifetimeData.ttlSecs).ToF32());
+	Fixed w = GetRandom(m_data.spawnData.spawnAngularSpeed);
+	TRange<UByte> aot = m_data.lifetimeData.alphaOverTime;
+	TRange<Fixed> sot = m_data.lifetimeData.scaleOverTime;
+	p.Init(velocity, ttl, transform, w, aot, sot);
 }
 
 void Emitter::InitParticles()
@@ -390,24 +394,24 @@ void Emitter::InitParticles()
 	}
 }
 
-void Emitter::TickInternal(Time dt)
+void Emitter::TickInternal(Time dt, bool bPreWarming)
 {
 	// Update in use
 	size_t alive = 0;
+	Time _dt = dt;
 	for (size_t i = 0; i < m_particles.size(); ++i)
 	{
 		Particle& p = m_particles[i];
-		p.Tick(dt);
+		if (bPreWarming)
+		{
+			Fixed ttlSecs = p.m_ttl.AsSeconds();
+			TRange<Fixed> dtRange(ttlSecs * Fixed::OneTenth, ttlSecs);
+			_dt = Time::Seconds(GetRandom<Fixed>(dtRange).ToF32());
+		}
+		p.Tick(_dt);
 		if (p.m_bInUse)
 		{
 			++alive;
-			Fixed t(p.m_t.AsMilliseconds(), p.m_ttl.AsMilliseconds());
-			// Alpha
-			p.m_c.a = Lerp(m_data.lifetimeData.alphaOverTime, t);
-
-			// Scale
-			Fixed scale = Lerp(m_data.lifetimeData.scaleOverTime, t);
-			p.m_transform.localScale = Vector2(scale, scale);
 		}
 	}
 	
@@ -424,6 +428,7 @@ void Emitter::TickInternal(Time dt)
 			}
 		}
 	}
+	// Turn off if bFireOnce and all particles are dead
 	else if (alive == 0)
 	{
 		m_bEnabled = false;

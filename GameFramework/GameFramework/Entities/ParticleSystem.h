@@ -20,7 +20,6 @@ struct ParticleSpawnData
 	TRange<Fixed> emitterAngle{Fixed::Zero};
 	TRange<Fixed> spawnSpeed{Fixed(10), Fixed(20)};
 	TRange<Fixed> spawnAngularSpeed{Fixed::Zero};
-	u32 preWarmNumTicks = 50;
 	u32 numParticles;
 	bool bPreWarm = false;
 	bool bFireOnce = false;

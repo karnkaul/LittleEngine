@@ -12,7 +12,7 @@ struct SFVertArr
 	sf::VertexArray va;
 	sf::RenderStates rs;
 
-	SFVertArr(const sf::VertexArray& arr, sf::RenderStates* pStates = nullptr) : va(arr)
+	SFVertArr(sf::VertexArray arr, sf::RenderStates* pStates = nullptr) : va(std::move(arr))
 	{
 		if (pStates)
 		{

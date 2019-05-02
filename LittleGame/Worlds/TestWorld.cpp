@@ -207,17 +207,6 @@ void SpawnColliderMinefield()
 	}
 }
 
-SFPrimitive* pQuadPrim = nullptr;
-void InitVertexArrayTests()
-{
-	pQuadPrim = Services::RFactory()->New(LAYER_DEFAULT);
-	SFQuadVec* pQuadVec = pQuadPrim->GetQuadVec();
-	auto pTexture = pTestWorld->Repository()->Load<TextureAsset>("Textures/Ship_old.png");
-	pQuadVec->SetTexture(*pTexture);
-	SFQuad* pQ0 = pQuadVec->AddQuad();
-	pQ0->SetWorldOrientation(90)->SetPosition({-400, 300})->SetColour(Colour(255, 255, 255, 150));
-}
-
 // TweakBool(test0, nullptr);
 // TweakBool(testLongAssNameTweakable0, nullptr);
 // TweakBool(test1, nullptr);
@@ -271,8 +260,6 @@ void StartTests()
 	{
 		SpawnColliderMinefield();
 	}
-
-	InitVertexArrayTests();
 }
 
 UIButtonDrawer* pButtonDrawer = nullptr;
@@ -390,8 +377,6 @@ void Cleanup()
 	{
 		uProgressBG = nullptr;
 	}
-	pQuadPrim->Destroy();
-	pQuadPrim = nullptr;
 	debugTokens.clear();
 }
 } // namespace
