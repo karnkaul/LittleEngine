@@ -11,6 +11,7 @@ struct SFVertex
 	SFTexCoords texCoords;
 	Colour colour;
 
+	SFVertex();
 	SFVertex(Vector2 position, SFTexCoords texCoords = SFTexCoords::Zero, Colour colour = Colour::White);
 
 	sf::Vertex ToSFVertex() const;
@@ -19,7 +20,7 @@ struct SFVertex
 class SFQuad
 {
 private:
-	Vec<SFVertex> m_vertices;
+	Array<SFVertex, 4> m_vertices;
 	SFTexRect m_texRect;
 	Vector2 m_orgSize;
 	Vector2 m_scale = Vector2::One;

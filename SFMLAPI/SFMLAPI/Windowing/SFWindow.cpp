@@ -110,8 +110,10 @@ Vector2 SFWindow::Project(Vector2 nPos, bool bPreClamp) const
 
 Vector2 SFWindow::ScreenToWorld(sf::Vector2i screenPos) const
 {
-	Vector2 screen(screenPos.x, screenPos.y);
-	screen -= (Fixed::OneHalf * m_viewSize);
-	return Vector2(screen.x, -screen.y);
+	Vector2 screenPoint(screenPos.x, screenPos.y);
+	Vector2 screenSize(m_data.windowSize.width, m_data.windowSize.height);
+	Vector2 aspectRatio(m_viewSize.x / screenSize.x, m_data.viewSize.y / screenSize.y);
+	screenPoint -= (Fixed::OneHalf * screenSize);
+	return Vector2(screenPoint.x * aspectRatio.x, -screenPoint.y * aspectRatio.y);
 }
 } // namespace LittleEngine

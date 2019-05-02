@@ -135,7 +135,7 @@ bool UITextInput::OnInput(const EngineInput::Frame& frame)
 		}
 		if (frame.IsReleased(GameInputType::Back))
 		{
-			m_uKeyboard->m_liveLine.liveString = m_prevText;
+			m_uKeyboard->m_liveLine.Set(m_prevText);
 			OnInteractEnd(true);
 			return true;
 		}

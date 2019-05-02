@@ -91,7 +91,7 @@ void RemoveChars(String& outInput, InitList<char> toRemove)
 
 void RemoveWhitespace(String& outInput)
 {
-	SubstituteChars(outInput, {Pair<char>('\t', ' '), Pair<char>('\n', ' ')});
+	SubstituteChars(outInput, {Pair<char>('\t', ' '), Pair<char>('\n', ' '), Pair<char>('\r', ' ')});
 	RemoveChars(outInput, {' '});
 }
 

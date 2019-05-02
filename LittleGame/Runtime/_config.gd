@@ -9,6 +9,6 @@
 	windowTitle: Async_Little_Engine,
 	ticksPerSecond: 40,
 	maxTickTimeMS: 25,
-	colliderShapeBorderWidth: 1,
+	colliderShapeBorderWidth: 2,
 	bPauseOnFocusLoss: false
 }

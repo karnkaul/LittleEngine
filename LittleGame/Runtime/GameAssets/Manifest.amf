@@ -17,13 +17,15 @@
 
 	texts:
 	[
-		VFX/Fire0/Fire0_noloop.psdata.min,
-		VFX/Fire0/Fire0_loop.psdata.min
+		VFX/Fire0/Fire0_noloop.psdata,
+		VFX/Fire0/Fire0_loop.psdata,
+		VFX/Stars0/Stars0.psdata
 	],
 	
 	textureSets:
 	[
 		{ pathPrefix: VFX/Fire0, count: 3, assetPrefix: , assetSuffix: .png },
+		{ pathPrefix: VFX/Stars0, count: 1, assetPrefix: , assetSuffix: .png },
 		{ pathPrefix: Misc/STRESS_TEST, count: 5, assetPrefix: , assetSuffix: .png }
 	],
 	

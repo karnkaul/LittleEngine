@@ -405,7 +405,7 @@ void Emitter::TickInternal(Time dt, bool bPreWarming)
 		if (bPreWarming)
 		{
 			Fixed ttlSecs = p.m_ttl.AsSeconds();
-			TRange<Fixed> dtRange(ttlSecs * Fixed::OneTenth, ttlSecs);
+			TRange<Fixed> dtRange(Fixed::Zero, ttlSecs);
 			_dt = Time::Seconds(GetRandom<Fixed>(dtRange).ToF32());
 		}
 		p.Tick(_dt);

@@ -5,6 +5,10 @@
 
 namespace LittleEngine
 {
+SFVertex::SFVertex() : colour(Colour::White)
+{
+}
+
 SFVertex::SFVertex(Vector2 position, SFTexCoords texCoords, Colour colour)
 	: position(position), texCoords(texCoords), colour(colour)
 {
@@ -18,10 +22,10 @@ sf::Vertex SFVertex::ToSFVertex() const
 SFQuad::SFQuad(Rect2 worldRect, SFTexRect texRect, Colour colour)
 	: m_texRect(std::move(texRect)), m_orgSize(worldRect.GetSize()), m_position(worldRect.GetCentre())
 {
-	m_vertices.emplace_back(worldRect.GetTopLeft(), SFTexCoords(m_texRect.min.x, m_texRect.min.y), colour);
-	m_vertices.emplace_back(worldRect.GetTopRight(), SFTexCoords(m_texRect.max.x, m_texRect.min.y), colour);
-	m_vertices.emplace_back(worldRect.GetBottomRight(), SFTexCoords(m_texRect.max.x, m_texRect.max.y), colour);
-	m_vertices.emplace_back(worldRect.GetBottomLeft(), SFTexCoords(m_texRect.min.x, m_texRect.max.y), colour);
+	m_vertices[0] = SFVertex(worldRect.GetTopLeft(), SFTexCoords(m_texRect.min.x, m_texRect.min.y), colour);
+	m_vertices[1] = SFVertex(worldRect.GetTopRight(), SFTexCoords(m_texRect.max.x, m_texRect.min.y), colour);
+	m_vertices[2] = SFVertex(worldRect.GetBottomRight(), SFTexCoords(m_texRect.max.x, m_texRect.max.y), colour);
+	m_vertices[3] = SFVertex(worldRect.GetBottomLeft(), SFTexCoords(m_texRect.min.x, m_texRect.max.y), colour);
 }
 
 SFQuad::~SFQuad() = default;

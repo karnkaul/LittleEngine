@@ -18,7 +18,7 @@ namespace
 const Colour MOUSE_LEFT_COLOUR = Colour(230, 0, 100, 255);
 const Colour MOUSE_RIGHT_COLOUR = Colour(0, 230, 100, 255);
 const Colour MOUSE_DEFAULT_COLOUR = Colour(100, 100, 100, 255);
-const u8 MOUSE_QUAD_WIDTH = 1;
+const u8 MOUSE_QUAD_WIDTH = 2;
 bool bShowCrosshair = false;
 } // namespace
 #endif

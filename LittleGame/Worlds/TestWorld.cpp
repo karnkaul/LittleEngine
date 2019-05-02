@@ -238,19 +238,15 @@ void StartTests()
 		*pTexture, {PlayerCollider(AABBData({120, 60}), {0, -15}), PlayerCollider(AABBData({60, 80}))});
 	pPlayer->InitPlayer(std::move(data));
 
-	// String psName = "Fire0";
-	// String path = "VFX/Fire0/Fire0_noloop.psdata.min";
 	String psName = "Stars0";
-	String path = !OS::IsSHIPPING() && OS::IsDebuggerAttached() ? "VFX/Stars0/Stars0.psdata"
-																: "VFX/Stars0/Stars0.psdata.min";
+	String path = "VFX/Stars0/Stars0.psdata";
 	auto* pText = pTestWorld->Repository()->Load<TextAsset>(path);
 	GData psGData(pText->GetText());
 	pParticleSystem0 = pTestWorld->Game()->NewEntity<ParticleSystem>(std::move(psName));
 	pParticleSystem0->InitParticleSystem(ParticleSystemData(psGData));
-	// pParticleSystem0->m_transform.localScale = {Fixed(2.0f), Fixed(2.0f)};
 	pParticleSystem0->Stop();
 
-	pText = pTestWorld->Repository()->Load<TextAsset>("VFX/Fire0/Fire0_noloop.psdata.min");
+	pText = pTestWorld->Repository()->Load<TextAsset>("VFX/Fire0/Fire0_loop.psdata");
 	pParticleSystem1 = pTestWorld->Game()->NewEntity<ParticleSystem>("Fire0");
 	pParticleSystem1->InitParticleSystem(ParticleSystemData(GData(pText->GetText())));
 	pParticleSystem1->m_transform.localScale = {Fixed::Two, Fixed::Two};
