@@ -4,15 +4,15 @@
 
 namespace LittleEngine
 {
-class JobHandle final
+class JobHandleBlock final
 {
 private:
 	std::future<void> m_future;
 	s64 m_jobID = -1;
 
 public:
-	JobHandle() = default;
-	JobHandle(s64 jobID, std::future<void>&& future);
+	JobHandleBlock() = default;
+	JobHandleBlock(s64 jobID, std::future<void>&& future);
 
 	s64 GetID() const;
 
@@ -23,4 +23,6 @@ private:
 	friend class JobWorker;
 	friend class JobManager;
 };
+
+using JobHandle = SPtr<JobHandleBlock>;
 } // namespace LittleEngine

@@ -470,7 +470,7 @@ ParticleSystem::~ParticleSystem() = default;
 
 void ParticleSystem::OnCreated()
 {
-	SetName("", "ParticleSystem");
+	SetType("ParticleSystem");
 }
 
 void ParticleSystem::InitParticleSystem(ParticleSystemData data)

@@ -24,7 +24,7 @@ Entity::~Entity()
 
 void Entity::OnCreate(String name)
 {
-	SetName(std::move(name), "Entity");
+	SetNameAndType(std::move(name), "Entity");
 	OnCreated();
 }
 

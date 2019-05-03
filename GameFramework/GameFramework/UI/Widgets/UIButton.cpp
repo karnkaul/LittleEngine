@@ -23,7 +23,7 @@ UIElement* UIButton::GetButtonElement() const
 
 void UIButton::OnCreated()
 {
-	SetName("", "UIButton");
+	SetType("UIButton");
 	m_pRoot = AddElement<UIElement>(String(GetNameStr()) + " Panel");
 	m_pRoot->m_transform.size = m_style.widgetSize;
 }

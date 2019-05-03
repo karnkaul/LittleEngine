@@ -21,7 +21,7 @@ UIContext::~UIContext()
 
 void UIContext::OnCreate(String name, LayerID rootLayer)
 {
-	SetName(std::move(name), "UIContext");
+	SetNameAndType(std::move(name), "UIContext");
 	m_uUIWidgets = MakeUnique<UIWidgetMatrix>();
 	s32 layerDelta = rootLayer - LAYER_UI;
 	m_pRootElement = AddElement<UIElement>(String(GetNameStr()) + "_Root", nullptr, layerDelta);

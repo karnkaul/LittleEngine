@@ -5,11 +5,6 @@
 #include "TestWorld.h"
 #include "UI/OptionsUI.h"
 
-// TODO: Remove
-#include "LittleEngine/RenderLoop/RenderFactory.h"
-#include "SFMLAPI/Windowing/SFWindow.h"
-#include "SFMLAPI/System/SFTypes.h"
-
 namespace LittleEngine
 {
 namespace

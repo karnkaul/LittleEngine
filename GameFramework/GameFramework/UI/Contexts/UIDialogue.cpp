@@ -14,7 +14,7 @@ const Fixed footerHeight = 80;
 
 void UIDialogue::OnCreated()
 {
-	SetName("", "UIDialogue");
+	SetType("UIDialogue");
 	const Fixed contentHeight = m_data.size.y - (headerHeight + footerHeight);
 	m_bAutoDestroyOnCancel = true;
 	m_pRootElement->m_transform.size = {m_data.size.x, m_data.size.y};

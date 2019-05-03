@@ -7,7 +7,6 @@ namespace LittleEngine
 {
 UIProgressBar::UIProgressBar(LayerID layer, bool bSilent) : UIElement("Progress Bar", layer, bSilent)
 {
-	SetName("", "UIProgressBar");
 }
 
 void UIProgressBar::InitProgressBar(Vector2 size, Colour colour, Fixed initProgress)
@@ -29,6 +28,6 @@ void UIProgressBar::SetProgress(Fixed progress)
 
 void UIProgressBar::OnCreated()
 {
-	SetName("", "UIProgressBar");
+	SetType("UIProgressBar");
 }
 } // namespace LittleEngine
