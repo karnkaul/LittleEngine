@@ -29,10 +29,16 @@ using Lock = std::lock_guard<std::mutex>;
 
 AsyncFileLogger::AsyncFileLogger(String path) : m_filePath(std::move(path))
 {
-	Core::g_OnLogStr = std::bind(&AsyncFileLogger::OnLogStr, this, std::placeholders::_1);
+	Core::g_OnLogStr = [&](const char* pText) {
+		if (!m_bStopLogging.load(std::memory_order_relaxed))
+		{
+			Lock lock(m_mutex);
+			m_cache += std::string(pText);
+		}
+	};
 	m_bStopLogging.store(false, std::memory_order_relaxed);
-	m_sFileLogJobHandle = Services::Jobs()->EnqueueEngine(
-		std::bind(&AsyncFileLogger::Async_StartLogging, this), "AsyncFileLogger");
+	m_sFileLogJobHandle =
+		Services::Jobs()->EnqueueEngine([&]() { Async_StartLogging(); }, "AsyncFileLogger");
 }
 
 AsyncFileLogger::~AsyncFileLogger()
@@ -67,14 +73,5 @@ void AsyncFileLogger::Async_StartLogging()
 		m_uWriter->Append(std::move(m_cache));
 	}
 	m_uWriter = nullptr;
-}
-
-void AsyncFileLogger::OnLogStr(const char* pText)
-{
-	if (!m_bStopLogging.load(std::memory_order_relaxed))
-	{
-		Lock lock(m_mutex);
-		m_cache += std::string(pText);
-	}
 }
 } // namespace LittleEngine

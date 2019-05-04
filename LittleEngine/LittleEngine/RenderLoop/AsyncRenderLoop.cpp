@@ -42,8 +42,8 @@ void AsyncRenderLoop::Start()
 		m_pSFWindow->setActive(false);
 		m_bRendering.store(true, std::memory_order_relaxed);
 		LOG_I("[AsyncRenderLoop] Deactivated SFWindow on this thread, starting render thread");
-		m_pRenderJobHandle = Services::Jobs()->EnqueueEngine(
-			std::bind(&AsyncRenderLoop::Async_Run, this), "Async Render Loop");
+		m_pRenderJobHandle =
+			Services::Jobs()->EnqueueEngine([&]() { Async_Run(); }, "Async Render Loop");
 	}
 }
 

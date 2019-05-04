@@ -30,8 +30,8 @@ void OnEnter()
 	//	{
 	//		auto rc0 = pEntity2->AddComponent<RenderComponent>();
 	//		rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({100, 100},
-	//SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow); 		auto t0 =
-	//pEntity2->AddComponent<CollisionComponent>(); 		t0->AddCircle(100);
+	// SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow); 		auto t0 =
+	// pEntity2->AddComponent<CollisionComponent>(); 		t0->AddCircle(100);
 	//	}
 
 	//	pEntity3 = pTestWorld->Game()->NewEntity<Entity>("Blue Rectangle", Vector2(500, -200));
@@ -387,7 +387,7 @@ void TestWorld::OnActivated()
 {
 	pTestWorld = this;
 	StartTests();
-	BindInput(std::bind(&TestWorld::OnInput, this, _1));
+	BindInput([&](const EngineInput::Frame& frame) -> bool { return OnInput(frame); });
 	BindInput(&Test_OnInput);
 }
 

@@ -45,8 +45,8 @@ private:
 	// Called after event loop, before Window destruction
 	virtual void PostRun() = 0;
 	virtual void PreTick() = 0;
-	// Fixed time slice Tick
-	virtual void Tick(Time dt) = 0;
+	// Fixed time slice Tick; return true to yield current integration
+	virtual bool Tick(Time dt) = 0;
 	// Called once per frame; use to swap buffers etc
 	virtual void FinishFrame() = 0;
 };

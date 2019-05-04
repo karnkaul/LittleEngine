@@ -41,7 +41,7 @@ void OptionsUI::OnCreated()
 	}
 
 	// Last UIWidget on this column
-	m_tokens.push_back(AddMainButton("Close", std::bind(&UIContext::Destruct, this), true));
+	m_tokens.push_back(AddMainButton("Close", [&]() { Destruct(); }, true));
 
 	// Resolutions
 	const auto& resolutions = GFX::GetValidWindowSizes();

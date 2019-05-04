@@ -37,10 +37,12 @@ public:
 
 private:
 	void Start(String manifestPath = "", String archivePath = "");
-	void Tick(Time dt);
+	// Returns true if active World state changed
+	bool Tick(Time dt);
 	
 	void LoadingTick(Time dt);
-	void GameTick(Time dt);
+	// Returns true if active World state changed
+	bool GameTick(Time dt);
 
 	friend class EngineService;
 };

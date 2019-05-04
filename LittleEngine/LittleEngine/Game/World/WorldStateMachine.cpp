@@ -109,14 +109,14 @@ void WorldStateMachine::Start(String manifestPath, String archivePath)
 	// When done, load World 0
 }
 
-void WorldStateMachine::Tick(Time dt)
+bool WorldStateMachine::Tick(Time dt)
 {
 	if (m_bLoading)
 	{
 		LoadingTick(dt);
-		return;
+		return false;
 	}
-	GameTick(dt);
+	return GameTick(dt);
 }
 
 void WorldStateMachine::LoadingTick(Time dt)
@@ -148,12 +148,14 @@ void WorldStateMachine::LoadingTick(Time dt)
 	}
 }
 
-void WorldStateMachine::GameTick(Time dt)
+bool WorldStateMachine::GameTick(Time dt)
 {
+	bool bYield = false;
 	if (m_bToActivateState)
 	{
 		m_pActiveState->Activate();
 		m_bToActivateState = false;
+		bYield = true;
 		LOG_I("[WorldStateMachine] ...Loaded %s", m_pNextState->LogNameStr());
 	}
 
@@ -172,6 +174,7 @@ void WorldStateMachine::GameTick(Time dt)
 		m_pActiveState = m_pNextState;
 		m_bToActivateState = true;
 	}
+	return bYield;
 }
 
 Vec<WorldID> WorldStateMachine::GetAllStateIDs() const

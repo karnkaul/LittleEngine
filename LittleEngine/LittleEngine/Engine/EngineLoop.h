@@ -28,7 +28,7 @@ public:
 private:
 	void PreRun() override;
 	void PreTick() override;
-	void Tick(Time dt) override;
+	bool Tick(Time dt) override;
 	void FinishFrame() override;
 	void PostRun() override;
 	void OnPause(bool bPause) override;

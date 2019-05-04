@@ -113,12 +113,12 @@ void EngineService::SetWindowStyle(SFWindowStyle newStyle)
 
 void EngineService::Terminate()
 {
-	m_bTerminate = true;
+	m_bTerminating = true;
 }
 
 void EngineService::PreRun()
 {
-	m_bTerminate = false;
+	m_bTerminating = false;
 #if ENABLED(CONSOLE)
 	Console::Init();
 #endif
@@ -134,11 +134,11 @@ void EngineService::UpdateInput(const SFInputDataFrame& inputDataFrame)
 	m_uEngineInput->FireCallbacks();
 }
 
-void EngineService::Tick(Time dt)
+bool EngineService::Tick(Time dt)
 {
 	Services::Jobs()->Tick(dt);
 	m_uEngineRepository->Tick(dt);
-	m_uWorldStateMachine->Tick(dt);
+	bool bWorldStateChanged = m_uWorldStateMachine->Tick(dt);
 	m_uEngineAudio->Tick(dt);
 #if ENABLED(CONSOLE)
 	Console::Tick(dt);
@@ -146,6 +146,7 @@ void EngineService::Tick(Time dt)
 #if ENABLED(PROFILER)
 	Profiler::Tick(dt);
 #endif
+	return bWorldStateChanged || m_bTerminating;
 }
 
 void EngineService::PreFinishFrame()

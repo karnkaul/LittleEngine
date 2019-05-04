@@ -39,14 +39,12 @@ LayerID UIContext::GetMaxLayer() const
 			maxLayer = uElement->m_layer;
 		}
 	}
-	m_uUIWidgets->ForEach([&maxLayer](const UPtr<UIWidget>& uWidget) 
-	{
+	m_uUIWidgets->ForEach([&maxLayer](const UPtr<UIWidget>& uWidget) {
 		if (uWidget->GetMaxLayer() > maxLayer)
 		{
 			maxLayer = uWidget->GetMaxLayer();
 		}
-	}
-	);
+	});
 	return maxLayer;
 }
 
@@ -60,7 +58,8 @@ void UIContext::SetActive(bool bActive, bool bResetSelection)
 			ResetSelection();
 		}
 		Tick(Time::Zero);
-		m_inputTokens.push_back(Services::Engine()->Input()->Register(std::bind(&UIContext::OnInput, this, _1)));
+		m_inputTokens.push_back(Services::Engine()->Input()->Register(
+			[&](const EngineInput::Frame& frame) -> bool { return OnInput(frame); }));
 	}
 }
 

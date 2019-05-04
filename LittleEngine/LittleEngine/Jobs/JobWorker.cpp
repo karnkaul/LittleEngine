@@ -11,7 +11,7 @@ JobWorker::JobWorker(JobManager& manager, u8 id, bool bEngineWorker)
 {
 	m_bWork.store(true, std::memory_order_relaxed);
 	m_logName = "[JobWorker" + Strings::ToString(this->id) + "]";
-	m_thread = std::thread(std::bind(&JobWorker::Run, this));
+	m_thread = std::thread([&]() { Run(); });
 }
 
 JobWorker::~JobWorker()
@@ -59,8 +59,7 @@ void JobWorker::Run()
 			{
 				LOG_D("%s Starting %s %s", m_logName.c_str(),
 					  m_bEngineWorker ? "Engine Job" : "Job", uJob->ToStr());
-			} 
-			// TODO: Retrieve and defer any exceptions thrown
+			}
 			uJob->Run();
 			if (!uJob->m_bSilent && !uJob->m_szException)
 			{

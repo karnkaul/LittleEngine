@@ -51,7 +51,7 @@ void ControllerComponent::OnCreated()
 	{
 		LOG_E("%s : %s has ControllerComponent but no RenderComponent!", LogNameStr(), m_pOwner->LogNameStr());
 	}
-	BindInput(std::bind(&ControllerComponent::OnInput, this, _1));
+	BindInput([&](const EngineInput::Frame& x) -> bool { return OnInput(x); });
 	Reset();
 }
 

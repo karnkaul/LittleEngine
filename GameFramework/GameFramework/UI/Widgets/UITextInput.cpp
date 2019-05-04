@@ -86,7 +86,8 @@ void UITextInput::OnInteractEnd(bool bInteract)
 	{
 		m_bWriting = !m_bWriting;
 		m_token = m_bWriting
-					  ? Services::Engine()->Input()->Register(std::bind(&UITextInput::OnInput, this, _1))
+					  ? Services::Engine()->Input()->Register(
+							[&](const EngineInput::Frame& frame) -> bool { return OnInput(frame); })
 					  : nullptr;
 	}
 	Colour fill = m_bWriting ? m_style.interacting.fill : m_style.selected.fill;

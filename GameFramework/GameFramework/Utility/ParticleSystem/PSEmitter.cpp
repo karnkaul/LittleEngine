@@ -118,10 +118,7 @@ void Emitter::Reset(bool bSetEnabled)
 	for (size_t i = 0; i < m_particles.size(); ++i)
 	{
 		m_particles[i].m_bInUse = false;
-		if (!bSetEnabled)
-		{
-			m_particles[i].m_pQuad->SetEnabled(false);
-		}
+		m_particles[i].m_pQuad->SetEnabled(false);
 	}
 	if (m_bSoundPlayed && !bSetEnabled && m_pSoundPlayer)
 	{
