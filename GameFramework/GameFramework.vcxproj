@@ -35,6 +35,8 @@
     <ClCompile Include="GameFramework\UI\Widgets\UISelection.cpp" />
     <ClCompile Include="GameFramework\UI\Widgets\UITextInput.cpp" />
     <ClCompile Include="GameFramework\UI\Widgets\UIToggle.cpp" />
+    <ClCompile Include="GameFramework\Utility\ParticleSystem\PSData.cpp" />
+    <ClCompile Include="GameFramework\Utility\ParticleSystem\PSEmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameFramework\Components\CollisionComponent.h" />
@@ -52,6 +54,8 @@
     <ClInclude Include="GameFramework\UI\Widgets\UISelection.h" />
     <ClInclude Include="GameFramework\UI\Widgets\UITextInput.h" />
     <ClInclude Include="GameFramework\UI\Widgets\UIToggle.h" />
+    <ClInclude Include="GameFramework\Utility\ParticleSystem\PSData.h" />
+    <ClInclude Include="GameFramework\Utility\ParticleSystem\PSEmitter.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -241,7 +241,7 @@ void StartTests()
 	pParticleSystem0->InitParticleSystem(ParticleSystemData(psGData));
 	pParticleSystem0->Stop();
 
-	pText = pTestWorld->Repository()->Load<TextAsset>("VFX/Fire0/Fire0_loop.psdata");
+	pText = pTestWorld->Repository()->Load<TextAsset>("VFX/Fire0/Fire0_noloop.psdata");
 	pParticleSystem1 = pTestWorld->Game()->NewEntity<ParticleSystem>("Fire0");
 	pParticleSystem1->InitParticleSystem(ParticleSystemData(GData(pText->GetText())));
 	pParticleSystem1->m_transform.localScale = {Fixed::Two, Fixed::Two};
