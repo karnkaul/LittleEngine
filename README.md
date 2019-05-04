@@ -44,9 +44,9 @@ The Engine needs an `AssetManifest` serialised `GData` object in order to locate
 ### Running the Engine
 The Engine uses a state machine to manage the active `World` and switch to a different `World`. Follow these steps in `main()` to set up and run the engine:
 
-1. Create an instance of the Engine using `EngineLoop::Create()`
-1. Add derived World classes in order using `Services::Engine()->Worlds()->CreateWorld<T>()`;
-1. Run the Engine by calling `EngineLoop::Run()` on the created instance
+1. Create an instance of the Engine using `auto engine = EngineLoop::Create();`
+1. Add derived `World` objects in order using `engine->Worlds()->CreateWorld<T>();`
+1. Run the Engine by calling `engine->Run();` on the created instance
 
 A `World` is capable of spawning new `Entities` and its subclasses, as well as new `Components` and subclasses, attached to existing `Entities`. The Engine will call `World::Tick(Time dt)` at a fixed time slice, set in `EngineConfig`. `World` will then call `Entity::Tick()` and `Component::Tick()` on all active objects.
 
