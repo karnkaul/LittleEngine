@@ -60,8 +60,8 @@ void Particle::Init(Vector2 u, Time ttl, Transform transform, Fixed w, TRange<UB
 	m_aot = alphaOverTime;
 	m_sot = scaleOverTime;
 
-	m_pQuad->SetScale(transform.Scale())
-		->SetLocalOrientation(transform.Orientation())
+	m_pQuad->SetScale({m_sot.min, m_sot.min})
+		->SetLocalOrientation(transform.localOrientation)
 		->SetPosition(transform.Position());
 }
 
@@ -73,18 +73,11 @@ void Particle::Tick(Time dt)
 		Colour c = Colour::White;
 		Fixed s = Lerp(m_sot, t);
 		c.a = Lerp(m_aot, t);
-		if (m_w != Fixed::Zero)
-		{
-			m_pQuad->SetColour(c)
-				->SetPosition(Vector2::Zero)
-				->SetScale({s, s})
-				->SetWorldOrientation(m_transform.Orientation())
-				->SetPosition(m_transform.Position());
-		}
-		else
-		{
-			m_pQuad->SetColour(c)->SetScale({s, s})->SetPosition(m_transform.Position());
-		}
+		m_pQuad->SetColour(c)
+			->SetPosition(Vector2::Zero)
+			->SetScale({s, s})
+			->SetWorldOrientation(m_transform.localOrientation)
+			->SetPosition(m_transform.Position());
 
 		Fixed ms(dt.AsMilliseconds());
 		m_transform.localPosition += ms * m_v;
@@ -143,10 +136,6 @@ void Emitter::Reset(bool bSetEnabled)
 
 void Emitter::PreWarm()
 {
-	for (auto& particle : m_particles)
-	{
-		particle.m_bDraw = false;
-	}
 	bool bTemp = m_bSpawnNewParticles;
 	m_bSpawnNewParticles = true;
 	TickInternal(Time::Zero, true);
@@ -188,6 +177,10 @@ void Emitter::Init()
 	m_bWaiting = m_data.startDelaySecs > Fixed::Zero;
 	m_elapsed = Time::Zero;
 	m_bSoundPlayed = false;
+	for (auto& particle : m_particles)
+	{
+		particle.m_bDraw = false;
+	}
 	InitParticles();
 	if (m_data.spawnData.bPreWarm)
 	{

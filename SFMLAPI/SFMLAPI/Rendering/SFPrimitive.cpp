@@ -21,6 +21,7 @@ SFPrimitive::SFPrimitive(LayerID layer)
 void SFPrimitive::SwapState()
 {
 	m_renderState = m_gameState;
+	m_quadVec.SwapStates();
 }
 
 SFPrimitive* SFPrimitive::SetEnabled(bool bEnabled)

@@ -20,7 +20,8 @@ struct SFVertex
 class SFQuad
 {
 private:
-	Array<SFVertex, 4> m_vertices;
+	Array<SFVertex, 4> m_gameVerts;
+	Array<SFVertex, 4> m_renderVerts;
 	SFTexRect m_texRect;
 	Vector2 m_orgSize;
 	Vector2 m_scale = Vector2::One;
@@ -41,6 +42,8 @@ public:
 	SFQuad* SetEnabled(bool bEnabled);
 
 private:
+	void SwapStates();
+
 	friend class SFQuadVec;
 };
 
@@ -56,6 +59,8 @@ public:
 	// Sets size and texCoords according to m_pTexture
 	SFQuad* AddQuad();
 	void SetTexture(TextureAsset& texture);
+
+	void SwapStates();
 
 	bool IsPopulated() const;
 	sf::VertexArray ToSFVertexArray() const;
