@@ -345,6 +345,13 @@ void TestTick(Time dt)
 		pTextContext->SetActive(true);
 		bSpawnedTextInput = true;
 	}
+
+	static bool bJobException = false;
+	if (elapsed.AsSeconds() >= 5 && !bJobException)
+	{
+		bJobException = true;
+		Services::Jobs()->Enqueue([]() { throw std::exception("Test"); }, "ExceptionJob");
+	}
 }
 
 void Cleanup()

@@ -62,10 +62,14 @@ void JobWorker::Run()
 			} 
 			// TODO: Retrieve and defer any exceptions thrown
 			uJob->Run();
-			if (!uJob->m_bSilent)
+			if (!uJob->m_bSilent && !uJob->m_szException)
 			{
 				LOG_D("%s Completed %s %s", m_logName.c_str(),
 					  m_bEngineWorker ? "Engine Job" : "Job", uJob->ToStr());
+			}
+			if (uJob->m_szException)
+			{
+				LOG_E("%s Threw an exception running %s\n\t%s!", m_logName.c_str(), uJob->ToStr(), uJob->m_szException);
 			}
 			uJob->Fulfil();
 		}

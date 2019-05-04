@@ -31,8 +31,8 @@ void JobManager::Job::Run()
 	}
 	catch (const std::exception& e)
 	{
-		Assert(false, "AsyncTask threw exception!");
-		LOG_E("%d threw an exception and job has failed! %d\n%s", m_sHandle->GetID(), e.what());
+		AssertVar(false, e.what());
+		m_szException = e.what();
 	}
 }
 

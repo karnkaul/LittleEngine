@@ -26,7 +26,8 @@ private:
 		std::function<void()> m_task;
 		s32 m_id;
 		bool m_bSilent = false;
-
+		const char* m_szException = nullptr;
+		
 	public:
 		Job() = default;
 		Job(s32 id, std::function<void()> task, String name, bool bSilent);
