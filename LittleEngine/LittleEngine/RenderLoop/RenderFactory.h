@@ -1,5 +1,4 @@
 #pragma once
-#include <mutex>
 #include "SimpleTime.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/Rendering/ISFRenderBuffer.h"
@@ -10,8 +9,6 @@ namespace LittleEngine
 class RenderFactory final : public IRenderBuffer, public IService
 {
 private:
-	using PrimVec = Vec<UPtr<SFPrimitive>>;
-	using PrimMat = Array<PrimVec, _LAYER_COUNT>;
 	using Lock = std::lock_guard<std::mutex>;
 
 private:
@@ -19,7 +16,6 @@ private:
 	static const u32 LOCK_SLEEP_MS = 5;
 	PrimMat m_active;
 	PrimVec m_standby;
-	std::mutex m_mutex;
 	Time m_lastSwapTime;
 	
 public:
@@ -32,8 +28,9 @@ public:
 private:
 	void Reconcile();
 	void Lock_Swap() override;
-	void Lock_Traverse(std::function<void(Vec<SFPrimitive*>)> procedure) override;
-	void Lock_TraverseMatrix(std::function<void(PrimMat&)> procedure);
+	
+private:
+	PrimMat& GetActiveRenderMatrix() override;
 
 private:
 	friend class AsyncRenderLoop;

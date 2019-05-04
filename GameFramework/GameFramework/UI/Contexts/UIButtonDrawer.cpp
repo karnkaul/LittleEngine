@@ -49,7 +49,7 @@ UIButton::OnClick::Token UIButtonDrawer::AddButton(UIText buttonText,
 
 void UIButtonDrawer::OnCreated()
 {
-	SetName("", "UIButtonDrawer");
+	SetType("UIButtonDrawer");
 	m_pRootElement->m_transform.size = m_data.panelStyle.size;
 	m_pRootElement->SetPanel(m_data.panelStyle.fill, m_data.panelStyle.border, m_data.panelStyle.outline);
 }

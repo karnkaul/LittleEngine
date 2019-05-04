@@ -83,8 +83,8 @@ void Tweakable::SyncS32(String rawValue)
 	m_value = Strings::ToString(value);
 	if (m_pTarget)
 	{
-		f32* pF32 = reinterpret_cast<f32*>(m_pTarget);
-		*pF32 = value;
+		s32* pS32 = reinterpret_cast<s32*>(m_pTarget);
+		*pS32 = value;
 	}
 }
 

@@ -3,6 +3,7 @@
 #include <functional>
 #include <future>
 #include "CoreTypes.h"
+#include "JobHandle.h"
 #include "LittleEngine/Services/IService.h"
 
 namespace LittleEngine
@@ -21,11 +22,12 @@ private:
 		std::promise<void> m_promise;
 		String logName;
 	public:
-		SPtr<class JobHandle> m_sHandle;
+		JobHandle m_sHandle;
 		std::function<void()> m_task;
 		s32 m_id;
 		bool m_bSilent = false;
-
+		const char* m_szException = nullptr;
+		
 	public:
 		Job() = default;
 		Job(s32 id, std::function<void()> task, String name, bool bSilent);
@@ -52,8 +54,8 @@ public:
 	~JobManager() override;
 
 public:
-	SPtr<JobHandle> Enqueue(std::function<void()> task, String name = "", bool bSilent = false);
-	SPtr<JobHandle> EnqueueEngine(std::function<void()> task, String name);
+	JobHandle Enqueue(std::function<void()> task, String name = "", bool bSilent = false);
+	JobHandle EnqueueEngine(std::function<void()> task, String name);
 	MultiJob* CreateMultiJob(String name);
 
 private:
@@ -61,7 +63,7 @@ private:
 	void Tick(Time dt);
 
 	UPtr<Job> Lock_PopJob(bool bEngineQueue = false);
-	SPtr<JobHandle> Lock_Enqueue(UPtr<Job>&& uJob, List<UPtr<Job>>& jobQueue);
+	JobHandle Lock_Enqueue(UPtr<Job>&& uJob, List<UPtr<Job>>& jobQueue);
 
 	friend class EngineService;
 	friend class EngineLoop;

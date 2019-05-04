@@ -45,7 +45,8 @@ void SFWindow::CreateWindow()
 	Assert(!isOpen(), "Duplicate call to SFWindow::Create()!");
 	create(sf::VideoMode(m_data.windowSize.width, m_data.windowSize.height), m_data.title,
 		   Cast(m_data.style));
-	m_viewBounds = Rect2::CentreSize(m_data.viewSize);
+	m_viewSize = m_data.viewSize;
+	m_viewBounds = Rect2::CentreSize(m_viewSize);
 	Vector2 viewSize = m_viewBounds.GetSize();
 	Fixed worldAspect = viewSize.x / viewSize.y;
 	Fixed screenAspect(m_data.windowSize.width, m_data.windowSize.height);
@@ -92,7 +93,7 @@ void SFWindow::OverrideData(SFWindowRecreateData data)
 
 Vector2 SFWindow::GetViewSize() const
 {
-	return m_viewBounds.GetSize();
+	return m_viewSize;
 }
 
 Vector2 SFWindow::Project(Vector2 nPos, bool bPreClamp) const
@@ -105,5 +106,14 @@ Vector2 SFWindow::Project(Vector2 nPos, bool bPreClamp) const
 	}
 	Vector2 s = m_viewBounds.topRight;
 	return Vector2(p.x * s.x, p.y * s.y);
+}
+
+Vector2 SFWindow::ScreenToWorld(sf::Vector2i screenPos) const
+{
+	Vector2 screenPoint(screenPos.x, screenPos.y);
+	Vector2 screenSize(m_data.windowSize.width, m_data.windowSize.height);
+	Vector2 aspectRatio(m_viewSize.x / screenSize.x, m_data.viewSize.y / screenSize.y);
+	screenPoint -= (Fixed::OneHalf * screenSize);
+	return Vector2(screenPoint.x * aspectRatio.x, -screenPoint.y * aspectRatio.y);
 }
 } // namespace LittleEngine

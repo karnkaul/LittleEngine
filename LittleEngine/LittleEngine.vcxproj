@@ -85,6 +85,7 @@
     <ClInclude Include="LittleEngine\Engine\EngineLoop.h" />
     <ClInclude Include="LittleEngine\Engine\EngineService.h" />
     <ClInclude Include="LittleEngine\Engine\AsyncFileLogger.h" />
+    <ClInclude Include="LittleEngine\Engine\FatalEngineException.h" />
     <ClInclude Include="LittleEngine\Engine\OS.h" />
     <ClInclude Include="LittleEngine\Game\Camera.h" />
     <ClInclude Include="LittleEngine\Game\Component.h" />
@@ -131,12 +132,6 @@
     <ClInclude Include="LittleEngine\UI\UIWidgetMatrix.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.vcxproj">
-      <Project>{af5b2e49-98bc-4c1b-8b53-0122876d47fa}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\PCH\_PCH.vcxproj">
-      <Project>{176489df-3f22-43d5-a6f4-56ef4f2d4388}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\SFMLAPI\SFMLAPI.vcxproj">
       <Project>{927b2d28-14e8-4d17-a0fb-5d637cf4ea3c}</Project>
     </ProjectReference>

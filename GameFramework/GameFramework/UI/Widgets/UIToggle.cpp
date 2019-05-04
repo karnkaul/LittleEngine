@@ -53,7 +53,7 @@ UIElement* UIToggle::GetRoot() const
 
 void UIToggle::OnCreated()
 {
-	SetName("", "UIToggle");
+	SetType("UIToggle");
 	m_pRoot = AddElement<UIElement>("ToggleRoot");
 	m_pRoot->SetPanel(m_style.background);
 	m_pRoot->m_transform.size = m_style.widgetSize;

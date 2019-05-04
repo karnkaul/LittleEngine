@@ -85,7 +85,7 @@ void ConsoleImpl::Tick(Time dt)
 			m_bShowCursor = !m_bShowCursor;
 			m_elapsed = Time::Zero;
 		}
-		m_renderer.SetLiveString(m_input.GetConsoleLiveLine(m_bShowCursor));
+		m_renderer.SetLiveString(m_input.m_keyboard.GetLiveString(), m_input.m_keyboard.m_liveLine.GetCursorNPos(), m_bShowCursor);
 		// Log Lines
 		m_renderer.UpdateLog(Console::g_uLogBook->GetLogPage());
 	}

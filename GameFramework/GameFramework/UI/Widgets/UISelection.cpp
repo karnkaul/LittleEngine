@@ -59,7 +59,7 @@ void UISelection::OnCreated()
 	m_style = UIWidgetStyle::GetDefault1(&m_style);
 	UIButton::OnCreated();
 	
-	SetName("", "UISelection");
+	SetType("UISelection");
 	m_buttonToken = AddCallback(std::bind(&UISelection::OnSpawnDrawer, this));
 }
 

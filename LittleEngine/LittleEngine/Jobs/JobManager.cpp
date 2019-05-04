@@ -2,7 +2,6 @@
 #include <thread>
 #include "Logger.h"
 #include "Utils.h"
-#include "JobHandle.h"
 #include "JobManager.h"
 #include "JobWorker.h"
 #include "MultiJob.h"
@@ -16,7 +15,7 @@ JobManager::Job::Job(s32 id, std::function<void()> task, String name, bool bSile
 {
 	String suffix = name.empty() ? "" : "-" + name;
 	logName = "[" + Strings::ToString(id) + suffix + "]";
-	m_sHandle = MakeShared<JobHandle>(id, m_promise.get_future());
+	m_sHandle = MakeShared<JobHandleBlock>(id, m_promise.get_future());
 }
 
 const char* JobManager::Job::ToStr() const
@@ -32,8 +31,8 @@ void JobManager::Job::Run()
 	}
 	catch (const std::exception& e)
 	{
-		Assert(false, "AsyncTask threw exception!");
-		LOG_E("%d threw an exception and job has failed! %d\n%s", m_sHandle->GetID(), e.what());
+		AssertVar(false, e.what());
+		m_szException = e.what();
 	}
 }
 
@@ -78,13 +77,13 @@ JobManager::~JobManager()
 	LOG_I("[JobManager] destroyed");
 }
 
-SPtr<JobHandle> JobManager::Enqueue(std::function<void()> task, String name, bool bSilent)
+JobHandle JobManager::Enqueue(std::function<void()> task, String name, bool bSilent)
 {
 	UPtr<Job> uJob = MakeUnique<Job>(++m_nextGameJobID, std::move(task), std::move(name), bSilent);
 	return Lock_Enqueue(std::move(uJob), m_gameJobQueue);
 }
 
-SPtr<JobHandle> JobManager::EnqueueEngine(std::function<void()> task, String name)
+JobHandle JobManager::EnqueueEngine(std::function<void()> task, String name)
 {
 	Assert(AvailableEngineThreads() > 0, "!DEADLOCK! No available engine workers!");
 	UPtr<Job> uJob = MakeUnique<Job>(++m_nextEngineJobID, std::move(task), std::move(name), false);
@@ -139,9 +138,9 @@ UPtr<JobManager::Job> JobManager::Lock_PopJob(bool bEngineQueue)
 	return {};
 }
 
-SPtr<JobHandle> JobManager::Lock_Enqueue(UPtr<Job>&& uJob, List<UPtr<Job>>& jobQueue)
+JobHandle JobManager::Lock_Enqueue(UPtr<Job>&& uJob, List<UPtr<Job>>& jobQueue)
 {
-	SPtr<JobHandle> sHandle = uJob->m_sHandle;
+	JobHandle sHandle = uJob->m_sHandle;
 	Lock lock(m_mutex);
 	jobQueue.emplace_front(std::move(uJob));
 	return sHandle;

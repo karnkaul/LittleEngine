@@ -42,6 +42,8 @@ enum class SpecialInputType
 	Delete,
 	PageUp,
 	PageDown,
+	Home,
+	End,
 };
 
 // \brief Struct to hold synchronous input text as a string
@@ -55,10 +57,18 @@ struct TextInput
 	void Reset();
 };
 
+struct MouseInput
+{
+	Vector2 worldPosition;
+	bool bLeftPressed = false;
+	bool bRightPressed = false;
+};
+
 struct SFInputDataFrame
 {
 	Vec<KeyState> pressed;
 	TextInput textInput;
+	MouseInput mouseInput;
 
 	static String GetClipboard();
 };

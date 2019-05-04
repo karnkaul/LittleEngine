@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
+#include "JobHandle.h"
 
 namespace LittleEngine
 {
@@ -16,8 +17,8 @@ private:
 
 	String m_logName;
 	Vec<SubJob> m_subJobs;
-	List<SPtr<class JobHandle>> m_pendingJobs;
-	List<SPtr<JobHandle>> m_completedJobs;
+	List<JobHandle> m_pendingJobs;
+	List<JobHandle> m_completedJobs;
 	std::function<void()> m_onComplete = nullptr;
 	Time m_startTime;
 	bool m_bCompleted = false;

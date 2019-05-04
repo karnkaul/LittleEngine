@@ -69,7 +69,7 @@ void WorldStateMachine::Start(String manifestPath, String archivePath)
 	if (!m_manifestPath.empty())
 	{
 		// LoadAsync all assets in manifest
-#if !SHIPPING
+#if ENABLED(FILESYSTEM_ASSETS)
 		if (m_archivePath.empty())
 		{
 			LOG_D("[WorldStateMachine] Loading assets from filesystem using manifest at [%s]...",

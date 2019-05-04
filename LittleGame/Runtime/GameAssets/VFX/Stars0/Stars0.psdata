@@ -2,18 +2,17 @@
 	emitters: [
 		{
 			spawnData: {
-				spawnPosition: { min: { x: -960, y: 540 }, max: { x: 960, y: 800} },
+				spawnPosition: { min: { x: -960, y: 540 }, max: { x: 960, y: 540} },
 				spreadAngle: { min: 180.00, max: 180.00 },
 				emitterAngle: { min: 0.00, max: 0.00 },
-				spawnSpeed: { min: 0.05, max: 0.5 },
+				spawnSpeed: { min: 0.03, max: 0.2 },
 				spawnAngularSpeed: { min: 0.00, max: 0.00 },
-				preWarmNumTicks: 10,
-				numParticles: 1000,
+				numParticles: 3000,
 				bPreWarm: true,
 				bFireOnce: false
 			},
 			lifetimeData: {
-				ttlSecs: { min: 10, max: 20 },
+				ttlSecs: { min: 6, max: 12 },
 				scaleOverTime: { min: 0.2, max: 0.1 },
 				alphaOverTime: { min: 255, max: 150 }
 			},

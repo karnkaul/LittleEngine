@@ -40,8 +40,10 @@
 
 #if !SHIPPING
 #define DEBUG_LOGGING 1
+#define FILESYSTEM_ASSETS 1
 #else
 #define DEBUG_LOGGING 0
+#define FILESYSTEM_ASSETS 0
 #endif
 
 using u8 = uint8_t;

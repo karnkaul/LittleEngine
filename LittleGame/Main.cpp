@@ -13,10 +13,13 @@ s32 TestGameLoop()
 	WorldStateMachine::s_bTEST_infiniteLoad = bInfiniteLoad;
 #endif
 	auto uGameLoop = EngineLoop::Create();
-
-	Services::Engine()->Worlds()->CreateWorld<BootWorld>();
-	Services::Engine()->Worlds()->CreateWorld<TestWorld>();
-	return uGameLoop->Run();
+	if (uGameLoop)
+	{
+		uGameLoop->Worlds()->CreateWorld<BootWorld>();
+		uGameLoop->Worlds()->CreateWorld<TestWorld>();
+		return uGameLoop->Run();
+	}
+	return -1;
 }
 
 int main()

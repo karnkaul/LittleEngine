@@ -47,7 +47,7 @@ void SetStringIfEmpty(GData& data, String key, String value)
 } // namespace
 
 const bool EngineConfig::s_bPauseOnFocusLoss = false;
-const Version EngineConfig::s_engineVersion = "0.1.5";
+const Version EngineConfig::s_engineVersion = "0.1.6";
 
 EngineConfig::EngineConfig()
 {
@@ -181,8 +181,8 @@ void EngineConfig::Verify()
 {
 	SetStringIfEmpty(*m_uData, WINDOW_TITLE_KEY, "Async Little Engine");
 	SetStringIfEmpty(*m_uData, LOG_LEVEL_KEY, "Info");
-	SetStringIfEmpty(*m_uData, COLLIDER_SHAPE_WIDTH_KEY, "1.0");
-	SetStringIfEmpty(*m_uData, TICKS_PER_SECOND_KEY, Strings::ToString(40));
+	SetStringIfEmpty(*m_uData, COLLIDER_SHAPE_WIDTH_KEY, "2");
+	SetStringIfEmpty(*m_uData, TICKS_PER_SECOND_KEY, Strings::ToString(60));
 	SetStringIfEmpty(*m_uData, MAX_TICK_TIME_MS, Strings::ToString(25));
 	SetStringIfEmpty(*m_uData, RENDER_THREAD_KEY, Strings::ToString(true));
 	SetStringIfEmpty(*m_uData, NUM_GAME_THREADS_KEY, Strings::ToString(6));

@@ -45,7 +45,7 @@ CircleLocus Intersect(const AABBData& bounds, const CircleData& circle)
 } // namespace
 
 #if DEBUGGING
-u32 Collider::s_debugShapeWidth = 1;
+u32 Collider::s_debugShapeWidth = 2;
 bool Collider::s_bShowDebugShape = false;
 TweakBool(colliders, &Collider::s_bShowDebugShape);
 #endif

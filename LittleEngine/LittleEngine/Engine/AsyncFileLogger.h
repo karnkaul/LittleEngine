@@ -2,6 +2,7 @@
 #include <atomic>
 #include <mutex>
 #include "CoreTypes.h"
+#include "LittleEngine/Jobs/JobHandle.h"
 
 namespace Core
 {
@@ -18,7 +19,7 @@ private:
 	UPtr<Core::FileRW> m_uWriter;
 	std::atomic<bool> m_bStopLogging;
 	std::mutex m_mutex;
-	SPtr<class JobHandle> m_sFileLogJobHandle;
+	JobHandle m_sFileLogJobHandle;
 
 public:
 	AsyncFileLogger(String filePath);

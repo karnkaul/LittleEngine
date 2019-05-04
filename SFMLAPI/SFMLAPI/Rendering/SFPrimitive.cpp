@@ -11,26 +11,6 @@ namespace
 const sf::Vector2f ZERO = sf::Vector2f(0, 0);
 }
 
-Vector2 SFPrimitive::WorldToScreen(Vector2 worldPoint)
-{
-	return Vector2(worldPoint.x, -worldPoint.y);
-}
-
-Fixed SFPrimitive::WorldToScreen(Fixed worldOrientation)
-{
-	return -worldOrientation;
-}
-
-Vector2 SFPrimitive::ScreenToWorld(Vector2 screenPoint)
-{
-	return Vector2(screenPoint.x, -screenPoint.y);
-}
-
-Fixed SFPrimitive::ScreenToWorld(Fixed screenOrientation)
-{
-	return -screenOrientation;
-}
-
 SFPrimitive::SFPrimitive(LayerID layer)
 {
 	m_gameState.layer = layer;
@@ -41,6 +21,7 @@ SFPrimitive::SFPrimitive(LayerID layer)
 void SFPrimitive::SwapState()
 {
 	m_renderState = m_gameState;
+	m_quadVec.SwapStates();
 }
 
 SFPrimitive* SFPrimitive::SetEnabled(bool bEnabled)
@@ -49,15 +30,15 @@ SFPrimitive* SFPrimitive::SetEnabled(bool bEnabled)
 	return this;
 }
 
-SFPrimitive* SFPrimitive::SetPosition(Vector2 sfPosition, bool bImmediate)
+SFPrimitive* SFPrimitive::SetPosition(Vector2 worldPosition, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.sfPosition.Reset(WorldToScreen(sfPosition));
+		m_gameState.sfPosition.Reset(WorldToScreen(worldPosition));
 	}
 	else
 	{
-		m_gameState.sfPosition.Update(WorldToScreen(sfPosition));
+		m_gameState.sfPosition.Update(WorldToScreen(worldPosition));
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -68,15 +49,15 @@ SFPrimitive* SFPrimitive::SetPosition(Vector2 sfPosition, bool bImmediate)
 	return this;
 }
 
-SFPrimitive* SFPrimitive::SetOrientation(Fixed sfOrientation, bool bImmediate)
+SFPrimitive* SFPrimitive::SetOrientation(Fixed worldOrientation, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.sfOrientation.Reset(WorldToScreen(sfOrientation));
+		m_gameState.sfOrientation.Reset(WorldToScreen(worldOrientation));
 	}
 	else
 	{
-		m_gameState.sfOrientation.Update(WorldToScreen(sfOrientation));
+		m_gameState.sfOrientation.Update(WorldToScreen(worldOrientation));
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -87,15 +68,15 @@ SFPrimitive* SFPrimitive::SetOrientation(Fixed sfOrientation, bool bImmediate)
 	return this;
 }
 
-SFPrimitive* SFPrimitive::SetScale(Vector2 sfScale, bool bImmediate)
+SFPrimitive* SFPrimitive::SetScale(Vector2 worldScale, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.sfScale.Reset(sfScale);
+		m_gameState.sfScale.Reset(worldScale);
 	}
 	else
 	{
-		m_gameState.sfScale.Update(sfScale);
+		m_gameState.sfScale.Update(worldScale);
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -184,7 +165,7 @@ SFPrimitive* SFPrimitive::SetTexture(const TextureAsset& texture)
 SFPrimitive* SFPrimitive::CropTexture(SFTexRect textureRect)
 {
 	m_gameState.texRect = textureRect;
-	m_sprite.setTextureRect(m_gameState.texRect.Cast());
+	m_sprite.setTextureRect(m_gameState.texRect.ToSFIntRect());
 	return this;
 }
 
@@ -326,6 +307,11 @@ SFPrimitive* SFPrimitive::SetStatic(bool bStatic)
 		m_bMakeStatic = m_bStatic = false;
 	}
 	return this;
+}
+
+SFQuadVec* SFPrimitive::GetQuadVec()
+{
+	return &m_quadVec;
 }
 
 void SFPrimitive::UpdatePivot()

@@ -34,7 +34,7 @@ void UIElement::SetParent(UITransform& parent)
 
 void UIElement::OnCreate(String name, UITransform* pParent)
 {
-	SetName(std::move(name), "UIElement");
+	SetNameAndType(std::move(name), "UIElement");
 	if (pParent)
 	{
 		m_transform.SetParent(*pParent);

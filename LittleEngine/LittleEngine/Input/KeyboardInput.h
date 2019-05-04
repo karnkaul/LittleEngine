@@ -7,12 +7,19 @@ namespace LittleEngine
 struct LiveLine
 {
 	String liveString;
+	size_t cursorIdx;
 
 	LiveLine();
 
+	void Set(String newInput);
 	void Append(String newInput);
-	void Backspace();
+	bool Backspace();
+	bool Delete();
 	void Clear();
+	bool MoveCursor(s8 units);
+	void MoveCursorToExtreme(bool bStart);
+
+	Fixed GetCursorNPos() const;
 };
 
 class KeyboardInput final

@@ -12,7 +12,7 @@ UIWidget::~UIWidget() = default;
 
 void UIWidget::OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCopy)
 {
-	SetName(std::move(name), "UIWidget");
+	SetNameAndType(std::move(name), "UIWidget");
 	m_pOwner = &owner;
 	m_style = pStyleToCopy ? *pStyleToCopy : UIWidgetStyle::GetDefault0();
 	OnCreated();

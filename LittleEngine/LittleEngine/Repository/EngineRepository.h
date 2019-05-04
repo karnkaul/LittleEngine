@@ -35,7 +35,7 @@ public:
 	template <typename T>
 	std::future<T*> LoadAsync(String id);
 
-#if !SHIPPING
+#if ENABLED(FILESYSTEM_ASSETS)
 	ManifestLoader* LoadAsync(String manifestPath, std::function<void()> onComplete = nullptr);
 #endif
 	ManifestLoader* LoadAsync(String archivePath,
@@ -57,7 +57,7 @@ private:
 	T* GetLoaded(const String& id);
 	template <typename T>
 	T* LoadFromArchive(const String& id);
-#if !SHIPPING
+#if ENABLED(FILESYSTEM_ASSETS)
 	template <typename T>
 	T* LoadFromFilesystem(const String& id);
 #endif
@@ -65,7 +65,7 @@ private:
 	template <typename T>
 	UPtr<T> CreateAsset(const String& id, Vec<u8> buffer);
 
-#if !SHIPPING
+#if ENABLED(FILESYSTEM_ASSETS)
 	template <typename T>
 	UPtr<T> FetchAsset(const String& id);
 #endif
@@ -97,7 +97,7 @@ T* EngineRepository::Load(String id)
 	}
 	if (!pT)
 	{
-#if !SHIPPING
+#if ENABLED(FILESYSTEM_ASSETS)
 		LOG_W("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
 		pT = LoadFromFilesystem<T>(id);
 #else
@@ -129,7 +129,7 @@ std::future<T*> EngineRepository::LoadAsync(String id)
 	}
 	else
 	{
-#if !SHIPPING
+#if ENABLED(FILESYSTEM_ASSETS)
 		LOG_W("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
 		Services::Jobs()->Enqueue(
 			[this, id, sPromise]() { sPromise->set_value(LoadFromFilesystem<T>(id)); }, "", true);
@@ -171,7 +171,7 @@ T* EngineRepository::LoadFromArchive(const String& id)
 	return pT;
 }
 
-#if !SHIPPING
+#if ENABLED(FILESYSTEM_ASSETS)
 template <typename T>
 T* EngineRepository::LoadFromFilesystem(const String& id)
 {
@@ -207,7 +207,7 @@ UPtr<T> EngineRepository::CreateAsset(const String& id, Vec<u8> buffer)
 	return std::move(uT);
 }
 
-#if !SHIPPING
+#if ENABLED(FILESYSTEM_ASSETS)
 template <typename T>
 UPtr<T> EngineRepository::FetchAsset(const String& id)
 {

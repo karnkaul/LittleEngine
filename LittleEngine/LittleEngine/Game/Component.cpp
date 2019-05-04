@@ -32,7 +32,7 @@ void AComponent::Tick(Time /*dt*/)
 
 void AComponent::RegenerateLogNameStr()
 {
-	String suffix = m_className.empty() ? "" : "/" + m_className;
+	String suffix = m_typeName.empty() ? "" : "/" + m_typeName;
 	suffix += "=>" + m_pOwner->m_name;
 	m_logName = "[" + m_name + suffix + "]";
 }

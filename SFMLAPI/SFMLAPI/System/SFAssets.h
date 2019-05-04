@@ -40,7 +40,7 @@ public:
 
 private:
 	// Prevents having to expose texture to code outside SFMLInterface
-	friend class SFSprite;
+	friend class SFQuadVec;
 	friend class SFPrimitive;
 };
 

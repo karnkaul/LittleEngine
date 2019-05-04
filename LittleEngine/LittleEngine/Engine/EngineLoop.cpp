@@ -5,6 +5,7 @@
 #include "EngineConfig.h"
 #include "EngineLoop.h"
 #include "EngineService.h"
+#include "FatalEngineException.h"
 #include "OS.h"
 #include "LittleEngine/Audio/EngineAudio.h"
 #include "LittleEngine/Debug/DebugProfiler.h"
@@ -18,6 +19,7 @@
 #if DEBUGGING
 #include "LittleEngine/Physics/Collider.h"
 #endif
+#include "LittleEngine/Game/World/WorldStateMachine.h"
 
 namespace LittleEngine
 {
@@ -57,7 +59,7 @@ void EngineLoop::FinishFrame()
 	m_uAsyncRenderLoop->m_bPauseRendering.store(true, std::memory_order_release);
 	m_uRenderFactory->Lock_Swap();
 	m_uAsyncRenderLoop->m_bPauseRendering.store(false, std::memory_order_release);
-	
+
 	if (!m_bRenderThread)
 	{
 		Time renderElapsed = Time::Now() - m_uRenderFactory->GetLastSwapTime();
@@ -95,21 +97,30 @@ void EngineLoop::OnPause(bool bPause)
 UPtr<EngineLoop> EngineLoop::Create()
 {
 	UPtr<EngineLoop> uEngine = MakeUnique<EngineLoop>();
-	uEngine->Start();
-	return uEngine;
+	if (uEngine->Start())
+	{
+		return uEngine;
+	}
+	return nullptr;
 }
+	
 
-void EngineLoop::Start()
+bool EngineLoop::Start()
 {
 	if (m_bInit)
 	{
 		LOG_W("[EngineLoop] Engine already started");
-		return;
+		return true;
 	}
-	Init();
+	return m_bInit = Init();
 }
 
-void EngineLoop::Init()
+WorldStateMachine* EngineLoop::Worlds() const
+{
+	return Services::Engine()->Worlds();
+}
+
+bool EngineLoop::Init()
 {
 	m_uConfig = MakeUnique<EngineConfig>();
 #if !SHIPPING
@@ -147,10 +158,18 @@ void EngineLoop::Init()
 	m_cullBounds = gameSettings->GetCullBounds(viewSize);
 	m_uSFWindow->SetData(SFWindowData(gameSettings->GetWindowSize(viewSize), viewSize,
 									  m_uConfig->GetWindowTitle(), gameSettings->GetWindowStyle()));
-	m_uEngineService = MakeUnique<EngineService>(*this);
-
+	try
+	{
+		m_uEngineService = MakeUnique<EngineService>(*this);
+	}
+	catch (const FatalEngineException& /*e*/)
+	{
+		LOG_E("ERROR! Could not initialise Engine Service!");
+		return false;
+	}
+	
 	g_maxFrameTime = m_maxFrameTime;
-	m_bInit = true;
+	return true;
 }
 
 void EngineLoop::Uninit()

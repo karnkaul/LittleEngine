@@ -27,6 +27,7 @@ private:
 	Time m_cursorFreq = Time::Milliseconds(200);
 	Time m_elapsed;
 	UIElement* m_pRoot = nullptr;
+	UIElement* m_pCursor = nullptr;
 	UIElement* m_pText = nullptr;
 	bool m_bWriting = false;
 	bool m_bShowCursor = false;

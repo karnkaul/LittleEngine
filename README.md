@@ -6,13 +6,14 @@ Written in **C++14**, utilising [**SFML v2.5.1**](https://www.sfml-dev.org/) and
 ### Requirements
 
 #### To Run
-1. Microsoft VC++ Runtime
+1. Windows 7/8/10 64-bit
+1. [Microsoft VC++ Runtime (x64)](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
 
 #### To Build Source
-1. Microsoft Visual Studio 15 (2017)
+1. Microsoft Visual Studio 15 (2017) / 16 (2019)
 1. [LLVM for Windows](http://releases.llvm.org/download.html)
-1. [VS2017 LLVM Compiler Toolchain plugin](https://marketplace.visualstudio.com/items?itemName=LLVMExtensions.llvm-toolchain)
-1. Windows 7+ SDK
+1. [VS2017/2019 LLVM Compiler Toolchain plugin](https://marketplace.visualstudio.com/items?itemName=LLVMExtensions.llvm-toolchain)
+1. Windows 10 SDK
 
 >*Note: Ensure to unzip all libraries before linking.*
 
@@ -36,8 +37,9 @@ Before activating `World 0`, the Engine first loads assets into memory.
 When not `SHIPPING`, the Engine can load assets into memory at any time, and directly through the filesystem. It is recommended to set a root directory such as GameAssets and store all assets hierarchically there. In `SHIPPING` builds, the Engine will only load assets through a compressed archive named `GameAssets.cooked`, which should be a zip archive of the root assets directory.
 >*Expect warning logs for loading assets not present in `GameAssets.cooked`.*
 
-The Engine needs an `AssetManifest` to locate relevant bytes within the cooked archive, and expects this to be in the root directory of the archive, named `Manifest.minified`. (Text files with a `.minified` / `.min` suffix must not contain any spaces, tabs, quotes, newlines, or any other special characters: they are read directly as bytes.) For convenience a pretty version can be maintained alongside for editing during development, with its contents minified and copied to `Manifest.minified` before creating the cooked archive.
->*Expect warning logs and potential hitches on calling Load<T> for assets not present in the `Manifest.minified`.*
+The Engine needs an `AssetManifest` serialised `GData` object in order to locate relevant bytes within the cooked archive, and expects this to be in the root directory of the archive, named `Manifest.amf`.
+
+>*Expect warning logs and potential hitches on calling `Load<T>` for assets not present in `Manifest.amf`.*
 
 ### Running the Engine
 The Engine uses a state machine to manage the active `World` and switch to a different `World`. Follow these steps in `main()` to set up and run the engine:
@@ -57,7 +59,8 @@ At the end of each `Tick()` cycle, the current state of all primitives will be c
 
 **Project**         | **Description**
 --------------------|----------------
-**_PCH**            | Pre-compiled header `stdafx.h/cpp` (shared across all projects)
+**ThirdParty**      | All dependencies that are compiled from source, like PhysicsFS
+**_PCH**            | Pre-compiled header `stdafx.h/cpp` (shared across all downstream projects)
 **Core**            | Core structures and utilities used by all projects
 **SFMLAPI**         | Wrapper classes for and implementations of SFML libraries
 **LittleEngine**    | All Engine code
@@ -83,12 +86,22 @@ At the end of each `Tick()` cycle, the current state of all primitives will be c
 - [x] Gameplay UI classes
 - [x] Gameplay Camera (root `Transform` for all `Entity`s)
 - [x] Runtime configurable/recreatable Render Window
-- [ ] Options Menu
+- [x] Options Menu
+- [x] Vertex-Array particle systems
 - [ ] Animation system
 - [ ] Collision Resolution
 
 **To use another version of SFML and/or another IDE/compiler(/OS):**
-1. Obtain the corresponding libraries from SFML's website 
-1. Create a [PhysicsFS](https://icculus.org/physfs/) static library for your platform, or add the source as a project (used for archive decompression)
-1. Set up all the projects with include paths, files/filters, libraries, and dependencies
+1. Obtain the corresponding libraries from [SFML's website](https://www.sfml-dev.org/download/sfml/2.5.1/)
+1. Set up all the projects as outlined below. Each project must (recursively) add the root directories of all dependent projects to their include paths. All projects emit static libraries and use `stdafx.h` as their pre-compiled header, except where mentioned:
+    1. Set up `./PhysicsFS` as a `ThirdParty` static library project, with no PCH
+    1. Set up `./PCH` where `stdafx.cpp` generates a `.pch` file
+    1. Set up `./Core` that references both the above, and uses `stdafx.h` as its PCH
+    1. Set up `./SFMLAPI` that references `Core`
+    1. Set up `./LittleEngine` that references `SFMLAPI`
+    1. Set up `./GameFramework` that references `LittleEngine`
+    1. Set up `./LittleGame` or a custom project as a 64-bit application that references `GameFramework`
+    1. Add all leaf directories in `./Libraries/...` to the linker's library search paths
+    1. Set up any/all of `Debug`, `Development`, `Release`, `Shipping` build configurations as outlined above
+    1. All pre-processor macros and external `.lib`s that any code files reference are defined / `#pragma`d in source code itself, and need not be defined/added at the project level
 1. Build LittleGame

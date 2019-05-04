@@ -217,6 +217,9 @@
     <ProjectReference Include="..\PCH\_PCH.vcxproj">
       <Project>{176489df-3f22-43d5-a6f4-56ef4f2d4388}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\PhysicsFS\PhysicsFS.vcxproj">
+      <Project>{f6d2e7c5-26aa-410b-b5b8-51bc24d2a1c9}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

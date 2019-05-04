@@ -9,13 +9,23 @@ SFTexCoords::SFTexCoords(u32 x, u32 y) : x(x), y(y)
 {
 }
 
+sf::Vector2f SFTexCoords::ToSFV2f() const
+{
+	return sf::Vector2f(x, y);
+}
+
 const SFTexRect SFTexRect::Zero = SFTexRect(SFTexCoords::Zero, SFTexCoords::Zero);
 
 SFTexRect::SFTexRect(SFTexCoords min, SFTexCoords max) : min(min), max(max)
 {
 }
 
-sf::IntRect SFTexRect::Cast() const
+SFTexRect::SFTexRect(u32 maxX, u32 maxY)
+	: min(SFTexCoords::Zero), max(SFTexCoords(maxX, maxY))
+{
+}
+
+sf::IntRect SFTexRect::ToSFIntRect() const
 {
 	u32 x = max.x - min.x;
 	u32 y = max.y - min.y;

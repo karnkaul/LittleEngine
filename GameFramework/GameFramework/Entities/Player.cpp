@@ -22,7 +22,7 @@ PlayerData::PlayerData(TextureAsset& mainTexture, Vec<PlayerCollider> colliders)
 
 void Player::OnCreated()
 {
-	SetName("", "Player");
+	SetType("Player");
 }
 
 void Player::InitPlayer(PlayerData data)

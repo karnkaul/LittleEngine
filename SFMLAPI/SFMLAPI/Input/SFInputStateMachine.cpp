@@ -90,6 +90,7 @@ const SFInputDataFrame SFInputStateMachine::GetFrameInputData() const
 		}
 	}
 	frame.textInput = m_textInput;
+	frame.mouseInput = m_pointerInput;
 	return frame;
 }
 
@@ -104,6 +105,11 @@ void SFInputStateMachine::OnKeyUp(const sf::Event::KeyEvent& key)
 {
 	KeyState& toModify = GetOrCreateKeyState(key.code);
 	toModify.bPressed = false;
+}
+
+void SFInputStateMachine::SetPointerState(MouseInput pointerInput)
+{
+	this->m_pointerInput = std::move(pointerInput);
 }
 
 void SFInputStateMachine::ResetKeyStates()
@@ -198,6 +204,14 @@ void SFInputStateMachine::StoreNonASCIISpecialInput(KeyCode key)
 
 	case KeyCode::PageDown:
 		m_textInput.specials.push_back(SpecialInputType::PageDown);
+		break;
+
+	case KeyCode::Home:
+		m_textInput.specials.push_back(SpecialInputType::Home);
+		break;
+
+	case KeyCode::End:
+		m_textInput.specials.push_back(SpecialInputType::End);
 		break;
 
 	default:
