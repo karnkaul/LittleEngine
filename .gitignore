@@ -4,6 +4,7 @@
 **/*.exe
 **/*.lib
 **/*.pdb
+**/*.aps
 **/vc-fileutils.settings
 **/*.vcxproj.user
 **/SourceArt/*

@@ -50,7 +50,7 @@ void AsyncRenderLoop::Start()
 
 void AsyncRenderLoop::Stop()
 {
-	m_bRendering.store(false, std::memory_order_relaxed);
+	m_bRendering.store(false);
 	if (m_pRenderJobHandle)
 	{
 		m_pRenderJobHandle->Wait();

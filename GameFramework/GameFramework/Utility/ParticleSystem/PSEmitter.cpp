@@ -73,11 +73,36 @@ void Particle::Tick(Time dt)
 		Colour c = Colour::White;
 		Fixed s = Lerp(m_sot, t);
 		c.a = Lerp(m_aot, t);
-		m_pQuad->SetColour(c)
-			->SetPosition(Vector2::Zero)
-			->SetScale({s, s})
-			->SetWorldOrientation(m_transform.localOrientation)
-			->SetPosition(m_transform.Position());
+		// Scale + Orientation + Position
+		if (m_sot.IsFuzzy() && m_w != Fixed::Zero)
+		{
+			m_pQuad->SetColour(c)
+				->SetPosition(Vector2::Zero)
+				->SetScale({s, s})
+				->SetWorldOrientation(m_transform.localOrientation)
+				->SetPosition(m_transform.Position());
+		}
+		// Scale + Position
+		else if (m_sot.IsFuzzy() && m_w == Fixed::Zero)
+		{
+			m_pQuad->SetColour(c)
+				->SetPosition(Vector2::Zero)
+				->SetScale({s, s})
+				->SetPosition(m_transform.Position());
+		}
+		// Orientation + Position
+		else if (!m_sot.IsFuzzy() && m_w != Fixed::Zero)
+		{
+			m_pQuad->SetColour(c)
+				->SetPosition(Vector2::Zero)
+				->SetWorldOrientation(m_transform.localOrientation)
+				->SetPosition(m_transform.Position());
+		}
+		// Position
+		else if (!m_sot.IsFuzzy() && m_w == Fixed::Zero)
+		{
+			m_pQuad->SetColour(c)->SetPosition(m_transform.Position());
+		}
 
 		Fixed ms(dt.AsMilliseconds());
 		m_transform.localPosition += ms * m_v;
