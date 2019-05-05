@@ -30,5 +30,12 @@
     <ClInclude Include="UI\OptionsUI.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LittleGame.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Icon.ico" />
   </ItemGroup>
 </Project>

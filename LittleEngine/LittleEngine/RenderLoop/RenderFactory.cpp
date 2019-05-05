@@ -47,9 +47,12 @@ inline void ReconcileState(Primitive& p)
 
 RenderFactory::RenderFactory()
 {
-	for (auto& vec : m_active)
 	{
-		vec.reserve(LAYER_RESERVE);
+		Lock lock(m_mutex);
+		for (auto& vec : m_active)
+		{
+			vec.reserve(LAYER_RESERVE);
+		}
 	}
 	Services::ProvideRenderFactory(*this);
 }
