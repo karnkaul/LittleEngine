@@ -5,6 +5,10 @@
 
 namespace LittleEngine
 {
+#if DEBUGGING
+bool BootWorld::s_bTerminateOnFirstTick = false;
+#endif
+
 BootWorld::BootWorld() : World("Boot")
 {
 }
@@ -45,6 +49,12 @@ void BootWorld::Tick(Time dt)
 		colour.a = UByte(alpha.ToU32());
 		m_pLogoHeader->GetText()->SetPrimaryColour(colour);
 	}
+#if DEBUGGING
+	if (s_bTerminateOnFirstTick)
+	{
+		Services::Engine()->Terminate();
+	}
+#endif
 }
 
 void BootWorld::OnDeactivating()

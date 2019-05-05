@@ -39,6 +39,7 @@ void AsyncRenderLoop::Start()
 {
 	if (m_bRunThread)
 	{
+		OS::Platform()->SetCreatingRenderThread();
 		m_pSFWindow->setActive(false);
 		m_bRendering.store(true, std::memory_order_relaxed);
 		LOG_I("[AsyncRenderLoop] Deactivated SFWindow on this thread, starting render thread");
@@ -54,6 +55,7 @@ void AsyncRenderLoop::Stop()
 	{
 		m_pRenderJobHandle->Wait();
 		m_pSFWindow->setActive(true);
+		OS::Platform()->ReleaseRenderThread();
 	}
 }
 

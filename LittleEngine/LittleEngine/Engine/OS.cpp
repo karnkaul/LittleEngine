@@ -117,6 +117,20 @@ void PlatformData::SetCreatingLoggerThread()
 	--m_systemWorkerCount;
 }
 
+void PlatformData::ReleaseLoggerThread()
+{
+	m_bWillCreateLoggerThread = false;
+	++m_spareThreadCount;
+	++m_systemWorkerCount;
+}
+
+void PlatformData::ReleaseRenderThread()
+{
+	m_bWillCreateRenderThread = false;
+	++m_spareThreadCount;
+	++m_systemWorkerCount;
+}
+
 void PlatformData::SetDesiredWorkerCount(u32 workerCount)
 {
 	if (static_cast<u32>(m_userWorkerCount) > workerCount)

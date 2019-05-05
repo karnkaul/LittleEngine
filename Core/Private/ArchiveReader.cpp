@@ -1,31 +1,53 @@
 #include "stdafx.h"
+#include "Asserts.h"
 #include "ArchiveReader.h"
 #include "PhysicsFS/physfs.h"
 
 namespace Core
 {
-bool ArchiveReader::s_bInit = false;
+namespace
+{
+struct PhysFSState
+{
+	bool bOk = false;
+
+	PhysFSState();
+	~PhysFSState();
+};
+
+static PhysFSState* s_pState = nullptr;
+
+PhysFSState::PhysFSState()
+{
+	s32 success = PHYSFS_init(nullptr);
+	bOk = (success == 1);
+}
+
+PhysFSState::~PhysFSState()
+{
+	PHYSFS_deinit();
+}
+} // namespace
 
 ArchiveReader::ArchiveReader()
 {
-	if (!s_bInit)
+	if (!s_pState)
 	{
-		s32 success = PHYSFS_init(nullptr);
-		if (success == 0)
-		{
-			throw DependencyException();
-		}
-		s_bInit = true;
+		static PhysFSState physfsState;
+		s_pState = &physfsState;
 	}
+	Assert(s_pState && s_pState->bOk, "PhysFS not initialised!");
 }
 
 void ArchiveReader::Load(const char* szArchivePath)
 {
+	Assert(s_pState && s_pState->bOk, "PhysFS not initialised!");
 	PHYSFS_addToSearchPath(szArchivePath, 1);
 }
 
 void ArchiveReader::Load(const Vec<String>& archivePaths)
 {
+	Assert(s_pState && s_pState->bOk, "PhysFS not initialised!");
 	for (const auto& archivePath : archivePaths)
 	{
 		PHYSFS_addToSearchPath(archivePath.c_str(), 1);
@@ -34,6 +56,7 @@ void ArchiveReader::Load(const Vec<String>& archivePaths)
 
 void ArchiveReader::Load(InitList<const char*> archivePaths)
 {
+	Assert(s_pState && s_pState->bOk, "PhysFS not initialised!");
 	for (const char* szArchivePath : archivePaths)
 	{
 		PHYSFS_addToSearchPath(szArchivePath, 1);
@@ -42,11 +65,13 @@ void ArchiveReader::Load(InitList<const char*> archivePaths)
 
 bool ArchiveReader::IsPresent(const char* szPathInArchive) const
 {
+	Assert(s_pState && s_pState->bOk, "PhysFS not initialised!");
 	return PHYSFS_exists(szPathInArchive) != 0;
 }
 
 Vec<u8> ArchiveReader::Decompress(const char* szPathInArchive) const
 {
+	Assert(s_pState && s_pState->bOk, "PhysFS not initialised!");
 	if (IsPresent(szPathInArchive))
 	{
 		PHYSFS_File* pFile = PHYSFS_openRead(szPathInArchive);
@@ -59,11 +84,6 @@ Vec<u8> ArchiveReader::Decompress(const char* szPathInArchive) const
 		}
 	}
 	return {};
-}
-
-void ArchiveReader::UnInit()
-{
-	PHYSFS_deinit();
 }
 
 String ArchiveReader::ToText(Vec<u8> rawBuffer)

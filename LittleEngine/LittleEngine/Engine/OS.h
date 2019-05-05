@@ -32,6 +32,8 @@ public:
 
 	void SetCreatingRenderThread();
 	void SetCreatingLoggerThread();
+	void ReleaseLoggerThread();
+	void ReleaseRenderThread();
 	void SetDesiredWorkerCount(u32 workerCount);
 };
 

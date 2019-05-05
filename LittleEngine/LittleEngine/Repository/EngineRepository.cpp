@@ -106,7 +106,7 @@ bool EngineRepository::Unload(String id)
 	if (bPresent)
 	{
 		Services::Jobs()->Enqueue(
-			[&, id]() {
+			[&]() {
 				Lock lock(m_mutex);
 				m_loaded.erase(id);
 			},
@@ -156,7 +156,6 @@ EngineRepository::~EngineRepository()
 {
 	m_pDefaultFont = nullptr;
 	UnloadAll(true);
-	Core::ArchiveReader::UnInit();
 	LOG_I("[EngineRepository] destroyed");
 }
 } // namespace LittleEngine

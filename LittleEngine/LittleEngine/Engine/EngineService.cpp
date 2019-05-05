@@ -69,7 +69,11 @@ EngineService::~EngineService()
 	m_uEngineAudio = nullptr;
 	Services::UnprovideEngine(*this);
 	LOG_I("Logging terminated");
-	m_uFileLogger = nullptr;
+	if (m_uFileLogger)
+	{
+		m_uFileLogger = nullptr;
+		OS::Platform()->ReleaseLoggerThread();
+	}
 }
 
 WorldStateMachine* EngineService::Worlds() const

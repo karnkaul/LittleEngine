@@ -143,10 +143,6 @@ bool EngineLoop::Init()
 				"available!");
 			m_bRenderThread = false;
 		}
-		else
-		{
-			OS::Platform()->SetCreatingRenderThread();
-		}
 	}
 
 #if DEBUGGING
