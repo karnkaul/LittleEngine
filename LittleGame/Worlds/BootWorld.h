@@ -5,10 +5,6 @@ namespace LittleEngine
 {
 class BootWorld final : public World
 {
-#if DEBUGGING
-public:
-	static bool s_bTerminateOnFirstTick;
-#endif
 private:
 	class UIButtonDrawer* m_pLogoDrawer = nullptr;
 	class UIElement* m_pLogoHeader = nullptr;

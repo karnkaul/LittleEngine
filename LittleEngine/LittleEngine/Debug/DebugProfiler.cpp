@@ -123,7 +123,7 @@ void Renderer::Tick(Time dt)
 	auto iter = m_entries.begin();
 	while (iter != m_entries.end())
 	{
-		if ((now - iter->second->startTime) > Time::Milliseconds(iter->second->maxTime.AsMilliseconds() * 100))
+		if ((now - iter->second->startTime) > iter->second->maxTime.Scale(100))
 		{
 			if (iter->second->endTime == maxFrameDeltaTime)
 			{

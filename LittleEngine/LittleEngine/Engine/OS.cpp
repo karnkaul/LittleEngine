@@ -2,6 +2,7 @@
 #include <thread>
 #include "OS.h"
 #include "Asserts.h"
+#include "Logger.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
 #if _WIN32
 #include <Windows.h>
@@ -13,6 +14,7 @@ namespace
 {
 std::thread::id mainThreadID;
 }
+
 namespace OS
 {
 PlatformData::PlatformData() : m_cpuThreadCount(std::thread::hardware_concurrency())
@@ -139,6 +141,57 @@ void PlatformData::SetDesiredWorkerCount(u32 workerCount)
 	}
 }
 
+void EnvData::SetVars(s32 argc, char** argv)
+{
+	if (argc > 0)
+	{
+		m_exePath = String(argv[0]);
+	}
+
+	String logOut;
+	for (s32 i = 1; i < argc; ++i)
+	{
+		String raw = String(argv[i]);
+		if (raw.length() > 2 && raw[0] == '-' && raw[1] == '-')
+		{
+			String key = raw.substr(2);
+			String value;
+			if (i < argc - 1)
+			{
+				value = String(argv[i + 1]);
+			}
+			if (value.empty())
+			{
+				logOut += ("[" + key + "], ");
+			}
+			else
+			{
+				logOut += ("[" + key + "/" + value + "], ");
+			}
+			m_vars.emplace(std::move(key), std::move(value));
+		}
+	}
+	LOG_I("[Env] Obtained exe path: %s", m_exePath.c_str());
+	if (!logOut.empty())
+	{
+		logOut = logOut.substr(0, logOut.length() - 2);
+		LOG_I("[Env] Obtained env vars: %s", logOut.c_str());
+	}
+}
+
+bool EnvData::HasVar(const String& key)
+{
+	return m_vars.find(key) != m_vars.end();
+}
+
+std::pair<bool, String> EnvData::GetVar(const String& key)
+{
+	auto search = m_vars.find(key);
+	bool bFound = search != m_vars.end();
+	String val = bFound ? search->second : String();
+	return std::make_pair(bFound, std::move(val));
+}
+
 bool IsMainThread()
 {
 	return std::this_thread::get_id() == mainThreadID;
@@ -173,5 +226,11 @@ PlatformData* Platform()
 	static PlatformData platformData;
 	return &platformData;
 }
+
+EnvData* Env()
+{
+	static EnvData envData;
+	return &envData;
+}
 } // namespace OS
-} // namespace LittleEngine
+} // namespace OS

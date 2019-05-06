@@ -89,7 +89,7 @@ s32 ASFEventLoop::Run()
 		}
 		else
 		{
-			frameElapsed = Time::Milliseconds(m_tickRate.AsMilliseconds() * 0.25f);
+			frameElapsed = m_tickRate.Scale(Fixed(0.25f));
 		}
 		Sleep(m_tickRate - frameElapsed);
 	}

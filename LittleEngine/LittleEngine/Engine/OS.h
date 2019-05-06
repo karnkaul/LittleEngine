@@ -39,6 +39,21 @@ public:
 
 PlatformData* Platform();
 
+class EnvData final
+{
+private:
+	String m_exePath;
+	Map<String, String> m_vars;
+
+public:
+	void SetVars(s32 argc, char** argv);
+
+	bool HasVar(const String& key);
+	std::pair<bool, String> GetVar(const String& key);
+};
+
+EnvData* Env();
+
 bool IsMainThread();
 bool IsDebuggerAttached();
 bool IsDEBUGGING();

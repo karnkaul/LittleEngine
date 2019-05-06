@@ -44,7 +44,7 @@ AsyncFileLogger::AsyncFileLogger(String path) : m_filePath(std::move(path))
 AsyncFileLogger::~AsyncFileLogger()
 {
 	// Freeze m_cache and terminate thread
-	m_bStopLogging.store(true, std::memory_order_relaxed);
+	m_bStopLogging.store(true);
 	if (m_sFileLogJobHandle)
 	{
 		m_sFileLogJobHandle->Wait();

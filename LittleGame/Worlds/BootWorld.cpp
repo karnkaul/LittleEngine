@@ -5,12 +5,20 @@
 
 namespace LittleEngine
 {
+
 #if DEBUGGING
-bool BootWorld::s_bTerminateOnFirstTick = false;
+namespace
+{
+bool bTerminateOnReady = false;
+bool bTerminateNow = false;
+}
 #endif
 
 BootWorld::BootWorld() : World("Boot")
 {
+#if DEBUGGING
+	bTerminateOnReady = OS::Env()->HasVar("terminate-on-ready");
+#endif
 }
 
 void BootWorld::OnActivated()
@@ -50,9 +58,15 @@ void BootWorld::Tick(Time dt)
 		m_pLogoHeader->GetText()->SetPrimaryColour(colour);
 	}
 #if DEBUGGING
-	if (s_bTerminateOnFirstTick)
+	if (bTerminateNow)
 	{
 		Services::Engine()->Terminate();
+		bTerminateNow = false;
+	}
+	if (bTerminateOnReady)
+	{
+		bTerminateNow = true;
+		bTerminateOnReady = false;
 	}
 #endif
 }

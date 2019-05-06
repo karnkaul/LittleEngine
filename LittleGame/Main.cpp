@@ -6,7 +6,6 @@
 using namespace LittleEngine;
 
 bool bInfiniteLoad = false;
-bool bInfiniteBoot = false;
 
 s32 TestGameLoop()
 {
@@ -23,26 +22,8 @@ s32 TestGameLoop()
 	return -1;
 }
 
-s32 TestInfiniteBoot()
+int main(int argc, char** argv)
 {
-	s32 ret = -1;
-#if DEBUGGING
-	BootWorld::s_bTerminateOnFirstTick = true;
-#endif
-	while (true)
-	{
-		auto uEngine = EngineLoop::Create();
-		uEngine->Worlds()->CreateWorld<BootWorld>();
-		uEngine->Worlds()->CreateWorld<TestWorld>();
-		ret = uEngine->Run();
-	}
-}
-
-int main()
-{
-	if (bInfiniteBoot)
-	{
-		TestInfiniteBoot();
-	}
+	OS::Env()->SetVars(argc, argv);
 	return TestGameLoop();
 }
