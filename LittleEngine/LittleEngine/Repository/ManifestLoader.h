@@ -1,6 +1,6 @@
 #pragma once
 #include <functional>
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #include "LoadHelpers.h"
 
 namespace Core

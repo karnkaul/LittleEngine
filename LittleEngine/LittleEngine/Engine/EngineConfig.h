@@ -1,7 +1,7 @@
 #pragma once
-#include "CoreTypes.h"
-#include "Logger.h" // Logger::Severity
-#include "Version.h"
+#include "Core/CoreTypes.h"
+#include "Core/Logger.h" // Logger::Severity
+#include "Core/Version.h"
 
 namespace Core
 {

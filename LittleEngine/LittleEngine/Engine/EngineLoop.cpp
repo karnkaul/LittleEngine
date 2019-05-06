@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "Logger.h"
-#include "Utils.h"
+#include "Core/Logger.h"
+#include "Core/Utils.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
 #include "EngineConfig.h"
 #include "EngineLoop.h"

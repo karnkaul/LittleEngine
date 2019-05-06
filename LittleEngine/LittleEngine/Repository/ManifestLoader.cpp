@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ArchiveReader.h"
+#include "Core/ArchiveReader.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "ManifestLoader.h"
 #include "EngineRepository.h"

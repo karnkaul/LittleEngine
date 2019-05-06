@@ -1,7 +1,7 @@
 #pragma once
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #if ENABLED(CONSOLE)
-#include "CircularList.hpp"
+#include "Core/CircularList.h"
 #include "LittleEngine/Input/EngineInput.h"
 #include "LittleEngine/Input/KeyboardInput.h"
 

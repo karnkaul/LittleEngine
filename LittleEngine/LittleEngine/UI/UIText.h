@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #include "SFMLAPI/Rendering/Colour.h"
 
 namespace LittleEngine

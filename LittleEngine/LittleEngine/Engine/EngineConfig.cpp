@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "GData.h"
-#include "Utils.h"
+#include "Core/GData.h"
+#include "Core/Utils.h"
 #include "EngineConfig.h"
 
 using GData = Core::GData;

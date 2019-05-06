@@ -2,7 +2,7 @@
 #include <mutex>
 #include <functional>
 #include <future>
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #include "JobHandle.h"
 #include "LittleEngine/Services/IService.h"
 

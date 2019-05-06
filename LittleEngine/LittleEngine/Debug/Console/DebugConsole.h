@@ -1,7 +1,7 @@
 #pragma once
-#include "StdTypes.h"
+#include "Core/StdTypes.h"
 #if ENABLED(CONSOLE)
-#include "SimpleTime.h"
+#include "Core/SimpleTime.h"
 #include "SFMLAPI/Rendering/Colour.h"
 
 namespace LittleEngine

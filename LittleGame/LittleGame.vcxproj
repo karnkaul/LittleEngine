@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="UI\OptionsUI.cpp" />
-    <ClCompile Include="Worlds\BootWorld.cpp" />
-    <ClCompile Include="Worlds\TestWorld.cpp" />
+    <ClCompile Include="LittleGame\Main.cpp" />
+    <ClCompile Include="LittleGame\UI\OptionsUI.cpp" />
+    <ClCompile Include="LittleGame\Worlds\BootWorld.cpp" />
+    <ClCompile Include="LittleGame\Worlds\TestWorld.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GameFramework\GameFramework.vcxproj">
@@ -30,16 +30,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="UI\OptionsUI.h" />
-    <ClInclude Include="Worlds\BootWorld.h" />
-    <ClInclude Include="Worlds\TestWorld.h" />
+    <ClInclude Include="LittleGame\Resources\resource.h" />
+    <ClInclude Include="LittleGame\UI\OptionsUI.h" />
+    <ClInclude Include="LittleGame\Worlds\BootWorld.h" />
+    <ClInclude Include="LittleGame\Worlds\TestWorld.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="LittleGame.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resources\Icon.ico" />
+    <ResourceCompile Include="LittleGame\Resources\LittleGame.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -132,12 +129,12 @@
       <ConformanceMode>true</ConformanceMode>
       <SupportJustMyCode>false</SupportJustMyCode>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;..\Include;..\PCH;..\Core\Public;..\SFMLAPI;..\LittleEngine;..\GameFramework</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;..\GameFramework;.</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Libraries\SFML</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\ThirdParty\Libraries\SFML</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -150,14 +147,14 @@
       <SupportJustMyCode>false</SupportJustMyCode>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;..\Include;..\PCH;..\Core\Public;..\SFMLAPI;..\LittleEngine;..\GameFramework</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;..\GameFramework;.</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zo %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Libraries\SFML;..\Libraries\PhysicsFS</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\ThirdParty\Libraries\SFML</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -170,14 +167,14 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG;SHIP</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;..\Include;..\PCH;..\Core\Public;..\SFMLAPI;..\LittleEngine;..\GameFramework</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;..\GameFramework;.</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <LinkTimeCodeGeneration />
-      <AdditionalLibraryDirectories>..\Libraries\SFML;..\Libraries\PhysicsFS</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\ThirdParty\Libraries\SFML</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -190,7 +187,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;SHIP</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;..\Include;..\PCH;..\Core\Public;..\SFMLAPI;..\LittleEngine;..\GameFramework</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;..\GameFramework;.</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -198,7 +195,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <LinkTimeCodeGeneration>
       </LinkTimeCodeGeneration>
-      <AdditionalLibraryDirectories>..\Libraries\SFML;..\Libraries\PhysicsFS</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\ThirdParty\Libraries\SFML</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>

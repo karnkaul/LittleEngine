@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include <thread>
 #include "OS.h"
-#include "Asserts.h"
-#include "Logger.h"
+#include "Core/Asserts.h"
+#include "Core/Logger.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
 #if _WIN32
 #include <Windows.h>

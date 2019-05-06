@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "SFAssets.h"
-#include "CoreTypes.h"
-#include "Utils.h"
-#include "GData.h"
-#include "ArchiveReader.h"
-#include "Logger.h"
+#include "Core/CoreTypes.h"
+#include "Core/Utils.h"
+#include "Core/GData.h"
+#include "Core/ArchiveReader.h"
+#include "Core/Logger.h"
 
 namespace LittleEngine
 {

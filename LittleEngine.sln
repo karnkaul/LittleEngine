@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.271
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LittleGame", "LittleGame\LittleGame.vcxproj", "{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}"
 EndProject
@@ -29,7 +29,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameFramework", "GameFramew
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", "{B3DC8741-3C47-4236-AC49-06A61FDA1747}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhysicsFS", "PhysicsFS\PhysicsFS.vcxproj", "{F6D2E7C5-26AA-410B-B5B8-51BC24D2A1C9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhysicsFS", "ThirdParty\PhysicsFS\PhysicsFS.vcxproj", "{F6D2E7C5-26AA-410B-B5B8-51BC24D2A1C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +39,14 @@ Global
 		Ship|x64 = Ship|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Debug|x64.ActiveCfg = Debug|x64
+		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Debug|x64.Build.0 = Debug|x64
+		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Development|x64.ActiveCfg = Development|x64
+		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Development|x64.Build.0 = Development|x64
+		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Release|x64.ActiveCfg = Release|x64
+		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Release|x64.Build.0 = Release|x64
+		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Ship|x64.ActiveCfg = Ship|x64
+		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Ship|x64.Build.0 = Ship|x64
 		{F47FDA22-5053-4B11-A8D8-5281110C3B60}.Debug|x64.ActiveCfg = Debug|x64
 		{F47FDA22-5053-4B11-A8D8-5281110C3B60}.Debug|x64.Build.0 = Debug|x64
 		{F47FDA22-5053-4B11-A8D8-5281110C3B60}.Development|x64.ActiveCfg = Development|x64
@@ -79,18 +87,10 @@ Global
 		{F3F2010F-993E-49C1-9E0E-7EC58A0D6EE3}.Release|x64.Build.0 = Release|x64
 		{F3F2010F-993E-49C1-9E0E-7EC58A0D6EE3}.Ship|x64.ActiveCfg = Ship|x64
 		{F3F2010F-993E-49C1-9E0E-7EC58A0D6EE3}.Ship|x64.Build.0 = Ship|x64
-		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Debug|x64.ActiveCfg = Debug|x64
-		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Debug|x64.Build.0 = Debug|x64
-		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Development|x64.ActiveCfg = Development|x64
-		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Development|x64.Build.0 = Development|x64
-		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Release|x64.ActiveCfg = Release|x64
-		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Release|x64.Build.0 = Release|x64
-		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Ship|x64.ActiveCfg = Ship|x64
-		{E6DCB510-4DF2-4C49-B230-C2D62F2DF371}.Ship|x64.Build.0 = Ship|x64
 		{F6D2E7C5-26AA-410B-B5B8-51BC24D2A1C9}.Debug|x64.ActiveCfg = Debug|x64
 		{F6D2E7C5-26AA-410B-B5B8-51BC24D2A1C9}.Debug|x64.Build.0 = Debug|x64
-		{F6D2E7C5-26AA-410B-B5B8-51BC24D2A1C9}.Development|x64.ActiveCfg = Release|x64
-		{F6D2E7C5-26AA-410B-B5B8-51BC24D2A1C9}.Development|x64.Build.0 = Release|x64
+		{F6D2E7C5-26AA-410B-B5B8-51BC24D2A1C9}.Development|x64.ActiveCfg = Debug|x64
+		{F6D2E7C5-26AA-410B-B5B8-51BC24D2A1C9}.Development|x64.Build.0 = Debug|x64
 		{F6D2E7C5-26AA-410B-B5B8-51BC24D2A1C9}.Release|x64.ActiveCfg = Release|x64
 		{F6D2E7C5-26AA-410B-B5B8-51BC24D2A1C9}.Release|x64.Build.0 = Release|x64
 		{F6D2E7C5-26AA-410B-B5B8-51BC24D2A1C9}.Ship|x64.ActiveCfg = Release|x64

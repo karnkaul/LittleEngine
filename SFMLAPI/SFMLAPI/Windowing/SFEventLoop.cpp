@@ -3,7 +3,7 @@
 #include "SFEventLoop.h"
 #include "SFWindow.h"
 #include "SFWindowData.h"
-#include "Logger.h"
+#include "Core/Logger.h"
 #include "SFMLAPI/Input/SFEventHandler.h"
 #include "SFMLAPI/Input/SFInputDataFrame.h"
 #include "SFMLAPI/System/SFGameClock.h"

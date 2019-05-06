@@ -2,11 +2,11 @@
 #include <functional>
 #include "DebugCommands.h"
 #if ENABLED(CONSOLE)
-#include "Utils.h"
+#include "Core/Utils.h"
 #include "DebugConsole.h"
 #include "RenderStatsRenderer.h"
 #include "Tweakable.h"
-#include "Logger.h"
+#include "Core/Logger.h"
 #include "LogLine.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Debug/DebugProfiler.h"

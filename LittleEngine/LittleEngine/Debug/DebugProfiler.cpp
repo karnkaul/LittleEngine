@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "DebugProfiler.h"
 #if ENABLED(PROFILER)
-#include "Logger.h"
-#include "Asserts.h"
+#include "Core/Logger.h"
+#include "Core/Asserts.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/System/SFGameClock.h"
 #include "LittleEngine/Debug/Console/Tweakable.h"

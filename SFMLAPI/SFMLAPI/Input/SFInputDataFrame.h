@@ -1,7 +1,7 @@
 #pragma once
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #include "SFML/Window.hpp"
-#include "Utils.h"
+#include "Core/Utils.h"
 
 namespace LittleEngine
 {

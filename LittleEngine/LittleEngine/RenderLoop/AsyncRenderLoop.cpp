@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "Asserts.h"
-#include "Logger.h"
+#include "Core/Asserts.h"
+#include "Core/Logger.h"
 #include "SFMLAPI/Rendering/ISFRenderBuffer.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
 #include "AsyncRenderLoop.h"

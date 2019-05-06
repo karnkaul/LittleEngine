@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include <thread>
 #include <ctime>
-#include "FileRW.h"
-#include "Logger.h"
+#include "Core/FileRW.h"
+#include "Core/Logger.h"
 #include "AsyncFileLogger.h"
 #include "LittleEngine/Engine/EngineConfig.h"
 #include "LittleEngine/Game/GameManager.h"

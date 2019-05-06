@@ -1,41 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Worlds">
-      <UniqueIdentifier>{b3ad8a2e-bd84-4816-a559-f52e029777b0}</UniqueIdentifier>
+    <Filter Include="LittleGame">
+      <UniqueIdentifier>{dbb6a20d-60bd-4c3a-8aca-41a0ac8b6abd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI">
+    <Filter Include="LittleGame\UI">
       <UniqueIdentifier>{939ce821-94a6-4a1a-ba0b-f6c2ed7e0d22}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LittleGame\Worlds">
+      <UniqueIdentifier>{b3ad8a2e-bd84-4816-a559-f52e029777b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LittleGame\Resources">
+      <UniqueIdentifier>{1f9a7571-424d-4465-a5c7-f42675dd43fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Worlds\BootWorld.cpp">
-      <Filter>Worlds</Filter>
+    <ClCompile Include="LittleGame\UI\OptionsUI.cpp">
+      <Filter>LittleGame\UI</Filter>
     </ClCompile>
-    <ClCompile Include="Worlds\TestWorld.cpp">
-      <Filter>Worlds</Filter>
+    <ClCompile Include="LittleGame\Worlds\BootWorld.cpp">
+      <Filter>LittleGame\Worlds</Filter>
     </ClCompile>
-    <ClCompile Include="UI\OptionsUI.cpp">
-      <Filter>UI</Filter>
+    <ClCompile Include="LittleGame\Worlds\TestWorld.cpp">
+      <Filter>LittleGame\Worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="LittleGame\Main.cpp">
+      <Filter>LittleGame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Worlds\BootWorld.h">
-      <Filter>Worlds</Filter>
+    <ClInclude Include="LittleGame\UI\OptionsUI.h">
+      <Filter>LittleGame\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Worlds\TestWorld.h">
-      <Filter>Worlds</Filter>
+    <ClInclude Include="LittleGame\Worlds\BootWorld.h">
+      <Filter>LittleGame\Worlds</Filter>
     </ClInclude>
-    <ClInclude Include="UI\OptionsUI.h">
-      <Filter>UI</Filter>
+    <ClInclude Include="LittleGame\Worlds\TestWorld.h">
+      <Filter>LittleGame\Worlds</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="LittleGame\Resources\resource.h">
+      <Filter>LittleGame\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="LittleGame.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resources\Icon.ico" />
+    <ResourceCompile Include="LittleGame\Resources\LittleGame.rc">
+      <Filter>LittleGame\Resources</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

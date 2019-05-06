@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #include "LittleEngine/Game/Inheritable.h"
 
 namespace LittleEngine

@@ -1,8 +1,8 @@
 #pragma once
 #include <mutex>
 #include <future>
-#include "CoreTypes.h"
-#include "Logger.h"
+#include "Core/CoreTypes.h"
+#include "Core/Logger.h"
 
 namespace Core
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "StdTypes.h"
+#include "Core/StdTypes.h"
 #include "SFMLAPI/Windowing/SFWindowData.h"
 
 namespace LittleEngine

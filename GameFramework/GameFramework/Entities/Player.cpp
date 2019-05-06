@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Logger.h"
+#include "Core/Logger.h"
 #include "SFMLAPI/Rendering/SFLayerID.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/System/SFAssets.h"

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <mutex>
-#include "Utils.h"
-#include "Logger.h"
+#include "Core/Utils.h"
+#include "Core/Logger.h"
 #include "SFPrimitive.h"
 #include "SFRenderer.h"
 #include "SFRenderState.h"

@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #if ENABLED(CONSOLE)
 #include "DebugConsole.h"
 #include "SFMLAPI/Rendering/Colour.h"

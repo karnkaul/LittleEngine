@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Logger.h"
+#include "Core/Logger.h"
 #include "LoadingUI.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Engine/EngineService.h"

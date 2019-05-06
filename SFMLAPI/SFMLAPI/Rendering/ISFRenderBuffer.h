@@ -1,8 +1,8 @@
 #pragma once
 #include <mutex>
 #include <functional>
-#include "CoreTypes.h"
-#include "SimpleTime.h"
+#include "Core/CoreTypes.h"
+#include "Core/SimpleTime.h"
 #include "SFLayerID.h"
 
 namespace LittleEngine

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <fstream>
-#include "ArchiveReader.h"
-#include "Utils.h"
+#include "Core/ArchiveReader.h"
+#include "Core/Utils.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "EngineRepository.h"
 #include "LoadHelpers.h"

@@ -1,6 +1,6 @@
 #pragma once
-#include "CoreTypes.h"
-#include "Delegate.hpp"
+#include "Core/CoreTypes.h"
+#include "Core/Delegate.h"
 #include "SFMLAPI/Rendering/SFLayerID.h"
 #include "UIObject.h"
 #include "LittleEngine/Input/EngineInput.h"

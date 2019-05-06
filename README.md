@@ -48,6 +48,8 @@ The Engine uses a state machine to manage the active `World` and switch to a dif
 1. Add derived `World` objects in order using `engine->Worlds()->CreateWorld<T>();`
 1. Run the Engine by calling `engine->Run();` on the created instance
 
+>*Note: Ensure to set the working directory for the application project (`LittleGame`) as `$(ProjectDir)/Runtime`, to debug/run from the IDE.*
+
 A `World` is capable of spawning new `Entities` and its subclasses, as well as new `Components` and subclasses, attached to existing `Entities`. The Engine will call `World::Tick(Time dt)` at a fixed time slice, set in `EngineConfig`. `World` will then call `Entity::Tick()` and `Component::Tick()` on all active objects.
 
 A `World` also contains a `UIManager`, which manages a stack of `UIContext` objects. Each `UIContext` can contain numerous `UIElements` (base UI object) `UIWidgets` (navigatable and interactable `UIElements`). There are several existing `UIWidgets` and `UIContexts` ready for use in `GameplayFramework`.

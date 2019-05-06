@@ -1,6 +1,6 @@
 #pragma once
-#include "CoreTypes.h"
-#include "TokenHandler.hpp"
+#include "Core/CoreTypes.h"
+#include "Core/TokenHandler.h"
 #include "LittleEngine/Game/Inheritable.h"
 #include "LittleEngine/Input/EngineInput.h"
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "Logger.h"
-#include "Utils.h"
+#include "Core/Logger.h"
+#include "Core/Utils.h"
 #include "JobManager.h"
 #include "MultiJob.h"
 #include "LittleEngine/Services/Services.h"

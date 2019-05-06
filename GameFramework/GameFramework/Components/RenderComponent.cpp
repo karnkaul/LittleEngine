@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "ArchiveReader.h"
-#include "GData.h"
+#include "Core/ArchiveReader.h"
+#include "Core/GData.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Game/Entity.h"

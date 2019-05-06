@@ -2,7 +2,7 @@
 #include <memory>
 #include "SFML/Graphics.hpp"
 #include "SFWindowData.h"
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 
 namespace LittleEngine
 {

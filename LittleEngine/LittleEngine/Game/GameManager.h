@@ -1,7 +1,7 @@
 #pragma once
-#include "CoreTypes.h"
-#include "Logger.h"
-#include "Version.h"
+#include "Core/CoreTypes.h"
+#include "Core/Logger.h"
+#include "Core/Version.h"
 #include "ComponentTimingType.h"
 #include "LittleEngine/Services/IService.h"
 

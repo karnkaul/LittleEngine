@@ -1,9 +1,8 @@
 #include "stdafx.h"
-#include "ArchiveReader.h"
 #include "LittleEngine/Debug/Console/Tweakable.h"
 #include "GameFramework/GameFramework.h"
 #include "TestWorld.h"
-#include "UI/OptionsUI.h"
+#include "LittleGame/UI/OptionsUI.h"
 
 namespace LittleEngine
 {

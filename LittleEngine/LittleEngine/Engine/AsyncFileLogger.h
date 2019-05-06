@@ -1,7 +1,7 @@
 #pragma once
 #include <atomic>
 #include <mutex>
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #include "LittleEngine/Jobs/JobHandle.h"
 
 namespace Core

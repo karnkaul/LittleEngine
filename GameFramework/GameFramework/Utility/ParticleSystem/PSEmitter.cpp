@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "GData.h"
-#include "Utils.h"
+#include "Core/GData.h"
+#include "Core/Utils.h"
 #include "SFMLAPI/Rendering/Colour.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/Rendering/SFQuad.h"
