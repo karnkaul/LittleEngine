@@ -19,8 +19,7 @@ class EngineConfig
 private:
 	// Set this to determine whether the engine will pause ticking if the window loses focus
 	static const bool s_bPauseOnFocusLoss;
-	static const Version s_engineVersion;
-
+	
 	UPtr<Core::GData> m_uData;
 	bool m_bDirty = false;
 

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include <mutex>
-#if _WIN32
+#if _WIN64
 #include "Windows.h"
 #endif
 #include "Logger.h"
@@ -34,7 +34,7 @@ void LogInternal(const char* pText, u32 severityIndex, va_list argList)
 	totalLength += snprintf(logBuffer + totalLength, BUFFER_SIZE - totalLength, " [%02d:%02d:%02d]",
 							ltm.tm_hour, ltm.tm_min, ltm.tm_sec);
 	strcat_s(logBuffer, BUFFER_SIZE - totalLength, "\n");
-#if _WIN32
+#if _WIN64
 	OutputDebugStringA(logBuffer);
 #endif
 	std::cout << logBuffer;

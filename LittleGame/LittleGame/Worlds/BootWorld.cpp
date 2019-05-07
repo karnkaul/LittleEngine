@@ -9,15 +9,16 @@ namespace LittleEngine
 #if DEBUGGING
 namespace
 {
-bool bTerminateOnReady = false;
-bool bTerminateNow = false;
+bool bLoadWorld1Now = false;
 }
 #endif
+
+bool g_bTerminateOnReady = false;
 
 BootWorld::BootWorld() : World("Boot")
 {
 #if DEBUGGING
-	bTerminateOnReady = OS::Env()->HasVar("terminate-on-ready");
+	g_bTerminateOnReady = OS::Env()->HasVar("terminate-on-ready");
 #endif
 }
 
@@ -58,15 +59,14 @@ void BootWorld::Tick(Time dt)
 		m_pLogoHeader->GetText()->SetPrimaryColour(colour);
 	}
 #if DEBUGGING
-	if (bTerminateNow)
+	if (bLoadWorld1Now)
 	{
-		Services::Engine()->Terminate();
-		bTerminateNow = false;
+		Services::Game()->Worlds()->LoadState(1);
+		bLoadWorld1Now = false;
 	}
-	if (bTerminateOnReady)
+	if (g_bTerminateOnReady)
 	{
-		bTerminateNow = true;
-		bTerminateOnReady = false;
+		bLoadWorld1Now = true;
 	}
 #endif
 }

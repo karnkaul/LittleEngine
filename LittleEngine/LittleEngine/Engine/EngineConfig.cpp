@@ -2,8 +2,10 @@
 #include "Core/GData.h"
 #include "Core/Utils.h"
 #include "EngineConfig.h"
+#include "OS.h"
 
 using GData = Core::GData;
+using Version = Core::Version;
 
 namespace LittleEngine
 {
@@ -18,6 +20,8 @@ const char* WINDOW_TITLE_KEY = "windowTitle";
 const char* LOG_LEVEL_KEY = "logLevel";
 const char* VIEW_SIZE_KEY = "viewSize";
 const char* COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
+
+Version engineVersion = "0.1.6";
 
 UMap<Core::LogSeverity, String> severityMap = {{Core::LogSeverity::Error, "Error"},
 											   {Core::LogSeverity::Warning, "Warning"},
@@ -47,7 +51,6 @@ void SetStringIfEmpty(GData& data, String key, String value)
 } // namespace
 
 const bool EngineConfig::s_bPauseOnFocusLoss = false;
-const Version EngineConfig::s_engineVersion = "0.2.0";
 
 EngineConfig::EngineConfig()
 {
@@ -125,7 +128,12 @@ Vector2 EngineConfig::GetViewSize() const
 
 const Version& EngineConfig::GetEngineVersion()
 {
-	return s_engineVersion;
+	Version fileEngineVersion = OS::Env()->GetFileEngineVersion();
+	if (fileEngineVersion != Version())
+	{
+		engineVersion = fileEngineVersion;
+	}
+	return engineVersion;
 }
 
 bool EngineConfig::SetCreateRenderThread(bool bCreate)

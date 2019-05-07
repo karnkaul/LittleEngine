@@ -38,6 +38,9 @@
   <ItemGroup>
     <ResourceCompile Include="LittleGame\Resources\LittleGame.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="LittleGame\Resources\Icon.ico" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{e6dcb510-4df2-4c49-b230-c2d62f2df371}</ProjectGuid>

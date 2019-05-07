@@ -11,7 +11,6 @@ class GameManager final : public IService
 {
 private:
 	static constexpr size_t COMPONENT_LINES = ToIdx(TimingType::LAST) + 1;
-	static Core::Version s_gameVersion;
 
 private:
 	String m_logName;
@@ -22,7 +21,6 @@ private:
 	UPtr<class Camera> m_uWorldCamera;
 
 public:
-	static void SetGameVersion(const Core::Version& version);
 	static const Core::Version& GetGameVersion();
 
 public:

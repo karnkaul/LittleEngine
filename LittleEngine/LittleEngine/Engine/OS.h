@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/StdTypes.h"
+#include "Core/Version.h"
 #include "SFMLAPI/Windowing/SFWindowData.h"
 
 namespace LittleEngine
@@ -44,12 +45,17 @@ class EnvData final
 private:
 	String m_exePath;
 	Map<String, String> m_vars;
+	Core::Version m_fileGameVersion;
+	Core::Version m_fileEngineVersion;
 
 public:
 	void SetVars(s32 argc, char** argv);
 
 	bool HasVar(const String& key);
 	std::pair<bool, String> GetVar(const String& key);
+
+	Core::Version GetFileGameVersion() const;
+	Core::Version GetFileEngineVersion() const;
 };
 
 EnvData* Env();

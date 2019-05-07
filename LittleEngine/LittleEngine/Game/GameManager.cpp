@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include "GameManager.h"
 #include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/Engine/OS.h"
 #include "LittleEngine/Game/Camera.h"
 #include "LittleEngine/Physics/CollisionManager.h"
 #include "LittleEngine/Services/Services.h"
@@ -12,16 +13,21 @@
 
 namespace LittleEngine
 {
-Core::Version GameManager::s_gameVersion = "0.1";
+using Version = Core::Version;
 
-void GameManager::SetGameVersion(const Core::Version& version)
+namespace
 {
-	s_gameVersion = version;
+Version gameVersion = "0.1";
 }
 
-const Core::Version& GameManager::GetGameVersion()
+const Version& GameManager::GetGameVersion()
 {
-	return s_gameVersion;
+	Version fileGameVersion = OS::Env()->GetFileGameVersion();
+	if (fileGameVersion != Version())
+	{
+		gameVersion = fileGameVersion;
+	}
+	return gameVersion;
 }
 
 GameManager::GameManager() : m_logName("GameManager")

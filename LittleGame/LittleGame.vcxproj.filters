@@ -47,4 +47,7 @@
       <Filter>LittleGame\Resources</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="LittleGame\Resources\Icon.ico" />
+  </ItemGroup>
 </Project>

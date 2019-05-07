@@ -6,6 +6,8 @@
 
 namespace LittleEngine
 {
+extern bool g_bTerminateOnReady;
+
 namespace
 {
 bool bSpawnColliderMinefield = false;
@@ -302,6 +304,13 @@ void SpawnToggle()
 void TestTick(Time dt)
 {
 	elapsed += dt;
+
+	if (elapsed.AsSeconds() >= 0.25f && g_bTerminateOnReady)
+	{
+		Services::Engine()->Terminate();
+		return;
+	}
+
 	if (elapsed.AsSeconds() >= 1 && !bSpawnedDrawer)
 	{
 		bSpawnedDrawer = true;
@@ -343,13 +352,6 @@ void TestTick(Time dt)
 		pTextContext->m_bAutoDestroyOnCancel = true;
 		pTextContext->SetActive(true);
 		bSpawnedTextInput = true;
-	}
-
-	static bool bJobException = false;
-	if (elapsed.AsSeconds() >= 5 && !bJobException)
-	{
-		bJobException = true;
-		Services::Jobs()->Enqueue([]() { throw std::exception("Test"); }, "ExceptionJob");
 	}
 }
 
