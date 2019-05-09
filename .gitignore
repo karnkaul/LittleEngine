@@ -10,5 +10,5 @@
 **/SourceArt/*
 **/Redist/*
 **/GameAssets.cooked
-debug.log
+Debug*.log
 Settings.ini

@@ -8,6 +8,7 @@
 #include "LittleEngine/Audio/EngineAudio.h"
 #include "LittleEngine/Debug/DebugProfiler.h"
 #include "LittleEngine/Debug/Console/DebugConsole.h"
+#include "LittleEngine/Engine/EngineConfig.h"
 #include "LittleEngine/Engine/EngineLoop.h"
 #include "LittleEngine/Engine/OS.h"
 #include "LittleEngine/Game/GameSettings.h"
@@ -45,7 +46,7 @@ EngineService::EngineService(EngineLoop& engineLoop) : m_pEngineLoop(&engineLoop
 	else
 	{
 		OS::Platform()->SetCreatingLoggerThread();
-		m_uFileLogger = MakeUnique<AsyncFileLogger>("Debug.log");
+		m_uFileLogger = MakeUnique<AsyncFileLogger>("Debug", m_pEngineLoop->m_uConfig->GetBackupLogFileCount());
 	}
 	m_uEngineInput = MakeUnique<EngineInput>();
 	m_uEngineRepository = MakeUnique<EngineRepository>("GameAssets.cooked", "GameAssets");

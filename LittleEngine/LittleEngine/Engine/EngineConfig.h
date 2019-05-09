@@ -44,6 +44,7 @@ public:
 	u32 GetColliderBorderWidth() const;
 	LogSeverity GetLogLevel() const;
 	Vector2 GetViewSize() const;
+	u8 GetBackupLogFileCount() const;
 
 	bool SetCreateRenderThread(bool bCreate);
 	bool SetPauseOnFocusLoss(bool bPause);
@@ -54,6 +55,7 @@ public:
 	bool SetLogLevel(LogSeverity level);
 	bool SetColliderBorderWidth(u32 shapeWidth);
 	bool SetViewSize(u32 width, u32 height);
+	bool SetBackupLogFileCount(u8 count);
 
 private:
 	void Verify();
