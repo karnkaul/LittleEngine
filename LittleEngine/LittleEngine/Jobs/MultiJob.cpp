@@ -12,7 +12,7 @@ MultiJob::SubJob::SubJob(String name, std::function<void()> job)
 {
 }
 
-MultiJob::MultiJob(String name) : m_logName("[" + std::move(name) + " (MultiJob)]")
+MultiJob::MultiJob(String name) : m_logName("[" + std::move(name) + "]")
 {
 }
 
@@ -28,7 +28,7 @@ void MultiJob::AddJob(std::function<void()> job, String name)
 
 void MultiJob::StartJobs(std::function<void()> onComplete)
 {
-	LOG_I("%s started. Running and monitoring %d jobs", LogNameStr(), m_pendingJobs.size());
+	LOG_I("%s started. Running and monitoring %d jobs", LogNameStr(), m_subJobs.size());
 	JobManager* pJobs = Services::Jobs();
 	m_onComplete = onComplete;
 	m_bCompleted = false;

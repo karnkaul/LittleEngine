@@ -125,6 +125,7 @@ TextAsset::TextAsset(String id, Vec<u8> buffer) : Asset(std::move(id), AssetType
 	else
 	{
 		m_text = Core::ArchiveReader::ToText(std::move(buffer));
+		Strings::RemoveChars(m_text, {'\r'});
 	}
 }
 

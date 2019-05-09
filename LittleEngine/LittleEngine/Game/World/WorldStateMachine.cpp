@@ -23,7 +23,7 @@ bool WorldStateMachine::s_bTEST_infiniteLoad = false;
 WorldStateMachine::WorldStateMachine()
 {
 	s_bReady = false;
-	LOG_I("[WorldStateMachine] constructed");
+	LOG_D("[WorldStateMachine] constructed");
 }
 
 WorldStateMachine::~WorldStateMachine()
@@ -33,7 +33,7 @@ WorldStateMachine::~WorldStateMachine()
 		m_pActiveState->Deactivate();
 	}
 	m_uCreatedStates.clear();
-	LOG_I("[WorldStateMachine] destroyed");
+	LOG_D("[WorldStateMachine] destroyed");
 }
 
 World* WorldStateMachine::GetActiveState() const
@@ -61,45 +61,21 @@ bool WorldStateMachine::LoadState(WorldID id)
 	return false;
 }
 
-void WorldStateMachine::Start(String manifestPath, String archivePath)
+void WorldStateMachine::Start(String manifestPath)
 {
 	m_manifestPath = std::move(manifestPath);
-	m_archivePath = std::move(archivePath);
 	m_bLoading = true;
 	if (!m_manifestPath.empty())
 	{
 		// LoadAsync all assets in manifest
-#if ENABLED(FILESYSTEM_ASSETS)
-		if (m_archivePath.empty())
+		m_pAssetLoader = Services::Engine()->Repository()->LoadAsync(m_manifestPath, [&]() {
+			m_bLoaded = true;
+			m_pAssetLoader = nullptr;
+		});
+		loadTime = Time::Now();
+		if (!m_uLoadingUI)
 		{
-			LOG_D("[WorldStateMachine] Loading assets from filesystem using manifest at [%s]...",
-				  m_manifestPath.c_str());
-			m_pAssetLoader = Services::Engine()->Repository()->LoadAsync(m_manifestPath, [&]() {
-				m_bLoaded = true;
-				m_pAssetLoader = nullptr;
-			});
-			loadTime = Time::Zero;
-			if (!m_uLoadingUI)
-			{
-				m_uLoadingUI = MakeUnique<LoadingUI>();
-			}
-		}
-		else
-#endif
-		{
-			LOG_D(
-				"[WorldStateMachine] Loading cooked assets from archive at [%s] using manifest "
-				"[%s]...",
-				m_archivePath.c_str(), m_manifestPath.c_str());
-			m_pAssetLoader = Services::Engine()->Repository()->LoadAsync(m_archivePath, m_manifestPath, [&]() {
-				m_bLoaded = true;
-				m_pAssetLoader = nullptr;
-			});
-			loadTime = Time::Zero;
-			if (!m_uLoadingUI)
-			{
-				m_uLoadingUI = MakeUnique<LoadingUI>();
-			}
+			m_uLoadingUI = MakeUnique<LoadingUI>();
 		}
 	}
 	else
@@ -129,7 +105,7 @@ void WorldStateMachine::LoadingTick(Time dt)
 	if (m_bLoaded)
 	{
 		loadTime = Time::Now() - loadTime;
-		LOG_I("[WorldStateMachine] ...Manifest load complete in %.2fs. Loading World 0", loadTime.AsSeconds());
+		LOG_I("[WorldStateMachine] Manifest load complete in %.2fs. Loading World 0...", loadTime.AsSeconds());
 #if DEBUGGING
 		if (s_bTEST_infiniteLoad)
 		{
@@ -137,7 +113,7 @@ void WorldStateMachine::LoadingTick(Time dt)
 			m_bLoaded = false;
 			m_uLoadingUI->Reset();
 			LOG_D("[WorldStateMachine] Reloading all assets");
-			Start(m_manifestPath, m_archivePath);
+			Start(m_manifestPath);
 			return;
 		}
 #endif

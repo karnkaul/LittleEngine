@@ -16,13 +16,14 @@ namespace LittleEngine
 EngineRepository::EngineRepository(String archivePath, String rootDir)
 	: m_rootDir(std::move(rootDir)), m_pDefaultFont(nullptr)
 {
+	m_assetPathPrefix = m_rootDir.empty() ? String() : m_rootDir + "/";
 	std::ifstream file(archivePath);
 	Assert(file.good(), "Cooked archive does not exist!");
 #if DEBUGGING
 	if (OS::IsDebuggerAttached())
 	{
-		// If you are debugging and have broken here, 
-		// no need to restart the session, just fix the 
+		// If you are debugging and have broken here,
+		// no need to restart the session, just fix the
 		// missing archive before continuing!
 		file = std::ifstream(archivePath);
 	}
@@ -35,8 +36,10 @@ EngineRepository::EngineRepository(String archivePath, String rootDir)
 #endif
 	}
 	m_uCooked = MakeUnique<Core::ArchiveReader>();
-	String fontID = "Fonts/main.ttf";
 	m_uCooked->Load(archivePath.c_str());
+	LOG_I("[EngineRepository] Located cooked archive at [%s]", archivePath.c_str());
+
+	String fontID = "Fonts/main.ttf";
 	if (!m_uCooked->IsPresent(fontID.c_str()))
 	{
 		LOG_E("[EngineRepository] Cooked assets does not contain %s!", fontID.c_str());
@@ -59,7 +62,7 @@ EngineRepository::EngineRepository(String archivePath, String rootDir)
 #if ENABLED(FILESYSTEM_ASSETS)
 	if (!m_pDefaultFont)
 	{
-		UPtr<FontAsset> uDefaultFont = FetchAsset<FontAsset>(fontID);
+		UPtr<FontAsset> uDefaultFont = RetrieveAsset<FontAsset>(fontID);
 		if (uDefaultFont)
 		{
 			m_pDefaultFont = uDefaultFont.get();
@@ -71,7 +74,7 @@ EngineRepository::EngineRepository(String archivePath, String rootDir)
 		}
 	}
 #endif
-	LOG_I("[EngineRepository] constructed");
+	LOG_D("[EngineRepository] constructed");
 	Assert(m_pDefaultFont, "Invariant violated: Default Font is null!");
 }
 
@@ -80,21 +83,10 @@ FontAsset* EngineRepository::GetDefaultFont() const
 	return m_pDefaultFont;
 }
 
-#if ENABLED(FILESYSTEM_ASSETS)
 ManifestLoader* EngineRepository::LoadAsync(String manifestPath, std::function<void()> onComplete)
 {
 	UPtr<ManifestLoader> uAsyncLoader =
 		MakeUnique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete));
-	ManifestLoader* pLoader = uAsyncLoader.get();
-	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
-	return pLoader;
-}
-#endif
-
-ManifestLoader* EngineRepository::LoadAsync(String archivePath, String manifestPath, std::function<void()> onComplete)
-{
-	UPtr<ManifestLoader> uAsyncLoader = MakeUnique<ManifestLoader>(
-		*this, std::move(archivePath), std::move(manifestPath), std::move(onComplete));
 	ManifestLoader* pLoader = uAsyncLoader.get();
 	m_uAsyncLoaders.emplace_back(std::move(uAsyncLoader));
 	return pLoader;
@@ -156,6 +148,18 @@ EngineRepository::~EngineRepository()
 {
 	m_pDefaultFont = nullptr;
 	UnloadAll(true);
-	LOG_I("[EngineRepository] destroyed");
+	LOG_D("[EngineRepository] destroyed");
 }
+
+#if ENABLED(FILESYSTEM_ASSETS)
+bool EngineRepository::DoesFileAssetExist(const String& id)
+{
+	std::ifstream file(GetFileAssetPath(id));
+	return file.good();
+}
+String EngineRepository::GetFileAssetPath(const String& id) const
+{
+	return m_assetPathPrefix + id;
+}
+#endif
 } // namespace LittleEngine

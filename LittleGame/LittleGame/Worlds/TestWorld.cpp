@@ -353,6 +353,44 @@ void TestTick(Time dt)
 		pTextContext->SetActive(true);
 		bSpawnedTextInput = true;
 	}
+
+	static Deferred<TextureAsset*> largeTex;
+	static Deferred<TextAsset*> miscText;
+	static TextureAsset* pLargeTex = nullptr;
+	static TextAsset* pMiscText = nullptr;
+	static bool bStartLoadLargeTex = false;
+	if (elapsed.AsSeconds() >= 3 && !bStartLoadLargeTex)
+	{
+		largeTex = pTestWorld->Repository()->LoadAsync<TextureAsset>("Misc/06.png");
+		miscText = pTestWorld->Repository()->LoadAsync<TextAsset>("Misc/BinaryText.txt");
+		bStartLoadLargeTex = true;
+	}
+	static u32 frame = 0;
+	static bool bLoadedLargeTex = false;
+	static bool bLoadedMiscText = false;
+	if (bStartLoadLargeTex && (!bLoadedLargeTex || !bLoadedMiscText))
+	{
+		bLoadedLargeTex |= largeTex.IsReady();
+		bLoadedMiscText |= miscText.IsReady();
+		if (!bLoadedLargeTex)
+		{
+			LOG_I("Waiting to load %s, frame #%d", "Misc/06.png", frame);
+		}
+		else if (!pLargeTex)
+		{
+			pLargeTex = largeTex.Get();
+		}
+		if (!bLoadedMiscText)
+		{
+			LOG_I("Waiting to load %s, frame %d", "Misc/BinaryText.txt", frame);
+		}
+		else if (!pMiscText)
+		{
+			pMiscText = miscText.Get();
+			LOG_I("Loaded %s: %s", "Misc/BinaryText.txt", pMiscText->GetText().c_str());
+		}
+		++frame;
+	}
 }
 
 void Cleanup()

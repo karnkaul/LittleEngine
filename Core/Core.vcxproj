@@ -184,6 +184,7 @@
     <ClInclude Include="Core\CircularVector.h" />
     <ClInclude Include="Core\Core.h" />
     <ClInclude Include="Core\CoreTypes.h" />
+    <ClInclude Include="Core\Deferred.h" />
     <ClInclude Include="Core\Delegate.h" />
     <ClInclude Include="Core\FileRW.h" />
     <ClInclude Include="Core\Fixed.h" />

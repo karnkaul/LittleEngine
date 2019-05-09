@@ -129,7 +129,7 @@ void EngineService::PreRun()
 #if ENABLED(PROFILER)
 	Profiler::Init(std::this_thread::get_id());
 #endif
-	m_uWorldStateMachine->Start("Manifest.amf", "GameAssets.cooked");
+	m_uWorldStateMachine->Start("Manifest.amf");
 }
 
 void EngineService::UpdateInput(const SFInputDataFrame& inputDataFrame)

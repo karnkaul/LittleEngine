@@ -3,11 +3,6 @@
 #include "Core/CoreTypes.h"
 #include "LoadHelpers.h"
 
-namespace Core
-{
-class ArchiveReader;
-}
-
 namespace LittleEngine
 {
 class ManifestLoader final
@@ -24,7 +19,6 @@ private:
 		}
 	};
 
-	UPtr<Core::ArchiveReader> m_uArchiveReader;
 	std::function<void()> m_onDone;
 	Vec<NewAsset<class TextureAsset>> m_newTextures;
 	Vec<NewAsset<class FontAsset>> m_newFonts;
@@ -36,10 +30,7 @@ private:
 	bool m_bIdle = false;
 
 public:
-#if !SHIPPING
 	ManifestLoader(EngineRepository& repository, String manifestPath, std::function<void()> onDone);
-#endif
-	ManifestLoader(EngineRepository& repository, String archivePath, String manifestPath, std::function<void()> onDone);
 
 	Fixed GetProgress() const;
 
