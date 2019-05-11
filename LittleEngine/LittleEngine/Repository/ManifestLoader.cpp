@@ -16,8 +16,21 @@ ManifestLoader::ManifestLoader(EngineRepository& repository, String manifestPath
 {
 	AssetManifestData data;
 #if ENABLED(FILESYSTEM_ASSETS)
-	LOG_D("[ManifestLoader] Loading [%s] from filesystem", manifestPath.c_str());
-	data.Load(m_pRepository->GetFileAssetPath(manifestPath));
+	std::ifstream fileManifest(m_pRepository->GetFileAssetPath(manifestPath));
+	m_bManifestFilePresent = fileManifest.good();
+	if (m_bManifestFilePresent)
+	{
+		LOG_D("[ManifestLoader] Loading [%s] from filesystem", manifestPath.c_str());
+		data.Load(m_pRepository->GetFileAssetPath(manifestPath));
+	}
+	else
+	{
+		LOG_W("[ManifestLoader] FILESYSTEM_ASSETS enabled but %s missing from filesystem! Loading from cooked assets",
+			  manifestPath.c_str());
+		String manifestText =
+			Core::ArchiveReader::ToText(m_pRepository->m_uCooked->Decompress(manifestPath.c_str()));
+		data.Deserialise(std::move(manifestText));
+	}
 #else
 	LOG_D("[ManifestLoader] Decompressing [%s] from cooked assets", manifestPath.c_str());
 	String manifestText =
@@ -78,73 +91,82 @@ ManifestLoader::ManifestLoader(EngineRepository& repository, String manifestPath
 	m_bCompleted = m_bIdle = false;
 
 #if ENABLED(FILESYSTEM_ASSETS)
-	// Load
-	m_pMultiJob = Services::Jobs()->CreateMultiJob(manifestPath + "(FSLoad)");
-	m_pMultiJob->AddJob(
-		[&]() {
-			for (auto& sound : m_newSounds)
-			{
-				sound.asset = m_pRepository->RetrieveAsset<SoundAsset>(sound.assetID);
-			}
-		},
-		"Load All Sounds");
+	bool bUsingFileSystem = false;
+	bUsingFileSystem = m_bManifestFilePresent;
+	if (bUsingFileSystem)
+	{
+		// Load
+		m_pMultiJob = Services::Jobs()->CreateMultiJob(manifestPath + "(FSLoad)");
+		m_pMultiJob->AddJob(
+			[&]() {
+				for (auto& sound : m_newSounds)
+				{
+					sound.asset = m_pRepository->RetrieveAsset<SoundAsset>(sound.assetID);
+				}
+			},
+			"Load All Sounds");
 
-	for (auto& texture : m_newTextures)
-	{
-		m_pMultiJob->AddJob(
-			[&]() { texture.asset = m_pRepository->RetrieveAsset<TextureAsset>(texture.assetID); },
-			texture.assetID);
+		for (auto& texture : m_newTextures)
+		{
+			m_pMultiJob->AddJob(
+				[&]() {
+					texture.asset = m_pRepository->RetrieveAsset<TextureAsset>(texture.assetID);
+				},
+				texture.assetID);
+		}
+		for (auto& font : m_newFonts)
+		{
+			m_pMultiJob->AddJob(
+				[&]() { font.asset = m_pRepository->RetrieveAsset<FontAsset>(font.assetID); }, font.assetID);
+		}
+		for (auto& text : m_newTexts)
+		{
+			m_pMultiJob->AddJob(
+				[&]() { text.asset = m_pRepository->RetrieveAsset<TextAsset>(text.assetID); }, text.assetID);
+		}
 	}
-	for (auto& font : m_newFonts)
-	{
-		m_pMultiJob->AddJob(
-			[&]() { font.asset = m_pRepository->RetrieveAsset<FontAsset>(font.assetID); }, font.assetID);
-	}
-	for (auto& text : m_newTexts)
-	{
-		m_pMultiJob->AddJob(
-			[&]() { text.asset = m_pRepository->RetrieveAsset<TextAsset>(text.assetID); }, text.assetID);
-	}
-#else
-	m_pMultiJob = Services::Jobs()->CreateMultiJob(manifestPath + "(Decompress)");
-	m_pMultiJob->AddJob(
-		[&]() {
-			for (auto& sound : m_newSounds)
-			{
-				sound.asset = m_pRepository->CreateAsset<SoundAsset>(
-					sound.assetID, m_pRepository->m_uCooked->Decompress(sound.assetID.c_str()));
-			}
-		},
-		"Load All Sounds");
-
-	for (auto& texture : m_newTextures)
-	{
-		m_pMultiJob->AddJob(
-			[&]() {
-				texture.asset = m_pRepository->CreateAsset<TextureAsset>(
-					texture.assetID, m_pRepository->m_uCooked->Decompress(texture.assetID.c_str()));
-			},
-			texture.assetID);
-	}
-	for (auto& font : m_newFonts)
-	{
-		m_pMultiJob->AddJob(
-			[&]() {
-				font.asset = m_pRepository->CreateAsset<FontAsset>(
-					font.assetID, m_pRepository->m_uCooked->Decompress(font.assetID.c_str()));
-			},
-			font.assetID);
-	}
-	for (auto& text : m_newTexts)
-	{
-		m_pMultiJob->AddJob(
-			[&]() {
-				text.asset = m_pRepository->CreateAsset<TextAsset>(
-					text.assetID, m_pRepository->m_uCooked->Decompress(text.assetID.c_str()));
-			},
-			text.assetID);
-	}
+	else
 #endif
+	{
+		m_pMultiJob = Services::Jobs()->CreateMultiJob(manifestPath + "(Decompress)");
+		m_pMultiJob->AddJob(
+			[&]() {
+				for (auto& sound : m_newSounds)
+				{
+					sound.asset = m_pRepository->CreateAsset<SoundAsset>(
+						sound.assetID, m_pRepository->m_uCooked->Decompress(sound.assetID.c_str()));
+				}
+			},
+			"Load All Sounds");
+
+		for (auto& texture : m_newTextures)
+		{
+			m_pMultiJob->AddJob(
+				[&]() {
+					texture.asset = m_pRepository->CreateAsset<TextureAsset>(
+						texture.assetID, m_pRepository->m_uCooked->Decompress(texture.assetID.c_str()));
+				},
+				texture.assetID);
+		}
+		for (auto& font : m_newFonts)
+		{
+			m_pMultiJob->AddJob(
+				[&]() {
+					font.asset = m_pRepository->CreateAsset<FontAsset>(
+						font.assetID, m_pRepository->m_uCooked->Decompress(font.assetID.c_str()));
+				},
+				font.assetID);
+		}
+		for (auto& text : m_newTexts)
+		{
+			m_pMultiJob->AddJob(
+				[&]() {
+					text.asset = m_pRepository->CreateAsset<TextAsset>(
+						text.assetID, m_pRepository->m_uCooked->Decompress(text.assetID.c_str()));
+				},
+				text.assetID);
+		}
+	}
 	m_pMultiJob->StartJobs([&]() { m_bCompleted = true; });
 }
 

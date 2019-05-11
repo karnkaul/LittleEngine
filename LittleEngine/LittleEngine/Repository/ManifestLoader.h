@@ -28,6 +28,9 @@ private:
 	class MultiJob* m_pMultiJob = nullptr;
 	bool m_bCompleted = false;
 	bool m_bIdle = false;
+#if ENABLED(FILESYSTEM_ASSETS)
+	bool m_bManifestFilePresent = false;
+#endif
 
 public:
 	ManifestLoader(EngineRepository& repository, String manifestPath, std::function<void()> onDone);
