@@ -89,6 +89,8 @@ At the end of each `Tick()` cycle, the current state of all primitives will be c
 - [x] Runtime configurable/recreatable Render Window
 - [x] Options Menu
 - [x] Vertex-Array particle systems
+- [x] Asset Cooker tool
+- [x] Application Packager tool
 - [ ] Animation system
 - [ ] Collision Resolution
 

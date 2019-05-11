@@ -25,13 +25,13 @@
 	
 	"textureSets":
 	[
-		{ "pathPrefix": "VFX/Fire0", "count": 3, "assetPrefix": "", "assetSuffix": ".png" },
-		{ "pathPrefix": "VFX/Stars0", "count": 1, "assetPrefix": "", "assetSuffix": ".png" },
-		{ "pathPrefix": "Misc/STRESS_TEST", "count": 5, "assetPrefix": "", "assetSuffix": ".png" }
+		{ "pathPrefix": "VFX/Fire0", "count": 3, "assetSuffix": ".png" },
+		{ "pathPrefix": "VFX/Stars0", "count": 1, "assetSuffix": ".png" },
+		{ "pathPrefix": "Misc/STRESS_TEST", "count": 5, "assetSuffix": ".png" }
 	],
 	
 	"soundSets":
 	[
-		{ "pathPrefix": "VFX/Fire0", "count": 2, "assetPrefix": "", "assetSuffix": ".wav" }
+		{ "pathPrefix": "VFX/Fire0", "count": 2, "assetSuffix": ".wav" }
 	]
 }

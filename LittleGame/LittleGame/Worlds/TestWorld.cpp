@@ -387,7 +387,10 @@ void TestTick(Time dt)
 		else if (!pMiscText)
 		{
 			pMiscText = miscText.Get();
-			LOG_I("Loaded %s: %s", "Misc/BinaryText.txt", pMiscText->GetText().c_str());
+			if (pMiscText)
+			{
+				LOG_I("Loaded %s: %s", "Misc/BinaryText.txt", pMiscText->GetText().c_str());
+			}
 		}
 		++frame;
 	}
