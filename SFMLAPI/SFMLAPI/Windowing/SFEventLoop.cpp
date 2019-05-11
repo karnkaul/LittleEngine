@@ -3,7 +3,7 @@
 #include "SFEventLoop.h"
 #include "SFWindow.h"
 #include "SFWindowData.h"
-#include "Logger.h"
+#include "Core/Logger.h"
 #include "SFMLAPI/Input/SFEventHandler.h"
 #include "SFMLAPI/Input/SFInputDataFrame.h"
 #include "SFMLAPI/System/SFGameClock.h"
@@ -14,7 +14,7 @@ namespace LittleEngine
 #if DEBUGGING
 namespace
 {
-inline void ProfileFrameTime(Time& frameElapsed, Time& maxFrameTime)
+inline void ProfileFrameTime(Time frameElapsed, Time maxFrameTime)
 {
 	static const Time DILATED_TIME = Time::Milliseconds(250);
 	static const u8 MAX_CONSECUTIVE = 2;
@@ -77,20 +77,19 @@ s32 ASFEventLoop::Run()
 		if (!m_bPauseTicking)
 		{
 			Integrate(currentTime, accumulator);
+			FinishFrame();
 			if (m_bStopTicking)
 			{
 				break;
 			}
-			FinishFrame();
 #if DEBUGGING
-			frameElapsed = Time::Now() - currentTime;
-			ProfileFrameTime(frameElapsed, m_tickRate);
+			ProfileFrameTime(Time::Now() - currentTime, m_tickRate);
 #endif
 			frameElapsed = Time::Now() - currentTime;
 		}
 		else
 		{
-			frameElapsed = Time::Milliseconds(m_tickRate.AsMilliseconds() * 0.25f);
+			frameElapsed = m_tickRate.Scale(Fixed(0.25f));
 		}
 		Sleep(m_tickRate - frameElapsed);
 	}
@@ -151,12 +150,14 @@ void ASFEventLoop::Integrate(Time& outCurrentTime, Time& outAccumulator)
 	while (outAccumulator >= dt)
 	{
 		GameClock::Tick(dt);
-		Tick(dt);
-		if (m_bStopTicking)
+		bool bYield = Tick(dt);
+		m_elapsed += dt;
+		if (bYield)
 		{
+			outAccumulator = Time::Zero;
+			LOG_D("[EventLoop] Yielded integration");
 			return;
 		}
-		m_elapsed += dt;
 		outAccumulator -= dt;
 	}
 }

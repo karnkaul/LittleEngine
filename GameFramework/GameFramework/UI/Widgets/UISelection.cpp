@@ -58,9 +58,9 @@ void UISelection::OnCreated()
 {
 	m_style = UIWidgetStyle::GetDefault1(&m_style);
 	UIButton::OnCreated();
-	
+
 	SetType("UISelection");
-	m_buttonToken = AddCallback(std::bind(&UISelection::OnSpawnDrawer, this));
+	m_buttonToken = AddCallback([&]() { OnSpawnDrawer(); });
 }
 
 void UISelection::OnSpawnDrawer()
@@ -75,8 +75,7 @@ void UISelection::OnSpawnDrawer()
 	for (size_t idx = 0; idx < m_options.size(); ++idx)
 	{
 		String option = m_options[idx];
-		m_drawerTokens.push_back(m_pDrawer->AddButton(option, [&, idx, option]() 
-		{ 
+		m_drawerTokens.push_back(m_pDrawer->AddButton(option, [&, idx, option]() {
 			m_pDrawer->Destruct();
 			m_value = option;
 			SetText(m_value);

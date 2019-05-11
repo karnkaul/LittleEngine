@@ -35,10 +35,9 @@ Config | CRT | DEBUGGING | SHIPPING | Optimisation | Disk Assets
 Before activating `World 0`, the Engine first loads assets into memory.
 
 When not `SHIPPING`, the Engine can load assets into memory at any time, and directly through the filesystem. It is recommended to set a root directory such as GameAssets and store all assets hierarchically there. In `SHIPPING` builds, the Engine will only load assets through a compressed archive named `GameAssets.cooked`, which should be a zip archive of the root assets directory.
->*Expect warning logs for loading assets not present in `GameAssets.cooked`.*
+>*Expect warning logs for loading assets not present in `GameAssets.cooked` (only possible if `!SHIPPING`).*
 
-The Engine needs an `AssetManifest` serialised `GData` object in order to locate relevant bytes within the cooked archive, and expects this to be in the root directory of the archive, named `Manifest.amf`.
-
+The Engine needs an `AssetManifest` serialised `GData` object in order to locate relevant bytes within the cooked archive, and expects this to be in the root directory of the archive, named `Manifest.amf`. `AssetCooker.py` is a tool that can be used to automate populating and generating `GameAssets.cooked` via all the assets listed in `Manifest.amf`. The expected workflow is to ensure all assets referenced by the game are in the manifest (critical), and then to simply run the tool, which will backup the cooked archive if it already exists before creating a new one.
 >*Expect warning logs and potential hitches on calling `Load<T>` for assets not present in `Manifest.amf`.*
 
 ### Running the Engine
@@ -47,6 +46,8 @@ The Engine uses a state machine to manage the active `World` and switch to a dif
 1. Create an instance of the Engine using `auto engine = EngineLoop::Create();`
 1. Add derived `World` objects in order using `engine->Worlds()->CreateWorld<T>();`
 1. Run the Engine by calling `engine->Run();` on the created instance
+
+>*Note: Ensure to set the working directory for the application project (`LittleGame`) as `$(ProjectDir)/Runtime`, to debug/run from the IDE.*
 
 A `World` is capable of spawning new `Entities` and its subclasses, as well as new `Components` and subclasses, attached to existing `Entities`. The Engine will call `World::Tick(Time dt)` at a fixed time slice, set in `EngineConfig`. `World` will then call `Entity::Tick()` and `Component::Tick()` on all active objects.
 

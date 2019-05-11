@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #include "SFMLAPI/Rendering/SFRenderer.h"
 #include "SFMLAPI/Windowing/SFWindowData.h"
 #include "LittleEngine/Jobs/JobHandle.h"

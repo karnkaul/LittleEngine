@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "DebugProfiler.h"
 #if ENABLED(PROFILER)
-#include "Logger.h"
-#include "Asserts.h"
+#include "Core/Logger.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/System/SFGameClock.h"
 #include "LittleEngine/Debug/Console/Tweakable.h"
@@ -123,7 +122,7 @@ void Renderer::Tick(Time dt)
 	auto iter = m_entries.begin();
 	while (iter != m_entries.end())
 	{
-		if ((now - iter->second->startTime) > Time::Milliseconds(iter->second->maxTime.AsMilliseconds() * 100))
+		if ((now - iter->second->startTime) > iter->second->maxTime.Scale(10))
 		{
 			if (iter->second->endTime == maxFrameDeltaTime)
 			{

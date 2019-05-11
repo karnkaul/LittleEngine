@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SFEventHandler.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
-#include "Logger.h"
+#include "Core/Logger.h"
 
 namespace LittleEngine
 {

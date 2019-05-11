@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "SFWindow.h"
 #include "SFWindowData.h"
-#include "Utils.h"
-#include "Logger.h"
+#include "Core/Utils.h"
+#include "Core/Logger.h"
 #include "SFMLAPI/System/SFTypes.h"
 
 #pragma comment(lib, "freetype.lib")

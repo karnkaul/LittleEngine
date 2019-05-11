@@ -113,7 +113,7 @@
       <SupportJustMyCode>false</SupportJustMyCode>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,7 +128,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(OutputPath)LittleEngine-$(Configuration).pch</PrecompiledHeaderOutputFile>
       <SupportJustMyCode>false</SupportJustMyCode>
-      <AdditionalIncludeDirectories>..\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -149,7 +149,7 @@
       <PrecompiledHeaderOutputFile>$(OutputPath)LittleEngine-$(Configuration).pch</PrecompiledHeaderOutputFile>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG;SHIP</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -169,7 +169,7 @@
       <PrecompiledHeaderOutputFile>$(OutputPath)LittleEngine-$(Configuration).pch</PrecompiledHeaderOutputFile>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;SHIP</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

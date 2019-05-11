@@ -1,36 +1,37 @@
 {
-	textures: 
+	"textures": 
 	[
-		Textures/Ship.png
+		"Textures/Ship.png"
 	],
 	
-	fonts:
+	"fonts":
 	[
-		Fonts/Sunscreen.otf
+		"Fonts/main.ttf",
+		"Fonts/Sunscreen.otf"
 	],
 	
-	sounds:
+	"sounds":
 	[
-		Sounds/TestSound.wav,
-		Sounds/TestSound_b.wav
+		"Sounds/TestSound.wav",
+		"Sounds/TestSound_b.wav"
 	],
 
-	texts:
+	"texts":
 	[
-		VFX/Fire0/Fire0_noloop.psdata,
-		VFX/Fire0/Fire0_loop.psdata,
-		VFX/Stars0/Stars0.psdata
+		"VFX/Fire0/Fire0_noloop.psdata",
+		"VFX/Fire0/Fire0_loop.psdata",
+		"VFX/Stars0/Stars0.psdata"
 	],
 	
-	textureSets:
+	"textureSets":
 	[
-		{ pathPrefix: VFX/Fire0, count: 3, assetPrefix: , assetSuffix: .png },
-		{ pathPrefix: VFX/Stars0, count: 1, assetPrefix: , assetSuffix: .png },
-		{ pathPrefix: Misc/STRESS_TEST, count: 5, assetPrefix: , assetSuffix: .png }
+		{ "pathPrefix": "VFX/Fire0", "count": 3, "assetPrefix": "", "assetSuffix": ".png" },
+		{ "pathPrefix": "VFX/Stars0", "count": 1, "assetPrefix": "", "assetSuffix": ".png" },
+		{ "pathPrefix": "Misc/STRESS_TEST", "count": 5, "assetPrefix": "", "assetSuffix": ".png" }
 	],
 	
-	soundSets:
+	"soundSets":
 	[
-		{ pathPrefix: VFX/Fire0, count: 2, assetPrefix: , assetSuffix: .wav }
+		{ "pathPrefix": "VFX/Fire0", "count": 2, "assetPrefix": "", "assetSuffix": ".wav" }
 	]
 }

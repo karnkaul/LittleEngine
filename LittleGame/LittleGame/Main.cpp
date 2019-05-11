@@ -22,7 +22,8 @@ s32 TestGameLoop()
 	return -1;
 }
 
-int main()
+int main(int argc, char** argv)
 {
+	OS::Env()->SetVars(argc, argv);
 	return TestGameLoop();
 }

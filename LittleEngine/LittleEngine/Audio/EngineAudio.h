@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #include "SFMLAPI/Audio/SFAudioPlayer.h"
 
 namespace LittleEngine

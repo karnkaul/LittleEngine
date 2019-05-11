@@ -1,9 +1,11 @@
 #include "stdafx.h"
-#include "GData.h"
-#include "Utils.h"
+#include "Core/GData.h"
+#include "Core/Utils.h"
 #include "EngineConfig.h"
+#include "OS.h"
 
 using GData = Core::GData;
+using Version = Core::Version;
 
 namespace LittleEngine
 {
@@ -18,6 +20,9 @@ const char* WINDOW_TITLE_KEY = "windowTitle";
 const char* LOG_LEVEL_KEY = "logLevel";
 const char* VIEW_SIZE_KEY = "viewSize";
 const char* COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
+const char* BACKUP_LOG_FILE_COUNT_KEY = "backupLogFileCount";
+
+Version engineVersion = "0.1.6";
 
 UMap<Core::LogSeverity, String> severityMap = {{Core::LogSeverity::Error, "Error"},
 											   {Core::LogSeverity::Warning, "Warning"},
@@ -47,7 +52,6 @@ void SetStringIfEmpty(GData& data, String key, String value)
 } // namespace
 
 const bool EngineConfig::s_bPauseOnFocusLoss = false;
-const Version EngineConfig::s_engineVersion = "0.1.6";
 
 EngineConfig::EngineConfig()
 {
@@ -123,9 +127,20 @@ Vector2 EngineConfig::GetViewSize() const
 	return Vector2(Fixed(vec2.GetS32("x")), Fixed(vec2.GetS32("y")));
 }
 
+
+u8 EngineConfig::GetBackupLogFileCount() const
+{
+	return static_cast<u8>(m_uData->GetS32(BACKUP_LOG_FILE_COUNT_KEY));
+}
+
 const Version& EngineConfig::GetEngineVersion()
 {
-	return s_engineVersion;
+	Version fileEngineVersion = OS::Env()->GetFileEngineVersion();
+	if (fileEngineVersion != Version())
+	{
+		engineVersion = fileEngineVersion;
+	}
+	return engineVersion;
 }
 
 bool EngineConfig::SetCreateRenderThread(bool bCreate)
@@ -177,8 +192,18 @@ bool EngineConfig::SetViewSize(u32 width, u32 height)
 	return m_bDirty = m_uData->AddField(VIEW_SIZE_KEY, gData);
 }
 
+
+bool EngineConfig::SetBackupLogFileCount(u8 count)
+{
+	return m_bDirty = m_uData->SetString(BACKUP_LOG_FILE_COUNT_KEY, Strings::ToString(count));
+}
+
 void EngineConfig::Verify()
 {
+	u32 backupLogFileCount = 5;
+#if DEBUGGING
+	backupLogFileCount = 3;
+#endif
 	SetStringIfEmpty(*m_uData, WINDOW_TITLE_KEY, "Async Little Engine");
 	SetStringIfEmpty(*m_uData, LOG_LEVEL_KEY, "Info");
 	SetStringIfEmpty(*m_uData, COLLIDER_SHAPE_WIDTH_KEY, "2");
@@ -187,6 +212,7 @@ void EngineConfig::Verify()
 	SetStringIfEmpty(*m_uData, RENDER_THREAD_KEY, Strings::ToString(true));
 	SetStringIfEmpty(*m_uData, NUM_GAME_THREADS_KEY, Strings::ToString(6));
 	SetStringIfEmpty(*m_uData, PAUSE_ON_FOCUS_LOSS_KEY, Strings::ToString(s_bPauseOnFocusLoss));
+	SetStringIfEmpty(*m_uData, BACKUP_LOG_FILE_COUNT_KEY, Strings::ToString(backupLogFileCount));
 	if (m_uData->GetString(VIEW_SIZE_KEY).empty())
 	{
 		SetViewSize(1920, 1080);

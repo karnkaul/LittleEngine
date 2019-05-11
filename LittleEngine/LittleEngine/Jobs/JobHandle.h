@@ -1,18 +1,17 @@
 #pragma once
-#include <future>
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 
 namespace LittleEngine
 {
 class JobHandleBlock final
 {
 private:
-	std::future<void> m_future;
+	Deferred<void> m_deferred;
 	s64 m_jobID = -1;
 
 public:
 	JobHandleBlock() = default;
-	JobHandleBlock(s64 jobID, std::future<void>&& future);
+	JobHandleBlock(s64 jobID, Deferred<void>&& future);
 
 	s64 GetID() const;
 

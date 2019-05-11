@@ -1,7 +1,7 @@
 #pragma once
-#include "CoreTypes.h"
-#include "Property.h"
-#include "Logger.h"
+#include "Core/CoreTypes.h"
+#include "Core/Property.h"
+#include "Core/Logger.h"
 
 namespace LittleEngine
 {

@@ -1,7 +1,7 @@
 #pragma once
-#include "CoreTypes.h"
-#include "GData.h"
-#include "TRange.hpp"
+#include "Core/CoreTypes.h"
+#include "Core/GData.h"
+#include "Core/TRange.h"
 
 namespace LittleEngine
 {

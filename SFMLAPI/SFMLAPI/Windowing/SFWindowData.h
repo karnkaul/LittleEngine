@@ -1,6 +1,6 @@
 #pragma once
 #include <optional>
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 
 namespace LittleEngine
 {

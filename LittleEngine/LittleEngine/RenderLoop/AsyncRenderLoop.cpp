@@ -1,6 +1,5 @@
 #include "stdafx.h"
-#include "Asserts.h"
-#include "Logger.h"
+#include "Core/Logger.h"
 #include "SFMLAPI/Rendering/ISFRenderBuffer.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
 #include "AsyncRenderLoop.h"
@@ -39,21 +38,23 @@ void AsyncRenderLoop::Start()
 {
 	if (m_bRunThread)
 	{
+		OS::Platform()->SetCreatingRenderThread();
 		m_pSFWindow->setActive(false);
 		m_bRendering.store(true, std::memory_order_relaxed);
 		LOG_I("[AsyncRenderLoop] Deactivated SFWindow on this thread, starting render thread");
-		m_pRenderJobHandle = Services::Jobs()->EnqueueEngine(
-			std::bind(&AsyncRenderLoop::Async_Run, this), "Async Render Loop");
+		m_pRenderJobHandle =
+			Services::Jobs()->EnqueueEngine([&]() { Async_Run(); }, "Async Render Loop");
 	}
 }
 
 void AsyncRenderLoop::Stop()
 {
-	m_bRendering.store(false, std::memory_order_relaxed);
+	m_bRendering.store(false);
 	if (m_pRenderJobHandle)
 	{
 		m_pRenderJobHandle->Wait();
 		m_pSFWindow->setActive(true);
+		OS::Platform()->ReleaseRenderThread();
 	}
 }
 

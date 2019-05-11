@@ -1,5 +1,5 @@
 #pragma once
-#include "Delegate.hpp"
+#include "Core/Delegate.h"
 #include "LittleEngine/UI/UIWidget.h"
 #include "LittleEngine/UI/UIText.h"
 

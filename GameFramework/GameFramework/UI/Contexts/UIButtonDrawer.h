@@ -1,6 +1,6 @@
 #pragma once
-#include "CoreTypes.h"
-#include "TRange.hpp"
+#include "Core/CoreTypes.h"
+#include "Core/TRange.h"
 #include "LittleEngine/UI/UIContext.h"
 #include "LittleEngine/UI/UIStyle.h"
 #include "LittleEngine/UI/UIText.h"

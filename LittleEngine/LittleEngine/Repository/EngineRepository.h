@@ -1,8 +1,7 @@
 #pragma once
 #include <mutex>
-#include <future>
-#include "CoreTypes.h"
-#include "Logger.h"
+#include "Core/CoreTypes.h"
+#include "Core/Logger.h"
 
 namespace Core
 {
@@ -23,6 +22,7 @@ private:
 	std::mutex m_mutex;
 	UMap<String, Asset::Ptr> m_loaded;
 	String m_rootDir;
+	String m_assetPathPrefix;
 	class FontAsset* m_pDefaultFont;
 
 public:
@@ -33,14 +33,9 @@ public:
 	template <typename T>
 	T* Load(String id);
 	template <typename T>
-	std::future<T*> LoadAsync(String id);
+	Deferred<T*> LoadAsync(String id);
 
-#if ENABLED(FILESYSTEM_ASSETS)
 	ManifestLoader* LoadAsync(String manifestPath, std::function<void()> onComplete = nullptr);
-#endif
-	ManifestLoader* LoadAsync(String archivePath,
-							  String manifestPath,
-							  std::function<void()> onComplete = nullptr);
 
 	FontAsset* GetDefaultFont() const;
 
@@ -67,10 +62,14 @@ private:
 
 #if ENABLED(FILESYSTEM_ASSETS)
 	template <typename T>
-	UPtr<T> FetchAsset(const String& id);
+	UPtr<T> RetrieveAsset(const String& id);
 #endif
 
 	bool IsLoaded(const String& id);
+#if ENABLED(FILESYSTEM_ASSETS)
+	bool DoesFileAssetExist(const String& id);
+	String GetFileAssetPath(const String& id) const;
+#endif
 
 	void Tick(Time dt);
 
@@ -90,56 +89,104 @@ T* EngineRepository::Load(String id)
 		return pT;
 	}
 
-	LOG_W("[EngineRepository] Orphaned asset (not loaded by manifest) requested at runtime [%s]", id.c_str());
-	if (m_uCooked->IsPresent(id.c_str()))
+	LOG_W(
+		"[EngineRepository] Synchronously loading Asset (add id to manifest or use LoadAsync() to "
+		"suppress warning) [%s]",
+		id.c_str());
+
+	bool bInCooked = m_uCooked->IsPresent(id.c_str());
+#if ENABLED(FILESYSTEM_ASSETS)
+	bool bOnFilesystem = DoesFileAssetExist(id);
+	// Asset doesn't exist
+	if (!bInCooked && !bOnFilesystem)
+	{
+		LOG_E("[EngineRepository] Asset not present in cooked archive or on filesystem! [%s]", id.c_str());
+		return nullptr;
+	}
+	// Not in cooked archive (but on filesystem)
+	if (!bInCooked)
+	{
+		LOG_W("[EngineRepository] Asset present on filesystem but not in cooked archive! [%s]", id.c_str());
+	}
+	// Not on filesystem (but in cooked archive)
+	if (!bOnFilesystem)
+	{
+		LOG_W("[EngineRepository] Asset present in cooked archive but not on filesystem! [%s]", id.c_str());
+		pT = LoadFromArchive<T>(id);
+	}
+	// On filesystem: load that regardless of cooked asset
+	else
+	{
+		pT = LoadFromFilesystem<T>(id);
+	}
+#else
+	if (!bInCooked)
+	{
+		LOG_E("[EngineRepository] Asset not present in cooked archive! [%s]", id.c_str());
+	}
+	else
 	{
 		pT = LoadFromArchive<T>(id);
 	}
-	if (!pT)
-	{
-#if ENABLED(FILESYSTEM_ASSETS)
-		LOG_W("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
-		pT = LoadFromFilesystem<T>(id);
-#else
-		LOG_E("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
 #endif
-	}
 	return pT;
 }
 
 template <typename T>
-std::future<T*> EngineRepository::LoadAsync(String id)
+Deferred<T*> EngineRepository::LoadAsync(String id)
 {
 	static_assert(IsDerived<Asset, T>(),
 				  "T must derive from Asset: check Output window for erroneous call");
 	// std::function needs to be copyable, so cannot use UPtr<promise> here
 	SPtr<std::promise<T*>> sPromise = MakeShared<std::promise<T*>>();
+	Deferred<T*> deferred = sPromise->get_future();
 
 	T* pT = GetLoaded<T>(id);
 	if (pT)
 	{
 		sPromise->set_value(pT);
-		return sPromise->get_future();
+		return deferred;
 	}
 
-	if (m_uCooked->IsPresent(id.c_str()))
+	bool bInCooked = m_uCooked->IsPresent(id.c_str());
+#if ENABLED(FILESYSTEM_ASSETS)
+	bool bOnFilesystem = DoesFileAssetExist(id);
+	if (!bInCooked && !bOnFilesystem)
+	{
+		LOG_E("[EngineRepository] Asset not present in cooked archive or on filesystem! [%s]", id.c_str());
+		return deferred;
+	}
+	// Not in cooked archive (but on filesystem)
+	if (!bInCooked)
+	{
+		LOG_W("[EngineRepository] Asset present on filesystem but not in cooked archive! [%s]", id.c_str());
+	}
+	// Not on filesystem (but in cooked archive)
+	if (!bOnFilesystem)
+	{
+		LOG_W("[EngineRepository] Asset present in cooked archive but not on filesystem! [%s]", id.c_str());
+		Services::Jobs()->Enqueue(
+			[&, sPromise, id]() { sPromise->set_value(LoadFromArchive<T>(std::move(id))); }, "", true);
+	}
+	// On filesystem: load that regardless of cooked asset
+	else
 	{
 		Services::Jobs()->Enqueue(
-			[this, id, sPromise]() { sPromise->set_value(LoadFromArchive<T>(id)); }, "", true);
+			[&, sPromise, id]() { sPromise->set_value(LoadFromFilesystem<T>(std::move(id))); }, "", true);
+	}
+#else
+	if (!bInCooked)
+	{
+		LOG_E("[EngineRepository] Asset not present in cooked archive! [%s]", id.c_str());
+		sPromise->set_value(nullptr);
 	}
 	else
 	{
-#if ENABLED(FILESYSTEM_ASSETS)
-		LOG_W("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
 		Services::Jobs()->Enqueue(
-			[this, id, sPromise]() { sPromise->set_value(LoadFromFilesystem<T>(id)); }, "", true);
-#else
-		LOG_E("[EngineRepository] Asset not present in cooked archive [%s]", id.c_str());
-		sPromise->set_value(nullptr);
-#endif
+			[&, sPromise, id]() { sPromise->set_value(LoadFromArchive<T>(std::move(id))); }, "", true);
 	}
-
-	return sPromise->get_future();
+#endif
+	return deferred;
 }
 
 template <typename T>
@@ -149,9 +196,6 @@ T* EngineRepository::GetLoaded(const String& id)
 	auto search = m_loaded.find(id);
 	if (search != m_loaded.end())
 	{
-#if LOG_CACHED_ASSET_LOADS
-		LOG_D("[EngineRepository] Found Asset [%s] in cache", id.c_str());
-#endif
 		return dynamic_cast<T*>(search->second.get());
 	}
 	return nullptr;
@@ -176,7 +220,7 @@ template <typename T>
 T* EngineRepository::LoadFromFilesystem(const String& id)
 {
 	T* pT = nullptr;
-	UPtr<T> uT = FetchAsset<T>(id);
+	UPtr<T> uT = RetrieveAsset<T>(id);
 	if (uT)
 	{
 		pT = uT.get();
@@ -209,7 +253,7 @@ UPtr<T> EngineRepository::CreateAsset(const String& id, Vec<u8> buffer)
 
 #if ENABLED(FILESYSTEM_ASSETS)
 template <typename T>
-UPtr<T> EngineRepository::FetchAsset(const String& id)
+UPtr<T> EngineRepository::RetrieveAsset(const String& id)
 {
 	struct enable_smart : public T
 	{

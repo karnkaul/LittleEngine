@@ -1,12 +1,7 @@
 #pragma once
 #include <functional>
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #include "LoadHelpers.h"
-
-namespace Core
-{
-class ArchiveReader;
-}
 
 namespace LittleEngine
 {
@@ -24,7 +19,6 @@ private:
 		}
 	};
 
-	UPtr<Core::ArchiveReader> m_uArchiveReader;
 	std::function<void()> m_onDone;
 	Vec<NewAsset<class TextureAsset>> m_newTextures;
 	Vec<NewAsset<class FontAsset>> m_newFonts;
@@ -34,12 +28,12 @@ private:
 	class MultiJob* m_pMultiJob = nullptr;
 	bool m_bCompleted = false;
 	bool m_bIdle = false;
+#if ENABLED(FILESYSTEM_ASSETS)
+	bool m_bManifestFilePresent = false;
+#endif
 
 public:
-#if !SHIPPING
 	ManifestLoader(EngineRepository& repository, String manifestPath, std::function<void()> onDone);
-#endif
-	ManifestLoader(EngineRepository& repository, String archivePath, String manifestPath, std::function<void()> onDone);
 
 	Fixed GetProgress() const;
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SysDialog.h"
-#if _WIN32
+#if _WIN64
 #include <Windows.h>
 #endif
 
@@ -8,7 +8,7 @@ namespace Core
 {
 namespace
 {
-#if _WIN32
+#if _WIN64
 s32 LaunchMessageBox(const DialogueData& data)
 {
 	UINT type = MB_CANCELTRYCONTINUE;
@@ -45,7 +45,7 @@ s32 LaunchMessageBox(const DialogueData& data)
 
 void CreateSystemDialogue(const DialogueData& data)
 {
-#if _WIN32
+#if _WIN64
 	LaunchMessageBox(data);
 #endif
 }

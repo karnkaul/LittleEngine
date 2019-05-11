@@ -1,5 +1,5 @@
 #pragma once
-#include "SimpleTime.h"
+#include "Core/SimpleTime.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/Rendering/ISFRenderBuffer.h"
 #include "LittleEngine/Services/IService.h"

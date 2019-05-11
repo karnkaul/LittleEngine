@@ -1,7 +1,7 @@
 #pragma once
-#include "CoreTypes.h"
-#include "Logger.h" // Logger::Severity
-#include "Version.h"
+#include "Core/CoreTypes.h"
+#include "Core/Logger.h" // Logger::Severity
+#include "Core/Version.h"
 
 namespace Core
 {
@@ -19,8 +19,7 @@ class EngineConfig
 private:
 	// Set this to determine whether the engine will pause ticking if the window loses focus
 	static const bool s_bPauseOnFocusLoss;
-	static const Version s_engineVersion;
-
+	
 	UPtr<Core::GData> m_uData;
 	bool m_bDirty = false;
 
@@ -45,6 +44,7 @@ public:
 	u32 GetColliderBorderWidth() const;
 	LogSeverity GetLogLevel() const;
 	Vector2 GetViewSize() const;
+	u8 GetBackupLogFileCount() const;
 
 	bool SetCreateRenderThread(bool bCreate);
 	bool SetPauseOnFocusLoss(bool bPause);
@@ -55,6 +55,7 @@ public:
 	bool SetLogLevel(LogSeverity level);
 	bool SetColliderBorderWidth(u32 shapeWidth);
 	bool SetViewSize(u32 width, u32 height);
+	bool SetBackupLogFileCount(u8 count);
 
 private:
 	void Verify();

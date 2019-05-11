@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <thread>
-#include "Logger.h"
-#include "Utils.h"
+#include "Core/Logger.h"
+#include "Core/Utils.h"
 #include "JobManager.h"
 #include "JobWorker.h"
 #include "MultiJob.h"

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Logger.h"
+#include "Core/Logger.h"
 #include "Inheritable.h"
 
 namespace LittleEngine

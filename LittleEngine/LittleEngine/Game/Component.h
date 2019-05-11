@@ -1,5 +1,5 @@
 #pragma once
-#include "SimpleTime.h"
+#include "Core/SimpleTime.h"
 #include "ComponentTimingType.h"
 #include "WorldObject.h"
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #include "SFMLAPI/System/SFAssetType.h"
 
 namespace LittleEngine

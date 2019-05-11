@@ -1,6 +1,6 @@
 #pragma once
 #include <atomic>
-#include "SimpleTime.h"
+#include "Core/SimpleTime.h"
 #include "SFMLAPI/Windowing/SFWindowData.h"
 
 namespace LittleEngine

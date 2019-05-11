@@ -4,10 +4,12 @@
 **/*.exe
 **/*.lib
 **/*.pdb
+**/*.aps
 **/vc-fileutils.settings
 **/*.vcxproj.user
 **/SourceArt/*
 **/Redist/*
-**/GameAssets.cooked
-debug.log
+**/GameAssets.cooked*
+**/*.report
+Debug*.log
 Settings.ini

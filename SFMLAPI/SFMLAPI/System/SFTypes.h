@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #include "SFML/Graphics.hpp"
 #include "SFMLAPI/Rendering/Colour.h"
 #include "SFMLAPI/Windowing/SFWindowData.h"

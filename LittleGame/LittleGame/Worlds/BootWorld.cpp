@@ -1,12 +1,25 @@
 #include "stdafx.h"
 #include "GameFramework/GameFramework.h"
 #include "BootWorld.h"
-#include "UI/OptionsUI.h"
+#include "LittleGame/UI/OptionsUI.h"
 
 namespace LittleEngine
 {
+
+#if DEBUGGING
+namespace
+{
+bool bLoadWorld1Now = false;
+}
+#endif
+
+bool g_bTerminateOnReady = false;
+
 BootWorld::BootWorld() : World("Boot")
 {
+#if DEBUGGING
+	g_bTerminateOnReady = OS::Env()->HasVar("terminate-on-ready");
+#endif
 }
 
 void BootWorld::OnActivated()
@@ -22,11 +35,11 @@ void BootWorld::OnActivated()
 		}
 		m_pLogoHeader->m_transform.UnsetParent();
 		m_pLogoHeader->m_transform.nPosition = {0, Fixed(0.8f)};
-		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton("Start", std::bind(&BootWorld::OnLoadNextWorld, this)));
+		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton("Start", [&]() { OnLoadNextWorld(); }));
 		m_tokenHandler
 			.AddToken(m_pLogoDrawer->AddButton(
 				"Options", []() { Services::Game()->UI()->PushContext<OptionsUI>(); }));
-		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton("Quit", std::bind(&World::Quit, this)));
+		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton("Quit", [&]() { Quit(); }));
 		m_pLogoDrawer->SetActive(true);
 	}
 }
@@ -45,6 +58,17 @@ void BootWorld::Tick(Time dt)
 		colour.a = UByte(alpha.ToU32());
 		m_pLogoHeader->GetText()->SetPrimaryColour(colour);
 	}
+#if DEBUGGING
+	if (bLoadWorld1Now)
+	{
+		Services::Game()->Worlds()->LoadState(1);
+		bLoadWorld1Now = false;
+	}
+	if (g_bTerminateOnReady)
+	{
+		bLoadWorld1Now = true;
+	}
+#endif
 }
 
 void BootWorld::OnDeactivating()

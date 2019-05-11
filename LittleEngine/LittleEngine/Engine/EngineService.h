@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #include "SFMLAPI/Windowing/SFWindowData.h"
 #include "LittleEngine/Services/IService.h"
 
@@ -15,7 +15,7 @@ private:
 	UPtr<class AsyncFileLogger> m_uFileLogger;
 	class EngineLoop* m_pEngineLoop = nullptr;
 	class AsyncRenderLoop* m_pRenderLoop = nullptr;
-	bool m_bTerminate;
+	bool m_bTerminating = false;
 
 public:
 	EngineService(EngineLoop& engineLoop);
@@ -33,7 +33,8 @@ public:
 private:
 	void PreRun();
 	void UpdateInput(const struct SFInputDataFrame& inputDataFrame);
-	void Tick(Time dt);
+	// Returns true if active World state changed or terminating
+	bool Tick(Time dt);
 	void PreFinishFrame();
 
 	friend class EngineLoop;

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ArchiveReader.h"
+#include "Core/ArchiveReader.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "ManifestLoader.h"
 #include "EngineRepository.h"
@@ -11,93 +11,49 @@ namespace LittleEngine
 {
 using Lock = std::lock_guard<std::mutex>;
 
-#if !SHIPPING
-ManifestLoader::ManifestLoader(EngineRepository& repository,
-								   String manifestPath,
-								   std::function<void()> onDone)
+ManifestLoader::ManifestLoader(EngineRepository& repository, String manifestPath, std::function<void()> onDone)
 	: m_onDone(std::move(onDone)), m_pRepository(&repository)
 {
 	AssetManifestData data;
-	data.Load(std::move(manifestPath));
-	AssetManifest& manifest = data.GetManifest();
-	for (auto& definition : manifest.definitions)
+#if ENABLED(FILESYSTEM_ASSETS)
+	std::ifstream fileManifest(m_pRepository->GetFileAssetPath(manifestPath));
+	m_bManifestFilePresent = fileManifest.good();
+	if (m_bManifestFilePresent)
 	{
-		switch (definition.type)
-		{
-		case AssetType::Texture:
-		{
-			AddTextureIDs(std::move(definition.assetIDs));
-			break;
-		}
-
-		case AssetType::Font:
-		{
-			AddFontIDs(std::move(definition.assetIDs));
-			break;
-		}
-
-		case AssetType::Sound:
-		{
-			AddSoundIDs(std::move(definition.assetIDs));
-			break;
-		}
-
-		case AssetType::Text:
-		{
-			AddTextIDs(std::move(definition.assetIDs));
-			break;
-		}
-
-		default:
-			LOG_W("Unsupported Asset Type [%d] for asynchronous loading!", definition.type);
-		}
+		LOG_D("[ManifestLoader] Loading [%s] from filesystem", manifestPath.c_str());
+		data.Load(m_pRepository->GetFileAssetPath(manifestPath));
 	}
-
-	m_bCompleted = m_bIdle = false;
-	m_pMultiJob = Services::Jobs()->CreateMultiJob("Load " + manifestPath);
-	m_pMultiJob->AddJob(
-		[&]() {
-			for (auto& sound : m_newSounds)
-			{
-				sound.asset = m_pRepository->FetchAsset<SoundAsset>(sound.assetID);
-			}
-		},
-		"Load All Sounds");
-
-	for (auto& texture : m_newTextures)
+	else
 	{
-		m_pMultiJob->AddJob(
-			[&]() { texture.asset = m_pRepository->FetchAsset<TextureAsset>(texture.assetID); },
-			texture.assetID);
+		LOG_W("[ManifestLoader] FILESYSTEM_ASSETS enabled but %s missing from filesystem! Loading from cooked assets",
+			  manifestPath.c_str());
+		String manifestText =
+			Core::ArchiveReader::ToText(m_pRepository->m_uCooked->Decompress(manifestPath.c_str()));
+		data.Deserialise(std::move(manifestText));
 	}
-	for (auto& font : m_newFonts)
-	{
-		m_pMultiJob->AddJob(
-			[&]() { font.asset = m_pRepository->FetchAsset<FontAsset>(font.assetID); }, font.assetID);
-	}
-	for (auto& text : m_newTexts)
-	{
-		m_pMultiJob->AddJob(
-			[&]() { text.asset = m_pRepository->FetchAsset<TextAsset>(text.assetID); }, text.assetID);
-	}
-
-	m_pMultiJob->StartJobs([&]() { m_bCompleted = true; });
-}
+#else
+	LOG_D("[ManifestLoader] Decompressing [%s] from cooked assets", manifestPath.c_str());
+	String manifestText =
+		Core::ArchiveReader::ToText(m_pRepository->m_uCooked->Decompress(manifestPath.c_str()));
+	data.Deserialise(std::move(manifestText));
 #endif
 
-ManifestLoader::ManifestLoader(EngineRepository& repository,
-								   String archivePath,
-								   String manifestPath,
-								   std::function<void()> onDone)
-	: m_onDone(std::move(onDone)), m_pRepository(&repository)
-{
-	m_uArchiveReader = MakeUnique<Core::ArchiveReader>();
-	m_uArchiveReader->Load(archivePath.c_str());
-	String manifestText = m_uArchiveReader->ToText(m_uArchiveReader->Decompress(manifestPath.c_str()));
-	AssetManifestData data;
-	data.Deserialise(std::move(manifestText));
-
 	AssetManifest& manifest = data.GetManifest();
+
+#if ENABLED(FILESYSTEM_ASSETS)
+	// Verify
+	for (const auto& definition : manifest.definitions)
+	{
+		for (const auto& id : definition.assetIDs.assetIDs)
+		{
+			if (!m_pRepository->m_uCooked->IsPresent(id.c_str()))
+			{
+				LOG_W("[ManifestLoader] Asset not present in cooked archive! [%s]", id.c_str());
+			}
+		}
+	}
+#endif
+
 	for (auto& definition : manifest.definitions)
 	{
 		switch (definition.type)
@@ -127,50 +83,90 @@ ManifestLoader::ManifestLoader(EngineRepository& repository,
 		}
 
 		default:
-			LOG_W("Unsupported Asset Type [%d] for asynchronous loading!", definition.type);
+			LOG_W("[ManifestLoader] Unsupported Asset Type [%s] for asynchronous loading!",
+				  g_szAssetType[ToIdx(definition.type)]);
 		}
 	}
 
 	m_bCompleted = m_bIdle = false;
-	m_pMultiJob = Services::Jobs()->CreateMultiJob("Decompress " + archivePath);
-	m_pMultiJob->AddJob(
-		[&]() {
-			for (auto& sound : m_newSounds)
-			{
-				sound.asset = m_pRepository->CreateAsset<SoundAsset>(
-					sound.assetID, m_uArchiveReader->Decompress(sound.assetID.c_str()));
-			}
-		},
-		"Load All Sounds");
 
-	for (auto& texture : m_newTextures)
+#if ENABLED(FILESYSTEM_ASSETS)
+	bool bUsingFileSystem = false;
+	bUsingFileSystem = m_bManifestFilePresent;
+	if (bUsingFileSystem)
 	{
+		// Load
+		m_pMultiJob = Services::Jobs()->CreateMultiJob(manifestPath + "(FSLoad)");
 		m_pMultiJob->AddJob(
 			[&]() {
-				texture.asset = m_pRepository->CreateAsset<TextureAsset>(
-					texture.assetID, m_uArchiveReader->Decompress(texture.assetID.c_str()));
+				for (auto& sound : m_newSounds)
+				{
+					sound.asset = m_pRepository->RetrieveAsset<SoundAsset>(sound.assetID);
+				}
 			},
-			texture.assetID);
-	}
-	for (auto& font : m_newFonts)
-	{
-		m_pMultiJob->AddJob(
-			[&]() {
-				font.asset = m_pRepository->CreateAsset<FontAsset>(
-					font.assetID, m_uArchiveReader->Decompress(font.assetID.c_str()));
-			},
-			font.assetID);
-	}
-	for (auto& text : m_newTexts)
-	{
-		m_pMultiJob->AddJob(
-			[&]() {
-				text.asset = m_pRepository->CreateAsset<TextAsset>(
-					text.assetID, m_uArchiveReader->Decompress(text.assetID.c_str()));
-			},
-			text.assetID);
-	}
+			"Load All Sounds");
 
+		for (auto& texture : m_newTextures)
+		{
+			m_pMultiJob->AddJob(
+				[&]() {
+					texture.asset = m_pRepository->RetrieveAsset<TextureAsset>(texture.assetID);
+				},
+				texture.assetID);
+		}
+		for (auto& font : m_newFonts)
+		{
+			m_pMultiJob->AddJob(
+				[&]() { font.asset = m_pRepository->RetrieveAsset<FontAsset>(font.assetID); }, font.assetID);
+		}
+		for (auto& text : m_newTexts)
+		{
+			m_pMultiJob->AddJob(
+				[&]() { text.asset = m_pRepository->RetrieveAsset<TextAsset>(text.assetID); }, text.assetID);
+		}
+	}
+	else
+#endif
+	{
+		m_pMultiJob = Services::Jobs()->CreateMultiJob(manifestPath + "(Decompress)");
+		m_pMultiJob->AddJob(
+			[&]() {
+				for (auto& sound : m_newSounds)
+				{
+					sound.asset = m_pRepository->CreateAsset<SoundAsset>(
+						sound.assetID, m_pRepository->m_uCooked->Decompress(sound.assetID.c_str()));
+				}
+			},
+			"Load All Sounds");
+
+		for (auto& texture : m_newTextures)
+		{
+			m_pMultiJob->AddJob(
+				[&]() {
+					texture.asset = m_pRepository->CreateAsset<TextureAsset>(
+						texture.assetID, m_pRepository->m_uCooked->Decompress(texture.assetID.c_str()));
+				},
+				texture.assetID);
+		}
+		for (auto& font : m_newFonts)
+		{
+			m_pMultiJob->AddJob(
+				[&]() {
+					font.asset = m_pRepository->CreateAsset<FontAsset>(
+						font.assetID, m_pRepository->m_uCooked->Decompress(font.assetID.c_str()));
+				},
+				font.assetID);
+		}
+		for (auto& text : m_newTexts)
+		{
+			m_pMultiJob->AddJob(
+				[&]() {
+					text.asset = m_pRepository->CreateAsset<TextAsset>(
+						text.assetID, m_pRepository->m_uCooked->Decompress(text.assetID.c_str()));
+				},
+				text.assetID);
+		}
+	}
 	m_pMultiJob->StartJobs([&]() { m_bCompleted = true; });
 }
 

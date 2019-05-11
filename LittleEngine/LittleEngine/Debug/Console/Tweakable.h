@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 #if ENABLED(TWEAKABLES)
 #define TweakBool(id, address) \
 	LittleEngine::Debug::Tweakable id(#id, LittleEngine::Debug::TweakType::BOOL, "false", address)

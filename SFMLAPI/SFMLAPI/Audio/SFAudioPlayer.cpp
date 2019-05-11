@@ -1,10 +1,10 @@
 #include "stdafx.h"
+#include "SFML/Audio.hpp"
+#include "Core/Utils.h"
+#include "Core/Logger.h"
 #include "SFAudioPlayer.h"
-#include "Utils.h"
-#include "Logger.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "SFMLAPI/System/SFGameClock.h"
-#include "SFML/Audio.hpp"
 
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "openal32.lib")

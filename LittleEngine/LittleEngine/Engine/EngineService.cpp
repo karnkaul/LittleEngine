@@ -8,6 +8,7 @@
 #include "LittleEngine/Audio/EngineAudio.h"
 #include "LittleEngine/Debug/DebugProfiler.h"
 #include "LittleEngine/Debug/Console/DebugConsole.h"
+#include "LittleEngine/Engine/EngineConfig.h"
 #include "LittleEngine/Engine/EngineLoop.h"
 #include "LittleEngine/Engine/OS.h"
 #include "LittleEngine/Game/GameSettings.h"
@@ -45,7 +46,7 @@ EngineService::EngineService(EngineLoop& engineLoop) : m_pEngineLoop(&engineLoop
 	else
 	{
 		OS::Platform()->SetCreatingLoggerThread();
-		m_uFileLogger = MakeUnique<AsyncFileLogger>("Debug.log");
+		m_uFileLogger = MakeUnique<AsyncFileLogger>("Debug", m_pEngineLoop->m_uConfig->GetBackupLogFileCount());
 	}
 	m_uEngineInput = MakeUnique<EngineInput>();
 	m_uEngineRepository = MakeUnique<EngineRepository>("GameAssets.cooked", "GameAssets");
@@ -69,7 +70,11 @@ EngineService::~EngineService()
 	m_uEngineAudio = nullptr;
 	Services::UnprovideEngine(*this);
 	LOG_I("Logging terminated");
-	m_uFileLogger = nullptr;
+	if (m_uFileLogger)
+	{
+		m_uFileLogger = nullptr;
+		OS::Platform()->ReleaseLoggerThread();
+	}
 }
 
 WorldStateMachine* EngineService::Worlds() const
@@ -113,19 +118,19 @@ void EngineService::SetWindowStyle(SFWindowStyle newStyle)
 
 void EngineService::Terminate()
 {
-	m_bTerminate = true;
+	m_bTerminating = true;
 }
 
 void EngineService::PreRun()
 {
-	m_bTerminate = false;
+	m_bTerminating = false;
 #if ENABLED(CONSOLE)
 	Console::Init();
 #endif
 #if ENABLED(PROFILER)
 	Profiler::Init(std::this_thread::get_id());
 #endif
-	m_uWorldStateMachine->Start("Manifest.amf", "GameAssets.cooked");
+	m_uWorldStateMachine->Start("Manifest.amf");
 }
 
 void EngineService::UpdateInput(const SFInputDataFrame& inputDataFrame)
@@ -134,11 +139,11 @@ void EngineService::UpdateInput(const SFInputDataFrame& inputDataFrame)
 	m_uEngineInput->FireCallbacks();
 }
 
-void EngineService::Tick(Time dt)
+bool EngineService::Tick(Time dt)
 {
 	Services::Jobs()->Tick(dt);
 	m_uEngineRepository->Tick(dt);
-	m_uWorldStateMachine->Tick(dt);
+	bool bWorldStateChanged = m_uWorldStateMachine->Tick(dt);
 	m_uEngineAudio->Tick(dt);
 #if ENABLED(CONSOLE)
 	Console::Tick(dt);
@@ -146,6 +151,7 @@ void EngineService::Tick(Time dt)
 #if ENABLED(PROFILER)
 	Profiler::Tick(dt);
 #endif
+	return bWorldStateChanged || m_bTerminating;
 }
 
 void EngineService::PreFinishFrame()

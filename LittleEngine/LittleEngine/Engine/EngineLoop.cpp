@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "Logger.h"
-#include "Utils.h"
+#include "Core/Logger.h"
+#include "Core/Utils.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
 #include "EngineConfig.h"
 #include "EngineLoop.h"
@@ -46,11 +46,12 @@ void EngineLoop::PreTick()
 	m_uEngineService->UpdateInput(GetInputDataFrame());
 }
 
-void EngineLoop::Tick(Time dt)
+bool EngineLoop::Tick(Time dt)
 {
 	PROFILE_START("Tick", Colour(127, 0, 255, 255));
-	m_uEngineService->Tick(dt);
+	bool bYield = m_uEngineService->Tick(dt);
 	PROFILE_STOP("Tick");
+	return bYield;
 }
 
 void EngineLoop::FinishFrame()
@@ -67,7 +68,7 @@ void EngineLoop::FinishFrame()
 		m_uAsyncRenderLoop->Render(*m_uRenderFactory, alpha);
 	}
 
-	m_bStopTicking = m_uEngineService->m_bTerminate;
+	m_bStopTicking = m_uEngineService->m_bTerminating;
 }
 
 void EngineLoop::PostRun()
@@ -141,10 +142,6 @@ bool EngineLoop::Init()
 				"Insufficient threads to create render thread!\n!ERROR! Async Renderer not "
 				"available!");
 			m_bRenderThread = false;
-		}
-		else
-		{
-			OS::Platform()->SetCreatingRenderThread();
 		}
 	}
 

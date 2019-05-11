@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include <thread>
 #include <ctime>
-#include "FileRW.h"
-#include "Logger.h"
+#include "Core/FileRW.h"
+#include "Core/Logger.h"
+#include "Core/Utils.h"
 #include "AsyncFileLogger.h"
 #include "LittleEngine/Engine/EngineConfig.h"
 #include "LittleEngine/Game/GameManager.h"
@@ -27,18 +28,25 @@ String GetPrologue()
 } // namespace
 using Lock = std::lock_guard<std::mutex>;
 
-AsyncFileLogger::AsyncFileLogger(String path) : m_filePath(std::move(path))
+AsyncFileLogger::AsyncFileLogger(String filename, u8 backupCount) : m_filename(std::move(filename))
 {
-	Core::g_OnLogStr = std::bind(&AsyncFileLogger::OnLogStr, this, std::placeholders::_1);
+	RenameOldFiles(backupCount);
+	Core::g_OnLogStr = [&](const char* pText) {
+		if (!m_bStopLogging.load(std::memory_order_relaxed))
+		{
+			Lock lock(m_mutex);
+			m_cache += std::string(pText);
+		}
+	};
 	m_bStopLogging.store(false, std::memory_order_relaxed);
-	m_sFileLogJobHandle = Services::Jobs()->EnqueueEngine(
-		std::bind(&AsyncFileLogger::Async_StartLogging, this), "AsyncFileLogger");
+	m_sFileLogJobHandle =
+		Services::Jobs()->EnqueueEngine([&]() { Async_StartLogging(); }, "AsyncFileLogger");
 }
 
 AsyncFileLogger::~AsyncFileLogger()
 {
 	// Freeze m_cache and terminate thread
-	m_bStopLogging.store(true, std::memory_order_relaxed);
+	m_bStopLogging.store(true);
 	if (m_sFileLogJobHandle)
 	{
 		m_sFileLogJobHandle->Wait();
@@ -48,7 +56,7 @@ AsyncFileLogger::~AsyncFileLogger()
 
 void AsyncFileLogger::Async_StartLogging()
 {
-	m_uWriter = MakeUnique<FileRW>(m_filePath);
+	m_uWriter = MakeUnique<FileRW>(m_filename + m_extension);
 	m_uWriter->Write(GetPrologue());
 	while (!m_bStopLogging.load(std::memory_order_relaxed))
 	{
@@ -69,12 +77,49 @@ void AsyncFileLogger::Async_StartLogging()
 	m_uWriter = nullptr;
 }
 
-void AsyncFileLogger::OnLogStr(const char* pText)
+void AsyncFileLogger::RenameOldFiles(u8 countToKeep)
 {
-	if (!m_bStopLogging.load(std::memory_order_relaxed))
+	auto BackupPath = [&](u8 id) { return m_filename + "_bak_" + Strings::ToString(id) + m_extension; };
+	
+	// Make room for oldest backup
+	String oldest = BackupPath(countToKeep);
+	std::ifstream logFile(oldest);
+	if (logFile.good())
 	{
-		Lock lock(m_mutex);
-		m_cache += std::string(pText);
+		std::remove(oldest.c_str());
+	}
+	--countToKeep;
+	s32 success = 0;
+
+	// Rename old backups
+	while (countToKeep > 0)
+	{
+		String from = BackupPath(countToKeep);
+		String to = BackupPath(countToKeep + 1);
+		std::ifstream logFile(from);
+		if (logFile.good())
+		{
+			if (std::ifstream(to))
+			{
+				std::remove(to.c_str());
+			}
+			logFile.close();
+			success += std::rename(from.c_str(), to.c_str());
+		}
+		--countToKeep;
+	}
+
+	// Rename last log file
+	String from = m_filename + m_extension;
+	String to = BackupPath(1);
+	if (std::ifstream(from))
+	{
+		success += std::rename(from.c_str(), to.c_str());
+	}
+
+	if (success != 0)
+	{
+		LOG_E("[AsyncFileLogger] Could not rename all old log files");
 	}
 }
 } // namespace LittleEngine

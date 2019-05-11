@@ -3,8 +3,8 @@
 
 namespace LittleEngine
 {
-JobHandleBlock::JobHandleBlock(s64 jobID, std::future<void>&& future)
-	: m_future(std::move(future)), m_jobID(jobID)
+JobHandleBlock::JobHandleBlock(s64 jobID, Deferred<void>&& deferred)
+	: m_deferred(std::move(deferred)), m_jobID(jobID)
 {
 }
 
@@ -15,14 +15,11 @@ s64 JobHandleBlock::GetID() const
 
 void JobHandleBlock::Wait()
 {
-	if (m_future.valid())
-	{
-		m_future.get();
-	}
+	m_deferred.SafeWait();
 }
 
 bool JobHandleBlock::HasCompleted() const
 {
-	return m_future.valid() && m_future.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready;
+	return m_deferred.IsReady();
 }
 } // namespace LittleEngine

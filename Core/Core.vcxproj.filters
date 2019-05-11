@@ -1,135 +1,135 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Private">
-      <UniqueIdentifier>{232d1485-cd94-4f9b-a434-0d7a46e831fe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Public">
-      <UniqueIdentifier>{136339b9-dd94-4d99-9255-e8ff80c77f61}</UniqueIdentifier>
+    <Filter Include="Core">
+      <UniqueIdentifier>{6037938e-977f-4ae1-b5ed-6bda270299cf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Private\Logger.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\SysDialog.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\Asserts.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\Fixed.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\UByte.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\Vector2.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\Utils.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\FileRW.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\GData.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\Rect2.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\Transform.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\Property.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\Maths.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\ArchiveReader.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\Version.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Private\SimpleTime.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
+    <ClInclude Include="Core\ArchiveReader.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Asserts.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CoreTypes.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\FileRW.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Fixed.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\GData.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Logger.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Maths.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Property.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Rect2.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\SimpleTime.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\StdTypes.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\SysDialog.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Transform.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UByte.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utils.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Vector2.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Version.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\TRange.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\TokenHandler.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CircularList.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CircularVector.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Delegate.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Deferred.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Public\CoreTypes.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\Logger.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\SysDialog.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\Asserts.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\Fixed.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\UByte.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\Vector2.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\Utils.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\CircularVector.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\Delegate.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\FileRW.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\GData.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\Rect2.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\TokenHandler.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\TRange.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\Transform.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\StdTypes.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\Core.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\Property.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\Maths.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\ArchiveReader.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\Version.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\SimpleTime.h">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Public\CircularList.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
+    <ClCompile Include="Core\ArchiveReader.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Asserts.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\FileRW.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Fixed.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\GData.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Logger.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Maths.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Property.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Rect2.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\SimpleTime.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\SysDialog.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Transform.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\UByte.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utils.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Vector2.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Version.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

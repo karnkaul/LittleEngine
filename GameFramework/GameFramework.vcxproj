@@ -149,7 +149,7 @@
       <ConformanceMode>true</ConformanceMode>
       <SupportJustMyCode>false</SupportJustMyCode>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;..\Include;..\PCH;..\Core\Public;..\SFMLAPI;..\LittleEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;.</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(OutputPath)LittleEngine-$(Configuration).pch</PrecompiledHeaderOutputFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -167,7 +167,7 @@
       <SupportJustMyCode>false</SupportJustMyCode>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;..\Include;..\PCH;..\Core\Public;..\SFMLAPI;..\LittleEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;.</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(OutputPath)LittleEngine-$(Configuration).pch</PrecompiledHeaderOutputFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -186,7 +186,7 @@
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.;..\Include;..\PCH;..\Core\Public;..\SFMLAPI;..\LittleEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;.</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(OutputPath)LittleEngine-$(Configuration).pch</PrecompiledHeaderOutputFile>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG;SHIP</PreprocessorDefinitions>
@@ -207,7 +207,7 @@
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.;..\Include;..\PCH;..\Core\Public;..\SFMLAPI;..\LittleEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;.</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(OutputPath)LittleEngine-$(Configuration).pch</PrecompiledHeaderOutputFile>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;SHIP</PreprocessorDefinitions>

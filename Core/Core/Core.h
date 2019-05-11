@@ -1,0 +1,9 @@
+#pragma once
+#include "Core/ArchiveReader.h"
+#include "Core/CircularVector.h"
+#include "Core/CoreTypes.h"
+#include "Core/Delegate.h"
+#include "Core/GData.h"
+#include "Core/TokenHandler.h"
+#include "Core/TRange.h"
+#include "Core/Utils.h"

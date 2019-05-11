@@ -18,7 +18,6 @@ private:
 	bool m_bLoading = false;
 	bool m_bLoaded = false;
 	String m_manifestPath;
-	String m_archivePath;
 #if DEBUGGING
 public:
 	static bool s_bTEST_infiniteLoad;
@@ -36,11 +35,13 @@ public:
 	bool LoadState(WorldID id);
 
 private:
-	void Start(String manifestPath = "", String archivePath = "");
-	void Tick(Time dt);
+	void Start(String manifestPath = "");
+	// Returns true if active World state changed
+	bool Tick(Time dt);
 	
 	void LoadingTick(Time dt);
-	void GameTick(Time dt);
+	// Returns true if active World state changed
+	bool GameTick(Time dt);
 
 	friend class EngineService;
 };

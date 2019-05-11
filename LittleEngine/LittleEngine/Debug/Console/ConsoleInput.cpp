@@ -13,7 +13,8 @@ namespace Debug
 {
 ConsoleInput::ConsoleInput()
 {
-	m_token = Services::Engine()->Input()->RegisterSudo(std::bind(&ConsoleInput::OnInput, this, _1));
+	m_token = Services::Engine()->Input()->RegisterSudo(
+		[&](const EngineInput::Frame& frame) -> bool { return OnInput(frame); });
 }
 
 bool ConsoleInput::OnInput(const EngineInput::Frame& frame)

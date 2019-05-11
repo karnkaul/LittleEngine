@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "ConsoleRenderer.h"
 #if ENABLED(CONSOLE)
-#include "Logger.h"
-#include "Utils.h"
+#include "Core/Logger.h"
+#include "Core/Utils.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "LittleEngine/Engine/EngineService.h"

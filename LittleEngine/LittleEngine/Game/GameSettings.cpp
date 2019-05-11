@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "FileRW.h"
-#include "Utils.h"
+#include "Core/FileRW.h"
+#include "Core/Utils.h"
 #include "SFMLAPI/Windowing/SFWindow.h"
 #include "SFMLAPI/Windowing/SFWindowData.h"
 #include "GameSettings.h"

@@ -1,12 +1,13 @@
 #include "stdafx.h"
-#include "ArchiveReader.h"
 #include "LittleEngine/Debug/Console/Tweakable.h"
 #include "GameFramework/GameFramework.h"
 #include "TestWorld.h"
-#include "UI/OptionsUI.h"
+#include "LittleGame/UI/OptionsUI.h"
 
 namespace LittleEngine
 {
+extern bool g_bTerminateOnReady;
+
 namespace
 {
 bool bSpawnColliderMinefield = false;
@@ -30,8 +31,8 @@ void OnEnter()
 	//	{
 	//		auto rc0 = pEntity2->AddComponent<RenderComponent>();
 	//		rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({100, 100},
-	//SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow); 		auto t0 =
-	//pEntity2->AddComponent<CollisionComponent>(); 		t0->AddCircle(100);
+	// SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow); 		auto t0 =
+	// pEntity2->AddComponent<CollisionComponent>(); 		t0->AddCircle(100);
 	//	}
 
 	//	pEntity3 = pTestWorld->Game()->NewEntity<Entity>("Blue Rectangle", Vector2(500, -200));
@@ -303,6 +304,13 @@ void SpawnToggle()
 void TestTick(Time dt)
 {
 	elapsed += dt;
+
+	if (elapsed.AsSeconds() >= 0.25f && g_bTerminateOnReady)
+	{
+		Services::Engine()->Terminate();
+		return;
+	}
+
 	if (elapsed.AsSeconds() >= 1 && !bSpawnedDrawer)
 	{
 		bSpawnedDrawer = true;
@@ -346,11 +354,42 @@ void TestTick(Time dt)
 		bSpawnedTextInput = true;
 	}
 
-	static bool bJobException = false;
-	if (elapsed.AsSeconds() >= 5 && !bJobException)
+	static Deferred<TextureAsset*> largeTex;
+	static Deferred<TextAsset*> miscText;
+	static TextureAsset* pLargeTex = nullptr;
+	static TextAsset* pMiscText = nullptr;
+	static bool bStartLoadLargeTex = false;
+	if (elapsed.AsSeconds() >= 3 && !bStartLoadLargeTex)
 	{
-		bJobException = true;
-		Services::Jobs()->Enqueue([]() { throw std::exception("Test"); }, "ExceptionJob");
+		largeTex = pTestWorld->Repository()->LoadAsync<TextureAsset>("Misc/06.png");
+		miscText = pTestWorld->Repository()->LoadAsync<TextAsset>("Misc/BinaryText.txt");
+		bStartLoadLargeTex = true;
+	}
+	static u32 frame = 0;
+	static bool bLoadedLargeTex = false;
+	static bool bLoadedMiscText = false;
+	if (bStartLoadLargeTex && (!bLoadedLargeTex || !bLoadedMiscText))
+	{
+		bLoadedLargeTex |= largeTex.IsReady();
+		bLoadedMiscText |= miscText.IsReady();
+		if (!bLoadedLargeTex)
+		{
+			LOG_I("Waiting to load %s, frame #%d", "Misc/06.png", frame);
+		}
+		else if (!pLargeTex)
+		{
+			pLargeTex = largeTex.Get();
+		}
+		if (!bLoadedMiscText)
+		{
+			LOG_I("Waiting to load %s, frame %d", "Misc/BinaryText.txt", frame);
+		}
+		else if (!pMiscText)
+		{
+			pMiscText = miscText.Get();
+			LOG_I("Loaded %s: %s", "Misc/BinaryText.txt", pMiscText->GetText().c_str());
+		}
+		++frame;
 	}
 }
 
@@ -387,7 +426,7 @@ void TestWorld::OnActivated()
 {
 	pTestWorld = this;
 	StartTests();
-	BindInput(std::bind(&TestWorld::OnInput, this, _1));
+	BindInput([&](const EngineInput::Frame& frame) -> bool { return OnInput(frame); });
 	BindInput(&Test_OnInput);
 }
 

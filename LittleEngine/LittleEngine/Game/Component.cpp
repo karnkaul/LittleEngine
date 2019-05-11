@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Logger.h"
+#include "Core/Logger.h"
 #include "Component.h"
 #include "Entity.h"
 

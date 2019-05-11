@@ -1,7 +1,7 @@
 #pragma once
 #include <atomic>
 #include <thread>
-#include "CoreTypes.h"
+#include "Core/CoreTypes.h"
 
 namespace LittleEngine
 {
