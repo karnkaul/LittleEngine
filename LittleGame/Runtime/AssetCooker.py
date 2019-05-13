@@ -6,11 +6,10 @@ import sys
 import zipfile
 
 # Cook vars
-manifest_path = './Manifest.amf'
-asset_root_dir = '.'
-cooked_path = '../GameAssets.cooked'
+manifest_name = 'Manifest.amf'
+assets_root_dir = './GameAssets'
+cooked_path = './GameAssets.cooked'
 
-# Globals
 class Mode(Enum):
     Analyse     = 0
     Cook_Prompt = 1
@@ -24,10 +23,10 @@ class Asset:
         self.bytes = os.path.getsize(self.path)
 
 class Manifest:
-    def __init__(self, manifest_path, asset_root_dir):
-        self.asset_root_dir = asset_root_dir
-        self.manifest_path = manifest_path
-        self.manifest_name = manifest_path.replace('./', '').replace('../', '')
+    def __init__(self, manifest_name, assets_root_dir):
+        self.assets_root_dir = assets_root_dir
+        self.manifest_name = manifest_name
+        self.manifest_path = assets_root_dir + '/' + manifest_name
         self.cooked_path = ''
         self.assets_in_manifest = []
         self.assets_not_on_fs = []
@@ -46,7 +45,7 @@ class Manifest:
             for a_type in a_types:
                 if a_type in loaded_manifest:
                     for asset_id in loaded_manifest[a_type]:
-                        asset_path = self.asset_root_dir + '/' + asset_id
+                        asset_path = self.assets_root_dir + '/' + asset_id
                         if (os.path.isfile(asset_path)):
                             self.assets_in_manifest.append(Asset(asset_type_map[a_type], asset_path, asset_id))
                         else:
@@ -62,7 +61,7 @@ class Manifest:
                     asset_prefix = asset_set['assetPrefix'] if 'assetPrefix' in asset_set else ''
                     asset_suffix = asset_set['assetSuffix'] if 'assetSuffix' in asset_set else ''
                     asset_id = path_prefix + asset_prefix + filename + asset_suffix
-                    asset_path = self.asset_root_dir + '/' + asset_id
+                    asset_path = self.assets_root_dir + '/' + asset_id
                     if (os.path.isfile(asset_path)):
                         self.assets_in_manifest.append(Asset(asset_type_map[a_type], asset_path, asset_id))
                     else:
@@ -141,7 +140,7 @@ def log_paths(paths, header = ''):
         log('\t' + index_text + path_text)
     log(' ')
             
-def log_assets_if_not_empty(_type, assets, bPrint_size):
+def log_assets_if_not_empty(_type, assets, bPrint_size, bPrint_id = False):
     total_size = 0
     if (assets):
         log_dashes('\t\t' + _type)
@@ -154,7 +153,7 @@ def log_assets_if_not_empty(_type, assets, bPrint_size):
         for asset in assets:
             i += 1
             total_size += asset.bytes
-            path_text = asset.path.ljust(column_width)
+            path_text = asset.id.ljust(column_width) if bPrint_id else asset.path.ljust(column_width)
             size_text = sizeof_fmt(asset.bytes)
             index_text = (str(i) + '.').ljust(5)
             if (bPrint_size):
@@ -187,19 +186,19 @@ def log_asset_group_by_type(assets, bPrint_size = True):
     total_size += log_assets_if_not_empty('TEXTURES', textures, bPrint_size)
     return total_size
 
-def log_asset_flat(assets, bPrint_size = True):
-    return log_assets_if_not_empty('ASSETS', assets, bPrint_size)
+def log_asset_flat(assets, bPrint_size = True, bPrint_id = False):
+    return log_assets_if_not_empty('ASSETS', assets, bPrint_size, bPrint_id)
 
 def get_sizeof_file(path):
     return ' [' + sizeof_fmt(os.path.getsize(path)) + ']'
 
 # Init
 def init():
-    global manifest_path, bCooked_exists, mode, cooked_path, backup_path
+    global manifest_name, assets_root_dir, bCooked_exists, mode, cooked_path, backup_path
     prev_arg = ''
     for arg in sys.argv:
         if (prev_arg == '--manifest' or prev_arg == '-m'):
-            manifest_path = arg
+            manifest_name = arg
         elif (prev_arg == '--zip' or prev_arg == '-z'):
             cooked_path = arg
         if (arg == '--cook' or arg == '-c'):
@@ -213,6 +212,7 @@ def init():
     now = str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M'))
     log('\n\t\tLITTLE ENGINE ASSET COOKER\n\t\t  ' + now + '\n')
     cw = 17
+    manifest_path = assets_root_dir + '/' + manifest_name
     if (not os.path.isfile(manifest_path)):
         log ('  ERROR! Missing manifest [' + manifest_path + ']')
         sys.exit(-1)
@@ -241,7 +241,7 @@ def cook(manifest, backup_path):
         print('')
 
 def log_summary(manifest):
-    global mode, manifest_path, cooked_path
+    global mode, assets_root_dir, manifest_name, cooked_path
     # Manifest Crawl
     log('  \n\t\t\tMANIFEST CRAWL')
     log_asset_group_by_type(manifest.assets_in_manifest)
@@ -263,7 +263,7 @@ def log_summary(manifest):
     else:
         header = '  \n\t\t\tASSETS TO COOK'
     log(header)
-    log_asset_flat(manifest.assets_to_cook)
+    log_asset_flat(manifest.assets_to_cook, True, True)
 
     # Orphaned
     if (manifest.assets_only_in_cooked):
@@ -279,9 +279,9 @@ def log_summary(manifest):
     return True
 
 def run():
-    global manifest_path, asset_root_dir, cooked_path, mode, log_str, backup_path
+    global manifest_name, assets_root_dir, cooked_path, mode, log_str, backup_path
     init()
-    manifest = Manifest(manifest_path, asset_root_dir)
+    manifest = Manifest(manifest_name, assets_root_dir)
     manifest.load(cooked_path)
     if (log_summary(manifest)):
         if (mode == Mode.Cook_Silent):
@@ -301,7 +301,7 @@ def run():
             if (backup_path):
                 log(('  Back up').ljust(20) + ': ' + backup_path + get_sizeof_file(backup_path))
         if (mode == Mode.Analyse):
-            log(('  Crawled').ljust(20) + ': ' + manifest_path)
+            log(('  Crawled').ljust(20) + ': ' + manifest.manifest_path)
             if (bCooked_exists):
                 log(('  Analysed').ljust(20) + ': ' + cooked_path + get_sizeof_file(cooked_path))
             suffix = ' '

@@ -1,13 +1,14 @@
+import datetime
 import glob
 import json
 import os
-import shutil
 import sys
 import zipfile
 
 # Vars
 manifest_path = './AppManifest.json'
 out_path = './Redist'
+cooker_script = './AssetCooker.py'
 
 # Execution
 class Target:
@@ -17,14 +18,14 @@ class Target:
 
 class Manifest:
     def __init__(self):
-        self.zip_name = ''
+        self.zip_path = ''
         self.zip_suffix = ''
         self.zip_ext = ''
         self.targets_to_zip = []
     
     def deserialise(self, json_str):
         data = json.loads(json_str)
-        self.zip_name = data['zipName']
+        self.zip_path = data['zipName']
         self.zip_ext = data['zipExtension']
         dirs_data = data['directories']
         for dir_data in dirs_data:
@@ -44,7 +45,14 @@ class Manifest:
     def get_zip_path(self, parent_dir):
         if parent_dir and not parent_dir.endswith('/'):
             parent_dir += '/'
-        return parent_dir + self.zip_name + self.zip_suffix + self.zip_ext
+        return parent_dir + self.zip_path + self.zip_suffix + self.zip_ext
+
+def sizeof_fmt(num, suffix='B'):
+    for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+        if abs(num) < 1024.0:
+            return '%3.1f%s%s' % (num, unit, suffix)
+        num /= 1024.0
+    return '%.1f%s%s' % (num, 'Yi', suffix)
 
 def init(manifest_path, manifest):
     if (not os.path.isfile(manifest_path)):
@@ -53,28 +61,43 @@ def init(manifest_path, manifest):
     with (open(manifest_path, 'r')) as f:
         manifest.deserialise(f.read())
     for arg in sys.argv:
+        if (arg == '-c' or arg == '--cook'):
+            if os.path.isfile(cooker_script):
+                os.system('python ' + cooker_script + ' -s')
+            else:
+                print('\n  ERROR: Cannot cook! ' + cooker_script + ' not found!')
+                sys.exit(-1)
         if (arg.startswith('-v')):
             manifest.set_suffix(arg)
 
-def create_package(zip_name, targets_to_zip):
-    if os.path.isfile(zip_name):
-        os.system('mv ' + zip_name + ' ' + zip_name + '.bak')
+def create_package(zip_path, targets_to_zip):
+    if os.path.isfile(zip_path):
+        os.system('mv ' + zip_path + ' ' + zip_path + '.bak')
     column_width=0
     for target in targets_to_zip:
         if (len(target.dest) > column_width):
             column_width = len(target.dest)
-    column_width += 3
-    with zipfile.ZipFile(zip_name, 'w', zipfile.ZIP_DEFLATED, True, 9) as archive:
+    column_width += 5
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED, True, 9) as archive:
         for target in targets_to_zip:
-            print(('\t' + target.dest).ljust(column_width) + ' ...added')
+            size_text = sizeof_fmt(os.path.getsize(target.source)).ljust(10)
+            print(('\t' + target.dest).ljust(column_width) + size_text + ' ...added')
             archive.write(target.source, target.dest)
-        print('\n  ' + zip_name + ' packaged successfully.')
+        size_text = ' [' + sizeof_fmt(os.path.getsize(zip_path)) + ']'
+        print('\n  ' + zip_path + size_text + ' created successfully.')
 
 def run():
     global manifest_path, out_path
     manifest = Manifest()
-    init(manifest_path, manifest) 
-    create_package(manifest.get_zip_path(out_path), manifest.targets_to_zip)
+    if not os.path.isdir(out_path):
+        os.mkdir(out_path)
+    init(manifest_path, manifest)
+    zip_path = manifest.get_zip_path(out_path)
+    now = str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M'))
+    print('\n\t\t  APP PACKAGER\n\t\t' + now + '\n')
+    print(('  Manifest').ljust(15) + ': ' + manifest_path)
+    print(('  Output').ljust(15) + ': ' + zip_path + '\n')
+    create_package(zip_path, manifest.targets_to_zip)
 
 if __name__ == "__main__":
     run()

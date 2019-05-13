@@ -154,6 +154,7 @@ Deferred<T*> EngineRepository::LoadAsync(String id)
 	if (!bInCooked && !bOnFilesystem)
 	{
 		LOG_E("[EngineRepository] Asset not present in cooked archive or on filesystem! [%s]", id.c_str());
+		sPromise->set_value(nullptr);
 		return deferred;
 	}
 	// Not in cooked archive (but on filesystem)
