@@ -33,8 +33,7 @@ GData::~GData() = default;
 
 bool GData::Marshall(String serialised)
 {
-	Strings::RemoveWhitespace(serialised);
-	Strings::RemoveChars(serialised, {'"'});
+	Strings::RemoveChars(serialised, {'\t', '\r', '\n'});
 	if (serialised[0] == '{' && serialised[serialised.size() - 1] == '}')
 	{
 		Clear();
@@ -45,7 +44,10 @@ bool GData::Marshall(String serialised)
 			Strings::Pair<String> kvp = Strings::Bisect(token, ':');
 			if (!kvp.second.empty() && !kvp.first.empty())
 			{
-				m_fieldMap.emplace(kvp.first, kvp.second);
+				InitList<char> trim = {' ', '"'};
+				String key = Strings::Trim(kvp.first, trim);
+				String value = Strings::Trim(kvp.second, trim);
+				m_fieldMap.emplace(std::move(key), std::move(value));
 			}
 		}
 		return true;
@@ -127,22 +129,11 @@ GData GData::GetGData(const String& key) const
 Vec<GData> GData::GetVectorGData(const String& key) const
 {
 	Vec<GData> ret;
-	auto search = m_fieldMap.find(key);
-	if (search != m_fieldMap.end())
+	Vec<String> rawStrings = GetVector(key);
+	for (auto& rawString : rawStrings)
 	{
-		String value = search->second;
-		if (value.size() > 2)
-		{
-			if (value[0] == '[' && value[value.size() - 1] == ']')
-			{
-				value = value.substr(1, value.size() - 2);
-				Vec<String> gDatas = Strings::Tokenise(value, ',', gDataEscapes);
-				for (const auto& gData : gDatas)
-				{
-					ret.emplace_back(gData);
-				}
-			}
-		}
+		rawString = Strings::Trim(rawString, {'"', ' '});
+		ret.emplace_back(rawString);
 	}
 	return ret;
 }
@@ -155,10 +146,17 @@ Vec<String> GData::GetVector(const String& key) const
 		String value = search->second;
 		if (value.size() > 2)
 		{
+			value = Strings::Trim(value, {' '});
 			if (value[0] == '[' && value[value.size() - 1] == ']')
 			{
 				value = value.substr(1, value.size() - 2);
-				return Strings::Tokenise(value, ',', {'\"'});
+				value = Strings::Trim(value, {' '});
+				Vec<String> ret = Strings::Tokenise(value, ',', gDataEscapes);
+				for (auto& str : ret)
+				{
+					str = Strings::Trim(str, {'"', ' '});
+				}
+				return ret;
 			}
 		}
 	}

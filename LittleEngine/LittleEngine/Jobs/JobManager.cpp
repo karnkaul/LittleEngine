@@ -145,4 +145,17 @@ JobHandle JobManager::Lock_Enqueue(UPtr<Job>&& uJob, List<UPtr<Job>>& jobQueue)
 	jobQueue.emplace_front(std::move(uJob));
 	return sHandle;
 }
+
+bool JobManager::AreGameWorkersIdle()
+{
+	for (auto& gameWorker : m_gameWorkers)
+	{
+		if (gameWorker->GetState() == JobWorker::State::WORKING)
+		{
+			return false;
+		}
+	}
+	Lock lock(m_mutex);
+	return m_gameJobQueue.empty();
+}
 } // namespace LittleEngine

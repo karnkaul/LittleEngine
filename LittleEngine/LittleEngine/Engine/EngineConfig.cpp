@@ -108,7 +108,7 @@ u32 EngineConfig::GetMaxTickTimeMS() const
 
 String EngineConfig::GetWindowTitle() const
 {
-	return m_uData->GetString(WINDOW_TITLE_KEY, '_', "(Value unset in Engine Config GData file)");
+	return m_uData->GetString(WINDOW_TITLE_KEY, "(Value unset in Engine Config GData file)");
 }
 
 u32 EngineConfig::GetColliderBorderWidth() const

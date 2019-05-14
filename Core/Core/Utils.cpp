@@ -89,6 +89,29 @@ void RemoveChars(String& outInput, InitList<char> toRemove)
 	outInput.erase(iter, outInput.end());
 }
 
+String Trim(const String& input, InitList<char> toRemove)
+{
+	size_t startIdx = 0;
+	size_t endIdx = input.size() - 1;
+	while (startIdx < input.size())
+	{
+		if (std::find(toRemove.begin(), toRemove.end(), input[startIdx]) == toRemove.end())
+		{
+			break;
+		}
+		++startIdx;
+	}
+	while (endIdx >= startIdx)
+	{
+		if (std::find(toRemove.begin(), toRemove.end(), input[endIdx]) == toRemove.end())
+		{
+			break;
+		}
+		--endIdx;
+	}
+	return input.substr(startIdx, (endIdx - startIdx + 1));
+}
+
 void RemoveWhitespace(String& outInput)
 {
 	SubstituteChars(outInput, {Pair<char>('\t', ' '), Pair<char>('\n', ' '), Pair<char>('\r', ' ')});
@@ -113,13 +136,7 @@ Vec<String> Tokenise(const String& s, char delimiter, InitList<Pair<char>> escap
 			}
 			for (auto e : escape)
 			{
-				if (*it == e.first)
-				{
-					escaping = true;
-					escapeStack.push(e);
-					break;
-				}
-				if (*it == e.second)
+				if (escaping && *it == e.second)
 				{
 					if (e.first == escapeStack.top().first)
 					{
@@ -127,6 +144,12 @@ Vec<String> Tokenise(const String& s, char delimiter, InitList<Pair<char>> escap
 						escaping = !escapeStack.empty();
 						break;
 					}
+				}
+				if (*it == e.first)
+				{
+					escaping = true;
+					escapeStack.push(e);
+					break;
 				}
 			}
 			continue;

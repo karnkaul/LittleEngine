@@ -16,6 +16,7 @@ private:
 	class EngineLoop* m_pEngineLoop = nullptr;
 	class AsyncRenderLoop* m_pRenderLoop = nullptr;
 	bool m_bTerminating = false;
+	bool m_bWaitingToTerminate = false;
 
 public:
 	EngineService(EngineLoop& engineLoop);

@@ -73,6 +73,8 @@ struct Pair
 Pair<String> Bisect(const String& input, char delimiter);
 // Removes all occurrences of toRemove from outInput
 void RemoveChars(String& outInput, InitList<char> toRemove);
+// Removes leading and trailing characters
+String Trim(const String& input, InitList<char> toRemove);
 // Removes all tabs and spaces
 void RemoveWhitespace(String& outInput);
 // Tokenises a string via a delimiter, skipping over any delimiters within escape characters

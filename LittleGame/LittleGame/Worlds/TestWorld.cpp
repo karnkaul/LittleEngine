@@ -22,6 +22,14 @@ Entity* pEntity4 = nullptr;
 ParticleSystem* pParticleSystem0 = nullptr;
 ParticleSystem* pParticleSystem1 = nullptr;
 
+Deferred<TextureAsset*> largeTex;
+Deferred<TextAsset*> miscText;
+TextureAsset* pLargeTex = nullptr;
+TextAsset* pMiscText = nullptr;
+bool bStartedAsycLoad = false;
+bool bLoadedLargeTex = false;
+bool bLoadedMiscText = false;	
+
 void OnEnter()
 {
 	// if (!pEntity2 && !pEntity3)
@@ -301,6 +309,16 @@ void SpawnToggle()
 	pParent->SetActive(true);
 }
 
+void LoadAsyncTest()
+{
+	pLargeTex = nullptr;
+	pMiscText = nullptr;
+	largeTex = pTestWorld->Repository()->LoadAsync<TextureAsset>("Misc/06.png");
+	miscText = pTestWorld->Repository()->LoadAsync<TextAsset>("Misc/BinaryText.txt");
+	bStartedAsycLoad = true;
+	bLoadedLargeTex = bLoadedMiscText = false;
+}
+
 void TestTick(Time dt)
 {
 	elapsed += dt;
@@ -321,8 +339,7 @@ void TestTick(Time dt)
 		panelStyle.fill = Colour(100, 100, 100, 100);
 		pButtonDrawer->SetPanel(panelStyle);
 		UIButton* pButton1 = nullptr;
-		debugTokens.push_back(
-			pButtonDrawer->AddButton("Button 0", []() { LOG_D("Button 0 pressed!"); }));
+		debugTokens.push_back(pButtonDrawer->AddButton("Load Async", &LoadAsyncTest));
 		debugTokens.push_back(pButtonDrawer->AddButton(
 			"Options", []() { Services::Game()->UI()->PushContext<OptionsUI>("Options"); }, &pButton1));
 		pButton1->SetInteractable(false);
@@ -354,21 +371,8 @@ void TestTick(Time dt)
 		bSpawnedTextInput = true;
 	}
 
-	static Deferred<TextureAsset*> largeTex;
-	static Deferred<TextAsset*> miscText;
-	static TextureAsset* pLargeTex = nullptr;
-	static TextAsset* pMiscText = nullptr;
-	static bool bStartLoadLargeTex = false;
-	if (elapsed.AsSeconds() >= 3 && !bStartLoadLargeTex)
-	{
-		largeTex = pTestWorld->Repository()->LoadAsync<TextureAsset>("Misc/06.png");
-		miscText = pTestWorld->Repository()->LoadAsync<TextAsset>("Misc/BinaryText.txt");
-		bStartLoadLargeTex = true;
-	}
 	static u32 frame = 0;
-	static bool bLoadedLargeTex = false;
-	static bool bLoadedMiscText = false;
-	if (bStartLoadLargeTex && (!bLoadedLargeTex || !bLoadedMiscText))
+	if (bStartedAsycLoad && (!bLoadedLargeTex || !bLoadedMiscText))
 	{
 		bLoadedLargeTex |= largeTex.IsReady();
 		bLoadedMiscText |= miscText.IsReady();
@@ -379,6 +383,10 @@ void TestTick(Time dt)
 		else if (!pLargeTex)
 		{
 			pLargeTex = largeTex.Get();
+			if (pLargeTex)
+			{
+				LOG_I("Loaded %s", pLargeTex->GetID());
+			}
 		}
 		if (!bLoadedMiscText)
 		{
