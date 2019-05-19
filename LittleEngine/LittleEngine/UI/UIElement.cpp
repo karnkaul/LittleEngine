@@ -16,7 +16,8 @@ UIElement::UIElement(LayerID layer, bool bSilent) : UIObject("Untitled", bSilent
 	Construct(layer);
 }
 
-UIElement::UIElement(String name, LayerID layer, bool bSilent /*= false*/) : UIObject(std::move(name), bSilent)
+UIElement::UIElement(String name, LayerID layer, bool bSilent /*= false*/)
+	: UIObject(std::move(name), bSilent)
 {
 	Construct(layer);
 }

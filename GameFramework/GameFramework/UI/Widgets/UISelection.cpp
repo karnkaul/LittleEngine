@@ -26,7 +26,7 @@ UISelection* UISelection::AddOption(String option)
 	return this;
 }
 
-UISelection* UISelection::AddOptions(Vec<String> options)
+UISelection* UISelection::SetOptions(Vec<String> options)
 {
 	m_options = std::move(options);
 	return this;

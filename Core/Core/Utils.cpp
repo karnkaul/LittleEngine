@@ -17,6 +17,10 @@ bool ToBool(String input, bool bDefaultValue)
 	{
 		return true;
 	}
+	if (input == "false" || input == "0")
+	{
+		return false;
+	}
 	return bDefaultValue;
 }
 
@@ -76,17 +80,34 @@ Pair<String> Bisect(const String& input, char delimiter)
 
 void RemoveChars(String& outInput, InitList<char> toRemove)
 {
-	String::iterator iter = std::remove_if(outInput.begin(), outInput.end(), [&toRemove](char c) -> bool {
-		for (const auto& x : toRemove)
-		{
-			if (c == x)
-			{
-				return true;
-			}
-		}
-		return false;
-	});
+	auto lambda = [&toRemove](char c) -> bool {
+		return std::find(toRemove.begin(), toRemove.end(), c) != toRemove.end();
+	};
+	auto iter = std::remove_if(outInput.begin(), outInput.end(), lambda);
 	outInput.erase(iter, outInput.end());
+}
+
+void Trim(String& outInput, InitList<char> toRemove)
+{
+	size_t startIdx = 0;
+	size_t endIdx = outInput.size() - 1;
+	while (startIdx < outInput.size())
+	{
+		if (std::find(toRemove.begin(), toRemove.end(), outInput[startIdx]) == toRemove.end())
+		{
+			break;
+		}
+		++startIdx;
+	}
+	while (endIdx >= startIdx)
+	{
+		if (std::find(toRemove.begin(), toRemove.end(), outInput[endIdx]) == toRemove.end())
+		{
+			break;
+		}
+		--endIdx;
+	}
+	outInput = outInput.substr(startIdx, (endIdx - startIdx + 1));
 }
 
 void RemoveWhitespace(String& outInput)
@@ -113,13 +134,7 @@ Vec<String> Tokenise(const String& s, char delimiter, InitList<Pair<char>> escap
 			}
 			for (auto e : escape)
 			{
-				if (*it == e.first)
-				{
-					escaping = true;
-					escapeStack.push(e);
-					break;
-				}
-				if (*it == e.second)
+				if (escaping && *it == e.second)
 				{
 					if (e.first == escapeStack.top().first)
 					{
@@ -127,6 +142,12 @@ Vec<String> Tokenise(const String& s, char delimiter, InitList<Pair<char>> escap
 						escaping = !escapeStack.empty();
 						break;
 					}
+				}
+				if (*it == e.first)
+				{
+					escaping = true;
+					escapeStack.push(e);
+					break;
 				}
 			}
 			continue;

@@ -12,12 +12,10 @@ public:
 
 private:
 	OnClick m_OnInteracted;
-	UIElement* m_pRoot = nullptr;
 
 public:
 	void SetText(UIText uiText);
 	OnClick::Token AddCallback(OnClick::Callback callback);
-	UIElement* GetButtonElement() const;
 
 public:
 	void SetInteractable(bool bInteractable) override;

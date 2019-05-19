@@ -46,7 +46,8 @@ EngineService::EngineService(EngineLoop& engineLoop) : m_pEngineLoop(&engineLoop
 	else
 	{
 		OS::Platform()->SetCreatingLoggerThread();
-		m_uFileLogger = MakeUnique<AsyncFileLogger>("Debug", m_pEngineLoop->m_uConfig->GetBackupLogFileCount());
+		m_uFileLogger =
+			MakeUnique<AsyncFileLogger>("Debug", m_pEngineLoop->m_uConfig->GetBackupLogFileCount());
 	}
 	m_uEngineInput = MakeUnique<EngineInput>();
 	m_uEngineRepository = MakeUnique<EngineRepository>("GameAssets.cooked", "GameAssets");
@@ -118,7 +119,16 @@ void EngineService::SetWindowStyle(SFWindowStyle newStyle)
 
 void EngineService::Terminate()
 {
-	m_bTerminating = true;
+	if (!Services::Jobs()->AreGameWorkersIdle())
+	{
+		Assert(false, "Terminate() called while game workers are active!");
+		LOG_E("[EngineService] Terminate() called while game workers are active!");
+		m_bWaitingToTerminate = true;
+	}
+	else
+	{
+		m_bTerminating = true;
+	}
 }
 
 void EngineService::PreRun()
@@ -142,16 +152,28 @@ void EngineService::UpdateInput(const SFInputDataFrame& inputDataFrame)
 bool EngineService::Tick(Time dt)
 {
 	Services::Jobs()->Tick(dt);
-	m_uEngineRepository->Tick(dt);
-	bool bWorldStateChanged = m_uWorldStateMachine->Tick(dt);
-	m_uEngineAudio->Tick(dt);
+	if (!m_bWaitingToTerminate)
+	{
+		m_uEngineRepository->Tick(dt);
+		bool bWorldStateChanged = m_uWorldStateMachine->Tick(dt);
+		m_uEngineAudio->Tick(dt);
 #if ENABLED(CONSOLE)
-	Console::Tick(dt);
+		Console::Tick(dt);
 #endif
 #if ENABLED(PROFILER)
-	Profiler::Tick(dt);
+		Profiler::Tick(dt);
 #endif
-	return bWorldStateChanged || m_bTerminating;
+		return bWorldStateChanged || m_bTerminating;
+	}
+	else
+	{
+		m_bTerminating = Services::Jobs()->AreGameWorkersIdle();
+		if (m_bTerminating)
+		{
+			LOG_W("[EngineService] Engine termination blocked by JobManager...");
+		}
+		return true;
+	}
 }
 
 void EngineService::PreFinishFrame()
@@ -159,8 +181,7 @@ void EngineService::PreFinishFrame()
 	if (bChangeResolution && pNewWindowSize)
 	{
 		GameSettings::Instance()->SetWindowHeight(pNewWindowSize->height);
-		LOG_I("Set Resolution to: %dx%d", pNewWindowSize->width,
-			  pNewWindowSize->height);
+		LOG_I("Set Resolution to: %dx%d", pNewWindowSize->width, pNewWindowSize->height);
 		m_pRenderLoop->RecreateWindow(SFWindowRecreateData(std::move(*pNewWindowSize)));
 		bChangeResolution = false;
 	}

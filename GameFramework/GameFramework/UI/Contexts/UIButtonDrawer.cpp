@@ -60,7 +60,7 @@ void UIButtonDrawer::SetButtonPositions()
 	// Special cases
 	if (count == 1)
 	{
-		m_uiButtons[0]->GetButtonElement()->m_transform.nPosition = {0, 0};
+		m_uiButtons[0]->GetRoot()->m_transform.nPosition = {0, 0};
 		return;
 	}
 	if (count == 2)
@@ -70,8 +70,8 @@ void UIButtonDrawer::SetButtonPositions()
 		Fixed lowerMid = (m_data.btnNPosRange.min + midPoint) * Fixed::OneHalf;
 		Vector2 upper = m_data.bHorizontal ? Vector2(lowerMid, 0) : Vector2(0, upperMid);
 		Vector2 lower = m_data.bHorizontal ? Vector2(upperMid, 0) : Vector2(0, lowerMid);
-		m_uiButtons[0]->GetButtonElement()->m_transform.nPosition = upper;
-		m_uiButtons[1]->GetButtonElement()->m_transform.nPosition = lower;
+		m_uiButtons[0]->GetRoot()->m_transform.nPosition = upper;
+		m_uiButtons[1]->GetRoot()->m_transform.nPosition = lower;
 		return;
 	}
 
@@ -81,7 +81,7 @@ void UIButtonDrawer::SetButtonPositions()
 	for (auto pButton : m_uiButtons)
 	{
 		Vector2 pos = m_data.bHorizontal ? Vector2(current, 0) : Vector2(0, current);
-		pButton->GetButtonElement()->m_transform.nPosition = pos;
+		pButton->GetRoot()->m_transform.nPosition = pos;
 		current += (m_data.bHorizontal ? step : -step);
 	}
 }

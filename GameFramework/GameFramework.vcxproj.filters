@@ -25,6 +25,9 @@
     <Filter Include="GameFramework\Utility\ParticleSystem">
       <UniqueIdentifier>{32c0866d-bd9a-4063-b68d-1dc6eeef0385}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameFramework\UI\Containers">
+      <UniqueIdentifier>{841660ce-1173-4698-aeb6-9ae3debb4c28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameFramework\Components\RenderComponent.cpp">
@@ -65,6 +68,12 @@
     </ClCompile>
     <ClCompile Include="GameFramework\Utility\ParticleSystem\PSEmitter.cpp">
       <Filter>GameFramework\Utility\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework\UI\Containers\UIContainer.cpp">
+      <Filter>GameFramework\UI\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework\UI\Containers\UIOptions.cpp">
+      <Filter>GameFramework\UI\Containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +127,12 @@
     </ClInclude>
     <ClInclude Include="GameFramework\Utility\ParticleSystem\PSEmitter.h">
       <Filter>GameFramework\Utility\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\UI\Containers\UIContainer.h">
+      <Filter>GameFramework\UI\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\UI\Containers\UIOptions.h">
+      <Filter>GameFramework\UI\Containers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

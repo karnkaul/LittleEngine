@@ -33,8 +33,8 @@ GData::~GData() = default;
 
 bool GData::Marshall(String serialised)
 {
-	Strings::RemoveWhitespace(serialised);
-	Strings::RemoveChars(serialised, {'"'});
+	Strings::RemoveChars(serialised, {'\t', '\r', '\n'});
+	Strings::Trim(serialised, {' '});
 	if (serialised[0] == '{' && serialised[serialised.size() - 1] == '}')
 	{
 		Clear();
@@ -45,7 +45,10 @@ bool GData::Marshall(String serialised)
 			Strings::Pair<String> kvp = Strings::Bisect(token, ':');
 			if (!kvp.second.empty() && !kvp.first.empty())
 			{
-				m_fieldMap.emplace(kvp.first, kvp.second);
+				InitList<char> trim = {' ', '"'};
+				Strings::Trim(kvp.first, trim);
+				Strings::Trim(kvp.second, trim);
+				m_fieldMap.emplace(std::move(kvp.first), std::move(kvp.second));
 			}
 		}
 		return true;
@@ -114,6 +117,18 @@ f64 GData::GetF64(const String& key, f64 defaultValue) const
 	return Get<f64>(m_fieldMap, key, &Strings::ToF64, defaultValue);
 }
 
+Vector2 GData::GetVector2(const String& key, Vector2 defaultValue) const
+{
+	auto search = m_fieldMap.find(key);
+	if (search != m_fieldMap.end())
+	{
+		GData vec2Data(search->second);
+		return Vector2(Fixed(vec2Data.GetF64("x", defaultValue.x.ToF64())),
+					   Fixed(vec2Data.GetF64("y", defaultValue.y.ToF64())));
+	}
+	return defaultValue;
+}
+
 GData GData::GetGData(const String& key) const
 {
 	auto search = m_fieldMap.find(key);
@@ -127,22 +142,11 @@ GData GData::GetGData(const String& key) const
 Vec<GData> GData::GetVectorGData(const String& key) const
 {
 	Vec<GData> ret;
-	auto search = m_fieldMap.find(key);
-	if (search != m_fieldMap.end())
+	Vec<String> rawStrings = GetVector(key);
+	for (auto& rawString : rawStrings)
 	{
-		String value = search->second;
-		if (value.size() > 2)
-		{
-			if (value[0] == '[' && value[value.size() - 1] == ']')
-			{
-				value = value.substr(1, value.size() - 2);
-				Vec<String> gDatas = Strings::Tokenise(value, ',', gDataEscapes);
-				for (const auto& gData : gDatas)
-				{
-					ret.emplace_back(gData);
-				}
-			}
-		}
+		Strings::Trim(rawString, {'"', ' '});
+		ret.emplace_back(rawString);
 	}
 	return ret;
 }
@@ -155,10 +159,17 @@ Vec<String> GData::GetVector(const String& key) const
 		String value = search->second;
 		if (value.size() > 2)
 		{
+			Strings::Trim(value, {' '});
 			if (value[0] == '[' && value[value.size() - 1] == ']')
 			{
 				value = value.substr(1, value.size() - 2);
-				return Strings::Tokenise(value, ',', {'\"'});
+				Strings::Trim(value, {' '});
+				Vec<String> ret = Strings::Tokenise(value, ',', gDataEscapes);
+				for (auto& str : ret)
+				{
+					Strings::Trim(str, {'"', ' '});
+				}
+				return ret;
 			}
 		}
 	}

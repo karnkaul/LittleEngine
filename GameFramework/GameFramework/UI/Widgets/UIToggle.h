@@ -15,13 +15,13 @@ private:
 	{
 		Vector2 boxSize = {40, 40};
 		Colour onColour = Colour::Cyan;
-		Colour offColour = Colour::White;
+		Colour offColour = Colour(150, 150, 150, 255);
+		Colour background = Colour::Transparent;
 	};
 
 private:
 	UIToggleData m_data;
 	OnChanged m_delegate;
-	UIElement* m_pRoot;
 	UIElement* m_pLabel;
 	UIElement* m_pToggle;
 	bool m_bOn = false;
@@ -31,10 +31,9 @@ public:
 	UIToggle* SetText(UIText text);
 	UIToggle* SetOnColour(Colour onColour);
 	UIToggle* SetOffColour(Colour offColour);
+	UIToggle* SetBackground(Colour colour);
 	UIToggle* SetBoxSize(Vector2 size);
 	OnChanged::Token AddCallback(OnChanged::Callback callback);
-
-	UIElement* GetRoot() const;
 
 public:
 	void SetInteractable(bool bInteractable) override;

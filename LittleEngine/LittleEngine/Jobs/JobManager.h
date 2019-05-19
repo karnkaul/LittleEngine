@@ -64,6 +64,7 @@ private:
 
 	UPtr<Job> Lock_PopJob(bool bEngineQueue = false);
 	JobHandle Lock_Enqueue(UPtr<Job>&& uJob, List<UPtr<Job>>& jobQueue);
+	bool AreGameWorkersIdle();
 
 	friend class EngineService;
 	friend class EngineLoop;

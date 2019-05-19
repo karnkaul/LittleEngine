@@ -4,9 +4,6 @@
     <Filter Include="LittleGame">
       <UniqueIdentifier>{dbb6a20d-60bd-4c3a-8aca-41a0ac8b6abd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LittleGame\UI">
-      <UniqueIdentifier>{939ce821-94a6-4a1a-ba0b-f6c2ed7e0d22}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LittleGame\Worlds">
       <UniqueIdentifier>{b3ad8a2e-bd84-4816-a559-f52e029777b0}</UniqueIdentifier>
     </Filter>
@@ -15,9 +12,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LittleGame\UI\OptionsUI.cpp">
-      <Filter>LittleGame\UI</Filter>
-    </ClCompile>
     <ClCompile Include="LittleGame\Worlds\BootWorld.cpp">
       <Filter>LittleGame\Worlds</Filter>
     </ClCompile>
@@ -29,9 +23,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LittleGame\UI\OptionsUI.h">
-      <Filter>LittleGame\UI</Filter>
-    </ClInclude>
     <ClInclude Include="LittleGame\Worlds\BootWorld.h">
       <Filter>LittleGame\Worlds</Filter>
     </ClInclude>

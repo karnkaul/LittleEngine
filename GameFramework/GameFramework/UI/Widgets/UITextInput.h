@@ -26,7 +26,6 @@ private:
 	OnEditComplete m_onEditComplete;
 	Time m_cursorFreq = Time::Milliseconds(200);
 	Time m_elapsed;
-	UIElement* m_pRoot = nullptr;
 	UIElement* m_pCursor = nullptr;
 	UIElement* m_pText = nullptr;
 	bool m_bWriting = false;

@@ -29,6 +29,8 @@
     <ClCompile Include="GameFramework\Components\RenderComponent.cpp" />
     <ClCompile Include="GameFramework\Entities\ParticleSystem.cpp" />
     <ClCompile Include="GameFramework\Entities\Player.cpp" />
+    <ClCompile Include="GameFramework\UI\Containers\UIContainer.cpp" />
+    <ClCompile Include="GameFramework\UI\Containers\UIOptions.cpp" />
     <ClCompile Include="GameFramework\UI\Contexts\UIButtonDrawer.cpp" />
     <ClCompile Include="GameFramework\UI\Contexts\UIDialogue.cpp" />
     <ClCompile Include="GameFramework\UI\Widgets\UIButton.cpp" />
@@ -47,6 +49,8 @@
     <ClInclude Include="GameFramework\Entities\ParticleSystem.h" />
     <ClInclude Include="GameFramework\Entities\Player.h" />
     <ClInclude Include="GameFramework\GameFramework.h" />
+    <ClInclude Include="GameFramework\UI\Containers\UIContainer.h" />
+    <ClInclude Include="GameFramework\UI\Containers\UIOptions.h" />
     <ClInclude Include="GameFramework\UI\Contexts\UIButtonDrawer.h" />
     <ClInclude Include="GameFramework\UI\Contexts\UIDialogue.h" />
     <ClInclude Include="GameFramework\UI\UI.h" />

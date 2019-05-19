@@ -16,16 +16,9 @@ UIButton::OnClick::Token UIButton::AddCallback(UIButton::OnClick::Callback callb
 	return m_OnInteracted.Register(std::move(callback));
 }
 
-UIElement* UIButton::GetButtonElement() const
-{
-	return m_pRoot;
-}
-
 void UIButton::OnCreated()
 {
 	SetType("UIButton");
-	m_pRoot = AddElement<UIElement>(String(GetNameStr()) + " Panel");
-	m_pRoot->m_transform.size = m_style.widgetSize;
 }
 
 void UIButton::OnSelected()

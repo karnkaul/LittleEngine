@@ -1,16 +1,18 @@
 #include "stdafx.h"
+#include "LittleEngine/Debug/Console/DebugCommands.h"
 #include "GameFramework/GameFramework.h"
 #include "BootWorld.h"
-#include "LittleGame/UI/OptionsUI.h"
 
 namespace LittleEngine
 {
-
 #if DEBUGGING
 namespace
 {
 bool bLoadWorld1Now = false;
-}
+#if ENABLED(CONSOLE)
+UPtr<Debug::Commands::Command> uUIContainerTester;
+#endif
+} // namespace
 #endif
 
 bool g_bTerminateOnReady = false;
@@ -25,6 +27,10 @@ BootWorld::BootWorld() : World("Boot")
 void BootWorld::OnActivated()
 {
 	m_pLogoFont = Repository()->Load<FontAsset>("Fonts/Sunscreen.otf");
+#if ENABLED(CONSOLE)
+	uUIContainerTester = MakeUnique<Debug::Commands::CMD_UIContainer>();
+	Debug::Commands::AddCommand(std::move(uUIContainerTester));
+#endif
 	if ((m_pLogoDrawer = Game()->UI()->PushContext<UIButtonDrawer>("MainMenu")))
 	{
 		m_pLogoHeader = m_pLogoDrawer->AddElement<UIElement>("Logo Header");
@@ -36,9 +42,8 @@ void BootWorld::OnActivated()
 		m_pLogoHeader->m_transform.UnsetParent();
 		m_pLogoHeader->m_transform.nPosition = {0, Fixed(0.8f)};
 		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton("Start", [&]() { OnLoadNextWorld(); }));
-		m_tokenHandler
-			.AddToken(m_pLogoDrawer->AddButton(
-				"Options", []() { Services::Game()->UI()->PushContext<OptionsUI>(); }));
+		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton(
+			"Options", []() { Services::Game()->UI()->PushContext<UIOptions>("Options"); }));
 		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton("Quit", [&]() { Quit(); }));
 		m_pLogoDrawer->SetActive(true);
 	}
