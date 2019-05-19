@@ -17,6 +17,10 @@ bool ToBool(String input, bool bDefaultValue)
 	{
 		return true;
 	}
+	if (input == "false" || input == "0")
+	{
+		return false;
+	}
 	return bDefaultValue;
 }
 

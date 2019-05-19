@@ -92,20 +92,21 @@ ManifestLoader* EngineRepository::LoadAsync(String manifestPath, std::function<v
 	return pLoader;
 }
 
+bool EngineRepository::IsLoaded(const String& id)
+{
+	Lock lock(m_mutex);
+	return m_loaded.find(id) != m_loaded.end();
+}
+
 bool EngineRepository::Unload(String id)
 {
 	bool bPresent = m_loaded.find(id) != m_loaded.end();
 	if (bPresent)
 	{
-		Services::Jobs()->Enqueue(
-			[&]() {
-				Lock lock(m_mutex);
-				m_loaded.erase(id);
-			},
-			"", true);
+		Lock lock(m_mutex);
+		m_loaded.erase(id);
 	}
 	return bPresent;
-	// return m_loaded.erase(id);
 }
 
 void EngineRepository::UnloadAll(bool bUnloadDefaultFont)
@@ -121,12 +122,6 @@ void EngineRepository::UnloadAll(bool bUnloadDefaultFont)
 			m_loaded, [fontID](UPtr<Asset>& uAsset) { return uAsset->GetID() != fontID; });
 	}
 	LOG_I("[EngineRepository] cleared");
-}
-
-bool EngineRepository::IsLoaded(const String& id)
-{
-	auto search = m_loaded.find(id);
-	return search != m_loaded.end();
 }
 
 void EngineRepository::Tick(Time dt)

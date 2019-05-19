@@ -116,6 +116,18 @@ f64 GData::GetF64(const String& key, f64 defaultValue) const
 	return Get<f64>(m_fieldMap, key, &Strings::ToF64, defaultValue);
 }
 
+Vector2 GData::GetVector2(const String& key, Vector2 defaultValue) const
+{
+	auto search = m_fieldMap.find(key);
+	if (search != m_fieldMap.end())
+	{
+		GData vec2Data(search->second);
+		return Vector2(Fixed(vec2Data.GetF64("x", defaultValue.x.ToF64())),
+					   Fixed(vec2Data.GetF64("y", defaultValue.y.ToF64())));
+	}
+	return defaultValue;
+}
+
 GData GData::GetGData(const String& key) const
 {
 	auto search = m_fieldMap.find(key);

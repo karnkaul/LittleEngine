@@ -46,10 +46,8 @@ void UITextInput::OnCreated()
 	m_uKeyboard->m_bClearOnEscape = false;
 	m_style = UIWidgetStyle::GetDefault1(&m_style);
 
-	m_pRoot = AddElement<UIElement>("TextInputRoot");
 	m_pRoot->SetPanel(m_style.background);
-	m_pRoot->m_transform.size = m_style.widgetSize;
-
+	
 	m_pText = AddElement<UIElement>("TextInputText");
 	m_pText->m_transform.SetParent(m_pRoot->m_transform);
 	m_pText->m_transform.anchor = {-1, 1};

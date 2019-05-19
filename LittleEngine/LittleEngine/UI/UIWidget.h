@@ -20,6 +20,7 @@ protected:
 	UIWidgetStyle m_style;
 	Vec<UPtr<class UIElement>> m_uiElements;
 	class UIContext* m_pOwner = nullptr;
+	class UIElement* m_pRoot = nullptr;
 	UIWidgetState m_state = UIWidgetState::NotSelected;
 	UIWidgetState m_prevState;
 
@@ -31,6 +32,7 @@ public:
 	UIElement* AddElement(String name = "", struct UITransform* pParent = nullptr, s32 layerDelta = 0);
 
 	UIWidgetStyle& GetStyle();
+	UIElement* GetRoot() const;
 
 public:
 	virtual void SetStyle(const UIWidgetStyle& style);

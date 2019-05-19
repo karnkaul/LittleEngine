@@ -23,12 +23,12 @@ void OptionsUI::OnCreated()
 	m_tokens.push_back(pLoadWorldSelection->RegisterOnChanged([stateIDs](std::pair<size_t, String> selected) {
 		Services::Game()->Worlds()->LoadState(stateIDs[selected.first]);
 	}));
-	pLoadWorldSelection->GetButtonElement()->m_transform.nPosition = {-Fixed::OneHalf, Fixed::OneHalf};
+	pLoadWorldSelection->GetRoot()->m_transform.nPosition = {-Fixed::OneHalf, Fixed::OneHalf};
 
 	// Help
 	auto pHelpButton = AddWidget<UIButton>("Help");
 	pHelpButton->SetText("Help");
-	pHelpButton->GetButtonElement()->m_transform.nPosition = {-Fixed::OneHalf, Fixed::Zero};
+	pHelpButton->GetRoot()->m_transform.nPosition = {-Fixed::OneHalf, Fixed::Zero};
 	m_tokens.push_back(pHelpButton->AddCallback([]() { LOG_D("Not Implemented"); }));
 
 	// Quit
@@ -36,7 +36,7 @@ void OptionsUI::OnCreated()
 	{
 		auto pQuitButton = AddWidget<UIButton>("Quit");
 		pQuitButton->SetText("Quit");
-		pQuitButton->GetButtonElement()->m_transform.nPosition = {-Fixed::OneHalf, -Fixed::OneHalf};
+		pQuitButton->GetRoot()->m_transform.nPosition = {-Fixed::OneHalf, -Fixed::OneHalf};
 		m_tokens.push_back(pQuitButton->AddCallback([]() { Services::Engine()->Terminate(); }));
 	}
 
@@ -54,7 +54,7 @@ void OptionsUI::OnCreated()
 	auto pResolutionSelection = AddWidget<UISelection>("Resolution", nullptr, true);
 	pResolutionSelection->SetText("Resolution");
 	pResolutionSelection->AddOptions(Strings::ToString(resolutionHeights, "", "p"));
-	pResolutionSelection->GetButtonElement()->m_transform.nPosition = {Fixed::OneHalf, Fixed::OneHalf};
+	pResolutionSelection->GetRoot()->m_transform.nPosition = {Fixed::OneHalf, Fixed::OneHalf};
 	m_tokens.push_back(pResolutionSelection->RegisterOnChanged([resolutionHeights](std::pair<size_t, String> kvp) {
 		Services::Engine()->TrySetWindowSize(resolutionHeights[kvp.first]);
 	}));
@@ -67,9 +67,6 @@ void OptionsUI::OnCreated()
 	pBorderlessToggle->GetRoot()->m_transform.nPosition = {Fixed::OneHalf, Fixed::Zero};
 	pBorderlessToggle->SetOffColour(Colour(150, 150, 150, 255));
 	pBorderlessToggle->SetOn(GameSettings::Instance()->IsBorderless());
-	auto pBorderlessLabel = AddElement<UIElement>("BorderlessLabel");
-	pBorderlessLabel->SetText("Borderless");
-	pBorderlessLabel->m_transform.nPosition = {Fixed::OneHalf, Fixed::Zero};
-	pBorderlessLabel->m_transform.padding = {50, 10};
+	pBorderlessToggle->SetText("Borderless");
 }
 } // namespace LittleEngine

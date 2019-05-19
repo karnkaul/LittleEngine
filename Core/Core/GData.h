@@ -1,5 +1,6 @@
 #pragma once
 #include "StdTypes.h"
+#include "Vector2.h"
 
 namespace Core
 {
@@ -14,7 +15,7 @@ public:
 	// Pass serialised data to marhshall and load fields
 	GData(String serialised);
 	GData(const GData& rhs) = default;
- 	GData(GData&&) = default;
+	GData(GData&&) = default;
 	GData& operator=(const GData&) = default;
 	GData& operator=(GData&&) = default;
 	~GData();
@@ -31,6 +32,7 @@ public:
 	bool GetBool(const String& key, bool defaultValue = false) const;
 	s32 GetS32(const String& key, s32 defaultValue = -1) const;
 	f64 GetF64(const String& key, f64 defaultValue = -1.0) const;
+	Vector2 GetVector2(const String& key, Vector2 defaultValue = {-1, -1}) const;
 	GData GetGData(const String& key) const;
 
 	Vec<GData> GetVectorGData(const String& key) const;

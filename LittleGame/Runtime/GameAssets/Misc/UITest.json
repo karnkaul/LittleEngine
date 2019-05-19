@@ -1,0 +1,45 @@
+{
+    "isPanel": "true",
+    "size": { "x": 500, "y": 300 },
+    "colour": "#ffffff99",
+    "children": [
+        {
+            "id": "button0",
+            "widgetType": "button",
+            "position": { "x": -0.8, "y": 0.8 },
+            "isAutoPad": true,
+            "uiText": {
+                "text": "Test 0!",
+                "colour": "black"
+            }
+        },
+        {
+            "id": "button1",
+            "widgetType": "button",
+            "position": { "x": -0.8, "y": -0.8 },
+            "isAutoPad": true,
+            "uiText": {
+                "text": "Test 1!",
+                "colour": "#226677"
+            }
+        },
+        {
+            "isPanel": true,
+            "size": { "x": 200, "y": 100 },
+            "position": { "x": 1, "y": -1 },
+            "isAutoPad": true,
+            "colour": "white",
+            "children": [
+                {
+                    "id": "toggle0",
+                    "widgetType": "toggle",
+                    "uiText": {
+                        "text": "Test!",
+                        "colour": "black"
+                    },
+                    "isNewColumn": true
+                }
+            ]
+        }
+    ]
+}

@@ -37,38 +37,22 @@ Vec<LogLine> GetAllCommands();
 }
 
 #pragma region Commands
-// Simple command with no params, or that parses its own params dynamically
-class Command
+Command::Command(const char* szName) : m_name(szName)
 {
-public:
-	String m_name;
-	// Set to true to include space when autocompleting this Command
-	bool m_bTakesCustomParam = false;
+}
 
-	virtual ~Command() = default;
+Vec<LogLine> Command::Execute(String params)
+{
+	String suffix = params.empty() ? "" : " " + params;
+	m_executeResult.emplace_back(m_name + suffix, g_liveHistoryColour);
+	FillExecuteResult(std::move(params));
+	return std::move(m_executeResult);
+}
 
-	Vec<LogLine> Execute(String params)
-	{
-		String suffix = params.empty() ? "" : " " + params;
-		m_executeResult.emplace_back(m_name + suffix, g_liveHistoryColour);
-		FillExecuteResult(std::move(params));
-		return std::move(m_executeResult);
-	}
-
-	virtual Vec<String> AutoCompleteParams(const String& /*query*/)
-	{
-		return Vec<String>();
-	}
-
-protected:
-	Vec<LogLine> m_executeResult;
-
-	Command(const char* name) : m_name(name)
-	{
-	}
-
-	virtual void FillExecuteResult(String params) = 0;
-};
+Vec<String> Command::AutoCompleteParams(const String&)
+{
+	return Vec<String>();
+}
 
 // Commands that take a fixed number and constant values of parameters as options
 class ParameterisedCommand : public Command
@@ -336,11 +320,11 @@ public:
 	{
 		if (params.empty())
 		{
-			m_executeResult.emplace_back("Syntax: " + m_name + "<assetID>", g_logTextColour);
+			m_executeResult.emplace_back("Syntax: " + m_name + " <assetID>", g_logTextColour);
 		}
 		else
 		{
-			if (Services::Game()->Repository()->Unload(params)) 
+			if (Services::Game()->Repository()->Unload(params))
 			{
 				m_executeResult.emplace_back("Unloaded " + params + " from Repository", g_logTextColour);
 			}
@@ -460,6 +444,14 @@ void Init()
 	Add<Set>();
 #endif
 	Add<Unload>();
+}
+
+void AddCommand(UPtr<Command> uCommand)
+{
+	auto iter = std::find_if(commands.begin(), commands.end(), [&uCommand](const UPtr<Command>& uC) {
+		return uCommand->m_name < uC->m_name;
+	});
+	commands.insert(iter, std::move(uCommand));
 }
 
 Vec<LogLine> Execute(const String& query)

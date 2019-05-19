@@ -31,13 +31,15 @@ public:
 
 	// Loads Asset at path. T must derive from Asset!
 	template <typename T>
-	T* Load(String id);
+	T* Load(String id, bool bReload = false);
 	template <typename T>
 	Deferred<T*> LoadAsync(String id);
 
 	ManifestLoader* LoadAsync(String manifestPath, std::function<void()> onComplete = nullptr);
 
 	FontAsset* GetDefaultFont() const;
+
+	bool IsLoaded(const String& id);
 
 	bool Unload(String id);
 	// Unload all assets
@@ -65,7 +67,6 @@ private:
 	UPtr<T> RetrieveAsset(const String& id);
 #endif
 
-	bool IsLoaded(const String& id);
 #if ENABLED(FILESYSTEM_ASSETS)
 	bool DoesFileAssetExist(const String& id);
 	String GetFileAssetPath(const String& id) const;
@@ -78,10 +79,15 @@ private:
 };
 
 template <typename T>
-T* EngineRepository::Load(String id)
+T* EngineRepository::Load(String id, bool bReload)
 {
 	static_assert(IsDerived<Asset, T>(),
 				  "T must derive from Asset: check Output window for erroneous call");
+
+	if (bReload)
+	{
+		Unload(id);
+	}
 
 	T* pT = GetLoaded<T>(id);
 	if (pT)
@@ -89,10 +95,14 @@ T* EngineRepository::Load(String id)
 		return pT;
 	}
 
-	LOG_W(
-		"[EngineRepository] Synchronously loading Asset (add id to manifest or use LoadAsync() to "
-		"suppress warning) [%s]",
-		id.c_str());
+	if (!bReload)
+	{
+		LOG_W(
+			"[EngineRepository] Synchronously loading Asset (add id to manifest or use LoadAsync() "
+			"to "
+			"suppress warning) [%s]",
+			id.c_str());
+	}
 
 	bool bInCooked = m_uCooked->IsPresent(id.c_str());
 #if ENABLED(FILESYSTEM_ASSETS)
@@ -100,18 +110,27 @@ T* EngineRepository::Load(String id)
 	// Asset doesn't exist
 	if (!bInCooked && !bOnFilesystem)
 	{
-		LOG_E("[EngineRepository] Asset not present in cooked archive or on filesystem! [%s]", id.c_str());
+		if (!bReload)
+		{
+			LOG_E("[EngineRepository] Asset not present in cooked archive or on filesystem! [%s]", id.c_str());
+		}
 		return nullptr;
 	}
 	// Not in cooked archive (but on filesystem)
 	if (!bInCooked)
 	{
-		LOG_W("[EngineRepository] Asset present on filesystem but not in cooked archive! [%s]", id.c_str());
+		if (!bReload)
+		{
+			LOG_W("[EngineRepository] Asset present on filesystem but not in cooked archive! [%s]", id.c_str());
+		}
 	}
 	// Not on filesystem (but in cooked archive)
 	if (!bOnFilesystem)
 	{
-		LOG_W("[EngineRepository] Asset present in cooked archive but not on filesystem! [%s]", id.c_str());
+		if (!bReload)
+		{
+			LOG_W("[EngineRepository] Asset present in cooked archive but not on filesystem! [%s]", id.c_str());
+		}
 		pT = LoadFromArchive<T>(id);
 	}
 	// On filesystem: load that regardless of cooked asset

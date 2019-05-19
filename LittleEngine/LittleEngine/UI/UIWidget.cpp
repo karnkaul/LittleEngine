@@ -15,6 +15,8 @@ void UIWidget::OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCo
 	SetNameAndType(std::move(name), "UIWidget");
 	m_pOwner = &owner;
 	m_style = pStyleToCopy ? *pStyleToCopy : UIWidgetStyle::GetDefault0();
+	m_pRoot = AddElement<UIElement>(String(GetNameStr()) + "_Root");
+	m_pRoot->m_transform.size = m_style.widgetSize;
 	OnCreated();
 	SetInteractable(true);
 }
@@ -22,6 +24,11 @@ void UIWidget::OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCo
 UIWidgetStyle& UIWidget::GetStyle()
 {
 	return m_style;
+}
+
+UIElement* UIWidget::GetRoot() const
+{
+	return m_pRoot;
 }
 
 void UIWidget::SetStyle(const UIWidgetStyle& style)

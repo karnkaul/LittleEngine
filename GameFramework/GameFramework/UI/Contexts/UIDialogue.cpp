@@ -67,9 +67,7 @@ UIDialogue* UIDialogue::SetHeader(UIText text, const Colour* pBackground)
 	return this;
 }
 
-UIButton::OnClick::Token UIDialogue::AddMainButton(UIText text,
-												   UIButton::OnClick::Callback onMainButton,
-												   bool bDismissOnBack)
+UIButton::OnClick::Token UIDialogue::AddMainButton(UIText text, UIButton::OnClick::Callback onMainButton, bool bDismissOnBack)
 {
 	if (m_pMainButton)
 	{
@@ -84,7 +82,7 @@ UIButton::OnClick::Token UIDialogue::AddMainButton(UIText text,
 
 	m_pMainButton = AddWidget<UIButton>(String(GetNameStr()) + " Button 0");
 	m_pMainButton->SetText(std::move(text));
-	UIElement* pButtonEl = m_pMainButton->GetButtonElement();
+	UIElement* pButtonEl = m_pMainButton->GetRoot();
 	pButtonEl->m_transform.SetParent(m_pFooter->m_transform);
 	m_bAutoDestroyOnCancel = bDismissOnBack;
 	return m_pMainButton->AddCallback(std::move(onMainButton));
@@ -102,11 +100,11 @@ UIButton::OnClick::Token UIDialogue::AddOtherButton(UIText otherButtonUIText,
 	}
 	m_pOtherButton = AddWidget<UIButton>("Dialog Button 0", nullptr, true);
 	m_pOtherButton->SetText(std::move(otherButtonUIText));
-	UIElement* pOtherButtonEl = m_pOtherButton->GetButtonElement();
+	UIElement* pOtherButtonEl = m_pOtherButton->GetRoot();
 	pOtherButtonEl->m_transform.SetParent(m_pFooter->m_transform);
 	pOtherButtonEl->m_transform.nPosition = {Fixed::OneHalf, 0};
 
-	UIElement* pMainButtonEl = m_pMainButton->GetButtonElement();
+	UIElement* pMainButtonEl = m_pMainButton->GetRoot();
 	pMainButtonEl->m_transform.SetParent(m_pFooter->m_transform);
 	pMainButtonEl->m_transform.nPosition = {-Fixed::OneHalf, 0};
 

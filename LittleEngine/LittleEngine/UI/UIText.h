@@ -6,7 +6,9 @@ namespace LittleEngine
 {
 struct UIText
 {
-	u32 pixelSize = 30;
+	const static u32 s_DEFAULT_PIXEL_SIZE = 30;
+
+	u32 pixelSize = s_DEFAULT_PIXEL_SIZE;
 	String text;
 	Colour colour;
 
