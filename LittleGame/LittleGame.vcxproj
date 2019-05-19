@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LittleGame\Main.cpp" />
-    <ClCompile Include="LittleGame\UI\OptionsUI.cpp" />
     <ClCompile Include="LittleGame\Worlds\BootWorld.cpp" />
     <ClCompile Include="LittleGame\Worlds\TestWorld.cpp" />
   </ItemGroup>
@@ -31,7 +30,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleGame\Resources\resource.h" />
-    <ClInclude Include="LittleGame\UI\OptionsUI.h" />
     <ClInclude Include="LittleGame\Worlds\BootWorld.h" />
     <ClInclude Include="LittleGame\Worlds\TestWorld.h" />
   </ItemGroup>

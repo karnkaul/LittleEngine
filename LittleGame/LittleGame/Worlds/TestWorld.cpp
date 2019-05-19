@@ -2,7 +2,6 @@
 #include "LittleEngine/Debug/Console/Tweakable.h"
 #include "GameFramework/GameFramework.h"
 #include "TestWorld.h"
-#include "LittleGame/UI/OptionsUI.h"
 
 namespace LittleEngine
 {
@@ -341,7 +340,7 @@ void TestTick(Time dt)
 		UIButton* pButton1 = nullptr;
 		debugTokens.push_back(pButtonDrawer->AddButton("Load Async", &LoadAsyncTest));
 		debugTokens.push_back(pButtonDrawer->AddButton(
-			"Options", []() { Services::Game()->UI()->PushContext<OptionsUI>("Options"); }, &pButton1));
+			"Options", []() { Services::Game()->UI()->PushContext<UIOptions>("Options"); }, &pButton1));
 		pButton1->SetInteractable(false);
 		debugTokens.push_back(pButtonDrawer->AddButton("Toggle B1", [pButton1]() {
 			pButton1->SetInteractable(!pButton1->IsInteractable());
@@ -457,7 +456,7 @@ bool TestWorld::OnInput(const EngineInput::Frame& frame)
 {
 	if (frame.IsReleased(GameInputType::Back))
 	{
-		Services::Game()->UI()->PushContext<OptionsUI>("Options");
+		Services::Game()->UI()->PushContext<UIOptions>("Options");
 		return true;
 	}
 	return false;

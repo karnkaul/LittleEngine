@@ -72,6 +72,9 @@
     <ClCompile Include="GameFramework\UI\Containers\UIContainer.cpp">
       <Filter>GameFramework\UI\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="GameFramework\UI\Containers\UIOptions.cpp">
+      <Filter>GameFramework\UI\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameFramework\Components\RenderComponent.h">
@@ -126,6 +129,9 @@
       <Filter>GameFramework\Utility\ParticleSystem</Filter>
     </ClInclude>
     <ClInclude Include="GameFramework\UI\Containers\UIContainer.h">
+      <Filter>GameFramework\UI\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework\UI\Containers\UIOptions.h">
       <Filter>GameFramework\UI\Containers</Filter>
     </ClInclude>
   </ItemGroup>

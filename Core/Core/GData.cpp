@@ -34,6 +34,7 @@ GData::~GData() = default;
 bool GData::Marshall(String serialised)
 {
 	Strings::RemoveChars(serialised, {'\t', '\r', '\n'});
+	serialised = Strings::Trim(serialised, {' '});
 	if (serialised[0] == '{' && serialised[serialised.size() - 1] == '}')
 	{
 		Clear();

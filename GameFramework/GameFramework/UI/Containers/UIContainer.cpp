@@ -15,6 +15,8 @@
 #include "LittleEngine/UI/UIWidgetMatrix.h"
 #include "UIContainer.h"
 #include "GameFramework/UI/Widgets/UIButton.h"
+#include "GameFramework/UI/Widgets/UISelection.h"
+#include "GameFramework/UI/Widgets/UITextInput.h"
 #include "GameFramework/UI/Widgets/UIToggle.h"
 
 namespace LittleEngine
@@ -182,6 +184,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 		UIElement* pNextParent = nullptr;
 		s32 layerDelta = data.GetS32("layerDelta", 0);
 		String id = data.GetString("id");
+		String name = String(GetNameStr()) + "_" + id;
 #if !SHIPPING
 		if (!id.empty())
 		{
@@ -210,7 +213,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 		Strings::ToLower(widgetType);
 		if (widgetType.empty())
 		{
-			UIElement* pElement = AddElement<UIElement>(id, nullptr, layerDelta);
+			UIElement* pElement = AddElement<UIElement>(name, &pParent->m_transform, layerDelta);
 			pElement->m_transform.bAutoPad = data.GetBool("isAutoPad");
 			pElement->m_transform.nPosition = position;
 			if (size.x > Fixed::Zero && size.y > Fixed::Zero)
@@ -259,7 +262,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 					}
 					pStyle->widgetSize = size;
 				}
-				UIButton* pButton = AddWidget<UIButton>(id, pStyle, bNewColumn);
+				UIButton* pButton = AddWidget<UIButton>(name, pStyle, bNewColumn);
 				if (!text.empty())
 				{
 					pButton->SetText(UIText(text, textSize, textColour));
@@ -269,7 +272,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 
 			else if (widgetType == "toggle")
 			{
-				UIToggle* pToggle = AddWidget<UIToggle>(id, pStyle, bNewColumn);
+				UIToggle* pToggle = AddWidget<UIToggle>(name, pStyle, bNewColumn);
 				pToggle->SetOn(data.GetBool("isOn", true));
 				if (size.x > 0 & size.y > 0)
 				{
@@ -295,6 +298,20 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 					pToggle->SetBackground(ParseColour(dump));
 				}
 				pWidget = pToggle;
+			}
+
+			else if (widgetType == "selection")
+			{
+				UISelection* pSelection = AddWidget<UISelection>(name, pStyle, bNewColumn);
+				pSelection->SetText(UIText(text, textSize, textColour));
+				pSelection->SetOptions(data.GetVector("options"));
+				pWidget = pSelection;
+			}
+
+			else if (widgetType == "textInput")
+			{
+				UITextInput* pTextInput = AddWidget<UITextInput>(name, pStyle, bNewColumn);
+				pWidget = pTextInput;
 			}
 
 			else

@@ -1,0 +1,92 @@
+{
+    "size": { "x": 800, "y": 600 },
+    "children": [
+        {
+            "id": "header",
+            "isPanel": true,
+            "size": { "x": 800, "y": 80 },
+            "position": { "x": 0, "y": 1 },
+            "isAutoPad": true,
+            "colour": "#ffcb8aff",
+            "uiText": {
+                "text": "Options",
+                "colour": "black"
+            }
+        },
+        {
+            "id": "footer",
+            "size": { "x": 800, "y": 80 },
+            "position": { "x": 0, "y": -1 },
+            "isAutoPad": true,
+            "isPanel": true,
+            "children": [
+                {
+                    "id": "close_button",
+                    "widgetType": "button",
+                    "uiText": {
+                        "text": "Close",
+                        "colour": "black"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "content",
+            "isPanel": "true",
+            "colour": "#ffffffff",
+            "size": { "x": 800, "y": 440 },
+            "padding": { "x": 0, "y": -440 },
+            "children": [
+                {
+                    "id": "world_selection",
+                    "widgetType": "selection",
+                    "uiText": {
+                        "text": "Load World",
+                        "colour": "black"
+                    },
+                    "options": ["World 0"],
+                    "position": { "x": -0.5, "y": 0.66 }
+                },
+                {
+                    "id": "help_button",
+                    "widgetType": "button",
+                    "position": { "x": -0.5, "y": 0 },
+                    "uiText": {
+                        "text": "Help",
+                        "colour": "black"
+                    }
+                },
+                {
+                    "id": "quit_button",
+                    "widgetType": "button",
+                    "position": { "x": -0.5, "y": -0.66 },
+                    "uiText": {
+                        "text": "Quit",
+                        "colour": "black"
+                    }
+                },
+                {
+                    "id": "resolution_selection",
+                    "isNewColumn": true,
+                    "widgetType": "selection",
+                    "uiText": {
+                        "text": "Resolution",
+                        "colour": "black"
+                    },
+                    "options": ["1080p"],
+                    "position": { "x": 0.5, "y": 0.66 }
+                },
+                {
+                    "id": "borderless_toggle",
+                    "widgetType": "toggle",
+                    "uiText": {
+                        "text": "Borderless",
+                        "colour": "black"
+                    },
+                    "position": { "x": 0.5, "y": 0 },
+                    "isOn": false
+                }
+            ]
+        }
+    ]
+}

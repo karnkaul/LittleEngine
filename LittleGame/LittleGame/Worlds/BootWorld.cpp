@@ -2,7 +2,6 @@
 #include "LittleEngine/Debug/Console/DebugCommands.h"
 #include "GameFramework/GameFramework.h"
 #include "BootWorld.h"
-#include "LittleGame/UI/OptionsUI.h"
 
 namespace LittleEngine
 {
@@ -44,7 +43,7 @@ void BootWorld::OnActivated()
 		m_pLogoHeader->m_transform.nPosition = {0, Fixed(0.8f)};
 		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton("Start", [&]() { OnLoadNextWorld(); }));
 		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton(
-			"Options", []() { Services::Game()->UI()->PushContext<OptionsUI>(); }));
+			"Options", []() { Services::Game()->UI()->PushContext<UIOptions>("Options"); }));
 		m_tokenHandler.AddToken(m_pLogoDrawer->AddButton("Quit", [&]() { Quit(); }));
 		m_pLogoDrawer->SetActive(true);
 	}

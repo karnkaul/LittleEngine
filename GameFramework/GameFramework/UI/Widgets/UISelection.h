@@ -27,7 +27,7 @@ public:
 	OnChanged::Token RegisterOnChanged(OnChanged::Callback callback);
 	UISelection* SetValue(String text);
 	UISelection* AddOption(String option);
-	UISelection* AddOptions(Vec<String> options);
+	UISelection* SetOptions(Vec<String> options);
 	UISelection* SetPanelSize(Vector2 size);
 	UISelection* SetPanelColour(Colour colour);
 
