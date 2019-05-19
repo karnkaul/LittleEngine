@@ -324,13 +324,21 @@ public:
 		}
 		else
 		{
-			if (Services::Game()->Repository()->Unload(params))
+			if (params == "all")
 			{
-				m_executeResult.emplace_back("Unloaded " + params + " from Repository", g_logTextColour);
+				Services::Game()->Repository()->UnloadAll(false);
+				m_executeResult.emplace_back("Unloaded all except default font from Repository", g_logTextColour);
 			}
 			else
 			{
-				m_executeResult.emplace_back(params + " not loaded in Repository", g_logTextColour);
+				if (Services::Game()->Repository()->Unload(params))
+				{
+					m_executeResult.emplace_back("Unloaded " + params + " from Repository", g_logTextColour);
+				}
+				else
+				{
+					m_executeResult.emplace_back(params + " not loaded in Repository", g_logTextColour);
+				}
 			}
 		}
 	}

@@ -103,16 +103,16 @@ void GameSettings::LoadAndOverride()
 	Property::Persistor persistor;
 	if (persistor.Load(FILE_PATH))
 	{
-		Property saved = persistor.GetProp(WINDOW_HEIGHT_KEY);
-		if (saved.key == WINDOW_HEIGHT_KEY)
+		auto pSaved = persistor.GetProp(WINDOW_HEIGHT_KEY);
+		if (pSaved)
 		{
-			m_windowHeight = saved;
+			m_windowHeight = *pSaved;
 		}
 
-		saved = persistor.GetProp(BORDERLESS_KEY);
-		if (saved.key == BORDERLESS_KEY)
+		pSaved = persistor.GetProp(BORDERLESS_KEY);
+		if (pSaved)
 		{
-			m_borderless = saved;
+			m_borderless = *pSaved;
 		}
 	}
 }

@@ -89,7 +89,7 @@ void RenderStatsRenderer::Tick(Time /*dt*/)
 	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uQuadCount, "Quads: ", g_renderData.quadCount);
 }
 
-#if !SHIPPING
+#if DEBUGGING
 VersionRenderer::VersionRenderer()
 {
 	const Core::Version& engineVersion = EngineConfig::GetEngineVersion();

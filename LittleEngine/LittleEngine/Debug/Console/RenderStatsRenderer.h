@@ -29,7 +29,7 @@ public:
 	void Tick(Time dt);
 };
 
-#if !SHIPPING
+#if DEBUGGING
 class VersionRenderer
 {
 private:

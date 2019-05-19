@@ -24,8 +24,7 @@ public:
 	
 	Time();
 	explicit Time(s64 microSeconds);
-	explicit Time(sf::Time& sfTime);
-
+	
 	Time& Scale(Fixed magnitude);
 
 	Time& operator-();
@@ -44,8 +43,6 @@ public:
 	f32 AsSeconds() const;
 	s32 AsMilliseconds() const;
 	s64 AsMicroseconds() const;
-
-	sf::Time _ToSFTime() const;
 };
 
 Time operator+(const Time& lhs, const Time& rhs);

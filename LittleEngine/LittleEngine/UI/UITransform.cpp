@@ -73,6 +73,6 @@ void UITransform::AddChild(UITransform& child)
 
 bool UITransform::RemoveChild(UITransform& child)
 {
-	return Core::VectorErase(children, &child);
+	return Core::Remove(children, &child);
 }
 } // namespace LittleEngine

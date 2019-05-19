@@ -118,7 +118,7 @@ void EngineRepository::UnloadAll(bool bUnloadDefaultFont)
 	else
 	{
 		String fontID = m_pDefaultFont->GetID();
-		Core::CleanMap<String, UPtr<Asset>>(
+		Core::RemoveIf<String, UPtr<Asset>>(
 			m_loaded, [fontID](UPtr<Asset>& uAsset) { return uAsset->GetID() != fontID; });
 	}
 	LOG_I("[EngineRepository] cleared");

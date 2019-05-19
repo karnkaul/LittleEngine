@@ -6,7 +6,7 @@ namespace Core
 {
 namespace
 {
-InitList<Strings::Pair<char>> gDataEscapes = {{'{', '}'}, {'[', ']'}, '\"'};
+InitList<Strings::Pair<char>> gDataEscapes = {{'{', '}'}, {'[', ']'}, {'"', '"'}};
 
 template <typename T>
 T Get(const UMap<String, String>& table, const String& key, T (*Adaptor)(String, T), const T& defaultValue)
@@ -65,7 +65,7 @@ String GData::Unmarshall() const
 	{
 		String value = kvp.second;
 		auto space = value.find(' ');
-		if (Strings::IsCharEnclosedIn(value, space, '\"'))
+		if (Strings::IsCharEnclosedIn(value, space, {'"', '"'}))
 		{
 			value = '\"' + value + '\"';
 		}
@@ -136,7 +136,7 @@ GData GData::GetGData(const String& key) const
 	{
 		return GData(search->second);
 	}
-	return GData();
+	return {};
 }
 
 Vec<GData> GData::GetVectorGData(const String& key) const
@@ -146,7 +146,7 @@ Vec<GData> GData::GetVectorGData(const String& key) const
 	for (auto& rawString : rawStrings)
 	{
 		Strings::Trim(rawString, {'"', ' '});
-		ret.emplace_back(rawString);
+		ret.emplace_back(std::move(rawString));
 	}
 	return ret;
 }

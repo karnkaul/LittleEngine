@@ -51,29 +51,25 @@ bool Property::Persistor::Save(String filePath) const
 	return file.Write(PropertiesToString(properties));
 }
 
-Property Property::Persistor::GetProp(String key) const
+const Property* Property::Persistor::GetProp(String key) const
 {
-	for (auto& prop : properties)
-	{
-		if (prop.key == key)
-		{
-			return prop;
-		}
-	}
-	return Property();
+	auto iter = std::find_if(properties.begin(), properties.end(),
+							 [&](const Property& p) { return p.key == key; });
+	return iter != properties.end() ? &(*iter) : nullptr;
 }
 
 void Property::Persistor::SetProp(Property property)
 {
-	for (auto& prop : properties)
+	auto iter = std::find_if(properties.begin(), properties.end(),
+							 [&](const Property& p) { return p.key == property.key; });
+	if (iter != properties.end())
 	{
-		if (prop.key == property.key)
-		{
-			prop.stringValue = property.stringValue;
-			return;
-		}
+		iter->stringValue = std::move(property.stringValue);
 	}
-	properties.emplace_back(std::move(property));
+	else
+	{
+		properties.emplace_back(std::move(property));
+	}
 }
 
 Property::Property() = default;

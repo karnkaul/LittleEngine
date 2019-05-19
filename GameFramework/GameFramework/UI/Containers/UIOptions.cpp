@@ -27,8 +27,7 @@ void UIOptions::OnCreated()
 
 	auto pWorldSelection = Get<UISelection>("world_selection");
 	auto stateIDs = Services::Game()->Worlds()->GetAllStateIDs();
-	auto thisStateID = Services::Game()->Worlds()->GetActiveStateID();
-	Core::VectorErase(stateIDs, thisStateID);
+	Core::Remove(stateIDs, Services::Game()->Worlds()->GetActiveStateID());
 	pWorldSelection->SetOptions(Strings::ToString(stateIDs, "World "));
 	m_tokens.push_back(pWorldSelection->RegisterOnChanged([stateIDs](std::pair<size_t, String> selected) {
 		Services::Game()->Worlds()->LoadState(stateIDs[selected.first]);
@@ -42,12 +41,10 @@ void UIOptions::OnCreated()
 
 	auto pResolutionSelection = Get<UISelection>("resolution_selection");
 	const auto& resolutions = GFX::GetValidWindowSizes();
-	Vec<u32> resolutionHeights(resolutions.size(), 0);
-	size_t idx = 0;
-	for (const auto& kvp : resolutions)
-	{
-		resolutionHeights[idx++] = kvp.second.height;
-	}
+	Vec<u32> resolutionHeights;
+	std::for_each(resolutions.begin(), resolutions.end(), [&resolutionHeights](const auto& kvp) {
+		resolutionHeights.push_back(kvp.second.height);
+	});
 	pResolutionSelection->SetOptions(Strings::ToString(resolutionHeights, "", "p"));
 	pResolutionSelection->GetRoot()->m_transform.nPosition = {Fixed::OneHalf, Fixed::OneHalf};
 	m_tokens.push_back(pResolutionSelection->RegisterOnChanged([resolutionHeights](std::pair<size_t, String> kvp) {

@@ -49,7 +49,7 @@ void Entity::Destruct()
 
 void Entity::Tick(Time /*dt*/)
 {
-	Core::CleanVector<AComponent*>(m_pComponents,
+	Core::RemoveIf<AComponent*>(m_pComponents,
 								  [](AComponent* pComponent) { return pComponent->m_bDestroyed; });
 }
 

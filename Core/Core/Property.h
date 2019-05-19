@@ -13,7 +13,7 @@ struct Property
 	public:
 		bool Load(String filePath);
 		bool Save(String filePath) const;
-		Property GetProp(String key) const;
+		const Property* GetProp(String key) const;
 		void SetProp(Property property);
 
 	private:

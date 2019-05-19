@@ -89,7 +89,7 @@ void RenderFactory::Lock_Swap()
 	PROFILE_FRAME("Swap Frame", Colour(204, 0, 102, 255));
 	for (auto& vec : m_active)
 	{
-		Core::CleanVector<Primitive>(vec, [](const Primitive& p) { return IsDestroyed(p); });
+		Core::RemoveIf<Primitive>(vec, [](const Primitive& p) { return IsDestroyed(p); });
 		for (auto& p : vec)
 		{
 			SwapState(p);

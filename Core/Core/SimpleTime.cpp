@@ -83,11 +83,6 @@ Time::Time(s64 microSeconds) : microSeconds(microSeconds)
 {
 }
 
-Time::Time(sf::Time& sfTime)
-{
-	microSeconds = sfTime.asMicroseconds();
-}
-
 Time& Time::Scale(Fixed magnitude)
 {
 	microSeconds *= magnitude.ToF32();
@@ -167,11 +162,6 @@ s32 Time::AsMilliseconds() const
 s64 Time::AsMicroseconds() const
 {
 	return microSeconds;
-}
-
-sf::Time Time::_ToSFTime() const
-{
-	return sf::Time();
 }
 
 Time operator+(const Time& lhs, const Time& rhs)

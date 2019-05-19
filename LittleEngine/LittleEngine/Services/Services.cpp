@@ -110,7 +110,7 @@ void Services::Provide(IService& service)
 
 void Services::Unprovide(IService& service)
 {
-	Core::VectorErase(s_pServices, &service);
+	Core::Remove(s_pServices, &service);
 }
 
 void Services::Clear()

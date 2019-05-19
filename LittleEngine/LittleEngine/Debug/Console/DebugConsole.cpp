@@ -45,7 +45,7 @@ private:
 	ConsoleInput m_input;
 	ConsoleRenderer m_renderer;
 	RenderStatsRenderer m_renderStats;
-#if !SHIPPING
+#if DEBUGGING
 	VersionRenderer m_version;
 #endif
 

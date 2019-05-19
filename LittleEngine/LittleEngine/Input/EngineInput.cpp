@@ -38,17 +38,17 @@ EngineInput::Frame::Frame(Vec<GameInputType> pressed, Vec<GameInputType> held, V
 
 bool EngineInput::Frame::IsPressed(GameInputType keyCode) const
 {
-	return Core::VectorSearch(pressed, keyCode) != pressed.end();
+	return Core::Search(pressed, keyCode) != pressed.end();
 }
 
 bool EngineInput::Frame::IsHeld(GameInputType keyCode) const
 {
-	return Core::VectorSearch(held, keyCode) != held.end();
+	return Core::Search(held, keyCode) != held.end();
 }
 
 bool EngineInput::Frame::IsReleased(GameInputType keyCode) const
 {
-	return Core::VectorSearch(released, keyCode) != released.end();
+	return Core::Search(released, keyCode) != released.end();
 }
 
 bool EngineInput::Frame::HasData() const
@@ -102,7 +102,7 @@ void EngineInput::TakeSnapshot(const SFInputDataFrame& frameData)
 		GameInputType input = m_gamepad.ToGameInputType(key);
 		if (input != GameInputType::Invalid)
 		{
-			auto duplicate = Core::VectorSearch(m_currentSnapshot, input);
+			auto duplicate = Core::Search(m_currentSnapshot, input);
 			if (duplicate == m_currentSnapshot.end())
 			{
 				m_currentSnapshot.push_back(input);
@@ -135,7 +135,7 @@ void EngineInput::FireCallbacks()
 	// Build "pressed" and "held" vectors
 	for (auto input : m_currentSnapshot)
 	{
-		auto search = Core::VectorSearch(m_previousSnapshot, input);
+		auto search = Core::Search(m_previousSnapshot, input);
 		if (search != m_previousSnapshot.end())
 		{
 			held.push_back(input);
@@ -147,8 +147,8 @@ void EngineInput::FireCallbacks()
 	}
 
 	released = m_previousSnapshot;
-	Core::CleanVector<GameInputType>(released, [&held](GameInputType type) {
-		return Core::VectorSearch(held, type) != held.end();
+	Core::RemoveIf<GameInputType>(released, [&held](GameInputType type) {
+		return Core::Search(held, type) != held.end();
 	});
 	if (m_uSudoContext && m_uSudoContext->wToken.expired())
 	{
@@ -159,7 +159,7 @@ void EngineInput::FireCallbacks()
 	if (dataFrame.HasData())
 	{
 		size_t prev = m_contexts.size();
-		Core::CleanVector<InputContext>(
+		Core::RemoveIf<InputContext>(
 			m_contexts, [](InputContext& context) { return context.wToken.expired(); });
 		size_t curr = m_contexts.size();
 		if (curr != prev)
