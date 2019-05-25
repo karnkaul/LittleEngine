@@ -14,6 +14,7 @@ private:
 
 private:
 	String m_logName;
+	Vec<std::function<void()>> m_initCallbacks;
 	Vec<UPtr<class Entity>> m_uEntities;
 	Array<Vec<UPtr<class AComponent>>, COMPONENT_LINES> m_uComponents;
 	UPtr<class UIManager> m_uUIManager;

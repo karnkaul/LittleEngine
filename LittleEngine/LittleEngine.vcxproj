@@ -61,11 +61,11 @@
     <ClCompile Include="LittleEngine\Repository\EngineRepository.cpp" />
     <ClCompile Include="LittleEngine\Services\Services.cpp" />
     <ClCompile Include="LittleEngine\UI\UIContext.cpp" />
+    <ClCompile Include="LittleEngine\UI\UIGameStyle.cpp" />
     <ClCompile Include="LittleEngine\UI\UIManager.cpp" />
     <ClCompile Include="LittleEngine\UI\UIElement.cpp" />
     <ClCompile Include="LittleEngine\UI\UIObject.cpp" />
     <ClCompile Include="LittleEngine\UI\UIProgressBar.cpp" />
-    <ClCompile Include="LittleEngine\UI\UIStyle.cpp" />
     <ClCompile Include="LittleEngine\UI\UIText.cpp" />
     <ClCompile Include="LittleEngine\UI\UITransform.cpp" />
     <ClCompile Include="LittleEngine\UI\UIWidget.cpp" />
@@ -121,6 +121,7 @@
     <ClInclude Include="LittleEngine\Services\Services.h" />
     <ClInclude Include="LittleEngine\UI\UI.h" />
     <ClInclude Include="LittleEngine\UI\UIContext.h" />
+    <ClInclude Include="LittleEngine\UI\UIGameStyle.h" />
     <ClInclude Include="LittleEngine\UI\UIManager.h" />
     <ClInclude Include="LittleEngine\UI\UIElement.h" />
     <ClInclude Include="LittleEngine\UI\UIObject.h" />

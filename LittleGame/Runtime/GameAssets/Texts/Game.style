@@ -1,0 +1,17 @@
+{
+    "styles": [
+        {
+            "id": "alternate0",
+            "notSelected": {
+                "fill": "#ef798a"
+            },
+            "selected": {
+                "fill": "#ef798a",
+                "outline": "#128ba5"
+            },
+            "interacting": {
+                "fill": "#ff96ff"
+            }
+        }
+    ]
+}

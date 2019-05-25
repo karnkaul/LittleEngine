@@ -5,6 +5,7 @@
 #include "LittleEngine/Input/KeyboardInput.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIGameStyle.h"
 #include "UITextInput.h"
 
 namespace LittleEngine
@@ -33,7 +34,7 @@ void UITextInput::OnCreated()
 {
 	m_uKeyboard = MakeUnique<KeyboardInput>();
 	m_uKeyboard->m_bClearOnEscape = false;
-	m_style = UIWidgetStyle::GetDefault1(&m_style);
+	UIGameStyle::Overwrite(m_style, "alternate0");
 
 	m_pRoot->SetPanel(m_style.background);
 	

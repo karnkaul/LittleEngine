@@ -25,9 +25,6 @@ private:
 	Vec<Obj> m_objs;
 
 public:
-	static Colour ParseColour(String serialised);
-
-public:
 	UIContainer();
 	~UIContainer() override;
 

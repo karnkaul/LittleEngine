@@ -289,7 +289,7 @@ void SpawnToggle()
 	Fixed y = 200;
 	auto* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>("TestToggleUIC");
 	pParent->GetRootElement()->m_transform.size = {x, y};
-	UIWidgetStyle toggleStyle = UIWidgetStyle::GetDefault0();
+	UIWidgetStyle toggleStyle = UIGameStyle::GetStyle("");
 	toggleStyle.widgetSize = {x, y * Fixed::OneHalf};
 	toggleStyle.background = Colour::Yellow;
 	auto* pToggle0 = pParent->AddWidget<UIToggle>("Toggle0", &toggleStyle);

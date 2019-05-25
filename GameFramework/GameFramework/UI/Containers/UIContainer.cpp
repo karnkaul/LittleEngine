@@ -9,6 +9,7 @@
 #include "LittleEngine/Repository/EngineRepository.h"
 #include "LittleEngine/Services/Services.h"
 #include "LittleEngine/UI/UIElement.h"
+#include "LittleEngine/UI/UIGameStyle.h"
 #include "LittleEngine/UI/UIManager.h"
 #include "LittleEngine/UI/UIText.h"
 #include "LittleEngine/UI/UIWidget.h"
@@ -22,38 +23,6 @@
 namespace LittleEngine
 {
 using GData = Core::GData;
-
-namespace
-{
-UByte H2B(const String& hex)
-{
-	s32 integer = -1;
-	std::istringstream(hex) >> std::hex >> integer;
-	if (integer >= 0)
-	{
-		return UByte(static_cast<u8>(integer));
-	}
-	return UByte(255);
-}
-
-Colour HexStrToColour(String hex, Colour defaultColour = Colour::White)
-{
-	Strings::ToLower(hex);
-	if (hex.size() == 6 || hex.size() == 8)
-	{
-		String r = hex.substr(0, 2);
-		String g = hex.substr(2, 2);
-		String b = hex.substr(4, 2);
-		String a = "ff";
-		if (hex.size() == 8)
-		{
-			a = hex.substr(6, 2);
-		}
-		return Colour(H2B(r), H2B(g), H2B(b), H2B(a));
-	}
-	return defaultColour;
-}
-} // namespace
 
 #if ENABLED(CONSOLE)
 namespace Debug
@@ -113,52 +82,6 @@ void CMD_UIContainer::FillExecuteResult(String params)
 } // namespace Debug
 #endif
 
-Colour UIContainer::ParseColour(String serialised)
-{
-	Strings::ToLower(serialised);
-	if (serialised == "white")
-	{
-		return Colour::White;
-	}
-	if (serialised == "black")
-	{
-		return Colour::Black;
-	}
-	if (serialised == "red")
-	{
-		return Colour::Red;
-	}
-	if (serialised == "green")
-	{
-		return Colour::Green;
-	}
-	if (serialised == "blue")
-	{
-		return Colour::Blue;
-	}
-	if (serialised == "cyan")
-	{
-		return Colour::Cyan;
-	}
-	if (serialised == "magenta")
-	{
-		return Colour::Magenta;
-	}
-	if (serialised == "yellow")
-	{
-		return Colour::Yellow;
-	}
-	if (serialised == "transparent")
-	{
-		return Colour::Transparent;
-	}
-	if (!serialised.empty() && serialised[0] == '#')
-	{
-		return HexStrToColour(serialised.substr(1, serialised.length() - 1));
-	}
-	return Colour::White;
-}
-
 UIContainer::UIContainer() = default;
 UIContainer::~UIContainer() = default;
 
@@ -170,7 +93,7 @@ void UIContainer::Deserialise(String serialised)
 	m_pRootElement->m_transform.size = root.GetVector2("size");
 	if (root.GetBool("isPanel"))
 	{
-		m_pRootElement->SetPanel(ParseColour(root.GetString("colour")));
+		m_pRootElement->SetPanel(UIGameStyle::ParseColour(root.GetString("colour")));
 	}
 	// Setup children
 	SetupChildren(m_pRootElement, root.GetVectorGData("children"));
@@ -204,7 +127,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 		GData uiTextData = data.GetString("uiText");
 		String text = uiTextData.GetString("text");
 		u32 textSize = uiTextData.GetS32("size", UIText::s_DEFAULT_PIXEL_SIZE);
-		Colour textColour = ParseColour(uiTextData.GetString("colour"));
+		Colour textColour = UIGameStyle::ParseColour(uiTextData.GetString("colour"));
 		if (text.empty())
 		{
 			text = data.GetString("text");
@@ -226,8 +149,8 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 			}
 			if (data.GetBool("isPanel"))
 			{
-				pElement->SetPanel(ParseColour(data.GetString("colour")), data.GetS32("border", 0),
-								   ParseColour(data.GetString("outline")));
+				pElement->SetPanel(UIGameStyle::ParseColour(data.GetString("colour")), data.GetS32("border", 0),
+								   UIGameStyle::ParseColour(data.GetString("outline")));
 			}
 
 			pNextParent = pElement;
@@ -236,30 +159,15 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 		else
 		{
 			bool bNewColumn = data.GetBool("isNewColumn", false);
-			UIWidgetStyle style0 = UIWidgetStyle::GetDefault0();
-			UIWidgetStyle style1 = UIWidgetStyle::GetDefault1();
 			UIWidget* pWidget = nullptr;
-			UIWidgetStyle* pStyle = nullptr;
-
-			switch (data.GetS32("widgetStyle", -1))
-			{
-			case 0:
-				pStyle = &style0;
-				break;
-
-			case 1:
-				pStyle = &style1;
-				break;
-			}
+			
+			UIWidgetStyle style = UIGameStyle::GetStyle(data.GetString("styleID", ""));
+			UIWidgetStyle* pStyle = &style;
 
 			if (widgetType == "button")
 			{
 				if (size.x > Fixed::Zero && size.y > Fixed::Zero)
 				{
-					if (!pStyle)
-					{
-						pStyle = &style0;
-					}
 					pStyle->widgetSize = size;
 				}
 				UIButton* pButton = AddWidget<UIButton>(name, pStyle, bNewColumn);
@@ -272,6 +180,10 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 
 			else if (widgetType == "toggle")
 			{
+				if (data.GetString("styleID").empty())
+				{
+					style = UIGameStyle::GetStyle("UIToggle");
+				}
 				UIToggle* pToggle = AddWidget<UIToggle>(name, pStyle, bNewColumn);
 				pToggle->SetOn(data.GetBool("isOn", true));
 				if (size.x > 0 & size.y > 0)
@@ -285,17 +197,17 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 				String dump = data.GetString("onColour");
 				if (!dump.empty())
 				{
-					pToggle->SetOnColour(ParseColour(dump));
+					pToggle->SetOnColour(UIGameStyle::ParseColour(dump));
 				}
 				dump = data.GetString("offColour");
 				if (!dump.empty())
 				{
-					pToggle->SetOffColour(ParseColour(dump));
+					pToggle->SetOffColour(UIGameStyle::ParseColour(dump));
 				}
 				dump = data.GetString("background");
 				if (!dump.empty())
 				{
-					pToggle->SetBackground(ParseColour(dump));
+					pToggle->SetBackground(UIGameStyle::ParseColour(dump));
 				}
 				pWidget = pToggle;
 			}
@@ -332,7 +244,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 				if (size.x > 0 && size.y > 0)
 				{
 					pNextParent->m_transform.size = size;
-				}	
+				}
 			}
 		}
 

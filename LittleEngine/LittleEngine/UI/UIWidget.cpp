@@ -3,6 +3,7 @@
 #include "UIWidget.h"
 #include "LittleEngine/UI/UIElement.h"
 #include "LittleEngine/UI/UIContext.h"
+#include "LittleEngine/UI/UIGameStyle.h"
 #include "LittleEngine/UI/UITransform.h"
 
 namespace LittleEngine
@@ -99,7 +100,7 @@ void UIWidget::OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCo
 {
 	SetNameAndType(std::move(name), "UIWidget");
 	m_pOwner = &owner;
-	m_style = pStyleToCopy ? *pStyleToCopy : UIWidgetStyle::GetDefault0();
+	m_style = pStyleToCopy ? *pStyleToCopy : UIGameStyle::GetStyle("");
 	m_pRoot = AddElement<UIElement>(String(GetNameStr()) + "_Root");
 	m_pRoot->m_transform.size = m_style.widgetSize;
 	OnCreated();

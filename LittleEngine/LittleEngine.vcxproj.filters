@@ -175,9 +175,6 @@
     <ClCompile Include="LittleEngine\Jobs\MultiJob.cpp">
       <Filter>LittleEngine\Jobs</Filter>
     </ClCompile>
-    <ClCompile Include="LittleEngine\UI\UIStyle.cpp">
-      <Filter>LittleEngine\UI</Filter>
-    </ClCompile>
     <ClCompile Include="LittleEngine\Game\GameSettings.cpp">
       <Filter>LittleEngine\Game</Filter>
     </ClCompile>
@@ -201,6 +198,9 @@
     </ClCompile>
     <ClCompile Include="LittleEngine\RenderLoop\RenderFactory.cpp">
       <Filter>LittleEngine\RenderLoop</Filter>
+    </ClCompile>
+    <ClCompile Include="LittleEngine\UI\UIGameStyle.cpp">
+      <Filter>LittleEngine\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -377,6 +377,9 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\Engine\FatalEngineException.h">
       <Filter>LittleEngine\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\UI\UIGameStyle.h">
+      <Filter>LittleEngine\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

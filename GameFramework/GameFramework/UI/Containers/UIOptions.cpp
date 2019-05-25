@@ -23,7 +23,7 @@ void UIOptions::OnCreated()
 {
 	UIContainer::OnCreated();
 
-	Deserialise(Services::Game()->Repository()->Load<TextAsset>("Layouts/UIOptions.uil")->GetText());
+	Deserialise(Services::Game()->Repository()->Load<TextAsset>("Texts/Layouts/UIOptions.uil")->GetText());
 
 	auto pWorldSelection = Get<UISelection>("world_selection");
 	auto stateIDs = Services::Game()->Worlds()->GetAllStateIDs();

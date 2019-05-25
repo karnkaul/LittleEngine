@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Core/ArchiveReader.h"
 #include "Core/Logger.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "LoadingUI.h"
@@ -7,6 +8,7 @@
 #include "LittleEngine/Repository/EngineRepository.h"
 #include "LittleEngine/Repository/ManifestLoader.h"
 #include "LittleEngine/Engine/EngineService.h"
+#include "LittleEngine/UI/UIGameStyle.h"
 
 namespace LittleEngine
 {
@@ -61,14 +63,22 @@ bool WorldStateMachine::LoadState(WorldID id)
 	return false;
 }
 
-void WorldStateMachine::Start(String manifestPath)
+void WorldStateMachine::Start(String manifestPath, String gameStyleID)
 {
 	m_manifestPath = std::move(manifestPath);
 	m_bLoading = true;
 	if (!m_manifestPath.empty())
 	{
 		// LoadAsync all assets in manifest
-		m_pAssetLoader = Services::Engine()->Repository()->LoadAsync(m_manifestPath, [&]() {
+		m_pAssetLoader = Services::Engine()->Repository()->LoadAsync(m_manifestPath, [&, gameStyleID]() {
+			if (!gameStyleID.empty())
+			{
+				TextAsset* pText = Services::Engine()->Repository()->Load<TextAsset>(gameStyleID);
+				if (pText)
+				{
+					UIGameStyle::Load(pText->GetText());
+				}
+			}
 			m_bLoaded = true;
 			m_pAssetLoader = nullptr;
 		});

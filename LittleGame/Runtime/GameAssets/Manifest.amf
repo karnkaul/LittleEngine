@@ -11,7 +11,8 @@
 		"Sounds/TestSound_b.wav"
 	],
 	"texts": [
-		"Layouts/UIOptions.uil",
+		"Texts/Game.style",
+		"Texts/Layouts/UIOptions.uil",
 		"VFX/Fire0/Fire0_noloop.psdata",
 		"VFX/Fire0/Fire0_loop.psdata",
 		"VFX/Stars0/Stars0.psdata"

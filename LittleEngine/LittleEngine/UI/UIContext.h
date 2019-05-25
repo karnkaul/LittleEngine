@@ -3,6 +3,7 @@
 #include "Core/Delegate.h"
 #include "SFMLAPI/Rendering/SFLayerID.h"
 #include "UIObject.h"
+#include "UIGameStyle.h"
 #include "LittleEngine/Input/EngineInput.h"
 
 namespace LittleEngine
@@ -72,7 +73,7 @@ T* UIContext::AddWidget(String name, UIWidgetStyle* pStyleToCopy, bool bNewColum
 	static_assert(std::is_base_of<UIWidget, T>::value, "T must derive from UIWidget.");
 	UPtr<T> uT = MakeUnique<T>();
 	T* pT = uT.get();
-	UIWidgetStyle defaultStyle = UIWidgetStyle::GetDefault0();
+	UIWidgetStyle defaultStyle = UIGameStyle::GetStyle("");
 	if (!pStyleToCopy)
 	{
 		pStyleToCopy = &defaultStyle;

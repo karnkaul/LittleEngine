@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LittleEngine/Game/GameManager.h"
 #include "LittleEngine/Services/Services.h"
+#include "LittleEngine/UI/UIGameStyle.h"
 #include "LittleEngine/UI/UIManager.h"
 #include "LittleEngine/UI/UIText.h"
 #include "UISelection.h"
@@ -56,7 +57,7 @@ Vec<String>& UISelection::GetOptions()
 
 void UISelection::OnCreated()
 {
-	m_style = UIWidgetStyle::GetDefault1(&m_style);
+	UIGameStyle::Overwrite(m_style, "alternate0");
 	UIButton::OnCreated();
 
 	SetType("UISelection");

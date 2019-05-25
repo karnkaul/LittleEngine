@@ -140,7 +140,7 @@ void EngineService::PreRun()
 #if ENABLED(PROFILER)
 	Profiler::Init(std::this_thread::get_id());
 #endif
-	m_uWorldStateMachine->Start("Manifest.amf");
+	m_uWorldStateMachine->Start("Manifest.amf", "Texts/Game.style");
 }
 
 void EngineService::UpdateInput(const SFInputDataFrame& inputDataFrame)

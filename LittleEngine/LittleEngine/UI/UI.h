@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UIElement.h"
+#include "UIGameStyle.h"
 #include "UIManager.h"
 #include "UIObject.h"
 #include "UIProgressBar.h"

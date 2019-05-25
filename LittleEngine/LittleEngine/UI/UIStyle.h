@@ -22,8 +22,5 @@ struct UIWidgetStyle
 	Vector2 widgetSize;
 	LayerID baseLayer = LAYER_UI;
 	Colour background;
-
-	static UIWidgetStyle GetDefault0(UIWidgetStyle* pReplace = nullptr);
-	static UIWidgetStyle GetDefault1(UIWidgetStyle* pReplace = nullptr);
 };
 } // namespace LittleEngine

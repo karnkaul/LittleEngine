@@ -35,7 +35,7 @@ public:
 	bool LoadState(WorldID id);
 
 private:
-	void Start(String manifestPath = "");
+	void Start(String manifestPath = "", String gameStyleID = "");
 	// Returns true if active World state changed
 	bool Tick(Time dt);
 	
