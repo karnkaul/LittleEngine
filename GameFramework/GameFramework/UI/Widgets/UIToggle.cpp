@@ -65,7 +65,7 @@ void UIToggle::OnCreated()
 	m_pLabel = AddElement<UIElement>("ToggleLabel", &m_pRoot->m_transform, 2);
 	m_pLabel->m_transform.anchor = {-1, 0};
 	m_pLabel->m_transform.nPosition = {Fixed(0.9f), 0};
-	Fixed xPad = m_style.widgetSize.x - m_data.boxSize.x - 30;
+	Fixed xPad = Maths::Max(m_style.widgetSize.x - m_data.boxSize.x - 50, Fixed::Zero);
 	m_pLabel->m_transform.padding = {-xPad , 8};
 }
 
@@ -100,15 +100,10 @@ void UIToggle::OnInteractEnd(bool bInteract)
 	}
 }
 
-void UIToggle::SetInteractable(bool bInteractable)
+void UIToggle::OnSetInteractable(bool bInteractable)
 {
-	UIStyle& style = bInteractable
-						 ? (m_prevState == UIWidgetState::Selected ? m_style.selected : m_style.notSelected)
-						 : m_style.uninteractable;
+	const UIStyle& style = bInteractable ? m_style.notSelected : m_style.uninteractable;
 	m_pToggle->SetPanel(style.fill, style.border, style.outline);
-	m_state = bInteractable
-				  ? (m_prevState == UIWidgetState::Selected ? UIWidgetState::Selected : UIWidgetState::NotSelected)
-				  : UIWidgetState::Uninteractable;
 }
 
 void UIToggle::Tick(Time dt)

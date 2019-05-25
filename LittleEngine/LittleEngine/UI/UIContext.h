@@ -58,7 +58,6 @@ protected:
 	void OnEnterPressed();
 	void OnEnterReleased(bool bInteract);
 	void OnBackReleased();
-	void Discard();
 
 private:
 	void OnCreate(String name, LayerID rootLayer);

@@ -10,17 +10,6 @@ namespace LittleEngine
 UIWidget::UIWidget() = default;
 UIWidget::~UIWidget() = default;
 
-void UIWidget::OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCopy)
-{
-	SetNameAndType(std::move(name), "UIWidget");
-	m_pOwner = &owner;
-	m_style = pStyleToCopy ? *pStyleToCopy : UIWidgetStyle::GetDefault0();
-	m_pRoot = AddElement<UIElement>(String(GetNameStr()) + "_Root");
-	m_pRoot->m_transform.size = m_style.widgetSize;
-	OnCreated();
-	SetInteractable(true);
-}
-
 UIWidgetStyle& UIWidget::GetStyle()
 {
 	return m_style;
@@ -36,9 +25,26 @@ void UIWidget::SetStyle(const UIWidgetStyle& style)
 	m_style = style;
 }
 
+void UIWidget::SetInteractable(bool bInteractable)
+{
+	SetState(bInteractable ? UIWidgetState::NotSelected : UIWidgetState::Uninteractable);
+	OnSetInteractable(bInteractable);
+}
+
 bool UIWidget::IsInteractable() const
 {
 	return m_state != UIWidgetState::Uninteractable;
+}
+
+void UIWidget::SetState(UIWidgetState state)
+{
+	m_prevState = m_state == UIWidgetState::Interacting ? state : m_state;
+	m_state = state;
+}
+
+
+void UIWidget::OnCreated()
+{
 }
 
 void UIWidget::Tick(Time dt)
@@ -53,11 +59,53 @@ void UIWidget::Tick(Time dt)
 	}
 }
 
-void UIWidget::SetState(UIWidgetState state)
+void UIWidget::Select()
 {
-	m_prevState = m_state == UIWidgetState::Interacting ? state : m_state;
-	m_state = state;
+	if (IsInteractable())
+	{
+		SetState(UIWidgetState::Selected);
+		OnSelected();
+	}
 }
+
+void UIWidget::Deselect()
+{
+	if (IsInteractable())
+	{
+		SetState(UIWidgetState::NotSelected);
+		OnDeselected();
+	}
+}
+
+void UIWidget::InteractStart()
+{
+	if (IsInteractable())
+	{
+		SetState(UIWidgetState::Interacting);
+		OnInteractStart();
+	}
+}
+
+void UIWidget::InteractEnd(bool bInteract)
+{
+	if (IsInteractable())
+	{
+		SetState(UIWidgetState::Selected);
+		OnInteractEnd(bInteract);
+	}
+}
+
+void UIWidget::OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCopy)
+{
+	SetNameAndType(std::move(name), "UIWidget");
+	m_pOwner = &owner;
+	m_style = pStyleToCopy ? *pStyleToCopy : UIWidgetStyle::GetDefault0();
+	m_pRoot = AddElement<UIElement>(String(GetNameStr()) + "_Root");
+	m_pRoot->m_transform.size = m_style.widgetSize;
+	OnCreated();
+	SetInteractable(true);
+}
+
 
 void UIWidget::InitElement(String name, UIElement* pNewElement, UITransform* pParent)
 {
@@ -80,9 +128,5 @@ LayerID UIWidget::GetMaxLayer() const
 		}
 	}
 	return maxLayer;
-}
-
-void UIWidget::OnCreated()
-{
 }
 } // namespace LittleEngine

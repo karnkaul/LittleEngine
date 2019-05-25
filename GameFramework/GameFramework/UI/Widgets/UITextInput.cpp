@@ -29,17 +29,6 @@ UITextInput::OnEditComplete::Token UITextInput::SetOnEditComplete(OnEditComplete
 	return m_onEditComplete.Register(std::move(callback));
 }
 
-void UITextInput::SetInteractable(bool bInteractable)
-{
-	UIStyle& style = bInteractable
-						 ? (m_prevState == UIWidgetState::Selected ? m_style.selected : m_style.notSelected)
-						 : m_style.uninteractable;
-	m_pRoot->SetPanel(style.fill, style.border, style.outline);
-	m_state = bInteractable
-				  ? (m_prevState == UIWidgetState::Selected ? UIWidgetState::Selected : UIWidgetState::NotSelected)
-				  : UIWidgetState::Uninteractable;
-}
-
 void UITextInput::OnCreated()
 {
 	m_uKeyboard = MakeUnique<KeyboardInput>();
@@ -96,6 +85,12 @@ void UITextInput::OnInteractEnd(bool bInteract)
 								m_data.textStyle.colour));
 		m_onEditComplete(m_uKeyboard->GetLiveString());
 	}
+}
+
+void UITextInput::OnSetInteractable(bool bInteractable)
+{
+	const UIStyle& style = bInteractable ? m_style.notSelected : m_style.uninteractable;
+	m_pRoot->SetPanel(style.fill, style.border, style.outline);
 }
 
 void UITextInput::Tick(Time dt)

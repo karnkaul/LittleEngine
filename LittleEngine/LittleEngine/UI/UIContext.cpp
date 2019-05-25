@@ -66,17 +66,11 @@ void UIContext::SetActive(bool bActive, bool bResetSelection)
 void UIContext::ResetSelection()
 {
 	m_uUIWidgets->Reset(true);
-	m_uUIWidgets->ForEach([](UPtr<UIWidget>& uWidget) {
-		if (uWidget->m_state != UIWidgetState::Uninteractable)
-		{
-			uWidget->OnDeselected();
-		}
-	});
+	m_uUIWidgets->ForEach([](UPtr<UIWidget>& uWidget) { uWidget->Deselect(); });
 	UIWidget* pSelected = GetSelected();
-	if (pSelected && pSelected->IsInteractable())
+	if (pSelected)
 	{
-		pSelected->SetState(UIWidgetState::Selected);
-		pSelected->OnSelected();
+		pSelected->Select();
 	}
 }
 
@@ -168,16 +162,14 @@ void UIContext::OnUp()
 		return;
 	}
 	UIWidget* pSelected = GetSelected();
-	if (pSelected && pSelected->IsInteractable())
+	if (pSelected)
 	{
-		pSelected->SetState(UIWidgetState::NotSelected);
-		pSelected->OnDeselected();
+		pSelected->Deselect();
 	}
 	pSelected = m_uUIWidgets->NextSelectableVertical(false);
 	if (pSelected)
 	{
-		pSelected->SetState(UIWidgetState::Selected);
-		pSelected->OnSelected();
+		pSelected->Select();
 	}
 }
 
@@ -188,16 +180,14 @@ void UIContext::OnDown()
 		return;
 	}
 	UIWidget* pWidget = GetSelected();
-	if (pWidget && pWidget->IsInteractable())
+	if (pWidget)
 	{
-		pWidget->SetState(UIWidgetState::NotSelected);
-		pWidget->OnDeselected();
+		pWidget->Deselect();
 	}
 	pWidget = m_uUIWidgets->NextSelectableVertical(true);
 	if (pWidget)
 	{
-		pWidget->SetState(UIWidgetState::Selected);
-		pWidget->OnSelected();
+		pWidget->Select();
 	}
 }
 
@@ -208,16 +198,14 @@ void UIContext::OnLeft()
 		return;
 	}
 	UIWidget* pWidget = GetSelected();
-	if (pWidget && pWidget->IsInteractable())
+	if (pWidget)
 	{
-		pWidget->SetState(UIWidgetState::NotSelected);
-		pWidget->OnDeselected();
+		pWidget->Deselect();
 	}
 	pWidget = m_uUIWidgets->NextSelectableHorizontal(false);
 	if (pWidget)
 	{
-		pWidget->SetState(UIWidgetState::Selected);
-		pWidget->OnSelected();
+		pWidget->Select();
 	}
 }
 
@@ -228,16 +216,14 @@ void UIContext::OnRight()
 		return;
 	}
 	UIWidget* pWidget = GetSelected();
-	if (pWidget && pWidget->IsInteractable())
+	if (pWidget)
 	{
-		pWidget->SetState(UIWidgetState::NotSelected);
-		pWidget->OnDeselected();
+		pWidget->Deselect();
 	}
 	pWidget = m_uUIWidgets->NextSelectableHorizontal(true);
 	if (pWidget)
 	{
-		pWidget->SetState(UIWidgetState::Selected);
-		pWidget->OnSelected();
+		pWidget->Select();
 	}
 }
 
@@ -246,8 +232,7 @@ void UIContext::OnEnterPressed()
 	UIWidget* pSelected = GetSelected();
 	if (pSelected && pSelected->IsInteractable())
 	{
-		pSelected->SetState(UIWidgetState::Interacting);
-		pSelected->OnInteractStart();
+		pSelected->InteractStart();
 		m_bInteracting = true;
 	}
 }
@@ -257,10 +242,9 @@ void UIContext::OnEnterReleased(bool bInteract)
 	if (m_bInteracting)
 	{
 		UIWidget* pSelected = GetSelected();
-		if (pSelected && pSelected->IsInteractable())
+		if (pSelected)
 		{
-			pSelected->SetState(UIWidgetState::Selected);
-			pSelected->OnInteractEnd(bInteract);
+			pSelected->InteractEnd(bInteract);
 		}
 		m_bInteracting = false;
 	}
@@ -277,9 +261,5 @@ void UIContext::OnBackReleased()
 		m_onCancelledDelegate();
 		m_bDestroyed = m_bAutoDestroyOnCancel;
 	}
-}
-
-void UIContext::Discard()
-{
 }
 } // namespace LittleEngine

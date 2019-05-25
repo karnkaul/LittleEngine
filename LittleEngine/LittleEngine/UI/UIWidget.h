@@ -36,25 +36,32 @@ public:
 
 public:
 	virtual void SetStyle(const UIWidgetStyle& style);
-	virtual void SetInteractable(bool bInteractable) = 0;
+	void SetInteractable(bool bInteractable);
 	bool IsInteractable() const;
 
 protected:
 	void SetState(UIWidgetState state);
 
 protected:
+	virtual void OnCreated();
 	virtual void OnSelected() = 0;
 	virtual void OnDeselected() = 0;
 	virtual void OnInteractStart() = 0;
 	virtual void OnInteractEnd(bool bInteract) = 0;
+	virtual void OnSetInteractable(bool bInteractable) = 0;
 	void Tick(Time dt) override;
+
+// UIContext friend functions
+private:
+	void Select();
+	void Deselect();
+	void InteractStart();
+	void InteractEnd(bool bInteract);
 
 private:
 	void OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCopy);
 	void InitElement(String name, UIElement* pNewElement, UITransform* pParent);
 	LayerID GetMaxLayer() const;
-
-	virtual void OnCreated();
 
 	friend class UIContext;
 };

@@ -40,14 +40,15 @@ public:
 	OnEditComplete::Token SetOnEditComplete(OnEditComplete::Callback callback);
 
 public:
-	void SetInteractable(bool bInteractable) override;
-
+	
 protected:
 	void OnCreated() override;
 	void OnSelected() override;
 	void OnDeselected() override;
 	void OnInteractStart() override;
 	void OnInteractEnd(bool bInteract) override;
+	void OnSetInteractable(bool bInteractable) override;
+
 	void Tick(Time dt) override;
 
 private:

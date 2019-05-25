@@ -27,7 +27,7 @@ TextureAsset* pLargeTex = nullptr;
 TextAsset* pMiscText = nullptr;
 bool bStartedAsycLoad = false;
 bool bLoadedLargeTex = false;
-bool bLoadedMiscText = false;	
+bool bLoadedMiscText = false;
 
 void OnEnter()
 {
@@ -285,7 +285,7 @@ void SpawnDialogue()
 
 void SpawnToggle()
 {
-	Fixed x = 300;
+	Fixed x = 400;
 	Fixed y = 200;
 	auto* pParent = pTestWorld->Game()->UI()->PushContext<UIContext>("TestToggleUIC");
 	pParent->GetRootElement()->m_transform.size = {x, y};
@@ -297,12 +297,19 @@ void SpawnToggle()
 
 	debugTokens.push_back(pToggle0->AddCallback([](bool bVal) { LOG_W("Toggle0 changed! %d", bVal); }));
 	pToggle0->GetRoot()->m_transform.bAutoPad = true;
-	pToggle0->SetText("Toggle 0")->SetOn(false)->GetRoot()->m_transform.nPosition = {0, 1};
-
+	pToggle0->SetBackground(Colour::White)
+		->SetText("Toggle 0")
+		->SetOn(false)
+		->GetRoot()
+		->m_transform.nPosition = {0, 1};
 	debugTokens.push_back(
 		pToggle1->AddCallback([](bool bValue) { LOG_W("Toggle1 changed! %d", bValue); }));
 	pToggle1->GetRoot()->m_transform.bAutoPad = true;
-	pToggle1->SetText("Toggle 1")->SetOn(true)->GetRoot()->m_transform.nPosition = {0, -1};
+	pToggle1->SetBackground(Colour::White)
+		->SetText("Toggle 1")
+		->SetOn(true)
+		->GetRoot()
+		->m_transform.nPosition = {0, -1};
 
 	pParent->m_bAutoDestroyOnCancel = true;
 	pParent->SetActive(true);
