@@ -1,6 +1,24 @@
 {
     "styles": [
         {
+            "size": { "x": 200, "y": 60 },
+            "background": "white",
+            "uninteractable": {
+                "fill": "#969696"
+            },
+            "notSelected": {
+                "fill": "#ff8745"
+            },
+            "selected": {
+                "fill": "#ff8745",
+                "border": 5,
+                "outline": "#128ba5"
+            },
+            "interacting": {
+                "fill": "#ff96ff"
+            }
+        },
+        {
             "id": "alternate0",
             "notSelected": {
                 "fill": "#ef798a"

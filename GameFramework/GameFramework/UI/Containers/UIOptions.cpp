@@ -25,7 +25,7 @@ void UIOptions::OnCreated()
 
 	Deserialise(Services::Game()->Repository()->Load<TextAsset>("Texts/Layouts/UIOptions.uil")->GetText());
 
-	auto pWorldSelection = Get<UISelection>("world_selection");
+	auto pWorldSelection = Find<UISelection>("world_selection");
 	auto stateIDs = Services::Game()->Worlds()->GetAllStateIDs();
 	Core::Remove(stateIDs, Services::Game()->Worlds()->GetActiveStateID());
 	pWorldSelection->SetOptions(Strings::ToString(stateIDs, "World "));
@@ -33,13 +33,13 @@ void UIOptions::OnCreated()
 		Services::Game()->Worlds()->LoadState(stateIDs[selected.first]);
 	}));
 
-	auto pHelpButton = Get<UIButton>("help_button");
+	auto pHelpButton = Find<UIButton>("help_button");
 	m_tokens.push_back(pHelpButton->AddCallback([]() { LOG_D("Not Implemented"); }));
 
-	auto pQuitButton = Get<UIButton>("quit_button");
+	auto pQuitButton = Find<UIButton>("quit_button");
 	m_tokens.push_back(pQuitButton->AddCallback([]() { Services::Engine()->Terminate(); }));
 
-	auto pResolutionSelection = Get<UISelection>("resolution_selection");
+	auto pResolutionSelection = Find<UISelection>("resolution_selection");
 	const auto& resolutions = GFX::GetValidWindowSizes();
 	Vec<u32> resolutionHeights;
 	std::for_each(resolutions.begin(), resolutions.end(), [&resolutionHeights](const auto& kvp) {
@@ -51,12 +51,12 @@ void UIOptions::OnCreated()
 		Services::Engine()->TrySetWindowSize(resolutionHeights[kvp.first]);
 	}));
 
-	auto pBorderlessToggle = Get<UIToggle>("borderless_toggle");
+	auto pBorderlessToggle = Find<UIToggle>("borderless_toggle");
 	m_tokens.push_back(pBorderlessToggle->AddCallback([](bool bBorderless) {
 		Services::Engine()->SetWindowStyle(bBorderless ? SFWindowStyle::Bordlerless : SFWindowStyle::Default);
 	}));
 
-	auto pCloseButton = Get<UIButton>("close_button");
+	auto pCloseButton = Find<UIButton>("close_button");
 	m_tokens.push_back(pCloseButton->AddCallback([&]() { Destruct(); }));
 }
 } // namespace LittleEngine

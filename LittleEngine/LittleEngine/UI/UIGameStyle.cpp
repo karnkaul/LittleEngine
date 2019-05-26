@@ -43,6 +43,7 @@ Colour HexStrToColour(String hex, Colour defaultColour = Colour::White)
 void SetupDefaultStyle()
 {
 	defaultStyle.widgetSize = {200, 60};
+	defaultStyle.background = Colour::White;
 
 	defaultStyle.uninteractable.fill = {150, 150, 150, 255};
 
@@ -66,6 +67,7 @@ void UIGameStyle::Load(String serialised)
 	{
 		UIWidgetStyle newStyle;
 		String id = styleData.GetString("id");
+		Strings::ToLower(id);
 		newStyle.widgetSize = styleData.GetVector2("size", defaultStyle.widgetSize);
 		newStyle.background = ParseColour(styleData.GetString("background"));
 
@@ -89,7 +91,7 @@ void UIGameStyle::Load(String serialised)
 		newStyle.interacting.outline = ParseColour(temp.GetString("outline", "transparent"));
 		newStyle.interacting.border = temp.GetS32("border", 0);
 
-		if (id.empty())
+		if (id.empty() || id == "default")
 		{
 			defaultStyle = newStyle;
 		}

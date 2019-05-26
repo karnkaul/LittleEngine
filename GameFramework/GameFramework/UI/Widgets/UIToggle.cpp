@@ -27,7 +27,8 @@ UIToggle* UIToggle::SetOffColour(Colour offColour)
 
 UIToggle* UIToggle::SetBackground(Colour colour)
 {
-	m_data.background = colour;
+	m_style.background = colour;
+	m_pRoot->SetPanel(m_style.background);
 	return this;
 }
 
@@ -55,7 +56,8 @@ UIToggle::OnChanged::Token UIToggle::AddCallback(UIToggle::OnChanged::Callback c
 void UIToggle::OnCreated()
 {
 	SetType("UIToggle");
-	m_pRoot->SetPanel(m_data.background);
+	m_pRoot->SetPanel(m_style.background);
+	m_pRoot->m_transform.size = m_style.widgetSize;
 	Colour initColour = m_bOn ? m_data.onColour : m_data.offColour;
 	m_pToggle = AddElement<UIElement>("ToggleBox", &m_pRoot->m_transform, 2);
 	m_pToggle->SetPanel(initColour, m_style.notSelected.border, m_style.notSelected.outline);
@@ -66,7 +68,7 @@ void UIToggle::OnCreated()
 	m_pLabel->m_transform.anchor = {-1, 0};
 	m_pLabel->m_transform.nPosition = {Fixed(0.9f), 0};
 	Fixed xPad = Maths::Max(m_style.widgetSize.x - m_data.boxSize.x - 50, Fixed::Zero);
-	m_pLabel->m_transform.padding = {-xPad , 8};
+	m_pLabel->m_transform.padding = {-xPad, 8};
 }
 
 void UIToggle::OnSelected()
@@ -104,13 +106,5 @@ void UIToggle::OnSetInteractable(bool bInteractable)
 {
 	const UIStyle& style = bInteractable ? m_style.notSelected : m_style.uninteractable;
 	m_pToggle->SetPanel(style.fill, style.border, style.outline);
-}
-
-void UIToggle::Tick(Time dt)
-{
-	UIWidget::Tick(dt);
-
-	m_pRoot->SetPanel(m_data.background);
-	m_pRoot->m_transform.size = m_style.widgetSize;
 }
 } // namespace LittleEngine

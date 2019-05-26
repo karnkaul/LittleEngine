@@ -32,14 +32,14 @@ public:
 
 	UIObject* GetObj(const String& id);
 	template <typename T>
-	T* Get(const String& id);
+	T* Find(const String& id);
 
 private:
 	void SetupChildren(class UIElement* pParent, Vec<Core::GData> uiObjects);
 };
 
 template <typename T>
-T* UIContainer::Get(const String& id)
+T* UIContainer::Find(const String& id)
 {
 	static_assert(IsDerived<UIObject, T>, "T must derive from UIObject!");
 	return dynamic_cast<T*>(GetObj(id));

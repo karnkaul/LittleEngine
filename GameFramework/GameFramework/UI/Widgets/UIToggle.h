@@ -16,7 +16,6 @@ private:
 		Vector2 boxSize = {40, 40};
 		Colour onColour = Colour::Cyan;
 		Colour offColour = Colour(150, 150, 150, 255);
-		Colour background = Colour::Transparent;
 	};
 
 private:
@@ -42,7 +41,5 @@ protected:
 	void OnInteractStart() override;
 	void OnInteractEnd(bool bInteract) override;
 	void OnSetInteractable(bool bInteractable) override;
-
-	void Tick(Time dt) override;
 };
 } // namespace LittleEngine
