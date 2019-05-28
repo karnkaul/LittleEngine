@@ -12,6 +12,7 @@ public:
 	Transform m_transform;
 
 private:
+	UPtr<class TileMap> m_uTileMap;
 	Vector2 m_prevPosition;
 	Time m_shakeDuration;
 	Time m_shakeElapsed;
@@ -23,6 +24,8 @@ public:
 	virtual ~Camera();
 
 	virtual void Shake(Fixed intensity = Fixed(5), Time duration = Time::Seconds(0.5f));
+	void FillViewWithTiles(class TextureAsset& texture);
+	void ClearTiles();
 
 protected:
 	virtual void Tick(Time dt);

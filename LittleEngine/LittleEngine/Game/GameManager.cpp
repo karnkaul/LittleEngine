@@ -86,6 +86,11 @@ CollisionManager* GameManager::Physics() const
 	return m_uCollisionManager.get();
 }
 
+void GameManager::SetWorldCamera(UPtr<Camera> uCamera)
+{
+	m_uWorldCamera = std::move(uCamera);
+}
+
 const char* GameManager::LogNameStr() const
 {
 	return m_logName.c_str();

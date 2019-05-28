@@ -18,7 +18,7 @@ struct Prim
 
 Prim Construct(LayerID layer)
 {
-	Assert(layer > 0 && layer < _LAYER_COUNT, "Invalid LayerID");
+	Assert(layer >= 0 && layer < _LAYER_COUNT, "Invalid LayerID");
 	Primitive uP = MakeUnique<SFPrimitive>(layer);
 	SFPrimitive* pP = uP.get();
 	return {std::move(uP), pP};

@@ -29,98 +29,9 @@ bool bStartedAsycLoad = false;
 bool bLoadedLargeTex = false;
 bool bLoadedMiscText = false;
 
-void OnEnter()
-{
-	// if (!pEntity2 && !pEntity3)
-	//{
-	//	pEntity2 = pTestWorld->Game()->NewEntity<Entity>("Yellow Circle", Vector2(-300, 300));
-	//	if (pEntity2)
-	//	{
-	//		auto rc0 = pEntity2->AddComponent<RenderComponent>();
-	//		rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({100, 100},
-	// SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow); 		auto t0 =
-	// pEntity2->AddComponent<CollisionComponent>(); 		t0->AddCircle(100);
-	//	}
-
-	//	pEntity3 = pTestWorld->Game()->NewEntity<Entity>("Blue Rectangle", Vector2(500, -200));
-	//	if (pEntity3)
-	//	{
-	//		auto rc1 = pEntity3->AddComponent<RenderComponent>();
-	//		rc1->SetShape(LAYER_DEFAULT)
-	//			->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)
-	//			->SetPrimaryColour(Colour::Blue);
-	//		auto t1 = pEntity3->AddComponent<CollisionComponent>();
-	//		t1->AddAABB(AABBData({600, 100}));
-	//	}
-	//}
-	// else
-	//{
-	//	pEntity2->Destruct();
-	//	pEntity2 = nullptr;
-	//	pEntity3->Destruct();
-	//	pEntity3 = nullptr;
-	//}
-
-	// if (!pEntity4)
-	//{
-	//	pEntity4 = pTestWorld->Game()->NewEntity<Entity>("SpriteSheetTest");
-	//	pEntity4->m_transform.localPosition = {-200, -200};
-	//	auto rc4 = pEntity4->AddComponent<RenderComponent>();
-	//	rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)), LAYER_FX);
-	//	// rc4->SetSpriteSheet(SpriteSheet(std::move(data), pTexture, Time::Seconds(1.0f)));
-	//}
-	// else
-	//{
-	//	pEntity4->Destruct();
-	//	pEntity4 = nullptr;
-	//}
-
-	if (!pParticleSystem1)
-	{
-		return;
-	}
-
-	if (pParticleSystem1->IsPlaying())
-	{
-		pParticleSystem1->Stop();
-	}
-
-	else
-	{
-		Fixed k(0.9f);
-		Fixed x = Maths::Random::Range(-k, k);
-		Fixed y = Maths::Random::Range(-k, k);
-		Vector2 worldPos = GFX::Project({x, y}, false);
-		pParticleSystem1->m_transform.localPosition = worldPos;
-		pParticleSystem1->Start();
-	}
-}
-
-void OnSelect()
-{
-	if (!pParticleSystem0)
-	{
-		return;
-	}
-
-	if (pParticleSystem0->IsPlaying())
-	{
-		pParticleSystem0->Stop();
-	}
-	else
-	{
-		// pParticleSystem0->SetEnabled(true);
-		// Fixed x = Maths::Random::Range(-Fixed::One, Fixed::One);
-		// Fixed y = Maths::Random::Range(-Fixed::One, Fixed::One);
-		// Vector2 worldPos = GFX::Project({x, y}, false);
-		// pParticleSystem0->m_transform.localPosition = worldPos;
-		pParticleSystem0->Start();
-		// pTestWorld->Game()->WorldCamera()->Shake();
-	}
-}
-
 Player* pPlayer = nullptr;
 bool bParented = false;
+
 void OnX()
 {
 	if (pEntity0 && pPlayer)
@@ -154,16 +65,130 @@ void OnY()
 	}
 }
 
-bool Test_OnInput(const EngineInput::Frame& frame)
+void OnA()
 {
-	if (frame.IsReleased(GameInputType::Enter))
+	// Collision Test
+	if (!pEntity2 && !pEntity3)
 	{
-		OnEnter();
+		pEntity2 = pTestWorld->Game()->NewEntity<Entity>("Yellow Circle", Vector2(-300, 300));
+		if (pEntity2)
+		{
+			auto rc0 = pEntity2->AddComponent<RenderComponent>();
+			rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({100, 100},
+	 SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow); 		auto t0 =
+	 pEntity2->AddComponent<CollisionComponent>(); 		t0->AddCircle(100);
+		}
+
+		pEntity3 = pTestWorld->Game()->NewEntity<Entity>("Blue Rectangle", Vector2(500, -200));
+		if (pEntity3)
+		{
+			auto rc1 = pEntity3->AddComponent<RenderComponent>();
+			rc1->SetShape(LAYER_DEFAULT)
+				->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)
+				->SetPrimaryColour(Colour::Blue);
+			auto t1 = pEntity3->AddComponent<CollisionComponent>();
+			t1->AddAABB(AABBData({600, 100}));
+		}
+	}
+	else
+	{
+		pEntity2->Destruct();
+		pEntity2 = nullptr;
+		pEntity3->Destruct();
+		pEntity3 = nullptr;
 	}
 
-	if (frame.IsReleased(GameInputType::Select))
+	// SpriteSheet flipbook test
+	if (!pEntity4)
 	{
-		OnSelect();
+		pEntity4 = pTestWorld->Game()->NewEntity<Entity>("SpriteSheetTest");
+		pEntity4->m_transform.localPosition = {-200, -200};
+		auto rc4 = pEntity4->AddComponent<RenderComponent>();
+		rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)), LAYER_FX);
+	}
+	else
+	{
+		pEntity4->Destruct();
+		pEntity4 = nullptr;
+	}
+}
+
+void OnB()
+{
+	// Tiles
+	static bool bShowTiles = false;
+	bShowTiles = !bShowTiles;
+	if (bShowTiles)
+	{
+		TextureAsset* pTexture =
+			pTestWorld->Repository()->Load<TextureAsset>("Textures/Tiles/SpaceTile0.png");
+		pTestWorld->Game()->WorldCamera()->FillViewWithTiles(*pTexture);
+	}
+	else
+	{
+		pTestWorld->Game()->WorldCamera()->ClearTiles();
+	}
+}
+
+void OnEnter()
+{
+	// Fire0 Test
+	if (!pParticleSystem1)
+	{
+		return;
+	}
+
+	if (pParticleSystem1->IsPlaying())
+	{
+		pParticleSystem1->Stop();
+	}
+
+	else
+	{
+		Fixed k(9, 10);
+		Fixed x = Maths::Random::Range(-k, k);
+		Fixed y = Maths::Random::Range(-k, k);
+		Vector2 worldPos = GFX::Project({x, y}, false);
+		pParticleSystem1->m_transform.localPosition = worldPos;
+		pParticleSystem1->Start();
+		pTestWorld->Game()->WorldCamera()->Shake();
+	}
+}
+
+void OnSelect()
+{
+	// Stars0 Test
+	if (!pParticleSystem0)
+	{
+		return;
+	}
+
+	if (pParticleSystem0->IsPlaying())
+	{
+		pParticleSystem0->Stop();
+	}
+	else
+	{
+		// pParticleSystem0->SetEnabled(true);
+		// Fixed x = Maths::Random::Range(-Fixed::One, Fixed::One);
+		// Fixed y = Maths::Random::Range(-Fixed::One, Fixed::One);
+		// Vector2 worldPos = GFX::Project({x, y}, false);
+		// pParticleSystem0->m_transform.localPosition = worldPos;
+		pParticleSystem0->Start();
+		// pTestWorld->Game()->WorldCamera()->Shake();
+	}
+}
+
+bool Test_OnInput(const EngineInput::Frame& frame)
+{
+	if (frame.IsReleased(GameInputType::A))
+	{
+		OnA();
+	}
+
+	if (frame.IsReleased(GameInputType::B))
+	{
+		OnB();
 	}
 
 	if (frame.IsReleased(GameInputType::X))
@@ -174,6 +199,16 @@ bool Test_OnInput(const EngineInput::Frame& frame)
 	if (frame.IsReleased(GameInputType::Y))
 	{
 		OnY();
+	}
+
+	if (frame.IsReleased(GameInputType::Enter))
+	{
+		OnEnter();
+	}
+
+	if (frame.IsReleased(GameInputType::Select))
+	{
+		OnSelect();
 	}
 
 	if (frame.IsReleased(GameInputType::LB))

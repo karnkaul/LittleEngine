@@ -197,6 +197,8 @@ void EngineInput::BindDefaults()
 
 	m_gamepad.Bind(GameInputType::X, KeyCode::Space);
 	m_gamepad.Bind(GameInputType::Y, KeyCode::E);
+	m_gamepad.Bind(GameInputType::A, KeyCode::R);
+	m_gamepad.Bind(GameInputType::B, KeyCode::F);
 	m_gamepad.Bind(GameInputType::LB, {KeyCode::LControl, KeyCode::RControl});
 	m_gamepad.Bind(GameInputType::RB, {KeyCode::LShift, KeyCode::RShift});
 

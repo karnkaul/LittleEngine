@@ -36,6 +36,8 @@ public:
 	Camera* WorldCamera() const;
 	CollisionManager* Physics() const;
 
+	void SetWorldCamera(UPtr<Camera> uCamera);
+
 public:
 	template <typename T>
 	T* NewEntity(String name = "Untitled", Vector2 position = Vector2::Zero, Fixed orientation = Fixed::Zero);

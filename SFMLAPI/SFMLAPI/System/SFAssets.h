@@ -38,8 +38,9 @@ public:
 	TextureAsset(String id, const String& pathPrefix);
 	TextureAsset(String id, Vec<u8> buffer);
 
+	Vector2 GetTextureSize() const;
+
 private:
-	// Prevents having to expose texture to code outside SFMLInterface
 	friend class SFQuadVec;
 	friend class SFPrimitive;
 };

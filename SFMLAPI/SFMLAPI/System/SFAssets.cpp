@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SFAssets.h"
+#include "SFTypes.h"
 #include "Core/CoreTypes.h"
 #include "Core/Utils.h"
 #include "Core/GData.h"
@@ -61,6 +62,11 @@ TextureAsset::TextureAsset(String id, Vec<u8> buffer) : Asset(std::move(id), Ass
 		LOG_E("Could not load Texture from buffer [%s]!", m_id.c_str());
 		m_bError = true;
 	}
+}
+
+Vector2 TextureAsset::GetTextureSize() const
+{
+	return Cast(m_sfTexture.getSize());
 }
 
 FontAsset::FontAsset(String id, const String& pathPrefix) : Asset(std::move(id), AssetType::Font)

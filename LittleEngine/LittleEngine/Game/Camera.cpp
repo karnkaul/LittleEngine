@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "Core/Utils.h"
+#include "SFMLAPI/Rendering/SFRenderState.h"
+#include "SFMLAPI/System/SFAssets.h"
 #include "Camera.h"
+#include "TileMap.h"
 
 namespace LittleEngine
 {
@@ -17,6 +20,20 @@ void Camera::Shake(Fixed intensity, Time duration)
 	m_shakeIntensity = intensity;
 	m_shakeDuration = duration;
 	m_shakeElapsed = Time::Zero;
+}
+
+void Camera::FillViewWithTiles(class TextureAsset& texture)
+{
+	if (!m_uTileMap)
+	{
+		m_uTileMap = MakeUnique<TileMap>(LAYER_ZERO);
+	}
+	m_uTileMap->FillView(texture);
+}
+
+void Camera::ClearTiles()
+{
+	m_uTileMap = nullptr;
 }
 
 void Camera::Tick(Time dt)
