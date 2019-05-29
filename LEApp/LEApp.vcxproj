@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Development|x64">
+      <Configuration>Development</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Ship|x64">
+      <Configuration>Ship</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="LEApp\GameLoop\GameLoop.cpp" />
+    <ClCompile Include="LEApp\Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LEApp\GameLoop\GameLoop.h" />
+    <ClInclude Include="LEApp\Resources\resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LEApp\Resources\LEApp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LEGame\LEGame.vcxproj">
+      <Project>{b4dae8fa-8724-411f-a0a5-d1c3fdfadb85}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="LEApp\Resources\Icon.ico" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{e6dcb510-4df2-4c49-b230-c2d62f2df371}</ProjectGuid>
+    <RootNamespace>LittleGame</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>LEApp</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>llvm</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>llvm</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>llvm</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>llvm</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>LEDemo-$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
+    <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>LEDemo-$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>LEDemo-$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
+    <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>LEDemo</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClangClAdditionalOptions>-Wextra</ClangClAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
+    <ClangClAdditionalOptions>-Wextra</ClangClAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClangClAdditionalOptions>-Wextra -Werror</ClangClAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'" Label="LLVM">
+    <ClangClAdditionalOptions>-Wextra -Werror</ClangClAdditionalOptions>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;..\LEGame.</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\ThirdParty\Libraries\SFML</AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;..\LEGame.</AdditionalIncludeDirectories>
+      <AdditionalOptions>/Zo %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\ThirdParty\Libraries\SFML</AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG;SHIP</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;..\LEGame.</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <LinkTimeCodeGeneration />
+      <AdditionalLibraryDirectories>..\ThirdParty\Libraries\SFML</AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;SHIP</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;..\LEGame.</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <LinkTimeCodeGeneration>
+      </LinkTimeCodeGeneration>
+      <AdditionalLibraryDirectories>..\ThirdParty\Libraries\SFML</AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

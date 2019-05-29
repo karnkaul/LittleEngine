@@ -71,22 +71,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
-    <IntDir>_Intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
     <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
-    <IntDir>_Intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
-    <IntDir>_Intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
     <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
-    <IntDir>_Intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -180,6 +180,7 @@
   <ItemGroup>
     <ClInclude Include="Core\ArchiveReader.h" />
     <ClInclude Include="Core\Asserts.h" />
+    <ClInclude Include="Core\FileLogger.h" />
     <ClInclude Include="Core\CircularList.h" />
     <ClInclude Include="Core\CircularVector.h" />
     <ClInclude Include="Core\Core.h" />
@@ -189,8 +190,14 @@
     <ClInclude Include="Core\FileRW.h" />
     <ClInclude Include="Core\Fixed.h" />
     <ClInclude Include="Core\GData.h" />
+    <ClInclude Include="Core\Jobs.h" />
+    <ClInclude Include="Core\Jobs\JobHandle.h" />
+    <ClInclude Include="Core\Jobs\JobManager.h" />
+    <ClInclude Include="Core\Jobs\JobWorker.h" />
+    <ClInclude Include="Core\Jobs\MultiJob.h" />
     <ClInclude Include="Core\Logger.h" />
     <ClInclude Include="Core\Maths.h" />
+    <ClInclude Include="Core\OS.h" />
     <ClInclude Include="Core\Property.h" />
     <ClInclude Include="Core\Rect2.h" />
     <ClInclude Include="Core\SimpleTime.h" />
@@ -207,11 +214,18 @@
   <ItemGroup>
     <ClCompile Include="Core\ArchiveReader.cpp" />
     <ClCompile Include="Core\Asserts.cpp" />
+    <ClCompile Include="Core\FileLogger.cpp" />
     <ClCompile Include="Core\FileRW.cpp" />
     <ClCompile Include="Core\Fixed.cpp" />
     <ClCompile Include="Core\GData.cpp" />
+    <ClCompile Include="Core\Jobs.cpp" />
+    <ClCompile Include="Core\Jobs\JobHandle.cpp" />
+    <ClCompile Include="Core\Jobs\JobManager.cpp" />
+    <ClCompile Include="Core\Jobs\JobWorker.cpp" />
+    <ClCompile Include="Core\Jobs\MultiJob.cpp" />
     <ClCompile Include="Core\Logger.cpp" />
     <ClCompile Include="Core\Maths.cpp" />
+    <ClCompile Include="Core\OS.cpp" />
     <ClCompile Include="Core\Property.cpp" />
     <ClCompile Include="Core\Rect2.cpp" />
     <ClCompile Include="Core\SimpleTime.cpp" />

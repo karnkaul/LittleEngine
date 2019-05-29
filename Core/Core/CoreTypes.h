@@ -1,15 +1,15 @@
 #pragma once
 #include <utility>
-#include "Core/Asserts.h"
-#include "Core/Deferred.h"
-#include "Core/Fixed.h"
-#include "Core/FileRW.h"
-#include "Core/Rect2.h"
-#include "Core/SimpleTime.h"
-#include "Core/StdTypes.h"
-#include "Core/UByte.h"
-#include "Core/Vector2.h"
-#include "Core/Transform.h"
+#include "Asserts.h"
+#include "Deferred.h"
+#include "Fixed.h"
+#include "FileRW.h"
+#include "Rect2.h"
+#include "SimpleTime.h"
+#include "StdTypes.h"
+#include "UByte.h"
+#include "Vector2.h"
+#include "Transform.h"
 
 template <typename T>
 using Deferred = Core::Deferred<T>;

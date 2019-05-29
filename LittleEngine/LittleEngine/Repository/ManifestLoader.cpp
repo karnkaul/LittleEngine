@@ -1,17 +1,15 @@
 #include "stdafx.h"
+#include "Core/Jobs.h"
 #include "Core/ArchiveReader.h"
 #include "SFMLAPI/System/SFAssets.h"
+#include "LERepository.h"
 #include "ManifestLoader.h"
-#include "EngineRepository.h"
-#include "LittleEngine/Jobs/JobManager.h"
-#include "LittleEngine/Jobs/MultiJob.h"
-#include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
 {
 using Lock = std::lock_guard<std::mutex>;
 
-ManifestLoader::ManifestLoader(EngineRepository& repository, String manifestPath, std::function<void()> onDone)
+ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, std::function<void()> onDone)
 	: m_onDone(std::move(onDone)), m_pRepository(&repository)
 {
 	AssetManifestData data;
@@ -96,7 +94,7 @@ ManifestLoader::ManifestLoader(EngineRepository& repository, String manifestPath
 	if (bUsingFileSystem)
 	{
 		// Load
-		m_pMultiJob = Services::Jobs()->CreateMultiJob(manifestPath + "(FSLoad)");
+		m_pMultiJob = Core::Jobs::CreateMultiJob(manifestPath + "(FSLoad)");
 		m_pMultiJob->AddJob(
 			[&]() {
 				for (auto& sound : m_newSounds)
@@ -128,7 +126,7 @@ ManifestLoader::ManifestLoader(EngineRepository& repository, String manifestPath
 	else
 #endif
 	{
-		m_pMultiJob = Services::Jobs()->CreateMultiJob(manifestPath + "(Decompress)");
+		m_pMultiJob = Core::Jobs::CreateMultiJob(manifestPath + "(Decompress)");
 		m_pMultiJob->AddJob(
 			[&]() {
 				for (auto& sound : m_newSounds)

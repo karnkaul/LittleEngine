@@ -59,6 +59,8 @@ using f64 = double;
 
 using String = std::string;
 using StringStream = std::stringstream;
+using Task = std::function<void()>;
+
 template <typename T>
 using InitList = std::initializer_list<T>;
 template <typename T, size_t U>
@@ -81,6 +83,7 @@ template <typename T>
 using SPtr = std::shared_ptr<T>;
 template <typename T>
 using WPtr = std::weak_ptr<T>;
+
 
 template <typename Base, typename Derived>
 constexpr bool IsDerived()

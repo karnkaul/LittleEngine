@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Development|x64">
+      <Configuration>Development</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Ship|x64">
+      <Configuration>Ship</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LittleEngine\LittleEngine.vcxproj">
+      <Project>{fb4a4dac-ca32-49b6-a32e-fd2654abf5a9}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="LEGame\Framework\Components\CollisionComponent.cpp" />
+    <ClCompile Include="LEGame\Framework\Components\ControllerComponent.cpp" />
+    <ClCompile Include="LEGame\Framework\Components\RenderComponent.cpp" />
+    <ClCompile Include="LEGame\Framework\Entities\ParticleSystem.cpp" />
+    <ClCompile Include="LEGame\Framework\Entities\Player.cpp" />
+    <ClCompile Include="LEGame\Framework\UI\Containers\UIContainer.cpp" />
+    <ClCompile Include="LEGame\Framework\UI\Containers\UIOptions.cpp" />
+    <ClCompile Include="LEGame\Framework\UI\Contexts\UIButtonDrawer.cpp" />
+    <ClCompile Include="LEGame\Framework\UI\Contexts\UIDialogue.cpp" />
+    <ClCompile Include="LEGame\Framework\UI\Elements\UIProgressBar.cpp" />
+    <ClCompile Include="LEGame\Framework\UI\Widgets\UIButton.cpp" />
+    <ClCompile Include="LEGame\Framework\UI\Widgets\UISelection.cpp" />
+    <ClCompile Include="LEGame\Framework\UI\Widgets\UITextInput.cpp" />
+    <ClCompile Include="LEGame\Framework\UI\Widgets\UIToggle.cpp" />
+    <ClCompile Include="LEGame\GameModel\GameConfig.cpp" />
+    <ClCompile Include="LEGame\GameModel\GameManager.cpp" />
+    <ClCompile Include="LEGame\GameModel\GameObject.cpp" />
+    <ClCompile Include="LEGame\GameModel\GameSettings.cpp" />
+    <ClCompile Include="LEGame\GameModel\Inheritable.cpp" />
+    <ClCompile Include="LEGame\GameModel\UI\UIContext.cpp" />
+    <ClCompile Include="LEGame\GameModel\UI\UIElement.cpp" />
+    <ClCompile Include="LEGame\GameModel\UI\UIGameStyle.cpp" />
+    <ClCompile Include="LEGame\GameModel\UI\UIManager.cpp" />
+    <ClCompile Include="LEGame\GameModel\UI\UIObject.cpp" />
+    <ClCompile Include="LEGame\GameModel\UI\UIText.cpp" />
+    <ClCompile Include="LEGame\GameModel\UI\UITransform.cpp" />
+    <ClCompile Include="LEGame\GameModel\UI\UIWidget.cpp" />
+    <ClCompile Include="LEGame\GameModel\UI\UIWidgetMatrix.cpp" />
+    <ClCompile Include="LEGame\GameModel\World\Camera.cpp" />
+    <ClCompile Include="LEGame\GameModel\World\Component.cpp" />
+    <ClCompile Include="LEGame\GameModel\World\Entity.cpp" />
+    <ClCompile Include="LEGame\GameModel\World\TileMap.cpp" />
+    <ClCompile Include="LEGame\GameModel\World\World.cpp" />
+    <ClCompile Include="LEGame\GameModel\World\WorldObject.cpp" />
+    <ClCompile Include="LEGame\GameModel\World\WorldStateMachine.cpp" />
+    <ClCompile Include="LEGame\GameModel\World\WSMErrorUI.cpp" />
+    <ClCompile Include="LEGame\GameModel\World\WSMLoadingUI.cpp" />
+    <ClCompile Include="LEGame\Utility\Debug\Console\ConsoleInput.cpp" />
+    <ClCompile Include="LEGame\Utility\Debug\Console\ConsoleRenderer.cpp" />
+    <ClCompile Include="LEGame\Utility\Debug\Console\DebugCommands.cpp" />
+    <ClCompile Include="LEGame\Utility\Debug\Console\DebugConsole.cpp" />
+    <ClCompile Include="LEGame\Utility\Debug\Console\LogLine.cpp" />
+    <ClCompile Include="LEGame\Utility\Debug\Console\RenderStatsRenderer.cpp" />
+    <ClCompile Include="LEGame\Utility\Debug\DebugProfiler.cpp" />
+    <ClCompile Include="LEGame\Utility\ParticleSystem\PSData.cpp" />
+    <ClCompile Include="LEGame\Utility\ParticleSystem\PSEmitter.cpp" />
+    <ClCompile Include="LEGame\Worlds\BootWorld.cpp" />
+    <ClCompile Include="LEGame\Worlds\TestWorld.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LEGame\Framework\Components\CollisionComponent.h" />
+    <ClInclude Include="LEGame\Framework\Components\Components.h" />
+    <ClInclude Include="LEGame\Framework\Components\ControllerComponent.h" />
+    <ClInclude Include="LEGame\Framework\Components\RenderComponent.h" />
+    <ClInclude Include="LEGame\Framework\Entities\Entities.h" />
+    <ClInclude Include="LEGame\Framework\Entities\ParticleSystem.h" />
+    <ClInclude Include="LEGame\Framework\Entities\Player.h" />
+    <ClInclude Include="LEGame\Framework\UI\Containers\UIContainer.h" />
+    <ClInclude Include="LEGame\Framework\UI\Containers\UIOptions.h" />
+    <ClInclude Include="LEGame\Framework\UI\Contexts\UIButtonDrawer.h" />
+    <ClInclude Include="LEGame\Framework\UI\Contexts\UIDialogue.h" />
+    <ClInclude Include="LEGame\Framework\UI\Elements\UIProgressBar.h" />
+    <ClInclude Include="LEGame\Framework\UI\UI.h" />
+    <ClInclude Include="LEGame\Framework\UI\Widgets\UIButton.h" />
+    <ClInclude Include="LEGame\Framework\UI\Widgets\UISelection.h" />
+    <ClInclude Include="LEGame\Framework\UI\Widgets\UITextInput.h" />
+    <ClInclude Include="LEGame\Framework\UI\Widgets\UIToggle.h" />
+    <ClInclude Include="LEGame\GameFramework.h" />
+    <ClInclude Include="LEGame\GameModel\GameConfig.h" />
+    <ClInclude Include="LEGame\GameModel\GameManager.h" />
+    <ClInclude Include="LEGame\GameModel\GameObject.h" />
+    <ClInclude Include="LEGame\GameModel\GameSettings.h" />
+    <ClInclude Include="LEGame\GameModel\Inheritable.h" />
+    <ClInclude Include="LEGame\GameModel\UI\UIContext.h" />
+    <ClInclude Include="LEGame\GameModel\UI\UIElement.h" />
+    <ClInclude Include="LEGame\GameModel\UI\UIGameStyle.h" />
+    <ClInclude Include="LEGame\GameModel\UI\UIManager.h" />
+    <ClInclude Include="LEGame\GameModel\UI\UIObject.h" />
+    <ClInclude Include="LEGame\GameModel\UI\UIStyle.h" />
+    <ClInclude Include="LEGame\GameModel\UI\UIText.h" />
+    <ClInclude Include="LEGame\GameModel\UI\UITransform.h" />
+    <ClInclude Include="LEGame\GameModel\UI\UIWidget.h" />
+    <ClInclude Include="LEGame\GameModel\UI\UIWidgetMatrix.h" />
+    <ClInclude Include="LEGame\GameModel\World\Camera.h" />
+    <ClInclude Include="LEGame\GameModel\World\Component.h" />
+    <ClInclude Include="LEGame\GameModel\World\ComponentTimingType.h" />
+    <ClInclude Include="LEGame\GameModel\World\Entity.h" />
+    <ClInclude Include="LEGame\GameModel\World\TileMap.h" />
+    <ClInclude Include="LEGame\GameModel\World\World.h" />
+    <ClInclude Include="LEGame\GameModel\World\WorldObject.h" />
+    <ClInclude Include="LEGame\GameModel\World\WorldStateMachine.h" />
+    <ClInclude Include="LEGame\GameModel\World\WSMErrorUI.h" />
+    <ClInclude Include="LEGame\GameModel\World\WSMLoadingUI.h" />
+    <ClInclude Include="LEGame\Utility\Debug\Console\ConsoleInput.h" />
+    <ClInclude Include="LEGame\Utility\Debug\Console\ConsoleRenderer.h" />
+    <ClInclude Include="LEGame\Utility\Debug\Console\DebugCommands.h" />
+    <ClInclude Include="LEGame\Utility\Debug\Console\DebugConsole.h" />
+    <ClInclude Include="LEGame\Utility\Debug\Console\LogLine.h" />
+    <ClInclude Include="LEGame\Utility\Debug\Console\RenderStatsRenderer.h" />
+    <ClInclude Include="LEGame\Utility\Debug\DebugProfiler.h" />
+    <ClInclude Include="LEGame\Utility\ParticleSystem\PSData.h" />
+    <ClInclude Include="LEGame\Utility\ParticleSystem\PSEmitter.h" />
+    <ClInclude Include="LEGame\Worlds\BootWorld.h" />
+    <ClInclude Include="LEGame\Worlds\TestWorld.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{b4dae8fa-8724-411f-a0a5-d1c3fdfadb85}</ProjectGuid>
+    <RootNamespace>LEGame</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>LEGame</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>llvm</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>llvm</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>llvm</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>llvm</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)-$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
+    <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)-$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)-$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
+    <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)-$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClangClAdditionalOptions>-Wextra</ClangClAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
+    <ClangClAdditionalOptions>-Wextra</ClangClAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClangClAdditionalOptions>-Wextra -Werror</ClangClAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'" Label="LLVM">
+    <ClangClAdditionalOptions>-Wextra -Werror</ClangClAdditionalOptions>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;.</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <Lib>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;.</AdditionalIncludeDirectories>
+      <AdditionalOptions>/Zo %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <Lib>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG;SHIP</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;.</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <LinkTimeCodeGeneration />
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <Lib>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;SHIP</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;..\LittleEngine;.</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <LinkTimeCodeGeneration>
+      </LinkTimeCodeGeneration>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <Lib>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
+    </Lib>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

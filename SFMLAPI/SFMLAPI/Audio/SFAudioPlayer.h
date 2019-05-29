@@ -4,6 +4,7 @@
 namespace sf
 {
 class Music;
+class Sound;
 }
 
 namespace LittleEngine
@@ -37,7 +38,6 @@ public:
 
 protected:
 	AudioPlayer();
-	Status Cast(sf::Sound::Status status);
 	virtual bool ApplyParams() = 0;
 };
 
@@ -45,7 +45,7 @@ protected:
 class SoundPlayer : public AudioPlayer
 {
 private:
-	sf::Sound m_sfSound;
+	UPtr<sf::Sound> m_uSFSound;
 	class SoundAsset* m_pSoundAsset = nullptr;
 
 public:
@@ -75,7 +75,6 @@ private:
 	Time m_elapsedTime;
 	Fixed m_targetVolume = Fixed::One;
 	Fixed m_startVolume = Fixed::One;
-	UPtr<class GameClock> m_uClock;
 	UPtr<sf::Music> m_uSFMusic;
 	bool m_bFadingIn = false;
 	bool m_bFadingOut = false;
@@ -86,7 +85,6 @@ public:
 
 	bool SetTrack(String path);
 	Time GetDuration() const;
-	Time GetElapsed() const;
 	bool IsFading() const;
 	void FadeIn(Time time, Fixed targetVolume = Fixed::One);
 	void FadeOut(Time time, Fixed targetVolume = Fixed::Zero);
@@ -106,6 +104,6 @@ private:
 
 	bool ApplyParams() override;
 
-	friend class EngineAudio;
+	friend class LEAudio;
 };
 } // namespace LittleEngine
