@@ -55,6 +55,8 @@ SFInputStateMachine::SFInputStateMachine()
 	m_keyStates.emplace_back(KeyCode::Backspace, "Backspace");
 }
 
+SFInputStateMachine::~SFInputStateMachine() = default;
+
 bool SFInputStateMachine::IsKeyPressed(KeyCode code) const
 {
 	for (const auto& iter : m_keyStates)

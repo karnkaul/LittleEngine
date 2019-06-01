@@ -5,6 +5,8 @@
 
 namespace Core
 {
+char* ArchiveReader::s_argv0 = nullptr;
+
 namespace
 {
 struct PhysFSState
@@ -19,7 +21,7 @@ static PhysFSState* s_pState = nullptr;
 
 PhysFSState::PhysFSState()
 {
-	s32 success = PHYSFS_init(nullptr);
+	s32 success = PHYSFS_init(ArchiveReader::s_argv0);
 	bOk = (success == 1);
 }
 

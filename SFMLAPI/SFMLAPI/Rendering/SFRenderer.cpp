@@ -6,8 +6,8 @@
 #include "SFRenderer.h"
 #include "SFRenderState.h"
 #include "ISFRenderBuffer.h"
-#include "SFMLAPI/Windowing/SFWindow.h"
-#include "SFMLAPI/Windowing/SFWindowData.h"
+#include "SFMLAPI/Viewport/SFViewport.h"
+#include "SFMLAPI/Viewport/SFViewportData.h"
 #include "SFML/Graphics.hpp"
 
 namespace LittleEngine
@@ -16,19 +16,19 @@ namespace LittleEngine
 RenderData g_renderData;
 #endif
 
-SFRenderer::SFRenderer(SFWindow& sfWindow)
-	: m_pSFWindow(&sfWindow)
+SFRenderer::SFRenderer(SFViewport& viewport)
+	: m_pViewport(&viewport)
 {
-	m_bRendering.store(true, std::memory_order_relaxed);
+	m_bRendering.store(true);
 }
 
 SFRenderer::~SFRenderer() = default;
 
-void SFRenderer::Render(IRenderBuffer& buffer, Fixed alpha)
+void SFRenderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 {
-	if (m_bRendering.load(std::memory_order_relaxed))
+	if (m_bRendering.load())
 	{
-		m_pSFWindow->clear();
+		m_pViewport->clear();
 
 		// Lock mutex
 		buffer.m_mutex.lock();
@@ -45,6 +45,14 @@ void SFRenderer::Render(IRenderBuffer& buffer, Fixed alpha)
 		{
 			for (auto& pPrimitive : vec)
 			{
+				pPrimitive->UpdateRenderState(alpha);
+			}
+		}
+
+		for (auto& vec : matrix)
+		{
+			for (auto& pPrimitive : vec)
+			{
 				if (pPrimitive->m_quadVec.IsPopulated())
 				{
 					sf::VertexArray va = pPrimitive->m_quadVec.ToSFVertexArray();
@@ -52,15 +60,14 @@ void SFRenderer::Render(IRenderBuffer& buffer, Fixed alpha)
 #if ENABLED(RENDER_STATS)
 					quads += (va.getVertexCount() / 4);
 #endif
-					m_pSFWindow->draw(va, rs);
+					m_pViewport->draw(va, rs);
 				}
 				else
 				{
-					pPrimitive->UpdateRenderState(alpha);
-					m_pSFWindow->draw(pPrimitive->m_circle);
-					m_pSFWindow->draw(pPrimitive->m_rectangle);
-					m_pSFWindow->draw(pPrimitive->m_sprite);
-					m_pSFWindow->draw(pPrimitive->m_text);
+					m_pViewport->draw(pPrimitive->m_circle);
+					m_pViewport->draw(pPrimitive->m_rectangle);
+					m_pViewport->draw(pPrimitive->m_sprite);
+					m_pViewport->draw(pPrimitive->m_text);
 
 #if ENABLED(RENDER_STATS)
 					++primitives;
@@ -99,7 +106,7 @@ void SFRenderer::Render(IRenderBuffer& buffer, Fixed alpha)
 		buffer.m_mutex.unlock();
 		
 		// Wait for VSync
-		m_pSFWindow->display();
+		m_pViewport->display();
 	}
 }
 } // namespace LittleEngine

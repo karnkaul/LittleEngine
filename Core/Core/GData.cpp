@@ -64,6 +64,7 @@ String GData::Unmarshall() const
 	for (const auto& kvp : m_fieldMap)
 	{
 		String value = kvp.second;
+		Strings::Trim(value, {' '});
 		auto space = value.find(' ');
 		if (Strings::IsCharEnclosedIn(value, space, {'"', '"'}))
 		{

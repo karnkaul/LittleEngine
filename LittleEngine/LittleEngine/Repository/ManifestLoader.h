@@ -3,6 +3,11 @@
 #include "Core/CoreTypes.h"
 #include "LoadHelpers.h"
 
+namespace Core
+{
+class MultiJob;
+}
+
 namespace LittleEngine
 {
 class ManifestLoader final
@@ -19,13 +24,13 @@ private:
 		}
 	};
 
-	std::function<void()> m_onDone;
+	Task m_onDone;
 	Vec<NewAsset<class TextureAsset>> m_newTextures;
 	Vec<NewAsset<class FontAsset>> m_newFonts;
 	Vec<NewAsset<class SoundAsset>> m_newSounds;
 	Vec<NewAsset<class TextAsset>> m_newTexts;
-	class EngineRepository* m_pRepository;
-	class MultiJob* m_pMultiJob = nullptr;
+	class LERepository* m_pRepository;
+	Core::MultiJob* m_pMultiJob = nullptr;
 	bool m_bCompleted = false;
 	bool m_bIdle = false;
 #if ENABLED(FILESYSTEM_ASSETS)
@@ -33,7 +38,7 @@ private:
 #endif
 
 public:
-	ManifestLoader(EngineRepository& repository, String manifestPath, std::function<void()> onDone);
+	ManifestLoader(LERepository& repository, String manifestPath, Task onDone);
 
 	Fixed GetProgress() const;
 
@@ -45,6 +50,6 @@ private:
 	void AddSoundIDs(AssetIDContainer IDs);
 	void AddTextIDs(AssetIDContainer IDs);
 
-	friend class EngineRepository;
+	friend class LERepository;
 };
 } // namespace LittleEngine

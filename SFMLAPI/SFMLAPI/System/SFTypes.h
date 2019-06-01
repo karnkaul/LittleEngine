@@ -2,7 +2,7 @@
 #include "Core/CoreTypes.h"
 #include "SFML/Graphics.hpp"
 #include "SFMLAPI/Rendering/Colour.h"
-#include "SFMLAPI/Windowing/SFWindowData.h"
+#include "SFMLAPI/Viewport/SFViewportData.h"
 
 namespace LittleEngine
 {
@@ -16,7 +16,7 @@ Vector2 Cast(const sf::Vector2<T>& vec2);
 sf::Color Cast(Colour colour);
 Colour Cast(const sf::Color& sfColor);
 
-sf::Uint8 Cast(SFWindowStyle style);
+sf::Uint8 Cast(SFViewportStyle style);
 
 Vector2 WorldToScreen(Vector2 worldPoint);
 Fixed WorldToScreen(Fixed worldOrientation);

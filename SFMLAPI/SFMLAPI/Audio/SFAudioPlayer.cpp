@@ -4,7 +4,6 @@
 #include "Core/Logger.h"
 #include "SFAudioPlayer.h"
 #include "SFMLAPI/System/SFAssets.h"
-#include "SFMLAPI/System/SFGameClock.h"
 
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "openal32.lib")
@@ -23,25 +22,29 @@
 
 namespace LittleEngine
 {
-AudioPlayer::AudioPlayer() = default;
-AudioPlayer::~AudioPlayer() = default;
-
-AudioPlayer::Status AudioPlayer::Cast(sf::Sound::Status status)
+namespace
+{
+AudioPlayer::Status Cast(sf::Sound::Status status)
 {
 	switch (status)
 	{
 	case sf::Sound::Status::Paused:
-		return Status::Paused;
+		return AudioPlayer::Status::Paused;
 	case sf::Sound::Status::Playing:
-		return Status::Playing;
+		return AudioPlayer::Status::Playing;
 	default:
 	case sf::Sound::Status::Stopped:
-		return Status::Stopped;
+		return AudioPlayer::Status::Stopped;
 	}
 }
+} // namespace
+
+AudioPlayer::AudioPlayer() = default;
+AudioPlayer::~AudioPlayer() = default;
 
 SoundPlayer::SoundPlayer(SoundAsset* pSoundAsset)
 {
+	m_uSFSound = MakeUnique<sf::Sound>();
 	if (pSoundAsset)
 	{
 		SetSoundAsset(*pSoundAsset);
@@ -52,7 +55,7 @@ SoundPlayer::~SoundPlayer()
 {
 	if (IsPlaying())
 	{
-		m_sfSound.stop();
+		m_uSFSound->stop();
 	}
 }
 
@@ -64,16 +67,16 @@ bool SoundPlayer::SetSoundAsset(SoundAsset& soundAsset)
 
 void SoundPlayer::SetDirection(Fixed direction)
 {
-	m_sfSound.setPosition(Maths::Clamp_11(-direction).ToF32(), 0, 0);
+	m_uSFSound->setPosition(Maths::Clamp_11(-direction).ToF32(), 0, 0);
 }
 
 void SoundPlayer::Play()
 {
 	if (m_pSoundAsset)
 	{
-		m_sfSound.setBuffer(m_pSoundAsset->m_sfSoundBuffer);
+		m_uSFSound->setBuffer(m_pSoundAsset->m_sfSoundBuffer);
 		ApplyParams();
-		m_sfSound.play();
+		m_uSFSound->play();
 	}
 }
 
@@ -81,7 +84,7 @@ void SoundPlayer::Stop()
 {
 	if (m_pSoundAsset)
 	{
-		m_sfSound.stop();
+		m_uSFSound->stop();
 	}
 }
 
@@ -89,7 +92,7 @@ void SoundPlayer::Pause()
 {
 	if (m_pSoundAsset && m_status == AudioPlayer::Status::Playing)
 	{
-		m_sfSound.pause();
+		m_uSFSound->pause();
 		m_status = AudioPlayer::Status::Paused;
 	}
 }
@@ -100,7 +103,7 @@ void SoundPlayer::Resume()
 	{
 		if (m_status == AudioPlayer::Status::Paused)
 		{
-			m_sfSound.play();
+			m_uSFSound->play();
 		}
 	}
 }
@@ -109,18 +112,18 @@ void SoundPlayer::Reset(Time time)
 {
 	if (m_pSoundAsset)
 	{
-		m_sfSound.setPlayingOffset(sf::milliseconds(time.AsMilliseconds()));
+		m_uSFSound->setPlayingOffset(sf::milliseconds(time.AsMilliseconds()));
 	}
 }
 
 bool SoundPlayer::IsPlaying() const
 {
-	return m_pSoundAsset && m_sfSound.getStatus() == sf::SoundSource::Status::Playing;
+	return m_pSoundAsset && m_uSFSound->getStatus() == sf::SoundSource::Status::Playing;
 }
 
 void SoundPlayer::Tick(Time /*dt*/)
 {
-	m_status = m_pSoundAsset ? Cast(m_sfSound.getStatus()) : Status::NoMedia;
+	m_status = m_pSoundAsset ? Cast(m_uSFSound->getStatus()) : Status::NoMedia;
 	ApplyParams();
 }
 
@@ -128,8 +131,8 @@ bool SoundPlayer::ApplyParams()
 {
 	if (m_pSoundAsset)
 	{
-		m_sfSound.setVolume(Maths::Clamp01(m_volume * m_pSoundAsset->m_volumeScale).ToF32() * 100);
-		m_sfSound.setLoop(m_bLooping);
+		m_uSFSound->setVolume(Maths::Clamp01(m_volume * m_pSoundAsset->m_volumeScale).ToF32() * 100);
+		m_uSFSound->setLoop(m_bLooping);
 		return true;
 	}
 	return false;
@@ -137,7 +140,6 @@ bool SoundPlayer::ApplyParams()
 
 MusicPlayer::MusicPlayer()
 {
-	m_uClock = MakeUnique<GameClock>();
 	m_uSFMusic = MakeUnique<sf::Music>();
 }
 
@@ -157,15 +159,6 @@ bool MusicPlayer::SetTrack(String path)
 Time MusicPlayer::GetDuration() const
 {
 	return Time::Microseconds(m_uSFMusic->getDuration().asMicroseconds());
-}
-
-Time MusicPlayer::GetElapsed() const
-{
-	if (IsPlaying())
-	{
-		return m_uClock->GetElapsed();
-	}
-	return Time::Zero;
 }
 
 bool MusicPlayer::IsFading() const
@@ -208,7 +201,6 @@ bool MusicPlayer::IsPaused() const
 
 void MusicPlayer::Play()
 {
-	m_uClock->Restart();
 	ApplyParams();
 	m_uSFMusic->play();
 }
@@ -234,7 +226,6 @@ void MusicPlayer::Resume()
 
 void MusicPlayer::Reset(Time time)
 {
-	m_uClock->Restart();
 	m_uSFMusic->setPlayingOffset(sf::milliseconds(time.AsMilliseconds()));
 }
 

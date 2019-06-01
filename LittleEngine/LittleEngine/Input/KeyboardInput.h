@@ -1,6 +1,6 @@
 #pragma once
 #include "Core/StdTypes.h"
-#include "LittleEngine/Input/EngineInput.h"
+#include "LittleEngine/Input/LEInput.h"
 
 namespace LittleEngine
 {
@@ -29,7 +29,7 @@ public:
 	bool m_bClearOnEscape = true;
 
 public:
-	void Update(const EngineInput::Frame& frame);
+	void Update(const LEInput::Frame& frame);
 	void Clear();
 	String GetLiveString() const;
 };

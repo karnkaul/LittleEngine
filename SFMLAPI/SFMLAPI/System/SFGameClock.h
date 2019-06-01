@@ -23,12 +23,9 @@ public:
 	void Restart();
 	Time GetElapsed() const;
 
-private:
 	// Global Ticks to be provided by SFEventLoop
 	static void Tick(Time dt);
 	// On App Reload etc
 	static void Reset();
-
-	friend class ASFEventLoop;
 };
 } // namespace LittleEngine
