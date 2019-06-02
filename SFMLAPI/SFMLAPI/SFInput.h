@@ -1,3 +1,3 @@
 #pragma once
-#include "Input/SFEventHandler.h"
+#include "Input/SFInputHandler.h"
 #include "Input/SFInputStateMachine.h"

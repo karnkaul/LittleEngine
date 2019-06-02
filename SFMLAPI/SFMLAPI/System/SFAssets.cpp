@@ -1,10 +1,25 @@
 #include "stdafx.h"
 #include "SFAssets.h"
+#include "SFTypes.h"
 #include "Core/CoreTypes.h"
 #include "Core/Utils.h"
 #include "Core/GData.h"
 #include "Core/ArchiveReader.h"
 #include "Core/Logger.h"
+
+#pragma comment(lib, "freetype.lib")
+#pragma comment(lib, "opengl32.lib")
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "gdi32.lib")
+#if defined(_DEBUG)
+#pragma comment(lib, "sfml-graphics-s-d.lib")
+#pragma comment(lib, "sfml-window-s-d.lib")
+#pragma comment(lib, "sfml-system-s-d.lib")
+#else
+#pragma comment(lib, "sfml-graphics-s.lib")
+#pragma comment(lib, "sfml-window-s.lib")
+#pragma comment(lib, "sfml-system-s.lib")
+#endif
 
 namespace LittleEngine
 {
@@ -61,6 +76,11 @@ TextureAsset::TextureAsset(String id, Vec<u8> buffer) : Asset(std::move(id), Ass
 		LOG_E("Could not load Texture from buffer [%s]!", m_id.c_str());
 		m_bError = true;
 	}
+}
+
+Vector2 TextureAsset::GetTextureSize() const
+{
+	return Cast(m_sfTexture.getSize());
 }
 
 FontAsset::FontAsset(String id, const String& pathPrefix) : Asset(std::move(id), AssetType::Font)

@@ -6,6 +6,9 @@ namespace Core
 class ArchiveReader final
 {
 public:
+	static char* s_argv0;
+
+public:
 	ArchiveReader();
 
 	void Load(const char* szArchivePath);

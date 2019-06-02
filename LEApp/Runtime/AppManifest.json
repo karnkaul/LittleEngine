@@ -1,0 +1,40 @@
+{
+    "zipName": "LittleEngine",
+    "zipExtension": ".zip",
+    "files": [
+        {
+            "source": "./../../_Build/Ship/LEDemo.exe",
+            "destination": "LEDemo.exe"
+        },
+        {
+            "source": "./../../_Build/Release/LEDemo-Release.exe",
+            "destination": "LEDemo-Release.exe"
+        },
+        {
+            "source": "./../../_Build/Development/LEDemo-Development.exe",
+            "destination": "LEDemo-Development.exe"
+        },
+        {
+            "source": "./GameAssets.cooked",
+            "destination": "GameAssets.cooked"
+        },
+        {
+            "source": "./openal32.dll",
+            "destination": "openal32.dll"
+        },
+        {
+            "source": "./Settings.ini",
+            "destination": "Settings.ini"
+        },
+        {
+            "source": "./_config.gd",
+            "destination": "_config.gd"
+        }
+    ],
+    "directories": [
+        {
+            "source": "./GameMusic",
+            "destination": "GameMusic"
+        }
+    ]
+}

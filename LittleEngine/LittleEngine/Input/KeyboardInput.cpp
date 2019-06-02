@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "LittleEngine/Engine/EngineService.h"
-#include "LittleEngine/Services/Services.h"
 #include "KeyboardInput.h"
 
 namespace LittleEngine
@@ -100,13 +98,13 @@ Fixed LiveLine::GetCursorNPos() const
 	return liveString.size() == 0 ? Fixed::One : Fixed(cursorIdx, liveString.size());
 }
 
-void KeyboardInput::Update(const EngineInput::Frame& frame)
+void KeyboardInput::Update(const LEInput::Frame& frame)
 {
 	bool bAppendText = false;
 
 	if (frame.IsHeld(GameInputType::RB) && frame.textInput.Contains(SpecialInputType::Insert))
 	{
-		m_liveLine.Append(EngineInput::Frame::GetClipboard());
+		m_liveLine.Append(LEInput::Frame::GetClipboard());
 	}
 
 	else if (frame.textInput.Contains(SpecialInputType::Backspace))

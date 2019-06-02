@@ -21,7 +21,9 @@ Transform::~Transform()
 	for (auto pChild : pChildren)
 	{
 		if (pChild)
+		{
 			pChild->pParent = nullptr;
+		}
 	}
 }
 
@@ -90,7 +92,7 @@ Vector2 Transform::Scale() const
 void Transform::Rotate(Fixed angle)
 {
 	localOrientation += angle;
-	Core::CleanVector<Transform*>(pChildren, [](Transform* child) { return child == nullptr; });
+	Core::RemoveIf<Transform*>(pChildren, [](Transform* child) { return child == nullptr; });
 	// Children need to be repositioned
 	if (!pChildren.empty())
 	{
@@ -119,6 +121,6 @@ void Transform::AddChild(Transform& child)
 
 bool Transform::RemoveChild(Transform& child)
 {
-	return Core::VectorErase(pChildren, &child);
+	return Core::Remove(pChildren, &child);
 }
 } // namespace Core

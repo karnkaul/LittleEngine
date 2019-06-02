@@ -28,14 +28,14 @@ Colour Cast(const sf::Color& sfColor)
 	return Colour(sfColor.r, sfColor.g, sfColor.b, sfColor.a);
 }
 
-sf::Uint8 Cast(SFWindowStyle style)
+sf::Uint8 Cast(SFViewportStyle style)
 {
 	switch (style)
 	{
 	default:
 		return sf::Style::Close;
 
-	case SFWindowStyle::Bordlerless:
+	case SFViewportStyle::Bordlerless:
 		return sf::Style::None;
 	}
 }

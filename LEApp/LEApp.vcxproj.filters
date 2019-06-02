@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="LEApp">
+      <UniqueIdentifier>{dbb6a20d-60bd-4c3a-8aca-41a0ac8b6abd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LEApp\GameLoop">
+      <UniqueIdentifier>{85bb7234-5602-4a28-bdfa-ab6093af8de3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LEApp\Resources">
+      <UniqueIdentifier>{7b8d996a-8f2f-4190-83d1-841427fe190d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="LEApp\Main.cpp">
+      <Filter>LEApp</Filter>
+    </ClCompile>
+    <ClCompile Include="LEApp\GameLoop\GameLoop.cpp">
+      <Filter>LEApp\GameLoop</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LEApp\GameLoop\GameLoop.h">
+      <Filter>LEApp\GameLoop</Filter>
+    </ClInclude>
+    <ClInclude Include="LEApp\Resources\resource.h">
+      <Filter>LEApp\Resources</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LEApp\Resources\LEApp.rc">
+      <Filter>LEApp\Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="LEApp\Resources\Icon.ico" />
+  </ItemGroup>
+</Project>

@@ -3,7 +3,6 @@
 #include "Core/Utils.h"
 #include "Collider.h"
 #include "CollisionManager.h"
-#include "LittleEngine/Services/Services.h"
 
 namespace LittleEngine
 {
@@ -70,7 +69,7 @@ AABBCollider* CollisionManager::CreateAABBCollider(String ownerName)
 
 void CollisionManager::Scrub()
 {
-	Core::CleanVector<UPtr<Collider>>(
+	Core::RemoveIf<UPtr<Collider>>(
 		m_colliders, [](UPtr<Collider>& uCollider) { return uCollider->m_bDestroyed; });
 }
 } // namespace LittleEngine

@@ -7,16 +7,20 @@
 
 namespace Core
 {
+// Returns true if val is found, and erases it from vec
+template <typename T>
+bool Remove(Vec<T>& vec, const T& val);
+
 // Erase all elements of a vector that qualify provided Predicate
 // Vector and T are passed by reference
 template <typename T>
-void CleanVector(Vec<T>& vec, std::function<bool(T& t)> predicate);
+void RemoveIf(Vec<T>& vec, std::function<bool(T& t)> predicate);
 
 template <typename K, typename V>
-void CleanMap(UMap<K, V>& map, std::function<bool(V& v)> predicate);
+void RemoveIf(UMap<K, V>& map, std::function<bool(V& v)> predicate);
 
 template <typename K, typename V>
-void CleanMap(Map<K, V>& map, std::function<bool(V& v)> predicate);
+void RemoveIf(Map<K, V>& map, std::function<bool(V& v)> predicate);
 
 // Given a Vec<weak_ptr<T>>, erase all elements where t.lock() == nullptr
 template <typename T>
@@ -24,11 +28,7 @@ void EraseNullWeakPtrs(Vec<WPtr<T>>& vec);
 
 // Given a Vec<T> and T& value, returns an iterator using std::find
 template <typename T>
-typename Vec<T>::const_iterator VectorSearch(const Vec<T>& vec, const T& value);
-
-// Returns true if val is found, and erases it from vec
-template <typename T>
-bool VectorErase(Vec<T>& vec, const T& val);
+typename Vec<T>::const_iterator Search(const Vec<T>& vec, const T& value);
 } // namespace Core
 
 namespace Strings
@@ -49,25 +49,7 @@ template <typename T>
 Vec<String> ToString(const Vec<T>& vec, String prefix = "", String suffix = "");
 
 template <typename T>
-struct Pair
-{
-	T first;
-	T second;
-
-	Pair(typename std::pair<T, T>&& pair) : first(pair.first), second(pair.second)
-	{
-	}
-	Pair(T first, T second) : first(std::move(first)), second(std::move(second))
-	{
-	}
-	Pair(T value) : first(value), second(value)
-	{
-	}
-	operator typename std::pair<T, T>()
-	{
-		return typename std::make_pair<T, T>(first, second);
-	}
-};
+using Pair = std::pair<T, T>;
 
 // Slices a string into a pair via the first occurence of a delimiter
 Pair<String> Bisect(const String& input, char delimiter);
@@ -88,41 +70,36 @@ bool IsCharEnclosedIn(const String& str, size_t idx, Strings::Pair<char> wrapper
 namespace Core
 {
 template <typename T>
-void CleanVector(Vec<T>& vec, std::function<bool(T& t)> predicate)
+bool Remove(Vec<T>& vec, const T& val)
+{
+	auto iter = std::remove(vec.begin(), vec.end(), val);
+	bool bFound = iter != vec.end();
+	vec.erase(iter, vec.end());
+	return bFound;
+}
+
+template <typename T>
+void RemoveIf(Vec<T>& vec, std::function<bool(T& t)> predicate)
 {
 	auto iter = std::remove_if(vec.begin(), vec.end(), predicate);
 	vec.erase(iter, vec.end());
 }
 
 template <typename K, typename V>
-void CleanMap(UMap<K, V>& map, std::function<bool(V& v)> predicate)
+void RemoveIf(UMap<K, V>& map, std::function<bool(V& v)> predicate)
 {
 	for (auto iter = map.begin(); iter != map.end();)
 	{
-		if (predicate(iter->second))
-		{
-			iter = map.erase(iter);
-		}
-		else
-		{
-			++iter;
-		}
+		iter = (predicate(iter->second)) ? map.erase(iter) : ++iter;
 	}
 }
 
 template <typename K, typename V>
-void CleanMap(Map<K, V>& map, std::function<bool(V& v)> predicate)
+void RemoveIf(Map<K, V>& map, std::function<bool(V& v)> predicate)
 {
 	for (auto iter = map.begin(); iter != map.end();)
 	{
-		if (predicate(iter->second))
-		{
-			iter = map.erase(iter);
-		}
-		else
-		{
-			++iter;
-		}
+		iter = (predicate(iter->second)) ? map.erase(iter) : ++iter;
 	}
 }
 
@@ -133,22 +110,9 @@ void EraseNullWeakPtrs(Vec<WPtr<T>>& vec)
 }
 
 template <typename T>
-typename Vec<T>::const_iterator VectorSearch(const Vec<T>& vec, const T& value)
+typename Vec<T>::const_iterator Search(const Vec<T>& vec, const T& value)
 {
 	return std::find(vec.begin(), vec.end(), value);
-}
-
-template <typename T>
-bool VectorErase(Vec<T>& vec, const T& val)
-{
-	auto iter = std::find(vec.begin(), vec.end(), val);
-	if (iter != vec.end())
-	{
-		std::swap(*iter, vec.back());
-		vec.pop_back();
-		return true;
-	}
-	return false;
 }
 } // namespace Core
 

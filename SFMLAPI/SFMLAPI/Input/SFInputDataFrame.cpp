@@ -26,7 +26,7 @@ bool TextInput::Contains(char c) const
 
 bool TextInput::Contains(SpecialInputType special) const
 {
-	return Core::VectorSearch(specials, special) != specials.end();
+	return Core::Search(specials, special) != specials.end();
 }
 
 void TextInput::Reset()

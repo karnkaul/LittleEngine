@@ -2,154 +2,66 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="LittleEngine">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="LittleEngine\RenderLoop">
-      <UniqueIdentifier>{3113ca62-c99a-4ca5-9fd3-8257e1c8f539}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LittleEngine\Input">
-      <UniqueIdentifier>{3766be28-b259-4437-8043-882b73edd632}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LittleEngine\GFX">
-      <UniqueIdentifier>{594e05f0-9219-4703-8725-54c3e32441a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LittleEngine\Services">
-      <UniqueIdentifier>{5e1c04cc-54d3-47fa-9d0c-013732e50e72}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LittleEngine\Audio">
-      <UniqueIdentifier>{5fcbc5f8-e44f-4ba8-881c-3de0005ccaf5}</UniqueIdentifier>
+      <UniqueIdentifier>{3a701645-bea7-44bd-8614-d7e2bda6f592}</UniqueIdentifier>
     </Filter>
     <Filter Include="LittleEngine\Repository">
-      <UniqueIdentifier>{0ff8f9d8-2958-446d-9c38-d33aa4437ffd}</UniqueIdentifier>
+      <UniqueIdentifier>{ff953ba0-79c3-4524-94d5-5d91b594ef0f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LittleEngine\Engine">
-      <UniqueIdentifier>{42063b7b-1281-44b6-b667-2e9e34923930}</UniqueIdentifier>
+    <Filter Include="LittleEngine\Audio">
+      <UniqueIdentifier>{b0d0aa9c-b6f1-4f34-9b7a-0550fb84b759}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LittleEngine\Jobs">
-      <UniqueIdentifier>{027c47a8-f0c3-46ed-9c5e-39e17e6cbb73}</UniqueIdentifier>
+    <Filter Include="LittleEngine\Context">
+      <UniqueIdentifier>{7f43d9d0-3791-4508-b262-039be5f133bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LittleEngine\UI">
-      <UniqueIdentifier>{7889fc48-ee2d-490c-82af-38f361472c95}</UniqueIdentifier>
+    <Filter Include="LittleEngine\Input">
+      <UniqueIdentifier>{2f94cdc2-5261-4ea3-b97d-6d445d70a2d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LittleEngine\Renderer">
+      <UniqueIdentifier>{50a9e009-1933-4c8a-8ff1-901c9083220d}</UniqueIdentifier>
     </Filter>
     <Filter Include="LittleEngine\Debug">
-      <UniqueIdentifier>{285e8a20-bc59-4415-9783-16c515ef35e6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LittleEngine\Debug\Console">
-      <UniqueIdentifier>{3f035e93-1575-4bf5-9bc9-330d5aa1e11f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LittleEngine\Game">
-      <UniqueIdentifier>{007e0f64-6e85-4ab7-8406-4b6b4e9c3a9e}</UniqueIdentifier>
+      <UniqueIdentifier>{0a8e2adf-d050-4900-8611-d4d1db259747}</UniqueIdentifier>
     </Filter>
     <Filter Include="LittleEngine\Physics">
-      <UniqueIdentifier>{bc181a82-8e38-40f3-ac97-dacf37772f4b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LittleEngine\Game\World">
-      <UniqueIdentifier>{7fab058a-fe19-463a-9bed-87f8ea20f050}</UniqueIdentifier>
+      <UniqueIdentifier>{6b3f7260-bbcf-4b64-adb8-4d0008878002}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LittleEngine\Input\EngineInput.cpp">
-      <Filter>LittleEngine\Input</Filter>
+    <ClCompile Include="LittleEngine\Repository\LoadHelpers.cpp">
+      <Filter>LittleEngine\Repository</Filter>
+    </ClCompile>
+    <ClCompile Include="LittleEngine\Repository\ManifestLoader.cpp">
+      <Filter>LittleEngine\Repository</Filter>
+    </ClCompile>
+    <ClCompile Include="LittleEngine\OS.cpp">
+      <Filter>LittleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="LittleEngine\Context\LEContext.cpp">
+      <Filter>LittleEngine\Context</Filter>
     </ClCompile>
     <ClCompile Include="LittleEngine\Input\Gamepad.cpp">
       <Filter>LittleEngine\Input</Filter>
     </ClCompile>
-    <ClCompile Include="LittleEngine\GFX\GFX.cpp">
-      <Filter>LittleEngine\GFX</Filter>
+    <ClCompile Include="LittleEngine\Input\KeyboardInput.cpp">
+      <Filter>LittleEngine\Input</Filter>
     </ClCompile>
-    <ClCompile Include="LittleEngine\Services\Services.cpp">
-      <Filter>LittleEngine\Services</Filter>
+    <ClCompile Include="LittleEngine\Renderer\LERenderer.cpp">
+      <Filter>LittleEngine\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="LittleEngine\Audio\EngineAudio.cpp">
-      <Filter>LittleEngine\Audio</Filter>
+    <ClCompile Include="LittleEngine\Renderer\RenderFactory.cpp">
+      <Filter>LittleEngine\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="LittleEngine\Repository\EngineRepository.cpp">
+    <ClCompile Include="LittleEngine\Input\LEInput.cpp">
+      <Filter>LittleEngine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="LittleEngine\Repository\LERepository.cpp">
       <Filter>LittleEngine\Repository</Filter>
     </ClCompile>
-    <ClCompile Include="LittleEngine\Engine\EngineService.cpp">
-      <Filter>LittleEngine\Engine</Filter>
+    <ClCompile Include="LittleEngine\Audio\LEAudio.cpp">
+      <Filter>LittleEngine\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="LittleEngine\Engine\EngineConfig.cpp">
-      <Filter>LittleEngine\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\RenderLoop\AsyncRenderLoop.cpp">
-      <Filter>LittleEngine\RenderLoop</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Engine\EngineLoop.cpp">
-      <Filter>LittleEngine\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Jobs\JobManager.cpp">
-      <Filter>LittleEngine\Jobs</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Jobs\JobWorker.cpp">
-      <Filter>LittleEngine\Jobs</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\UI\UIElement.cpp">
-      <Filter>LittleEngine\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\UI\UIObject.cpp">
-      <Filter>LittleEngine\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\UI\UITransform.cpp">
-      <Filter>LittleEngine\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\UI\UIWidgetMatrix.cpp">
-      <Filter>LittleEngine\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\UI\UIProgressBar.cpp">
-      <Filter>LittleEngine\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Engine\AsyncFileLogger.cpp">
-      <Filter>LittleEngine\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Engine\OS.cpp">
-      <Filter>LittleEngine\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\UI\UIText.cpp">
-      <Filter>LittleEngine\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Debug\Console\DebugCommands.cpp">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Debug\Console\DebugConsole.cpp">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Debug\DebugProfiler.cpp">
+    <ClCompile Include="LittleEngine\Debug\Tweakable.cpp">
       <Filter>LittleEngine\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Debug\Console\LogLine.cpp">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Debug\Console\ConsoleInput.cpp">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Debug\Console\ConsoleRenderer.cpp">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\UI\UIManager.cpp">
-      <Filter>LittleEngine\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Game\Component.cpp">
-      <Filter>LittleEngine\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Game\Entity.cpp">
-      <Filter>LittleEngine\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Game\GameManager.cpp">
-      <Filter>LittleEngine\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Game\Inheritable.cpp">
-      <Filter>LittleEngine\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Game\WorldObject.cpp">
-      <Filter>LittleEngine\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\UI\UIContext.cpp">
-      <Filter>LittleEngine\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\UI\UIWidget.cpp">
-      <Filter>LittleEngine\UI</Filter>
     </ClCompile>
     <ClCompile Include="LittleEngine\Physics\Collider.cpp">
       <Filter>LittleEngine\Physics</Filter>
@@ -160,163 +72,46 @@
     <ClCompile Include="LittleEngine\Physics\CollisionManager.cpp">
       <Filter>LittleEngine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="LittleEngine\Game\World\LoadingUI.cpp">
-      <Filter>LittleEngine\Game\World</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Game\World\World.cpp">
-      <Filter>LittleEngine\Game\World</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Game\World\WorldStateMachine.cpp">
-      <Filter>LittleEngine\Game\World</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Debug\Console\RenderStatsRenderer.cpp">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Jobs\MultiJob.cpp">
-      <Filter>LittleEngine\Jobs</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\UI\UIStyle.cpp">
-      <Filter>LittleEngine\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Game\GameSettings.cpp">
-      <Filter>LittleEngine\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Jobs\JobHandle.cpp">
-      <Filter>LittleEngine\Jobs</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Repository\ManifestLoader.cpp">
-      <Filter>LittleEngine\Repository</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Input\KeyboardInput.cpp">
-      <Filter>LittleEngine\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Game\Camera.cpp">
-      <Filter>LittleEngine\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Repository\LoadHelpers.cpp">
-      <Filter>LittleEngine\Repository</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Debug\Console\Tweakable.cpp">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\RenderLoop\RenderFactory.cpp">
-      <Filter>LittleEngine\RenderLoop</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LittleEngine\Input\EngineInput.h">
-      <Filter>LittleEngine\Input</Filter>
+    <ClInclude Include="LittleEngine\Repository\LoadHelpers.h">
+      <Filter>LittleEngine\Repository</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Repository\ManifestLoader.h">
+      <Filter>LittleEngine\Repository</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\FatalEngineException.h">
+      <Filter>LittleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\OS.h">
+      <Filter>LittleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Context\LEContext.h">
+      <Filter>LittleEngine\Context</Filter>
     </ClInclude>
     <ClInclude Include="LittleEngine\Input\Gamepad.h">
       <Filter>LittleEngine\Input</Filter>
     </ClInclude>
-    <ClInclude Include="LittleEngine\GFX\GFX.h">
-      <Filter>LittleEngine\GFX</Filter>
+    <ClInclude Include="LittleEngine\Input\KeyboardInput.h">
+      <Filter>LittleEngine\Input</Filter>
     </ClInclude>
-    <ClInclude Include="LittleEngine\Services\Services.h">
-      <Filter>LittleEngine\Services</Filter>
+    <ClInclude Include="LittleEngine\Renderer\LERenderer.h">
+      <Filter>LittleEngine\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="LittleEngine\Audio\EngineAudio.h">
-      <Filter>LittleEngine\Audio</Filter>
+    <ClInclude Include="LittleEngine\Renderer\RenderFactory.h">
+      <Filter>LittleEngine\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="LittleEngine\LittleEngine.h">
-      <Filter>LittleEngine</Filter>
+    <ClInclude Include="LittleEngine\Input\LEInput.h">
+      <Filter>LittleEngine\Input</Filter>
     </ClInclude>
-    <ClInclude Include="LittleEngine\Services\IService.h">
-      <Filter>LittleEngine\Services</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Repository\EngineRepository.h">
+    <ClInclude Include="LittleEngine\Repository\LERepository.h">
       <Filter>LittleEngine\Repository</Filter>
     </ClInclude>
-    <ClInclude Include="LittleEngine\Engine\EngineService.h">
-      <Filter>LittleEngine\Engine</Filter>
+    <ClInclude Include="LittleEngine\Audio\LEAudio.h">
+      <Filter>LittleEngine\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="LittleEngine\Engine\EngineConfig.h">
-      <Filter>LittleEngine\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\RenderLoop\AsyncRenderLoop.h">
-      <Filter>LittleEngine\RenderLoop</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Engine\EngineLoop.h">
-      <Filter>LittleEngine\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Jobs\JobManager.h">
-      <Filter>LittleEngine\Jobs</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Jobs\JobWorker.h">
-      <Filter>LittleEngine\Jobs</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\UI\UIElement.h">
-      <Filter>LittleEngine\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\UI\UIObject.h">
-      <Filter>LittleEngine\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\UI\UITransform.h">
-      <Filter>LittleEngine\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\UI\UIWidgetMatrix.h">
-      <Filter>LittleEngine\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\UI\UIProgressBar.h">
-      <Filter>LittleEngine\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\UI\UI.h">
-      <Filter>LittleEngine\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Engine\AsyncFileLogger.h">
-      <Filter>LittleEngine\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Engine\OS.h">
-      <Filter>LittleEngine\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\UI\UIText.h">
-      <Filter>LittleEngine\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Debug\Console\DebugCommands.h">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Debug\Console\DebugConsole.h">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Debug\DebugProfiler.h">
+    <ClInclude Include="LittleEngine\Debug\Tweakable.h">
       <Filter>LittleEngine\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Debug\Console\LogLine.h">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Debug\Console\ConsoleInput.h">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Debug\Console\ConsoleRenderer.h">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\UI\UIManager.h">
-      <Filter>LittleEngine\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Game\Component.h">
-      <Filter>LittleEngine\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Game\Entity.h">
-      <Filter>LittleEngine\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Game\Game.h">
-      <Filter>LittleEngine\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Game\GameManager.h">
-      <Filter>LittleEngine\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Game\Inheritable.h">
-      <Filter>LittleEngine\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Game\WorldObject.h">
-      <Filter>LittleEngine\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\UI\UIContext.h">
-      <Filter>LittleEngine\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\UI\UIWidget.h">
-      <Filter>LittleEngine\UI</Filter>
     </ClInclude>
     <ClInclude Include="LittleEngine\Physics\Collider.h">
       <Filter>LittleEngine\Physics</Filter>
@@ -330,53 +125,8 @@
     <ClInclude Include="LittleEngine\Physics\Physics.h">
       <Filter>LittleEngine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="LittleEngine\Game\World\LoadingUI.h">
-      <Filter>LittleEngine\Game\World</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Game\World\World.h">
-      <Filter>LittleEngine\Game\World</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Game\World\WorldStateMachine.h">
-      <Filter>LittleEngine\Game\World</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Debug\Console\RenderStatsRenderer.h">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Jobs\MultiJob.h">
-      <Filter>LittleEngine\Jobs</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\UI\UIStyle.h">
-      <Filter>LittleEngine\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Game\GameSettings.h">
-      <Filter>LittleEngine\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Jobs\JobHandle.h">
-      <Filter>LittleEngine\Jobs</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Repository\ManifestLoader.h">
-      <Filter>LittleEngine\Repository</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Input\KeyboardInput.h">
-      <Filter>LittleEngine\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Game\ComponentTimingType.h">
-      <Filter>LittleEngine\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Game\Camera.h">
-      <Filter>LittleEngine\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Repository\LoadHelpers.h">
-      <Filter>LittleEngine\Repository</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Debug\Console\Tweakable.h">
-      <Filter>LittleEngine\Debug\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\RenderLoop\RenderFactory.h">
-      <Filter>LittleEngine\RenderLoop</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Engine\FatalEngineException.h">
-      <Filter>LittleEngine\Engine</Filter>
+    <ClInclude Include="LittleEngine\LittleEngine.h">
+      <Filter>LittleEngine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

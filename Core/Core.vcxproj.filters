@@ -4,6 +4,9 @@
     <Filter Include="Core">
       <UniqueIdentifier>{6037938e-977f-4ae1-b5ed-6bda270299cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Jobs">
+      <UniqueIdentifier>{b9389d98-43e5-4fe5-891a-2279cfe68060}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\ArchiveReader.h">
@@ -66,12 +69,6 @@
     <ClInclude Include="Core\TRange.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Core\TokenHandler.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\CircularList.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Core\CircularVector.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -79,6 +76,27 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Deferred.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Jobs\JobHandle.h">
+      <Filter>Core\Jobs</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Jobs\JobWorker.h">
+      <Filter>Core\Jobs</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Jobs\MultiJob.h">
+      <Filter>Core\Jobs</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Jobs.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Jobs\JobManager.h">
+      <Filter>Core\Jobs</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\OS.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\FileLogger.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
@@ -129,6 +147,27 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Version.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Jobs\JobHandle.cpp">
+      <Filter>Core\Jobs</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Jobs\JobWorker.cpp">
+      <Filter>Core\Jobs</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Jobs\MultiJob.cpp">
+      <Filter>Core\Jobs</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Jobs.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Jobs\JobManager.cpp">
+      <Filter>Core\Jobs</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\OS.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\FileLogger.cpp">
       <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>

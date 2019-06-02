@@ -124,7 +124,7 @@ SFQuad* SFQuadVec::AddQuad()
 {
 	if (m_pTexture)
 	{
-		Vector2 texSize = Cast(m_pTexture->m_sfTexture.getSize());
+		Vector2 texSize = m_pTexture->GetTextureSize();
 		SFTexRect texRect(texSize.x.ToS32(), texSize.y.ToS32());
 		UPtr<SFQuad> uQuad = MakeUnique<SFQuad>(Rect2::CentreSize(texSize), texRect);
 		SFQuad* pQuad = uQuad.get();

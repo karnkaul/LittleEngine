@@ -39,6 +39,15 @@ SFPrimitive* SFPrimitive::SetPosition(Vector2 worldPosition, bool bImmediate)
 	else
 	{
 		m_gameState.sfPosition.Update(WorldToScreen(worldPosition));
+#if ENABLED(DEBUG_LOGGING)
+		if (m_bDebugThisPrimitive)
+		{
+			Vector2 v0 = m_gameState.sfPosition.min;
+			Vector2 v1 = m_gameState.sfPosition.max;
+			LOG_D("Position: [%.2f, %.2f], [%.2f, %.2f]", v0.x.ToF32(), v0.y.ToF32(), v1.x.ToF32(),
+				  v1.y.ToF32());
+		}
+#endif
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -179,7 +188,7 @@ SFPrimitive* SFPrimitive::SetFont(const FontAsset& font)
 SFPrimitive* SFPrimitive::SetTextSize(u32 pixelSize)
 {
 	m_gameState.textSize = pixelSize;
-	m_gameState.bTextSet = true;
+	m_bTextChanged.store(true, std::memory_order_relaxed);
 	if (m_bStatic)
 	{
 		m_bStatic = false;
@@ -191,7 +200,7 @@ SFPrimitive* SFPrimitive::SetTextSize(u32 pixelSize)
 SFPrimitive* SFPrimitive::SetText(String text)
 {
 	m_gameState.text = std::move(text);
-	m_gameState.bTextSet = true;
+	m_bTextChanged.store(true, std::memory_order_relaxed);
 	if (m_bStatic)
 	{
 		m_bStatic = false;
@@ -367,12 +376,13 @@ void SFPrimitive::UpdateRenderState(Fixed alpha)
 		break;
 	}
 	
-	if (m_renderState.bTextSet)
+	if (m_bTextChanged.load(std::memory_order_relaxed))
 	{
 		sf::String text = m_renderState.text;
 		u32 textSize = m_renderState.textSize;
 		m_text.setString(text);
 		m_text.setCharacterSize(textSize);
+		m_bTextChanged.store(false, std::memory_order_relaxed);
 	}
 	
 	UpdatePivot();
@@ -385,6 +395,17 @@ void SFPrimitive::UpdateRenderState(Fixed alpha)
 	sf::Color outline =
 		Cast(Colour::Lerp(m_renderState.sfSecondaryColour.min, m_renderState.sfSecondaryColour.max, alpha));
 	f32 outlineThickness = Cast(m_renderState.outlineThickness);
+
+#if ENABLED(DEBUG_LOGGING)
+	if (m_bDebugThisPrimitive)
+	{
+		Vector2 v0 = m_renderState.sfPosition.min;
+		Vector2 v1 = m_renderState.sfPosition.max;
+		Vector2 v2 = m_renderState.sfPosition.Lerp(alpha);
+		LOG_D("Lerping [%.2f, %.2f] => [%.2f, %.2f] (%.3f) = [%.2f, %.2f]", v0.x.ToF32(),
+			  v0.y.ToF32(), v1.x.ToF32(), v1.y.ToF32(), alpha.ToF32(), v2.x.ToF32(), v2.y.ToF32());
+	}
+#endif
 	
 	m_circle.setScale(scale);
 	m_circle.setRotation(orientation);

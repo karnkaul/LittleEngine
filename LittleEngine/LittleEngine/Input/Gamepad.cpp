@@ -24,7 +24,7 @@ Gamepad::InputMapping::InputMapping(GameInputType gameInput, InitList<KeyCode> k
 
 bool Gamepad::InputMapping::IsMapped(KeyCode keyCode) const
 {
-	auto iter = Core::VectorSearch(keyCodes, keyCode);
+	auto iter = Core::Search(keyCodes, keyCode);
 	return iter != keyCodes.end();
 }
 
@@ -70,7 +70,7 @@ void Gamepad::Unbind(GameInputType gameInput, KeyCode keyCode)
 	{
 		if (binding.gameInput == gameInput)
 		{
-			auto iter = Core::VectorSearch(binding.keyCodes, keyCode);
+			auto iter = Core::Search(binding.keyCodes, keyCode);
 			if (iter != binding.keyCodes.end())
 			{
 				binding.keyCodes.erase(iter);

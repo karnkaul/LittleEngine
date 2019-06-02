@@ -1,4 +1,6 @@
 #pragma once
+#include "SFML/System/Vector2.hpp"
+#include "SFML/Graphics/Rect.hpp"
 #include "Core/TRange.h"
 #include "Colour.h"
 #include "SFLayerID.h"
@@ -70,7 +72,6 @@ struct SFRenderState
 	SFShapeType shape = SFShapeType::None;
 
 	bool bEnabled = false;
-	bool bTextSet = false;
 
 	void Reconcile();
 };

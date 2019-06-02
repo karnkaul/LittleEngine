@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
 #include "Collider.h"
-#include "LittleEngine/Debug/Console/Tweakable.h"
+#include "LittleEngine/Debug/Tweakable.h"
 
 namespace LittleEngine
 {

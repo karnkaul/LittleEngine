@@ -10,7 +10,7 @@ bool IsNearlyEqual(f32 lhs, f32 rhs, f32 epsilon)
 
 Fixed ComputeAlpha(Time dt, Time totalTime)
 {
-	return Clamp01(dt.AsMilliseconds() / totalTime.AsMilliseconds());
+	return Fixed(Clamp01(dt.AsSeconds() / totalTime.AsSeconds()));
 }
 
 Random::Random(s32 min, s32 max) : m_detMt(1729), m_distribution(min, max)

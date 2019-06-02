@@ -41,9 +41,11 @@
 #if !SHIPPING
 #define DEBUG_LOGGING 1
 #define FILESYSTEM_ASSETS 1
+#define SUBSYSTEM_CONSOLE 1
 #else
 #define DEBUG_LOGGING 0
 #define FILESYSTEM_ASSETS 0
+#define SUBSYSTEM_CONSOLE 0
 #endif
 
 using u8 = uint8_t;
@@ -59,6 +61,8 @@ using f64 = double;
 
 using String = std::string;
 using StringStream = std::stringstream;
+using Task = std::function<void()>;
+
 template <typename T>
 using InitList = std::initializer_list<T>;
 template <typename T, size_t U>
@@ -81,6 +85,7 @@ template <typename T>
 using SPtr = std::shared_ptr<T>;
 template <typename T>
 using WPtr = std::weak_ptr<T>;
+
 
 template <typename Base, typename Derived>
 constexpr bool IsDerived()

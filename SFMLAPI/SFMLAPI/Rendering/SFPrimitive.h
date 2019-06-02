@@ -11,7 +11,7 @@ class SFPrimitive final
 {
 #if DEBUGGING
 public:
-	bool bDebugThisPrimitive = false;
+	bool m_bDebugThisPrimitive = false;
 #endif
 public:
 	bool m_bDestroyed = false;
@@ -27,6 +27,7 @@ private:
 	sf::Sprite m_sprite;
 	sf::Text m_text;
 	sf::Vector2f m_prevScale;
+	std::atomic<bool> m_bTextChanged = false;
 	bool m_bWasDisabled = false;
 	bool m_bStatic = false;
 	bool m_bMakeStatic = false;
@@ -88,7 +89,6 @@ private:
 	void UpdatePivot();
 	void UpdateRenderState(Fixed alpha);
 
-	friend struct GFXDataFrame;
 	friend class SFRenderer;
 };
 } // namespace LittleEngine

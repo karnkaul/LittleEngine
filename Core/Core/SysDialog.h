@@ -8,9 +8,9 @@ struct DialogueData
 {
 	String title;
 	String content;
-	std::function<void()> OnButton0 = nullptr;
-	std::function<void()> OnButton1 = nullptr;
-	std::function<void()> OnButton2 = nullptr;
+	Task OnButton0 = nullptr;
+	Task OnButton1 = nullptr;
+	Task OnButton2 = nullptr;
 };
 
 void CreateSystemDialogue(const DialogueData& data);

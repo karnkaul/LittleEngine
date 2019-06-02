@@ -24,6 +24,12 @@ template <typename T>
 T Clamp_11(T val);
 
 template <typename T>
+T Min(T lhs, T rhs);
+
+template <typename T>
+T Max(T lhs, T rhs);
+
+template <typename T>
 T Abs(T val);
 
 template <typename T>
@@ -100,13 +106,21 @@ T Clamp_11(T val)
 }
 
 template <typename T>
+T Min(T lhs, T rhs)
+{
+	return lhs < rhs ? lhs : rhs;
+}
+
+template <typename T>
+T Max(T lhs, T rhs)
+{
+	return lhs > rhs ? lhs : rhs;
+}
+
+template <typename T>
 T Abs(T val)
 {
-	if (val < 0)
-	{
-		return -val;	
-	}
-	return val;
+	return val < 0 ? -val : val;
 }
 
 template <typename T>

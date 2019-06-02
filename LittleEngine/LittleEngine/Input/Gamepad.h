@@ -16,6 +16,8 @@ enum class GameInputType
 	Select,
 	X,
 	Y,
+	A,
+	B,
 	LB,
 	RB,
 

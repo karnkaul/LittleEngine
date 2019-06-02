@@ -30,6 +30,7 @@ private:
 
 public:
 	SFInputStateMachine();
+	~SFInputStateMachine();
 
 	// Call this to check if a Key was pressed in this frame
 	bool IsKeyPressed(KeyCode code) const;
@@ -49,6 +50,6 @@ private:
 
 	void StoreNonASCIISpecialInput(KeyCode key);
 
-	friend class SFEventHandler;
+	friend class SFInputHandler;
 };
 } // namespace LittleEngine

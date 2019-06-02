@@ -7,18 +7,6 @@
     <ClInclude Include="SFMLAPI\Rendering\SFRenderState.h">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="SFMLAPI\Windowing\SFEventLoop.h">
-      <Filter>SFMLAPI\Windowing</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Windowing\SFWindow.h">
-      <Filter>SFMLAPI\Windowing</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Windowing\SFWindowData.h">
-      <Filter>SFMLAPI\Windowing</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Input\SFEventHandler.h">
-      <Filter>SFMLAPI\Input</Filter>
-    </ClInclude>
     <ClInclude Include="SFMLAPI\SFRendering.h">
       <Filter>SFMLAPI</Filter>
     </ClInclude>
@@ -73,22 +61,19 @@
     <ClInclude Include="SFMLAPI\Rendering\SFQuad.h">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="SFMLAPI\Input\SFInputHandler.h">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Viewport\SFViewport.h">
+      <Filter>SFMLAPI\Viewport</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Viewport\SFViewportData.h">
+      <Filter>SFMLAPI\Viewport</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SFMLAPI\Rendering\Colour.cpp">
       <Filter>SFMLAPI\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\Windowing\SFEventLoop.cpp">
-      <Filter>SFMLAPI\Windowing</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\Windowing\SFWindow.cpp">
-      <Filter>SFMLAPI\Windowing</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\Windowing\SFWindowData.cpp">
-      <Filter>SFMLAPI\Windowing</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\Input\SFEventHandler.cpp">
-      <Filter>SFMLAPI\Input</Filter>
     </ClCompile>
     <ClCompile Include="SFMLAPI\Input\SFInputStateMachine.cpp">
       <Filter>SFMLAPI\Input</Filter>
@@ -120,6 +105,15 @@
     <ClCompile Include="SFMLAPI\Rendering\SFQuad.cpp">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="SFMLAPI\Input\SFInputHandler.cpp">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Viewport\SFViewport.cpp">
+      <Filter>SFMLAPI\Viewport</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Viewport\SFViewportData.cpp">
+      <Filter>SFMLAPI\Viewport</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="SFMLAPI">
@@ -127,9 +121,6 @@
     </Filter>
     <Filter Include="SFMLAPI\Rendering">
       <UniqueIdentifier>{0855eecd-2b1c-4d9e-bb4c-d9d5c8582a15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SFMLAPI\Windowing">
-      <UniqueIdentifier>{e916c930-eacb-4818-925a-84b2306f56bb}</UniqueIdentifier>
     </Filter>
     <Filter Include="SFMLAPI\Input">
       <UniqueIdentifier>{9c04a6a1-07e6-4f65-a17d-bec3690fc741}</UniqueIdentifier>
@@ -139,6 +130,9 @@
     </Filter>
     <Filter Include="SFMLAPI\System">
       <UniqueIdentifier>{8bec89b2-2391-47d9-b8d2-cd0e09cc7ec6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SFMLAPI\Viewport">
+      <UniqueIdentifier>{e916c930-eacb-4818-925a-84b2306f56bb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

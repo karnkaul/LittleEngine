@@ -19,117 +19,41 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LittleEngine\Audio\EngineAudio.cpp" />
-    <ClCompile Include="LittleEngine\Debug\Console\ConsoleInput.cpp" />
-    <ClCompile Include="LittleEngine\Debug\Console\ConsoleRenderer.cpp" />
-    <ClCompile Include="LittleEngine\Debug\Console\DebugConsole.cpp" />
-    <ClCompile Include="LittleEngine\Debug\Console\DebugCommands.cpp" />
-    <ClCompile Include="LittleEngine\Debug\Console\LogLine.cpp" />
-    <ClCompile Include="LittleEngine\Debug\Console\RenderStatsRenderer.cpp" />
-    <ClCompile Include="LittleEngine\Debug\Console\Tweakable.cpp" />
-    <ClCompile Include="LittleEngine\Debug\DebugProfiler.cpp" />
-    <ClCompile Include="LittleEngine\Engine\EngineConfig.cpp" />
-    <ClCompile Include="LittleEngine\Engine\EngineLoop.cpp" />
-    <ClCompile Include="LittleEngine\Engine\EngineService.cpp" />
-    <ClCompile Include="LittleEngine\Engine\AsyncFileLogger.cpp" />
-    <ClCompile Include="LittleEngine\Engine\OS.cpp" />
-    <ClCompile Include="LittleEngine\Game\Camera.cpp" />
-    <ClCompile Include="LittleEngine\Game\Component.cpp" />
-    <ClCompile Include="LittleEngine\Game\Entity.cpp" />
-    <ClCompile Include="LittleEngine\Game\GameManager.cpp" />
-    <ClCompile Include="LittleEngine\Game\GameSettings.cpp" />
-    <ClCompile Include="LittleEngine\Game\Inheritable.cpp" />
-    <ClCompile Include="LittleEngine\Game\WorldObject.cpp" />
-    <ClCompile Include="LittleEngine\Game\World\LoadingUI.cpp" />
-    <ClCompile Include="LittleEngine\Game\World\World.cpp" />
-    <ClCompile Include="LittleEngine\Game\World\WorldStateMachine.cpp" />
-    <ClCompile Include="LittleEngine\GFX\GFX.cpp" />
-    <ClCompile Include="LittleEngine\Input\EngineInput.cpp" />
+    <ClCompile Include="LittleEngine\Audio\LEAudio.cpp" />
+    <ClCompile Include="LittleEngine\Context\LEContext.cpp" />
+    <ClCompile Include="LittleEngine\Debug\Tweakable.cpp" />
+    <ClCompile Include="LittleEngine\Input\LEInput.cpp" />
     <ClCompile Include="LittleEngine\Input\Gamepad.cpp" />
     <ClCompile Include="LittleEngine\Input\KeyboardInput.cpp" />
-    <ClCompile Include="LittleEngine\Jobs\JobHandle.cpp" />
-    <ClCompile Include="LittleEngine\Jobs\JobManager.cpp" />
-    <ClCompile Include="LittleEngine\Jobs\JobWorker.cpp" />
-    <ClCompile Include="LittleEngine\Jobs\MultiJob.cpp" />
+    <ClCompile Include="LittleEngine\OS.cpp" />
     <ClCompile Include="LittleEngine\Physics\Collider.cpp" />
     <ClCompile Include="LittleEngine\Physics\ColliderData.cpp" />
     <ClCompile Include="LittleEngine\Physics\CollisionManager.cpp" />
-    <ClCompile Include="LittleEngine\RenderLoop\AsyncRenderLoop.cpp" />
-    <ClCompile Include="LittleEngine\RenderLoop\RenderFactory.cpp" />
+    <ClCompile Include="LittleEngine\Renderer\LERenderer.cpp" />
+    <ClCompile Include="LittleEngine\Renderer\RenderFactory.cpp" />
+    <ClCompile Include="LittleEngine\Repository\LERepository.cpp" />
     <ClCompile Include="LittleEngine\Repository\LoadHelpers.cpp" />
     <ClCompile Include="LittleEngine\Repository\ManifestLoader.cpp" />
-    <ClCompile Include="LittleEngine\Repository\EngineRepository.cpp" />
-    <ClCompile Include="LittleEngine\Services\Services.cpp" />
-    <ClCompile Include="LittleEngine\UI\UIContext.cpp" />
-    <ClCompile Include="LittleEngine\UI\UIManager.cpp" />
-    <ClCompile Include="LittleEngine\UI\UIElement.cpp" />
-    <ClCompile Include="LittleEngine\UI\UIObject.cpp" />
-    <ClCompile Include="LittleEngine\UI\UIProgressBar.cpp" />
-    <ClCompile Include="LittleEngine\UI\UIStyle.cpp" />
-    <ClCompile Include="LittleEngine\UI\UIText.cpp" />
-    <ClCompile Include="LittleEngine\UI\UITransform.cpp" />
-    <ClCompile Include="LittleEngine\UI\UIWidget.cpp" />
-    <ClCompile Include="LittleEngine\UI\UIWidgetMatrix.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LittleEngine\Audio\EngineAudio.h" />
-    <ClInclude Include="LittleEngine\Debug\Console\ConsoleInput.h" />
-    <ClInclude Include="LittleEngine\Debug\Console\ConsoleRenderer.h" />
-    <ClInclude Include="LittleEngine\Debug\Console\DebugConsole.h" />
-    <ClInclude Include="LittleEngine\Debug\Console\DebugCommands.h" />
-    <ClInclude Include="LittleEngine\Debug\Console\LogLine.h" />
-    <ClInclude Include="LittleEngine\Debug\Console\RenderStatsRenderer.h" />
-    <ClInclude Include="LittleEngine\Debug\Console\Tweakable.h" />
-    <ClInclude Include="LittleEngine\Debug\DebugProfiler.h" />
-    <ClInclude Include="LittleEngine\Engine\EngineConfig.h" />
-    <ClInclude Include="LittleEngine\Engine\EngineLoop.h" />
-    <ClInclude Include="LittleEngine\Engine\EngineService.h" />
-    <ClInclude Include="LittleEngine\Engine\AsyncFileLogger.h" />
-    <ClInclude Include="LittleEngine\Engine\FatalEngineException.h" />
-    <ClInclude Include="LittleEngine\Engine\OS.h" />
-    <ClInclude Include="LittleEngine\Game\Camera.h" />
-    <ClInclude Include="LittleEngine\Game\Component.h" />
-    <ClInclude Include="LittleEngine\Game\ComponentTimingType.h" />
-    <ClInclude Include="LittleEngine\Game\Entity.h" />
-    <ClInclude Include="LittleEngine\Game\Game.h" />
-    <ClInclude Include="LittleEngine\Game\GameManager.h" />
-    <ClInclude Include="LittleEngine\Game\GameSettings.h" />
-    <ClInclude Include="LittleEngine\Game\Inheritable.h" />
-    <ClInclude Include="LittleEngine\Game\WorldObject.h" />
-    <ClInclude Include="LittleEngine\Game\World\LoadingUI.h" />
-    <ClInclude Include="LittleEngine\Game\World\World.h" />
-    <ClInclude Include="LittleEngine\Game\World\WorldStateMachine.h" />
-    <ClInclude Include="LittleEngine\Input\KeyboardInput.h" />
-    <ClInclude Include="LittleEngine\Jobs\JobHandle.h" />
-    <ClInclude Include="LittleEngine\Jobs\JobManager.h" />
-    <ClInclude Include="LittleEngine\Jobs\JobWorker.h" />
-    <ClInclude Include="LittleEngine\Jobs\MultiJob.h" />
-    <ClInclude Include="LittleEngine\LittleEngine.h" />
-    <ClInclude Include="LittleEngine\GFX\GFX.h" />
-    <ClInclude Include="LittleEngine\Input\EngineInput.h" />
+    <ClInclude Include="LittleEngine\Audio\LEAudio.h" />
+    <ClInclude Include="LittleEngine\Context\LEContext.h" />
+    <ClInclude Include="LittleEngine\Debug\Tweakable.h" />
+    <ClInclude Include="LittleEngine\FatalEngineException.h" />
+    <ClInclude Include="LittleEngine\Input\LEInput.h" />
     <ClInclude Include="LittleEngine\Input\Gamepad.h" />
+    <ClInclude Include="LittleEngine\Input\KeyboardInput.h" />
+    <ClInclude Include="LittleEngine\LittleEngine.h" />
+    <ClInclude Include="LittleEngine\OS.h" />
     <ClInclude Include="LittleEngine\Physics\Collider.h" />
     <ClInclude Include="LittleEngine\Physics\ColliderData.h" />
     <ClInclude Include="LittleEngine\Physics\CollisionManager.h" />
     <ClInclude Include="LittleEngine\Physics\Physics.h" />
-    <ClInclude Include="LittleEngine\RenderLoop\AsyncRenderLoop.h" />
-    <ClInclude Include="LittleEngine\RenderLoop\RenderFactory.h" />
+    <ClInclude Include="LittleEngine\Renderer\LERenderer.h" />
+    <ClInclude Include="LittleEngine\Renderer\RenderFactory.h" />
+    <ClInclude Include="LittleEngine\Repository\LERepository.h" />
     <ClInclude Include="LittleEngine\Repository\LoadHelpers.h" />
     <ClInclude Include="LittleEngine\Repository\ManifestLoader.h" />
-    <ClInclude Include="LittleEngine\Repository\EngineRepository.h" />
-    <ClInclude Include="LittleEngine\Services\IService.h" />
-    <ClInclude Include="LittleEngine\Services\Services.h" />
-    <ClInclude Include="LittleEngine\UI\UI.h" />
-    <ClInclude Include="LittleEngine\UI\UIContext.h" />
-    <ClInclude Include="LittleEngine\UI\UIManager.h" />
-    <ClInclude Include="LittleEngine\UI\UIElement.h" />
-    <ClInclude Include="LittleEngine\UI\UIObject.h" />
-    <ClInclude Include="LittleEngine\UI\UIProgressBar.h" />
-    <ClInclude Include="LittleEngine\UI\UIStyle.h" />
-    <ClInclude Include="LittleEngine\UI\UIText.h" />
-    <ClInclude Include="LittleEngine\UI\UITransform.h" />
-    <ClInclude Include="LittleEngine\UI\UIWidget.h" />
-    <ClInclude Include="LittleEngine\UI\UIWidgetMatrix.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFMLAPI\SFMLAPI.vcxproj">
@@ -138,9 +62,10 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{F47FDA22-5053-4B11-A8D8-5281110C3B60}</ProjectGuid>
+    <ProjectGuid>{fb4a4dac-ca32-49b6-a32e-fd2654abf5a9}</ProjectGuid>
     <RootNamespace>LittleEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>LittleEngine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -189,30 +114,29 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
-    <IntDir>_Intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
     <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
-    <IntDir>_Intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
-    <IntDir>_Intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
     <OutDir>$(SolutionDir)_Build\$(Configuration)\</OutDir>
-    <IntDir>_Intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)_Intermediate\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClangClAdditionalOptions>-Wextra</ClangClAdditionalOptions>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'" Label="LLVM">
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
     <ClangClAdditionalOptions>-Wextra</ClangClAdditionalOptions>
-    <UseLldLink>true</UseLldLink>
   </PropertyGroup>
   <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClangClAdditionalOptions>-Wextra -Werror</ClangClAdditionalOptions>
@@ -226,18 +150,20 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
       <SupportJustMyCode>false</SupportJustMyCode>
-      <PrecompiledHeaderOutputFile>$(OutputPath)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;.</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>..\SFMLAPI\Libraries\SFML</AdditionalLibraryDirectories>
     </Link>
+    <Lib>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
     <ClCompile>
@@ -245,10 +171,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
       <SupportJustMyCode>false</SupportJustMyCode>
-      <PrecompiledHeaderOutputFile>$(OutputPath)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;.</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zo %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -256,10 +181,13 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>..\SFMLAPI\Libraries\SFML</AdditionalLibraryDirectories>
     </Link>
-    <ProjectReference />
+    <Lib>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -269,21 +197,21 @@
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG;SHIP</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>$(OutputPath)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;.</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <LinkTimeCodeGeneration />
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
-      <LinkTimeCodeGeneration>
-      </LinkTimeCodeGeneration>
-      <AdditionalLibraryDirectories>..\SFMLAPI\Libraries\SFML</AdditionalLibraryDirectories>
     </Link>
+    <Lib>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
     <ClCompile>
@@ -293,21 +221,22 @@
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;SHIP</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>$(OutputPath)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;..\SFMLAPI;.</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>
       </LinkTimeCodeGeneration>
-      <AdditionalLibraryDirectories>..\SFMLAPI\Libraries\SFML</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
     </Link>
+    <Lib>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
