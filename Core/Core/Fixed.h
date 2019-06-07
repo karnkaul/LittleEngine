@@ -50,8 +50,11 @@ public:
 	Fixed Sqrt() const;
 	Fixed Inverse() const;
 	Fixed Sin() const;
+	Fixed ArcSin() const;
 	Fixed Cos() const;
+	Fixed ArcCos() const;
 	Fixed Tan() const;
+	Fixed ArcTan() const;
 
 	bool operator==(const Fixed& rhs) const;
 	bool operator>(const Fixed& rhs) const;

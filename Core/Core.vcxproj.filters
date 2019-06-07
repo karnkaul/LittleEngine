@@ -99,6 +99,9 @@
     <ClInclude Include="Core\FileLogger.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Matrix3.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\ArchiveReader.cpp">
@@ -168,6 +171,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\FileLogger.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Matrix3.cpp">
       <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>

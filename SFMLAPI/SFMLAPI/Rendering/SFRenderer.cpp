@@ -55,7 +55,7 @@ void SFRenderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 			{
 				if (pPrimitive->m_quadVec.IsPopulated())
 				{
-					sf::VertexArray va = pPrimitive->m_quadVec.ToSFVertexArray();
+					sf::VertexArray va = pPrimitive->m_quadVec.ToSFVertexArray(alpha);
 					sf::RenderStates rs = pPrimitive->m_quadVec.ToSFRenderStates();
 #if ENABLED(RENDER_STATS)
 					quads += (va.getVertexCount() / 4);
@@ -64,10 +64,13 @@ void SFRenderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 				}
 				else
 				{
-					m_pViewport->draw(pPrimitive->m_circle);
-					m_pViewport->draw(pPrimitive->m_rectangle);
-					m_pViewport->draw(pPrimitive->m_sprite);
-					m_pViewport->draw(pPrimitive->m_text);
+					if (pPrimitive->m_renderState.bEnabled)
+					{
+						m_pViewport->draw(pPrimitive->m_circle);
+						m_pViewport->draw(pPrimitive->m_rectangle);
+						m_pViewport->draw(pPrimitive->m_sprite);
+						m_pViewport->draw(pPrimitive->m_text);
+					}
 
 #if ENABLED(RENDER_STATS)
 					++primitives;

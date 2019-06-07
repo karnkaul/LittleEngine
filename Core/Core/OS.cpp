@@ -42,12 +42,14 @@ std::pair<Version, Version> ExtractGameAndEngineVersions(const String& exePath)
 						s32 major = verInfo->dwFileVersionMS >> 16 & 0xffff;
 						s32 minor = verInfo->dwFileVersionMS & 0xffff;
 						s32 patch = verInfo->dwFileVersionLS >> 16 & 0xffff;
-						fileEngineVersion = Version(major, minor, patch);
+						s32 pre = verInfo->dwFileVersionLS & 0xffff;
+						fileEngineVersion = Version(major, minor, patch, pre);
 
 						major = verInfo->dwProductVersionMS >> 16 & 0xffff;
 						minor = verInfo->dwProductVersionMS & 0xffff;
 						patch = verInfo->dwProductVersionLS >> 16 & 0xffff;
-						fileGameVersion = Version(major, minor, patch);
+						pre = verInfo->dwProductVersionLS & 0xffff;
+						fileGameVersion = Version(major, minor, patch, pre);
 					}
 				}
 			}

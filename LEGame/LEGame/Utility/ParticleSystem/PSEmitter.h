@@ -17,6 +17,7 @@ public:
 private:
 	class SFQuad* m_pQuad = nullptr;
 	bool m_bInUse = false;
+	bool m_bWasInUse = false;
 	bool* m_pDraw;
 
 public:
