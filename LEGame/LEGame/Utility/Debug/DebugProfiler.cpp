@@ -17,7 +17,6 @@ namespace Profiler
 #pragma region Local
 namespace
 {
-std::thread::id safeThreadID;
 LEContext* pContext = nullptr;
 
 struct Entry
@@ -54,7 +53,6 @@ Vector2 progressBarSize;
 Fixed textWidth;
 Fixed profilerHeight;
 Time maxTickDeltaTime;
-Time maxFrameDeltaTime;
 u32 maxEntries = 30;
 UByte globalAlpha = 200;
 
@@ -70,7 +68,7 @@ public:
 
 	void SetEnabled(bool bEnabled);
 	void Tick(Time dt);
-	void Start(String id, Colour colour, Time maxTime, bool bEnabled);
+	void Start(String id, Colour colour, Time maxTime, bool bFramed, bool bEnabled);
 	void Stop(String id);
 	void Clear();
 
@@ -85,14 +83,14 @@ Renderer::Renderer()
 	m_uLabelRoot->OnCreate(*pContext, "ProfilerLabels");
 	m_uLabelRoot->m_transform.size = {textWidth, profilerHeight};
 	m_uLabelRoot->m_transform.bAutoPad = true;
-	m_uLabelRoot->m_transform.nPosition = {-1, Fixed(-0.80f)};
-	// m_uLabelRoot->SetPanel(Colour(100, 100, 100, 100));
+	m_uLabelRoot->m_transform.nPosition = {-1, Fixed(-0.75f)};
+	//m_uLabelRoot->SetPanel(Colour(100, 100, 100, 100));
 	m_uBarRoot = MakeUnique<UIElement>(LAYER_TOP, true);
 	m_uBarRoot->OnCreate(*pContext, "ProfilerBars");
 	m_uBarRoot->m_transform.size = Vector2(progressBarSize.x, profilerHeight);
 	m_uBarRoot->m_transform.bAutoPad = true;
-	m_uBarRoot->m_transform.nPosition = {Fixed(0.8f), Fixed(-0.85f)};
-	// m_uBarRoot->SetPanel(Colour(100, 100, 100, 100));
+	m_uBarRoot->m_transform.nPosition = {Fixed(0.9f), Fixed(-0.75f)};
+	//m_uBarRoot->SetPanel(Colour(100, 100, 100, 100));
 }
 
 void Renderer::SetEnabled(bool bEnabled)
@@ -120,9 +118,11 @@ void Renderer::Tick(Time dt)
 	auto iter = m_entries.begin();
 	while (iter != m_entries.end())
 	{
-		if ((now - iter->second->startTime) > iter->second->maxTime.Scale(10))
+		UPtr<Entry>& uEntry = iter->second;
+		Time maxTime = uEntry->maxTime;
+		if ((now - uEntry->startTime) > maxTime.Scale(100))
 		{
-			if (iter->second->endTime == maxFrameDeltaTime)
+			if (uEntry->bFrameEntry)
 			{
 				--m_frameEntryCount;
 			}
@@ -137,10 +137,8 @@ void Renderer::Tick(Time dt)
 	SetupPositions();
 }
 
-void Renderer::Start(String id, Colour colour, Time maxTime, bool bEnabled)
+void Renderer::Start(String id, Colour colour, Time maxTime, bool bFramed, bool bEnabled)
 {
-	Assert(std::this_thread::get_id() == safeThreadID,
-		   "Can only use Profiler on Engine Loop thread!");
 	auto search = m_entries.find(id);
 	if (search != m_entries.end())
 	{
@@ -149,7 +147,7 @@ void Renderer::Start(String id, Colour colour, Time maxTime, bool bEnabled)
 	else
 	{
 		UPtr<Entry> uNewEntry =
-			MakeUnique<Entry>(id, colour, Time::Now(), maxTime, LAYER_TOP, maxTime > maxTickDeltaTime);
+			MakeUnique<Entry>(id, colour, Time::Now(), maxTime, LAYER_TOP, bFramed);
 		SetupNewEntry(*uNewEntry, colour, bEnabled);
 		m_entries.emplace(std::move(id), std::move(uNewEntry));
 	}
@@ -157,8 +155,6 @@ void Renderer::Start(String id, Colour colour, Time maxTime, bool bEnabled)
 
 void Renderer::Stop(String id)
 {
-	Assert(std::this_thread::get_id() == safeThreadID,
-		   "Can only use Profiler on Engine Loop thread!");
 	auto search = m_entries.find(id);
 	if (search != m_entries.end())
 	{
@@ -209,8 +205,7 @@ void Renderer::SetupPositions()
 			nY = 1 - (2 * nY);
 			++top;
 		}
-		entry->maxTime = entry->bFrameEntry ? maxFrameDeltaTime : maxTickDeltaTime;
-		entry->progressBar.m_transform.nPosition = {-1, nY};
+		entry->progressBar.m_transform.nPosition = {-1, nY - Fixed(0.022f)};
 		entry->labelElement.m_transform.nPosition = {1, nY};
 	}
 }
@@ -225,19 +220,17 @@ bool bEnabled = false;
 #pragma region Interface
 TweakBool(profiler, nullptr);
 TweakF32(pflr_maxDT, nullptr);
-TweakF32(pflr_maxFT, nullptr);
 
-void Init(LEContext& context, Time maxFrameTime)
+void Init(LEContext& context, Time maxTickTime)
 {
-	safeThreadID = std::this_thread::get_id();
 	pContext = &context;
 	maxTickDeltaTime = Time::Milliseconds(10);
-	maxFrameDeltaTime = maxFrameTime;
+	maxTickDeltaTime = maxTickTime;
 	textWidth = 300;
 	Vector2 worldSize = pContext->GetViewSize();
 	profilerHeight = worldSize.y * Fixed(18, 30);
 	Fixed screenWidth = worldSize.x;
-	progressBarSize = Vector2(screenWidth - textWidth - 80, 10);
+	progressBarSize = Vector2(screenWidth - textWidth - 30, 10);
 	uRenderer = MakeUnique<Renderer>();
 	Toggle(false);
 
@@ -246,9 +239,6 @@ void Init(LEContext& context, Time maxFrameTime)
 	pflr_maxDT.Set(Strings::ToString(maxTickDeltaTime.AsMilliseconds()));
 	pflr_maxDT.BindCallback(
 		[](const String& max) { maxTickDeltaTime = Time::Milliseconds(Strings::ToS32(max)); });
-	pflr_maxFT.Set(Strings::ToString(maxFrameDeltaTime.AsMilliseconds()));
-	pflr_maxFT.BindCallback(
-		[](const String& max) { maxFrameDeltaTime = Time::Milliseconds(Strings::ToS32(max)); });
 #endif
 }
 
@@ -261,7 +251,6 @@ void Toggle(bool bEnable)
 void Cleanup()
 {
 	pContext = nullptr;
-	safeThreadID = std::thread::id();
 	if (uRenderer)
 	{
 		uRenderer->Clear();
@@ -289,15 +278,15 @@ void StartTicked(String id, Colour colour)
 {
 	if (uRenderer)
 	{
-		uRenderer->Start(std::move(id), colour, maxTickDeltaTime, bEnabled);
+		uRenderer->Start(std::move(id), colour, maxTickDeltaTime, false, bEnabled);
 	}
 }
 
-void StartFramed(String id, Colour colour)
+void StartCustom(String id, Time maxTime, Colour colour)
 {
 	if (uRenderer)
 	{
-		uRenderer->Start(std::move(id), colour, maxFrameDeltaTime, bEnabled);
+		uRenderer->Start(std::move(id), colour, maxTime, true, bEnabled);
 	}
 }
 

@@ -121,6 +121,16 @@ void CreateContext(GameConfig& config)
 	data.renderThreadStartDelay = config.GetRenderThreadStartDelay();
 	data.bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
 	uContext = MakeUnique<LEContext>(std::move(data));
+#if ENABLED(PROFILER)
+	Time dt60Hz = Time::Seconds(1.0f / 60);
+	LERenderer* pR = uContext->Renderer();
+	pR->m_onRenderStart = [dt60Hz]() { PROFILE_CUSTOM("Render", dt60Hz, Colour(219, 10, 87)); };
+	pR->m_onRenderEnd = []() { PROFILE_STOP("Render"); };
+	pR->m_onLockStart = []() { PROFILE_CUSTOM("Lock", maxFrameTime, Colour(63, 89, 250)); };
+	pR->m_onLockStop = []() { PROFILE_STOP("Lock"); };
+	pR->m_onSwapStart = []() { PROFILE_CUSTOM("Swap", maxFrameTime, Colour(255, 244, 17)); };
+	pR->m_onSwapStop = []() { PROFILE_STOP("Swap"); };
+#endif
 }
 
 bool Tick(Time dt)
@@ -215,7 +225,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 	Console::Init(*uContext);
 #endif
 #if ENABLED(PROFILER)
-	Profiler::Init(*uContext, config.GetMaxFrameTime());
+	Profiler::Init(*uContext, Time::Milliseconds(10));
 #endif
 	GameClock::Reset();
 	uWSM->Start("Manifest.amf", "Texts/Game.style");
@@ -258,10 +268,8 @@ s32 GameLoop::Run(s32 argc, char** argv)
 				accumulator -= dt;
 			}
 
-			PROFILE_FRAME("Submit Frame", Colour(255, 102, 178, 255));
 			uContext->SubmitFrame();
-			PROFILE_STOP("Submit Frame");
-			
+
 			if (uContext->IsTerminating())
 			{
 				break;

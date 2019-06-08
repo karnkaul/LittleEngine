@@ -16,14 +16,14 @@ namespace Debug
 {
 namespace
 {
-void UpdateRenderStat(bool bEnabled, UIElement& element, const char* prefix, u32 stat)
+String Combine(InitList<u32> values, String suffix)
 {
-	if (bEnabled)
+	String ret;
+	for (auto value : values)
 	{
-		String text = String(prefix) + Strings::ToString(stat);
-		element.SetText(UIText(text, 11, g_logTextColour));
+		ret += (Strings::ToString(value) + suffix);
 	}
-	element.GetText()->SetEnabled(bEnabled);
+	return ret;
 }
 } // namespace
 
@@ -32,79 +32,43 @@ TweakBool(renderStats, &RenderStatsRenderer::s_bConsoleRenderStatsEnabled);
 
 RenderStatsRenderer::RenderStatsRenderer(LEContext& context)
 {
-	f32 d = 0.03f;
-	f32 end = 0.96f - (7 * d);
+	Fixed nY(-75, 100);
+	Fixed x(82, 100);
+	Fixed dx(12, 100);
 	LERenderer* pRenderer = context.Renderer();
 
-	m_uPrimitiveCount = MakeUnique<UIElement>(LAYER_TOP, true);
-	m_uPrimitiveCount->OnCreate(context, "RenderStatsPrimCount");
-	m_uPrimitiveCount->GetText()
-		->SetPivot({-1, 0})
-		->SetPosition(pRenderer->Project({Fixed(0.82f), -Fixed(end)}, false))
+	m_uTitles = MakeUnique<UIElement>(LAYER_TOP, true);
+	m_uTitles->OnCreate(context, "RenderStatsTitles");
+	m_uTitles->GetText()
+		->SetPivot({-1, 1})
+		->SetPosition(pRenderer->Project({x, nY}, false))
 		->SetEnabled(false);
-	end += d;
-
-	m_uDisabledCount = MakeUnique<UIElement>(LAYER_TOP, true);
-	m_uDisabledCount->OnCreate(context, "RenderStatsDisabledCount");
-	m_uDisabledCount->GetText()
-		->SetPivot({-1, 0})
-		->SetPosition(pRenderer->Project({Fixed(0.82f), -Fixed(end)}, false))
+	m_uTitles->SetText(UIText(
+		"Primitives\nDisabled\nDynamic\nStatic\nQuads\nTicks/s\nRenders/Frame\nFPS", 11, g_logTextColour));
+	m_uValues = MakeUnique<UIElement>(LAYER_TOP, true);
+	m_uValues->OnCreate(context, "RenderStatsValues");
+	m_uValues->GetText()
+		->SetPivot({-1, 1})
+		->SetPosition(pRenderer->Project({x + dx, nY}, false))
 		->SetEnabled(false);
-	end += d;
-
-	m_uDynamicCount = MakeUnique<UIElement>(LAYER_TOP, true);
-	m_uDynamicCount->OnCreate(context, "RenderStatsDynamicCount");
-	m_uDynamicCount->GetText()
-		->SetPivot({-1, 0})
-		->SetPosition(pRenderer->Project({Fixed(0.82f), -Fixed(end)}, false))
-		->SetEnabled(false);
-	end += d;
-
-	m_uStaticCount = MakeUnique<UIElement>(LAYER_TOP, true);
-	m_uStaticCount->OnCreate(context, "RenderStatsStaticCount");
-	m_uStaticCount->GetText()
-		->SetPivot({-1, 0})
-		->SetPosition(pRenderer->Project({Fixed(0.82f), -Fixed(end)}, false))
-		->SetEnabled(false);
-	end += d;
-
-	m_uQuadCount = MakeUnique<UIElement>(LAYER_TOP, true);
-	m_uQuadCount->OnCreate(context, "RenderStatsQuadCount");
-	m_uQuadCount->GetText()
-		->SetPivot({-1, 0})
-		->SetPosition(pRenderer->Project({Fixed(0.82f), -Fixed(end)}, false))
-		->SetEnabled(false);
-	end += d;
-
-	m_uTickRate = MakeUnique<UIElement>(LAYER_TOP, true);
-	m_uTickRate->OnCreate(context, "RenderStatsTickRate");
-	m_uTickRate->GetText()
-		->SetPivot({-1, 0})
-		->SetPosition(pRenderer->Project({Fixed(0.82f), -Fixed(end)}, false))
-		->SetEnabled(true);
-	end += d;
-
-	m_uFPS = MakeUnique<UIElement>(LAYER_TOP, true);
-	m_uFPS->OnCreate(context, "RenderStastFPS");
-	m_uFPS->GetText()
-		->SetPivot({-1, 0})
-		->SetPosition(pRenderer->Project({Fixed(0.85f), -Fixed(end)}, false))
-		->SetEnabled(false);
-	end += d;
 }
 
 RenderStatsRenderer::~RenderStatsRenderer() = default;
 
 void RenderStatsRenderer::Tick(Time /*dt*/)
 {
-	u32 ticksPerSec = 1.0f / g_renderData.tickRate.AsSeconds();
-	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uTickRate, "Ticks/s: ", ticksPerSec);
-	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uPrimitiveCount, "Primitives: ", g_renderData.primitiveCount);
-	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uDisabledCount, "Disabled: ", g_renderData.disabledCount);
-	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uFPS, "FPS: ", g_renderData.framesPerSecond);
-	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uDynamicCount, "Dynamic: ", g_renderData.dynamicCount);
-	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uStaticCount, "Static: ", g_renderData.staticCount);
-	UpdateRenderStat(s_bConsoleRenderStatsEnabled, *m_uQuadCount, "Quads: ", g_renderData.quadCount);
+	m_uTitles->GetText()->SetEnabled(s_bConsoleRenderStatsEnabled);
+	m_uValues->GetText()->SetEnabled(s_bConsoleRenderStatsEnabled);
+	if (s_bConsoleRenderStatsEnabled)
+	{
+		u32 ticksPerSec = 1.0f / g_renderData.tickRate.AsSeconds();
+		String values = Combine(
+			{g_renderData.primitiveCount, g_renderData.disabledCount, g_renderData.dynamicCount,
+			 g_renderData.staticCount, g_renderData.quadCount, ticksPerSec,
+			 g_renderData.rendersPerFrame.load(std::memory_order_relaxed), g_renderData.framesPerSecond},
+			"\n");
+		m_uValues->SetText(UIText(std::move(values), 11, g_logTextColour));
+	}
 }
 
 #if DEBUGGING

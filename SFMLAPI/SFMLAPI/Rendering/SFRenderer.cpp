@@ -92,6 +92,7 @@ void SFRenderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 		g_renderData.primitiveCount = primitives;
 		g_renderData.dynamicCount = primitives - statics - disabled;
 		g_renderData.quadCount = quads;
+		g_renderData.rendersPerFrame.fetch_add(1, std::memory_order_relaxed);
 		// Update FPS
 		{
 			++frameCount;

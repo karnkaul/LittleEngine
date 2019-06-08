@@ -20,7 +20,7 @@ public:
 	virtual ~IRenderBuffer() = default;
 
 	virtual Time GetLastSwapTime() const = 0;
-	virtual void Lock_Swap() = 0;
+	virtual void Swap() = 0;
 	
 	virtual PrimMat& GetActiveRenderMatrix() = 0;
 };

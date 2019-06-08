@@ -25,7 +25,7 @@ public:
 	Time GetLastSwapTime() const override;
 
 	void Reconcile();
-	void Lock_Swap() override;
+	void Swap() override;
 
 	PrimMat& GetActiveRenderMatrix() override;
 };

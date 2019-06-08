@@ -89,9 +89,37 @@ Time LERenderer::GetLastSwapTime() const
 
 void LERenderer::Lock_Swap()
 {
+#if ENABLED(RENDER_STATS) 
+	g_renderData.rendersPerFrame.store(0, std::memory_order_relaxed);
+#endif
+#if DEBUGGING
+	if (m_onLockStart)
+	{
+		m_onLockStart();
+	}
+#endif
 	m_bPauseRendering.store(true, std::memory_order_release);
-	m_uFactory->Lock_Swap();
+	std::lock_guard<std::mutex> lock(m_uFactory->m_mutex);
+#if DEBUGGING
+	if (m_onLockStop)
+	{
+		m_onLockStop();
+	}
+#endif
+#if DEBUGGING
+	if (m_onSwapStart)
+	{
+		m_onSwapStart();
+	}
+#endif
+	m_uFactory->Swap();
 	m_bPauseRendering.store(false, std::memory_order_release);
+#if DEBUGGING
+	if (m_onSwapStop)
+	{
+		m_onSwapStop();
+	}
+#endif
 }
 
 void LERenderer::Reconcile()
@@ -155,7 +183,19 @@ void LERenderer::Async_Run(Time startDelay)
 		{
 			Time renderElapsed = Time::Now() - m_uFactory->GetLastSwapTime();
 			Fixed alpha = Maths::ComputeAlpha(renderElapsed, m_data.tickRate);
+#if DEBUGGING
+			if (m_onRenderStart)
+			{
+				m_onRenderStart();
+			}
+#endif
 			RenderFrame(*m_uFactory, alpha);
+#if DEBUGGING
+			if (m_onRenderEnd)
+			{
+				m_onRenderEnd();
+			}
+#endif
 		}
 	}
 	m_pViewport->setActive(false);

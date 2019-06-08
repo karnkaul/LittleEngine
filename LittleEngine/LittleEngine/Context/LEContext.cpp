@@ -14,12 +14,12 @@
 
 namespace LittleEngine
 {
-TweakBool(renderThread, nullptr);
+TweakBool(asyncRendering, nullptr);
 
 LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 {
 #if ENABLED(TWEAKABLES) 
-	renderThread.BindCallback([&](const String& val) { 
+	asyncRendering.BindCallback([&](const String& val) { 
 		bool bEnable = Strings::ToBool(val);
 		if (bEnable)
 		{

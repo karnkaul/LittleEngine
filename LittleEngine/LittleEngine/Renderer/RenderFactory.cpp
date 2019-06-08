@@ -76,9 +76,8 @@ Time RenderFactory::GetLastSwapTime() const
 	return m_lastSwapTime;
 }
 
-void RenderFactory::Lock_Swap()
+void RenderFactory::Swap()
 {
-	Lock lock(m_mutex);
 	for (auto& vec : m_active)
 	{
 		Core::RemoveIf<Primitive>(vec, [](const Primitive& p) { return IsDestroyed(p); });

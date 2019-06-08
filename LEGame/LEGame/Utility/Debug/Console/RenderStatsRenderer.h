@@ -16,13 +16,8 @@ public:
 	static bool s_bConsoleRenderStatsEnabled;
 
 private:
-	UPtr<UIElement> m_uTickRate;
-	UPtr<UIElement> m_uPrimitiveCount;
-	UPtr<UIElement> m_uDisabledCount;
-	UPtr<UIElement> m_uStaticCount;
-	UPtr<UIElement> m_uDynamicCount;
-	UPtr<UIElement> m_uQuadCount;
-	UPtr<UIElement> m_uFPS;
+	UPtr<UIElement> m_uTitles;
+	UPtr<UIElement> m_uValues;
 
 public:
 	RenderStatsRenderer(LEContext& context);

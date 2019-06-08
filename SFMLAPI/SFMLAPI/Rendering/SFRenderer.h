@@ -18,6 +18,7 @@ struct RenderData
 	u32 dynamicCount = 0;
 	u32 quadCount = 0;
 	u32 framesPerSecond = 0;
+	std::atomic<u32> rendersPerFrame = 0;
 };
 
 extern RenderData g_renderData;

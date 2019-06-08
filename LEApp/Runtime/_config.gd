@@ -8,7 +8,7 @@
     },
     "bRenderThread": true,
     "logLevel": "Debug",
-    "ticksPerSecond": 30,
+    "ticksPerSecond": 40,
     "backupLogFileCount": 3,
     "colliderShapeBorderWidth": 2,
     "renderThreadStartDelayMS": 10,
