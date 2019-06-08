@@ -9,47 +9,47 @@ namespace LittleEngine
 {
 struct SFVertex
 {
-	Vector2 position;
-	SFTexCoords texCoords;
+	Vector2 xy;
+	SFTexCoords uv;
 	Colour colour;
-
-	SFVertex();
-	SFVertex(Vector2 position, SFTexCoords texCoords = SFTexCoords::Zero, Colour colour = Colour::White);
-
-	sf::Vertex ToSFVertex() const;
 };
 
 struct SFQuadState
 {
-	Array<SFVertex, 4> vertices;
+	TRange<Vector2> position = Vector2::Zero;
+	TRange<Vector2> scale = Vector2::One;
+	TRange<Fixed> orientation = Fixed::Zero;
+	TRange<Colour> colour = Colour::White;
+	
 	bool bEnabled = false;
 };
 
 class SFQuad
 {
+#if DEBUGGING
+public:
+	bool m_bDebugThisQuad = false;
+#endif
 private:
 	SFQuadState m_gameState;
 	SFQuadState m_renderState;
+	Array<SFVertex, 4> m_vertices;
 	SFTexRect m_texRect;
-	Vector2 m_orgSize;
-	Vector2 m_scale = Vector2::One;
-	Vector2 m_position;
 	
 public:
 	SFQuad(Rect2 worldRect, SFTexRect texRect = SFTexRect::Zero, Colour colour = Colour::White);
 	~SFQuad();
 
-	SFQuad* SetPosition(Vector2 position);
-	// Warning: Resets orientation
-	SFQuad* SetScale(Vector2 scale);
-	SFQuad* SetWorldOrientation(Fixed orientation);
-	SFQuad* SetLocalOrientation(Fixed orientation);
-	SFQuad* SetColour(Colour colour);
+	SFQuad* SetPosition(Vector2 position, bool bImmediate = false);
+	SFQuad* SetScale(Vector2 scale, bool bImmediate = false);
+	SFQuad* SetOrientation(Fixed degrees, bool bImmediate = false);
+	SFQuad* SetColour(Colour colour, bool bImmediate = false);
 	SFQuad* SetTexRect(SFTexRect texRect);
 	SFQuad* SetEnabled(bool bEnabled);
 
 private:
 	void SwapStates();
+	void Reconcile();
 
 	friend class SFQuadVec;
 };
@@ -68,9 +68,14 @@ public:
 	void SetTexture(TextureAsset& texture);
 
 	void SwapStates();
+	void Reconcile();
 
 	bool IsPopulated() const;
-	sf::VertexArray ToSFVertexArray() const;
+
+private:
+	sf::VertexArray ToSFVertexArray(Fixed alpha) const;
 	sf::RenderStates ToSFRenderStates() const;
+
+	friend class SFRenderer;
 };
 } // namespace LittleEngine

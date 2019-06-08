@@ -74,9 +74,9 @@ void OnA()
 		if (pEntity2)
 		{
 			auto rc0 = pEntity2->AddComponent<RenderComponent>();
-			rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({100, 100},
-	 SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow); 		auto t0 =
-	 pEntity2->AddComponent<CollisionComponent>(); 		t0->AddCircle(100);
+			rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({100, 100}, SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow);
+			auto t0 = pEntity2->AddComponent<CollisionComponent>();
+			t0->AddCircle(100);
 		}
 
 		pEntity3 = g_pGameManager->NewEntity<Entity>("Blue Rectangle", Vector2(500, -200));
@@ -120,8 +120,7 @@ void OnB()
 	bShowTiles = !bShowTiles;
 	if (bShowTiles)
 	{
-		TextureAsset* pTexture =
-			g_pRepository->Load<TextureAsset>("Textures/Tiles/SpaceTile0.png");
+		TextureAsset* pTexture = g_pRepository->Load<TextureAsset>("Textures/Tiles/SpaceTile0.png");
 		g_pGameManager->WorldCamera()->FillViewWithTiles(*pTexture);
 	}
 	else
@@ -245,12 +244,6 @@ void SpawnColliderMinefield()
 	}
 }
 
-// TweakBool(test0, nullptr);
-// TweakBool(testLongAssNameTweakable0, nullptr);
-// TweakBool(test1, nullptr);
-// TweakS32(test2, nullptr);
-// TweakF32(testLongAssNameTweakable1, nullptr);
-// TweakString(test3, nullptr);
 void StartTests()
 {
 	pEntity0 = g_pGameManager->NewEntity<Entity>("Entity0", {300, 200});
@@ -260,7 +253,8 @@ void StartTests()
 		->SetPrimaryColour(Colour::Cyan)
 		->SetEnabled(true);
 
-	pEntity1 = g_pGameManager->NewEntity<Entity>("Entity1", g_pGameManager->Renderer()->Project({0, Fixed(0.9f)}, false));
+	pEntity1 = g_pGameManager->NewEntity<Entity>(
+		"Entity1", g_pGameManager->Renderer()->Project({0, Fixed(0.9f)}, false));
 	auto rc1 = pEntity1->AddComponent<RenderComponent>();
 	FontAsset* font = g_pRepository->GetDefaultFont();
 	rc1->SetShape(LAYER_DEFAULT)
@@ -340,11 +334,8 @@ void SpawnToggle()
 	debugTokens.push_back(
 		pToggle1->AddCallback([](bool bValue) { LOG_W("Toggle1 changed! %d", bValue); }));
 	pToggle1->GetRoot()->m_transform.bAutoPad = true;
-	pToggle1->SetBackground(Colour::White)
-		->SetText("Toggle 1")
-		->SetOn(true)
-		->GetRoot()
-		->m_transform.nPosition = {0, -1};
+	pToggle1->SetBackground(Colour::White)->SetText("Toggle 1")->SetOn(true)->GetRoot()->m_transform.nPosition = {
+		0, -1};
 
 	pParent->m_bAutoDestroyOnCancel = true;
 	pParent->SetActive(true);

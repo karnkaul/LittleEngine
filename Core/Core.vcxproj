@@ -196,6 +196,7 @@
     <ClInclude Include="Core\Jobs\MultiJob.h" />
     <ClInclude Include="Core\Logger.h" />
     <ClInclude Include="Core\Maths.h" />
+    <ClInclude Include="Core\Matrix3.h" />
     <ClInclude Include="Core\OS.h" />
     <ClInclude Include="Core\Property.h" />
     <ClInclude Include="Core\Rect2.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="Core\Jobs\MultiJob.cpp" />
     <ClCompile Include="Core\Logger.cpp" />
     <ClCompile Include="Core\Maths.cpp" />
+    <ClCompile Include="Core\Matrix3.cpp" />
     <ClCompile Include="Core\OS.cpp" />
     <ClCompile Include="Core\Property.cpp" />
     <ClCompile Include="Core\Rect2.cpp" />

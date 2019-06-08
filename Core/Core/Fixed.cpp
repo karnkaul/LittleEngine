@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Fixed.h"
+#include "Asserts.h"
+#include "Maths.h"
 #include <iostream>
 #include <string>
 
@@ -169,14 +171,38 @@ Fixed Fixed::Sin() const
 	return Fixed(std::sin(ToF64()));
 }
 
+Fixed Fixed::ArcSin() const
+{
+	f64 val = ToF64();
+	Assert(val >= -1.0 && val <= 1.0, "Out of range");
+	return Fixed(std::asin(val));
+}
+
 Fixed Fixed::Cos() const
 {
 	return Fixed(std::cos(ToF64()));
 }
 
+Fixed Fixed::ArcCos() const
+{
+	f64 val = ToF64();
+	Assert(val >= -1.0 && val <= 1.0, "Out of range");
+	return Fixed(std::acos(val));
+}
+
 Fixed Fixed::Tan() const
 {
 	return Fixed(std::tan(ToF64()));
+}
+
+Fixed Fixed::ArcTan() const
+{
+	f64 val = ToF64();
+	if (val == 1.0)
+	{
+		return Maths::DEG_TO_RAD * Fixed(90);
+	}
+	return Fixed(std::atan(val));
 }
 
 bool Fixed::operator==(const Fixed& rhs) const

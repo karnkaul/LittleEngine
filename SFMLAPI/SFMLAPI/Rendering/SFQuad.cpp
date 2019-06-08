@@ -1,94 +1,85 @@
 #include "stdafx.h"
 #include "SFQuad.h"
+#include "Core/Matrix3.h"
 #include "SFMLAPI/System/SFTypes.h"
 #include "SFMLAPI/System/SFAssets.h"
 
 namespace LittleEngine
 {
-SFVertex::SFVertex() : colour(Colour::White)
-{
-}
+using Matrix3 = Core::Matrix3;
 
-SFVertex::SFVertex(Vector2 position, SFTexCoords texCoords, Colour colour)
-	: position(position), texCoords(texCoords), colour(colour)
+SFQuad::SFQuad(Rect2 worldRect, SFTexRect texRect, Colour colour) : m_texRect(std::move(texRect))
 {
-}
-
-sf::Vertex SFVertex::ToSFVertex() const
-{
-	return sf::Vertex(Cast(WorldToScreen(position)), Cast(colour), texCoords.ToSFV2f());
-}
-
-SFQuad::SFQuad(Rect2 worldRect, SFTexRect texRect, Colour colour)
-	: m_texRect(std::move(texRect)), m_orgSize(worldRect.GetSize()), m_position(worldRect.GetCentre())
-{
-	m_gameState.vertices[0] =
-		SFVertex(worldRect.GetTopLeft(), SFTexCoords(m_texRect.min.x, m_texRect.min.y), colour);
-	m_gameState.vertices[1] =
-		SFVertex(worldRect.GetTopRight(), SFTexCoords(m_texRect.max.x, m_texRect.min.y), colour);
-	m_gameState.vertices[2] =
-		SFVertex(worldRect.GetBottomRight(), SFTexCoords(m_texRect.max.x, m_texRect.max.y), colour);
-	m_gameState.vertices[3] =
-		SFVertex(worldRect.GetBottomLeft(), SFTexCoords(m_texRect.min.x, m_texRect.max.y), colour);
-	m_renderState = m_gameState;
+	m_vertices[0] = {worldRect.GetTopLeft(), SFTexCoords(m_texRect.min.x, m_texRect.min.y), colour};
+	m_vertices[1] = {worldRect.GetTopRight(), SFTexCoords(m_texRect.max.x, m_texRect.min.y), colour};
+	m_vertices[2] = {worldRect.GetBottomRight(), SFTexCoords(m_texRect.max.x, m_texRect.max.y), colour};
+	m_vertices[3] = {worldRect.GetBottomLeft(), SFTexCoords(m_texRect.min.x, m_texRect.max.y), colour};
+	m_gameState.position = worldRect.GetCentre();
 }
 
 SFQuad::~SFQuad() = default;
 
-SFQuad* SFQuad::SetPosition(Vector2 position)
+bool g_bResetQuad = false;
+SFQuad* SFQuad::SetPosition(Vector2 position, bool bImmediate)
 {
-	Vector2 delta = position - m_position;
-	for (auto& vertex : m_gameState.vertices)
+	if (g_bResetQuad)
 	{
-		vertex.position += delta;
+		bImmediate = true;
 	}
-	m_position += delta;
-	return this;
-}
-
-SFQuad* SFQuad::SetScale(Vector2 scale)
-{
-	m_scale = scale;
-	Vector2 newScale = Vector2(m_orgSize.x * m_scale.x, m_orgSize.y * m_scale.y);
-	Rect2 newRect = Rect2::CentreSize(newScale, m_position);
-	m_gameState.vertices[0].position = newRect.GetTopLeft();
-	m_gameState.vertices[1].position = newRect.GetTopRight();
-	m_gameState.vertices[2].position = newRect.GetBottomRight();
-	m_gameState.vertices[3].position = newRect.GetBottomLeft();
-	return this;
-}
-
-SFQuad* SFQuad::SetWorldOrientation(Fixed degrees)
-{
-	Fixed rad = degrees * Maths::DEG_TO_RAD;
-	Fixed s = rad.Sin(), c = rad.Cos();
-	Vector2 size(m_orgSize.x * m_scale.x, m_orgSize.y * m_scale.y);
-	Rect2 newRect = Rect2::CentreSize(size);
-	Vector2 tl = newRect.GetTopLeft();
-	Vector2 tr = newRect.GetTopRight();
-	Vector2 bl = newRect.GetBottomLeft();
-	Vector2 br = newRect.GetBottomRight();
-	m_gameState.vertices[0].position = Vector2((tl.x * c) - (tl.y * s), (tl.x * s) + (tl.y * c));
-	m_gameState.vertices[1].position = Vector2((tr.x * c) - (tr.y * s), (tr.x * s) + (tr.y * c));
-	m_gameState.vertices[2].position = Vector2((br.x * c) - (br.y * s), (br.x * s) + (br.y * c));
-	m_gameState.vertices[3].position = Vector2((bl.x * c) - (bl.y * s), (bl.x * s) + (bl.y * c));
-	return this;
-}
-
-SFQuad* SFQuad::SetLocalOrientation(Fixed orientation)
-{
-	Vector2 position = m_position;
-	SetPosition(Vector2::Zero);
-	SetWorldOrientation(orientation);
-	SetPosition(position);
-	return this;
-}
-
-SFQuad* SFQuad::SetColour(Colour colour)
-{
-	for (auto& vertex : m_gameState.vertices)
+	if (bImmediate)
 	{
-		vertex.colour = colour;
+		m_gameState.position.Reset(position);
+	}
+	else
+	{
+		m_gameState.position.Update(position);
+	}
+	return this;
+}
+
+SFQuad* SFQuad::SetScale(Vector2 scale, bool bImmediate)
+{
+	if (g_bResetQuad)
+	{
+		bImmediate = true;
+	}
+	if (bImmediate)
+	{
+		m_gameState.scale.Reset(scale);
+	}
+	else
+	{
+		m_gameState.scale.Update(scale);
+	}
+	return this;
+}
+
+SFQuad* SFQuad::SetOrientation(Fixed degrees, bool bImmediate)
+{
+	if (bImmediate)
+	{
+		m_gameState.orientation.Reset(degrees);
+	}
+	else
+	{
+		m_gameState.orientation.Update(degrees);
+	}
+	return this;
+}
+
+SFQuad* SFQuad::SetColour(Colour colour, bool bImmediate)
+{
+	if (g_bResetQuad)
+	{
+		bImmediate = true;
+	}
+	if (bImmediate)
+	{
+		m_gameState.colour.Reset(colour);
+	}
+	else
+	{
+		m_gameState.colour.Update(colour);
 	}
 	return this;
 }
@@ -96,10 +87,10 @@ SFQuad* SFQuad::SetColour(Colour colour)
 SFQuad* SFQuad::SetTexRect(SFTexRect texRect)
 {
 	m_texRect = std::move(texRect);
-	m_gameState.vertices[0].texCoords = {m_texRect.min.x, m_texRect.min.y};
-	m_gameState.vertices[1].texCoords = {m_texRect.max.x, m_texRect.min.y};
-	m_gameState.vertices[2].texCoords = {m_texRect.max.x, m_texRect.max.y};
-	m_gameState.vertices[3].texCoords = {m_texRect.min.x, m_texRect.max.y};
+	m_vertices[0].uv = {m_texRect.min.x, m_texRect.min.y};
+	m_vertices[1].uv = {m_texRect.max.x, m_texRect.min.y};
+	m_vertices[2].uv = {m_texRect.max.x, m_texRect.max.y};
+	m_vertices[3].uv = {m_texRect.min.x, m_texRect.max.y};
 	return this;
 }
 
@@ -109,10 +100,16 @@ SFQuad* SFQuad::SetEnabled(bool bEnabled)
 	return this;
 }
 
-
 void SFQuad::SwapStates()
 {
 	m_renderState = m_gameState;
+}
+
+void SFQuad::Reconcile()
+{
+	m_gameState.position.min = m_gameState.position.max;
+	m_gameState.scale.min = m_gameState.scale.max;
+	m_gameState.orientation.min = m_gameState.orientation.max;
 }
 
 SFQuadVec::SFQuadVec()
@@ -122,6 +119,7 @@ SFQuadVec::SFQuadVec()
 
 SFQuad* SFQuadVec::AddQuad()
 {
+	Assert(m_pTexture, "Texture is null!");
 	if (m_pTexture)
 	{
 		Vector2 texSize = m_pTexture->GetTextureSize();
@@ -139,7 +137,6 @@ void SFQuadVec::SetTexture(TextureAsset& texture)
 	m_pTexture = &texture;
 }
 
-
 void SFQuadVec::SwapStates()
 {
 	for (auto& uQuad : m_quads)
@@ -148,12 +145,20 @@ void SFQuadVec::SwapStates()
 	}
 }
 
+void SFQuadVec::Reconcile()
+{
+	for (auto& uQuad : m_quads)
+	{
+		uQuad->Reconcile();
+	}
+}
+
 bool SFQuadVec::IsPopulated() const
 {
 	return !m_quads.empty();
 }
 
-sf::VertexArray SFQuadVec::ToSFVertexArray() const
+sf::VertexArray SFQuadVec::ToSFVertexArray(Fixed alpha) const
 {
 	Vec<SFQuad*> enabledQuads;
 	enabledQuads.reserve(m_quads.size());
@@ -164,14 +169,22 @@ sf::VertexArray SFQuadVec::ToSFVertexArray() const
 			enabledQuads.push_back(uQuad.get());
 		}
 	}
+
 	sf::VertexArray va(sf::Quads, enabledQuads.size() * 4);
 	size_t idx = 0;
 	for (auto pQuad : enabledQuads)
 	{
-		Assert(pQuad->m_renderState.vertices.size() == 4, "Invalid vertex count on SFQuad!");
-		for (auto& vertex : pQuad->m_renderState.vertices)
+		Vector2 s = pQuad->m_renderState.scale.Lerp(alpha);
+		Vector2 o = Vector2::ToOrientation(pQuad->m_renderState.orientation.Lerp(alpha));
+		Vector2 p = pQuad->m_renderState.position.Lerp(alpha);
+		Colour colour = Colour::Lerp(pQuad->m_renderState.colour, alpha);
+		
+		Matrix3 transform(p, o, s);
+		for (auto& vertex : pQuad->m_vertices)
 		{
-			va[idx++] = vertex.ToSFVertex();
+			Vector2 position = WorldToScreen(vertex.xy * transform);
+			sf::Vector2f uv = vertex.uv.ToSFV2f();
+			va[idx++] = sf::Vertex(Cast(position), Cast(colour), uv);
 		}
 	}
 	return va;

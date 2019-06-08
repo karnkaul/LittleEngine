@@ -23,6 +23,11 @@ Colour Colour::Lerp(Colour min, Colour max, Fixed alpha)
 	return ((Fixed::One - alpha) * min) + (alpha * max);
 }
 
+Colour Colour::Lerp(const Core::TRange<Colour>& range, Fixed alpha)
+{
+	return Lerp(range.min, range.max, alpha);
+}
+
 Colour::Colour(UByte r, UByte g, UByte b, UByte a) : r(r), g(g), b(b), a(a)
 {
 }

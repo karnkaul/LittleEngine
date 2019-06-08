@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/CoreTypes.h"
+#include "Core/TRange.h"
 
 namespace LittleEngine
 {
@@ -18,6 +19,7 @@ public:
 	static const Colour Transparent;
 
 	static Colour Lerp(Colour min, Colour max, Fixed alpha);
+	static Colour Lerp(const Core::TRange<Colour>& range, Fixed alpha);
 
 	UByte r;
 	UByte g;

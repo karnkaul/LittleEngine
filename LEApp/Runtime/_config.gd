@@ -1,5 +1,5 @@
 {
-    "maxTickTimeMS": 100,
+    "maxFrameTimeMS": 50,
     "titleBarText": "Async Little Engine",
     "jobWorkerCount": 4,
     "viewSize": {
@@ -8,7 +8,7 @@
     },
     "bRenderThread": true,
     "logLevel": "Debug",
-    "ticksPerSecond": 45,
+    "ticksPerSecond": 30,
     "backupLogFileCount": 3,
     "colliderShapeBorderWidth": 2,
     "renderThreadStartDelayMS": 10,

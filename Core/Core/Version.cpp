@@ -14,7 +14,8 @@ u32 Parse(const Vec<String>& vec, size_t idx)
 
 Version::Version() = default;
 
-Version::Version(u32 major, u32 minor, u32 patch) : major(major), minor(minor), patch(patch)
+Version::Version(u32 major, u32 minor, u32 patch, u32 pre)
+	: major(major), minor(minor), patch(patch), pre(pre)
 {
 }
 
@@ -25,6 +26,7 @@ Version::Version(const char* szSerialised)
 	major = Parse(tokens, 0);
 	minor = Parse(tokens, 1);
 	patch = Parse(tokens, 2);
+	pre = Parse(tokens, 3);
 }
 
 u32 Version::Major() const
@@ -44,12 +46,12 @@ u32 Version::Patch() const
 
 String Version::ToString() const
 {
-	return Strings::ToString(major) + "." + Strings::ToString(minor) + "." + Strings::ToString(patch);
+	return Strings::ToString(major) + "." + Strings::ToString(minor) + "." + Strings::ToString(patch) + "." + Strings::ToString(pre);
 }
 
 bool Version::operator==(const Version& rhs)
 {
-	return major == rhs.major && minor == rhs.minor && patch == rhs.patch;
+	return major == rhs.major && minor == rhs.minor && patch == rhs.patch && pre == rhs.pre;
 }
 
 bool Version::operator!=(const Version& rhs)
@@ -60,7 +62,8 @@ bool Version::operator!=(const Version& rhs)
 bool Version::operator<(const Version& rhs)
 {
 	return (major < rhs.major) || (major == rhs.major && minor < rhs.minor) ||
-		   (major == rhs.major && minor == rhs.minor && patch < rhs.patch);
+		   (major == rhs.major && minor == rhs.minor && patch < rhs.patch) ||
+		   (major == rhs.major && minor == rhs.minor && patch == rhs.patch && rhs.pre < rhs.pre);
 }
 
 bool Version::operator<=(const Version& rhs)
@@ -71,7 +74,8 @@ bool Version::operator<=(const Version& rhs)
 bool Version::operator>(const Version& rhs)
 {
 	return (major > rhs.major) || (major == rhs.major && minor > rhs.minor) ||
-		   (major == rhs.major && minor == rhs.minor && patch > rhs.patch);
+		   (major == rhs.major && minor == rhs.minor && patch > rhs.patch) ||
+		   (major == rhs.major && minor == rhs.minor && patch == rhs.patch && pre > rhs.pre);
 }
 
 bool Version::operator>=(const Version& rhs)

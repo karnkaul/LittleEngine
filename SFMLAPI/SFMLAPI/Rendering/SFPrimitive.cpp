@@ -302,6 +302,7 @@ LayerID SFPrimitive::GetLayer() const
 void SFPrimitive::ReconcileState()
 {
 	m_gameState.Reconcile();
+	m_quadVec.Reconcile();
 }
 
 SFPrimitive* SFPrimitive::SetStatic(bool bStatic)

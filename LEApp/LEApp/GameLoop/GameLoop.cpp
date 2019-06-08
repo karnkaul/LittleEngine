@@ -88,7 +88,7 @@ bool Init(s32 argc, char** argv)
 	Vector2 viewSize = config.GetViewSize();
 	auto pSettings = GameSettings::Instance();
 	tickRate = config.GetTickRate();
-	maxFrameTime = config.GetMaxTickTime();
+	maxFrameTime = config.GetMaxFrameTime();
 	cullBounds = pSettings->GetCullBounds(viewSize);
 
 	try
@@ -215,7 +215,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 	Console::Init(*uContext);
 #endif
 #if ENABLED(PROFILER)
-	Profiler::Init(*uContext, config.GetMaxTickTime());
+	Profiler::Init(*uContext, config.GetMaxFrameTime());
 #endif
 	GameClock::Reset();
 	uWSM->Start("Manifest.amf", "Texts/Game.style");

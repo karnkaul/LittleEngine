@@ -8,6 +8,7 @@
 #include "LittleEngine/Audio/LEAudio.h"
 #include "LEGame/Model/GameManager.h"
 #include "LittleEngine/Renderer/LERenderer.h"
+#include "LittleEngine/Debug/Tweakable.h"
 #include "PSEmitter.h"
 
 namespace LittleEngine
@@ -59,11 +60,13 @@ void Particle::Init(Vector2 u, Time ttl, Transform transform, Fixed w, TRange<UB
 	m_aot = alphaOverTime;
 	m_sot = scaleOverTime;
 
-	m_pQuad->SetScale({m_sot.min, m_sot.min})
-		->SetLocalOrientation(transform.localOrientation)
-		->SetPosition(transform.Position());
+	m_pQuad->SetScale({m_sot.min, m_sot.min}, true)
+		->SetOrientation(transform.localOrientation, true)
+		->SetPosition(transform.Position(), true);
 }
 
+extern bool g_bResetQuad;
+TweakBool(resetQuad, &g_bResetQuad);
 void Particle::Tick(Time dt)
 {
 	if (m_bInUse)
@@ -72,35 +75,17 @@ void Particle::Tick(Time dt)
 		Colour c = Colour::White;
 		Fixed s = Lerp(m_sot, t);
 		c.a = Lerp(m_aot, t);
-		// Scale + Orientation + Position
-		if (m_sot.IsFuzzy() && m_w != Fixed::Zero)
+		bool bImmediate = !m_bWasInUse && m_bInUse;
+		m_bWasInUse = true;
+		m_pQuad->SetColour(c, bImmediate)
+			->SetScale({s, s}, bImmediate)
+			->SetOrientation(m_transform.localOrientation, bImmediate)
+			->SetPosition(m_transform.Position(), bImmediate);
+
+		
+		if (m_pQuad->m_bDebugThisQuad && bImmediate)
 		{
-			m_pQuad->SetColour(c)
-				->SetPosition(Vector2::Zero)
-				->SetScale({s, s})
-				->SetWorldOrientation(m_transform.localOrientation)
-				->SetPosition(m_transform.Position());
-		}
-		// Scale + Position
-		else if (m_sot.IsFuzzy() && m_w == Fixed::Zero)
-		{
-			m_pQuad->SetColour(c)
-				->SetPosition(Vector2::Zero)
-				->SetScale({s, s})
-				->SetPosition(m_transform.Position());
-		}
-		// Orientation + Position
-		else if (!m_sot.IsFuzzy() && m_w != Fixed::Zero)
-		{
-			m_pQuad->SetColour(c)
-				->SetPosition(Vector2::Zero)
-				->SetWorldOrientation(m_transform.localOrientation)
-				->SetPosition(m_transform.Position());
-		}
-		// Position
-		else if (!m_sot.IsFuzzy() && m_w == Fixed::Zero)
-		{
-			m_pQuad->SetColour(c)->SetPosition(m_transform.Position());
+			LOG_D("IMMEDIATE");
 		}
 
 		Fixed ms(dt.AsMilliseconds());
@@ -184,8 +169,7 @@ void Emitter::Tick(Time dt)
 
 	if (!m_bSoundPlayed && m_data.pSound)
 	{
-		m_pSoundPlayer = g_pAudio->PlaySFX(*m_data.pSound, m_data.sfxVolume,
-															Fixed::Zero, m_bSpawnNewParticles);
+		m_pSoundPlayer = g_pAudio->PlaySFX(*m_data.pSound, m_data.sfxVolume, Fixed::Zero, m_bSpawnNewParticles);
 		m_bSoundPlayed = true;
 	}
 
@@ -202,6 +186,10 @@ void Emitter::Init()
 	if (m_data.spawnData.bPreWarm)
 	{
 		PreWarm();
+	}
+	for (auto& particle : m_particles)
+	{
+		particle.m_bWasInUse = false;
 	}
 	m_bDraw = true;
 }

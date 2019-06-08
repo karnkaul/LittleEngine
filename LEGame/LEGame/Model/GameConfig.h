@@ -44,7 +44,7 @@ public:
 	u32 GetJobWorkerCount() const;
 	Time GetTickRate() const;
 	Time GetRenderThreadStartDelay() const;
-	Time GetMaxTickTime() const;
+	Time GetMaxFrameTime() const;
 	String GetTitleBarText() const;
 	u32 GetColliderBorderWidth() const;
 	LogSeverity GetLogLevel() const;
@@ -56,7 +56,7 @@ public:
 	bool SetJobWorkerCount(u32 numThreads);
 	bool SetTicksPerSecond(u32 ticksPerSecond);
 	bool SetRenderThreadStartDelay(u32 delayMS);
-	bool SetMaxTimeMS(u32 maxTickTimeMS);
+	bool SetMaxFrameTimeMS(u32 maxFrameTimeMS);
 	bool SetTitleBarText(String text);
 	bool SetLogLevel(LogSeverity level);
 	bool SetColliderBorderWidth(u32 shapeWidth);
