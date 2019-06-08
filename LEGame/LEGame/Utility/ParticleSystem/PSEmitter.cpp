@@ -65,8 +65,6 @@ void Particle::Init(Vector2 u, Time ttl, Transform transform, Fixed w, TRange<UB
 		->SetPosition(transform.Position(), true);
 }
 
-extern bool g_bResetQuad;
-TweakBool(resetQuad, &g_bResetQuad);
 void Particle::Tick(Time dt)
 {
 	if (m_bInUse)
@@ -81,12 +79,6 @@ void Particle::Tick(Time dt)
 			->SetScale({s, s}, bImmediate)
 			->SetOrientation(m_transform.localOrientation, bImmediate)
 			->SetPosition(m_transform.Position(), bImmediate);
-
-		
-		if (m_pQuad->m_bDebugThisQuad && bImmediate)
-		{
-			LOG_D("IMMEDIATE");
-		}
 
 		Fixed ms(dt.AsMilliseconds());
 		m_transform.localPosition += ms * m_v;

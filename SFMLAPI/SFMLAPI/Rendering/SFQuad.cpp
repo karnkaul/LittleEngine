@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "SFQuad.h"
 #include "Core/Matrix3.h"
+#include "Core/Logger.h"
+#include "SFQuad.h"
 #include "SFMLAPI/System/SFTypes.h"
 #include "SFMLAPI/System/SFAssets.h"
 
@@ -19,13 +20,8 @@ SFQuad::SFQuad(Rect2 worldRect, SFTexRect texRect, Colour colour) : m_texRect(st
 
 SFQuad::~SFQuad() = default;
 
-bool g_bResetQuad = false;
 SFQuad* SFQuad::SetPosition(Vector2 position, bool bImmediate)
 {
-	if (g_bResetQuad)
-	{
-		bImmediate = true;
-	}
 	if (bImmediate)
 	{
 		m_gameState.position.Reset(position);
@@ -39,10 +35,6 @@ SFQuad* SFQuad::SetPosition(Vector2 position, bool bImmediate)
 
 SFQuad* SFQuad::SetScale(Vector2 scale, bool bImmediate)
 {
-	if (g_bResetQuad)
-	{
-		bImmediate = true;
-	}
 	if (bImmediate)
 	{
 		m_gameState.scale.Reset(scale);
@@ -69,10 +61,6 @@ SFQuad* SFQuad::SetOrientation(Fixed degrees, bool bImmediate)
 
 SFQuad* SFQuad::SetColour(Colour colour, bool bImmediate)
 {
-	if (g_bResetQuad)
-	{
-		bImmediate = true;
-	}
 	if (bImmediate)
 	{
 		m_gameState.colour.Reset(colour);
@@ -110,6 +98,7 @@ void SFQuad::Reconcile()
 	m_gameState.position.min = m_gameState.position.max;
 	m_gameState.scale.min = m_gameState.scale.max;
 	m_gameState.orientation.min = m_gameState.orientation.max;
+	m_gameState.colour.min = m_gameState.colour.max;
 }
 
 SFQuadVec::SFQuadVec()
@@ -178,7 +167,6 @@ sf::VertexArray SFQuadVec::ToSFVertexArray(Fixed alpha) const
 		Vector2 o = Vector2::ToOrientation(pQuad->m_renderState.orientation.Lerp(alpha));
 		Vector2 p = pQuad->m_renderState.position.Lerp(alpha);
 		Colour colour = Colour::Lerp(pQuad->m_renderState.colour, alpha);
-		
 		Matrix3 transform(p, o, s);
 		for (auto& vertex : pQuad->m_vertices)
 		{
