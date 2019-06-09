@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GameInit.h"
+#include "LittleEngine/Renderer/ShaderRepository.h"
 #include "LEGame/Framework.h"
 #include "LEGame/Gameplay/Worlds.h"
 
@@ -12,5 +13,12 @@ void GameInit::CreateWorlds()
 	// WorldStateMachine::CreateWorlds<T...> will create worlds in order of template invocation and return nothing.
 	
 	WorldStateMachine::CreateWorlds<BootWorld, TestWorld>();
+}
+
+void GameInit::LoadShaders()
+{
+	// Load SFShaders here
+
+	ShaderRepository::LoadShader<SFShader>("Default", ShaderType::VertFrag);
 }
 } // namespace LittleEngine

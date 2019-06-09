@@ -49,7 +49,7 @@ void LERenderer::RecreateViewport(SFViewportRecreateData data)
 	m_pViewport->Destroy();
 	m_pViewport->OverrideData(std::move(data));
 	m_pViewport->Create();
-	LOG_I("[Renderer] Activated SFViewport on this thread and recreated it");
+	LOG_D("[Renderer] Activated SFViewport on this thread and recreated it");
 	Start();
 }
 
@@ -133,7 +133,7 @@ void LERenderer::Start()
 	{
 		m_pViewport->setActive(false);
 		m_bRendering.store(true, std::memory_order_relaxed);
-		LOG_I("[Renderer] Deactivated SFViewport on this thread, starting render thread");
+		LOG_D("[Renderer] Deactivated SFViewport on this thread, starting render thread");
 		m_threadHandle = OS::Threads::Spawn([&]() { Async_Run(m_data.threadStartDelay); });
 	}
 }
@@ -157,7 +157,7 @@ void LERenderer::Async_Run(Time startDelay)
 	m_pViewport->setActive(true);
 	m_pViewport->setVerticalSyncEnabled(true);
 	std::this_thread::sleep_for(std::chrono::milliseconds(startDelay.AsMilliseconds()));
-	LOG_I("R[Renderer] Activated SFViewport on this thread, starting render loop");
+	LOG_D("R[Renderer] Activated SFViewport on this thread, starting render loop");
 	while (m_bRendering.load(std::memory_order_relaxed))
 	{
 		if (m_bPauseRendering.load(std::memory_order_acquire))
@@ -174,7 +174,7 @@ void LERenderer::Async_Run(Time startDelay)
 		}
 	}
 	m_pViewport->setActive(false);
-	LOG_I("R[Renderer] Deactivated SFViewport on this thread, terminating render loop");
+	LOG_D("R[Renderer] Deactivated SFViewport on this thread, terminating render loop");
 }
 
 #if DEBUGGING

@@ -21,6 +21,7 @@ using namespace LittleEngine;
 // Globals
 UPtr<FileLogger> uFileLogger;
 UPtr<LERepository> uRepository;
+UPtr<ShaderRepository> uShaders;
 UPtr<LEAudio> uAudio;
 
 // LEContext
@@ -83,6 +84,7 @@ bool Init(s32 argc, char** argv)
 	}
 
 	Core::Jobs::Init(config.GetJobWorkerCount());
+	uShaders = MakeUnique<ShaderRepository>();
 
 #if DEBUGGING
 	Collider::s_debugShapeWidth = config.GetColliderBorderWidth();
@@ -192,6 +194,7 @@ void Cleanup()
 	uWSM = nullptr;
 	uContext = nullptr;
 	uAudio = nullptr;
+	uShaders = nullptr;
 	uRepository = nullptr;
 #if !SHIPPING
 	config.Save("_config.gd");

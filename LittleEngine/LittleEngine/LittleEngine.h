@@ -6,6 +6,7 @@
 #include "LittleEngine/Input/LEInput.h"
 #include "LittleEngine/Physics/Physics.h"
 #include "LittleEngine/Renderer/LERenderer.h"
+#include "LittleEngine/Renderer/ShaderRepository.h"
 #include "LittleEngine/Repository/LERepository.h"
 #include "LittleEngine/Repository/ManifestLoader.h"
 #include "LittleEngine/OS.h"

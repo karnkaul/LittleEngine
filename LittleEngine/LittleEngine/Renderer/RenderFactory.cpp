@@ -61,7 +61,7 @@ RenderFactory::~RenderFactory()
 		count += vec.size();
 		vec.clear();
 	}
-	LOG_I("[RenderFactory] Destroyed %d primitives", count);
+	LOG_D("[RenderFactory] Destroyed %d primitives", count);
 }
 
 SFPrimitive* RenderFactory::New(LayerID layer)

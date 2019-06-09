@@ -70,6 +70,9 @@
     <ClInclude Include="SFMLAPI\Viewport\SFViewportData.h">
       <Filter>SFMLAPI\Viewport</Filter>
     </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\SFShader.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SFMLAPI\Rendering\Colour.cpp">
@@ -113,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="SFMLAPI\Viewport\SFViewportData.cpp">
       <Filter>SFMLAPI\Viewport</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\SFShader.cpp">
+      <Filter>SFMLAPI\Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

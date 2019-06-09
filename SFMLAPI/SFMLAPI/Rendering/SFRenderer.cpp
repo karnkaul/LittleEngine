@@ -7,6 +7,7 @@
 #include "SFRenderer.h"
 #include "SFRenderState.h"
 #include "ISFRenderBuffer.h"
+#include "SFMLAPI/Rendering/SFShader.h"
 #include "SFMLAPI/Viewport/SFViewport.h"
 #include "SFMLAPI/Viewport/SFViewportData.h"
 
@@ -66,10 +67,17 @@ void SFRenderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 				{
 					if (pPrimitive->m_renderState.bEnabled)
 					{
-						m_pViewport->draw(pPrimitive->m_circle);
-						m_pViewport->draw(pPrimitive->m_rectangle);
-						m_pViewport->draw(pPrimitive->m_sprite);
-						m_pViewport->draw(pPrimitive->m_text);
+						if (pPrimitive->m_pShader)
+						{
+							pPrimitive->m_pShader->Draw(*pPrimitive, *m_pViewport);
+						}	
+						else
+						{
+							m_pViewport->draw(pPrimitive->m_circle);
+							m_pViewport->draw(pPrimitive->m_rectangle);
+							m_pViewport->draw(pPrimitive->m_sprite);
+							m_pViewport->draw(pPrimitive->m_text);
+						}
 					}
 
 #if ENABLED(RENDER_STATS)

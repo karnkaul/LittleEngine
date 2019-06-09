@@ -32,12 +32,14 @@ const Version& GameManager::GetGameVersion()
 	return gameVersion;
 }
 
-GameManager::GameManager(WorldStateMachine& wsm) : m_logName("GameManager"), m_pWSM(&wsm)
+GameManager::GameManager(WorldStateMachine& wsm) : m_logName("[GameManager]"), m_pWSM(&wsm)
 {
 	m_uUIManager = MakeUnique<UIManager>();
 	m_uCollisionManager = MakeUnique<CollisionManager>();
 	m_uWorldCamera = MakeUnique<Camera>();
+	m_uWorldCamera->SetName("WorldCamera");
 	g_pGameManager = this;
+	LOG_D("%s Created", m_logName.c_str());
 }
 
 GameManager::~GameManager()
@@ -51,6 +53,7 @@ GameManager::~GameManager()
 	m_uUIManager = nullptr;
 	m_uWorldCamera = nullptr;
 	g_pGameManager = nullptr;
+	LOG_D("%s Destroyed", m_logName.c_str());
 }
 
 UIManager* GameManager::UI() const
@@ -101,7 +104,7 @@ void GameManager::Quit()
 	if (!Core::Jobs::AreWorkersIdle())
 	{
 		Assert(false, "Quit() called while job workers are active!");
-		LOG_E("[GameManager] Quit() called while job workers are active!");
+		LOG_E("%s Quit() called while job workers are active!", m_logName.c_str());
 		m_bWaitingToTerminate = true;
 	}
 	else

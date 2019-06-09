@@ -9,7 +9,10 @@
 
 namespace LittleEngine
 {
-Camera::Camera() = default;
+Camera::Camera() : GameObject("Camera", "Camera")
+{
+}
+
 Camera::~Camera() = default;
 
 void Camera::Shake(Fixed intensity, Time duration)

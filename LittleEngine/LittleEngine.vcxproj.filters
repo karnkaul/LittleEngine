@@ -75,6 +75,9 @@
     <ClCompile Include="LittleEngine\Debug\Profiler.cpp">
       <Filter>LittleEngine\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="LittleEngine\Renderer\ShaderRepository.cpp">
+      <Filter>LittleEngine\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Repository\LoadHelpers.h">
@@ -133,6 +136,9 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\Debug\Profiler.h">
       <Filter>LittleEngine\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Renderer\ShaderRepository.h">
+      <Filter>LittleEngine\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -37,6 +37,6 @@ void Player::InitPlayer(PlayerData data)
 	}
 	AddComponent<ControllerComponent>();
 
-	LOG_I("%s %s", LogNameStr(), " Initialised");
+	LOG_D("%s %s", LogNameStr(), " Initialised");
 }
 } // namespace LittleEngine

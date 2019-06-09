@@ -20,8 +20,9 @@ private:
 public:
 	RenderFactory();
 	~RenderFactory() override;
+	
 	SFPrimitive* New(LayerID layer);
-
+	
 	Time GetLastSwapTime() const override;
 
 	void Reconcile();

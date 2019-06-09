@@ -1,6 +1,7 @@
 #pragma once
 #include <optional>
 #include "LEGame/Model/World/Component.h"
+#include "LittleEngine/Renderer/ShaderRepository.h"
 
 namespace LittleEngine
 {
@@ -75,8 +76,26 @@ public:
 	RenderComponent* SetSpriteSheet(SpriteSheet sheet, LayerID layer);
 	RenderComponent* UnsetSpriteSheet();
 	RenderComponent* SetSpriteFlip(bool bFlip);
+	RenderComponent* SetShader(SFShader* pShader);
+	template <typename T>
+	RenderComponent* SetShader(const String& id);
 
 private:
 	void UpdatePrimitive(Time dt);
 };
+
+template <typename T>
+RenderComponent* RenderComponent::SetShader(const String& id)
+{
+	auto pShader = g_pShaders->GetShader<T>(id);
+	if (!pShader)
+	{
+		LOG_W("%s Shader %s not in ShaderRepository!", m_logName.c_str(), id.c_str());
+	}
+	else
+	{
+		SetShader(pShader);
+	}
+	return this;
+}
 } // namespace LittleEngine

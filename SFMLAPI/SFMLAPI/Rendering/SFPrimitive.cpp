@@ -319,6 +319,12 @@ SFPrimitive* SFPrimitive::SetStatic(bool bStatic)
 	return this;
 }
 
+SFPrimitive* SFPrimitive::SetShader(SFShader* pShader)
+{
+	m_pShader = pShader;
+	return this;
+}
+
 SFQuadVec* SFPrimitive::GetQuadVec()
 {
 	return &m_quadVec;

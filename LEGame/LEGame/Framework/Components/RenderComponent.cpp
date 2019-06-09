@@ -203,6 +203,24 @@ RenderComponent* RenderComponent::SetSpriteFlip(bool bFlip)
 	return this;
 }
 
+RenderComponent* RenderComponent::SetShader(SFShader* pShader)
+{
+#if ENABLED(DEBUG_LOGGING)
+	if (pShader)
+	{
+		const char* szType = g_szShaderTypes[static_cast<size_t>(pShader->GetType())];
+		LOG_D("%s %s %s Shader set", m_logName.c_str(), pShader->GetID().c_str(), szType);
+	}
+	else
+	{
+		LOG_D("%s Shader unset", m_logName.c_str());
+	}
+#endif
+	
+	m_pSFPrimitive->SetShader(pShader);
+	return this;
+}
+
 void RenderComponent::UpdatePrimitive(Time dt)
 {
 	if (m_bFlippingSprites && m_oSpriteSheet)

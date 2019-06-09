@@ -18,7 +18,10 @@
 		"Textures/TestSheet_64x64_6x6.spritesheet",
 		"VFX/Fire0/Fire0_noloop.psdata",
 		"VFX/Fire0/Fire0_loop.psdata",
-		"VFX/Stars0/Stars0.psdata"
+		"VFX/Stars0/Stars0.psdata",
+
+		"Texts/Shaders/Default.vsh",
+		"Texts/Shaders/Default.fsh"
 	],
 	"textureSets": [
 		{

@@ -94,7 +94,6 @@ VersionRenderer::VersionRenderer(LEContext& context)
 	m_uEngineVersion = MakeUnique<UIElement>(LAYER_TOP, true);
 	m_uEngineVersion->OnCreate(context, "EngineVersion");
 	m_uEngineVersion->SetText(UIText(engineVersion.ToString(), 10, g_logTextColour));
-	m_uEngineVersion->GetText()->m_bDebugThisPrimitive = true;
 	m_uEngineVersion->GetText()
 		->SetPivot({-1, 0})
 		->SetPosition(pRenderer->Project({-Fixed(0.99f), -Fixed(0.97f)}, false))

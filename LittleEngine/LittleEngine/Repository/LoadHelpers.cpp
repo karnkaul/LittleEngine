@@ -63,28 +63,28 @@ AssetDefinition::AssetDefinition(AssetType type, AssetIDContainer assetIDs)
 }
 
 AssetManifest::AssetManifest(Vec<AssetDefinition> assetDefinitions)
-	: definitions(std::move(assetDefinitions))
+	: assetDefs(std::move(assetDefinitions))
 {
 }
 
 void AssetManifest::AddDefinition(AssetDefinition definition)
 {
-	definitions.emplace_back(std::move(definition));
+	assetDefs.emplace_back(std::move(definition));
 }
 
 void AssetManifest::AddDefinition(AssetType type, AssetIDContainer resourcePaths)
 {
-	definitions.emplace_back(type, std::move(resourcePaths));
+	assetDefs.emplace_back(type, std::move(resourcePaths));
 }
 
 void AssetManifest::Clear()
 {
-	definitions.clear();
+	assetDefs.clear();
 }
 
 void AssetManifest::ForEach(std::function<void(const AssetDefinition& definition)> callback) const
 {
-	for (const auto& definition : definitions)
+	for (const auto& definition : assetDefs)
 	{
 		callback(definition);
 	}
@@ -162,4 +162,4 @@ void AssetManifestData::Deserialise(String serialised)
 		}
 	}
 }
-}
+} // namespace LittleEngine

@@ -143,7 +143,7 @@ LERepository::~LERepository()
 {
 	g_pRepository = nullptr;
 	m_pDefaultFont = nullptr;
-	UnloadAll(true);
+	m_loaded.clear();
 	LOG_D("[Repository] destroyed");
 }
 

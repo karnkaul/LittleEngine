@@ -8,9 +8,9 @@
     },
     "bRenderThread": true,
     "logLevel": "Debug",
-    "ticksPerSecond": 40,
+    "ticksPerSecond": 30,
     "backupLogFileCount": 3,
     "colliderShapeBorderWidth": 2,
-    "renderThreadStartDelayMS": 10,
+    "renderThreadStartDelayMS": 3,
     "bPauseOnFocusLoss": false
 }

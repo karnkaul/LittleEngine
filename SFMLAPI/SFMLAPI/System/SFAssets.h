@@ -41,6 +41,7 @@ public:
 	Vector2 GetTextureSize() const;
 
 private:
+	friend class SFQuad;
 	friend class SFQuadVec;
 	friend class SFPrimitive;
 };

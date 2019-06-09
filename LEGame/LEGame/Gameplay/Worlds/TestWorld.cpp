@@ -288,6 +288,8 @@ void StartTests()
 	{
 		SpawnColliderMinefield();
 	}
+
+	pPlayer->GetComponent<RenderComponent>()->SetShader<SFShader>("Default");
 }
 
 UIButtonDrawer* pButtonDrawer = nullptr;

@@ -27,7 +27,7 @@ void MultiJob::AddJob(Task job, String name)
 
 void MultiJob::StartJobs(Task onComplete)
 {
-	LOG_I("%s started. Running and monitoring %d jobs", LogNameStr(), m_subJobs.size());
+	LOG_D("%s started. Running and monitoring %d jobs", LogNameStr(), m_subJobs.size());
 	m_onComplete = onComplete;
 	m_bCompleted = false;
 	m_startTime = Time::Now();
@@ -70,8 +70,10 @@ void MultiJob::Update()
 			m_onComplete = nullptr;
 		}
 		m_bCompleted = true;
+#if ENABLED(DEBUG_LOGGING)
 		f32 secs = (Time::Now() - m_startTime).AsSeconds();
-		LOG_I("%s completed %d jobs in %.2fs", LogNameStr(), m_subJobs.size(), secs);
+#endif
+		LOG_D("%s completed %d jobs in %.2fs", LogNameStr(), m_subJobs.size(), secs);
 	}
 }
 

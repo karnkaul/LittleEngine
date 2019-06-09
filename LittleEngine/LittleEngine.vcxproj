@@ -32,6 +32,7 @@
     <ClCompile Include="LittleEngine\Physics\CollisionManager.cpp" />
     <ClCompile Include="LittleEngine\Renderer\LERenderer.cpp" />
     <ClCompile Include="LittleEngine\Renderer\RenderFactory.cpp" />
+    <ClCompile Include="LittleEngine\Renderer\ShaderRepository.cpp" />
     <ClCompile Include="LittleEngine\Repository\LERepository.cpp" />
     <ClCompile Include="LittleEngine\Repository\LoadHelpers.cpp" />
     <ClCompile Include="LittleEngine\Repository\ManifestLoader.cpp" />
@@ -53,6 +54,7 @@
     <ClInclude Include="LittleEngine\Physics\Physics.h" />
     <ClInclude Include="LittleEngine\Renderer\LERenderer.h" />
     <ClInclude Include="LittleEngine\Renderer\RenderFactory.h" />
+    <ClInclude Include="LittleEngine\Renderer\ShaderRepository.h" />
     <ClInclude Include="LittleEngine\Repository\LERepository.h" />
     <ClInclude Include="LittleEngine\Repository\LoadHelpers.h" />
     <ClInclude Include="LittleEngine\Repository\ManifestLoader.h" />

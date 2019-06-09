@@ -27,6 +27,7 @@ private:
 	sf::Sprite m_sprite;
 	sf::Text m_text;
 	sf::Vector2f m_prevScale;
+	class SFShader* m_pShader = nullptr;
 	std::atomic<bool> m_bTextChanged = false;
 	bool m_bWasDisabled = false;
 	bool m_bStatic = false;
@@ -65,6 +66,8 @@ public:
 	SFPrimitive* SetText(String text);
 
 	SFPrimitive* SetStatic(bool bStatic);
+	
+	SFPrimitive* SetShader(SFShader* pShader);
 
 	SFQuadVec* GetQuadVec();
 	
@@ -90,5 +93,6 @@ private:
 	void UpdateRenderState(Fixed alpha);
 
 	friend class SFRenderer;
+	friend class SFShader;
 };
 } // namespace LittleEngine
