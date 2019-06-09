@@ -6,6 +6,7 @@
 #include "SFMLAPI/Viewport/SFViewportData.h"
 #include "LEContext.h"
 #include "LittleEngine/Audio/LEAudio.h"
+#include "LittleEngine/Debug/Profiler.h"
 #include "LittleEngine/Debug/Tweakable.h"
 #include "LittleEngine/OS.h"
 #include "LittleEngine/Input/LEInput.h"
@@ -195,9 +196,14 @@ void LEContext::SubmitFrame()
 	m_uRenderer->Lock_Swap();
 	if (!m_data.bRenderThread)
 	{
+#if ENABLED(PROFILER)
+		static Time dt60Hz = Time::Seconds(1.0f / 60);
+#endif
+		PROFILE_CUSTOM("RENDER", dt60Hz, Colour(219, 10, 87));
 		Time renderElapsed = Time::Now() - m_uRenderer->GetLastSwapTime();
 		Fixed alpha = Maths::ComputeAlpha(renderElapsed, m_data.tickRate);
 		m_uRenderer->Render(alpha);
+		PROFILE_STOP("RENDER");
 	}
 }
 

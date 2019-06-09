@@ -58,7 +58,7 @@ void UIContext::SetActive(bool bActive, bool bResetSelection)
 		{
 			ResetSelection();
 		}
-		Tick(Time::Zero);
+		Tick();
 		m_inputTokens.push_back(g_pGameManager->Input()->Register(
 			[&](const LEInput::Frame& frame) -> bool { return OnInput(frame); }));
 	}

@@ -434,6 +434,10 @@ void TestTick(Time dt)
 		}
 		++frame;
 	}
+
+	/*PROFILE_CUSTOM("TEST", Time::Milliseconds(3), Colour::White);
+	std::this_thread::sleep_for(std::chrono::milliseconds(Maths::Random::Range(0, 3)));
+	PROFILE_STOP("TEST");*/
 }
 
 void Cleanup()

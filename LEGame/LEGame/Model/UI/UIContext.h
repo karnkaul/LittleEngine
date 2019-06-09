@@ -46,7 +46,7 @@ public:
 	OnCancelled::Token SetOnCancelled(OnCancelled::Callback callback, bool bAutoDestroy);
 	void Destruct();
 
-	void Tick(Time dt) override;
+	void Tick(Time dt = Time::Zero) override;
 
 protected:
 	virtual void OnCreated();

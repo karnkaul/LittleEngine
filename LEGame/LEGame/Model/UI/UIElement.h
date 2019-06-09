@@ -38,7 +38,7 @@ public:
 	SFPrimitive* GetText() const;
 
 	void OnCreate(LEContext& context, String name, UITransform* pParent = nullptr);
-	void Tick(Time dt) override;
+	void Tick(Time dt = Time::Zero) override;
 
 	LayerID GetLayer() const;
 

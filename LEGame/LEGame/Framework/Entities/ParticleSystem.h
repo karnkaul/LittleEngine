@@ -15,6 +15,9 @@ class ParticleSystem : public Entity
 protected:
 	Vec<UPtr<class Emitter>> m_emitters;
 	bool m_bIsPlaying = false;
+#if ENABLED(PROFILER)
+	Colour m_profileColour;
+#endif
 
 public:
 	ParticleSystem();

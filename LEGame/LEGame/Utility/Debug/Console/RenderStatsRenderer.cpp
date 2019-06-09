@@ -32,11 +32,11 @@ TweakBool(renderStats, &RenderStatsRenderer::s_bConsoleRenderStatsEnabled);
 
 RenderStatsRenderer::RenderStatsRenderer(LEContext& context)
 {
-	Fixed nY(-75, 100);
-	Fixed x(82, 100);
+	Fixed nY(-71, 100);
+	Fixed x(80, 100);
 	Fixed dx(12, 100);
-	Vector2 size(170, 140);
-	Vector2 pad(-20, 10);
+	Vector2 size(180, 140);
+	Vector2 pad(-30, 30);
 	Colour bg(20, 20, 20, 150);
 	LERenderer* pRenderer = context.Renderer();
 
@@ -48,7 +48,7 @@ RenderStatsRenderer::RenderStatsRenderer(LEContext& context)
 	m_uBG->m_transform.padding = pad;
 	m_uBG->SetPanel(bg);
 	m_uBG->GetPrimitive()->SetEnabled(true);
-	m_uBG->Tick(Time::Zero);
+	m_uBG->Tick();
 
 	m_uTitles = MakeUnique<UIElement>(LAYER_TOP, true);
 	m_uTitles->OnCreate(context, "RenderStatsTitles");

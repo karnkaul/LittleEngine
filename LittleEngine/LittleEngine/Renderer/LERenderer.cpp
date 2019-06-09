@@ -8,6 +8,7 @@
 #include "LERenderer.h"
 #include "RenderFactory.h"
 #include "LittleEngine/OS.h"
+#include "LittleEngine/Debug/Profiler.h"
 
 namespace LittleEngine 
 {
@@ -92,34 +93,15 @@ void LERenderer::Lock_Swap()
 #if ENABLED(RENDER_STATS) 
 	g_renderData.rendersPerFrame.store(0, std::memory_order_relaxed);
 #endif
-#if DEBUGGING
-	if (m_onLockStart)
-	{
-		m_onLockStart();
-	}
-#endif
+	PROFILE_CUSTOM("LOCK", m_data.tickRate, Colour(255, 72, 0)); 
 	m_bPauseRendering.store(true, std::memory_order_release);
 	std::lock_guard<std::mutex> lock(m_uFactory->m_mutex);
-#if DEBUGGING
-	if (m_onLockStop)
-	{
-		m_onLockStop();
-	}
-#endif
-#if DEBUGGING
-	if (m_onSwapStart)
-	{
-		m_onSwapStart();
-	}
-#endif
+	PROFILE_STOP("LOCK");
+
+	PROFILE_CUSTOM("SWAP", m_data.tickRate, Colour(255, 72, 0));
 	m_uFactory->Swap();
 	m_bPauseRendering.store(false, std::memory_order_release);
-#if DEBUGGING
-	if (m_onSwapStop)
-	{
-		m_onSwapStop();
-	}
-#endif
+	PROFILE_STOP("SWAP");
 }
 
 void LERenderer::Reconcile()
@@ -169,6 +151,9 @@ void LERenderer::Stop()
 void LERenderer::Async_Run(Time startDelay)
 {
 	Assert(!OS::IsMainThread(), "Renderer::Async_Run() called from Main thread!");
+#if ENABLED(PROFILER)
+	static Time dt60Hz = Time::Seconds(1.0f / 60);
+#endif
 	m_pViewport->setActive(true);
 	m_pViewport->setVerticalSyncEnabled(true);
 	std::this_thread::sleep_for(std::chrono::milliseconds(startDelay.AsMilliseconds()));
@@ -183,19 +168,9 @@ void LERenderer::Async_Run(Time startDelay)
 		{
 			Time renderElapsed = Time::Now() - m_uFactory->GetLastSwapTime();
 			Fixed alpha = Maths::ComputeAlpha(renderElapsed, m_data.tickRate);
-#if DEBUGGING
-			if (m_onRenderStart)
-			{
-				m_onRenderStart();
-			}
-#endif
+			PROFILE_CUSTOM("RENDER", dt60Hz, Colour(219, 10, 87));
 			RenderFrame(*m_uFactory, alpha);
-#if DEBUGGING
-			if (m_onRenderEnd)
-			{
-				m_onRenderEnd();
-			}
-#endif
+			PROFILE_STOP("RENDER");
 		}
 	}
 	m_pViewport->setActive(false);

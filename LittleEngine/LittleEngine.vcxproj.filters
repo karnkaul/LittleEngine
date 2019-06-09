@@ -72,6 +72,9 @@
     <ClCompile Include="LittleEngine\Physics\CollisionManager.cpp">
       <Filter>LittleEngine\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="LittleEngine\Debug\Profiler.cpp">
+      <Filter>LittleEngine\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LittleEngine\Repository\LoadHelpers.h">
@@ -127,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\LittleEngine.h">
       <Filter>LittleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Debug\Profiler.h">
+      <Filter>LittleEngine\Debug</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

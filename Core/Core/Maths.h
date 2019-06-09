@@ -62,6 +62,7 @@ public:
 	void Seed(s32 seed);
 	s32 NextDeterministic();
 	s32 NextNonDeterministic();
+	s32 Next(bool bDeterministic);
 };
 
 template <typename T>

@@ -2,6 +2,7 @@
 #include "Core/Logger.h"
 #include "LittleEngine/Debug/Tweakable.h"
 #include "ParticleSystem.h"
+#include "LittleEngine/Debug/Profiler.h"
 #include "LEGame/Utility/Debug/DebugProfiler.h"
 #include "LEGame/Utility/ParticleSystem/PSEmitter.h"
 
@@ -64,7 +65,16 @@ void ParticleSystem::Stop()
 
 void ParticleSystem::Tick(Time dt)
 {
-	PROFILE_START(m_name, Colour::Yellow);
+#if ENABLED(PROFILER)
+	String id = m_name;
+	Strings::ToUpper(id);
+	if (m_profileColour == Colour())
+	{
+		Maths::Random r(50, 250);
+		m_profileColour = Colour(r.Next(false), r.Next(false), r.Next(false));
+	}
+#endif
+	PROFILE_START(id, m_profileColour);
 	Super::Tick(dt);
 
 	bool bAnyPlaying = false;
@@ -74,6 +84,6 @@ void ParticleSystem::Tick(Time dt)
 		bAnyPlaying |= emitter->m_bEnabled;
 	}
 	m_bIsPlaying = bAnyPlaying;
-	PROFILE_STOP(m_name);
+	PROFILE_STOP(id);
 }
 } // namespace LittleEngine

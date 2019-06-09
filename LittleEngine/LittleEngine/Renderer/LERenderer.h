@@ -17,13 +17,6 @@ struct RendererData
 // \warning: Ensure SFViewport remains alive until destruction is complete!
 class LERenderer final : public SFRenderer
 {
-#if DEBUGGING
-public:
-	std::function<void()> m_onLockStart, m_onLockStop;
-	std::function<void()> m_onSwapStart, m_onSwapStop;
-	std::function<void()> m_onRenderStart, m_onRenderEnd;
-#endif
-
 private:
 	RendererData m_data;
 	Map<u32, SFViewportSize> m_viewportSizes;

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="LittleEngine\Audio\LEAudio.cpp" />
     <ClCompile Include="LittleEngine\Context\LEContext.cpp" />
+    <ClCompile Include="LittleEngine\Debug\Profiler.cpp" />
     <ClCompile Include="LittleEngine\Debug\Tweakable.cpp" />
     <ClCompile Include="LittleEngine\Input\LEInput.cpp" />
     <ClCompile Include="LittleEngine\Input\Gamepad.cpp" />
@@ -38,6 +39,7 @@
   <ItemGroup>
     <ClInclude Include="LittleEngine\Audio\LEAudio.h" />
     <ClInclude Include="LittleEngine\Context\LEContext.h" />
+    <ClInclude Include="LittleEngine\Debug\Profiler.h" />
     <ClInclude Include="LittleEngine\Debug\Tweakable.h" />
     <ClInclude Include="LittleEngine\FatalEngineException.h" />
     <ClInclude Include="LittleEngine\Input\LEInput.h" />

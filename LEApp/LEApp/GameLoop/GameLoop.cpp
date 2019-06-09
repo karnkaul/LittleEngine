@@ -2,6 +2,7 @@
 #include "Core/Logger.h"
 #include "Core/FileLogger.h"
 #include "LittleEngine/FatalEngineException.h"
+#include "LittleEngine/Debug/Profiler.h"
 #include "LEGame/Model/GameConfig.h"
 #include "LEGame/GameFramework.h"
 #include "LEGame/Utility/Debug/Console/DebugConsole.h"
@@ -122,21 +123,11 @@ void CreateContext(GameConfig& config)
 	data.renderThreadStartDelay = config.GetRenderThreadStartDelay();
 	data.bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
 	uContext = MakeUnique<LEContext>(std::move(data));
-#if ENABLED(PROFILER)
-	Time dt60Hz = Time::Seconds(1.0f / 60);
-	LERenderer* pR = uContext->Renderer();
-	pR->m_onRenderStart = [dt60Hz]() { PROFILE_CUSTOM("Render", dt60Hz, Colour(219, 10, 87)); };
-	pR->m_onRenderEnd = []() { PROFILE_STOP("Render"); };
-	pR->m_onLockStart = []() { PROFILE_CUSTOM("Lock", maxFrameTime, Colour(63, 89, 250)); };
-	pR->m_onLockStop = []() { PROFILE_STOP("Lock"); };
-	pR->m_onSwapStart = []() { PROFILE_CUSTOM("Swap", maxFrameTime, Colour(255, 244, 17)); };
-	pR->m_onSwapStop = []() { PROFILE_STOP("Swap"); };
-#endif
 }
 
 bool Tick(Time dt)
 {
-	PROFILE_START("Tick", Colour(127, 0, 255, 255));
+	PROFILE_START("TICK", Colour(127, 0, 255));
 	uRepository->Tick(dt);
 	bool bYield = uWSM->Tick(dt);
 	bYield |= uContext->Update();
@@ -144,7 +135,7 @@ bool Tick(Time dt)
 #if ENABLED(CONSOLE)
 	Console::Tick(dt);
 #endif
-	PROFILE_STOP("Tick");
+	PROFILE_STOP("TICK");
 #if ENABLED(PROFILER)
 	Profiler::Tick(dt);
 #endif

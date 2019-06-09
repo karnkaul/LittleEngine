@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <mutex>
+#include "SFML/Graphics.hpp"
 #include "Core/Utils.h"
 #include "Core/Logger.h"
 #include "SFPrimitive.h"
@@ -8,7 +9,6 @@
 #include "ISFRenderBuffer.h"
 #include "SFMLAPI/Viewport/SFViewport.h"
 #include "SFMLAPI/Viewport/SFViewportData.h"
-#include "SFML/Graphics.hpp"
 
 namespace LittleEngine
 {

@@ -47,7 +47,7 @@ WSMLoadingUI::WSMLoadingUI(LEContext& context) : m_pContext(&context)
 	m_uProgressBar->m_transform.anchor = {-1, 0};
 	m_uProgressBar->m_transform.padding = {0, progressBarSize.y * Fixed::OneHalf};
 	m_uProgressBar->m_transform.nPosition = {-Fixed::One, -Fixed::One};
-	m_uProgressBar->Tick(Time::Zero);
+	m_uProgressBar->Tick();
 }
 
 WSMLoadingUI::~WSMLoadingUI()
@@ -80,7 +80,7 @@ void WSMLoadingUI::Tick(Time dt, Fixed progress)
 void WSMLoadingUI::Reset()
 {
 	m_uProgressBar->m_transform.size = {Fixed::Zero, progressBarSize.y};
-	m_uProgressBar->Tick(Time::Zero);
+	m_uProgressBar->Tick();
 }
 
 void WSMLoadingUI::TickElements(Time dt)
