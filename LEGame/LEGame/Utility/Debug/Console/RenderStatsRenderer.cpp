@@ -35,7 +35,20 @@ RenderStatsRenderer::RenderStatsRenderer(LEContext& context)
 	Fixed nY(-75, 100);
 	Fixed x(82, 100);
 	Fixed dx(12, 100);
+	Vector2 size(170, 140);
+	Vector2 pad(-20, 10);
+	Colour bg(20, 20, 20, 150);
 	LERenderer* pRenderer = context.Renderer();
+
+	m_uBG = MakeUnique<UIElement>(static_cast<LayerID>(LAYER_TOP - 1), true);
+	m_uBG->OnCreate(context, "RenderStatsBG");
+	m_uBG->m_transform.size = size;
+	m_uBG->m_transform.anchor = {1, -1};
+	m_uBG->m_transform.nPosition = {1, -1};
+	m_uBG->m_transform.padding = pad;
+	m_uBG->SetPanel(bg);
+	m_uBG->GetPrimitive()->SetEnabled(true);
+	m_uBG->Tick(Time::Zero);
 
 	m_uTitles = MakeUnique<UIElement>(LAYER_TOP, true);
 	m_uTitles->OnCreate(context, "RenderStatsTitles");
@@ -57,6 +70,7 @@ RenderStatsRenderer::~RenderStatsRenderer() = default;
 
 void RenderStatsRenderer::Tick(Time /*dt*/)
 {
+	m_uBG->GetPrimitive()->SetEnabled(s_bConsoleRenderStatsEnabled);
 	m_uTitles->GetText()->SetEnabled(s_bConsoleRenderStatsEnabled);
 	m_uValues->GetText()->SetEnabled(s_bConsoleRenderStatsEnabled);
 	if (s_bConsoleRenderStatsEnabled)

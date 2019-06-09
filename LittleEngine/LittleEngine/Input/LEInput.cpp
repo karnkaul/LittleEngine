@@ -166,7 +166,7 @@ void LEInput::FireCallbacks()
 		size_t curr = m_contexts.size();
 		if (curr != prev)
 		{
-			LOG_D("[EngineInput] Deleted %d stale contexts", prev - curr);
+			LOG_D("[Input] Deleted %d stale contexts", prev - curr);
 		}
 
 		if (m_uSudoContext)

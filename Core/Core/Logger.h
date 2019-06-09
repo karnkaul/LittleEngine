@@ -26,7 +26,7 @@ enum class LogSeverity
 	Error = 4
 };
 
-extern std::function<void(const char*)> g_OnLogStr;
+extern std::function<bool(const char*)> g_OnLogStr;
 extern LogSeverity g_MinLogSeverity;
 
 void Log(LogSeverity severity, const char* pText, ...);

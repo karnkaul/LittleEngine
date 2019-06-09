@@ -102,7 +102,7 @@ T* LERepository::Load(String id, bool bReload)
 	if (!bReload)
 	{
 		LOG_W(
-			"[EngineRepository] Synchronously loading Asset (add id to manifest or use LoadAsync() "
+			"[Repository] Synchronously loading Asset (add id to manifest or use LoadAsync() "
 			"to "
 			"suppress warning) [%s]",
 			id.c_str());
@@ -116,7 +116,7 @@ T* LERepository::Load(String id, bool bReload)
 	{
 		if (!bReload)
 		{
-			LOG_E("[EngineRepository] Asset not present in cooked archive or on filesystem! [%s]", id.c_str());
+			LOG_E("[Repository] Asset not present in cooked archive or on filesystem! [%s]", id.c_str());
 		}
 		return nullptr;
 	}
@@ -125,7 +125,7 @@ T* LERepository::Load(String id, bool bReload)
 	{
 		if (!bReload)
 		{
-			LOG_W("[EngineRepository] Asset present on filesystem but not in cooked archive! [%s]", id.c_str());
+			LOG_W("[Repository] Asset present on filesystem but not in cooked archive! [%s]", id.c_str());
 		}
 	}
 	// Not on filesystem (but in cooked archive)
@@ -133,7 +133,7 @@ T* LERepository::Load(String id, bool bReload)
 	{
 		if (!bReload)
 		{
-			LOG_W("[EngineRepository] Asset present in cooked archive but not on filesystem! [%s]", id.c_str());
+			LOG_W("[Repository] Asset present in cooked archive but not on filesystem! [%s]", id.c_str());
 		}
 		pT = LoadFromArchive<T>(id);
 	}
@@ -145,7 +145,7 @@ T* LERepository::Load(String id, bool bReload)
 #else
 	if (!bInCooked)
 	{
-		LOG_E("[EngineRepository] Asset not present in cooked archive! [%s]", id.c_str());
+		LOG_E("[Repository] Asset not present in cooked archive! [%s]", id.c_str());
 	}
 	else
 	{
@@ -176,19 +176,19 @@ Deferred<T*> LERepository::LoadAsync(String id)
 	bool bOnFilesystem = DoesFileAssetExist(id);
 	if (!bInCooked && !bOnFilesystem)
 	{
-		LOG_E("[EngineRepository] Asset not present in cooked archive or on filesystem! [%s]", id.c_str());
+		LOG_E("[Repository] Asset not present in cooked archive or on filesystem! [%s]", id.c_str());
 		sPromise->set_value(nullptr);
 		return deferred;
 	}
 	// Not in cooked archive (but on filesystem)
 	if (!bInCooked)
 	{
-		LOG_W("[EngineRepository] Asset present on filesystem but not in cooked archive! [%s]", id.c_str());
+		LOG_W("[Repository] Asset present on filesystem but not in cooked archive! [%s]", id.c_str());
 	}
 	// Not on filesystem (but in cooked archive)
 	if (!bOnFilesystem)
 	{
-		LOG_W("[EngineRepository] Asset present in cooked archive but not on filesystem! [%s]", id.c_str());
+		LOG_W("[Repository] Asset present in cooked archive but not on filesystem! [%s]", id.c_str());
 		Core::Jobs::Enqueue(
 			[&, sPromise, id]() { sPromise->set_value(LoadFromArchive<T>(std::move(id))); }, "", true);
 	}
@@ -201,7 +201,7 @@ Deferred<T*> LERepository::LoadAsync(String id)
 #else
 	if (!bInCooked)
 	{
-		LOG_E("[EngineRepository] Asset not present in cooked archive! [%s]", id.c_str());
+		LOG_E("[Repository] Asset not present in cooked archive! [%s]", id.c_str());
 		sPromise->set_value(nullptr);
 	}
 	else
@@ -271,7 +271,7 @@ UPtr<T> LERepository::CreateAsset(const String& id, Vec<u8> buffer)
 	{
 		return nullptr;
 	}
-	LOG_I("[EngineRepository] Decompressed %s [%s]", g_szAssetType[ToIdx(uT->GetType())], id.c_str());
+	LOG_I("== [%s] %s decompressed", id.c_str(), g_szAssetType[ToIdx(uT->GetType())]);
 	return std::move(uT);
 }
 
@@ -292,7 +292,7 @@ UPtr<T> LERepository::RetrieveAsset(const String& id)
 	{
 		return nullptr;
 	}
-	LOG_I("[EngineRepository] Loaded %s from filesystem [%s]", g_szAssetType[ToIdx(uT->GetType())], id.c_str());
+	LOG_I("== [%s] %s loaded from filesystem", id.c_str(), g_szAssetType[ToIdx(uT->GetType())]);
 	return std::move(uT);
 }
 #endif

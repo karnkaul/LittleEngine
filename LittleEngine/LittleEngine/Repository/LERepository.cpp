@@ -35,12 +35,12 @@ LERepository::LERepository(String archivePath, String rootDir)
 	}
 	m_uCooked = MakeUnique<Core::ArchiveReader>();
 	m_uCooked->Load(archivePath.c_str());
-	LOG_I("[EngineRepository] Located cooked archive at [%s]", archivePath.c_str());
+	LOG_I("[Repository] Located cooked archive at [%s]", archivePath.c_str());
 
 	String fontID = "Fonts/main.ttf";
 	if (!m_uCooked->IsPresent(fontID.c_str()))
 	{
-		LOG_E("[EngineRepository] Cooked assets does not contain %s!", fontID.c_str());
+		LOG_E("[Repository] Cooked assets does not contain %s!", fontID.c_str());
 	}
 	else
 	{
@@ -53,7 +53,7 @@ LERepository::LERepository(String archivePath, String rootDir)
 		}
 		else
 		{
-			LOG_E("[EngineRepository] Could not load %s from Cooked assets!", fontID.c_str());
+			LOG_E("[Repository] Could not load %s from Cooked assets!", fontID.c_str());
 		}
 	}
 
@@ -68,11 +68,11 @@ LERepository::LERepository(String archivePath, String rootDir)
 		}
 		else
 		{
-			LOG_E("[EngineRepository] Could not load %s from filesystem assets!", fontID.c_str());
+			LOG_E("[Repository] Could not load %s from filesystem assets!", fontID.c_str());
 		}
 	}
 #endif
-	LOG_D("[EngineRepository] constructed");
+	LOG_D("[Repository] constructed");
 	Assert(m_pDefaultFont, "Invariant violated: Default Font is null!");
 
 	g_pRepository = this;
@@ -121,7 +121,7 @@ void LERepository::UnloadAll(bool bUnloadDefaultFont)
 		Core::RemoveIf<String, UPtr<Asset>>(
 			m_loaded, [fontID](UPtr<Asset>& uAsset) { return uAsset->GetID() != fontID; });
 	}
-	LOG_I("[EngineRepository] cleared");
+	LOG_I("[Repository] cleared");
 }
 
 void LERepository::Tick(Time dt)
@@ -144,7 +144,7 @@ LERepository::~LERepository()
 	g_pRepository = nullptr;
 	m_pDefaultFont = nullptr;
 	UnloadAll(true);
-	LOG_D("[EngineRepository] destroyed");
+	LOG_D("[Repository] destroyed");
 }
 
 #if ENABLED(FILESYSTEM_ASSETS)

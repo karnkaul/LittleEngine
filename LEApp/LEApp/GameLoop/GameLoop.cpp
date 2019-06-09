@@ -36,6 +36,8 @@ TweakS32(ticksPerSec, nullptr);
 
 bool Init(s32 argc, char** argv)
 {
+	OS::Env()->SetVars(argc, argv);
+
 #if ENABLED(TWEAKABLES)
 	ticksPerSec.BindCallback([](const String& val) {
 		s32 newRate = Strings::ToS32(val);
@@ -53,13 +55,13 @@ bool Init(s32 argc, char** argv)
 #endif
 	config.Init();
 #if !SHIPPING
-	LOG_I("[GameLoop] Initialising EventLoop, loading config...");
+	LOG_I("[GameLoop] Initialising event loop, loading config...");
 	config.Load("_config.gd");
 #endif
 	Core::g_MinLogSeverity = config.GetLogLevel();
 	bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
 	bRenderThread = config.ShouldCreateRenderThread();
-
+	
 	if (OS::Threads::GetVacantThreadCount() > 0)
 	{
 		String header = "Game: " + GameConfig::GetGameVersion().ToString() +
@@ -79,7 +81,6 @@ bool Init(s32 argc, char** argv)
 		}
 	}
 
-	OS::Env()->SetVars(argc, argv);
 	Core::Jobs::Init(config.GetJobWorkerCount());
 
 #if DEBUGGING

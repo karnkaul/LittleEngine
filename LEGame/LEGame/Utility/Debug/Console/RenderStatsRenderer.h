@@ -16,6 +16,7 @@ public:
 	static bool s_bConsoleRenderStatsEnabled;
 
 private:
+	UPtr<UIElement> m_uBG;
 	UPtr<UIElement> m_uTitles;
 	UPtr<UIElement> m_uValues;
 

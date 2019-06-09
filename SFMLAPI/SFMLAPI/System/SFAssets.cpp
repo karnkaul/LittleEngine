@@ -40,7 +40,7 @@ Asset::~Asset()
 {
 	if (!m_bError)
 	{
-		LOG_I("%s [%s] destroyed", g_szAssetType[ToIdx(m_type)], m_id.c_str());
+		LOG_I("-- [%s] %s destroyed", m_id.c_str(), g_szAssetType[ToIdx(m_type)]);
 	}
 }
 

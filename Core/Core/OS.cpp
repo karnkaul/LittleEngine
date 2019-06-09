@@ -94,8 +94,8 @@ void Join(Handle& handle)
 			{
 				iter->uThread->join();
 			}
-			Core::RemoveIf<Thread>(threads,
-							 [handle](const Thread& thread) { return thread.handle == handle; });
+			Core::RemoveIf<Thread>(
+				threads, [handle](const Thread& thread) { return thread.handle == handle; });
 		}
 		handle = 0;
 	}
@@ -115,7 +115,7 @@ u32 GetVacantThreadCount()
 {
 	return GetMaxConcurrentThreadCount(false) - GetRunningThreadCount(false);
 }
-}
+} // namespace Threads
 void EnvData::SetVars(s32 argc, char** argv)
 {
 	mainThreadID = std::this_thread::get_id();
@@ -133,6 +133,13 @@ void EnvData::SetVars(s32 argc, char** argv)
 		m_fileEngineVersion = versions.second;
 #endif
 	}
+
+#if _WIN64
+	DEVMODE lpDevMode;
+	memset(&lpDevMode, 0, sizeof(DEVMODE));
+	lpDevMode.dmSize = sizeof(DEVMODE);
+	EnumDisplaySettings(nullptr, ENUM_CURRENT_SETTINGS, &lpDevMode);
+#endif
 
 	String logOut;
 	for (s32 i = 1; i < argc; ++i)
@@ -191,6 +198,19 @@ Version EnvData::GetFileGameVersion() const
 Version EnvData::GetFileEngineVersion() const
 {
 	return m_fileEngineVersion;
+}
+
+u32 GetScreenRefreshRate(u32 assume)
+{
+	u32 refreshRate = assume;
+#if _WIN64
+	DEVMODE lpDevMode;
+	memset(&lpDevMode, 0, sizeof(DEVMODE));
+	lpDevMode.dmSize = sizeof(DEVMODE);
+	EnumDisplaySettings(nullptr, ENUM_CURRENT_SETTINGS, &lpDevMode);
+	refreshRate = lpDevMode.dmDisplayFrequency;
+#endif
+	return refreshRate;
 }
 
 bool IsMainThread()
