@@ -7,7 +7,7 @@
                 "emitterAngle": { "min": 0, "max": 0 },
                 "spawnSpeed": { "min": 0.03, "max": 0.2},
                 "spawnAngularSpeed": { "min": 0, "max": 0 },
-                "numParticles": 2000,
+                "numParticles": 3000,
                 "bPreWarm": true,
                 "bFireOnce": false
             },
