@@ -31,6 +31,7 @@ Vector2 progressBarSize;
 Fixed textWidth;
 Fixed profilerHeight;
 u32 maxEntries = 30;
+u32 killEntryAfterTimeScale = 10;
 UByte barAlpha = 180;
 bool bProfilerEnabled = false;
 
@@ -106,8 +107,7 @@ void Renderer::Tick(Time dt)
 	while (iter != entries.end())
 	{
 		Entry& entry = iter->second;
-		Time maxTime = entry.maxTime;
-		if ((now - entry.startTime) > maxTime.Scale(100))
+		if ((now - entry.startTime) > entry.maxTime.Scaled(killEntryAfterTimeScale))
 		{
 			if (entry.bCustom)
 			{
@@ -123,7 +123,7 @@ void Renderer::Tick(Time dt)
 
 	size_t top = 0;
 	size_t bottom = maxEntries;
-	size_t idx = 0;	
+	size_t idx = 0;
 	{
 		Lock lock(entriesMutex);
 		for (auto& kvp : entries)
@@ -141,7 +141,7 @@ void Renderer::Tick(Time dt)
 			{
 				UIEntry& uiEntry = m_uiEntries[idx];
 				uiEntry.uLabelElement->SetText(UIText(entry.id, 20, entry.colour));
-				uiEntry.uProgressBar->SetProgress(entry.timeRatio);	
+				uiEntry.uProgressBar->SetProgress(entry.timeRatio);
 				Colour barColour = entry.colour;
 				barColour.a = barAlpha;
 				uiEntry.uProgressBar->GetPrimitive()->SetPrimaryColour(barColour);

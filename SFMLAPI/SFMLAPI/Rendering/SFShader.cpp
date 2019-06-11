@@ -6,7 +6,8 @@
 
 namespace LittleEngine
 {
-const char* g_szShaderTypes[static_cast<size_t>(ShaderType::_COUNT)] = {"Invalid", "Vertex", "Fragment", "VertFrag"};
+const char* g_szShaderTypes[ToIdx(ShaderType::_COUNT)] = {"Invalid", "Vertex",
+																		"Fragment", "VertFrag"};
 
 SFShader::SFShader(String id) : m_id(std::move(id))
 {
@@ -16,13 +17,25 @@ void SFShader::Compile(const String& code, ShaderType type)
 {
 	Assert(type == ShaderType::Vertex || type == ShaderType::Fragment,
 		   "Can only compile single ShaderType via this overload");
-	m_type = type;
 	m_bError = true;
 	if (sf::Shader::isAvailable())
 	{
 		if (!code.empty())
 		{
-			sf::Shader::Type sfType = type == ShaderType::Fragment ? sf::Shader::Fragment : sf::Shader::Vertex;
+			sf::Shader::Type sfType = sf::Shader::Vertex;
+			switch (type)
+			{
+			default:
+			case ShaderType::Vertex:
+				m_type = VERT;
+				sfType = sf::Shader::Vertex;
+				break;
+
+			case ShaderType::Fragment:
+				m_type |= FRAG;
+				sfType = sf::Shader::Fragment;
+				break;
+			}
 			if (m_shader.loadFromMemory(code, sfType))
 			{
 				m_bError = false;
@@ -31,12 +44,8 @@ void SFShader::Compile(const String& code, ShaderType type)
 	}
 	if (m_bError)
 	{
-		m_type = ShaderType::Invalid;
-		LOG_E("[%s] Error loading %s Shader!", m_id.c_str(), g_szShaderTypes[static_cast<size_t>(m_type)]);
-	}
-	else
-	{
-		m_type = type;
+		m_type = 0;
+		LOG_E("[%s] Error loading %s Shader!", m_id.c_str(), g_szShaderTypes[ToIdx(m_type)]);
 	}
 }
 
@@ -52,12 +61,12 @@ void SFShader::Compile(const String& vertCode, const String& fragCode)
 	}
 	if (m_bError)
 	{
-		LOG_E("[%s] Error loading %s Shader!", m_id.c_str(), g_szShaderTypes[static_cast<size_t>(m_type)]);
-		m_type = ShaderType::Invalid;
+		LOG_E("[%s] Error loading %s Shader!", m_id.c_str(), g_szShaderTypes[ToIdx(m_type)]);
+		m_type = 0;
 	}
 	else
 	{
-		m_type = ShaderType::VertFrag;
+		m_type = VERT | FRAG;
 	}
 }
 
@@ -65,7 +74,7 @@ SFShader::~SFShader()
 {
 	if (!m_bError)
 	{
-		LOG_I("-- [%s] %s Shader destroyed", m_id.c_str(), g_szShaderTypes[static_cast<size_t>(m_type)]);
+		LOG_I("-- [%s] %s Shader destroyed", m_id.c_str(), g_szShaderTypes[ToIdx(m_type)]);
 	}
 }
 
@@ -76,7 +85,19 @@ const String& SFShader::GetID() const
 
 ShaderType SFShader::GetType() const
 {
-	return m_type;
+	if (m_type == VERT)
+	{
+		return ShaderType::Vertex;
+	}
+	if (m_type == FRAG)
+	{
+		return ShaderType::Fragment;
+	}
+	if (m_type & VERT && m_type & FRAG)
+	{
+		return ShaderType::VertFrag;
+	}
+	return ShaderType::Invalid;
 }
 
 void SFShader::Draw(SFPrimitive& primitive, SFViewport& viewport)

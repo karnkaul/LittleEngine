@@ -7,7 +7,7 @@ namespace LittleEngine
 {
 struct ShaderRepoData
 {
-	String codePrefix = "#version 120";
+	String codePrefix = "#version 120\n";
 	String assetIDPrefix = "Texts/Shaders/";
 	String vertExt = ".vsh";
 	String fragExt = ".fsh";
@@ -62,7 +62,7 @@ SFShader* ShaderRepository::LoadShader(const String& id, ShaderType asType)
 		auto pText = g_pRepository->Load<TextAsset>(vsAssetID);
 		if (pText)
 		{
-			vertCode = pText->GetText();
+			vertCode = s_data.codePrefix + pText->GetText();
 		}
 	}
 
@@ -72,7 +72,7 @@ SFShader* ShaderRepository::LoadShader(const String& id, ShaderType asType)
 		auto pText = g_pRepository->Load<TextAsset>(fsAssetID);
 		if (pText)
 		{
-			fragCode = pText->GetText();
+			fragCode = s_data.codePrefix + pText->GetText();
 		}
 	}
 
@@ -80,7 +80,7 @@ SFShader* ShaderRepository::LoadShader(const String& id, ShaderType asType)
 	switch (asType)
 	{
 	default:
-	break;
+		break;
 	case ShaderType::Vertex:
 	{
 		uT->Compile(std::move(vertCode), ShaderType::Vertex);
@@ -101,7 +101,7 @@ SFShader* ShaderRepository::LoadShader(const String& id, ShaderType asType)
 	if (uT->GetType() != ShaderType::Invalid)
 	{
 		LOG_I("== [%s] %s Shader created", uT->GetID().c_str(),
-				g_szShaderTypes[static_cast<size_t>(uT->GetType())]);
+			  g_szShaderTypes[ToIdx(uT->GetType())]);
 		T* pT = uT.get();
 		s_shaderMap.emplace(id, std::move(uT));
 		return pT;

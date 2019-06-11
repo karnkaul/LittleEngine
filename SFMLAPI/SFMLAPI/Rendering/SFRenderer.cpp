@@ -17,8 +17,7 @@ namespace LittleEngine
 RenderData g_renderData;
 #endif
 
-SFRenderer::SFRenderer(SFViewport& viewport)
-	: m_pViewport(&viewport)
+SFRenderer::SFRenderer(SFViewport& viewport) : m_pViewport(&viewport)
 {
 	m_bRendering.store(true);
 }
@@ -70,13 +69,22 @@ void SFRenderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 						if (pPrimitive->m_pShader)
 						{
 							pPrimitive->m_pShader->Draw(*pPrimitive, *m_pViewport);
-						}	
+						}
 						else
 						{
-							m_pViewport->draw(pPrimitive->m_circle);
-							m_pViewport->draw(pPrimitive->m_rectangle);
-							m_pViewport->draw(pPrimitive->m_sprite);
-							m_pViewport->draw(pPrimitive->m_text);
+							if (pPrimitive->m_flags & SFPrimitive::SHAPE)
+							{
+								m_pViewport->draw(pPrimitive->m_circle);
+								m_pViewport->draw(pPrimitive->m_rectangle);
+							}
+							else if (pPrimitive->m_flags & SFPrimitive::SPRITE)
+							{
+								m_pViewport->draw(pPrimitive->m_sprite);
+							}
+							else if (pPrimitive->m_flags & SFPrimitive::TEXT)
+							{
+								m_pViewport->draw(pPrimitive->m_text);
+							}
 						}
 					}
 
@@ -116,7 +124,7 @@ void SFRenderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 
 		// Release lock
 		buffer.m_mutex.unlock();
-		
+
 		// Wait for VSync
 		m_pViewport->display();
 	}

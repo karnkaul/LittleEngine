@@ -53,7 +53,7 @@ AssetIDContainer::AssetIDContainer(const String& pathPrefix, u32 count, const St
 
 String AssetIDContainer::GetRandom() const
 {
-	size_t index = Maths::Random::Range(static_cast<size_t>(0), assetIDs.size());
+	size_t index = Maths::Random::Range(ToIdx(0), assetIDs.size());
 	return assetIDs[index];
 }
 

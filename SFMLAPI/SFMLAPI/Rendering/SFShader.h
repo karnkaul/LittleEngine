@@ -10,20 +10,28 @@ enum class ShaderType
 	Vertex,
 	Fragment,
 	VertFrag,
-	_COUNT
+
+	_COUNT,
 };
 
-extern const char* g_szShaderTypes[static_cast<size_t>(ShaderType::_COUNT)];
+extern const char* g_szShaderTypes[ToIdx(ShaderType::_COUNT)];
 
 class SFShader
 {
+protected:
+	enum Type
+	{
+		VERT = 1 << 0,
+		FRAG = 1 << 1
+	};
+
 protected:
 	using Super = SFShader;
 
 protected:
 	String m_id;
 private:
-	ShaderType m_type = ShaderType::Invalid;
+	s32 m_type = 0;
 	sf::Shader m_shader;
 	bool m_bError = false;
 

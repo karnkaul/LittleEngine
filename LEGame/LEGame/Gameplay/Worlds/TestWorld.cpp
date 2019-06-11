@@ -290,6 +290,12 @@ void StartTests()
 	}
 
 	pPlayer->GetComponent<RenderComponent>()->SetShader<SFShader>("Default");
+	auto pShader = g_pShaders->GetShader<SFShader>("Default");
+	if (pShader)
+	{
+		/*pShader->SetUniform("xy", sf::Vector2f(0, 0));
+		pShader->SetUniform("texture", 0.0f);*/
+	}
 }
 
 UIButtonDrawer* pButtonDrawer = nullptr;

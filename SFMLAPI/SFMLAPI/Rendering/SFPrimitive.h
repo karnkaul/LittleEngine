@@ -9,6 +9,15 @@ namespace LittleEngine
 {
 class SFPrimitive final
 {
+public:
+	enum Flags
+	{
+		NONE = 0,
+		SHAPE = 1 << 0,
+		SPRITE = 1 << 1,
+		TEXT = 1 << 2
+	};
+
 #if DEBUGGING
 public:
 	bool m_bDebugThisPrimitive = false;
@@ -27,6 +36,7 @@ private:
 	sf::Sprite m_sprite;
 	sf::Text m_text;
 	sf::Vector2f m_prevScale;
+	s32 m_flags = 0;
 	class SFShader* m_pShader = nullptr;
 	std::atomic<bool> m_bTextChanged = false;
 	bool m_bWasDisabled = false;

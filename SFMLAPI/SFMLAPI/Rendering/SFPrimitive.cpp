@@ -161,6 +161,7 @@ SFPrimitive* SFPrimitive::SetSize(Vector2 size, SFShapeType onShape)
 		m_bStatic = false;
 		m_bMakeStatic = true;
 	}
+	m_flags |= SHAPE;
 	return this;
 }
 
@@ -168,6 +169,7 @@ SFPrimitive* SFPrimitive::SetTexture(const TextureAsset& texture)
 {
 	m_gameState.pTexture = &texture;
 	m_sprite.setTexture(m_gameState.pTexture->m_sfTexture);
+	m_flags |= SPRITE;
 	return this;
 }
 
@@ -206,6 +208,7 @@ SFPrimitive* SFPrimitive::SetText(String text)
 		m_bStatic = false;
 		m_bMakeStatic = true;
 	}
+	m_flags |= TEXT;
 	return this;
 }
 
@@ -347,19 +350,37 @@ void SFPrimitive::UpdateRenderState(Fixed alpha)
 	{
 		m_bWasDisabled = true;
 		m_prevScale = Cast(m_renderState.sfScale.max);
-		m_circle.setScale(ZERO);
-		m_rectangle.setScale(ZERO);
-		m_text.setString("");
-		m_sprite.setScale(ZERO);
+		if (m_flags & SHAPE)
+		{
+			m_circle.setScale(ZERO);
+			m_rectangle.setScale(ZERO);
+		}
+		else if (m_flags & TEXT)
+		{
+			m_text.setString("");
+		}
+		else if (m_flags & SPRITE)
+		{
+			m_sprite.setScale(ZERO);
+		}
 	}
 	if (m_bWasDisabled && m_renderState.bEnabled)
 	{
 		m_bWasDisabled = false;
-		m_circle.setScale(m_prevScale);
-		m_rectangle.setScale(m_prevScale);
-		m_text.setString(m_renderState.text);
-		m_text.setCharacterSize(m_renderState.textSize);
-		m_sprite.setScale(m_prevScale);
+		if (m_flags & SHAPE)
+		{
+			m_circle.setScale(m_prevScale);
+			m_rectangle.setScale(m_prevScale);
+		}
+		else if (m_flags & TEXT)
+		{
+			m_text.setString(m_renderState.text);
+			m_text.setCharacterSize(m_renderState.textSize);
+		}
+		else if (m_flags & SPRITE)
+		{
+			m_sprite.setScale(m_prevScale);
+		}
 	}
 	m_bRendered = true;
 	if (m_bStatic || !m_renderState.bEnabled)
@@ -382,7 +403,7 @@ void SFPrimitive::UpdateRenderState(Fixed alpha)
 		m_rectangle.setSize(shapeSize);
 		break;
 	}
-	
+
 	if (m_bTextChanged.load(std::memory_order_relaxed))
 	{
 		sf::String text = m_renderState.text;
@@ -391,7 +412,7 @@ void SFPrimitive::UpdateRenderState(Fixed alpha)
 		m_text.setCharacterSize(textSize);
 		m_bTextChanged.store(false, std::memory_order_relaxed);
 	}
-	
+
 	UpdatePivot();
 
 	sf::Vector2f scale = Cast(m_renderState.sfScale.Lerp(alpha));
@@ -413,32 +434,38 @@ void SFPrimitive::UpdateRenderState(Fixed alpha)
 			  v0.y.ToF32(), v1.x.ToF32(), v1.y.ToF32(), alpha.ToF32(), v2.x.ToF32(), v2.y.ToF32());
 	}
 #endif
+	if (m_flags & SHAPE)
+	{
+		m_circle.setScale(scale);
+		m_circle.setRotation(orientation);
+		m_circle.setPosition(position);
+		m_circle.setFillColor(fill);
+		m_circle.setOutlineThickness(outlineThickness);
+		m_circle.setOutlineColor(outline);
+		m_rectangle.setScale(scale);
+		m_rectangle.setRotation(orientation);
+		m_rectangle.setPosition(position);
+		m_rectangle.setFillColor(fill);
+		m_rectangle.setOutlineThickness(outlineThickness);
+		m_rectangle.setOutlineColor(outline);
+	}
+	else if (m_flags & SPRITE)
+	{
+		m_sprite.setScale(scale);
+		m_sprite.setRotation(orientation);
+		m_sprite.setPosition(position);
+		m_sprite.setColor(fill);
+	}
+	else if (m_flags & TEXT)
+	{
+		m_text.setScale(scale);
+		m_text.setRotation(orientation);
+		m_text.setPosition(position);
+		m_text.setFillColor(fill);
+		m_text.setOutlineThickness(outlineThickness);
+		m_text.setOutlineColor(outline);
+	}
 	
-	m_circle.setScale(scale);
-	m_circle.setRotation(orientation);
-	m_circle.setPosition(position);
-	m_rectangle.setScale(scale);
-	m_rectangle.setRotation(orientation);
-	m_rectangle.setPosition(position);
-	m_sprite.setScale(scale);
-	m_sprite.setRotation(orientation);
-	m_sprite.setPosition(position);
-	m_rectangle.setPosition(position);
-	m_text.setScale(scale);
-	m_text.setRotation(orientation);
-	m_text.setPosition(position);
-
-	m_circle.setFillColor(fill);
-	m_circle.setOutlineThickness(outlineThickness);
-	m_circle.setOutlineColor(outline);
-	m_rectangle.setFillColor(fill);
-	m_rectangle.setOutlineThickness(outlineThickness);
-	m_rectangle.setOutlineColor(outline);
-	m_text.setFillColor(fill);
-	m_text.setOutlineThickness(outlineThickness);
-	m_text.setOutlineColor(outline);
-	m_sprite.setColor(fill);
-
 	if (m_bMakeStatic)
 	{
 		m_bStatic = true;

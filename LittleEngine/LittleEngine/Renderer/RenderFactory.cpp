@@ -33,7 +33,7 @@ inline void SwapState(Primitive& p)
 
 inline size_t GetIdx(const Primitive& p)
 {
-	return static_cast<size_t>(p->GetLayer());
+	return ToIdx(p->GetLayer());
 }
 
 inline void ReconcileState(Primitive& p)
