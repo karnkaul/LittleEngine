@@ -54,19 +54,37 @@ void SFShader::Compile(const String& vertCode, const String& fragCode)
 	m_bError = true;
 	if (sf::Shader::isAvailable())
 	{
-		if (m_shader.loadFromMemory(vertCode, fragCode))
+		if (fragCode.empty() && !vertCode.empty())
 		{
-			m_bError = false;
+			if (m_shader.loadFromMemory(vertCode, sf::Shader::Vertex))
+			{
+				m_bError = false;
+				m_type = VERT;
+			}
+		}
+
+		else if (vertCode.empty() && !fragCode.empty())
+		{
+			if (m_shader.loadFromMemory(fragCode, sf::Shader::Fragment))
+			{
+				m_bError = false;
+				m_type = FRAG;
+			}
+		}
+
+		else if (!vertCode.empty() && !fragCode.empty())
+		{
+			if (m_shader.loadFromMemory(vertCode, fragCode))
+			{
+				m_bError = false;
+				m_type = VERT | FRAG;
+			}
 		}
 	}
 	if (m_bError)
 	{
 		LOG_E("[%s] Error loading %s Shader!", m_id.c_str(), g_szShaderTypes[ToIdx(m_type)]);
 		m_type = 0;
-	}
-	else
-	{
-		m_type = VERT | FRAG;
 	}
 }
 
@@ -104,9 +122,18 @@ void SFShader::Draw(SFPrimitive& primitive, SFViewport& viewport)
 {
 	sf::RenderStates states;
 	states.shader = &m_shader;
-	viewport.draw(primitive.m_circle, states);
-	viewport.draw(primitive.m_rectangle, states);
-	viewport.draw(primitive.m_sprite, states);
-	viewport.draw(primitive.m_text, states);
+	if (primitive.m_flags & SFPrimitive::SHAPE)
+	{
+		viewport.draw(primitive.m_circle, states);
+		viewport.draw(primitive.m_rectangle, states);
+	}
+	else if (primitive.m_flags & SFPrimitive::SPRITE)
+	{
+		viewport.draw(primitive.m_sprite, states);
+	}
+	else if (primitive.m_flags & SFPrimitive::TEXT)
+	{
+		viewport.draw(primitive.m_text, states);
+	}
 }
 } // namespace LittleEngine

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ShaderRepository.h"
-#include "LittleEngine/Repository/LERepository.h"
 
 namespace LittleEngine
 {

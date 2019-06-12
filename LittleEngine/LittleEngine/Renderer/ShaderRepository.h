@@ -2,6 +2,7 @@
 #include "Core/CoreTypes.h"
 #include "Core/Logger.h"
 #include "SFMLAPI/Rendering/SFShader.h"
+#include "LittleEngine/Repository/LERepository.h"
 
 namespace LittleEngine
 {
@@ -26,28 +27,52 @@ public:
 	~ShaderRepository();
 
 	template <typename T>
-	SFShader* GetShader(const String& id);
+	T* GetShader(const String& id);
 	template <typename T>
-	SFShader* CreateShader(const String& id, const String& vertCode, const String& fragCode);
+	T* CreateShader(const String& id, const String& vertCode, const String& fragCode);
 
 	template <typename T>
-	static SFShader* LoadShader(const String& id, ShaderType asType);
+	static T* LoadShader(const String& id, ShaderType asType);
 };
 
 template <typename T>
-SFShader* ShaderRepository::GetShader(const String& id)
+T* ShaderRepository::GetShader(const String& id)
 {
 	static_assert(IsDerived<SFShader, T>(), "T must derive from SFShader");
 	auto search = s_shaderMap.find(id);
 	if (search != s_shaderMap.end())
 	{
-		return search->second.get();
+		return dynamic_cast<T*>(search->second.get());
 	}
 	return nullptr;
 }
 
 template <typename T>
-SFShader* ShaderRepository::LoadShader(const String& id, ShaderType asType)
+T* ShaderRepository::CreateShader(const String& id, const String& vertCode, const String& fragCode)
+{
+	if (s_shaderMap.find(id) != s_shaderMap.end())
+	{
+		LOG_E("[ShaderFactory] [%s] shader already loaded!");
+		return nullptr;
+	}
+
+	UPtr<T> uT = MakeUnique<T>(id);
+	uT->Compile(vertCode, fragCode);
+	if (uT->GetType() != ShaderType::Invalid)
+	{
+		T* pT = uT.get();
+		s_shaderMap.emplace(id, std::move(uT));
+		return pT;
+	}
+	else
+	{
+		LOG_E("Error compiling shader [%s]!", id.c_str());
+	}
+	return nullptr;
+}
+
+template <typename T>
+T* ShaderRepository::LoadShader(const String& id, ShaderType asType)
 {
 	Assert(s_shaderMap.find(id) == s_shaderMap.end(), "Shader ID already loaded!");
 	Assert(g_pRepository, "Repository is null!");
@@ -108,32 +133,9 @@ SFShader* ShaderRepository::LoadShader(const String& id, ShaderType asType)
 	}
 	else
 	{
-		LOG_E("Error loading shader code [%s] from [%s]!", id.c_str(), assetID.c_str());
+		LOG_E("Error loading/compiling shader code [%s] from [%s]!", id.c_str(), assetID.c_str());
 	}
 
-	return nullptr;
-}
-
-template <typename T>
-SFShader* ShaderRepository::CreateShader(const String& id, const String& vertCode, const String& fragCode)
-{
-	if (s_shaderMap.find(id) != s_shaderMap.end())
-	{
-		LOG_E("[ShaderFactory] [%s] shader already loaded!");
-		return nullptr;
-	}
-
-	UPtr<T> uT = MakeUnique<T>(id, vertCode, fragCode);
-	if (!uT->m_bError)
-	{
-		T* pT = uT.get();
-		s_shaderMap.emplace(id, std::move(uT));
-		return pT;
-	}
-	else
-	{
-		LOG_E("Error loading shader %s!", id.c_str());
-	}
 	return nullptr;
 }
 } // namespace LittleEngine
