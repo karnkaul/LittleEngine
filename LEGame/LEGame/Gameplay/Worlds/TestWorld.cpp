@@ -20,6 +20,7 @@ Entity* pEntity4 = nullptr;
 // bool bLoopingPS = false;
 ParticleSystem* pParticleSystem0 = nullptr;
 ParticleSystem* pParticleSystem1 = nullptr;
+Emitter::OnTick::Token psToken;
 
 Deferred<TextureAsset*> largeTex;
 Deferred<TextAsset*> miscText;
@@ -277,6 +278,15 @@ void StartTests()
 	pParticleSystem0 = g_pGameManager->NewEntity<ParticleSystem>(std::move(psName));
 	pParticleSystem0->InitParticleSystem(ParticleSystemData(psGData));
 	pParticleSystem0->Stop();
+	Emitter* pEmitter0 = pParticleSystem0->GetEmitter("main");
+	if (pEmitter0)
+	{
+		psToken = pEmitter0->RegisterOnTick([](Particle& p) {
+			static Vector2 target = g_pGameManager->Renderer()->Project({Fixed::OneHalf, -Fixed(1.5f)}, false);
+			Vector2 wind = (target - p.m_transform.Position()).Normalised();
+			p.m_v.x = wind.x * Maths::Abs(p.m_v.y) * Fixed::OneHalf;
+		});
+	}
 
 	pText = g_pRepository->Load<TextAsset>("VFX/Fire0/Fire0_noloop.psdata");
 	pParticleSystem1 = g_pGameManager->NewEntity<ParticleSystem>("Fire0");
@@ -469,6 +479,7 @@ void Cleanup()
 	{
 		uProgressBG = nullptr;
 	}
+	psToken = nullptr;
 	debugTokens.clear();
 }
 } // namespace

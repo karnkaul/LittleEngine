@@ -4,7 +4,6 @@
 #include "ParticleSystem.h"
 #include "LittleEngine/Debug/Profiler.h"
 #include "LEGame/Utility/Debug/DebugProfiler.h"
-#include "LEGame/Utility/ParticleSystem/PSEmitter.h"
 
 namespace LittleEngine
 {
@@ -41,6 +40,14 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 
 	Core::Log(logSeverity, "%s initialised: [%d] emitters %s", LogNameStr(), emitters.size(),
 			  particles.c_str());
+}
+
+Emitter* ParticleSystem::GetEmitter(const String& id)
+{
+	auto search = std::find_if(m_emitters.begin(), m_emitters.end(), [id](const UPtr<Emitter>& uEmitter) {
+		return uEmitter->m_data.id == id;
+	});
+	return search != m_emitters.end() ? search->get() : nullptr;
 }
 
 void ParticleSystem::Start()

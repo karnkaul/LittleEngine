@@ -2,6 +2,7 @@
 #include "Core/TRange.h"
 #include "LEGame/Model/World/Entity.h"
 #include "LEGame/Utility/ParticleSystem/PSData.h"
+#include "LEGame/Utility/ParticleSystem/PSEmitter.h"
 
 namespace Core
 {
@@ -13,7 +14,7 @@ namespace LittleEngine
 class ParticleSystem : public Entity
 {
 protected:
-	Vec<UPtr<class Emitter>> m_emitters;
+	Vec<UPtr<Emitter>> m_emitters;
 	bool m_bIsPlaying = false;
 #if ENABLED(PROFILER)
 	Colour m_profileColour;
@@ -25,6 +26,8 @@ public:
 
 	void OnCreated() override;
 	void InitParticleSystem(ParticleSystemData data);
+	Emitter* GetEmitter(const String& id);
+
 	void Start();
 	void Stop();
 	inline bool IsPlaying() const

@@ -49,7 +49,7 @@ Particle::Particle(SFQuadVec& quadVec, bool& bDraw) : m_pDraw(&bDraw)
 
 Particle::~Particle() = default;
 
-void Particle::Init(Vector2 u, Time ttl, Transform transform, Fixed w, TRange<UByte> alphaOverTime, TRange<Fixed> scaleOverTime)
+void Particle::Init(Vector2 u, Time ttl, Transform transform, Fixed w, TRange<UByte> alphaOverTime, TRange<Fixed> scaleOverTime, Colour colour)
 {
 	m_bInUse = true;
 	m_ttl = ttl;
@@ -59,6 +59,7 @@ void Particle::Init(Vector2 u, Time ttl, Transform transform, Fixed w, TRange<UB
 	m_transform = transform;
 	m_aot = alphaOverTime;
 	m_sot = scaleOverTime;
+	m_c = colour;
 
 	m_pQuad->SetScale({m_sot.min, m_sot.min}, true)
 		->SetOrientation(transform.localOrientation, true)
@@ -70,7 +71,7 @@ void Particle::Tick(Time dt)
 	if (m_bInUse)
 	{
 		Fixed t(m_t.AsMilliseconds(), m_ttl.AsMilliseconds());
-		Colour c = Colour::White;
+		Colour c = m_c;
 		Fixed s = Lerp(m_sot, t);
 		c.a = Lerp(m_aot, t);
 		bool bImmediate = !m_bWasInUse && m_bInUse;
@@ -111,6 +112,11 @@ Emitter::~Emitter()
 	}
 	m_particles.clear();
 	m_pSFPrimitive->Destroy();
+}
+
+Emitter::OnTick::Token Emitter::RegisterOnTick(OnTick::Callback callback)
+{
+	return m_onTick.Register(callback);
 }
 
 void Emitter::Reset(bool bSetEnabled)
@@ -241,7 +247,8 @@ void Emitter::InitParticle(Particle& p)
 	Fixed w = GetRandom(m_data.spawnData.spawnAngularSpeed);
 	TRange<UByte> aot = m_data.lifetimeData.alphaOverTime;
 	TRange<Fixed> sot = m_data.lifetimeData.scaleOverTime;
-	p.Init(velocity, ttl, transform, w, aot, sot);
+	Colour colour = m_data.spawnData.spawnColour;
+	p.Init(velocity, ttl, transform, w, aot, sot, colour);
 }
 
 void Emitter::InitParticles()
@@ -267,6 +274,7 @@ void Emitter::TickInternal(Time dt, bool bPreWarming)
 			TRange<Fixed> dtRange(Fixed::Zero, ttlSecs);
 			_dt = Time::Seconds(GetRandom<Fixed>(dtRange).ToF32());
 		}
+		m_onTick(p);
 		p.Tick(_dt);
 		if (p.m_bInUse)
 		{
