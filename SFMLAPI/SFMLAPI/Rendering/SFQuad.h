@@ -4,6 +4,7 @@
 #include "SFML/Graphics/VertexArray.hpp"
 #include "SFML/Graphics/RenderStates.hpp"
 #include "SFRenderState.h"
+#include "SFTexRect.h"
 
 namespace LittleEngine
 {
@@ -35,20 +36,22 @@ private:
 	SFQuadState m_renderState;
 	Array<SFVertex, 4> m_vertices;
 	SFTexRect m_texRect;
+	Vector2 m_size;
 	
 public:
 	SFQuad(Rect2 worldRect, SFTexRect texRect = SFTexRect::Zero, Colour colour = Colour::White);
-	~SFQuad();
+	virtual ~SFQuad();
 
 	SFQuad* SetPosition(Vector2 position, bool bImmediate = false);
 	SFQuad* SetScale(Vector2 scale, bool bImmediate = false);
 	SFQuad* SetOrientation(Fixed degrees, bool bImmediate = false);
 	SFQuad* SetColour(Colour colour, bool bImmediate = false);
 	SFQuad* SetTexRect(SFTexRect texRect);
+	SFQuad* SetUV(Fixed u, Fixed v, Fixed du, Fixed dv);
 	SFQuad* SetEnabled(bool bEnabled);
 
 private:
-	void SwapStates();
+	void SwapState();
 	void Reconcile();
 
 	friend class SFQuadVec;
@@ -67,7 +70,7 @@ public:
 	SFQuad* AddQuad();
 	void SetTexture(TextureAsset& texture);
 
-	void SwapStates();
+	void SwapState();
 	void Reconcile();
 
 	bool IsPopulated() const;

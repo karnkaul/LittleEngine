@@ -1,9 +1,9 @@
 #pragma once
+#include "SFML/Graphics.hpp"
 #include "Core/CoreTypes.h"
 #include "Colour.h"
 #include "SFQuad.h"
 #include "SFRenderState.h"
-#include "SFML/Graphics.hpp"
 
 namespace LittleEngine
 {
@@ -37,6 +37,7 @@ private:
 	sf::Text m_text;
 	sf::Vector2f m_prevScale;
 	s32 m_flags = 0;
+	LayerID m_layer = LAYER_DEFAULT;
 	class SFShader* m_pShader = nullptr;
 	std::atomic<bool> m_bTextChanged = false;
 	bool m_bWasDisabled = false;
@@ -56,10 +57,11 @@ public:
 	SFPrimitive* SetPosition(Vector2 worldPosition, bool bImmediate = false);
 	SFPrimitive* SetOrientation(Fixed worldOrientation, bool bImmediate = false);
 	SFPrimitive* SetScale(Vector2 worldScale, bool bImmediate = false);
-	SFPrimitive* SetPivot(Vector2 pivot = Vector2::Zero);
 	SFPrimitive* SetPrimaryColour(Colour sfColour, bool bImmediate = false);
 	SFPrimitive* SetSecondaryColour(Colour sfColour, bool bImmediate = false);
 
+	SFPrimitive* SetPivot(Vector2 pivot = Vector2::Zero);
+	
 	// Shapes and Text
 	SFPrimitive* SetOutline(Fixed thickness);
 
@@ -69,6 +71,7 @@ public:
 	// Sprite
 	SFPrimitive* SetTexture(const class TextureAsset & texture);
 	SFPrimitive* CropTexture(SFTexRect textureRect);
+	SFPrimitive* SetUV(Fixed u, Fixed v, Fixed du, Fixed dv);
 
 	// Text
 	SFPrimitive* SetFont(const class FontAsset& font);
@@ -99,7 +102,6 @@ public:
 	void Destroy();
 
 private:
-	void UpdatePivot();
 	void UpdateRenderState(Fixed alpha);
 
 	friend class SFRenderer;

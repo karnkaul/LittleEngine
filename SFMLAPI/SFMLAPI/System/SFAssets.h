@@ -38,6 +38,8 @@ public:
 	TextureAsset(String id, const String& pathPrefix);
 	TextureAsset(String id, Vec<u8> buffer);
 
+	TextureAsset* SetRepeated(bool bRepeat);
+
 	Vector2 GetTextureSize() const;
 
 private:

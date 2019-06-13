@@ -9,7 +9,8 @@ namespace LittleEngine
 {
 using Matrix3 = Core::Matrix3;
 
-SFQuad::SFQuad(Rect2 worldRect, SFTexRect texRect, Colour colour) : m_texRect(std::move(texRect))
+SFQuad::SFQuad(Rect2 worldRect, SFTexRect texRect, Colour colour)
+	: m_texRect(std::move(texRect)), m_size(worldRect.GetSize())
 {
 	m_vertices[0] = {worldRect.GetTopLeft(), SFTexCoords(m_texRect.min.x, m_texRect.min.y), colour};
 	m_vertices[1] = {worldRect.GetTopRight(), SFTexCoords(m_texRect.max.x, m_texRect.min.y), colour};
@@ -82,13 +83,20 @@ SFQuad* SFQuad::SetTexRect(SFTexRect texRect)
 	return this;
 }
 
+SFQuad* SFQuad::SetUV(Fixed u, Fixed v, Fixed du, Fixed dv)
+{
+	Vector2 min(u * m_size.x, v * m_size.y);
+	Vector2 max(du * m_size.x, dv * m_size.y);
+	return SetTexRect(SFTexRect(SFTexCoords(min), SFTexCoords(max)));
+}
+
 SFQuad* SFQuad::SetEnabled(bool bEnabled)
 {
 	m_gameState.bEnabled = bEnabled;
 	return this;
 }
 
-void SFQuad::SwapStates()
+void SFQuad::SwapState()
 {
 	m_renderState = m_gameState;
 }
@@ -126,11 +134,11 @@ void SFQuadVec::SetTexture(TextureAsset& texture)
 	m_pTexture = &texture;
 }
 
-void SFQuadVec::SwapStates()
+void SFQuadVec::SwapState()
 {
 	for (auto& uQuad : m_quads)
 	{
-		uQuad->SwapStates();
+		uQuad->SwapState();
 	}
 }
 

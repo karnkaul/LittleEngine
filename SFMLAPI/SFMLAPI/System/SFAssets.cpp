@@ -78,6 +78,12 @@ TextureAsset::TextureAsset(String id, Vec<u8> buffer) : Asset(std::move(id), Ass
 	}
 }
 
+TextureAsset* TextureAsset::SetRepeated(bool bRepeat)
+{
+	m_sfTexture.setRepeated(bRepeat);
+	return this;
+}
+
 Vector2 TextureAsset::GetTextureSize() const
 {
 	return Cast(m_sfTexture.getSize());

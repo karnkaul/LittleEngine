@@ -74,8 +74,7 @@ void WorldStateMachine::Start(String manifestPath, String gameStyleID)
 {
 	m_manifestPath = std::move(manifestPath);
 	m_bLoading = true;
-	// TODO - uncomment after adding Worlds
-	if (!m_manifestPath.empty() /*&& s_bHasState*/)
+	if (!m_manifestPath.empty() && s_bHasState)
 	{
 		// LoadAsync all assets in manifest
 		m_pAssetLoader = g_pRepository->LoadAsync(m_manifestPath, [&, gameStyleID]() {

@@ -31,6 +31,7 @@
     <ClInclude Include="SFMLAPI\Rendering\SFRenderer.h" />
     <ClInclude Include="SFMLAPI\Rendering\SFRenderState.h" />
     <ClInclude Include="SFMLAPI\Rendering\SFShader.h" />
+    <ClInclude Include="SFMLAPI\Rendering\SFTexRect.h" />
     <ClInclude Include="SFMLAPI\SFAudio.h" />
     <ClInclude Include="SFMLAPI\SFInput.h" />
     <ClInclude Include="SFMLAPI\SFMLAPI.h" />
@@ -53,8 +54,8 @@
     <ClCompile Include="SFMLAPI\Rendering\SFQuad.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\SFPrimitive.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\SFRenderer.cpp" />
-    <ClCompile Include="SFMLAPI\Rendering\SFRenderState.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\SFShader.cpp" />
+    <ClCompile Include="SFMLAPI\Rendering\SFTexRect.cpp" />
     <ClCompile Include="SFMLAPI\System\SFAssets.cpp" />
     <ClCompile Include="SFMLAPI\System\SFGameClock.cpp" />
     <ClCompile Include="SFMLAPI\System\SFTypes.cpp" />

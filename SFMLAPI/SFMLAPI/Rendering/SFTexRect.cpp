@@ -1,11 +1,16 @@
 #include "stdafx.h"
-#include "SFRenderState.h"
+#include "SFTexRect.h"
+#include "SFMLAPI/System/SFAssets.h"
 
 namespace LittleEngine
 {
 const SFTexCoords SFTexCoords::Zero = SFTexCoords(0, 0);
 
 SFTexCoords::SFTexCoords(u32 x, u32 y) : x(x), y(y)
+{
+}
+
+SFTexCoords::SFTexCoords(Vector2 point) : x(point.x.ToU32()), y(point.y.ToU32())
 {
 }
 
@@ -20,9 +25,14 @@ SFTexRect::SFTexRect(SFTexCoords min, SFTexCoords max) : min(min), max(max)
 {
 }
 
-SFTexRect::SFTexRect(u32 maxX, u32 maxY)
-	: min(SFTexCoords::Zero), max(SFTexCoords(maxX, maxY))
+SFTexRect::SFTexRect(u32 maxX, u32 maxY) : min(SFTexCoords::Zero), max(SFTexCoords(maxX, maxY))
 {
+}
+
+void SFTexRect::Import(const TextureAsset& texture)
+{
+	Vector2 size = texture.GetTextureSize();
+	*this = SFTexRect(size.x.ToU32(), size.y.ToU32());
 }
 
 sf::IntRect SFTexRect::ToSFIntRect() const
@@ -35,14 +45,5 @@ sf::IntRect SFTexRect::ToSFIntRect() const
 bool SFTexRect::IsZero() const
 {
 	return min.x == min.y == max.x == max.y == 0;
-}
-
-void SFRenderState::Reconcile()
-{
-	sfPosition.min = sfPosition.max;
-	sfOrientation.min = sfOrientation.max;
-	sfScale.min = sfScale.max;
-	sfPrimaryColour.min = sfPrimaryColour.max;
-	sfSecondaryColour.min = sfSecondaryColour.max;
 }
 } // namespace LittleEngine

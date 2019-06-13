@@ -73,6 +73,9 @@
     <ClInclude Include="SFMLAPI\Rendering\SFShader.h">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\SFTexRect.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SFMLAPI\Rendering\Colour.cpp">
@@ -92,9 +95,6 @@
     </ClCompile>
     <ClCompile Include="SFMLAPI\System\SFTypes.cpp">
       <Filter>SFMLAPI\System</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\Rendering\SFRenderState.cpp">
-      <Filter>SFMLAPI\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="SFMLAPI\Rendering\SFRenderer.cpp">
       <Filter>SFMLAPI\Rendering</Filter>
@@ -118,6 +118,9 @@
       <Filter>SFMLAPI\Viewport</Filter>
     </ClCompile>
     <ClCompile Include="SFMLAPI\Rendering\SFShader.cpp">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\SFTexRect.cpp">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClCompile>
   </ItemGroup>
