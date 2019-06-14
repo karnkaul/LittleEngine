@@ -4,6 +4,7 @@
 #include "Core/OS.h"
 #include "SFMLAPI/Rendering/SFLayerID.h"
 #include "SFMLAPI/Rendering/SFRenderer.h"
+#include "RenderFactory.h"
 
 namespace LittleEngine
 {
@@ -20,7 +21,7 @@ class LERenderer final : public SFRenderer
 private:
 	RendererData m_data;
 	Map<u32, SFViewportSize> m_viewportSizes;
-	UPtr<class RenderFactory> m_uFactory;	
+	UPtr<RenderFactory> m_uFactory;	
 	OS::Threads::Handle m_threadHandle;
 	std::atomic<bool> m_bPauseRendering = true; // Used to reduce inexplicable lock contention on main thread
 	
@@ -34,7 +35,8 @@ public:
 	Vector2 GetViewSize() const;
 	Vector2 Project(Vector2 nPos, bool bPreClamp) const;
 
-	class SFPrimitive* New(LayerID layer);
+	template <typename T>
+	T* New(LayerID layer);
 
 	Time GetLastSwapTime() const;
 	void Lock_Swap();
@@ -56,4 +58,10 @@ private:
 
 	friend class LEContext;
 };
+
+template <typename T>
+T* LERenderer::New(LayerID layer)
+{
+	return m_uFactory->template New<T>(layer);
+}
 } // namespace LittleEngine

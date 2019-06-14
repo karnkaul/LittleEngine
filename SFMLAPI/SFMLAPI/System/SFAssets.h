@@ -31,7 +31,7 @@ public:
 // \brief TextureAsset is an image texture copied to VRAM
 class TextureAsset : public Asset
 {
-private:
+public:
 	sf::Texture m_sfTexture;
 
 public:
@@ -52,8 +52,9 @@ private:
 class FontAsset : public Asset
 {
 private:
-	sf::Font m_sfFont;
 	Vec<u8> m_fontBuffer;
+public:
+	sf::Font m_sfFont;
 
 public:
 	FontAsset(String id, const String& pathPrefix);
@@ -67,7 +68,7 @@ private:
 // \brief SoundAsset is an audio asset fully loaded in RAM
 class SoundAsset : public Asset
 {
-private:
+public:
 	sf::SoundBuffer m_sfSoundBuffer;
 	Fixed m_volumeScale = Fixed::One;
 

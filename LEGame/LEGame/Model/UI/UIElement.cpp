@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
 #include "SFMLAPI/System/SFAssets.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/Rendering/Primitives.h"
 #include "UIElement.h"
 #include "UIText.h"
 #include "LittleEngine/Renderer/LERenderer.h"
@@ -16,8 +16,8 @@ UIElement::UIElement(LayerID layer, bool bSilent) : UIObject("Untitled", bSilent
 
 UIElement::~UIElement()
 {
-	m_pPrimitive->Destroy();
 	m_pText->Destroy();
+	m_pRect->Destroy();
 }
 
 void UIElement::SetParent(UITransform& parent)
@@ -44,12 +44,10 @@ void UIElement::OnCreated()
 void UIElement::Construct()
 {
 	m_transform.size = GetViewSize();
-	m_pPrimitive = Renderer()->New(m_layer);
-	m_pText = Renderer()->New(static_cast<LayerID>(m_layer + 1));
-	m_pPrimitive->SetEnabled(true);
-	m_pText->SetEnabled(true);
-	m_pPrimitive->SetStatic(true);
-	m_pText->SetStatic(true);
+	m_pRect = Renderer()->New<SFRect>(m_layer);
+	m_pText = Renderer()->New<SFText>(static_cast<LayerID>(m_layer + 1));
+	m_pRect->SetStatic(true)->SetEnabled(true);
+	m_pText->SetStatic(true)->SetEnabled(true);
 }
 
 void UIElement::SetPanel(UByte r, UByte g, UByte b, UByte a)
@@ -61,24 +59,24 @@ void UIElement::SetPanel(UByte r, UByte g, UByte b, UByte a)
 void UIElement::SetPanel(Colour fill, Fixed border, Colour outline)
 {
 	m_bPanel = true;
-	m_pPrimitive->SetPrimaryColour(fill);
-	m_pPrimitive->SetOutline(border);
-	m_pPrimitive->SetSecondaryColour(outline);
-	m_pPrimitive->SetSize(m_transform.size, SFShapeType::Rectangle);
+	m_pRect->SetPrimaryColour(fill);
+	m_pRect->SetOutline(border);
+	m_pRect->SetSecondaryColour(outline);
+	m_pRect->SetSize(m_transform.size);
 }
 
-void UIElement::SetImage(TextureAsset& texture, Colour colour)
-{
-	m_pPrimitive->SetTexture(texture);
-	m_pPrimitive->SetPrimaryColour(colour);
-}
+//void UIElement::SetImage(TextureAsset& texture, Colour colour)
+//{
+//	m_pPrimitive->SetTexture(texture);
+//	m_pPrimitive->SetPrimaryColour(colour);
+//}
 
 void UIElement::SetText(UIText uiText)
 {
 	m_pText->SetFont(*g_pRepository->GetDefaultFont());
 	m_pText->SetText(std::move(uiText.text));
 	m_pText->SetPrimaryColour(uiText.colour);
-	m_pText->SetTextSize(uiText.pixelSize);
+	m_pText->SetSize(uiText.pixelSize);
 }
 
 void UIElement::SetFont(FontAsset& font)
@@ -86,12 +84,12 @@ void UIElement::SetFont(FontAsset& font)
 	m_pText->SetFont(font);
 }
 
-SFPrimitive* UIElement::GetPrimitive() const
+SFRect* UIElement::GetRect() const
 {
-	return m_pPrimitive;
+	return m_pRect;
 }
 
-SFPrimitive* UIElement::GetText() const
+SFText* UIElement::GetText() const
 {
 	return m_pText;
 }
@@ -108,18 +106,18 @@ void UIElement::Tick(Time)
 	}
 	m_transform.anchor.x = Maths::Clamp_11(m_transform.anchor.x);
 	m_transform.anchor.y = Maths::Clamp_11(m_transform.anchor.y);
-	m_pPrimitive->SetPivot(m_transform.anchor);
+	m_pRect->SetPivot(m_transform.anchor);
 	m_pText->SetPivot(m_transform.anchor);
 	if (m_bPanel)
 	{
-		m_pPrimitive->SetSize(m_transform.size, SFShapeType::Rectangle);
+		m_pRect->SetSize(m_transform.size);
 	}
-	m_pPrimitive->SetScale(Vector2::One, true);
+	m_pRect->SetScale(Vector2::One, true);
 	m_pText->SetScale(Vector2::One, true);
-	m_pPrimitive->SetOrientation(Fixed::Zero, true);
+	m_pRect->SetOrientation(Fixed::Zero, true);
 	m_pText->SetOrientation(Fixed::Zero, true);
 	Vector2 viewSize = Renderer()->GetViewSize();
-	m_pPrimitive->SetPosition(m_transform.GetWorldPosition(viewSize));
+	m_pRect->SetPosition(m_transform.GetWorldPosition(viewSize));
 	m_pText->SetPosition(m_transform.GetWorldPosition(viewSize));
 }
 

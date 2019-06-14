@@ -62,8 +62,8 @@ private:
 	class LEContext* m_pContext;
 	Gamepad m_gamepad;
 #if DEBUGGING
-	class SFPrimitive* m_pMouseH = nullptr;
-	SFPrimitive* m_pMouseV = nullptr;
+	class Quad* m_pMouseH = nullptr;
+	Quad* m_pMouseV = nullptr;
 #endif
 
 public:

@@ -2,6 +2,7 @@
 #include "Core/Logger.h"
 #include "WSMLoadingUI.h"
 #include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/Rendering/Primitives/SFText.h"
 #include "LittleEngine/Context/LEContext.h"
 #include "LittleEngine/Repository/LERepository.h"
 #include "LEGame/Model/UI/UIElement.h"
@@ -35,6 +36,7 @@ WSMLoadingUI::WSMLoadingUI(LEContext& context) : m_pContext(&context)
 	m_uTitle->SetFont(*pFont);
 	m_uTitle->SetText(UIText(titleText, titleSize, Colour::White));
 	m_uTitle->m_transform.nPosition = {0, Fixed(0.1f)};
+	m_uTitle->Tick();
 	m_uEllipsis = MakeUnique<UIElement>();
 	m_uEllipsis->OnCreate(context, "WSMLoadingEllipsis");
 	m_uEllipsis->SetFont(*pFont);

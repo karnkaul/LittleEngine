@@ -16,7 +16,6 @@ struct RenderData
 	u32 staticCount = 0;
 	u32 disabledCount = 0;
 	u32 dynamicCount = 0;
-	u32 quadCount = 0;
 	u32 framesPerSecond = 0;
 	std::atomic<u32> rendersPerFrame = 0;
 };

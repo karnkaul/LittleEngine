@@ -17,11 +17,11 @@ struct TileData
 class TileMap
 {
 private:
-	class SFPrimitive* m_pSFPrimitive;
+	class Quads* m_pQuads;
 	bool m_bDestroyPrimitive;
 
 public:
-	TileMap(class SFPrimitive& primitive, bool bAutoDestroyPrimitive = true);
+	TileMap(Quads& quad, bool bAutoDestroyPrimitive = true);
 	virtual ~TileMap();
 
 	void CreateTiles(TileData data);

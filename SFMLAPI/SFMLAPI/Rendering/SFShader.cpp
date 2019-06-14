@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
 #include "SFShader.h"
-#include "SFPrimitive.h"
+#include "Primitives/Primitive.h"
 #include "SFMLAPI/Viewport/SFViewport.h"
 
 namespace LittleEngine
@@ -36,7 +36,7 @@ void SFShader::Compile(const String& code, ShaderType type)
 				sfType = sf::Shader::Fragment;
 				break;
 			}
-			if (m_shader.loadFromMemory(code, sfType))
+			if (m_sfShader.loadFromMemory(code, sfType))
 			{
 				m_bError = false;
 			}
@@ -56,7 +56,7 @@ void SFShader::Compile(const String& vertCode, const String& fragCode)
 	{
 		if (fragCode.empty() && !vertCode.empty())
 		{
-			if (m_shader.loadFromMemory(vertCode, sf::Shader::Vertex))
+			if (m_sfShader.loadFromMemory(vertCode, sf::Shader::Vertex))
 			{
 				m_bError = false;
 				m_type = VERT;
@@ -65,7 +65,7 @@ void SFShader::Compile(const String& vertCode, const String& fragCode)
 
 		else if (vertCode.empty() && !fragCode.empty())
 		{
-			if (m_shader.loadFromMemory(fragCode, sf::Shader::Fragment))
+			if (m_sfShader.loadFromMemory(fragCode, sf::Shader::Fragment))
 			{
 				m_bError = false;
 				m_type = FRAG;
@@ -74,7 +74,7 @@ void SFShader::Compile(const String& vertCode, const String& fragCode)
 
 		else if (!vertCode.empty() && !fragCode.empty())
 		{
-			if (m_shader.loadFromMemory(vertCode, fragCode))
+			if (m_sfShader.loadFromMemory(vertCode, fragCode))
 			{
 				m_bError = false;
 				m_type = VERT | FRAG;
@@ -118,22 +118,8 @@ ShaderType SFShader::GetType() const
 	return ShaderType::Invalid;
 }
 
-void SFShader::Draw(SFPrimitive& primitive, SFViewport& viewport)
+void SFShader::PreDraw(APrimitive*)
 {
-	sf::RenderStates states;
-	states.shader = &m_shader;
-	if (primitive.m_flags & SFPrimitive::SHAPE)
-	{
-		viewport.draw(primitive.m_circle, states);
-		viewport.draw(primitive.m_rectangle, states);
-	}
-	else if (primitive.m_flags & SFPrimitive::SPRITE)
-	{
-		viewport.draw(primitive.m_sprite, states);
-	}
-	else if (primitive.m_flags & SFPrimitive::TEXT)
-	{
-		viewport.draw(primitive.m_text, states);
-	}
+	// Set uniforms here
 }
 } // namespace LittleEngine

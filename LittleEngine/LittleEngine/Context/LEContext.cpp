@@ -13,6 +13,8 @@
 #include "LittleEngine/Renderer/LERenderer.h"
 #include "LittleEngine/Repository/LERepository.h"
 
+#include "SFMLAPI/Rendering/Primitives/Primitive.h"
+
 namespace LittleEngine
 {
 TweakBool(asyncRendering, nullptr);
@@ -172,7 +174,6 @@ bool LEContext::Update()
 		return true;
 	}
 }
-
 void LEContext::StartFrame()
 {
 	m_uRenderer->Reconcile();
@@ -200,9 +201,7 @@ void LEContext::SubmitFrame()
 		static Time dt60Hz = Time::Seconds(1.0f / 60);
 #endif
 		PROFILE_CUSTOM("RENDER", dt60Hz, Colour(219, 10, 87));
-		Time renderElapsed = Time::Now() - m_uRenderer->GetLastSwapTime();
-		Fixed alpha = Maths::ComputeAlpha(renderElapsed, m_data.tickRate);
-		m_uRenderer->Render(alpha);
+		m_uRenderer->Render(Fixed::One);
 		PROFILE_STOP("RENDER");
 	}
 }

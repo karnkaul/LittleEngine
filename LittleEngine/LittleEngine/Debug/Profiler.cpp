@@ -2,7 +2,6 @@
 #include "Profiler.h"
 #if ENABLED(PROFILER)
 #include "Core/Logger.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/System/SFGameClock.h"
 #include "LittleEngine/Debug/Tweakable.h"
 #include "LittleEngine/Context/LEContext.h"

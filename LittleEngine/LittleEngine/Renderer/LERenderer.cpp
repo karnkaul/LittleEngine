@@ -2,11 +2,9 @@
 #include "Core/Asserts.h"
 #include "Core/Logger.h"
 #include "SFMLAPI/Rendering/ISFRenderBuffer.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/Viewport/SFViewportData.h"
 #include "SFMLAPI/Viewport/SFViewport.h"
 #include "LERenderer.h"
-#include "RenderFactory.h"
 #include "LittleEngine/OS.h"
 #include "LittleEngine/Debug/Profiler.h"
 
@@ -76,11 +74,6 @@ Vector2 LERenderer::GetViewSize() const
 Vector2 LERenderer::Project(Vector2 nPos, bool bPreClamp) const
 {
 	return m_pViewport->Project(nPos, bPreClamp);
-}
-
-SFPrimitive* LERenderer::New(LayerID layer)
-{
-	return m_uFactory ? m_uFactory->New(layer) : nullptr;
 }
 
 Time LERenderer::GetLastSwapTime() const

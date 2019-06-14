@@ -42,7 +42,7 @@ private:
 public:
 	CircleCollider(String ownerName = "");
 
-	void SetCircle(Fixed radius);
+	void SetCircle(Fixed diameter);
 	CircleData GetWorldCircle() const;
 
 	bool IsIntersecting(const Collider& other) const override;

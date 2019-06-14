@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Core/Utils.h"
-#include "SFMLAPI/Rendering/SFRenderState.h"
+#include "SFMLAPI/Rendering/Primitives/Quads.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Renderer/LERenderer.h"
 #include "../GameManager.h"
@@ -32,7 +32,7 @@ void Camera::FillViewWithTiles(class TextureAsset& texture)
 	LERenderer* pRenderer = g_pGameManager->Renderer();
 	if (!m_uTileMap)
 	{
-		m_uTileMap = MakeUnique<TileMap>(*pRenderer->New(LAYER_ZERO), true);
+		m_uTileMap = MakeUnique<TileMap>(*pRenderer->New<Quads>(LAYER_ZERO), true);
 	}
 	m_uTileMap->FillView(pRenderer->GetViewSize(), texture);
 }

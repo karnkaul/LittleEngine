@@ -7,17 +7,17 @@ namespace LittleEngine
 {
 struct SpriteSheetData
 {
-	Vec<SFTexRect> frames;
+	Vec<Rect2> frames;
 	Vec<size_t> indices;
 
 	SpriteSheetData() = default;
-	SpriteSheetData(SFTexCoords frameBounds, u32 rows, u32 columns);
+	SpriteSheetData(u32 rows, u32 columns);
 	SpriteSheetData(String serialised);
 	SpriteSheetData(SpriteSheetData&&) = default;
 	SpriteSheetData& operator=(SpriteSheetData&&) = default;
 
 private:
-	void Construct(SFTexCoords frameBounds, u32 rows, u32 columns);
+	void Construct(u32 rows, u32 columns);
 	void Construct(String serialised);
 };
 
@@ -25,6 +25,7 @@ class SpriteSheet
 {
 private:
 	SpriteSheetData m_data;
+	Vector2 m_frameSize;
 	Vec<size_t>::const_iterator m_iterator;
 	Time m_period;
 	TextureAsset* m_pTexture = nullptr;
@@ -47,7 +48,8 @@ public:
 	SpriteSheet& operator=(SpriteSheet&&) = default;
 
 private:
-	SFTexRect GetFrame() const;
+	Rect2 GetFrame() const;
+	Vector2 GetFrameSize() const;
 	void Next();
 
 	friend class RenderComponent;
@@ -56,7 +58,7 @@ private:
 class RenderComponent : public AComponent
 {
 public:
-	class SFPrimitive* m_pSFPrimitive = nullptr;
+	class APrimitive* m_pPrimitive = nullptr;
 	std::optional<SpriteSheet> m_oSpriteSheet;
 	Time m_flipElapsed;
 	Time m_framePeriod;
@@ -71,8 +73,10 @@ public:
 	void SetEnabled(bool bEnabled) override;
 	void Tick(Time dt) override;
 
-	RenderComponent* SetShape(LayerID layer);
-	RenderComponent* SetSprite(TextureAsset& texture, LayerID layer);
+	class SFRect* SetRectangle(LayerID layer);
+	class SFCircle* SetCircle(LayerID layer);
+	class Quad* SetSprite(TextureAsset& texture, LayerID layer);
+	class SFText* SetText(LayerID layer);
 	RenderComponent* SetSpriteSheet(SpriteSheet sheet, LayerID layer);
 	RenderComponent* UnsetSpriteSheet();
 	RenderComponent* SetSpriteFlip(bool bFlip);
