@@ -43,10 +43,10 @@ public:
 	Colour GetSecondaryColour() const;
 
 protected:
-	void OnSwapState() override;
 	void ReconcileGameState() override;
+	void SwapState() override;
 
 protected:
 	DrawableState GetDrawableState(Fixed alpha) const;
 };
-}
+} // namespace LittleEngine

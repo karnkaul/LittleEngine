@@ -3,6 +3,13 @@
 
 namespace Maths
 {
+Rect2 Lerp(Rect2 min, Rect2 max, Fixed alpha)
+{
+	Vector2 tl = Maths::Lerp(min.topLeft, max.topLeft, alpha);
+	Vector2 br = Maths::Lerp(min.bottomRight, max.bottomRight, alpha);
+	return Rect2{tl, br};
+}
+
 bool IsNearlyEqual(f32 lhs, f32 rhs, f32 epsilon)
 {
 	return Abs(lhs - rhs) < epsilon;

@@ -90,16 +90,16 @@ Colour ASFDrawable::GetSecondaryColour() const
 	return m_drawableGameState.tSecondaryColour.max;
 }
 
-void ASFDrawable::OnSwapState()
-{
-	m_drawableRenderState = m_drawableGameState;
-}
-
 void ASFDrawable::ReconcileGameState()
 {
 	APrimitive::ReconcileGameState();
-
 	m_drawableGameState.Reconcile();
+}
+
+void ASFDrawable::SwapState()
+{
+	APrimitive::SwapState();
+	m_drawableRenderState = m_drawableGameState;
 }
 
 ASFDrawable::DrawableState ASFDrawable::GetDrawableState(Fixed alpha) const
@@ -108,9 +108,8 @@ ASFDrawable::DrawableState ASFDrawable::GetDrawableState(Fixed alpha) const
 	Vector2 offset = Fixed::OneHalf * GetBounds().GetSize();
 	Vector2 pivot = m_drawableRenderState.tPivot.Lerp(alpha);
 	ret.origin = Vector2(offset.x * pivot.x, offset.y * pivot.y) + offset;
-	//ret.origin = m_drawableRenderState.tPivot.Lerp(alpha) + offset;
 	ret.secondary = Colour::Lerp(m_drawableRenderState.tSecondaryColour, alpha);
 	ret.outline = m_drawableRenderState.tOutline.Lerp(alpha);
 	return ret;
 }
-}
+} // namespace LittleEngine

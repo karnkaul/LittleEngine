@@ -57,7 +57,7 @@ void SFViewport::Create()
 	Vector2 viewSize = m_viewBounds.GetSize();
 	Fixed worldAspect = viewSize.x / viewSize.y;
 	Fixed screenAspect(m_data.viewportSize.width, m_data.viewportSize.height);
-	if (!Maths::IsNearlyEqual(worldAspect.ToF32(), screenAspect.ToF32()))
+	if (!Maths::IsNearlyEqual(worldAspect.ToF32(), screenAspect.ToF32(), 0.1f))
 	{
 		String screenSizeStr = "[" + Strings::ToString(m_data.viewportSize.width) + "x" +
 							   Strings::ToString(m_data.viewportSize.height) + "]";

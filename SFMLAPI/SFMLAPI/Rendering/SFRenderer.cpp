@@ -46,10 +46,12 @@ void SFRenderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 					if (pPrimitive->m_renderState.bEnabled)
 					{
 						pPrimitive->Draw(*m_pViewport, alpha);
+#if ENABLED(RENDER_STATS)
 						++drawCalls;
+#endif
 					}
 #if ENABLED(RENDER_STATS)
-					
+
 					if (pPrimitive->IsStatic())
 					{
 						++statics;

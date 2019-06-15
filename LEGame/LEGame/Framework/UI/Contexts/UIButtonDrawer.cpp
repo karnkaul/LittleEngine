@@ -39,12 +39,14 @@ UIButton::OnClick::Token UIButtonDrawer::AddButton(UIText buttonText,
 												   UIButton** ppButton)
 {
 	String buttonName = "Button" + Strings::ToString(m_uiButtons.size());
-	UIButton* pButton = AddWidget<UIButton>(buttonName, nullptr, m_data.bHorizontal);
+	auto pButton = AddWidget<UIButton>(buttonName, nullptr, m_data.bHorizontal);
 	pButton->SetText(std::move(buttonText));
 	m_uiButtons.push_back(pButton);
 	SetButtonPositions();
 	if (ppButton)
+	{
 		*ppButton = pButton;
+	}
 	return pButton->AddCallback(std::move(onInteracted));
 }
 

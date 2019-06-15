@@ -41,7 +41,7 @@ Matrix3::Matrix3()
 {
 }
 
-Matrix3::Matrix3(Vector3 x, Vector3 y, Vector3 w) : m_x(x), m_y(y), m_w(w)
+Matrix3::Matrix3(Vector3 x, Vector3 y, Vector3 w) : m_x(std::move(x)), m_y(std::move(y)), m_w(std::move(w))
 {
 }
 
@@ -138,9 +138,9 @@ Vector2 MatTransform::GetScale() const
 	return m_scale;
 }
 
-const Matrix3& MatTransform::GetWorldMatrix(bool bForceRecacl) const
+const Matrix3& MatTransform::GetWorldMatrix(bool bForceRecalc) const
 {
-	if (m_bDirty || bForceRecacl)
+	if (m_bDirty || bForceRecalc)
 	{
 		m_mat = Matrix3(m_position, m_orientation, m_scale);
 		m_bDirty = false;

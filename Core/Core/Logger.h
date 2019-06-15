@@ -26,7 +26,10 @@ enum class LogSeverity
 	Error = 4
 };
 
-extern std::function<bool(const char*)> g_OnLogStr;
+constexpr size_t LOG_BUFFER_SIZE = 4096;
+using LogArr = Array<char, LOG_BUFFER_SIZE>;
+
+extern std::function<bool(LogArr&)> g_OnLogStr;
 extern LogSeverity g_MinLogSeverity;
 
 void Log(LogSeverity severity, const char* pText, ...);

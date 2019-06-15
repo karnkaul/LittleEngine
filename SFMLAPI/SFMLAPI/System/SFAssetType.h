@@ -5,10 +5,11 @@ namespace LittleEngine
 enum class AssetType
 {
 	Texture = 0,
-	Font = 1,
-	Sound = 2,
-	Text = 3,
+	Font,
+	Sound,
+	Text,
+	_COUNT
 };
 
-extern const char* g_szAssetType[4];
+extern Array<const char*, ToIdx(AssetType::_COUNT)> g_szAssetType;
 } // namespace LittleEngine

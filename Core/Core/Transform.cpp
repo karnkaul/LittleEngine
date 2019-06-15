@@ -97,7 +97,8 @@ void Transform::Rotate(Fixed angle)
 	if (!pChildren.empty())
 	{
 		Fixed rad = angle * Maths::DEG_TO_RAD;
-		Fixed s = rad.Sin(), c = rad.Cos();
+		Fixed s = rad.Sin();
+		Fixed c = rad.Cos();
 		for (auto pChild : pChildren)
 		{
 			if (pChild)

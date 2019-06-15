@@ -62,10 +62,11 @@ void JobWorker::Run()
 			}
 			if (uJob->m_szException)
 			{
-				LOG_E("%s Threw an exception running %s\n\t%s!", m_logName.c_str(), uJob->ToStr(), uJob->m_szException);
+				LOG_E("%s Threw an exception running %s\n\t%s!", m_logName.c_str(), uJob->ToStr(),
+					  uJob->m_szException);
 			}
 			uJob->Fulfil();
 		}
 	}
 }
-} // namespace LittleEngine
+} // namespace Core

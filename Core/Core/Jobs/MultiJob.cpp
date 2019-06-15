@@ -6,12 +6,12 @@
 
 namespace Core
 {
-MultiJob::SubJob::SubJob(String name, Task job)
-	: name(std::move(name)), job(std::move(job))
+MultiJob::SubJob::SubJob(String name, Task job) : name(std::move(name)), job(std::move(job))
 {
 }
 
-MultiJob::MultiJob(JobManager& manager, String name) : m_logName("[" + std::move(name) + "]"), m_pManager(&manager)
+MultiJob::MultiJob(JobManager& manager, String name)
+	: m_logName("[" + std::move(name) + "]"), m_pManager(&manager)
 {
 }
 
@@ -81,4 +81,4 @@ const char* MultiJob::LogNameStr() const
 {
 	return m_logName.c_str();
 }
-} // namespace LittleEngine
+} // namespace Core

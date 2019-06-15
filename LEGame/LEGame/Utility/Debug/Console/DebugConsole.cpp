@@ -12,9 +12,7 @@
 #include "LittleEngine/Context/LEContext.h"
 #include "LEGame/Model/GameManager.h"
 
-namespace LittleEngine
-{
-namespace Debug
+namespace LittleEngine::Debug
 {
 UByte g_logTextAlpha = 200;
 Colour g_logTextColour = Colour(220, 220, 220, g_logTextAlpha);
@@ -61,10 +59,7 @@ public:
 };
 
 ConsoleImpl::ConsoleImpl()
-	: m_input(*pContext),
-	  m_renderer(*pContext),
-	  m_renderStats(*pContext),
-	  m_version(*pContext)
+	: m_input(*pContext), m_renderer(*pContext), m_renderStats(*pContext), m_version(*pContext)
 {
 	LOG_D("Debug Console initialised");
 	Console::g_uLogBook = MakeUnique<LogBook>(m_renderer.m_logLinesCount);
@@ -124,6 +119,5 @@ void Console::Cleanup()
 	uConsole = nullptr;
 	pContext = nullptr;
 }
-} // namespace Debug
-} // namespace LittleEngine
+} // namespace LittleEngine::Debug
 #endif

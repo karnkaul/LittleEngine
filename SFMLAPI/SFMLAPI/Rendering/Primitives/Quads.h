@@ -13,14 +13,16 @@ public:
 	Quads(LayerID layer);
 	~Quads() override;
 
-protected:
-	void OnUpdateRenderState(Fixed alpha) override;
-	void OnDraw(SFViewport& viewport, sf::RenderStates& sfStates) override;
-	void OnSwapState() override;
+public:
+	Rect2 GetBounds() const override;
 
 public:
 	void ReconcileGameState() override;
-	Rect2 GetBounds() const override;
+	void SwapState() override;
+
+protected:
+	void OnUpdateRenderState(Fixed alpha) override;
+	void OnDraw(SFViewport& viewport, sf::RenderStates& sfStates) override;
 
 public:
 	Quads* SetTexture(TextureAsset& texture);

@@ -9,11 +9,7 @@
 #include "LittleEngine/Context/LEContext.h"
 #include "LEGame/Framework/UI/Elements/UIProgressBar.h"
 
-namespace LittleEngine
-{
-namespace Debug
-{
-namespace Profiler
+namespace LittleEngine::Debug::Profiler
 {
 using Lock = std::lock_guard<std::mutex>;
 
@@ -55,7 +51,7 @@ private:
 
 Renderer::Renderer()
 {
-	LayerID top_1 = static_cast<LayerID>(LAYER_TOP - 1);
+	auto top_1 = static_cast<LayerID>(LAYER_TOP - 1);
 	m_uLabelRoot = MakeUnique<UIElement>(top_1, true);
 	m_uLabelRoot->OnCreate(*pContext, "ProfilerLabels");
 	m_uLabelRoot->m_transform.size = {textWidth, profilerHeight};
@@ -232,7 +228,5 @@ void Tick(Time dt)
 		uRenderer->Tick(dt);
 	}
 }
-} // namespace Profiler
-} // namespace Debug
-} // namespace LittleEngine
+} // namespace LittleEngine::Debug::Profiler
 #endif

@@ -6,9 +6,7 @@
 #include "LogLine.h"
 #include "LittleEngine/Context/LEContext.h"
 
-namespace LittleEngine
-{
-namespace Debug
+namespace LittleEngine::Debug
 {
 ConsoleInput::ConsoleInput(LEContext& context) : m_pContext(&context)
 {
@@ -37,7 +35,7 @@ void ConsoleInput::Update()
 {
 	if (!m_query.empty())
 	{
-		m_queryCache .PushBack(m_query);
+		m_queryCache.PushBack(m_query);
 		Vec<LogLine> logAppend = Commands::Execute(m_query);
 		Console::g_uLogBook->Append(std::move(logAppend));
 		m_query.clear();
@@ -170,6 +168,5 @@ void ConsoleInput::UpdateLiveLine(const LEInput::Frame& frame)
 		m_keyboard.Update(frame);
 	}
 }
-} // namespace Debug
-} // namespace LittleEngine
+} // namespace LittleEngine::Debug
 #endif

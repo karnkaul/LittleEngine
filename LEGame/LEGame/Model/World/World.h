@@ -24,9 +24,6 @@ public:
 	World(String name);
 	~World() override;
 
-	// TODO: Remove all this
-	void PlaySFX(class SoundAsset* pSound, Fixed volume, Fixed direction, bool bLoop);
-	void PlayMusic(String path, Fixed volume, Time fadeTime, bool bLoop);
 	bool LoadWorld(WorldID id);
 	void Quit();
 

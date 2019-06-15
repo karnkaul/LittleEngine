@@ -9,7 +9,7 @@
 namespace LittleEngine
 {
 PlayerCollider::PlayerCollider(AABBData bounds, Vector2 offset)
-	: bounds(std::move(bounds)), offset(offset)
+	: bounds(std::move(bounds)), offset(std::move(offset))
 {
 }
 
@@ -26,7 +26,7 @@ void Player::OnCreated()
 void Player::InitPlayer(PlayerData data)
 {
 	auto pRenderComponent = AddComponent<RenderComponent>();
-	LayerID layer = static_cast<LayerID>(LAYER_LIVE + 5);
+	auto layer = static_cast<LayerID>(LAYER_LIVE + 5);
 	pRenderComponent->SetSprite(*data.pMainTexture, layer);
 
 	auto pCollisionComponent = AddComponent<CollisionComponent>();

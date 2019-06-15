@@ -18,19 +18,6 @@ World::World(String name) : GameObject(std::move(name), "World")
 
 World::~World() = default;
 
-void World::PlaySFX(SoundAsset* pSound, Fixed volume, Fixed direction, bool bLoop)
-{
-	if (pSound)
-	{
-		g_pAudio->PlaySFX(*pSound, volume, direction, bLoop);
-	}
-}
-
-void World::PlayMusic(String path, Fixed volume, Time fadeTime, bool bLoop)
-{
-	g_pAudio->PlayMusic(path, volume, fadeTime, bLoop);
-}
-
 bool World::LoadWorld(WorldID id)
 {
 	Assert(m_pWSM, "WSM is null!");

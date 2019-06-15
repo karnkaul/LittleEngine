@@ -35,7 +35,7 @@ public:
 	// Call this to check if a Key was pressed in this frame
 	bool IsKeyPressed(KeyCode code) const;
 	// Get KeyState for this KeyCode on the current frame
-	const KeyState GetKeyState(KeyCode code) const;
+	const KeyState* GetKeyState(KeyCode code) const;
 	const SFInputDataFrame GetFrameInputData() const;
 
 private:

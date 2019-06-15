@@ -94,7 +94,7 @@ SFText* UIElement::GetText() const
 	return m_pText;
 }
 
-void UIElement::Tick(Time)
+void UIElement::Tick(Time /*dt*/)
 {
 	if (m_bDestroyed)
 	{

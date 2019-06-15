@@ -19,4 +19,4 @@ Screen* Screen::Instance()
 	}
 	return &screen;
 }
-}
+} // namespace OS

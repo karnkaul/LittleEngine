@@ -20,13 +20,14 @@ private:
 	private:
 		std::promise<void> m_promise;
 		String logName;
+
 	public:
 		JobHandle m_sHandle;
 		Task m_task;
 		s32 m_id;
 		bool m_bSilent = false;
 		const char* m_szException = nullptr;
-		
+
 	public:
 		Job();
 		Job(s32 id, Task task, String name, bool bSilent);
@@ -54,10 +55,10 @@ public:
 	void Update();
 	bool AreWorkersIdle();
 
-private:	
+private:
 	UPtr<Job> Lock_PopJob();
 	JobHandle Lock_Enqueue(UPtr<Job>&& uJob, List<UPtr<Job>>& jobQueue);
-	
+
 	friend class JobWorker;
 };
-} // namespace LittleEngine
+} // namespace Core

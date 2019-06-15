@@ -8,7 +8,7 @@
 
 namespace LittleEngine
 {
-Entity::Entity() : GameObject()
+Entity::Entity()
 {
 	Assert(g_pGameManager, "Game Manager is null!");
 	Camera* pWorldCam = g_pGameManager->WorldCamera();

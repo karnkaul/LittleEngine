@@ -27,7 +27,6 @@ void APrimitive::ReconcileGameState()
 void APrimitive::SwapState()
 {
 	m_renderState = m_gameState;
-	OnSwapState();
 }
 
 void APrimitive::UpdateRenderState(Fixed alpha)

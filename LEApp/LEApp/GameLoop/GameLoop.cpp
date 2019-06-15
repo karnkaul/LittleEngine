@@ -57,7 +57,7 @@ bool Init(s32 argc, char** argv)
 #endif
 	config.Init();
 #if !SHIPPING
-	LOG_I("[GameLoop] Initialising event loop, loading config...");
+	LOG_D("[GameLoop] Initialising event loop, loading config...");
 	config.Load("_config.gd");
 #endif
 	Core::g_MinLogSeverity = config.GetLogLevel();

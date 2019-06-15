@@ -32,7 +32,7 @@ bool AABBData::IsPointInRect(Vector2 point) const
 		   point.y <= upperBound.y;
 }
 
-CircleData::CircleData(Fixed radius, Vector2 centre) : centre(centre), radius(radius)
+CircleData::CircleData(Fixed radius, Vector2 centre) : centre(std::move(centre)), radius(std::move(radius))
 {
 }
 

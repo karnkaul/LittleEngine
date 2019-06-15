@@ -22,4 +22,4 @@ bool JobHandleBlock::HasCompleted() const
 {
 	return m_deferred.IsReady();
 }
-} // namespace LittleEngine
+} // namespace Core

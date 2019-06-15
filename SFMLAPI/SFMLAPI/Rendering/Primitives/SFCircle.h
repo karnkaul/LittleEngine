@@ -21,13 +21,15 @@ public:
 	SFCircle(LayerID layer);
 	~SFCircle() override;
 
-protected:
-	void OnUpdateRenderState(Fixed alpha) override;
-	void OnDraw(SFViewport& viewport, sf::RenderStates& sfStates) override;
-	void OnSwapState() override;
-
 public:
 	Rect2 GetBounds() const override;
+
+public:
+	void SwapState() override;
+	void OnUpdateRenderState(Fixed alpha) override;
+
+protected:
+	void OnDraw(SFViewport& viewport, sf::RenderStates& sfStates) override;
 
 public:
 	SFCircle* SetDiameter(Fixed diameter);

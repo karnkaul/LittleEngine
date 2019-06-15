@@ -1,6 +1,6 @@
 # Little Engine
 
-Written in **C++14**, utilising [**SFML v2.5.1**](https://www.sfml-dev.org/) and [**PhysicsFS 3.0.1**](https://icculus.org/physfs/), Little Engine is a hobby project with little defined ambition or scope; in other words, let's see where we can take this!
+Written in **C++17**, utilising [**SFML v2.5.1**](https://www.sfml-dev.org/) and [**PhysicsFS 3.0.1**](https://icculus.org/physfs/), Little Engine is a hobby project with little defined ambition or scope; in other words, let's see where we can take this!
 
 ## Using LittleEngine
 ### Requirements

@@ -32,9 +32,9 @@ struct Vector3
 class Matrix3
 {
 public:
-	Vector3 m_x;	// [1, 0, 0]
-	Vector3 m_y;	// [0, 1, 0]
-	Vector3 m_w;	// [0, 0, 1]
+	Vector3 m_x; // [1, 0, 0]
+	Vector3 m_y; // [0, 1, 0]
+	Vector3 m_w; // [0, 0, 1]
 
 public:
 	static const Matrix3 ZERO;
@@ -69,7 +69,7 @@ public:
 	Vector2 GetPosition() const;
 	Vector2 GetOrientation() const;
 	Vector2 GetScale() const;
-	
+
 	const Matrix3& GetWorldMatrix(bool bForceRecalc = false) const;
 };
-}
+} // namespace Core

@@ -132,7 +132,9 @@ void LEInput::TakeSnapshot(const SFInputDataFrame& frameData)
 
 void LEInput::FireCallbacks()
 {
-	Vec<GameInputType> pressed, held, released;
+	Vec<GameInputType> pressed;
+	Vec<GameInputType> held;
+	Vec<GameInputType> released;
 
 	// Build "pressed" and "held" vectors
 	for (auto input : m_currentSnapshot)
@@ -149,9 +151,8 @@ void LEInput::FireCallbacks()
 	}
 
 	released = m_previousSnapshot;
-	Core::RemoveIf<GameInputType>(released, [&held](GameInputType type) {
-		return Core::Search(held, type) != held.end();
-	});
+	Core::RemoveIf<GameInputType>(
+		released, [&held](GameInputType type) { return Core::Search(held, type) != held.end(); });
 	if (m_uSudoContext && m_uSudoContext->wToken.expired())
 	{
 		m_uSudoContext = nullptr;

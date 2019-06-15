@@ -273,7 +273,7 @@ void RenderComponent::UpdatePrimitive(Time dt)
 		if (m_pPrimitive)
 		{
 			auto pQuad = m_pPrimitive->CastTo<Quad>();
-			pQuad->SetUV(m_oSpriteSheet->GetFrame());
+			pQuad->SetUV(m_oSpriteSheet->GetFrame(), true);
 		}
 	}
 

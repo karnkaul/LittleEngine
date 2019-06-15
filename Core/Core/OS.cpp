@@ -36,19 +36,19 @@ std::pair<Version, Version> ExtractGameAndEngineVersions(const String& exePath)
 			{
 				if (size)
 				{
-					VS_FIXEDFILEINFO* verInfo = reinterpret_cast<VS_FIXEDFILEINFO*>(lpBuffer);
-					if (verInfo->dwSignature == 0xfeef04bd)
+					auto pVerInfo = reinterpret_cast<VS_FIXEDFILEINFO*>(lpBuffer);
+					if (pVerInfo->dwSignature == 0xfeef04bd)
 					{
-						s32 major = verInfo->dwFileVersionMS >> 16 & 0xffff;
-						s32 minor = verInfo->dwFileVersionMS & 0xffff;
-						s32 patch = verInfo->dwFileVersionLS >> 16 & 0xffff;
-						s32 pre = verInfo->dwFileVersionLS & 0xffff;
+						s32 major = pVerInfo->dwFileVersionMS >> 16 & 0xffff;
+						s32 minor = pVerInfo->dwFileVersionMS & 0xffff;
+						s32 patch = pVerInfo->dwFileVersionLS >> 16 & 0xffff;
+						s32 pre = pVerInfo->dwFileVersionLS & 0xffff;
 						fileEngineVersion = Version(major, minor, patch, pre);
 
-						major = verInfo->dwProductVersionMS >> 16 & 0xffff;
-						minor = verInfo->dwProductVersionMS & 0xffff;
-						patch = verInfo->dwProductVersionLS >> 16 & 0xffff;
-						pre = verInfo->dwProductVersionLS & 0xffff;
+						major = pVerInfo->dwProductVersionMS >> 16 & 0xffff;
+						minor = pVerInfo->dwProductVersionMS & 0xffff;
+						patch = pVerInfo->dwProductVersionLS >> 16 & 0xffff;
+						pre = pVerInfo->dwProductVersionLS & 0xffff;
 						fileGameVersion = Version(major, minor, patch, pre);
 					}
 				}
@@ -164,7 +164,7 @@ void EnvData::SetVars(s32 argc, char** argv)
 			m_vars.emplace(std::move(key), std::move(value));
 		}
 	}
-	LOG_I("[Env] Obtained exe path: %s", m_exePath.c_str());
+	LOG_D("[Env] Obtained exe path: %s", m_exePath.c_str());
 	if (!logOut.empty())
 	{
 		logOut = logOut.substr(0, logOut.length() - 2);

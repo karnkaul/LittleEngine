@@ -20,7 +20,7 @@ protected:
 		TRange<Vector2> tScale = Vector2::One;
 		TRange<Fixed> tOrientation = Fixed::Zero;
 		TRange<Colour> tColour = Colour(255, 255, 255, 255);
-		
+
 		bool bEnabled = false;
 
 		void Reconcile();
@@ -35,7 +35,8 @@ protected:
 	};
 
 #if DEBUGGING
-		public : bool m_bDEBUG = false;
+public:
+	bool m_bDEBUG = false;
 #endif
 protected:
 	TState m_gameState;
@@ -56,22 +57,23 @@ public:
 	APrimitive(LayerID layer);
 	virtual ~APrimitive();
 
-protected:
-	virtual void OnUpdateRenderState(Fixed alpha) = 0;
-	virtual void OnSwapState() = 0;
-	virtual void OnDraw(SFViewport& viewport, sf::RenderStates& sfStates) = 0;
-
 public:
 	virtual Rect2 GetBounds() const = 0;
+
+public:
 	virtual void ReconcileGameState();
+	virtual void SwapState();
+	void UpdateRenderState(Fixed alpha);
+
+protected:
+	virtual void OnUpdateRenderState(Fixed alpha) = 0;
+	virtual void OnDraw(SFViewport& viewport, sf::RenderStates& sfStates) = 0;
 
 public:
 	template <typename T>
 	T* CastTo();
 
 public:
-	void SwapState();
-	void UpdateRenderState(Fixed alpha);
 	void Destroy();
 
 private:
@@ -83,7 +85,7 @@ public:
 	APrimitive* SetOrientation(Fixed worldOrientation, bool bImmediate = false);
 	APrimitive* SetScale(Vector2 worldScale, bool bImmediate = false);
 	APrimitive* SetPrimaryColour(Colour colour, bool bImmediate = false);
-	
+
 	// Regular states
 	APrimitive* SetEnabled(bool bEnabled);
 	APrimitive* SetShader(SFShader* pShader);

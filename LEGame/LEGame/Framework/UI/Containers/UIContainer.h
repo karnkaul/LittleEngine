@@ -46,9 +46,7 @@ T* UIContainer::Find(const String& id)
 }
 
 #if ENABLED(CONSOLE)
-namespace Debug
-{
-namespace Commands
+namespace Debug::Commands
 {
 class CMD_UIContainer : public Command
 {
@@ -58,9 +56,8 @@ private:
 public:
 	CMD_UIContainer();
 
-	void FillExecuteResult(String params);
+	void FillExecuteResult(String params) override;
 };
-} // namespace Commands
-} // namespace Debug
+} // namespace Debug::Commands
 #endif
 } // namespace LittleEngine

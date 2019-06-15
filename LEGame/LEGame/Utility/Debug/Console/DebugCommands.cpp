@@ -19,9 +19,7 @@
 #include "LEGame/Model/World/WorldStateMachine.h"
 #include "LEGame/Utility/Debug/DebugProfiler.h"
 
-namespace LittleEngine
-{
-namespace Debug
+namespace LittleEngine::Debug
 {
 namespace Console
 {
@@ -34,7 +32,7 @@ namespace
 {
 LEContext* pContext = nullptr;
 Vec<LogLine> GetAllCommands();
-}
+} // namespace
 
 #pragma region Commands
 Command::Command(const char* szName) : m_name(szName)
@@ -49,7 +47,7 @@ Vec<LogLine> Command::Execute(String params)
 	return std::move(m_executeResult);
 }
 
-Vec<String> Command::AutoCompleteParams(const String&)
+Vec<String> Command::AutoCompleteParams(const String& /*incomplete*/)
 {
 	return Vec<String>();
 }
@@ -266,7 +264,7 @@ public:
 		}
 
 		String id;
-		if (tokens.size() >= 1)
+		if (!tokens.empty())
 		{
 			id = std::move(tokens[0]);
 		}
@@ -317,7 +315,7 @@ public:
 		m_bTakesCustomParam = true;
 	}
 
-	void FillExecuteResult(String params)
+	void FillExecuteResult(String params) override
 	{
 		if (params.empty())
 		{
@@ -534,6 +532,5 @@ AutoCompleteResults AutoComplete(const String& incompleteQuery)
 }
 } // namespace Commands
 #pragma endregion
-} // namespace Debug
-} // namespace LittleEngine
+} // namespace LittleEngine::Debug
 #endif

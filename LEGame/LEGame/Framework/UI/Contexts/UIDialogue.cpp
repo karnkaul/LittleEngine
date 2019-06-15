@@ -42,7 +42,9 @@ UIDialogue* UIDialogue::SetContent(UIText text, const Colour* pBackground, const
 		m_pContent->m_transform.size = {m_data.size.x, contentHeight};
 		m_pHeader->m_transform.size = {m_data.size.x, headerHeight};
 		if (m_pFooter)
+		{
 			m_pFooter->m_transform.size = {m_data.size.x, footerHeight};
+		}
 	}
 
 	if (pBackground)
@@ -110,8 +112,9 @@ UIButton::OnClick::Token UIDialogue::AddOtherButton(UIText otherButtonUIText,
 
 	// Terrible hack
 	if (!bSelect)
+	{
 		OnLeft();
-
+	}
 	return m_pOtherButton->AddCallback(std::move(onOtherButton));
 }
 } // namespace LittleEngine

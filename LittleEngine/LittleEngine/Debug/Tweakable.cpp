@@ -2,14 +2,12 @@
 #include "Core/Utils.h"
 #include "Tweakable.h"
 #if ENABLED(TWEAKABLES)
-namespace LittleEngine
-{
-namespace Debug
+namespace LittleEngine::Debug
 {
 Tweakable::Tweakable(String id, TweakType type, String value /* = "" */, void* pTarget /* = nullptr */)
 	: m_pTarget(pTarget), m_value(std::move(value)), m_type(type)
 {
-	static String suffix[4] = {"", "_f32", "_s32", "_b"};
+	static Array<const char*, 4> suffix = {"", "_f32", "_s32", "_b"};
 	m_id = std::move(id) + suffix[m_type];
 	TweakManager::Instance()->m_tweakables.emplace(m_id, this);
 }
@@ -61,7 +59,7 @@ void Tweakable::SyncString(String rawValue)
 	m_value = std::move(rawValue);
 	if (m_pTarget)
 	{
-		String* pString = reinterpret_cast<String*>(m_pTarget);
+		auto pString = reinterpret_cast<String*>(m_pTarget);
 		*pString = m_value;
 	}
 }
@@ -72,7 +70,7 @@ void Tweakable::SyncF32(String rawValue)
 	m_value = Strings::ToString(value);
 	if (m_pTarget)
 	{
-		f32* pF32 = reinterpret_cast<f32*>(m_pTarget);
+		auto pF32 = reinterpret_cast<f32*>(m_pTarget);
 		*pF32 = value;
 	}
 }
@@ -83,7 +81,7 @@ void Tweakable::SyncS32(String rawValue)
 	m_value = Strings::ToString(value);
 	if (m_pTarget)
 	{
-		s32* pS32 = reinterpret_cast<s32*>(m_pTarget);
+		auto pS32 = reinterpret_cast<s32*>(m_pTarget);
 		*pS32 = value;
 	}
 }
@@ -94,7 +92,7 @@ void Tweakable::SyncBool(String rawValue)
 	m_value = Strings::ToString(bValue);
 	if (m_pTarget)
 	{
-		bool* pBool = reinterpret_cast<bool*>(m_pTarget);
+		auto pBool = reinterpret_cast<bool*>(m_pTarget);
 		*pBool = bValue;
 	}
 }
@@ -114,6 +112,5 @@ Tweakable* TweakManager::Find(const String& id) const
 	}
 	return nullptr;
 }
-} // namespace Debug
-} // namespace LittleEngine
+} // namespace LittleEngine::Debug
 #endif

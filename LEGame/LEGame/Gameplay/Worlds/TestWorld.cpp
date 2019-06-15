@@ -127,7 +127,7 @@ void OnB()
 	bShowTiles = !bShowTiles;
 	if (bShowTiles)
 	{
-		TextureAsset* pTexture = g_pRepository->Load<TextureAsset>("Textures/Tiles/SpaceTile0.png");
+		auto pTexture = g_pRepository->Load<TextureAsset>("Textures/Tiles/SpaceTile0.png");
 		g_pGameManager->WorldCamera()->FillViewWithTiles(*pTexture);
 	}
 	else

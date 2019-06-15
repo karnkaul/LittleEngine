@@ -69,16 +69,16 @@ bool SFInputStateMachine::IsKeyPressed(KeyCode code) const
 	return false;
 }
 
-const KeyState SFInputStateMachine::GetKeyState(KeyCode code) const
+const KeyState* SFInputStateMachine::GetKeyState(KeyCode code) const
 {
 	for (const auto& iter : m_keyStates)
 	{
 		if (iter.GetKeyCode() == code)
 		{
-			return iter;
+			return &iter;
 		}
 	}
-	return KeyState(code);
+	return nullptr;
 }
 
 const SFInputDataFrame SFInputStateMachine::GetFrameInputData() const

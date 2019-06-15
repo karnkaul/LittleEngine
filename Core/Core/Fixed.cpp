@@ -32,8 +32,8 @@ Fixed::Fixed(f64 value) : value(static_cast<s32>(value * SCALE_FACTOR))
 	}
 }
 
-Fixed::Fixed(const Fixed& other) = default;
-Fixed& Fixed::operator=(const Fixed& other) = default;
+Fixed::Fixed(const Fixed& rhs) = default;
+Fixed& Fixed::operator=(const Fixed& rhs) = default;
 
 Fixed::Fixed(s32 numerator, s32 denominator)
 	: value(static_cast<s64>(numerator) * static_cast<s64>(SCALE_FACTOR) / static_cast<s64>(denominator))
@@ -242,9 +242,9 @@ Fixed operator-(const Fixed& rhs)
 	return ret;
 }
 
-std::ostream& operator<<(std::ostream& lhs, Fixed rhs)
+std::ostream& operator<<(std::ostream& os, Fixed rhs)
 {
-	return lhs << rhs.ToF64();
+	return os << rhs.ToF64();
 }
 
 Fixed operator+(const Fixed& lhs, const Fixed& rhs)

@@ -40,7 +40,7 @@ public:
 	~ConsoleRenderer();
 
 	void Tick(Time dt);
-	void SetLiveString(String text, Fixed cursorPos, bool bShowCursor);
+	void SetLiveString(String text, Fixed cursorNPos, bool bShowCursor);
 	void UpdateLog(Vec<LogLine> logLines);
 };
 } // namespace Debug

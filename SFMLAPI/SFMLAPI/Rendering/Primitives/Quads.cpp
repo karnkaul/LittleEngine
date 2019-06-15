@@ -19,6 +19,31 @@ Quads::Quads(LayerID layer) : APrimitive(layer)
 
 Quads::~Quads() = default;
 
+Rect2 Quad::GetBounds() const
+{
+	Vector2 size(Maths::Abs(m_vertexModel[0].x - m_vertexModel[1].x),
+				 Maths::Abs(m_vertexModel[1].y - m_vertexModel[2].y));
+	return Rect2::CentreSize(size);
+}
+
+void Quads::ReconcileGameState()
+{
+	APrimitive::ReconcileGameState();
+	for (auto& uQuad : m_quads)
+	{
+		uQuad->ReconcileGameState();
+	}
+}
+
+void Quads::SwapState()
+{
+	APrimitive::SwapState();
+	for (auto& uQuad : m_quads)
+	{
+		uQuad->SwapState();
+	}
+}
+
 void Quads::OnUpdateRenderState(Fixed alpha)
 {
 	for (auto& uQuad : m_quads)
@@ -53,23 +78,6 @@ void Quads::OnDraw(SFViewport& viewport, sf::RenderStates& sfStates)
 #endif
 	sfStates.texture = &m_pTexture->m_sfTexture;
 	viewport.draw(va, sfStates);
-}
-
-void Quads::OnSwapState()
-{
-	for (auto& uQuad : m_quads)
-	{
-		uQuad->SwapState();
-	}
-}
-
-void Quads::ReconcileGameState()
-{
-	APrimitive::ReconcileGameState();
-	for (auto& uQuad : m_quads)
-	{
-		uQuad->ReconcileGameState();
-	}
 }
 
 Rect2 Quads::GetBounds() const

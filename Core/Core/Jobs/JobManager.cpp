@@ -50,7 +50,7 @@ JobManager::JobManager(u32 workerCount)
 	{
 		m_jobWorkers.emplace_back(MakeUnique<JobWorker>(*this, i + 100, false));
 	}
-	LOG_I("[JobManager] Detected [%d] max threads; spawned [%d] JobWorkers", maxThreads, workerCount);
+	LOG_D("[JobManager] Detected [%d] max threads; spawned [%d] JobWorkers", maxThreads, workerCount);
 }
 
 JobManager::~JobManager()

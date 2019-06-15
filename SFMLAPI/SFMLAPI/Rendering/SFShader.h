@@ -14,7 +14,7 @@ enum class ShaderType
 	_COUNT,
 };
 
-extern const char* g_szShaderTypes[ToIdx(ShaderType::_COUNT)];
+extern Array<const char*, ToIdx(ShaderType::_COUNT)> g_szShaderTypes;
 
 class SFShader
 {
@@ -30,6 +30,7 @@ protected:
 
 protected:
 	String m_id;
+
 private:
 	s32 m_type = 0;
 	sf::Shader m_sfShader;
@@ -41,10 +42,10 @@ public:
 
 	void Compile(const String& code, ShaderType type);
 	void Compile(const String& vertCode, const String& fragCode);
-	
+
 	template <typename T>
 	void SetUniform(String id, T value);
-	
+
 	const String& GetID() const;
 	ShaderType GetType() const;
 
@@ -60,4 +61,4 @@ void SFShader::SetUniform(String id, T value)
 {
 	m_sfShader.setUniform(id, value);
 }
-}
+} // namespace LittleEngine

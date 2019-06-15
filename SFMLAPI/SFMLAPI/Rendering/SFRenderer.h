@@ -11,10 +11,10 @@ using Time = Core::Time;
 struct RenderData
 {
 	Time tickRate;
-  	Time lastRenderTime;
+	Time lastRenderTime;
 	u32 drawCallCount = 0;
 	u32 quadCount = 0;
-	u32 _quadCount_Internal = 0;	// Unstable to render
+	u32 _quadCount_Internal = 0; // Unstable to render
 	u32 staticCount = 0;
 	u32 dynamicCount = 0;
 	u32 framesPerSecond = 0;
@@ -29,10 +29,10 @@ class SFRenderer
 {
 public:
 	std::atomic<bool> m_bRendering;
-	
+
 protected:
 	class SFViewport* m_pViewport;
-	
+
 public:
 	SFRenderer(SFViewport& viewPort);
 	virtual ~SFRenderer();

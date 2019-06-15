@@ -5,23 +5,17 @@
 
 namespace LittleEngine
 {
-struct Vertex
-{
-	Vector2 xy;
-	Vector2 uv;
-	Colour colour;
-};
-
 class Quad : public APrimitive
 {
 protected:
 	struct QuadState
 	{
+		TRange<Rect2> tUV = Rect2::UV;
 		class TextureAsset* pTexture = nullptr;
 	};
 
 protected:
-	Array<Vertex, 4> m_vertices;
+	Array<Vector2, 4> m_vertexModel;
 	sf::VertexArray m_sfVertArr;
 	QuadState m_quadGameState;
 	QuadState m_quadRenderState;
@@ -30,21 +24,24 @@ public:
 	Quad(LayerID layer);
 	~Quad() override;
 
-protected:
-	void OnUpdateRenderState(Fixed alpha) override;
-	void OnSwapState() override;
-	void OnDraw(SFViewport& viewport, sf::RenderStates& sfStates) override;
-
 public:
 	Rect2 GetBounds() const override;
 
 public:
-	Quad* SetModel(Rect2 xy, Rect2 uv = Rect2::UV, Colour colour = Colour::White);
+	void ReconcileGameState() override;
+	void SwapState() override;
+
+protected:
+	void OnUpdateRenderState(Fixed alpha) override;
+	void OnDraw(SFViewport& viewport, sf::RenderStates& sfStates) override;
+
+public:
+	Quad* SetModel(Rect2 xy);
 	Quad* SetTexture(TextureAsset& texture);
-	Quad* SetUV(Rect2 uv);
+	Quad* SetUV(Rect2 uv, bool bImmediate = false);
 	Quad* SetUV(Fixed u, Fixed v, Fixed du, Fixed dv);
 
 private:
 	friend class Quads;
 };
-}
+} // namespace LittleEngine

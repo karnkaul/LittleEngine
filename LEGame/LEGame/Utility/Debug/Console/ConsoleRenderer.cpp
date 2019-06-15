@@ -10,9 +10,7 @@
 #include "LEGame/Model/UI/UIElement.h"
 #include "LogLine.h"
 
-namespace LittleEngine
-{
-namespace Debug
+namespace LittleEngine::Debug
 {
 ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_SIZE)
 {
@@ -39,7 +37,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uSeparator->m_transform.size = {bgSize.x, 2};
 	m_uSeparator->m_transform.nPosition = {0, -1};
 	m_uSeparator->m_transform.padding = {0, m_textSize + 5};
-	
+
 	// Carat
 	m_uCarat = MakeUnique<UIElement>(LAYER_TOP, true);
 	m_uCarat->OnCreate(context, "ConsoleCarat", &m_uBG->m_transform);
@@ -48,7 +46,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	s32 textPad = m_textSize * 1.3f;
 	m_uCarat->m_transform.padding = {0, textPad};
 	m_uCarat->SetText(UIText(">", m_textSize, m_liveTextColour));
-	
+
 	// Live Line
 	m_uLiveText = MakeUnique<UIElement>(LAYER_TOP, true);
 	m_uLiveText->OnCreate(context, "ConsoleLiveText", &m_uBG->m_transform);
@@ -56,12 +54,12 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uLiveText->m_transform.anchor = {-1, 1};
 	m_uLiveText->m_transform.nPosition = {-Fixed(0.99f), -1};
 	m_uLiveText->m_transform.padding = {0, textPad};
-	
+
 	// Cursor
 	m_uCursor = MakeUnique<UIElement>(LAYER_TOP, true);
 	m_uCursor->OnCreate(context, "ConsoleCursor", &m_uBG->m_transform);
 	m_uCursor->SetText(UIText("|", m_textSize, m_liveTextColour));
-	
+
 	// Log Lines
 	s32 iPad = textPad + 2;
 	m_logLinesCount = (m_uBG->m_transform.size.y.ToU32() / textPad) - 1;
@@ -109,7 +107,7 @@ void ConsoleRenderer::Tick(Time dt)
 	m_uCarat->Tick(dt);
 	m_uLiveText->Tick(dt);
 	m_uCursor->Tick(dt);
-	
+
 	Vector2 cursorPosition = m_uLiveText->GetText()->GetPosition();
 	Fixed xOffset = m_cursorNPos * m_uLiveText->GetText()->GetBounds().GetSize().x;
 	cursorPosition.x += xOffset;
@@ -141,6 +139,5 @@ void ConsoleRenderer::UpdateLog(Vec<LogLine> logLines)
 		++iter;
 	}
 }
-} // namespace Debug
-} // namespace LittleEngine
+} // namespace LittleEngine::Debug
 #endif

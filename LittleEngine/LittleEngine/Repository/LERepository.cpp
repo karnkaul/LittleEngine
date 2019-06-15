@@ -35,7 +35,7 @@ LERepository::LERepository(String archivePath, String rootDir)
 	}
 	m_uCooked = MakeUnique<Core::ArchiveReader>();
 	m_uCooked->Load(archivePath.c_str());
-	LOG_I("[Repository] Located cooked archive at [%s]", archivePath.c_str());
+	LOG_D("[Repository] Located cooked archive at [%s]", archivePath.c_str());
 
 	String fontID = "Fonts/main.ttf";
 	if (!m_uCooked->IsPresent(fontID.c_str()))
@@ -121,7 +121,7 @@ void LERepository::UnloadAll(bool bUnloadDefaultFont)
 		Core::RemoveIf<String, UPtr<Asset>>(
 			m_loaded, [fontID](UPtr<Asset>& uAsset) { return uAsset->GetID() != fontID; });
 	}
-	LOG_I("[Repository] cleared");
+	LOG_D("[Repository] cleared");
 }
 
 void LERepository::Tick(Time dt)

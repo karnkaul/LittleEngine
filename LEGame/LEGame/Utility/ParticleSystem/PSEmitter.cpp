@@ -121,10 +121,10 @@ Emitter::OnTick::Token Emitter::RegisterOnTick(OnTick::Callback callback)
 void Emitter::Reset(bool bSetEnabled)
 {
 	m_bDraw = false;
-	for (size_t i = 0; i < m_particles.size(); ++i)
+	for (auto& particle : m_particles)
 	{
-		m_particles[i].m_bInUse = false;
-		m_particles[i].m_pQuad->SetEnabled(false);
+		particle.m_bInUse = false;
+		particle.m_pQuad->SetEnabled(false);
 	}
 	if (m_bSoundPlayed && !bSetEnabled && m_pSoundPlayer)
 	{
@@ -264,9 +264,8 @@ void Emitter::TickInternal(Time dt, bool bPreWarming)
 	// Update in use
 	size_t alive = 0;
 	Time _dt = dt;
-	for (size_t i = 0; i < m_particles.size(); ++i)
+	for (auto& p : m_particles)
 	{
-		Particle& p = m_particles[i];
 		if (bPreWarming)
 		{
 			Fixed ttlSecs = p.m_ttl.AsSeconds();

@@ -16,7 +16,7 @@ AssetIDContainer DeserialiseAssetPaths(GData& gData)
 }
 } // namespace
 
-const char* g_szAssetType[4] = {"TextureAsset", "FontAsset", "SoundAsset", "TextAsset"};
+Array<const char*, ToIdx(AssetType::_COUNT)> g_szAssetType = {"TextureAsset", "FontAsset", "SoundAsset", "TextAsset"};
 
 AssetIDContainer::AssetIDContainer(String assetPath)
 {

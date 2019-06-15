@@ -36,4 +36,4 @@ private:
 
 	friend class JobManager;
 };
-} // namespace LittleEngine
+} // namespace Core

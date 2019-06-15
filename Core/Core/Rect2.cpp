@@ -71,5 +71,4 @@ Vector2 Rect2::GetBottomRight() const
 {
 	return bottomRight;
 }
-
 } // namespace Core

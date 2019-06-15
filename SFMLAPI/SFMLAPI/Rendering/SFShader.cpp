@@ -6,7 +6,7 @@
 
 namespace LittleEngine
 {
-const char* g_szShaderTypes[ToIdx(ShaderType::_COUNT)] = {"Invalid", "Vertex",
+Array<const char*, ToIdx(ShaderType::_COUNT)> g_szShaderTypes = {"Invalid", "Vertex",
 																		"Fragment", "VertFrag"};
 
 SFShader::SFShader(String id) : m_id(std::move(id))

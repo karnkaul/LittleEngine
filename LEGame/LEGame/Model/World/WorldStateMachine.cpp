@@ -80,7 +80,7 @@ void WorldStateMachine::Start(String manifestPath, String gameStyleID)
 		m_pAssetLoader = g_pRepository->LoadAsync(m_manifestPath, [&, gameStyleID]() {
 			if (!gameStyleID.empty())
 			{
-				TextAsset* pText = g_pRepository->Load<TextAsset>(gameStyleID);
+				auto pText = g_pRepository->Load<TextAsset>(gameStyleID);
 				if (pText)
 				{
 					UIGameStyle::Load(pText->GetText());

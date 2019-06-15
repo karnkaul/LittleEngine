@@ -21,6 +21,12 @@ Rect2 SFText::GetBounds() const
 	return Rect2::CentreSize(size, pivot + offset);
 }
 
+void SFText::SwapState()
+{
+	ASFDrawable::SwapState();
+	m_textRenderState = m_textGameState;
+}
+
 void SFText::OnUpdateRenderState(Fixed alpha)
 {
 	if (m_bTextChanged.load(std::memory_order_relaxed))
@@ -50,13 +56,6 @@ void SFText::OnUpdateRenderState(Fixed alpha)
 void SFText::OnDraw(SFViewport& viewport, sf::RenderStates& states)
 {
 	viewport.draw(m_sfText, states);
-}
-
-void SFText::OnSwapState()
-{
-	ASFDrawable::OnSwapState();
-
-	m_textRenderState = m_textGameState;
 }
 
 SFText* SFText::SetFont(FontAsset& font)

@@ -24,14 +24,15 @@ String GetPrologue(String header)
 } // namespace
 using Lock = std::lock_guard<std::mutex>;
 
-FileLogger::FileLogger(String filename, u8 backupCount, String header) : m_filename(std::move(filename))
+FileLogger::FileLogger(String filename, u8 backupCount, String header)
+	: m_filename(std::move(filename))
 {
 	RenameOldFiles(backupCount);
-	Core::g_OnLogStr = [&](const char* pText) -> bool {
+	Core::g_OnLogStr = [&](LogArr& text) -> bool {
 		if (!m_bStopLogging.load(std::memory_order_relaxed))
 		{
 			Lock lock(m_mutex);
-			m_cache += std::string(pText);
+			m_cache += std::string(text.data());
 			return true;
 		}
 		return false;
@@ -44,7 +45,7 @@ FileLogger::FileLogger(String filename, u8 backupCount, String header) : m_filen
 
 FileLogger::~FileLogger()
 {
-	LOG_I("Logging terminated");
+	LOG_D("Logging terminated");
 	// Freeze m_cache and terminate thread
 	m_bStopLogging.store(true);
 	OS::Threads::Join(m_threadHandle);
@@ -112,4 +113,4 @@ void FileLogger::RenameOldFiles(u16 countToKeep)
 		LOG_W("[AsyncFileLogger] Could not rename all old log files");
 	}
 }
-} // namespace LittleEngine
+} // namespace Core

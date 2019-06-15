@@ -21,15 +21,17 @@ public:
 	SFRect(LayerID layer);
 	~SFRect() override;
 
+public:
+	Rect2 GetBounds() const override;
+
+public:
+	void SwapState() override;
+
 protected:
 	void OnUpdateRenderState(Fixed alpha) override;
 	void OnDraw(SFViewport& viewport, sf::RenderStates& sfStates) override;
-	void OnSwapState() override;
 
-public:
-	Rect2 GetBounds() const override;
-	
 public:
 	SFRect* SetSize(Vector2 size);
 };
-}
+} // namespace LittleEngine
