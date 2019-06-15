@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "LittleEngine/Renderer/LERenderer.h"
 #include "LEGame/Model/World/Entity.h"
 #include "LEGame/Model/GameManager.h"
@@ -69,7 +68,7 @@ void ControllerComponent::Tick(Time dt)
 	if (m_pRenderComponent)
 	{
 		ClampPosition(m_pOwner->m_transform.localPosition,
-					  m_pRenderComponent->m_pSFPrimitive->GetBounds().GetSize() * Fixed::OneHalf);
+					  m_pRenderComponent->m_pPrimitive->GetBounds().GetSize() * Fixed::OneHalf);
 	}
 }
 

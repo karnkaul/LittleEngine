@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "LEGame/Model/UI/UIElement.h"
 #include "LEGame/Model/UI/UIStyle.h"
 #include "LEGame/Model/UI/UIWidgetMatrix.h"

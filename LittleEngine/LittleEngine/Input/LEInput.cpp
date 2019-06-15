@@ -2,7 +2,7 @@
 #include "Core/Logger.h"
 #include "Core/Utils.h"
 #include "SFMLAPI/Input/SFInputStateMachine.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "LEInput.h"
 #include "LittleEngine/Context/LEContext.h"
 #if DEBUGGING
@@ -211,13 +211,13 @@ void LEInput::BindDefaults()
 void LEInput::CreateDebugPointer()
 {
 	Vector2 viewSize = m_pContext->GetViewSize();
-	m_pMouseH = m_pContext->Renderer()->New(LAYER_TOP);
-	m_pMouseV = m_pContext->Renderer()->New(LAYER_TOP);
-	m_pMouseH->SetSize({MOUSE_QUAD_WIDTH, viewSize.y}, SFShapeType::Rectangle)
+	m_pMouseH = m_pContext->Renderer()->New<Quad>(LAYER_TOP);
+	m_pMouseV = m_pContext->Renderer()->New<Quad>(LAYER_TOP);
+	m_pMouseH->SetModel(Rect2::CentreSize({MOUSE_QUAD_WIDTH, viewSize.y}))
 		->SetStatic(true)
 		->SetPrimaryColour(MOUSE_DEFAULT_COLOUR)
 		->SetEnabled(true);
-	m_pMouseV->SetSize({viewSize.x, MOUSE_QUAD_WIDTH}, SFShapeType::Rectangle)
+	m_pMouseV->SetModel(Rect2::CentreSize({viewSize.x, MOUSE_QUAD_WIDTH}))
 		->SetStatic(true)
 		->SetPrimaryColour(MOUSE_DEFAULT_COLOUR)
 		->SetEnabled(true);

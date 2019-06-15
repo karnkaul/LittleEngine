@@ -2,7 +2,7 @@
 #include "DebugProfiler.h"
 #if ENABLED(PROFILER)
 #include "Core/Logger.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/Rendering/Primitives.h"
 #include "SFMLAPI/System/SFGameClock.h"
 #include "LittleEngine/Debug/Profiler.h"
 #include "LittleEngine/Debug/Tweakable.h"
@@ -81,7 +81,7 @@ Renderer::Renderer()
 		colour.a = barAlpha;
 		newEntry.uProgressBar->InitProgressBar(progressBarSize, colour);
 		newEntry.uProgressBar->m_transform.anchor = {-1, 0};
-		newEntry.uProgressBar->GetPrimitive()->SetEnabled(bProfilerEnabled)->SetStatic(false);
+		newEntry.uProgressBar->GetRect()->SetEnabled(bProfilerEnabled)->SetStatic(false);
 		newEntry.uLabelElement->m_transform.anchor = {1, 0};
 		newEntry.uLabelElement->GetText()->SetEnabled(bProfilerEnabled);
 		m_uiEntries.emplace_back(std::move(newEntry));
@@ -91,12 +91,12 @@ Renderer::Renderer()
 
 void Renderer::SetEnabled(bool bEnabled)
 {
-	m_uLabelRoot->GetPrimitive()->SetEnabled(bEnabled);
-	m_uBarRoot->GetPrimitive()->SetEnabled(bEnabled);
+	m_uLabelRoot->GetRect()->SetEnabled(bEnabled);
+	m_uBarRoot->GetRect()->SetEnabled(bEnabled);
 	for (auto& entry : m_uiEntries)
 	{
 		entry.uLabelElement->GetText()->SetEnabled(bEnabled);
-		entry.uProgressBar->GetPrimitive()->SetEnabled(bEnabled);
+		entry.uProgressBar->GetRect()->SetEnabled(bEnabled);
 	}
 }
 
@@ -144,7 +144,7 @@ void Renderer::Tick(Time dt)
 				uiEntry.uProgressBar->SetProgress(entry.timeRatio);
 				Colour barColour = entry.colour;
 				barColour.a = barAlpha;
-				uiEntry.uProgressBar->GetPrimitive()->SetPrimaryColour(barColour);
+				uiEntry.uProgressBar->GetRect()->SetPrimaryColour(barColour);
 				uiEntry.uProgressBar->Tick(dt);
 			}
 		}

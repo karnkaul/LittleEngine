@@ -2,8 +2,8 @@
 #include "Core/GData.h"
 #include "Core/Utils.h"
 #include "SFMLAPI/Rendering/Colour.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
-#include "SFMLAPI/Rendering/SFQuad.h"
+#include "SFMLAPI/Rendering/Primitives/Quads.h"
+#include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Audio/LEAudio.h"
 #include "LEGame/Model/GameManager.h"
@@ -41,9 +41,9 @@ UByte Lerp(TRange<UByte> tRange, Fixed alpha)
 }
 } // namespace
 
-Particle::Particle(SFQuadVec& quadVec, bool& bDraw) : m_pDraw(&bDraw)
+Particle::Particle(Quads& quads, bool& bDraw) : m_pDraw(&bDraw)
 {
-	m_pQuad = quadVec.AddQuad();
+	m_pQuad = quads.AddQuad();
 	m_pQuad->SetEnabled(false);
 }
 
@@ -76,7 +76,7 @@ void Particle::Tick(Time dt)
 		c.a = Lerp(m_aot, t);
 		bool bImmediate = !m_bWasInUse && m_bInUse;
 		m_bWasInUse = true;
-		m_pQuad->SetColour(c, bImmediate)
+		m_pQuad->SetPrimaryColour(c, bImmediate)
 			->SetScale({s, s}, bImmediate)
 			->SetOrientation(m_transform.localOrientation, bImmediate)
 			->SetPosition(m_transform.Position(), bImmediate);
@@ -95,12 +95,11 @@ Emitter::Emitter(EmitterData data, bool bSetEnabled)
 	: m_data(std::move(data)), m_pParent(data.pParent), m_bEnabled(bSetEnabled)
 {
 	m_particles.reserve(m_data.spawnData.numParticles);
-	m_pSFPrimitive = g_pGameManager->Renderer()->New(static_cast<LayerID>(LAYER_FX + m_data.layerDelta));
-	SFQuadVec* quadVec = m_pSFPrimitive->GetQuadVec();
-	quadVec->SetTexture(m_data.GetTexture());
+	m_pQuads = g_pGameManager->Renderer()->New<Quads>(static_cast<LayerID>(LAYER_FX + m_data.layerDelta));
+	m_pQuads->SetTexture(m_data.GetTexture())->SetEnabled(true);
 	for (size_t i = 0; i < m_data.spawnData.numParticles; ++i)
 	{
-		m_particles.emplace_back(*quadVec, m_bDraw);
+		m_particles.emplace_back(*m_pQuads, m_bDraw);
 	}
 }
 
@@ -111,7 +110,7 @@ Emitter::~Emitter()
 		m_pSoundPlayer->Stop();
 	}
 	m_particles.clear();
-	m_pSFPrimitive->Destroy();
+	m_pQuads->Destroy();
 }
 
 Emitter::OnTick::Token Emitter::RegisterOnTick(OnTick::Callback callback)

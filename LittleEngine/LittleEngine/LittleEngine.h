@@ -1,4 +1,5 @@
 #pragma once
+#include "SFMLAPI/Rendering/Primitives.h"
 #include "LittleEngine/Audio/LEAudio.h"
 #include "LittleEngine/Context/LEContext.h"
 #include "LittleEngine/Debug/Profiler.h"

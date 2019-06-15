@@ -74,9 +74,9 @@ CircleCollider::CircleCollider(String ownerName)
 	m_name = prefix + "CircleCollider";
 }
 
-void CircleCollider::SetCircle(Fixed radius)
+void CircleCollider::SetCircle(Fixed diameter)
 {
-	m_circle.radius = radius;
+	m_circle.radius = diameter * Fixed::OneHalf;
 }
 
 CircleData CircleCollider::GetWorldCircle() const

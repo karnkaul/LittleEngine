@@ -3,6 +3,12 @@
 #include "LEGame/GameFramework.h"
 #include "TestWorld.h"
 
+#include "SFMLAPI/Rendering/Primitives/Quad.h"
+#include "SFMLAPI/Rendering/Primitives/Quads.h"
+#include "SFMLAPI/Rendering/Primitives/SFText.h"
+#include "SFMLAPI/Rendering/Primitives/SFRect.h"
+#include "SFMLAPI/Rendering/Primitives/SFCircle.h"
+
 namespace LittleEngine
 {
 extern bool g_bTerminateOnReady;
@@ -16,6 +22,8 @@ TestWorld* pTestWorld = nullptr;
 Entity *pEntity0 = nullptr, *pEntity1 = nullptr;
 Entity *pEntity2 = nullptr, *pEntity3 = nullptr;
 Entity* pEntity4 = nullptr;
+Quads* pQuads0 = nullptr;
+Quad* pQuad0 = nullptr;
 
 // bool bLoopingPS = false;
 ParticleSystem* pParticleSystem0 = nullptr;
@@ -75,18 +83,16 @@ void OnA()
 		if (pEntity2)
 		{
 			auto rc0 = pEntity2->AddComponent<RenderComponent>();
-			rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({100, 100}, SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow);
+			rc0->SetCircle(LAYER_DEFAULT)->SetDiameter(200)->SetPrimaryColour(Colour::Yellow);
 			auto t0 = pEntity2->AddComponent<CollisionComponent>();
-			t0->AddCircle(100);
+			t0->AddCircle(200);
 		}
 
 		pEntity3 = g_pGameManager->NewEntity<Entity>("Blue Rectangle", Vector2(500, -200));
 		if (pEntity3)
 		{
 			auto rc1 = pEntity3->AddComponent<RenderComponent>();
-			rc1->SetShape(LAYER_DEFAULT)
-				->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)
-				->SetPrimaryColour(Colour::Blue);
+			rc1->SetRectangle(LAYER_DEFAULT)->SetSize({600, 100})->SetPrimaryColour(Colour::Blue);
 			auto t1 = pEntity3->AddComponent<CollisionComponent>();
 			t1->AddAABB(AABBData({600, 100}));
 		}
@@ -249,8 +255,8 @@ void StartTests()
 {
 	pEntity0 = g_pGameManager->NewEntity<Entity>("Entity0", {300, 200});
 	auto rc0 = pEntity0->AddComponent<RenderComponent>();
-	rc0->SetShape(LAYER_DEFAULT)
-		->m_pSFPrimitive->SetSize({300, 100}, SFShapeType::Rectangle)
+	rc0->SetRectangle(LAYER_DEFAULT)
+		->SetSize({300, 100})
 		->SetPrimaryColour(Colour::Cyan)
 		->SetEnabled(true);
 
@@ -258,10 +264,10 @@ void StartTests()
 		"Entity1", g_pGameManager->Renderer()->Project({0, Fixed(0.9f)}, false));
 	auto rc1 = pEntity1->AddComponent<RenderComponent>();
 	FontAsset* font = g_pRepository->GetDefaultFont();
-	rc1->SetShape(LAYER_DEFAULT)
-		->m_pSFPrimitive->SetText("Hello World!")
+	rc1->SetText(LAYER_DEFAULT)
+		->SetText("Hello World!")
 		->SetFont(*font)
-		->SetTextSize(50)
+		->SetSize(50)
 		->SetPrimaryColour(Colour(200, 150, 50))
 		->SetEnabled(true);
 
@@ -300,11 +306,15 @@ void StartTests()
 	}
 
 	pPlayer->GetComponent<RenderComponent>()->SetShader<SFShader>("Default");
-	auto pShader = g_pShaders->GetShader<SFShader>("Default");
-	if (pShader)
+	
+	auto pTex = g_pRepository->Load<TextureAsset>("Misc/Test.png"); 
+	if (pTex)
 	{
-		/*pShader->SetUniform("xy", sf::Vector2f(0, 0));
-		pShader->SetUniform("texture", 0.0f);*/
+		pQuads0 = g_pGameManager->Renderer()->New<Quads>(LAYER_DEFAULT);
+		pTex->SetRepeated(true);
+		pQuads0->SetTexture(*pTex)->SetEnabled(true);
+		pQuad0 = pQuads0->AddQuad();
+		pQuad0->SetPosition({600, 300})->SetEnabled(true);
 	}
 }
 
@@ -453,6 +463,17 @@ void TestTick(Time dt)
 		++frame;
 	}
 
+	if (pQuad0)
+	{
+		static Fixed u;
+		u += Fixed(dt.AsSeconds() * 0.1f);
+		if (u > Fixed::One)
+		{
+			u = Fixed::Zero;
+		}
+		pQuad0->SetUV(u, 0, u + Fixed::OneHalf, Fixed::One);
+	}
+
 	/*PROFILE_CUSTOM("TEST", Time::Milliseconds(3), Colour::White);
 	std::this_thread::sleep_for(std::chrono::milliseconds(Maths::Random::Range(0, 3)));
 	PROFILE_STOP("TEST");*/
@@ -480,6 +501,12 @@ void Cleanup()
 		uProgressBG = nullptr;
 	}
 	psToken = nullptr;
+	if (pQuads0)
+	{
+		pQuads0->Destroy();
+	}
+	pQuads0 = nullptr;
+	pQuad0 = nullptr;
 	debugTokens.clear();
 }
 } // namespace

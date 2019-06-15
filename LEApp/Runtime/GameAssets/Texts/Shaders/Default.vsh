@@ -1,5 +1,3 @@
-uniform float debug_x;
-
 void main()
 {
     /* Update transform */

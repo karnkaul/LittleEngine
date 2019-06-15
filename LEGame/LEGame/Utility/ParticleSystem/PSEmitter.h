@@ -17,13 +17,13 @@ public:
 	Colour m_c;
 
 private:
-	class SFQuad* m_pQuad = nullptr;
+	class Quad* m_pQuad = nullptr;
 	bool m_bInUse = false;
 	bool m_bWasInUse = false;
 	bool* m_pDraw;
 
 public:
-	Particle(class SFQuadVec& quadVec, bool& bDraw);
+	Particle(class Quads& quads, bool& bDraw);
 	~Particle();
 
 	void Init(Vector2 u,
@@ -50,7 +50,7 @@ private:
 	OnTick m_onTick;
 	Time m_elapsed;
 	Transform* m_pParent = nullptr;
-	class SFPrimitive* m_pSFPrimitive = nullptr;
+	class Quads* m_pQuads = nullptr;
 	class SoundPlayer* m_pSoundPlayer = nullptr;
 	bool m_bSpawnNewParticles = true;
 	bool m_bWaiting = false;

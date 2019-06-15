@@ -4,7 +4,7 @@
 #include "Core/Logger.h"
 #include "Core/Utils.h"
 #include "SFMLAPI/System/SFAssets.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/Rendering/Primitives.h"
 #include "LittleEngine/Context/LEContext.h"
 #include "LittleEngine/Repository/LERepository.h"
 #include "LEGame/Model/UI/UIElement.h"

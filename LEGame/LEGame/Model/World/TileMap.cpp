@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "Core/Asserts.h"
 #include "Core/Logger.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/Rendering/Primitives/Quad.h"
+#include "SFMLAPI/Rendering/Primitives/Quads.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Renderer/LERenderer.h"
 #include "TileMap.h"
@@ -28,8 +29,8 @@ void TileData::FillView(Vector2 viewSize, TextureAsset& texture)
 	}
 }
 
-TileMap::TileMap(SFPrimitive& primitive, bool bAutoDestroyPrimitive)
-	: m_pSFPrimitive(&primitive), m_bDestroyPrimitive(bAutoDestroyPrimitive)
+TileMap::TileMap(Quads& quad, bool bAutoDestroyPrimitive)
+	: m_pQuads(&quad), m_bDestroyPrimitive(bAutoDestroyPrimitive)
 {
 }
 
@@ -37,7 +38,7 @@ TileMap::~TileMap()
 {
 	if (m_bDestroyPrimitive)
 	{
-		m_pSFPrimitive->Destroy();
+		m_pQuads->Destroy();
 	}
 }
 	
@@ -45,22 +46,21 @@ TileMap::~TileMap()
 void TileMap::CreateTiles(TileData data)
 {
 	Assert(data.pTexture, "Creating Tiles without texture!");
-	SFQuadVec* pQuadVec = m_pSFPrimitive->GetQuadVec();
-	pQuadVec->SetTexture(*data.pTexture);
+	m_pQuads->SetTexture(*data.pTexture);
 	Vector2 textureSize = data.pTexture->GetTextureSize();
 	Vector2 centre = data.startPos;
 	for (u16 row = 0; row < data.rows; ++row)
 	{
 		for (u16 col = 0; col < data.columns; ++col)
 		{
-			SFQuad* pQuad = pQuadVec->AddQuad();
+			Quad* pQuad = m_pQuads->AddQuad();
 			pQuad->SetPosition(centre)->SetEnabled(true);
 			centre.x += textureSize.x;
 		}
 		centre.x = data.startPos.x;
 		centre.y -= textureSize.y;
 	}
-	m_pSFPrimitive->SetEnabled(true);
+	m_pQuads->SetEnabled(true);
 }
 
 void TileMap::FillView(Vector2 viewSize, TextureAsset& texture)

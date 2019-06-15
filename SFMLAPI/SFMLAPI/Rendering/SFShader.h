@@ -32,7 +32,7 @@ protected:
 	String m_id;
 private:
 	s32 m_type = 0;
-	sf::Shader m_shader;
+	sf::Shader m_sfShader;
 	bool m_bError = false;
 
 public:
@@ -49,14 +49,15 @@ public:
 	ShaderType GetType() const;
 
 private:
-	virtual void Draw(class SFPrimitive& primitive, class SFViewport& viewport);
+	virtual void PreDraw(class APrimitive* pPrimitive);
 
 	friend class SFRenderer;
+	friend class APrimitive;
 };
 
 template <typename T>
 void SFShader::SetUniform(String id, T value)
 {
-	m_shader.setUniform(id, value);
+	m_sfShader.setUniform(id, value);
 }
 }

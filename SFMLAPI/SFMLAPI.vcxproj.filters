@@ -4,9 +4,6 @@
     <ClInclude Include="SFMLAPI\Rendering\Colour.h">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="SFMLAPI\Rendering\SFRenderState.h">
-      <Filter>SFMLAPI\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="SFMLAPI\SFRendering.h">
       <Filter>SFMLAPI</Filter>
     </ClInclude>
@@ -43,9 +40,6 @@
     <ClInclude Include="SFMLAPI\Rendering\SFRenderer.h">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="SFMLAPI\Rendering\SFPrimitive.h">
-      <Filter>SFMLAPI\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="SFMLAPI\Input\SFInputDataFrame.h">
       <Filter>SFMLAPI\Input</Filter>
     </ClInclude>
@@ -56,9 +50,6 @@
       <Filter>SFMLAPI\System</Filter>
     </ClInclude>
     <ClInclude Include="SFMLAPI\Rendering\ISFRenderBuffer.h">
-      <Filter>SFMLAPI\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Rendering\SFQuad.h">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="SFMLAPI\Input\SFInputHandler.h">
@@ -73,7 +64,28 @@
     <ClInclude Include="SFMLAPI\Rendering\SFShader.h">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="SFMLAPI\Rendering\SFTexRect.h">
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\Quad.h">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\Primitive.h">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\SFDrawable.h">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\Quads.h">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\SFRect.h">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\SFCircle.h">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\SFText.h">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\Primitives.h">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
@@ -99,14 +111,8 @@
     <ClCompile Include="SFMLAPI\Rendering\SFRenderer.cpp">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="SFMLAPI\Rendering\SFPrimitive.cpp">
-      <Filter>SFMLAPI\Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="SFMLAPI\Input\SFInputDataFrame.cpp">
       <Filter>SFMLAPI\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\Rendering\SFQuad.cpp">
-      <Filter>SFMLAPI\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="SFMLAPI\Input\SFInputHandler.cpp">
       <Filter>SFMLAPI\Input</Filter>
@@ -120,8 +126,26 @@
     <ClCompile Include="SFMLAPI\Rendering\SFShader.cpp">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="SFMLAPI\Rendering\SFTexRect.cpp">
-      <Filter>SFMLAPI\Rendering</Filter>
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\Quad.cpp">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\Primitive.cpp">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\SFDrawable.cpp">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\SFRect.cpp">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\Quads.cpp">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\SFCircle.cpp">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\SFText.cpp">
+      <Filter>SFMLAPI\Rendering\Primitives</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +166,9 @@
     </Filter>
     <Filter Include="SFMLAPI\Viewport">
       <UniqueIdentifier>{e916c930-eacb-4818-925a-84b2306f56bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SFMLAPI\Rendering\Primitives">
+      <UniqueIdentifier>{135ab94c-07be-4f2d-90a2-1916ea78c212}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

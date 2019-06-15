@@ -10,7 +10,7 @@ namespace LittleEngine
 class IRenderBuffer
 {
 public:
-	using PrimVec = Vec<UPtr<class SFPrimitive>>;
+	using PrimVec = Vec<UPtr<class APrimitive>>;
 	using PrimMat = Array<PrimVec, _LAYER_COUNT>;
 
 public:

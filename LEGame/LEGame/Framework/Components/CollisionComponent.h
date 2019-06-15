@@ -14,12 +14,7 @@ protected:
 		Vector2 offset;
 		class Collider* pCollider;
 #if DEBUGGING
-		class SFPrimitive* pSFPrimitive = nullptr;
-#endif
-
-		ColliderData(Collider* pCollider, Vector2 offset);
-#if DEBUGGING
-		ColliderData(Collider* pCollider, SFPrimitive* pSFPrimitive, Vector2 offset);
+		class ASFDrawable* pShape = nullptr;
 #endif
 	};
 
@@ -31,7 +26,7 @@ public:
 
 	void OnCreated() override;
 
-	void AddCircle(Fixed radius, Vector2 offset = Vector2::Zero);
+	void AddCircle(Fixed diameter, Vector2 offset = Vector2::Zero);
 	void AddAABB(const struct AABBData& aabbData, Vector2 offset = Vector2::Zero);
 
 	TimingType GetComponentTiming() const override;

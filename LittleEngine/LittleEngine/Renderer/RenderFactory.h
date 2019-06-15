@@ -1,6 +1,6 @@
 #pragma once
 #include "Core/SimpleTime.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/Rendering/Primitives/Primitive.h"
 #include "SFMLAPI/Rendering/ISFRenderBuffer.h"
 
 namespace LittleEngine
@@ -21,7 +21,8 @@ public:
 	RenderFactory();
 	~RenderFactory() override;
 	
-	SFPrimitive* New(LayerID layer);
+	template <typename T>
+	T* New(LayerID layer);
 	
 	Time GetLastSwapTime() const override;
 
@@ -30,4 +31,14 @@ public:
 
 	PrimMat& GetActiveRenderMatrix() override;
 };
+
+template <typename T>
+T* RenderFactory::New(LayerID layer)
+{
+	static_assert(IsDerived<APrimitive, T>, "T must derive from APrimitive");
+	UPtr<T> uT = MakeUnique<T>(layer);
+	T* pT = uT.get();
+	m_standby.emplace_back(std::move(uT));
+	return pT;
+}
 } // namespace LittleEngine
