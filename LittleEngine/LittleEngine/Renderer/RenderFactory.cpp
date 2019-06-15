@@ -4,26 +4,18 @@
 
 namespace LittleEngine
 {
-using Primitive = UPtr<SFPrimitive>;
+using Primitive = UPtr<APrimitive>;
 namespace
 {
 struct Prim
 {
 	Primitive p;
-	SFPrimitive* pP = nullptr;
+	APrimitive* pP = nullptr;
 };
-
-Prim Construct(LayerID layer)
-{
-	Assert(layer >= 0 && layer < _LAYER_COUNT, "Invalid LayerID");
-	Primitive uP = MakeUnique<SFPrimitive>(layer);
-	SFPrimitive* pP = uP.get();
-	return {std::move(uP), pP};
-}
 
 inline bool IsDestroyed(const Primitive& p)
 {
-	return p->m_bDestroyed;
+	return p->IsDestroyed();
 }
 
 inline void SwapState(Primitive& p)
@@ -33,12 +25,12 @@ inline void SwapState(Primitive& p)
 
 inline size_t GetIdx(const Primitive& p)
 {
-	return static_cast<size_t>(p->GetLayer());
+	return ToIdx(p->m_layer);
 }
 
 inline void ReconcileState(Primitive& p)
 {
-	p->ReconcileState();
+	p->ReconcileGameState();
 }
 } // namespace
 
@@ -61,14 +53,7 @@ RenderFactory::~RenderFactory()
 		count += vec.size();
 		vec.clear();
 	}
-	LOG_I("[RenderFactory] Destroyed %d primitives", count);
-}
-
-SFPrimitive* RenderFactory::New(LayerID layer)
-{
-	Prim prim = Construct(layer);
-	m_standby.emplace_back(std::move(prim.p));
-	return prim.pP;
+	LOG_D("[RenderFactory] Destroyed %d primitives", count);
 }
 
 Time RenderFactory::GetLastSwapTime() const
@@ -76,9 +61,8 @@ Time RenderFactory::GetLastSwapTime() const
 	return m_lastSwapTime;
 }
 
-void RenderFactory::Lock_Swap()
+void RenderFactory::Swap()
 {
-	Lock lock(m_mutex);
 	for (auto& vec : m_active)
 	{
 		Core::RemoveIf<Primitive>(vec, [](const Primitive& p) { return IsDestroyed(p); });
@@ -89,6 +73,7 @@ void RenderFactory::Lock_Swap()
 	}
 	for (auto& p : m_standby)
 	{
+		SwapState(p);
 		size_t idx = GetIdx(p);
 		Assert(idx < m_active.size(), "Invalid Layer on SFPrimitive!");
 		auto& vec = m_active.at(idx);

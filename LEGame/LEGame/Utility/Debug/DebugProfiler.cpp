@@ -2,8 +2,9 @@
 #include "DebugProfiler.h"
 #if ENABLED(PROFILER)
 #include "Core/Logger.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/Rendering/Primitives.h"
 #include "SFMLAPI/System/SFGameClock.h"
+#include "LittleEngine/Debug/Profiler.h"
 #include "LittleEngine/Debug/Tweakable.h"
 #include "LittleEngine/Context/LEContext.h"
 #include "LEGame/Framework/UI/Elements/UIProgressBar.h"
@@ -14,55 +15,31 @@ namespace Debug
 {
 namespace Profiler
 {
-#pragma region Local
+using Lock = std::lock_guard<std::mutex>;
+
 namespace
 {
-std::thread::id safeThreadID;
 LEContext* pContext = nullptr;
 
-struct Entry
+struct UIEntry
 {
-	UIProgressBar progressBar;
-	UIElement labelElement;
-	String id;
-	Colour colour;
-	Time startTime = Time::Zero;
-	Time endTime = Time::Zero;
-	Time maxTime = Time::Milliseconds(1);
-	bool bFrameEntry;
-
-	Entry(String id, Colour colour, Time startTime, Time maxTime, LayerID layer, bool bFrameEntry);
-	Time Elapsed() const;
+	UPtr<UIProgressBar> uProgressBar;
+	UPtr<UIElement> uLabelElement;
 };
-
-Entry::Entry(String id, Colour colour, Time startTime, Time maxTime, LayerID layer, bool bFrameEntry)
-	: progressBar(UIProgressBar(layer, true)),
-	  labelElement(UIElement(layer, true)),
-	  id(std::move(id)),
-	  colour(colour),
-	  startTime(startTime),
-	  maxTime(maxTime),
-	  bFrameEntry(bFrameEntry)
-{
-}
-Time Entry::Elapsed() const
-{
-	return endTime - startTime;
-}
 
 Vector2 progressBarSize;
 Fixed textWidth;
 Fixed profilerHeight;
-Time maxTickDeltaTime;
-Time maxFrameDeltaTime;
 u32 maxEntries = 30;
-UByte globalAlpha = 200;
+u32 killEntryAfterTimeScale = 10;
+UByte barAlpha = 180;
+bool bProfilerEnabled = false;
 
 class Renderer
 {
 	UPtr<UIElement> m_uLabelRoot = nullptr;
 	UPtr<UIElement> m_uBarRoot = nullptr;
-	UMap<String, UPtr<Entry>> m_entries;
+	Vec<UIEntry> m_uiEntries;
 	u32 m_frameEntryCount = 0;
 
 public:
@@ -70,63 +47,73 @@ public:
 
 	void SetEnabled(bool bEnabled);
 	void Tick(Time dt);
-	void Start(String id, Colour colour, Time maxTime, bool bEnabled);
-	void Stop(String id);
 	void Clear();
 
 private:
-	void SetupNewEntry(Entry& newEntry, Colour colour, bool bEnabled);
 	void SetupPositions();
 };
 
 Renderer::Renderer()
 {
-	m_uLabelRoot = MakeUnique<UIElement>(LAYER_TOP, true);
+	LayerID top_1 = static_cast<LayerID>(LAYER_TOP - 1);
+	m_uLabelRoot = MakeUnique<UIElement>(top_1, true);
 	m_uLabelRoot->OnCreate(*pContext, "ProfilerLabels");
 	m_uLabelRoot->m_transform.size = {textWidth, profilerHeight};
 	m_uLabelRoot->m_transform.bAutoPad = true;
-	m_uLabelRoot->m_transform.nPosition = {-1, Fixed(-0.80f)};
+	m_uLabelRoot->m_transform.nPosition = {-1, Fixed(-0.75f)};
 	// m_uLabelRoot->SetPanel(Colour(100, 100, 100, 100));
-	m_uBarRoot = MakeUnique<UIElement>(LAYER_TOP, true);
+	m_uBarRoot = MakeUnique<UIElement>(top_1, true);
 	m_uBarRoot->OnCreate(*pContext, "ProfilerBars");
 	m_uBarRoot->m_transform.size = Vector2(progressBarSize.x, profilerHeight);
 	m_uBarRoot->m_transform.bAutoPad = true;
-	m_uBarRoot->m_transform.nPosition = {Fixed(0.8f), Fixed(-0.85f)};
+	m_uBarRoot->m_transform.nPosition = {Fixed(0.8f), Fixed(-0.75f)};
+	m_uBarRoot->Tick();
+	m_uLabelRoot->Tick();
 	// m_uBarRoot->SetPanel(Colour(100, 100, 100, 100));
+	Colour colour = Colour::Yellow;
+	for (u32 i = 0; i < maxEntries; ++i)
+	{
+		UIEntry newEntry;
+		newEntry.uProgressBar = MakeUnique<UIProgressBar>(LAYER_TOP, true);
+		newEntry.uLabelElement = MakeUnique<UIElement>(LAYER_TOP, true);
+		newEntry.uProgressBar->OnCreate(*pContext, "", &m_uBarRoot->m_transform);
+		newEntry.uLabelElement->OnCreate(*pContext, "", &m_uLabelRoot->m_transform);
+		colour.a = barAlpha;
+		newEntry.uProgressBar->InitProgressBar(progressBarSize, colour);
+		newEntry.uProgressBar->m_transform.anchor = {-1, 0};
+		newEntry.uProgressBar->GetRect()->SetEnabled(bProfilerEnabled)->SetStatic(false);
+		newEntry.uLabelElement->m_transform.anchor = {1, 0};
+		newEntry.uLabelElement->GetText()->SetEnabled(bProfilerEnabled);
+		m_uiEntries.emplace_back(std::move(newEntry));
+	}
+	SetupPositions();
 }
 
 void Renderer::SetEnabled(bool bEnabled)
 {
-	m_uLabelRoot->GetPrimitive()->SetEnabled(bEnabled);
-	m_uBarRoot->GetPrimitive()->SetEnabled(bEnabled);
-	for (auto& entry : m_entries)
+	m_uLabelRoot->GetRect()->SetEnabled(bEnabled);
+	m_uBarRoot->GetRect()->SetEnabled(bEnabled);
+	for (auto& entry : m_uiEntries)
 	{
-		entry.second->labelElement.GetText()->SetEnabled(bEnabled);
-		entry.second->progressBar.GetPrimitive()->SetEnabled(bEnabled);
+		entry.uLabelElement->GetText()->SetEnabled(bEnabled);
+		entry.uProgressBar->GetRect()->SetEnabled(bEnabled);
 	}
 }
 
 void Renderer::Tick(Time dt)
 {
-	m_uBarRoot->Tick(dt);
-	m_uLabelRoot->Tick(dt);
-	for (auto& entry : m_entries)
-	{
-		entry.second->labelElement.Tick(dt);
-		entry.second->progressBar.Tick(dt);
-	}
-
 	Time now = Time::Now();
-	auto iter = m_entries.begin();
-	while (iter != m_entries.end())
+	auto iter = entries.begin();
+	while (iter != entries.end())
 	{
-		if ((now - iter->second->startTime) > iter->second->maxTime.Scale(10))
+		Entry& entry = iter->second;
+		if ((now - entry.startTime) > entry.maxTime.Scaled(killEntryAfterTimeScale))
 		{
-			if (iter->second->endTime == maxFrameDeltaTime)
+			if (entry.bCustom)
 			{
 				--m_frameEntryCount;
 			}
-			iter = m_entries.erase(iter);
+			iter = entries.erase(iter);
 		}
 		else
 		{
@@ -134,110 +121,83 @@ void Renderer::Tick(Time dt)
 		}
 	}
 
-	SetupPositions();
-}
-
-void Renderer::Start(String id, Colour colour, Time maxTime, bool bEnabled)
-{
-	Assert(std::this_thread::get_id() == safeThreadID,
-		   "Can only use Profiler on Engine Loop thread!");
-	auto search = m_entries.find(id);
-	if (search != m_entries.end())
+	size_t top = 0;
+	size_t bottom = maxEntries;
+	size_t idx = 0;
 	{
-		search->second->startTime = Time::Now();
+		Lock lock(entriesMutex);
+		for (auto& kvp : entries)
+		{
+			auto& entry = kvp.second;
+			if (entry.bCustom)
+			{
+				idx = --bottom;
+			}
+			else
+			{
+				idx = top++;
+			}
+			if (idx >= 0 && idx < maxEntries)
+			{
+				UIEntry& uiEntry = m_uiEntries[idx];
+				uiEntry.uLabelElement->SetText(UIText(entry.id, 20, entry.colour));
+				uiEntry.uProgressBar->SetProgress(entry.timeRatio);
+				Colour barColour = entry.colour;
+				barColour.a = barAlpha;
+				uiEntry.uProgressBar->GetRect()->SetPrimaryColour(barColour);
+				uiEntry.uProgressBar->Tick(dt);
+			}
+		}
 	}
-	else
-	{
-		UPtr<Entry> uNewEntry =
-			MakeUnique<Entry>(id, colour, Time::Now(), maxTime, LAYER_TOP, maxTime > maxTickDeltaTime);
-		SetupNewEntry(*uNewEntry, colour, bEnabled);
-		m_entries.emplace(std::move(id), std::move(uNewEntry));
-	}
-}
 
-void Renderer::Stop(String id)
-{
-	Assert(std::this_thread::get_id() == safeThreadID,
-		   "Can only use Profiler on Engine Loop thread!");
-	auto search = m_entries.find(id);
-	if (search != m_entries.end())
+	for (idx = top; idx < bottom; ++idx)
 	{
-		search->second->endTime = Time::Now();
-		f32 progress = search->second->Elapsed().AsSeconds() / search->second->maxTime.AsSeconds();
-		search->second->progressBar.SetProgress(Fixed(progress));
-		search->second->progressBar.Tick(Time::Zero);
+		UIEntry& uiEntry = m_uiEntries[idx];
+		uiEntry.uLabelElement->SetText("");
+		uiEntry.uProgressBar->SetProgress(Fixed::Zero);
+		uiEntry.uProgressBar->Tick(dt);
 	}
 }
 
 void Renderer::Clear()
 {
-	m_entries.clear();
-}
-
-void Renderer::SetupNewEntry(Entry& newEntry, Colour colour, bool bEnabled)
-{
-	newEntry.progressBar.OnCreate(*pContext, "", &m_uBarRoot->m_transform);
-	newEntry.labelElement.OnCreate(*pContext, "", &m_uLabelRoot->m_transform);
-	colour.a = globalAlpha;
-	newEntry.progressBar.InitProgressBar(progressBarSize, colour);
-	newEntry.progressBar.m_transform.anchor = {-1, 0};
-	newEntry.progressBar.GetPrimitive()->SetEnabled(bEnabled);
-	newEntry.labelElement.SetText(UIText(newEntry.id, 20, newEntry.colour));
-	newEntry.labelElement.m_transform.anchor = {1, 0};
-	newEntry.labelElement.GetText()->SetEnabled(bEnabled);
+	m_uiEntries.clear();
 }
 
 void Renderer::SetupPositions()
 {
-	u32 top = 0;
-	u32 bottom = 0;
+	u32 count = 0;
 	u32 max = maxEntries;
-	Assert(m_entries.size() <= maxEntries, "Too many profiler entries!");
-	for (auto& kvp : m_entries)
+	for (auto& entry : m_uiEntries)
 	{
-		auto& entry = kvp.second;
-		Fixed nY;
-		if (entry->bFrameEntry)
-		{
-			nY = Fixed(bottom, max);
-			nY = (2 * nY) - 1;
-			++bottom;
-		}
-		else
-		{
-			nY = Fixed(top, max);
-			nY = 1 - (2 * nY);
-			++top;
-		}
-		entry->maxTime = entry->bFrameEntry ? maxFrameDeltaTime : maxTickDeltaTime;
-		entry->progressBar.m_transform.nPosition = {-1, nY};
-		entry->labelElement.m_transform.nPosition = {1, nY};
+		Fixed nY = Fixed(count, max);
+		nY = 1 - (2 * nY);
+		++count;
+		entry.uProgressBar->m_transform.nPosition = {-1, nY - Fixed(0.022f)};
+		entry.uLabelElement->m_transform.nPosition = {1, nY};
+		entry.uProgressBar->Tick();
+		entry.uLabelElement->Tick();
 	}
 }
 
 using URenderer = UPtr<Renderer>;
 
 URenderer uRenderer = nullptr;
-bool bEnabled = false;
 } // namespace
-#pragma endregion
 
-#pragma region Interface
 TweakBool(profiler, nullptr);
 TweakF32(pflr_maxDT, nullptr);
-TweakF32(pflr_maxFT, nullptr);
 
-void Init(LEContext& context, Time maxFrameTime)
+void Init(LEContext& context, Time maxTickTime)
 {
-	safeThreadID = std::this_thread::get_id();
 	pContext = &context;
 	maxTickDeltaTime = Time::Milliseconds(10);
-	maxFrameDeltaTime = maxFrameTime;
+	maxTickDeltaTime = maxTickTime;
 	textWidth = 300;
 	Vector2 worldSize = pContext->GetViewSize();
 	profilerHeight = worldSize.y * Fixed(18, 30);
 	Fixed screenWidth = worldSize.x;
-	progressBarSize = Vector2(screenWidth - textWidth - 80, 10);
+	progressBarSize = Vector2(screenWidth - textWidth - 50, 10);
 	uRenderer = MakeUnique<Renderer>();
 	Toggle(false);
 
@@ -246,22 +206,18 @@ void Init(LEContext& context, Time maxFrameTime)
 	pflr_maxDT.Set(Strings::ToString(maxTickDeltaTime.AsMilliseconds()));
 	pflr_maxDT.BindCallback(
 		[](const String& max) { maxTickDeltaTime = Time::Milliseconds(Strings::ToS32(max)); });
-	pflr_maxFT.Set(Strings::ToString(maxFrameDeltaTime.AsMilliseconds()));
-	pflr_maxFT.BindCallback(
-		[](const String& max) { maxFrameDeltaTime = Time::Milliseconds(Strings::ToS32(max)); });
 #endif
 }
 
 void Toggle(bool bEnable)
 {
-	bEnabled = bEnable;
+	bProfilerEnabled = bEnable;
 	uRenderer->SetEnabled(bEnable);
 }
 
 void Cleanup()
 {
 	pContext = nullptr;
-	safeThreadID = std::thread::id();
 	if (uRenderer)
 	{
 		uRenderer->Clear();
@@ -276,39 +232,6 @@ void Tick(Time dt)
 		uRenderer->Tick(dt);
 	}
 }
-
-void Reset()
-{
-	if (uRenderer)
-	{
-		uRenderer->Clear();
-	}
-}
-
-void StartTicked(String id, Colour colour)
-{
-	if (uRenderer)
-	{
-		uRenderer->Start(std::move(id), colour, maxTickDeltaTime, bEnabled);
-	}
-}
-
-void StartFramed(String id, Colour colour)
-{
-	if (uRenderer)
-	{
-		uRenderer->Start(std::move(id), colour, maxFrameDeltaTime, bEnabled);
-	}
-}
-
-void Stop(String id)
-{
-	if (uRenderer)
-	{
-		uRenderer->Stop(std::move(id));
-	}
-}
-#pragma endregion
 } // namespace Profiler
 } // namespace Debug
 } // namespace LittleEngine

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/Rendering/Primitives/SFText.h"
 #include "LittleEngine/Context/LEContext.h"
 #include "LittleEngine/Input/KeyboardInput.h"
 #include "LEGame/Model/GameManager.h"

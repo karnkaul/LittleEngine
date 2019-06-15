@@ -12,7 +12,7 @@ LEAudio* g_pAudio = nullptr;
 
 LEAudio::LEAudio()
 {
-	LOG_D("[EngineAudio] constructed");
+	LOG_D("[Audio] constructed");
 	g_pAudio = this;
 }
 
@@ -20,7 +20,7 @@ LEAudio::~LEAudio()
 {
 	g_pAudio = nullptr;
 	Clear();
-	LOG_D("[EngineAudio] destroyed");
+	LOG_D("[Audio] destroyed");
 }
 
 SoundPlayer* LEAudio::PlaySFX(String id, Fixed volume, Fixed direction, bool bLoop)
@@ -164,7 +164,7 @@ void LEAudio::Clear(bool immediate)
 	}
 	GetStandbyPlayer().Stop();
 	m_uSwitchTrackRequest = nullptr;
-	LOG_D("[EngineAudio] Cleared [%d] SFXPlayers, 1 MusicPlayer]", sfxCount);
+	LOG_D("[Audio] Cleared [%d] SFXPlayers, 1 MusicPlayer]", sfxCount);
 }
 
 void LEAudio::Tick(Time dt)

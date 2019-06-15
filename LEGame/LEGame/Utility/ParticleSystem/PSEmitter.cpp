@@ -2,12 +2,13 @@
 #include "Core/GData.h"
 #include "Core/Utils.h"
 #include "SFMLAPI/Rendering/Colour.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
-#include "SFMLAPI/Rendering/SFQuad.h"
+#include "SFMLAPI/Rendering/Primitives/Quads.h"
+#include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Audio/LEAudio.h"
 #include "LEGame/Model/GameManager.h"
 #include "LittleEngine/Renderer/LERenderer.h"
+#include "LittleEngine/Debug/Tweakable.h"
 #include "PSEmitter.h"
 
 namespace LittleEngine
@@ -40,15 +41,15 @@ UByte Lerp(TRange<UByte> tRange, Fixed alpha)
 }
 } // namespace
 
-Particle::Particle(SFQuadVec& quadVec, bool& bDraw) : m_pDraw(&bDraw)
+Particle::Particle(Quads& quads, bool& bDraw) : m_pDraw(&bDraw)
 {
-	m_pQuad = quadVec.AddQuad();
+	m_pQuad = quads.AddQuad();
 	m_pQuad->SetEnabled(false);
 }
 
 Particle::~Particle() = default;
 
-void Particle::Init(Vector2 u, Time ttl, Transform transform, Fixed w, TRange<UByte> alphaOverTime, TRange<Fixed> scaleOverTime)
+void Particle::Init(Vector2 u, Time ttl, Transform transform, Fixed w, TRange<UByte> alphaOverTime, TRange<Fixed> scaleOverTime, Colour colour)
 {
 	m_bInUse = true;
 	m_ttl = ttl;
@@ -58,10 +59,11 @@ void Particle::Init(Vector2 u, Time ttl, Transform transform, Fixed w, TRange<UB
 	m_transform = transform;
 	m_aot = alphaOverTime;
 	m_sot = scaleOverTime;
+	m_c = colour;
 
-	m_pQuad->SetScale({m_sot.min, m_sot.min})
-		->SetLocalOrientation(transform.localOrientation)
-		->SetPosition(transform.Position());
+	m_pQuad->SetScale({m_sot.min, m_sot.min}, true)
+		->SetOrientation(transform.localOrientation, true)
+		->SetPosition(transform.Position(), true);
 }
 
 void Particle::Tick(Time dt)
@@ -69,39 +71,15 @@ void Particle::Tick(Time dt)
 	if (m_bInUse)
 	{
 		Fixed t(m_t.AsMilliseconds(), m_ttl.AsMilliseconds());
-		Colour c = Colour::White;
+		Colour c = m_c;
 		Fixed s = Lerp(m_sot, t);
 		c.a = Lerp(m_aot, t);
-		// Scale + Orientation + Position
-		if (m_sot.IsFuzzy() && m_w != Fixed::Zero)
-		{
-			m_pQuad->SetColour(c)
-				->SetPosition(Vector2::Zero)
-				->SetScale({s, s})
-				->SetWorldOrientation(m_transform.localOrientation)
-				->SetPosition(m_transform.Position());
-		}
-		// Scale + Position
-		else if (m_sot.IsFuzzy() && m_w == Fixed::Zero)
-		{
-			m_pQuad->SetColour(c)
-				->SetPosition(Vector2::Zero)
-				->SetScale({s, s})
-				->SetPosition(m_transform.Position());
-		}
-		// Orientation + Position
-		else if (!m_sot.IsFuzzy() && m_w != Fixed::Zero)
-		{
-			m_pQuad->SetColour(c)
-				->SetPosition(Vector2::Zero)
-				->SetWorldOrientation(m_transform.localOrientation)
-				->SetPosition(m_transform.Position());
-		}
-		// Position
-		else if (!m_sot.IsFuzzy() && m_w == Fixed::Zero)
-		{
-			m_pQuad->SetColour(c)->SetPosition(m_transform.Position());
-		}
+		bool bImmediate = !m_bWasInUse && m_bInUse;
+		m_bWasInUse = true;
+		m_pQuad->SetPrimaryColour(c, bImmediate)
+			->SetScale({s, s}, bImmediate)
+			->SetOrientation(m_transform.localOrientation, bImmediate)
+			->SetPosition(m_transform.Position(), bImmediate);
 
 		Fixed ms(dt.AsMilliseconds());
 		m_transform.localPosition += ms * m_v;
@@ -117,12 +95,11 @@ Emitter::Emitter(EmitterData data, bool bSetEnabled)
 	: m_data(std::move(data)), m_pParent(data.pParent), m_bEnabled(bSetEnabled)
 {
 	m_particles.reserve(m_data.spawnData.numParticles);
-	m_pSFPrimitive = g_pGameManager->Renderer()->New(static_cast<LayerID>(LAYER_FX + m_data.layerDelta));
-	SFQuadVec* quadVec = m_pSFPrimitive->GetQuadVec();
-	quadVec->SetTexture(m_data.GetTexture());
+	m_pQuads = g_pGameManager->Renderer()->New<Quads>(static_cast<LayerID>(LAYER_FX + m_data.layerDelta));
+	m_pQuads->SetTexture(m_data.GetTexture())->SetEnabled(true);
 	for (size_t i = 0; i < m_data.spawnData.numParticles; ++i)
 	{
-		m_particles.emplace_back(*quadVec, m_bDraw);
+		m_particles.emplace_back(*m_pQuads, m_bDraw);
 	}
 }
 
@@ -133,7 +110,12 @@ Emitter::~Emitter()
 		m_pSoundPlayer->Stop();
 	}
 	m_particles.clear();
-	m_pSFPrimitive->Destroy();
+	m_pQuads->Destroy();
+}
+
+Emitter::OnTick::Token Emitter::RegisterOnTick(OnTick::Callback callback)
+{
+	return m_onTick.Register(callback);
 }
 
 void Emitter::Reset(bool bSetEnabled)
@@ -184,8 +166,7 @@ void Emitter::Tick(Time dt)
 
 	if (!m_bSoundPlayed && m_data.pSound)
 	{
-		m_pSoundPlayer = g_pAudio->PlaySFX(*m_data.pSound, m_data.sfxVolume,
-															Fixed::Zero, m_bSpawnNewParticles);
+		m_pSoundPlayer = g_pAudio->PlaySFX(*m_data.pSound, m_data.sfxVolume, Fixed::Zero, m_bSpawnNewParticles);
 		m_bSoundPlayed = true;
 	}
 
@@ -202,6 +183,10 @@ void Emitter::Init()
 	if (m_data.spawnData.bPreWarm)
 	{
 		PreWarm();
+	}
+	for (auto& particle : m_particles)
+	{
+		particle.m_bWasInUse = false;
 	}
 	m_bDraw = true;
 }
@@ -261,7 +246,8 @@ void Emitter::InitParticle(Particle& p)
 	Fixed w = GetRandom(m_data.spawnData.spawnAngularSpeed);
 	TRange<UByte> aot = m_data.lifetimeData.alphaOverTime;
 	TRange<Fixed> sot = m_data.lifetimeData.scaleOverTime;
-	p.Init(velocity, ttl, transform, w, aot, sot);
+	Colour colour = m_data.spawnData.spawnColour;
+	p.Init(velocity, ttl, transform, w, aot, sot, colour);
 }
 
 void Emitter::InitParticles()
@@ -287,6 +273,7 @@ void Emitter::TickInternal(Time dt, bool bPreWarming)
 			TRange<Fixed> dtRange(Fixed::Zero, ttlSecs);
 			_dt = Time::Seconds(GetRandom<Fixed>(dtRange).ToF32());
 		}
+		m_onTick(p);
 		p.Tick(_dt);
 		if (p.m_bInUse)
 		{

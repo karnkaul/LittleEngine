@@ -2,8 +2,8 @@
 #include "Core/Logger.h"
 #include "LittleEngine/Debug/Tweakable.h"
 #include "ParticleSystem.h"
+#include "LittleEngine/Debug/Profiler.h"
 #include "LEGame/Utility/Debug/DebugProfiler.h"
-#include "LEGame/Utility/ParticleSystem/PSEmitter.h"
 
 namespace LittleEngine
 {
@@ -42,6 +42,14 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 			  particles.c_str());
 }
 
+Emitter* ParticleSystem::GetEmitter(const String& id)
+{
+	auto search = std::find_if(m_emitters.begin(), m_emitters.end(), [id](const UPtr<Emitter>& uEmitter) {
+		return uEmitter->m_data.id == id;
+	});
+	return search != m_emitters.end() ? search->get() : nullptr;
+}
+
 void ParticleSystem::Start()
 {
 	for (auto& uEmitter : m_emitters)
@@ -64,7 +72,16 @@ void ParticleSystem::Stop()
 
 void ParticleSystem::Tick(Time dt)
 {
-	PROFILE_START(m_name, Colour::Yellow);
+#if ENABLED(PROFILER)
+	String id = m_name;
+	Strings::ToUpper(id);
+	if (m_profileColour == Colour())
+	{
+		Maths::Random r(50, 250);
+		m_profileColour = Colour(r.Next(false), r.Next(false), r.Next(false));
+	}
+#endif
+	PROFILE_START(id, m_profileColour);
 	Super::Tick(dt);
 
 	bool bAnyPlaying = false;
@@ -74,6 +91,6 @@ void ParticleSystem::Tick(Time dt)
 		bAnyPlaying |= emitter->m_bEnabled;
 	}
 	m_bIsPlaying = bAnyPlaying;
-	PROFILE_STOP(m_name);
+	PROFILE_STOP(id);
 }
 } // namespace LittleEngine

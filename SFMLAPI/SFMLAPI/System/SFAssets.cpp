@@ -40,7 +40,7 @@ Asset::~Asset()
 {
 	if (!m_bError)
 	{
-		LOG_I("%s [%s] destroyed", g_szAssetType[ToIdx(m_type)], m_id.c_str());
+		LOG_I("-- [%s] %s destroyed", m_id.c_str(), g_szAssetType[ToIdx(m_type)]);
 	}
 }
 
@@ -76,6 +76,12 @@ TextureAsset::TextureAsset(String id, Vec<u8> buffer) : Asset(std::move(id), Ass
 		LOG_E("Could not load Texture from buffer [%s]!", m_id.c_str());
 		m_bError = true;
 	}
+}
+
+TextureAsset* TextureAsset::SetRepeated(bool bRepeat)
+{
+	m_sfTexture.setRepeated(bRepeat);
+	return this;
 }
 
 Vector2 TextureAsset::GetTextureSize() const

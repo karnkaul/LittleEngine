@@ -44,8 +44,9 @@ The Engine needs an `AssetManifest` serialised `GData` object in order to locate
 
 ### Running the Engine
 1. Add gameplay code files to "LEGame/Gameplay/", including at least one `World` derived class ("world 0").
-1. Add any new world headers to "LEGame/Gameplay/Worlds.h"
-1. Add `CreateWorld<T>` / `CreateWorlds<T>` to `GameInit::CreateWorlds()`. (This callback will be invoked by `GameLoop` before the Engine is started.)
+1. Add any new world headers to "LEGame/Gameplay/Worlds.h".
+1. Add at least one world via `CreateWorld<T>` / `CreateWorlds<T>` in `GameInit::CreateWorlds()`.
+1. Load any shaders via `ShaderRepository::LoadShader<T>` in `GameInit::LoadShaders()`.
 
 >*Note: Ensure to set the working directory for the application project (`LittleGame`) as `$(ProjectDir)/Runtime`, to debug/run from the IDE.*
 
@@ -56,8 +57,6 @@ An active `World` will always have an instance of `GameManager` available throug
 At the end of each gameplay frame, `FinishFrame()` will cause the game state of all primitives to be copied into their corresponding render states for the renderer to interpolate between until the next swap.
 
 There are several existing Entities, Components, UI Widgets and UI Contexts ready for use in "LEGame/Framework/UI".
-
->*Gameplay code should only update `SFPrimitive::SFRenderState`, and never directly call `draw()`*
 
 ### Solution Structure
 

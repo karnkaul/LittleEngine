@@ -15,7 +15,7 @@ public:
 	UIObject(String name, bool bSilent = false);
 	~UIObject() override;
 
-	virtual void Tick(Time dt) = 0;
+	virtual void Tick(Time dt = Time::Zero) = 0;
 
 	void SetContext(LEContext& context);
 	Vector2 GetViewSize() const;

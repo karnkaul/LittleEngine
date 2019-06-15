@@ -10,7 +10,7 @@ namespace
 using namespace std::chrono;
 
 time_point epoch = high_resolution_clock::now();
-}
+} // namespace
 
 const Time Time::Zero = Time(0);
 
@@ -87,6 +87,12 @@ Time& Time::Scale(Fixed magnitude)
 {
 	microSeconds *= magnitude.ToF32();
 	return *this;
+}
+
+Time Time::Scaled(Fixed magnitude) const
+{
+	Time ret = *this;
+	return ret.Scale(magnitude);
 }
 
 Time& Time::operator-()
@@ -184,4 +190,4 @@ Time operator/(const Time& lhs, const Time& rhs)
 	return Time(lhs) /= rhs;
 }
 
-} // namespace LittleEngine
+} // namespace Core

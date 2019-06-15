@@ -24,12 +24,18 @@
     <ClInclude Include="SFMLAPI\Input\SFInputDataFrame.h" />
     <ClInclude Include="SFMLAPI\Input\SFInputStateMachine.h" />
     <ClInclude Include="SFMLAPI\Rendering\Colour.h" />
-    <ClInclude Include="SFMLAPI\Rendering\SFQuad.h" />
+    <ClInclude Include="SFMLAPI\Rendering\Primitives.h" />
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\Primitive.h" />
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\Quad.h" />
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\Quads.h" />
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\SFCircle.h" />
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\SFDrawable.h" />
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\SFRect.h" />
+    <ClInclude Include="SFMLAPI\Rendering\Primitives\SFText.h" />
     <ClInclude Include="SFMLAPI\Rendering\ISFRenderBuffer.h" />
     <ClInclude Include="SFMLAPI\Rendering\SFLayerID.h" />
-    <ClInclude Include="SFMLAPI\Rendering\SFPrimitive.h" />
     <ClInclude Include="SFMLAPI\Rendering\SFRenderer.h" />
-    <ClInclude Include="SFMLAPI\Rendering\SFRenderState.h" />
+    <ClInclude Include="SFMLAPI\Rendering\SFShader.h" />
     <ClInclude Include="SFMLAPI\SFAudio.h" />
     <ClInclude Include="SFMLAPI\SFInput.h" />
     <ClInclude Include="SFMLAPI\SFMLAPI.h" />
@@ -49,10 +55,15 @@
     <ClCompile Include="SFMLAPI\Input\SFInputDataFrame.cpp" />
     <ClCompile Include="SFMLAPI\Input\SFInputStateMachine.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\Colour.cpp" />
-    <ClCompile Include="SFMLAPI\Rendering\SFQuad.cpp" />
-    <ClCompile Include="SFMLAPI\Rendering\SFPrimitive.cpp" />
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\Primitive.cpp" />
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\Quad.cpp" />
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\Quads.cpp" />
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\SFCircle.cpp" />
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\SFDrawable.cpp" />
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\SFRect.cpp" />
+    <ClCompile Include="SFMLAPI\Rendering\Primitives\SFText.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\SFRenderer.cpp" />
-    <ClCompile Include="SFMLAPI\Rendering\SFRenderState.cpp" />
+    <ClCompile Include="SFMLAPI\Rendering\SFShader.cpp" />
     <ClCompile Include="SFMLAPI\System\SFAssets.cpp" />
     <ClCompile Include="SFMLAPI\System\SFGameClock.cpp" />
     <ClCompile Include="SFMLAPI\System\SFTypes.cpp" />
@@ -159,6 +170,7 @@
       <PrecompiledHeaderOutputFile>$(OutputPath)LittleEngine-$(Configuration).pch</PrecompiledHeaderOutputFile>
       <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;.</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
@@ -178,6 +190,7 @@
       <AdditionalIncludeDirectories>..\ThirdParty\Include;..\PCH;..\Core;.</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
@@ -188,7 +201,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -197,6 +210,9 @@
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;DEBUG;SHIP</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zo %(AdditionalOptions)</AdditionalOptions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -209,7 +225,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -218,6 +234,8 @@
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);SFML_STATIC;SHIP</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <WholeProgramOptimization>true</WholeProgramOptimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

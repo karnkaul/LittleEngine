@@ -9,8 +9,10 @@ struct Vector2
 public:
 	static const Vector2 Zero;
 	static const Vector2 One;
+	static const Vector2 Up;
 
 	static Vector2 ToOrientation(Fixed degrees);
+	static Fixed ToOrientation(Vector2 orientation);
 
 public:
 	Fixed x;
@@ -30,7 +32,7 @@ public:
 	Vector2& operator/=(Fixed fixed);
 
 	Fixed Dot(Vector2 rhs) const;
-
+	
 	Vector2 Normalised() const;
 	void Normalise();
 	Fixed Magnitude() const;

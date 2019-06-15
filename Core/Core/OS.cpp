@@ -42,12 +42,14 @@ std::pair<Version, Version> ExtractGameAndEngineVersions(const String& exePath)
 						s32 major = verInfo->dwFileVersionMS >> 16 & 0xffff;
 						s32 minor = verInfo->dwFileVersionMS & 0xffff;
 						s32 patch = verInfo->dwFileVersionLS >> 16 & 0xffff;
-						fileEngineVersion = Version(major, minor, patch);
+						s32 pre = verInfo->dwFileVersionLS & 0xffff;
+						fileEngineVersion = Version(major, minor, patch, pre);
 
 						major = verInfo->dwProductVersionMS >> 16 & 0xffff;
 						minor = verInfo->dwProductVersionMS & 0xffff;
 						patch = verInfo->dwProductVersionLS >> 16 & 0xffff;
-						fileGameVersion = Version(major, minor, patch);
+						pre = verInfo->dwProductVersionLS & 0xffff;
+						fileGameVersion = Version(major, minor, patch, pre);
 					}
 				}
 			}
@@ -92,8 +94,8 @@ void Join(Handle& handle)
 			{
 				iter->uThread->join();
 			}
-			Core::RemoveIf<Thread>(threads,
-							 [handle](const Thread& thread) { return thread.handle == handle; });
+			Core::RemoveIf<Thread>(
+				threads, [handle](const Thread& thread) { return thread.handle == handle; });
 		}
 		handle = 0;
 	}
@@ -113,7 +115,7 @@ u32 GetVacantThreadCount()
 {
 	return GetMaxConcurrentThreadCount(false) - GetRunningThreadCount(false);
 }
-}
+} // namespace Threads
 void EnvData::SetVars(s32 argc, char** argv)
 {
 	mainThreadID = std::this_thread::get_id();
@@ -131,6 +133,13 @@ void EnvData::SetVars(s32 argc, char** argv)
 		m_fileEngineVersion = versions.second;
 #endif
 	}
+
+#if _WIN64
+	DEVMODE lpDevMode;
+	memset(&lpDevMode, 0, sizeof(DEVMODE));
+	lpDevMode.dmSize = sizeof(DEVMODE);
+	EnumDisplaySettings(nullptr, ENUM_CURRENT_SETTINGS, &lpDevMode);
+#endif
 
 	String logOut;
 	for (s32 i = 1; i < argc; ++i)
@@ -189,6 +198,19 @@ Version EnvData::GetFileGameVersion() const
 Version EnvData::GetFileEngineVersion() const
 {
 	return m_fileEngineVersion;
+}
+
+u32 GetScreenRefreshRate(u32 assume)
+{
+	u32 refreshRate = assume;
+#if _WIN64
+	DEVMODE lpDevMode;
+	memset(&lpDevMode, 0, sizeof(DEVMODE));
+	lpDevMode.dmSize = sizeof(DEVMODE);
+	EnumDisplaySettings(nullptr, ENUM_CURRENT_SETTINGS, &lpDevMode);
+	refreshRate = lpDevMode.dmDisplayFrequency;
+#endif
+	return refreshRate;
 }
 
 bool IsMainThread()

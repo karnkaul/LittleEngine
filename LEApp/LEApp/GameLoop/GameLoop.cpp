@@ -2,6 +2,7 @@
 #include "Core/Logger.h"
 #include "Core/FileLogger.h"
 #include "LittleEngine/FatalEngineException.h"
+#include "LittleEngine/Debug/Profiler.h"
 #include "LEGame/Model/GameConfig.h"
 #include "LEGame/GameFramework.h"
 #include "LEGame/Utility/Debug/Console/DebugConsole.h"
@@ -20,6 +21,7 @@ using namespace LittleEngine;
 // Globals
 UPtr<FileLogger> uFileLogger;
 UPtr<LERepository> uRepository;
+UPtr<ShaderRepository> uShaders;
 UPtr<LEAudio> uAudio;
 
 // LEContext
@@ -36,6 +38,8 @@ TweakS32(ticksPerSec, nullptr);
 
 bool Init(s32 argc, char** argv)
 {
+	OS::Env()->SetVars(argc, argv);
+
 #if ENABLED(TWEAKABLES)
 	ticksPerSec.BindCallback([](const String& val) {
 		s32 newRate = Strings::ToS32(val);
@@ -53,13 +57,13 @@ bool Init(s32 argc, char** argv)
 #endif
 	config.Init();
 #if !SHIPPING
-	LOG_I("[GameLoop] Initialising EventLoop, loading config...");
+	LOG_I("[GameLoop] Initialising event loop, loading config...");
 	config.Load("_config.gd");
 #endif
 	Core::g_MinLogSeverity = config.GetLogLevel();
 	bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
 	bRenderThread = config.ShouldCreateRenderThread();
-
+	
 	if (OS::Threads::GetVacantThreadCount() > 0)
 	{
 		String header = "Game: " + GameConfig::GetGameVersion().ToString() +
@@ -79,8 +83,8 @@ bool Init(s32 argc, char** argv)
 		}
 	}
 
-	OS::Env()->SetVars(argc, argv);
 	Core::Jobs::Init(config.GetJobWorkerCount());
+	uShaders = MakeUnique<ShaderRepository>();
 
 #if DEBUGGING
 	Collider::s_debugShapeWidth = config.GetColliderBorderWidth();
@@ -88,7 +92,7 @@ bool Init(s32 argc, char** argv)
 	Vector2 viewSize = config.GetViewSize();
 	auto pSettings = GameSettings::Instance();
 	tickRate = config.GetTickRate();
-	maxFrameTime = config.GetMaxTickTime();
+	maxFrameTime = config.GetMaxFrameTime();
 	cullBounds = pSettings->GetCullBounds(viewSize);
 
 	try
@@ -125,7 +129,7 @@ void CreateContext(GameConfig& config)
 
 bool Tick(Time dt)
 {
-	PROFILE_START("Tick", Colour(127, 0, 255, 255));
+	PROFILE_START("TICK", Colour(127, 0, 255));
 	uRepository->Tick(dt);
 	bool bYield = uWSM->Tick(dt);
 	bYield |= uContext->Update();
@@ -133,7 +137,7 @@ bool Tick(Time dt)
 #if ENABLED(CONSOLE)
 	Console::Tick(dt);
 #endif
-	PROFILE_STOP("Tick");
+	PROFILE_STOP("TICK");
 #if ENABLED(PROFILER)
 	Profiler::Tick(dt);
 #endif
@@ -190,6 +194,7 @@ void Cleanup()
 	uWSM = nullptr;
 	uContext = nullptr;
 	uAudio = nullptr;
+	uShaders = nullptr;
 	uRepository = nullptr;
 #if !SHIPPING
 	config.Save("_config.gd");
@@ -215,7 +220,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 	Console::Init(*uContext);
 #endif
 #if ENABLED(PROFILER)
-	Profiler::Init(*uContext, config.GetMaxTickTime());
+	Profiler::Init(*uContext, Time::Milliseconds(10));
 #endif
 	GameClock::Reset();
 	uWSM->Start("Manifest.amf", "Texts/Game.style");
@@ -258,10 +263,8 @@ s32 GameLoop::Run(s32 argc, char** argv)
 				accumulator -= dt;
 			}
 
-			PROFILE_FRAME("Submit Frame", Colour(255, 102, 178, 255));
 			uContext->SubmitFrame();
-			PROFILE_STOP("Submit Frame");
-			
+
 			if (uContext->IsTerminating())
 			{
 				break;

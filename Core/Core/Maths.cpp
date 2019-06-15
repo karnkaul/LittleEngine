@@ -53,4 +53,9 @@ s32 Random::NextNonDeterministic()
 {
 	return m_distribution(m_NDetMt);
 }
+
+s32 Random::Next(bool bDeterministic)
+{
+	return bDeterministic ? NextDeterministic() : NextNonDeterministic();
+}
 } // namespace Maths

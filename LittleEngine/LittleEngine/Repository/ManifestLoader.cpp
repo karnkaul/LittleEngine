@@ -4,6 +4,7 @@
 #include "SFMLAPI/System/SFAssets.h"
 #include "LERepository.h"
 #include "ManifestLoader.h"
+#include "LittleEngine/Renderer/ShaderRepository.h"
 
 namespace LittleEngine
 {
@@ -40,7 +41,7 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 
 #if ENABLED(FILESYSTEM_ASSETS)
 	// Verify
-	for (const auto& definition : manifest.definitions)
+	for (const auto& definition : manifest.assetDefs)
 	{
 		for (const auto& id : definition.assetIDs.assetIDs)
 		{
@@ -52,7 +53,7 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 	}
 #endif
 
-	for (auto& definition : manifest.definitions)
+	for (auto& definition : manifest.assetDefs)
 	{
 		switch (definition.type)
 		{

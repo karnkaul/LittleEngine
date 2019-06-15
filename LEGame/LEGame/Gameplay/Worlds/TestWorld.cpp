@@ -3,6 +3,12 @@
 #include "LEGame/GameFramework.h"
 #include "TestWorld.h"
 
+#include "SFMLAPI/Rendering/Primitives/Quad.h"
+#include "SFMLAPI/Rendering/Primitives/Quads.h"
+#include "SFMLAPI/Rendering/Primitives/SFText.h"
+#include "SFMLAPI/Rendering/Primitives/SFRect.h"
+#include "SFMLAPI/Rendering/Primitives/SFCircle.h"
+
 namespace LittleEngine
 {
 extern bool g_bTerminateOnReady;
@@ -16,10 +22,13 @@ TestWorld* pTestWorld = nullptr;
 Entity *pEntity0 = nullptr, *pEntity1 = nullptr;
 Entity *pEntity2 = nullptr, *pEntity3 = nullptr;
 Entity* pEntity4 = nullptr;
+Quads* pQuads0 = nullptr;
+Quad* pQuad0 = nullptr;
 
 // bool bLoopingPS = false;
 ParticleSystem* pParticleSystem0 = nullptr;
 ParticleSystem* pParticleSystem1 = nullptr;
+Emitter::OnTick::Token psToken;
 
 Deferred<TextureAsset*> largeTex;
 Deferred<TextAsset*> miscText;
@@ -74,18 +83,16 @@ void OnA()
 		if (pEntity2)
 		{
 			auto rc0 = pEntity2->AddComponent<RenderComponent>();
-			rc0->SetShape(LAYER_DEFAULT)->m_pSFPrimitive->SetSize({100, 100},
-	 SFShapeType::Circle)->SetPrimaryColour(Colour::Yellow); 		auto t0 =
-	 pEntity2->AddComponent<CollisionComponent>(); 		t0->AddCircle(100);
+			rc0->SetCircle(LAYER_DEFAULT)->SetDiameter(200)->SetPrimaryColour(Colour::Yellow);
+			auto t0 = pEntity2->AddComponent<CollisionComponent>();
+			t0->AddCircle(200);
 		}
 
 		pEntity3 = g_pGameManager->NewEntity<Entity>("Blue Rectangle", Vector2(500, -200));
 		if (pEntity3)
 		{
 			auto rc1 = pEntity3->AddComponent<RenderComponent>();
-			rc1->SetShape(LAYER_DEFAULT)
-				->m_pSFPrimitive->SetSize({600, 100}, SFShapeType::Rectangle)
-				->SetPrimaryColour(Colour::Blue);
+			rc1->SetRectangle(LAYER_DEFAULT)->SetSize({600, 100})->SetPrimaryColour(Colour::Blue);
 			auto t1 = pEntity3->AddComponent<CollisionComponent>();
 			t1->AddAABB(AABBData({600, 100}));
 		}
@@ -120,8 +127,7 @@ void OnB()
 	bShowTiles = !bShowTiles;
 	if (bShowTiles)
 	{
-		TextureAsset* pTexture =
-			g_pRepository->Load<TextureAsset>("Textures/Tiles/SpaceTile0.png");
+		TextureAsset* pTexture = g_pRepository->Load<TextureAsset>("Textures/Tiles/SpaceTile0.png");
 		g_pGameManager->WorldCamera()->FillViewWithTiles(*pTexture);
 	}
 	else
@@ -245,28 +251,23 @@ void SpawnColliderMinefield()
 	}
 }
 
-// TweakBool(test0, nullptr);
-// TweakBool(testLongAssNameTweakable0, nullptr);
-// TweakBool(test1, nullptr);
-// TweakS32(test2, nullptr);
-// TweakF32(testLongAssNameTweakable1, nullptr);
-// TweakString(test3, nullptr);
 void StartTests()
 {
 	pEntity0 = g_pGameManager->NewEntity<Entity>("Entity0", {300, 200});
 	auto rc0 = pEntity0->AddComponent<RenderComponent>();
-	rc0->SetShape(LAYER_DEFAULT)
-		->m_pSFPrimitive->SetSize({300, 100}, SFShapeType::Rectangle)
+	rc0->SetRectangle(LAYER_DEFAULT)
+		->SetSize({300, 100})
 		->SetPrimaryColour(Colour::Cyan)
 		->SetEnabled(true);
 
-	pEntity1 = g_pGameManager->NewEntity<Entity>("Entity1", g_pGameManager->Renderer()->Project({0, Fixed(0.9f)}, false));
+	pEntity1 = g_pGameManager->NewEntity<Entity>(
+		"Entity1", g_pGameManager->Renderer()->Project({0, Fixed(0.9f)}, false));
 	auto rc1 = pEntity1->AddComponent<RenderComponent>();
 	FontAsset* font = g_pRepository->GetDefaultFont();
-	rc1->SetShape(LAYER_DEFAULT)
-		->m_pSFPrimitive->SetText("Hello World!")
+	rc1->SetText(LAYER_DEFAULT)
+		->SetText("Hello World!")
 		->SetFont(*font)
-		->SetTextSize(50)
+		->SetSize(50)
 		->SetPrimaryColour(Colour(200, 150, 50))
 		->SetEnabled(true);
 
@@ -283,6 +284,15 @@ void StartTests()
 	pParticleSystem0 = g_pGameManager->NewEntity<ParticleSystem>(std::move(psName));
 	pParticleSystem0->InitParticleSystem(ParticleSystemData(psGData));
 	pParticleSystem0->Stop();
+	Emitter* pEmitter0 = pParticleSystem0->GetEmitter("main");
+	if (pEmitter0)
+	{
+		psToken = pEmitter0->RegisterOnTick([](Particle& p) {
+			static Vector2 target = g_pGameManager->Renderer()->Project({Fixed::OneHalf, -Fixed(1.5f)}, false);
+			Vector2 wind = (target - p.m_transform.Position()).Normalised();
+			p.m_v.x = wind.x * Maths::Abs(p.m_v.y) * Fixed::OneHalf;
+		});
+	}
 
 	pText = g_pRepository->Load<TextAsset>("VFX/Fire0/Fire0_noloop.psdata");
 	pParticleSystem1 = g_pGameManager->NewEntity<ParticleSystem>("Fire0");
@@ -293,6 +303,18 @@ void StartTests()
 	if (bSpawnColliderMinefield)
 	{
 		SpawnColliderMinefield();
+	}
+
+	pPlayer->GetComponent<RenderComponent>()->SetShader<SFShader>("Default");
+	
+	auto pTex = g_pRepository->Load<TextureAsset>("Misc/Test.png"); 
+	if (pTex)
+	{
+		pQuads0 = g_pGameManager->Renderer()->New<Quads>(LAYER_DEFAULT);
+		pTex->SetRepeated(true);
+		pQuads0->SetTexture(*pTex)->SetEnabled(true);
+		pQuad0 = pQuads0->AddQuad();
+		pQuad0->SetPosition({600, 300}, true)->SetEnabled(true);
 	}
 }
 
@@ -340,11 +362,8 @@ void SpawnToggle()
 	debugTokens.push_back(
 		pToggle1->AddCallback([](bool bValue) { LOG_W("Toggle1 changed! %d", bValue); }));
 	pToggle1->GetRoot()->m_transform.bAutoPad = true;
-	pToggle1->SetBackground(Colour::White)
-		->SetText("Toggle 1")
-		->SetOn(true)
-		->GetRoot()
-		->m_transform.nPosition = {0, -1};
+	pToggle1->SetBackground(Colour::White)->SetText("Toggle 1")->SetOn(true)->GetRoot()->m_transform.nPosition = {
+		0, -1};
 
 	pParent->m_bAutoDestroyOnCancel = true;
 	pParent->SetActive(true);
@@ -443,6 +462,21 @@ void TestTick(Time dt)
 		}
 		++frame;
 	}
+
+	if (pQuad0)
+	{
+		static Fixed u;
+		u += Fixed(dt.AsSeconds() * 0.1f);
+		if (u > Fixed::One)
+		{
+			u = Fixed::Zero;
+		}
+		pQuad0->SetUV(u, 0, u + Fixed::OneHalf, Fixed::One);
+	}
+
+	/*PROFILE_CUSTOM("TEST", Time::Milliseconds(3), Colour::White);
+	std::this_thread::sleep_for(std::chrono::milliseconds(Maths::Random::Range(0, 3)));
+	PROFILE_STOP("TEST");*/
 }
 
 void Cleanup()
@@ -466,6 +500,13 @@ void Cleanup()
 	{
 		uProgressBG = nullptr;
 	}
+	psToken = nullptr;
+	if (pQuads0)
+	{
+		pQuads0->Destroy();
+	}
+	pQuads0 = nullptr;
+	pQuad0 = nullptr;
 	debugTokens.clear();
 }
 } // namespace

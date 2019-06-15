@@ -3,6 +3,7 @@
 #include "SFMLAPI/System/SFAssets.h"
 #include "LittleEngine/Repository/LERepository.h"
 #include "LEGame/Model/GameManager.h"
+#include "LEGame/Model/UI/UIGameStyle.h"
 #include "PSData.h"
 
 namespace LittleEngine
@@ -39,6 +40,7 @@ ParticleSpawnData::ParticleSpawnData(u32 numParticles) : numParticles(numParticl
 void ParticleSpawnData::Deserialise(const GData& gData)
 {
 	spawnPosition = GetTRangeV2(gData.GetGData("spawnPosition"));
+	spawnColour = UIGameStyle::ParseColour(gData.GetString("spawnColour"));
 	DESERIALISE_TFIXED(gData, spreadAngle);
 	DESERIALISE_TFIXED(gData, emitterAngle);
 	DESERIALISE_TFIXED(gData, spawnSpeed);
@@ -62,6 +64,7 @@ EmitterData::EmitterData(TextureAsset& texture, u32 numParticles, SoundAsset* pS
 
 void EmitterData::Deserialise(const GData& gData)
 {
+	id = gData.GetString("id");
 	spawnData.Deserialise(gData.GetGData("spawnData"));
 	lifetimeData.Deserialise(gData.GetGData("lifetimeData"));
 	DESERIALISE_BOOL(gData, bStatic);

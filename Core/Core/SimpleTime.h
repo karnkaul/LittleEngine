@@ -17,15 +17,16 @@ public:
 	static String ToString(Time time);
 	static Time Microseconds(s64 microSeconds);
 	static Time Milliseconds(s32 milliSeconds);
- 	static Time Seconds(f32 seconds);
+	static Time Seconds(f32 seconds);
 	static Time Now();
 	static Time Clamp(Time val, Time min, Time max);
 	static void Reset();
-	
+
 	Time();
 	explicit Time(s64 microSeconds);
-	
+
 	Time& Scale(Fixed magnitude);
+	Time Scaled(Fixed magnitude) const;
 
 	Time& operator-();
 	Time& operator+=(const Time& rhs);

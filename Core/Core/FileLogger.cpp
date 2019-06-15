@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <thread>
 #include <ctime>
+#include <cstdio>
 #include "FileLogger.h"
 #include "FileRW.h"
 #include "Logger.h"
@@ -26,12 +27,14 @@ using Lock = std::lock_guard<std::mutex>;
 FileLogger::FileLogger(String filename, u8 backupCount, String header) : m_filename(std::move(filename))
 {
 	RenameOldFiles(backupCount);
-	Core::g_OnLogStr = [&](const char* pText) {
+	Core::g_OnLogStr = [&](const char* pText) -> bool {
 		if (!m_bStopLogging.load(std::memory_order_relaxed))
 		{
 			Lock lock(m_mutex);
 			m_cache += std::string(pText);
+			return true;
 		}
+		return false;
 	};
 	m_uWriter = MakeUnique<FileRW>(m_filename + m_extension);
 	m_uWriter->Write(GetPrologue(std::move(header)));
@@ -71,14 +74,11 @@ void FileLogger::Async_StartLogging()
 
 void FileLogger::RenameOldFiles(u16 countToKeep)
 {
-	auto BackupPath = [&](u16 id) { return m_filename + "_bak_" + Strings::ToString(id) + m_extension; };
-	
 	// Make room for oldest backup
-	String oldest = BackupPath(countToKeep);
-	std::ifstream logFile(oldest);
-	if (logFile.good())
+	String oldest = m_filename + "_bak_" + Strings::ToString(countToKeep) + m_extension;
+	if (std::ifstream(oldest))
 	{
-		std::remove(oldest.c_str());
+		remove(oldest.c_str());
 	}
 	--countToKeep;
 	s32 success = 0;
@@ -86,16 +86,14 @@ void FileLogger::RenameOldFiles(u16 countToKeep)
 	// Rename old backups
 	while (countToKeep > 0)
 	{
-		String from = BackupPath(countToKeep);
-		String to = BackupPath(countToKeep + 1);
-		std::ifstream logFile(from);
-		if (logFile.good())
+		String from = m_filename + "_bak_" + Strings::ToString(countToKeep) + m_extension;
+		String to = m_filename + "_bak_" + Strings::ToString(countToKeep + 1) + m_extension;
+		if (std::ifstream(from))
 		{
 			if (std::ifstream(to))
 			{
-				std::remove(to.c_str());
+				remove(to.c_str());
 			}
-			logFile.close();
 			success += std::rename(from.c_str(), to.c_str());
 		}
 		--countToKeep;
@@ -103,7 +101,7 @@ void FileLogger::RenameOldFiles(u16 countToKeep)
 
 	// Rename last log file
 	String from = m_filename + m_extension;
-	String to = BackupPath(1);
+	String to = m_filename + "_bak_" + Strings::ToString(1) + m_extension;
 	if (std::ifstream(from))
 	{
 		success += std::rename(from.c_str(), to.c_str());
@@ -111,7 +109,7 @@ void FileLogger::RenameOldFiles(u16 countToKeep)
 
 	if (success != 0)
 	{
-		LOG_E("[AsyncFileLogger] Could not rename all old log files");
+		LOG_W("[AsyncFileLogger] Could not rename all old log files");
 	}
 }
 } // namespace LittleEngine

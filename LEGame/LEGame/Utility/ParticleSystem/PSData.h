@@ -2,6 +2,7 @@
 #include "Core/CoreTypes.h"
 #include "Core/GData.h"
 #include "Core/TRange.h"
+#include "SFMLAPI/Rendering/Colour.h"
 
 namespace LittleEngine
 {
@@ -16,6 +17,7 @@ struct ParticleSpawnData
 	TRange<Fixed> emitterAngle{Fixed::Zero};
 	TRange<Fixed> spawnSpeed{Fixed(10), Fixed(20)};
 	TRange<Fixed> spawnAngularSpeed{Fixed::Zero};
+	Colour spawnColour = Colour::White;
 	u32 numParticles;
 	bool bPreWarm = false;
 	bool bFireOnce = false;
@@ -38,6 +40,7 @@ struct EmitterData
 {
 	ParticleSpawnData spawnData;
 	ParticleLifetimeData lifetimeData;
+	String id;
 	Fixed sfxVolume = Fixed::One;
 	Fixed startDelaySecs = Fixed::Zero;
 	s32 layerDelta = 0;

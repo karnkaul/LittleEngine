@@ -16,7 +16,7 @@ const char* PAUSE_ON_FOCUS_LOSS_KEY = "bPauseOnFocusLoss";
 const char* JOB_WORKER_COUNT_KEY = "jobWorkerCount";
 const char* TICKS_PER_SECOND_KEY = "ticksPerSecond";
 const char* RENDER_THREAD_START_DELAY_MS_KEY = "renderThreadStartDelayMS";
-const char* MAX_TICK_TIME_MS = "maxTickTimeMS";
+const char* MAX_FRAME_TIME_MS = "maxFrameTimeMS";
 const char* TITLEBAR_TEXT_KEY = "titleBarText";
 const char* LOG_LEVEL_KEY = "logLevel";
 const char* VIEW_SIZE_KEY = "viewSize";
@@ -112,9 +112,9 @@ Time GameConfig::GetRenderThreadStartDelay() const
 	return Time::Milliseconds(static_cast<u32>(m_uData->GetS32(RENDER_THREAD_START_DELAY_MS_KEY)));
 }
 
-Time GameConfig::GetMaxTickTime() const
+Time GameConfig::GetMaxFrameTime() const
 {
-	return Time::Milliseconds(static_cast<u32>(m_uData->GetS32(MAX_TICK_TIME_MS)));
+	return Time::Milliseconds(static_cast<u32>(m_uData->GetS32(MAX_FRAME_TIME_MS)));
 }
 
 String GameConfig::GetTitleBarText() const
@@ -188,9 +188,9 @@ bool GameConfig::SetRenderThreadStartDelay(u32 delayMS)
 	return m_bDirty = m_uData->SetString(RENDER_THREAD_START_DELAY_MS_KEY, Strings::ToString(delayMS));
 }
 
-bool GameConfig::SetMaxTimeMS(u32 maxTickTimeMS)
+bool GameConfig::SetMaxFrameTimeMS(u32 maxFrameTimeMS)
 {
-	return m_bDirty = m_uData->SetString(MAX_TICK_TIME_MS, Strings::ToString(maxTickTimeMS));
+	return m_bDirty = m_uData->SetString(MAX_FRAME_TIME_MS, Strings::ToString(maxFrameTimeMS));
 }
 
 bool GameConfig::SetTitleBarText(String text)
@@ -231,9 +231,9 @@ void GameConfig::Verify()
 	m_bDirty |= SetStringIfEmpty(*m_uData, TITLEBAR_TEXT_KEY, "Async Little Engine");
 	m_bDirty |= SetStringIfEmpty(*m_uData, LOG_LEVEL_KEY, "Info");
 	m_bDirty |= SetStringIfEmpty(*m_uData, COLLIDER_SHAPE_WIDTH_KEY, "2");
-	m_bDirty |= SetStringIfEmpty(*m_uData, TICKS_PER_SECOND_KEY, Strings::ToString(45));
-	m_bDirty |= SetStringIfEmpty(*m_uData, RENDER_THREAD_START_DELAY_MS_KEY, Strings::ToString(10));
-	m_bDirty |= SetStringIfEmpty(*m_uData, MAX_TICK_TIME_MS, Strings::ToString(100));
+	m_bDirty |= SetStringIfEmpty(*m_uData, TICKS_PER_SECOND_KEY, Strings::ToString(40));
+	m_bDirty |= SetStringIfEmpty(*m_uData, RENDER_THREAD_START_DELAY_MS_KEY, Strings::ToString(5));
+	m_bDirty |= SetStringIfEmpty(*m_uData, MAX_FRAME_TIME_MS, Strings::ToString(50));
 	m_bDirty |= SetStringIfEmpty(*m_uData, RENDER_THREAD_KEY, Strings::ToString(true));
 	m_bDirty |= SetStringIfEmpty(*m_uData, JOB_WORKER_COUNT_KEY, Strings::ToString(4));
 	m_bDirty |= SetStringIfEmpty(*m_uData, PAUSE_ON_FOCUS_LOSS_KEY, Strings::ToString(s_bPauseOnFocusLoss));

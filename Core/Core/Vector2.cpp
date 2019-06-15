@@ -7,8 +7,9 @@
 
 namespace Core
 {
-const Vector2 Vector2::Zero = Vector2(0, 0);
-const Vector2 Vector2::One = Vector2(1, 1);
+const Vector2 Vector2::Zero = Vector2(Fixed::Zero, Fixed::Zero);
+const Vector2 Vector2::One = Vector2(Fixed::One, Fixed::One);
+const Vector2 Vector2::Up = Vector2(Fixed::Zero, Fixed::One);
 
 Vector2::Vector2() : x(Fixed::Zero), y(Fixed::Zero)
 {
@@ -21,6 +22,18 @@ Vector2::Vector2(Fixed x, Fixed y) : x(std::move(x)), y(std::move(y))
 Vector2 Vector2::ToOrientation(Fixed degrees)
 {
 	return Vector2((Maths::DEG_TO_RAD * degrees).Sin(), (Maths::DEG_TO_RAD * degrees).Cos());
+}
+
+Fixed Vector2::ToOrientation(Vector2 orientation)
+{
+	if (orientation.SqrMagnitude() < 0.001)
+	{
+		return Fixed::Zero;
+	}
+	orientation.Normalise();
+	Vector2 up(Fixed::Zero, Fixed::One);
+	Fixed cos = orientation.Dot(up);
+	return cos.ArcCos();
 }
 
 Vector2& Vector2::operator+=(Vector2 rhs)

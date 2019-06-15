@@ -36,6 +36,7 @@ namespace Strings
 using Fixed = Core::Fixed;
 // ASCII only
 void ToLower(String& outString);
+void ToUpper(String& outString);
 
 bool ToBool(String input, bool defaultValue = false);
 s32 ToS32(String input, s32 defaultValue = -1);

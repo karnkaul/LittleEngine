@@ -9,10 +9,11 @@ private:
 	u32 major = 0;
 	u32 minor = 0;
 	u32 patch = 0;
+	u32 pre = 0;
 
 public:
 	Version();
-	Version(u32 major, u32 minor, u32 patch);
+	Version(u32 major, u32 minor, u32 patch, u32 pre);
 	Version(const char* szSerialised);
 
 public:

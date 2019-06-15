@@ -10,7 +10,7 @@ namespace LittleEngine
 class IRenderBuffer
 {
 public:
-	using PrimVec = Vec<UPtr<class SFPrimitive>>;
+	using PrimVec = Vec<UPtr<class APrimitive>>;
 	using PrimMat = Array<PrimVec, _LAYER_COUNT>;
 
 public:
@@ -20,7 +20,7 @@ public:
 	virtual ~IRenderBuffer() = default;
 
 	virtual Time GetLastSwapTime() const = 0;
-	virtual void Lock_Swap() = 0;
+	virtual void Swap() = 0;
 	
 	virtual PrimMat& GetActiveRenderMatrix() = 0;
 };

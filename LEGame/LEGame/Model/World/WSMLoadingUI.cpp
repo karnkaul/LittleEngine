@@ -2,6 +2,7 @@
 #include "Core/Logger.h"
 #include "WSMLoadingUI.h"
 #include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/Rendering/Primitives/SFText.h"
 #include "LittleEngine/Context/LEContext.h"
 #include "LittleEngine/Repository/LERepository.h"
 #include "LEGame/Model/UI/UIElement.h"
@@ -35,6 +36,7 @@ WSMLoadingUI::WSMLoadingUI(LEContext& context) : m_pContext(&context)
 	m_uTitle->SetFont(*pFont);
 	m_uTitle->SetText(UIText(titleText, titleSize, Colour::White));
 	m_uTitle->m_transform.nPosition = {0, Fixed(0.1f)};
+	m_uTitle->Tick();
 	m_uEllipsis = MakeUnique<UIElement>();
 	m_uEllipsis->OnCreate(context, "WSMLoadingEllipsis");
 	m_uEllipsis->SetFont(*pFont);
@@ -47,7 +49,7 @@ WSMLoadingUI::WSMLoadingUI(LEContext& context) : m_pContext(&context)
 	m_uProgressBar->m_transform.anchor = {-1, 0};
 	m_uProgressBar->m_transform.padding = {0, progressBarSize.y * Fixed::OneHalf};
 	m_uProgressBar->m_transform.nPosition = {-Fixed::One, -Fixed::One};
-	m_uProgressBar->Tick(Time::Zero);
+	m_uProgressBar->Tick();
 }
 
 WSMLoadingUI::~WSMLoadingUI()
@@ -80,7 +82,7 @@ void WSMLoadingUI::Tick(Time dt, Fixed progress)
 void WSMLoadingUI::Reset()
 {
 	m_uProgressBar->m_transform.size = {Fixed::Zero, progressBarSize.y};
-	m_uProgressBar->Tick(Time::Zero);
+	m_uProgressBar->Tick();
 }
 
 void WSMLoadingUI::TickElements(Time dt)

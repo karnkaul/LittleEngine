@@ -10,6 +10,7 @@
 #include "LittleEngine/Repository/ManifestLoader.h"
 #include "LEGame/Model/GameManager.h"
 #include "LEGame/Model/UI/UIGameStyle.h"
+#include "LEGame/Gameplay/GameInit.h"
 
 namespace LittleEngine
 {
@@ -31,7 +32,7 @@ WorldStateMachine::WorldStateMachine(LEContext& context) : m_pContext(&context)
 	{
 		uState->m_pWSM = this;
 	}
-	LOG_I("[WorldStateMachine] constructed, processed %u created Worlds", s_uCreatedStates.size());
+	LOG_I("[WSM] Processed %u created Worlds", s_uCreatedStates.size());
 }
 
 WorldStateMachine::~WorldStateMachine()
@@ -41,7 +42,7 @@ WorldStateMachine::~WorldStateMachine()
 		m_pActiveState->Deactivate();
 	}
 	s_uCreatedStates.clear();
-	LOG_D("[WorldStateMachine] destroyed");
+	LOG_D("[WSM] destroyed");
 }
 
 World* WorldStateMachine::GetActiveState() const
@@ -61,11 +62,11 @@ bool WorldStateMachine::LoadState(WorldID id)
 		if (uState->m_id == id)
 		{
 			m_pNextState = uState.get();
-			LOG_D("[WorldStateMachine] Load Enqueued: %s", m_pNextState->LogNameStr());
+			LOG_D("[WSM] Load Enqueued: %s", m_pNextState->LogNameStr());
 			return true;
 		}
 	}
-	LOG_E("[WorldStateMachine] State ID [%d] does not exist!", id);
+	LOG_E("[WSM] State ID [%d] does not exist!", id);
 	return false;
 }
 
@@ -73,8 +74,7 @@ void WorldStateMachine::Start(String manifestPath, String gameStyleID)
 {
 	m_manifestPath = std::move(manifestPath);
 	m_bLoading = true;
-	// TODO - uncomment after adding Worlds
-	if (!m_manifestPath.empty() /*&& s_bHasState*/)
+	if (!m_manifestPath.empty() && s_bHasState)
 	{
 		// LoadAsync all assets in manifest
 		m_pAssetLoader = g_pRepository->LoadAsync(m_manifestPath, [&, gameStyleID]() {
@@ -121,10 +121,12 @@ void WorldStateMachine::LoadingTick(Time dt)
 	}
 	if (m_bLoaded)
 	{
+		GameInit::LoadShaders();
+
 		loadTime = Time::Now() - loadTime;
 		if (s_bHasState)
 		{
-			LOG_I("[WorldStateMachine] Manifest load complete in %.2fs. Loading World 0...",
+			LOG_D("[WSM] Manifest load complete in %.2fs. Loading World 0...",
 				  loadTime.AsSeconds());
 		}
 #if DEBUGGING
@@ -133,7 +135,7 @@ void WorldStateMachine::LoadingTick(Time dt)
 			g_pRepository->UnloadAll(false);
 			m_bLoaded = false;
 			m_uLoadingUI->Reset();
-			LOG_D("[WorldStateMachine] Reloading all assets");
+			LOG_D("[WSM] Reloading all assets");
 			Start(m_manifestPath);
 			return;
 		}
@@ -147,7 +149,7 @@ void WorldStateMachine::LoadingTick(Time dt)
 		else
 		{
 			LOG_E(
-				"[WorldStateMachine] No Worlds created! Call "
+				"[WSM] No Worlds created! Call "
 				"`WorldStateMachine::CreateWorlds<T...>()` before `GameLoop::Run()`");
 			m_uErrorUI = MakeUnique<WSMErrorUI>(*m_pContext);
 			m_uErrorUI->SetTitle("No Worlds Created!");
@@ -167,7 +169,7 @@ bool WorldStateMachine::GameTick(Time dt)
 		m_pActiveState->Activate();
 		m_bToActivateState = false;
 		bYield = true;
-		LOG_I("[WorldStateMachine] ...Loaded %s", m_pNextState->LogNameStr());
+		LOG_I("[WSM] Loaded %s", m_pNextState->LogNameStr());
 	}
 
 	if (m_pActiveState)
@@ -177,7 +179,7 @@ bool WorldStateMachine::GameTick(Time dt)
 
 	if (m_pNextState != m_pActiveState)
 	{
-		LOG_D("[WorldStateMachine] Loading %s...", m_pNextState->LogNameStr());
+		LOG_D("[WSM] Loading %s...", m_pNextState->LogNameStr());
 		if (m_pActiveState)
 		{
 			m_pActiveState->Deactivate();

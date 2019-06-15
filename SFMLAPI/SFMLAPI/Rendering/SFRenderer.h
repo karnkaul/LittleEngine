@@ -12,12 +12,13 @@ struct RenderData
 {
 	Time tickRate;
   	Time lastRenderTime;
-	u32 primitiveCount = 0;
-	u32 staticCount = 0;
-	u32 disabledCount = 0;
-	u32 dynamicCount = 0;
+	u32 drawCallCount = 0;
 	u32 quadCount = 0;
+	u32 _quadCount_Internal = 0;	// Unstable to render
+	u32 staticCount = 0;
+	u32 dynamicCount = 0;
 	u32 framesPerSecond = 0;
+	std::atomic<u32> rendersPerFrame = 0;
 };
 
 extern RenderData g_renderData;

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Core/ArchiveReader.h"
 #include "Core/GData.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/Rendering/Primitives.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "LEGame/Model/World/Entity.h"
 #include "LEGame/Model/GameManager.h"
@@ -11,9 +11,9 @@
 
 namespace LittleEngine
 {
-SpriteSheetData::SpriteSheetData(SFTexCoords frameBounds, u32 rows, u32 columns)
+SpriteSheetData::SpriteSheetData(u32 rows, u32 columns)
 {
-	Construct(frameBounds, rows, columns);
+	Construct(rows, columns);
 }
 
 SpriteSheetData::SpriteSheetData(String serialised)
@@ -21,16 +21,20 @@ SpriteSheetData::SpriteSheetData(String serialised)
 	Construct(std::move(serialised));
 }
 
-void SpriteSheetData::Construct(SFTexCoords frameBounds, u32 rows, u32 columns)
+void SpriteSheetData::Construct(u32 rows, u32 columns)
 {
 	size_t idx = 0;
 	for (u32 row = 0; row < rows; ++row)
 	{
 		for (u32 column = 0; column < columns; ++column)
 		{
-			SFTexCoords min(column * frameBounds.x, row * frameBounds.y);
-			SFTexCoords max(min.x + frameBounds.x, min.y + frameBounds.y);
-			frames.emplace_back(min, max);
+			Fixed u(static_cast<f32>(column) / columns);
+			Fixed v(static_cast<f32>(row) / rows);
+			Fixed du(static_cast<f32>(column + 1) / columns);
+			Fixed dv(static_cast<f32>(row + 1) / rows);
+			Vector2 tl(u, v);
+			Vector2 br(du , dv);
+			frames.emplace_back(Rect2::TLBR(tl, br));
 			indices.push_back(idx++);
 		}
 	}
@@ -39,15 +43,9 @@ void SpriteSheetData::Construct(SFTexCoords frameBounds, u32 rows, u32 columns)
 void SpriteSheetData::Construct(String serialised)
 {
 	Core::GData gData(std::move(serialised));
-	Vec<String> frameBoundsText = gData.GetVector("frameBounds");
 	u32 rows = static_cast<u32>(gData.GetS32("rows", 0));
 	u32 columns = static_cast<u32>(gData.GetS32("columns", 0));
-	if (frameBoundsText.size() >= 2)
-	{
-		u32 min = static_cast<u32>(Strings::ToS32(frameBoundsText[0], 0));
-		u32 max = static_cast<u32>(Strings::ToS32(frameBoundsText[1], 0));
-		Construct(SFTexCoords(min, max), rows, columns);
-	}
+	Construct(rows, columns);
 }
 
 SpriteSheet::SpriteSheet(SpriteSheetData data, TextureAsset* pTexture, Time period, bool bUseFrames, u8 skipFrames)
@@ -70,6 +68,13 @@ SpriteSheet::SpriteSheet(String id,
 	{
 		m_pTexture = pTexture;
 		m_data = SpriteSheetData(pText->GetText());
+		if (!m_data.frames.empty())
+		{
+			m_frameSize = m_data.frames[0].GetSize();
+			Vector2 textureSize = pTexture->GetTextureSize();
+			m_frameSize.x *= textureSize.x;
+			m_frameSize.y *= textureSize.y;
+		}
 		m_iterator = m_data.indices.begin();
 	}
 	else
@@ -78,7 +83,7 @@ SpriteSheet::SpriteSheet(String id,
 	}
 }
 
-SFTexRect SpriteSheet::GetFrame() const
+Rect2 SpriteSheet::GetFrame() const
 {
 	if (!m_data.frames.empty())
 	{
@@ -89,6 +94,11 @@ SFTexRect SpriteSheet::GetFrame() const
 		}
 	}
 	return {};
+}
+
+Vector2 SpriteSheet::GetFrameSize() const
+{
+	return m_frameSize;
 }
 
 void SpriteSheet::Next()
@@ -102,9 +112,9 @@ void SpriteSheet::Next()
 
 RenderComponent::~RenderComponent()
 {
-	if (m_pSFPrimitive)
+	if (m_pPrimitive)
 	{
-		m_pSFPrimitive->Destroy();
+		m_pPrimitive->Destroy();
 	}
 }
 
@@ -122,9 +132,9 @@ void RenderComponent::SetEnabled(bool bEnabled)
 {
 	Super::SetEnabled(bEnabled);
 
-	if (m_pSFPrimitive)
+	if (m_pPrimitive)
 	{
-		m_pSFPrimitive->SetEnabled(bEnabled);
+		m_pPrimitive->SetEnabled(bEnabled);
 	}
 }
 
@@ -133,61 +143,78 @@ void RenderComponent::Tick(Time dt)
 	UpdatePrimitive(dt);
 }
 
-RenderComponent* RenderComponent::SetShape(LayerID layer)
+SFRect* RenderComponent::SetRectangle(LayerID layer)
 {
-	if (m_pSFPrimitive && m_pSFPrimitive->GetLayer() != layer)
+	if (m_pPrimitive)
 	{
-		m_pSFPrimitive->Destroy();
-		m_pSFPrimitive = nullptr;
+		m_pPrimitive->Destroy();
 	}
-	if (!m_pSFPrimitive)
-	{
-		m_pSFPrimitive = g_pGameManager->Renderer()->New(layer);
-	}
-	Assert(m_pSFPrimitive, "Could not provision Primitive!");
-	m_pSFPrimitive->SetEnabled(true);
-	return this;
+	auto pRect = g_pGameManager->Renderer()->New<SFRect>(layer);
+	Assert(pRect, "Could not provision Primitive!");
+	pRect->SetEnabled(true);
+	m_pPrimitive = pRect;
+	return pRect;
 }
 
-RenderComponent* RenderComponent::SetSprite(TextureAsset& texture, LayerID layer)
+SFCircle* RenderComponent::SetCircle(LayerID layer)
 {
-	if (m_pSFPrimitive && m_pSFPrimitive->GetLayer() != layer)
+	if (m_pPrimitive)
 	{
-		m_pSFPrimitive->Destroy();
-		m_pSFPrimitive = nullptr;
+		m_pPrimitive->Destroy();
 	}
-	if (!m_pSFPrimitive)
+	auto pCircle = g_pGameManager->Renderer()->New<SFCircle>(layer);
+	Assert(pCircle, "Could not provision Primitive!");
+	pCircle->SetEnabled(true);
+	m_pPrimitive = pCircle;
+	return pCircle;
+}
+
+Quad* RenderComponent::SetSprite(TextureAsset& texture, LayerID layer)
+{
+	if (m_pPrimitive)
 	{
-		m_pSFPrimitive = g_pGameManager->Renderer()->New(layer);	
+		m_pPrimitive->Destroy();
 	}
-	Assert(m_pSFPrimitive, "Could not provision Primitive!");
-	m_pSFPrimitive->SetTexture(texture)->SetEnabled(true);
-	return this;
+	auto pQuad = g_pGameManager->Renderer()->New<Quad>(layer);
+	Assert(pQuad, "Could not provision Primitive!");
+	pQuad->SetModel(Rect2::CentreSize(texture.GetTextureSize()))->SetTexture(texture)->SetEnabled(true);
+	m_pPrimitive = pQuad;
+	return pQuad;
+}
+
+SFText* RenderComponent::SetText(LayerID layer)
+{
+	if (m_pPrimitive)
+	{
+		m_pPrimitive->Destroy();
+	}
+	auto pText = g_pGameManager->Renderer()->New<SFText>(layer);
+	Assert(pText, "Could not provision Primitive!");
+	pText->SetEnabled(true);
+	m_pPrimitive = pText;
+	return pText;
 }
 
 RenderComponent* RenderComponent::SetSpriteSheet(SpriteSheet sheet, LayerID layer)
 {
 	if (sheet.m_pTexture)
 	{
-		if (m_pSFPrimitive && m_pSFPrimitive->GetLayer() != layer)
+		if (m_pPrimitive)
 		{
-			m_pSFPrimitive->Destroy();
-			m_pSFPrimitive = nullptr;
+			m_pPrimitive->Destroy();
 		}
-		if (!m_pSFPrimitive)
-		{
-			m_pSFPrimitive = g_pGameManager->Renderer()->New(layer);
-		}
-		Assert(m_pSFPrimitive, "Could not provision Primitive!");
-		m_pSFPrimitive->SetTexture(*sheet.m_pTexture)->SetEnabled(true);
+		auto pQuad = g_pGameManager->Renderer()->New<Quad>(layer);
+		Assert(pQuad, "Could not provision Primitive!");
+		Rect2 model = Rect2::CentreSize(sheet.GetFrameSize());
+		pQuad->SetTexture(*sheet.m_pTexture)->SetModel(model)->SetEnabled(true);
 		m_framePeriod = Time::Seconds(sheet.m_period.AsSeconds() / sheet.m_data.indices.size());
 		m_oSpriteSheet.emplace(std::move(sheet));
 		m_bFlippingSprites = true;
 		LOG_D("Set up SpriteSheet on %s", LogNameStr());
+		m_pPrimitive = pQuad;
 	}
 	return this;
 }
-
 
 RenderComponent* RenderComponent::UnsetSpriteSheet()
 {
@@ -200,6 +227,24 @@ RenderComponent* RenderComponent::UnsetSpriteSheet()
 RenderComponent* RenderComponent::SetSpriteFlip(bool bFlip)
 {
 	m_bFlippingSprites = bFlip;
+	return this;
+}
+
+RenderComponent* RenderComponent::SetShader(SFShader* pShader)
+{
+#if ENABLED(DEBUG_LOGGING)
+	if (pShader)
+	{
+		const char* szType = g_szShaderTypes[static_cast<size_t>(pShader->GetType())];
+		LOG_D("%s %s %s Shader set", m_logName.c_str(), pShader->GetID().c_str(), szType);
+	}
+	else
+	{
+		LOG_D("%s Shader unset", m_logName.c_str());
+	}
+#endif
+
+	m_pPrimitive->SetShader(pShader);
 	return this;
 }
 
@@ -225,17 +270,18 @@ void RenderComponent::UpdatePrimitive(Time dt)
 				m_oSpriteSheet->Next();
 			}
 		}
-		if (m_pSFPrimitive)
+		if (m_pPrimitive)
 		{
-			m_pSFPrimitive->CropTexture(m_oSpriteSheet->GetFrame());
+			auto pQuad = m_pPrimitive->CastTo<Quad>();
+			pQuad->SetUV(m_oSpriteSheet->GetFrame());
 		}
 	}
 
-	if (m_pSFPrimitive)
+	if (m_pPrimitive)
 	{
-		m_pSFPrimitive->SetScale(m_pOwner->m_transform.Scale(), m_pOwner->m_bResetRenderState);
-		m_pSFPrimitive->SetOrientation(m_pOwner->m_transform.Orientation(), m_pOwner->m_bResetRenderState);
-		m_pSFPrimitive->SetPosition(m_pOwner->m_transform.Position(), m_pOwner->m_bResetRenderState);
+		m_pPrimitive->SetScale(m_pOwner->m_transform.Scale(), m_pOwner->m_bResetRenderState);
+		m_pPrimitive->SetOrientation(m_pOwner->m_transform.Orientation(), m_pOwner->m_bResetRenderState);
+		m_pPrimitive->SetPosition(m_pOwner->m_transform.Position(), m_pOwner->m_bResetRenderState);
 		m_pOwner->m_bResetRenderState = false;
 	}
 }

@@ -6,20 +6,23 @@
 #include "SFMLAPI/Viewport/SFViewportData.h"
 #include "LEContext.h"
 #include "LittleEngine/Audio/LEAudio.h"
+#include "LittleEngine/Debug/Profiler.h"
 #include "LittleEngine/Debug/Tweakable.h"
 #include "LittleEngine/OS.h"
 #include "LittleEngine/Input/LEInput.h"
 #include "LittleEngine/Renderer/LERenderer.h"
 #include "LittleEngine/Repository/LERepository.h"
 
+#include "SFMLAPI/Rendering/Primitives/Primitive.h"
+
 namespace LittleEngine
 {
-TweakBool(renderThread, nullptr);
+TweakBool(asyncRendering, nullptr);
 
 LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 {
 #if ENABLED(TWEAKABLES) 
-	renderThread.BindCallback([&](const String& val) { 
+	asyncRendering.BindCallback([&](const String& val) { 
 		bool bEnable = Strings::ToBool(val);
 		if (bEnable)
 		{
@@ -171,7 +174,6 @@ bool LEContext::Update()
 		return true;
 	}
 }
-
 void LEContext::StartFrame()
 {
 	m_uRenderer->Reconcile();
@@ -195,9 +197,12 @@ void LEContext::SubmitFrame()
 	m_uRenderer->Lock_Swap();
 	if (!m_data.bRenderThread)
 	{
-		Time renderElapsed = Time::Now() - m_uRenderer->GetLastSwapTime();
-		Fixed alpha = Maths::ComputeAlpha(renderElapsed, m_data.tickRate);
-		m_uRenderer->Render(alpha);
+#if ENABLED(PROFILER)
+		static Time dt60Hz = Time::Seconds(1.0f / 60);
+#endif
+		PROFILE_CUSTOM("RENDER", dt60Hz, Colour(219, 10, 87));
+		m_uRenderer->Render(Fixed::One);
+		PROFILE_STOP("RENDER");
 	}
 }
 

@@ -10,6 +10,7 @@ using Time = Core::Time;
 
 const Fixed PI = Fixed(3.14159265359);
 const Fixed DEG_TO_RAD = Fixed(PI / 180);
+const Fixed RAD_TO_DEG = Fixed(180 / PI);
 
 // Returns val E [min, max]
 template <typename T>
@@ -61,6 +62,7 @@ public:
 	void Seed(s32 seed);
 	s32 NextDeterministic();
 	s32 NextNonDeterministic();
+	s32 Next(bool bDeterministic);
 };
 
 template <typename T>

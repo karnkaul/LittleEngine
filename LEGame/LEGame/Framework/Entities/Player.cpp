@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
 #include "SFMLAPI/Rendering/SFLayerID.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
 #include "SFMLAPI/System/SFAssets.h"
 #include "LEGame/Model/GameManager.h"
 #include "Player.h"
@@ -37,6 +36,6 @@ void Player::InitPlayer(PlayerData data)
 	}
 	AddComponent<ControllerComponent>();
 
-	LOG_I("%s %s", LogNameStr(), " Initialised");
+	LOG_D("%s %s", LogNameStr(), " Initialised");
 }
 } // namespace LittleEngine

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
-#include "SFMLAPI/Rendering/SFPrimitive.h"
+#include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "UIProgressBar.h"
 
 namespace LittleEngine
@@ -18,7 +18,7 @@ void UIProgressBar::InitProgressBar(Vector2 size, Colour colour, Fixed initProgr
 	m_transform.size = m_size;
 	SetPanel(colour);
 	SetProgress(initProgress);
-	GetPrimitive()->SetStatic(false);
+	GetRect()->SetStatic(false);
 }
 
 void UIProgressBar::SetProgress(Fixed progress)

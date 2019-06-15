@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/CoreTypes.h"
 #include "SFMLAPI/System/SFAssetType.h"
+#include "SFMLAPI/Rendering/SFShader.h"
 
 namespace LittleEngine
 {
@@ -40,8 +41,8 @@ struct AssetDefinition
 struct AssetManifest
 {
 public:
-	Vec<AssetDefinition> definitions;
-
+	Vec<AssetDefinition> assetDefs;
+	
 public:
 	AssetManifest() = default;
 	AssetManifest(Vec<AssetDefinition> assetDefinitions);

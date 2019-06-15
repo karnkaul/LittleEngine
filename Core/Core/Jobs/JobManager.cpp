@@ -60,7 +60,7 @@ JobManager::~JobManager()
 		worker->Stop();
 	}
 	m_jobWorkers.clear();
-	LOG_I("[JobManager] destroyed");
+	LOG_D("[JobManager] destroyed");
 }
 
 JobHandle JobManager::Enqueue(Task task, String name, bool bSilent)

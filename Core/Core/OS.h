@@ -39,6 +39,7 @@ public:
 
 EnvData* Env();
 
+u32 GetScreenRefreshRate(u32 assume = 60);
 bool IsMainThread();
 bool IsDebuggerAttached();
 bool IsDEBUGGING();

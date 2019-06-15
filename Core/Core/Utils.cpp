@@ -10,6 +10,11 @@ void ToLower(String& outString)
 	std::transform(outString.begin(), outString.end(), outString.begin(), ::tolower);
 }
 
+void ToUpper(String& outString)
+{
+	std::transform(outString.begin(), outString.end(), outString.begin(), ::toupper);
+}
+
 bool ToBool(String input, bool bDefaultValue)
 {
 	ToLower(input);
