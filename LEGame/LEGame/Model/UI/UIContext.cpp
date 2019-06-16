@@ -60,7 +60,7 @@ void UIContext::SetActive(bool bActive, bool bResetSelection)
 		}
 		Tick();
 		m_inputTokens.push_back(g_pGameManager->Input()->Register(
-			[&](const LEInput::Frame& frame) -> bool { return OnInput(frame); }));
+			[&](const LEInput::Frame& frame) -> bool { return OnInput(frame); }, true));
 	}
 }
 
@@ -125,31 +125,31 @@ bool UIContext::OnInput(const LEInput::Frame& frame)
 		return false;
 	}
 
-	if (frame.IsPressed(GameInputType::Enter))
+	if (frame.IsPressed(KeyCode::Enter) || frame.IsPressed(KeyType::JOY_BTN_0))
 	{
 		OnEnterPressed();
 	}
-	if (frame.IsReleased(GameInputType::Enter))
+	if (frame.IsReleased(KeyCode::Enter) || frame.IsReleased(KeyType::JOY_BTN_0))
 	{
 		OnEnterReleased(m_bInteracting);
 	}
-	if (frame.IsReleased(GameInputType::Back))
+	if (frame.IsReleased(KeyCode::Escape) || frame.IsReleased(KeyType::JOY_BTN_1))
 	{
 		OnBackReleased();
 	}
-	if (frame.IsReleased(GameInputType::Up))
+	if (frame.IsReleased(KeyCode::Up))
 	{
 		OnUp();
 	}
-	if (frame.IsReleased(GameInputType::Down))
+	if (frame.IsReleased(KeyCode::Down))
 	{
 		OnDown();
 	}
-	if (frame.IsReleased(GameInputType::Left))
+	if (frame.IsReleased(KeyCode::Left))
 	{
 		OnLeft();
 	}
-	if (frame.IsReleased(GameInputType::Right))
+	if (frame.IsReleased(KeyCode::Right))
 	{
 		OnRight();
 	}

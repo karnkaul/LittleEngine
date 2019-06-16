@@ -102,45 +102,80 @@ void KeyboardInput::Update(const LEInput::Frame& frame)
 {
 	bool bAppendText = false;
 
-	if (frame.IsHeld(GameInputType::RB) && frame.textInput.Contains(SpecialInputType::Insert))
+	if (frame.IsHeld(KeyCode::LShift) && frame.textInput.ContainsKey(KeyCode::Insert))
 	{
 		m_liveLine.Append(LEInput::Frame::GetClipboard());
 	}
 
-	else if (frame.textInput.Contains(SpecialInputType::Backspace))
+	else if (frame.textInput.ContainsIgnored(KeyCode::Backspace))
 	{
 		m_liveLine.Backspace();
 	}
 
-	else if (frame.textInput.Contains(SpecialInputType::Left))
+	else if (frame.textInput.ContainsIgnored(KeyCode::Left))
 	{
 		m_liveLine.MoveCursor(-1);
 	}
 
-	else if (frame.textInput.Contains(SpecialInputType::Right))
+	else if (frame.textInput.ContainsIgnored(KeyCode::Right))
 	{
 		m_liveLine.MoveCursor(1);
 	}
 
-	else if (frame.textInput.Contains(SpecialInputType::Home))
+	else if (frame.textInput.ContainsIgnored(KeyCode::Home))
 	{
 		m_liveLine.MoveCursorToExtreme(true);
 	}
 	
-	else if (frame.textInput.Contains(SpecialInputType::End))
+	else if (frame.textInput.ContainsIgnored(KeyCode::End))
 	{
 		m_liveLine.MoveCursorToExtreme(false);
 	}
 
-	else if (frame.textInput.Contains(SpecialInputType::Delete))
+	else if (frame.textInput.ContainsIgnored(KeyCode::Delete))
 	{
 		m_liveLine.Delete();
 	}
 
-	else if (m_bClearOnEscape && frame.textInput.Contains(SpecialInputType::Escape))
+	else if (m_bClearOnEscape && frame.textInput.ContainsIgnored(KeyCode::Escape))
 	{
 		m_liveLine.Clear();
 	}
+
+	/*else if (frame.IsPressed(KeyCode::Backspace))
+	{
+		m_liveLine.Backspace();
+	}
+
+	else if (frame.IsPressed(KeyCode::Left))
+	{
+		m_liveLine.MoveCursor(-1);
+	}
+
+	else if (frame.IsPressed(KeyCode::Right))
+	{
+		m_liveLine.MoveCursor(1);
+	}
+
+	else if (frame.IsPressed(KeyCode::Home))
+	{
+		m_liveLine.MoveCursorToExtreme(true);
+	}
+
+	else if (frame.IsPressed(KeyCode::End))
+	{
+		m_liveLine.MoveCursorToExtreme(false);
+	}
+
+	else if (frame.IsPressed(KeyCode::Delete))
+	{
+		m_liveLine.Delete();
+	}
+
+	else if (m_bClearOnEscape && frame.IsPressed(KeyCode::Escape))
+	{
+		m_liveLine.Clear();
+	}*/
 
 	else
 	{

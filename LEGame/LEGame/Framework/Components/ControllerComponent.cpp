@@ -51,7 +51,7 @@ void ControllerComponent::OnCreated()
 	{
 		LOG_E("%s : %s has ControllerComponent but no RenderComponent!", LogNameStr(), m_pOwner->LogNameStr());
 	}
-	BindInput([&](const LEInput::Frame& x) -> bool { return OnInput(x); });
+	BindInput([&](const LEInput::Frame& x) -> bool { return OnInput(x); }, true);
 	Reset();
 }
 
@@ -80,19 +80,21 @@ void ControllerComponent::SetEnabled(bool bEnabled)
 
 bool ControllerComponent::OnInput(const LEInput::Frame& frame)
 {
+	m_bKeyInput = false;
 	if (!m_bEnabled)
 	{
 		return false;
 	}
 
-	bool bModifier = frame.IsHeld(GameInputType::LB);
+	bool bModifier = frame.IsHeld(KeyCode::LControl) || frame.IsHeld(KeyCode::RControl) || frame.IsHeld(KeyType::JOY_BTN_4);
 	m_rotation = Fixed::Zero;
 	m_displacement = Vector2::Zero;
 
 	// Horizontal
 	{
-		if (frame.IsHeld(GameInputType::Left))
+		if (frame.IsHeld(KeyCode::Left))
 		{
+			m_bKeyInput = true;
 			if (bModifier)
 			{
 				m_rotation = 1;
@@ -103,8 +105,9 @@ bool ControllerComponent::OnInput(const LEInput::Frame& frame)
 			}
 		}
 
-		else if (frame.IsHeld(GameInputType::Right))
+		else if (frame.IsHeld(KeyCode::Right))
 		{
+			m_bKeyInput = true;
 			if (bModifier)
 			{
 				m_rotation = -1;
@@ -118,13 +121,15 @@ bool ControllerComponent::OnInput(const LEInput::Frame& frame)
 
 	// Vertical
 	{
-		if (frame.IsHeld(GameInputType::Up))
+		if (frame.IsHeld(KeyCode::Up))
 		{
+			m_bKeyInput = true;
 			m_displacement.y += 1;
 		}
 
-		else if (frame.IsHeld(GameInputType::Down))
+		else if (frame.IsHeld(KeyCode::Down))
 		{
+			m_bKeyInput = true;
 			m_displacement.y -= 1;
 		}
 	}
@@ -132,6 +137,27 @@ bool ControllerComponent::OnInput(const LEInput::Frame& frame)
 	if (m_displacement.SqrMagnitude() > 0.0)
 	{
 		m_displacement.Normalise();
+	}
+
+	for (const auto& state : frame.joyInput.m_states)
+	{
+		if (!m_bKeyInput)
+		{
+			m_displacement = Vector2::Zero;
+			m_rotation = Fixed::Zero;
+		}
+		if (Maths::Abs(state.xy.x) > SFInputStateMachine::JOY_DEADZONE)
+		{
+			m_displacement.x += (state.xy.x / Fixed(100));
+		}
+		if (Maths::Abs(state.xy.y) > SFInputStateMachine::JOY_DEADZONE)
+		{
+			m_displacement.y += (state.xy.y / Fixed(100));
+		}
+		if (Maths::Abs(state.uv.x) > SFInputStateMachine::JOY_DEADZONE)
+		{
+			m_rotation -= (state.uv.x / Fixed(100));
+		}
 	}
 	return false;
 }

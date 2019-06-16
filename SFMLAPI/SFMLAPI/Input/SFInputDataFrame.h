@@ -6,62 +6,75 @@
 namespace LittleEngine
 {
 using KeyCode = sf::Keyboard::Key;
+extern const u32 g_MAX_JOYSTICKS;
+
+enum KeyType
+{
+	// 0-499 : SFML
+
+	MOUSE_BTN_0 = 500, // Left
+	MOUSE_BTN_1,	   // Right
+	MOUSE_BTN_2,	   // Middle
+	MOUSE_BTN_3,
+	MOUSE_BTN_4,
+	JOY_BTN_0, // A
+	JOY_BTN_1, // B
+	JOY_BTN_2, // X
+	JOY_BTN_3, // Y
+	JOY_BTN_4, // LB
+	JOY_BTN_5, // RB
+	JOY_BTN_6, // Select
+	JOY_BTN_7  // Start
+};
 
 // \brief Wrapper struct to store state of sf::Event::KeyEvent
 struct KeyState
 {
 private:
-	String name;
-	KeyCode keyCode;
+	const char* szName;
+	s32 keyType;
 
 public:
 	bool bPressed;
 
 public:
-	KeyState(KeyCode keyCode, const char* szName = "Unknown");
+	KeyState(s32 keyType, const char* szName = "Unknown");
 
-	KeyCode GetKeyCode() const;
+	KeyType GetKeyType() const;
 	const char* GetNameStr() const;
-};
-
-// \brief Enum to detect special keyboard input (mainly for Console etc)
-enum class SpecialInputType
-{
-	Tab,
-	Enter,
-	Backspace,
-	Escape,
-	Up,
-	Down,
-	Left,
-	Right,
-	Shift,
-	Control,
-	Alt,
-	Insert,
-	Delete,
-	PageUp,
-	PageDown,
-	Home,
-	End,
 };
 
 // \brief Struct to hold synchronous input text as a string
 struct TextInput
 {
 	String text;
-	Vec<SpecialInputType> specials;
+	Vec<KeyType> keys;
+	USet<KeyCode> ignoredChars;
 
-	bool Contains(char c) const;
-	bool Contains(SpecialInputType special) const;
+	bool ContainsChar(char c) const;
+	bool ContainsKey(s32 keyCode) const;
+	bool ContainsIgnored(KeyCode keyCode) const;
 	void Reset();
 };
 
 struct MouseInput
 {
 	Vector2 worldPosition;
-	bool bLeftPressed = false;
-	bool bRightPressed = false;
+};
+
+struct JoyState
+{
+	s16 id;
+	Vector2 xy;
+	Vector2 zr;
+	Vector2 uv;
+	Vector2 pov;
+	Vec<KeyType> pressed;
+};
+
+struct JoyInput
+{
+	Vec<JoyState> m_states;
 };
 
 struct SFInputDataFrame
@@ -69,6 +82,7 @@ struct SFInputDataFrame
 	Vec<KeyState> pressed;
 	TextInput textInput;
 	MouseInput mouseInput;
+	JoyInput joyInput;
 
 	static String GetClipboard();
 };

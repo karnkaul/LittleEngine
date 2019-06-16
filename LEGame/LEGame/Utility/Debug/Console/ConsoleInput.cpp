@@ -17,7 +17,7 @@ ConsoleInput::ConsoleInput(LEContext& context) : m_pContext(&context)
 bool ConsoleInput::OnInput(const LEInput::Frame& frame)
 {
 	bool bWasEnabled = Console::g_bEnabled;
-	if (frame.textInput.Contains(CONSOLE_KEY))
+	if (frame.textInput.ContainsChar(CONSOLE_KEY))
 	{
 		Console::g_bEnabled = !Console::g_bEnabled;
 	}
@@ -46,20 +46,17 @@ void ConsoleInput::UpdateLiveLine(const LEInput::Frame& frame)
 {
 	const TextInput& textInput = frame.textInput;
 
-	bool bNavigating = textInput.Contains(SpecialInputType::Up) || textInput.Contains(SpecialInputType::Down);
-	if (!textInput.specials.empty() && !bNavigating)
-	{
-		bCyclingQueries = false;
-		m_queryCache.Reset();
-	}
+	bool bNavigating = textInput.ContainsKey(KeyCode::Up) || textInput.ContainsKey(KeyCode::Down);
+	bool bResetQuery = false;
 
-	if (textInput.Contains(SpecialInputType::Enter))
+	if (frame.IsPressed(KeyCode::Enter))
 	{
 		m_query = m_keyboard.m_liveLine.liveString;
 		m_keyboard.Clear();
+		bResetQuery = true;
 	}
 
-	else if (textInput.Contains(SpecialInputType::Tab))
+	else if (frame.IsPressed(KeyCode::Tab))
 	{
 		if (!m_keyboard.m_liveLine.liveString.empty())
 		{
@@ -113,9 +110,10 @@ void ConsoleInput::UpdateLiveLine(const LEInput::Frame& frame)
 				}
 			}
 		}
+		bResetQuery = true;
 	}
 
-	else if (textInput.Contains(SpecialInputType::Down))
+	else if (frame.IsPressed(KeyCode::Down))
 	{
 		if (!m_queryCache.IsEmpty())
 		{
@@ -136,7 +134,7 @@ void ConsoleInput::UpdateLiveLine(const LEInput::Frame& frame)
 		}
 	}
 
-	else if (textInput.Contains(SpecialInputType::Up))
+	else if (frame.IsPressed(KeyCode::Up))
 	{
 		if (!m_queryCache.IsEmpty())
 		{
@@ -153,19 +151,25 @@ void ConsoleInput::UpdateLiveLine(const LEInput::Frame& frame)
 		}
 	}
 
-	else if (textInput.Contains(SpecialInputType::PageUp))
+	else if (frame.IsPressed(KeyCode::PageUp))
 	{
 		Console::g_uLogBook->PageUp();
 	}
 
-	else if (textInput.Contains(SpecialInputType::PageDown))
+	else if (frame.IsPressed(KeyCode::PageDown))
 	{
 		Console::g_uLogBook->PageDown();
 	}
 
-	else if (!frame.textInput.Contains(CONSOLE_KEY))
+	else if (!frame.textInput.ContainsChar(CONSOLE_KEY))
 	{
 		m_keyboard.Update(frame);
+	}
+
+	if (bResetQuery && !bNavigating)
+	{
+		bCyclingQueries = false;
+		m_queryCache.Reset();
 	}
 }
 } // namespace LittleEngine::Debug

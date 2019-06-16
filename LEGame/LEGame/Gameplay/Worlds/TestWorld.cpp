@@ -187,48 +187,43 @@ void OnSelect()
 
 bool Test_OnInput(const LEInput::Frame& frame)
 {
-	if (frame.IsReleased(GameInputType::A))
+	if (frame.IsReleased(KeyType::JOY_BTN_0) || frame.IsReleased(KeyCode::Space))
 	{
 		OnA();
 	}
 
-	if (frame.IsReleased(GameInputType::B))
+	if (frame.IsReleased(KeyType::JOY_BTN_1) || frame.IsReleased(KeyCode::E))
 	{
 		OnB();
 	}
 
-	if (frame.IsReleased(GameInputType::X))
+	if (frame.IsReleased(KeyType::JOY_BTN_2) || frame.IsReleased(KeyCode::R))
 	{
 		OnX();
 	}
 
-	if (frame.IsReleased(GameInputType::Y))
+	if (frame.IsReleased(KeyType::JOY_BTN_3) || frame.IsReleased(KeyCode::F))
 	{
 		OnY();
 	}
 
-	if (frame.IsReleased(GameInputType::Enter))
+	if (frame.IsReleased(KeyType::JOY_BTN_7) || frame.IsReleased(KeyCode::Enter))
 	{
 		OnEnter();
 	}
 
-	if (frame.IsReleased(GameInputType::Select))
+	if (frame.IsReleased(KeyType::JOY_BTN_4) || frame.IsReleased(KeyCode::Tab))
 	{
 		OnSelect();
 	}
 
-	if (frame.IsReleased(GameInputType::LB))
-	{
-		Assert(false, "Test Assert");
-	}
-
-	if (frame.IsHeld(GameInputType::Left) && frame.IsHeld(GameInputType::RB))
+	if (frame.IsHeld(KeyCode::Left) && frame.IsHeld(KeyType::JOY_BTN_5))
 	{
 		g_pGameManager->WorldCamera()->m_transform.localPosition.x -= Fixed::Three;
 		return true;
 	}
 
-	if (frame.IsHeld(GameInputType::Right) && frame.IsHeld(GameInputType::RB))
+	if (frame.IsHeld(KeyCode::Right) && frame.IsHeld(KeyType::JOY_BTN_5))
 	{
 		g_pGameManager->WorldCamera()->m_transform.localPosition.x += Fixed::Three;
 		return true;
@@ -537,7 +532,7 @@ void TestWorld::OnDeactivating()
 
 bool TestWorld::OnInput(const LEInput::Frame& frame)
 {
-	if (frame.IsReleased(GameInputType::Back))
+	if (frame.IsReleased(KeyType::JOY_BTN_6) || frame.IsReleased(KeyCode::Escape))
 	{
 		g_pGameManager->UI()->PushContext<UIOptions>("Options");
 		return true;

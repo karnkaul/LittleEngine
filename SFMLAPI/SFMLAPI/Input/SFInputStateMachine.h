@@ -4,28 +4,16 @@
 
 namespace LittleEngine
 {
-// \brief Wrapper struct that holds key state modifiers
-struct KeyMod
-{
-	static const KeyMod Default;
-	bool bControl = false;
-	bool bAlt = false;
-	bool bShift = false;
-
-	KeyMod();
-	KeyMod(bool bControl, bool bAlt, bool bShift);
-
-private:
-	KeyMod(const sf::Event::KeyEvent& event);
-	friend class InputHandler;
-};
-
 // \brief Concrete class that a Graphics can update KeyStates to every frame
 class SFInputStateMachine
 {
+public:
+	static const Fixed JOY_DEADZONE;
+
 private:
 	TextInput m_textInput;
 	MouseInput m_pointerInput;
+	JoyInput m_joyInput;
 	Vec<KeyState> m_keyStates;
 
 public:
@@ -33,13 +21,13 @@ public:
 	~SFInputStateMachine();
 
 	// Call this to check if a Key was pressed in this frame
-	bool IsKeyPressed(KeyCode code) const;
+	bool IsKeyPressed(KeyType key) const;
 	// Get KeyState for this KeyCode on the current frame
-	const KeyState* GetKeyState(KeyCode code) const;
+	const KeyState* GetKeyState(KeyType key) const;
 	const SFInputDataFrame GetFrameInputData() const;
 
 private:
-	KeyState& GetOrCreateKeyState(KeyCode code);
+	KeyState& GetOrCreateKeyState(KeyType key);
 
 	void OnKeyDown(const sf::Event::KeyEvent& key);
 	void OnKeyUp(const sf::Event::KeyEvent& key);
@@ -47,8 +35,7 @@ private:
 	void ResetKeyStates();
 	void ClearTextInput();
 	void OnTextInput(u32 unicode);
-
-	void StoreNonASCIISpecialInput(KeyCode key);
+	void UpdateJoyInput();
 
 	friend class SFInputHandler;
 };

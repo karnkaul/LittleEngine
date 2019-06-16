@@ -14,9 +14,8 @@ SFViewportEventType SFInputHandler::PollEvents(SFViewport& sfWindow)
 	m_inputSM.ClearTextInput();
 	MouseInput pointerInput;
 	pointerInput.worldPosition = sfWindow.ScreenToWorld(sf::Mouse::getPosition(sfWindow));
-	pointerInput.bLeftPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-	pointerInput.bRightPressed = sf::Mouse::isButtonPressed(sf::Mouse::Right);
-	m_inputSM.SetPointerState(pointerInput);
+	m_inputSM.SetPointerState(std::move(pointerInput));
+	m_inputSM.UpdateJoyInput();
 	while (sfWindow.pollEvent(sfEvent))
 	{
 		switch (sfEvent.type)

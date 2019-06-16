@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <optional>
 #include "Gamepad.h"
 #if DEBUGGING
 #include "SFMLAPI/Rendering/Colour.h"
@@ -18,23 +19,19 @@ class LEInput final
 public:
 	struct Frame
 	{
-		using GameInputs = Vec<GameInputType>;
+		using GameInputs = Vec<KeyType>;
 
-		Vec<GameInputType> pressed;
-		Vec<GameInputType> held;
-		Vec<GameInputType> released;
+		Vec<KeyType> pressed;
+		Vec<KeyType> held;
+		Vec<KeyType> released;
 		TextInput textInput;
+		JoyInput joyInput;
 		
 		static String GetClipboard();
 
-		Frame(Vec<GameInputType> pressed,
-			  Vec<GameInputType> held,
-			  Vec<GameInputType> released,
-			  TextInput textInput);
-
-		bool IsPressed(GameInputType keyCode) const;
-		bool IsHeld(GameInputType keyCode) const;
-		bool IsReleased(GameInputType keyCode) const;
+		bool IsPressed(s32 key) const;
+		bool IsHeld(s32 key) const;
+		bool IsReleased(s32 key) const;
 		bool HasData() const;
 	};
 
@@ -48,19 +45,18 @@ private:
 	{
 		Delegate callback;
 		WToken wToken;
-
-		InputContext(Delegate callback, Token& sToken);
+		bool bForce = false;
 	};
 
 private:
-	Vec<GameInputType> m_previousSnapshot;
-	Vec<GameInputType> m_currentSnapshot;
+	Vec<KeyType> m_previousSnapshot;
+	Vec<KeyType> m_currentSnapshot;
 	TextInput m_textInput;
 	MouseInput m_mouseInput;
+	JoyInput m_joyInput;
 	Vec<InputContext> m_contexts;
-	UPtr<InputContext> m_uSudoContext;
+	std::optional<InputContext> m_oSudoContext;
 	class LEContext* m_pContext;
-	Gamepad m_gamepad;
 #if DEBUGGING
 	class Quad* m_pMouseH = nullptr;
 	Quad* m_pMouseV = nullptr;
@@ -71,14 +67,13 @@ public:
 	~LEInput();
 
 public:
-	Token Register(Delegate callback);
+	Token Register(Delegate callback, bool bForce = false);
 	MouseInput GetMouseState() const;
 
 private:
 	Token RegisterSudo(Delegate callback);
 	void TakeSnapshot(const struct SFInputDataFrame& frameData);
 	void FireCallbacks();
-	void BindDefaults();
 #if DEBUGGING
 	void CreateDebugPointer();
 #endif

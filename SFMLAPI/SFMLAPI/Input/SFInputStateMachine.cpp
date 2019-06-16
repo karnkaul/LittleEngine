@@ -5,36 +5,26 @@ namespace LittleEngine
 {
 namespace
 {
-UMap<u32, SpecialInputType> asciiIgnoreMap = {
-	{8, SpecialInputType::Backspace}, {9, SpecialInputType::Tab},	{13, SpecialInputType::Enter},
-	{27, SpecialInputType::Escape},   {15, SpecialInputType::Shift}, {16, SpecialInputType::Shift},
+UMap<u32, KeyCode> asciiIgnoreMap = {
+	{8, KeyCode::Backspace}, {9, KeyCode::Tab},		{13, KeyCode::Enter},
+	{27, KeyCode::Escape},   {15, KeyCode::LShift}, {16, KeyCode::RShift},
 };
 }
 
-const KeyMod KeyMod::Default = KeyMod();
-
-KeyMod::KeyMod() = default;
-KeyMod::KeyMod(bool bControl, bool bAlt, bool bShift)
-	: bControl(bControl), bAlt(bAlt), bShift(bShift)
-{
-}
-KeyMod::KeyMod(const sf::Event::KeyEvent& event)
-	: bControl(event.control), bAlt(event.alt), bShift(event.shift)
-{
-}
-
-KeyState& SFInputStateMachine::GetOrCreateKeyState(KeyCode code)
+KeyState& SFInputStateMachine::GetOrCreateKeyState(KeyType key)
 {
 	for (auto& keyState : m_keyStates)
 	{
-		if (keyState.GetKeyCode() == code)
+		if (keyState.GetKeyType() == key)
 		{
 			return keyState;
 		}
 	}
-	m_keyStates.emplace_back(code);
-	return *m_keyStates.rbegin();
+	m_keyStates.emplace_back(key);
+	return m_keyStates.back();
 }
+
+const Fixed SFInputStateMachine::JOY_DEADZONE = Fixed(25);
 
 SFInputStateMachine::SFInputStateMachine()
 {
@@ -57,11 +47,11 @@ SFInputStateMachine::SFInputStateMachine()
 
 SFInputStateMachine::~SFInputStateMachine() = default;
 
-bool SFInputStateMachine::IsKeyPressed(KeyCode code) const
+bool SFInputStateMachine::IsKeyPressed(KeyType key) const
 {
 	for (const auto& iter : m_keyStates)
 	{
-		if (iter.GetKeyCode() == code)
+		if (iter.GetKeyType() == key)
 		{
 			return iter.bPressed;
 		}
@@ -69,11 +59,11 @@ bool SFInputStateMachine::IsKeyPressed(KeyCode code) const
 	return false;
 }
 
-const KeyState* SFInputStateMachine::GetKeyState(KeyCode code) const
+const KeyState* SFInputStateMachine::GetKeyState(KeyType key) const
 {
 	for (const auto& iter : m_keyStates)
 	{
-		if (iter.GetKeyCode() == code)
+		if (iter.GetKeyType() == key)
 		{
 			return &iter;
 		}
@@ -93,25 +83,35 @@ const SFInputDataFrame SFInputStateMachine::GetFrameInputData() const
 	}
 	frame.textInput = m_textInput;
 	frame.mouseInput = m_pointerInput;
+	frame.joyInput = m_joyInput;
 	return frame;
 }
 
 void SFInputStateMachine::OnKeyDown(const sf::Event::KeyEvent& key)
 {
-	KeyState& toModify = GetOrCreateKeyState(key.code);
-	StoreNonASCIISpecialInput(key.code);
+	KeyState& toModify = GetOrCreateKeyState(static_cast<KeyType>(key.code));
 	toModify.bPressed = true;
 }
 
 void SFInputStateMachine::OnKeyUp(const sf::Event::KeyEvent& key)
 {
-	KeyState& toModify = GetOrCreateKeyState(key.code);
+	KeyState& toModify = GetOrCreateKeyState(static_cast<KeyType>(key.code));
 	toModify.bPressed = false;
 }
 
 void SFInputStateMachine::SetPointerState(MouseInput pointerInput)
 {
-	this->m_pointerInput = std::move(pointerInput);
+	m_pointerInput = std::move(pointerInput);
+	KeyState& toModify = GetOrCreateKeyState(KeyType::MOUSE_BTN_0);
+	toModify.bPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+	toModify = GetOrCreateKeyState(KeyType::MOUSE_BTN_1);
+	toModify.bPressed = sf::Mouse::isButtonPressed(sf::Mouse::Right);
+	toModify = GetOrCreateKeyState(KeyType::MOUSE_BTN_2);
+	toModify.bPressed = sf::Mouse::isButtonPressed(sf::Mouse::Middle);
+	toModify = GetOrCreateKeyState(KeyType::MOUSE_BTN_3);
+	toModify.bPressed = sf::Mouse::isButtonPressed(sf::Mouse::XButton1);
+	toModify = GetOrCreateKeyState(KeyType::MOUSE_BTN_4);
+	toModify.bPressed = sf::Mouse::isButtonPressed(sf::Mouse::XButton2);
 }
 
 void SFInputStateMachine::ResetKeyStates()
@@ -139,85 +139,39 @@ void SFInputStateMachine::OnTextInput(u32 unicode)
 	{
 		m_textInput.text += static_cast<char>(unicode);
 	}
+	else if (m_textInput.ignoredChars.find(iter->second) == m_textInput.ignoredChars.end())
+	{
+		m_textInput.ignoredChars.emplace(iter->second);
+	}
 }
 
-void SFInputStateMachine::StoreNonASCIISpecialInput(KeyCode key)
+void SFInputStateMachine::UpdateJoyInput()
 {
-	switch (key)
+	m_joyInput.m_states.clear();
+	for (u8 id = 0; id < g_MAX_JOYSTICKS; ++id)
 	{
-	case KeyCode::Up:
-		m_textInput.specials.push_back(SpecialInputType::Up);
-		break;
-
-	case KeyCode::Down:
-		m_textInput.specials.push_back(SpecialInputType::Down);
-		break;
-
-	case KeyCode::Left:
-		m_textInput.specials.push_back(SpecialInputType::Left);
-		break;
-
-	case KeyCode::Right:
-		m_textInput.specials.push_back(SpecialInputType::Right);
-		break;
-
-	case KeyCode::Tab:
-		m_textInput.specials.push_back(SpecialInputType::Tab);
-		break;
-
-	case KeyCode::Enter:
-		m_textInput.specials.push_back(SpecialInputType::Enter);
-		break;
-
-	case KeyCode::BackSpace:
-		m_textInput.specials.push_back(SpecialInputType::Backspace);
-		break;
-
-	case KeyCode::Escape:
-		m_textInput.specials.push_back(SpecialInputType::Escape);
-		break;
-
-	case KeyCode::LShift:
-	case KeyCode::RShift:
-		m_textInput.specials.push_back(SpecialInputType::Shift);
-		break;
-
-	case KeyCode::LControl:
-	case KeyCode::RControl:
-		m_textInput.specials.push_back(SpecialInputType::Control);
-		break;
-
-	case KeyCode::LAlt:
-	case KeyCode::RAlt:
-		m_textInput.specials.push_back(SpecialInputType::Alt);
-		break;
-
-	case KeyCode::Insert:
-		m_textInput.specials.push_back(SpecialInputType::Insert);
-		break;
-
-	case KeyCode::Delete:
-		m_textInput.specials.push_back(SpecialInputType::Delete);
-		break;
-
-	case KeyCode::PageUp:
-		m_textInput.specials.push_back(SpecialInputType::PageUp);
-		break;
-
-	case KeyCode::PageDown:
-		m_textInput.specials.push_back(SpecialInputType::PageDown);
-		break;
-
-	case KeyCode::Home:
-		m_textInput.specials.push_back(SpecialInputType::Home);
-		break;
-
-	case KeyCode::End:
-		m_textInput.specials.push_back(SpecialInputType::End);
-		break;
-
-	default:
-		break;
+		if (sf::Joystick::isConnected(id))
+		{
+			JoyState state;
+			state.id = id;
+			u32 buttonCount = sf::Joystick::getButtonCount(id);
+			s32 key = KeyType::JOY_BTN_0;
+			for (u32 btnId = 0; btnId < buttonCount; ++btnId)
+			{
+				KeyState& toModify = GetOrCreateKeyState(static_cast<KeyType>(key++));
+				toModify.bPressed = sf::Joystick::isButtonPressed(id, btnId);
+				state.pressed.push_back(static_cast<KeyType>(key));
+			}
+			state.xy.x = Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::X));
+			state.xy.y = -Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::Y));
+			state.zr.x = Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::Z));
+			state.zr.y = Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::R));
+			state.uv.x = Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::U));
+			state.uv.y = -Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::V));
+			state.pov.x = Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::PovX));
+			state.pov.y = Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::PovY));
+			m_joyInput.m_states.emplace_back(std::move(state));
+		}
 	}
 }
 } // namespace LittleEngine

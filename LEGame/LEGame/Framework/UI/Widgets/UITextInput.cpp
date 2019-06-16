@@ -75,7 +75,7 @@ void UITextInput::OnInteractEnd(bool bInteract)
 		m_bWriting = !m_bWriting;
 		m_token = m_bWriting
 					  ? g_pGameManager->Input()->Register(
-							[&](const LEInput::Frame& frame) -> bool { return OnInput(frame); })
+							[&](const LEInput::Frame& frame) -> bool { return OnInput(frame); }, true)
 					  : nullptr;
 	}
 	Colour fill = m_bWriting ? m_style.interacting.fill : m_style.selected.fill;
@@ -122,13 +122,13 @@ bool UITextInput::OnInput(const LEInput::Frame& frame)
 {
 	if (m_bWriting)
 	{
-		if (frame.IsReleased(GameInputType::Enter))
+		if (frame.IsReleased(KeyCode::Enter))
 		{
 			m_prevText = m_uKeyboard->GetLiveString();
 			OnInteractEnd(true);
 			return true;
 		}
-		if (frame.IsReleased(GameInputType::Back))
+		if (frame.IsReleased(KeyCode::Escape))
 		{
 			m_uKeyboard->m_liveLine.Set(m_prevText);
 			OnInteractEnd(true);

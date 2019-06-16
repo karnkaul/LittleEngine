@@ -15,10 +15,10 @@ GameObject::GameObject(String name, String baseClass, bool bSilent)
 
 GameObject::~GameObject() = default;
 
-void GameObject::BindInput(LEInput::Delegate callback)
+void GameObject::BindInput(LEInput::Delegate callback, bool bForceEveryFrame)
 {
 	Assert(g_pGameManager, "Manager is null!");
-	m_tokenHandler.AddToken(g_pGameManager->Input()->Register(std::move(callback)));
+	m_tokenHandler.AddToken(g_pGameManager->Input()->Register(std::move(callback), bForceEveryFrame));
 }
 
 LERenderer* GameObject::Renderer() const

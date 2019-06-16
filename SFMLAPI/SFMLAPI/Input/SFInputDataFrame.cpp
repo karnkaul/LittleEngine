@@ -3,36 +3,44 @@
 
 namespace LittleEngine
 {
-KeyState::KeyState(KeyCode keyCode, const char* szName)
-	: name(szName), keyCode(keyCode), bPressed(false)
+const u32 g_MAX_JOYSTICKS = 8;
+
+KeyState::KeyState(s32 keyType, const char* szName)
+	: szName(szName), keyType(keyType), bPressed(false)
 {
 }
 
-KeyCode KeyState::GetKeyCode() const
+KeyType KeyState::GetKeyType() const
 {
-	return keyCode;
+	return static_cast<KeyType>(keyType);
 }
 
 const char* KeyState::GetNameStr() const
 {
-	return name.c_str();
+	return szName;
 }
 
-bool TextInput::Contains(char c) const
+bool TextInput::ContainsChar(char c) const
 {
 	size_t idx = text.find(c);
 	return idx != String::npos;
 }
 
-bool TextInput::Contains(SpecialInputType special) const
+bool TextInput::ContainsKey(s32 keyCode) const
 {
-	return Core::Search(specials, special) != specials.end();
+	return Core::Search(keys, static_cast<KeyType>(keyCode)) != keys.end();
+}
+
+bool TextInput::ContainsIgnored(KeyCode keyCode) const
+{
+	return ignoredChars.find(keyCode) != ignoredChars.end();
 }
 
 void TextInput::Reset()
 {
 	text.clear();
-	specials.clear();
+	keys.clear();
+	ignoredChars.clear();
 }
 
 String SFInputDataFrame::GetClipboard()

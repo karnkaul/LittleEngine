@@ -13,6 +13,7 @@ protected:
 	Vector2 m_displacement;
 	Fixed m_rotation;
 	class RenderComponent* m_pRenderComponent = nullptr;
+	bool m_bKeyInput = false;
 
 public:
 	void Reset();
