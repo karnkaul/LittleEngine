@@ -19,7 +19,7 @@ void Camera::Shake(Fixed intensity, Time duration)
 {
 	if (!m_bShaking)
 	{
-		m_prevPosition = m_transform.localPosition;
+		m_prevPosition = m_transform.GetPosition();
 		m_bShaking = true;
 	}
 	m_shakeIntensity = intensity;
@@ -50,13 +50,13 @@ void Camera::Tick(Time dt)
 		if (m_shakeElapsed >= m_shakeDuration)
 		{
 			m_bShaking = false;
-			m_transform.localPosition = m_prevPosition;
+			m_transform.SetPosition(m_prevPosition);
 		}
 		else
 		{
 			Fixed x = Maths::Random::Range(Fixed::Zero, m_shakeIntensity);
 			Fixed y = Maths::Random::Range(Fixed::Zero, m_shakeIntensity);
-			m_transform.localPosition = m_prevPosition + Vector2(x, y);
+			m_transform.SetPosition(m_prevPosition + Vector2(x, y));
 		}
 	}
 }

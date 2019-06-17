@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SFInputStateMachine.h"
+#include "SFMLAPI/System/SFTypes.h"
 
 namespace LittleEngine
 {
@@ -99,19 +100,26 @@ void SFInputStateMachine::OnKeyUp(const sf::Event::KeyEvent& key)
 	toModify.bPressed = false;
 }
 
-void SFInputStateMachine::SetPointerState(MouseInput pointerInput)
+void SFInputStateMachine::OnMouseDown(const sf::Event::MouseButtonEvent& button)
 {
-	m_pointerInput = std::move(pointerInput);
-	KeyState& toModify = GetOrCreateKeyState(KeyType::MOUSE_BTN_0);
-	toModify.bPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-	toModify = GetOrCreateKeyState(KeyType::MOUSE_BTN_1);
-	toModify.bPressed = sf::Mouse::isButtonPressed(sf::Mouse::Right);
-	toModify = GetOrCreateKeyState(KeyType::MOUSE_BTN_2);
-	toModify.bPressed = sf::Mouse::isButtonPressed(sf::Mouse::Middle);
-	toModify = GetOrCreateKeyState(KeyType::MOUSE_BTN_3);
-	toModify.bPressed = sf::Mouse::isButtonPressed(sf::Mouse::XButton1);
-	toModify = GetOrCreateKeyState(KeyType::MOUSE_BTN_4);
-	toModify.bPressed = sf::Mouse::isButtonPressed(sf::Mouse::XButton2);
+	KeyState& toModify = GetOrCreateKeyState(Cast(button.button));
+	toModify.bPressed = true;
+}
+
+void SFInputStateMachine::OnMouseUp(const sf::Event::MouseButtonEvent& button)
+{
+	KeyState& toModify = GetOrCreateKeyState(Cast(button.button));
+	toModify.bPressed = false;
+}
+
+void SFInputStateMachine::OnMouseMove(Vector2 worldPosition)
+{
+	m_pointerInput.worldPosition = worldPosition;
+}
+
+void SFInputStateMachine::SetMouseWheelScroll(Fixed delta)
+{
+	m_pointerInput.scrollDelta = delta;
 }
 
 void SFInputStateMachine::ResetKeyStates()
@@ -120,6 +128,8 @@ void SFInputStateMachine::ResetKeyStates()
 	{
 		keyState.bPressed = false;
 	}
+	m_joyInput.m_states.clear();
+	m_pointerInput.scrollDelta = Fixed::Zero;
 }
 
 void SFInputStateMachine::ClearTextInput()

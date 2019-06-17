@@ -13,8 +13,6 @@ public:
 	static constexpr s32 INVALID_ID = -1;
 
 private:
-	using Lock = std::lock_guard<std::mutex>;
-
 	class Job
 	{
 	private:
@@ -42,7 +40,7 @@ private:
 	Vec<UPtr<class JobWorker>> m_jobWorkers;
 	List<UPtr<class MultiJob>> m_uMultiJobs;
 	List<UPtr<Job>> m_jobQueue;
-	std::mutex m_mutex;
+	mutable std::mutex m_mutex;
 	s64 m_nextGameJobID = 0;
 
 public:
@@ -52,8 +50,13 @@ public:
 public:
 	JobHandle Enqueue(Task task, String name = "", bool bSilent = false);
 	MultiJob* CreateMultiJob(String name);
+	void ForEach(std::function<void(size_t)> indexedTask,
+				 size_t iterationCount,
+				 size_t iterationsPerJob,
+				 size_t startIdx = 0);
+
 	void Update();
-	bool AreWorkersIdle();
+	bool AreWorkersIdle() const;
 
 private:
 	UPtr<Job> Lock_PopJob();

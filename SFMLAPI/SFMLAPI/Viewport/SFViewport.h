@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "SFML/Graphics.hpp"
+#include "SFML/Graphics/RenderWindow.hpp"
 #include "SFViewportData.h"
 #include "Core/CoreTypes.h"
 
@@ -30,6 +30,6 @@ public:
 	Vector2 GetViewSize() const;
 	// Projects unit Rect to screen
 	Vector2 Project(Vector2 nPos, bool bPreClamp) const;
-	Vector2 ScreenToWorld(sf::Vector2i screenPos) const;
+	Vector2 ScreenToWorld(s32 screenX, s32 screenY) const;
 };
 } // namespace LittleEngine

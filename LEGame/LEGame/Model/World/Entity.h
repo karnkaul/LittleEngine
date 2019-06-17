@@ -11,6 +11,13 @@ protected:
 
 private:
 	Vec<class AComponent*> m_pComponents;
+#if DEBUGGING
+public:
+	static bool s_bShowOrientation;
+protected:
+	class SFRect* m_pO_x = nullptr;
+	SFRect* m_pO_y = nullptr;
+#endif
 
 protected:
 	bool m_bDestroyed = false;

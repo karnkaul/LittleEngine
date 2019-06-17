@@ -17,7 +17,6 @@ using Deferred = Core::Deferred<T>;
 using Fixed = Core::Fixed;
 using FileRW = Core::FileRW;
 using Matrix3 = Core::Matrix3;
-using MatTransform = Core::MatTransform;
 using Rect2 = Core::Rect2;
 using Transform = Core::Transform;
 using Time = Core::Time;

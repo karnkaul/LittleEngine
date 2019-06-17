@@ -12,8 +12,6 @@ Time maxTickDeltaTime;
 std::mutex entriesMutex;
 UMap<String, Entry> entries;
 
-using Lock = std::lock_guard<std::mutex>;
-
 Entry::Entry(String id, Colour colour, Time startTime, Time maxTime, bool bCustom)
 	: id(std::move(id)), colour(colour), startTime(startTime), maxTime(maxTime), bCustom(bCustom)
 {

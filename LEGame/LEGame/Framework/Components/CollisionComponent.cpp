@@ -11,6 +11,8 @@
 
 namespace LittleEngine
 {
+CollisionComponent::CollisionComponent() = default;
+
 CollisionComponent::~CollisionComponent()
 {
 	for (auto& data : m_pColliders)
@@ -83,7 +85,7 @@ void CollisionComponent::Tick(Time /*dt*/)
 {
 	for (auto& data : m_pColliders)
 	{
-		Vector2 worldPosition = m_pOwner->m_transform.Position();
+		Vector2 worldPosition = m_pOwner->m_transform.GetWorldPosition();
 		data.pCollider->m_position = worldPosition;
 #if DEBUGGING
 		data.pShape->SetPosition(worldPosition + data.offset);

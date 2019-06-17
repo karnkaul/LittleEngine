@@ -33,7 +33,7 @@ void SFRect::OnUpdateRenderState(Fixed alpha)
 	DrawableState ds = GetDrawableState(alpha);
 	m_sfRect.setOrigin(Cast(ds.origin));
 	m_sfRect.setScale(Cast(s.scale));
-	m_sfRect.setRotation(Cast(s.orientation));
+	m_sfRect.setRotation(Cast(Vector2::ToOrientation(s.orientation)));
 	m_sfRect.setPosition(Cast(s.position));
 	m_sfRect.setFillColor(Cast(s.colour));
 	m_sfRect.setOutlineThickness(Cast(ds.outline));

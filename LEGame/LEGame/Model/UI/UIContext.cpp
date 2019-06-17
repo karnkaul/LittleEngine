@@ -125,23 +125,23 @@ bool UIContext::OnInput(const LEInput::Frame& frame)
 		return false;
 	}
 
-	if (frame.IsPressed(KeyCode::Enter) || frame.IsPressed(KeyType::JOY_BTN_0))
+	if (frame.IsPressed({KeyCode::Enter, KeyType::JOY_BTN_0, KeyType::MOUSE_BTN_0}))
 	{
 		OnEnterPressed();
 	}
-	if (frame.IsReleased(KeyCode::Enter) || frame.IsReleased(KeyType::JOY_BTN_0))
+	if (frame.IsReleased({KeyCode::Enter, KeyType::JOY_BTN_0, KeyType::MOUSE_BTN_0}))
 	{
 		OnEnterReleased(m_bInteracting);
 	}
-	if (frame.IsReleased(KeyCode::Escape) || frame.IsReleased(KeyType::JOY_BTN_1))
+	if (frame.IsReleased({KeyCode::Escape, KeyType::JOY_BTN_1, KeyType::MOUSE_BTN_1}))
 	{
 		OnBackReleased();
 	}
-	if (frame.IsReleased(KeyCode::Up))
+	if (frame.IsReleased(KeyCode::Up) || frame.GetMouseWhellScroll() > Fixed::Zero)
 	{
 		OnUp();
 	}
-	if (frame.IsReleased(KeyCode::Down))
+	if (frame.IsReleased(KeyCode::Down) || frame.GetMouseWhellScroll() < Fixed::Zero)
 	{
 		OnDown();
 	}

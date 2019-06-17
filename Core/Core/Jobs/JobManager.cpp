@@ -75,6 +75,45 @@ MultiJob* JobManager::CreateMultiJob(String name)
 	return m_uMultiJobs.back().get();
 }
 
+void JobManager::ForEach(std::function<void(size_t)> indexedTask,
+						 size_t iterationCount,
+						 size_t iterationsPerJob,
+						 size_t startIdx /* = 0 */)
+{
+	size_t idx = startIdx;
+	Vec<Core::JobHandle> handles;
+	u16 buckets = iterationCount / iterationsPerJob;
+	for (u16 bucket = 0; bucket < buckets; ++bucket)
+	{
+		size_t start = idx;
+		size_t end = Maths::Clamp(start + iterationsPerJob, start, iterationCount);
+		handles.emplace_back(Enqueue(
+			[start, end, &indexedTask]() {
+				for (size_t i = start; i < end; ++i)
+				{
+					indexedTask(i);
+				}
+			},
+			"", true));
+		idx += iterationsPerJob;
+	}
+	if (idx < iterationCount)
+	{
+		handles.emplace_back(Enqueue(
+			[&]() {
+				while (idx < iterationCount)
+				{
+					indexedTask(idx++);
+				}
+			},
+			"", true));
+	}
+	for (auto& handle : handles)
+	{
+		handle->Wait();
+	}
+}
+
 void JobManager::Update()
 {
 	auto iter = m_uMultiJobs.begin();
@@ -111,7 +150,7 @@ JobHandle JobManager::Lock_Enqueue(UPtr<Job>&& uJob, List<UPtr<Job>>& jobQueue)
 	return sHandle;
 }
 
-bool JobManager::AreWorkersIdle()
+bool JobManager::AreWorkersIdle() const
 {
 	for (auto& gameWorker : m_jobWorkers)
 	{

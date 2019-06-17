@@ -66,6 +66,7 @@ public:
 	bool m_bFlippingSprites = false;
 
 public:
+	RenderComponent();
 	~RenderComponent() override;
 
 	TimingType GetComponentTiming() const override;

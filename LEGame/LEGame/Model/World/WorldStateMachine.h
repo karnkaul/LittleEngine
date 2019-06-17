@@ -52,6 +52,8 @@ public:
 	bool GameTick(Time dt);
 
 private:
+	void Quit();
+
 	friend class GameManager;
 	friend class World;
 };

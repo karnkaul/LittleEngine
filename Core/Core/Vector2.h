@@ -10,6 +10,7 @@ public:
 	static const Vector2 Zero;
 	static const Vector2 One;
 	static const Vector2 Up;
+	static const Vector2 Right;
 
 	static Vector2 ToOrientation(Fixed degrees);
 	static Fixed ToOrientation(Vector2 orientation);

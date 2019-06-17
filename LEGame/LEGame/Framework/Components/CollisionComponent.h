@@ -22,6 +22,7 @@ protected:
 	s32 m_signature = 0;
 
 public:
+	CollisionComponent();
 	~CollisionComponent() override;
 
 	void OnCreated() override;

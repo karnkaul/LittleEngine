@@ -28,7 +28,8 @@ public:
 
 	void Init(Vector2 u,
 			  Time ttl,
-			  Transform transform = Transform::IDENTITY,
+			  Vector2 initPos,
+			  Vector2 scale,
 			  Fixed w = Fixed::Zero,
 			  TRange<UByte> alphaOverTime = TRange<UByte>(255),
 			  TRange<Fixed> scaleOverTime = TRange<Fixed>(Fixed::One), Colour colour = Colour::White);

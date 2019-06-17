@@ -101,16 +101,7 @@ Vec<WorldID> GameManager::GetAllWorldIDs() const
 
 void GameManager::Quit()
 {
-	if (!Core::Jobs::AreWorkersIdle())
-	{
-		Assert(false, "Quit() called while job workers are active!");
-		LOG_E("%s Quit() called while job workers are active!", m_logName.c_str());
-		m_bWaitingToTerminate = true;
-	}
-	else
-	{
-		m_pWSM->m_pContext->Terminate();
-	}
+	m_pWSM->Quit();
 }
 
 Camera* GameManager::WorldCamera() const

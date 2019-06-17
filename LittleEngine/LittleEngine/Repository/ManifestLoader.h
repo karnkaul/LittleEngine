@@ -1,7 +1,7 @@
 #pragma once
 #include <functional>
 #include "Core/CoreTypes.h"
-#include "LoadHelpers.h"
+#include "AssetManifest.h"
 
 namespace Core
 {

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
+#include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "LittleEngine/Debug/Tweakable.h"
 #include "ParticleSystem.h"
 #include "LittleEngine/Debug/Profiler.h"
@@ -40,6 +41,10 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 
 	Core::Log(logSeverity, "%s initialised: [%d] emitters %s", LogNameStr(), emitters.size(),
 			  particles.c_str());
+#if DEBUGGING
+	m_pO_x->SetEnabled(false);
+	m_pO_y->SetEnabled(false);
+#endif
 }
 
 Emitter* ParticleSystem::GetEmitter(const String& id)
@@ -92,5 +97,10 @@ void ParticleSystem::Tick(Time dt)
 	}
 	m_bIsPlaying = bAnyPlaying;
 	PROFILE_STOP(id);
+
+#if DEBUGGING
+	m_pO_x->SetEnabled(s_bShowOrientation && m_bIsPlaying);
+	m_pO_y->SetEnabled(s_bShowOrientation && m_bIsPlaying);
+#endif
 }
 } // namespace LittleEngine

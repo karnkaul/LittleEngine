@@ -25,7 +25,6 @@ private:
 	UPtr<class UIManager> m_uUIManager;
 	UPtr<class CollisionManager> m_uCollisionManager;
 	UPtr<class Camera> m_uWorldCamera;
-	bool m_bWaitingToTerminate = false;
 
 public:
 	static const Core::Version& GetGameVersion();
@@ -51,7 +50,7 @@ public:
 
 public:
 	template <typename T>
-	T* NewEntity(String name = "Untitled", Vector2 position = Vector2::Zero, Fixed orientation = Fixed::Zero);
+	T* NewEntity(String name = "Untitled", Vector2 position = Vector2::Zero, Vector2 orientation = Vector2::Right);
 	template <typename T>
 	T* NewComponent(Entity& owner);
 
@@ -64,15 +63,15 @@ private:
 };
 
 template <typename T>
-T* GameManager::NewEntity(String name, Vector2 position, Fixed orientation)
+T* GameManager::NewEntity(String name, Vector2 position, Vector2 orientation)
 {
 	static_assert(IsDerived<Entity, T>(), "T must derive from Entity");
 	UPtr<T> uT = MakeUnique<T>();
 	T* pT = uT.get();
 	m_uEntities.emplace_back(std::move(uT));
 	pT->OnCreate(std::move(name));
-	pT->m_transform.localPosition = position;
-	pT->m_transform.localOrientation = orientation;
+	pT->m_transform.SetPosition(position);
+	pT->m_transform.SetOrientation(orientation);
 	LOG_D("%s spawned", pT->LogNameStr());
 	return pT;
 }

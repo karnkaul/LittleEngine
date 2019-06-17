@@ -115,9 +115,9 @@ Vector2 SFViewport::Project(Vector2 nPos, bool bPreClamp) const
 	return Vector2(p.x * s.x, p.y * s.y);
 }
 
-Vector2 SFViewport::ScreenToWorld(sf::Vector2i screenPos) const
+Vector2 SFViewport::ScreenToWorld(s32 screenX, s32 screenY) const
 {
-	Vector2 screenPoint(screenPos.x, screenPos.y);
+	Vector2 screenPoint(screenX, screenY);
 	Vector2 screenSize(m_data.viewportSize.width, m_data.viewportSize.height);
 	Vector2 aspectRatio(m_viewSize.x / screenSize.x, m_data.viewSize.y / screenSize.y);
 	screenPoint -= (Fixed::OneHalf * screenSize);

@@ -1,7 +1,7 @@
 #include "stdafx.h"
+#include "Core/Logger.h"
 #include "SFInputHandler.h"
 #include "SFMLAPI/Viewport/SFViewport.h"
-#include "Core/Logger.h"
 
 namespace LittleEngine
 {
@@ -12,10 +12,8 @@ SFViewportEventType SFInputHandler::PollEvents(SFViewport& sfWindow)
 {
 	sf::Event sfEvent;
 	m_inputSM.ClearTextInput();
-	MouseInput pointerInput;
-	pointerInput.worldPosition = sfWindow.ScreenToWorld(sf::Mouse::getPosition(sfWindow));
-	m_inputSM.SetPointerState(std::move(pointerInput));
 	m_inputSM.UpdateJoyInput();
+	Fixed mouseWheelScroll = Fixed::Zero;
 	while (sfWindow.pollEvent(sfEvent))
 	{
 		switch (sfEvent.type)
@@ -41,13 +39,13 @@ SFViewportEventType SFInputHandler::PollEvents(SFViewport& sfWindow)
 			return SFViewportEventType::GainedFocus;
 		}
 
+		// Input
 		case sf::Event::KeyPressed:
 		{
 			m_inputSM.OnKeyDown(sfEvent.key);
 			break;
 		}
 
-		// Input
 		case sf::Event::KeyReleased:
 		{
 			m_inputSM.OnKeyUp(sfEvent.key);
@@ -60,12 +58,37 @@ SFViewportEventType SFInputHandler::PollEvents(SFViewport& sfWindow)
 			break;
 		}
 
+		case sf::Event::MouseButtonPressed:
+		{
+			m_inputSM.OnMouseDown(sfEvent.mouseButton);
+			break;
+		}
+
+		case sf::Event::MouseButtonReleased:
+		{
+			m_inputSM.OnMouseUp(sfEvent.mouseButton);
+			break;
+		}
+
+		case sf::Event::MouseWheelScrolled:
+		{
+			mouseWheelScroll = Fixed(sfEvent.mouseWheelScroll.delta);
+			break;
+		}
+
+		case sf::Event::MouseMoved:
+		{
+			m_inputSM.OnMouseMove(sfWindow.ScreenToWorld(sfEvent.mouseMove.x, sfEvent.mouseMove.y));
+			break;
+		}
+
 		// Catch all
 		default:
 			return SFViewportEventType::None;
 			;
 		}
 	}
+	m_inputSM.SetMouseWheelScroll(mouseWheelScroll);
 	return SFViewportEventType::None;
 }
 

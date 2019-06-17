@@ -3,7 +3,7 @@
 #include "Core/OS.h"
 #include "Core/Utils.h"
 #include "LERepository.h"
-#include "LoadHelpers.h"
+#include "AssetManifest.h"
 #include "ManifestLoader.h"
 #include "LittleEngine/FatalEngineException.h"
 
@@ -122,6 +122,11 @@ void LERepository::UnloadAll(bool bUnloadDefaultFont)
 			m_loaded, [fontID](UPtr<Asset>& uAsset) { return uAsset->GetID() != fontID; });
 	}
 	LOG_D("[Repository] cleared");
+}
+
+bool LERepository::IsBusy() const
+{
+	return !m_uAsyncLoaders.empty();
 }
 
 void LERepository::Tick(Time dt)

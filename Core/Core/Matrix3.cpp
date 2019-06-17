@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Matrix3.h"
-#include "Maths.h"
+#include "Utils.h"
 
 namespace Core
 {
@@ -47,9 +47,29 @@ Matrix3::Matrix3(Vector3 x, Vector3 y, Vector3 w) : m_x(std::move(x)), m_y(std::
 
 Matrix3::Matrix3(Vector2 position, Vector2 orientation, Vector2 scale)
 {
-	m_x.Set({orientation.y * scale.x, orientation.x * scale.y});
-	m_y.Set({-orientation.x * scale.x, orientation.y * scale.y});
-	m_w.Set(position);
+	orientation.Normalise();
+	if (scale.x == scale.y)
+	{
+		Fixed s = scale.x;
+		m_x.Set({orientation.x * s, orientation.y * s});
+		m_y.Set({-orientation.y * s, orientation.x * s});
+	}
+	else
+	{
+		Matrix3 rot;
+		rot.m_x.Set({orientation.x, orientation.y});
+		rot.m_y.Set({-orientation.y, orientation.x});
+		m_x.Set({scale.x, 0});
+		m_y.Set({0, scale.y});
+		*this *= rot;
+	}
+	m_w.Set(position, Fixed::One);
+}
+
+Matrix3::Matrix3(Vector2 position, Fixed rotation, Vector2 scale)
+{
+	Vector2 orientation = Vector2::ToOrientation(rotation);
+	*this = Matrix3(position, orientation, scale);
 }
 
 Matrix3& Matrix3::operator*=(const Matrix3& rhs)
@@ -88,63 +108,5 @@ Vector2 operator*(Vector2 lhs, const Matrix3& rhs)
 {
 	return {lhs.x * rhs.m_x.x + lhs.y * rhs.m_y.x + rhs.m_w.x,
 			lhs.x * rhs.m_x.y + lhs.y * rhs.m_y.y + rhs.m_w.y};
-}
-
-MatTransform& MatTransform::SetPosition(Vector2 position)
-{
-	m_bDirty |= m_position != position;
-	m_position = position;
-	return *this;
-}
-
-MatTransform& MatTransform::SetOrientation(Vector2 orientation)
-{
-	bool bEqual = m_orientation == orientation;
-	if (!bEqual)
-	{
-		m_orientation = orientation.Normalised();
-	}
-	m_bDirty |= !bEqual;
-	return *this;
-}
-
-MatTransform& MatTransform::SetOrientation(Fixed degrees)
-{
-	Vector2 mod = Vector2::ToOrientation(degrees);
-	m_bDirty = mod != m_orientation;
-	m_orientation = mod;
-	return *this;
-}
-
-MatTransform& MatTransform::SetScale(Vector2 scale)
-{
-	m_bDirty |= m_scale != scale;
-	m_scale = scale;
-	return *this;
-}
-
-Vector2 MatTransform::GetPosition() const
-{
-	return m_position;
-}
-
-Vector2 MatTransform::GetOrientation() const
-{
-	return m_orientation;
-}
-
-Vector2 MatTransform::GetScale() const
-{
-	return m_scale;
-}
-
-const Matrix3& MatTransform::GetWorldMatrix(bool bForceRecalc) const
-{
-	if (m_bDirty || bForceRecalc)
-	{
-		m_mat = Matrix3(m_position, m_orientation, m_scale);
-		m_bDirty = false;
-	}
-	return m_mat;
 }
 } // namespace Core

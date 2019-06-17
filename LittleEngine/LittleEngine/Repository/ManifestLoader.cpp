@@ -8,8 +8,6 @@
 
 namespace LittleEngine
 {
-using Lock = std::lock_guard<std::mutex>;
-
 ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Task onDone)
 	: m_onDone(std::move(onDone)), m_pRepository(&repository)
 {

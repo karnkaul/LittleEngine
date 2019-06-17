@@ -34,7 +34,7 @@ void SFCircle::OnUpdateRenderState(Fixed alpha)
 	DrawableState ds = GetDrawableState(alpha);
 	m_sfCircle.setOrigin(Cast(ds.origin));
 	m_sfCircle.setScale(Cast(s.scale));
-	m_sfCircle.setRotation(Cast(s.orientation));
+	m_sfCircle.setRotation(Cast(Vector2::ToOrientation(s.orientation)));
 	m_sfCircle.setPosition(Cast(s.position));
 	m_sfCircle.setFillColor(Cast(s.colour));
 	m_sfCircle.setOutlineThickness(Cast(ds.outline));

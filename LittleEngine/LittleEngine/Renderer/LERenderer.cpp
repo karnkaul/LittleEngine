@@ -88,7 +88,7 @@ void LERenderer::Lock_Swap()
 #endif
 	PROFILE_CUSTOM("LOCK", m_data.tickRate, Colour(255, 72, 0)); 
 	m_bPauseRendering.store(true, std::memory_order_release);
-	std::lock_guard<std::mutex> lock(m_uFactory->m_mutex);
+	Lock lock(m_uFactory->m_mutex);
 	PROFILE_STOP("LOCK");
 
 	PROFILE_CUSTOM("SWAP", m_data.tickRate, Colour(255, 72, 0));

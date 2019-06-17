@@ -40,6 +40,29 @@ sf::Uint8 Cast(SFViewportStyle style)
 	}
 }
 
+KeyType Cast(sf::Mouse::Button button)
+{
+	switch (button)
+	{
+	default:
+		return static_cast<KeyType>(-1);
+	case sf::Mouse::Button::Left:
+		return KeyType::MOUSE_BTN_0;
+
+	case sf::Mouse::Button::Right:
+		return KeyType::MOUSE_BTN_1;
+
+	case sf::Mouse::Button::Middle:
+		return KeyType::MOUSE_BTN_2;
+
+	case sf::Mouse::Button::XButton1:
+		return KeyType::MOUSE_BTN_3;
+
+	case sf::Mouse::Button::XButton2:
+		return KeyType::MOUSE_BTN_4;
+	}
+}
+
 Vector2 WorldToScreen(Vector2 worldPoint)
 {
 	return Vector2(worldPoint.x, -worldPoint.y);

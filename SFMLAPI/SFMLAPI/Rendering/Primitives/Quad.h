@@ -39,7 +39,7 @@ public:
 	Quad* SetModel(Rect2 xy);
 	Quad* SetTexture(TextureAsset& texture);
 	Quad* SetUV(Rect2 uv, bool bImmediate = false);
-	Quad* SetUV(Fixed u, Fixed v, Fixed du, Fixed dv);
+	Quad* SetUV(Fixed u, Fixed v, Fixed du, Fixed dv, bool bImmediate = false);
 
 private:
 	friend class Quads;

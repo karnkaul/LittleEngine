@@ -5,6 +5,12 @@ namespace LittleEngine
 {
 class ControllerComponent : public AComponent
 {
+#if DEBUGGING
+public:
+	static bool s_bShowJoystickOrientation;
+private:
+	class SFRect* m_pRect = nullptr;
+#endif
 public:
 	Fixed m_angularSpeed = Fixed::OneThird;
 	Fixed m_linearSpeed = Fixed::One;
@@ -14,6 +20,10 @@ protected:
 	Fixed m_rotation;
 	class RenderComponent* m_pRenderComponent = nullptr;
 	bool m_bKeyInput = false;
+
+public:
+	ControllerComponent();
+	~ControllerComponent() override;
 
 public:
 	void Reset();

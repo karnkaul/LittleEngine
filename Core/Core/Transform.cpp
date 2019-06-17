@@ -5,123 +5,139 @@
 
 namespace Core
 {
-const Transform Transform::IDENTITY = Transform();
-
-Transform::Transform()
-	: localPosition(Vector2::Zero), localScale(Vector2::One), localOrientation(Fixed::Zero)
-{
-}
-
+Transform::Transform() = default;
 Transform::~Transform()
 {
-	if (pParent)
+	if (m_pParent)
 	{
-		pParent->RemoveChild(*this);
+		m_pParent->RemoveChild(*this);
 	}
-	for (auto pChild : pChildren)
+	for (auto pChild : m_children)
 	{
 		if (pChild)
 		{
-			pChild->pParent = nullptr;
+			pChild->m_pParent = nullptr;
 		}
 	}
 }
 
-void Transform::SetParent(Transform& parent, bool bModifyWorldSpace)
+void Transform::SetParent(Transform& parent)
 {
-	pParent = &parent;
-	if (!bModifyWorldSpace)
-	{
-		localPosition -= parent.localPosition;
-		localOrientation -= parent.localOrientation;
-	}
+	m_pParent = &parent;
 	parent.AddChild(*this);
+	SetDirty();
 }
 
-void Transform::UnsetParent(bool bModifyWorldSpace)
+void Transform::UnsetParent()
 {
-	if (pParent)
+	if (m_pParent)
 	{
-		if (!bModifyWorldSpace)
+		m_pParent->RemoveChild(*this);
+	}
+	m_pParent = nullptr;
+	SetDirty();
+}
+
+Transform& Transform::SetPosition(Vector2 position)
+{
+	m_position = position;
+	SetDirty();
+	return *this;
+}
+
+Transform& Transform::SetOrientation(Vector2 orientation)
+{
+	m_orientation = orientation.Normalised();
+	SetDirty();
+	return *this;
+}
+
+Transform& Transform::SetOrientation(Fixed degrees)
+{
+	m_orientation = Vector2::ToOrientation(degrees);
+	SetDirty();
+	return *this;
+}
+
+Transform& Transform::SetScale(Vector2 scale)
+{
+	m_scale = scale;
+	SetDirty();
+	return *this;
+}
+
+Vector2 Transform::GetPosition() const
+{
+	return m_position;
+}
+
+Vector2 Transform::GetOrientation() const
+{
+	return m_orientation;
+}
+
+Vector2 Transform::GetScale() const
+{
+	return m_scale;
+}
+
+Vector2 Transform::GetWorldPosition() const
+{
+	GetWorldMatrix();
+	return {m_mat.m_w.x, m_mat.m_w.y};
+}
+
+Vector2 Transform::GetWorldOrientation() const
+{
+	GetWorldMatrix();
+	return {m_mat.m_x.x, m_mat.m_x.y};
+}
+
+Vector2 Transform::GetWorldScale() const
+{
+	Vector2 scale = m_scale;
+	if (m_pParent)
+	{
+		Vector2 parent = m_pParent->GetWorldScale();
+		scale.x *= parent.x;
+		scale.y *= parent.y;
+	}
+	return scale;
+}
+
+const Matrix3& Transform::GetWorldMatrix(bool bForceRecalc) const
+{
+	if (m_bDirty || bForceRecalc)
+	{
+		m_mat = Matrix3(m_position, m_orientation, Vector2::One);
+		if (m_pParent)
 		{
-			localPosition = Position();
-			localOrientation = Orientation();
+			m_mat *= m_pParent->GetWorldMatrix();
 		}
-
-		pParent->RemoveChild(*this);
+		m_bDirty = false;
 	}
-	pParent = nullptr;
-}
-
-Transform* Transform::GetParent() const
-{
-	return pParent;
-}
-
-Vector2 Transform::Position() const
-{
-	Vector2 position = localPosition;
-	if (pParent)
-	{
-		position += pParent->Position();
-	}
-	return position;
-}
-
-Fixed Transform::Orientation() const
-{
-	Fixed orientation = localOrientation;
-	if (pParent)
-	{
-		orientation += pParent->Orientation();
-	}
-	return orientation;
-}
-
-Vector2 Transform::Scale() const
-{
-	Vector2 ret = localScale;
-	if (pParent)
-	{
-		ret.x *= pParent->Scale().x;
-		ret.y *= pParent->Scale().y;
-	}
-	return ret;
-}
-
-void Transform::Rotate(Fixed angle)
-{
-	localOrientation += angle;
-	Core::RemoveIf<Transform*>(pChildren, [](Transform* child) { return child == nullptr; });
-	// Children need to be repositioned
-	if (!pChildren.empty())
-	{
-		Fixed rad = angle * Maths::DEG_TO_RAD;
-		Fixed s = rad.Sin();
-		Fixed c = rad.Cos();
-		for (auto pChild : pChildren)
-		{
-			if (pChild)
-			{
-				Vector2 p = pChild->localPosition;
-				pChild->localPosition = Vector2((p.x * c) - (p.y * s), (p.x * s) + (p.y * c));
-			}
-		}
-	}
-}
-
-String Transform::ToString() const
-{
-	return localPosition.ToString() + " , " + localOrientation.ToString();
+	return m_mat;
 }
 
 void Transform::AddChild(Transform& child)
 {
-	pChildren.push_back(&child);
+	if (Core::Search(m_children, &child) == m_children.end())
+	{
+		m_children.push_back(&child);
+	}
 }
 
 bool Transform::RemoveChild(Transform& child)
 {
-	return Core::Remove(pChildren, &child);
+	return Core::Remove(m_children, &child);
+}
+
+void Transform::SetDirty()
+{
+	m_bDirty = true;
+	for (auto pChild : m_children)
+	{
+		pChild->SetDirty();
+	}
 }
 } // namespace Core

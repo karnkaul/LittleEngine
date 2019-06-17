@@ -110,6 +110,8 @@ void SpriteSheet::Next()
 	}
 }
 
+RenderComponent::RenderComponent() = default;
+
 RenderComponent::~RenderComponent()
 {
 	if (m_pPrimitive)
@@ -279,9 +281,9 @@ void RenderComponent::UpdatePrimitive(Time dt)
 
 	if (m_pPrimitive)
 	{
-		m_pPrimitive->SetScale(m_pOwner->m_transform.Scale(), m_pOwner->m_bResetRenderState);
-		m_pPrimitive->SetOrientation(m_pOwner->m_transform.Orientation(), m_pOwner->m_bResetRenderState);
-		m_pPrimitive->SetPosition(m_pOwner->m_transform.Position(), m_pOwner->m_bResetRenderState);
+		m_pPrimitive->SetScale(m_pOwner->m_transform.GetWorldScale(), m_pOwner->m_bResetRenderState);
+		m_pPrimitive->SetOrientation(m_pOwner->m_transform.GetWorldOrientation(), m_pOwner->m_bResetRenderState);
+		m_pPrimitive->SetPosition(m_pOwner->m_transform.GetWorldPosition(), m_pOwner->m_bResetRenderState);
 		m_pOwner->m_bResetRenderState = false;
 	}
 }

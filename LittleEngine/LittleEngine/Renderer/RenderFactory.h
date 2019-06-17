@@ -8,9 +8,6 @@ namespace LittleEngine
 class RenderFactory final : public IRenderBuffer
 {
 private:
-	using Lock = std::lock_guard<std::mutex>;
-
-private:
 	static const u32 LAYER_RESERVE = 128;
 	static const u32 LOCK_SLEEP_MS = 5;
 	PrimMat m_active;

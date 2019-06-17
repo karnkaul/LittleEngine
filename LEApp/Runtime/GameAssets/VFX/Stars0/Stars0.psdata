@@ -4,11 +4,11 @@
             "id": "main",
             "spawnData": {
                 "spawnPosition": { "min": { "x": -1800, "y": 540 }, "max": { "x": 1600, "y": 540 } },
-                "spreadAngle": { "min": 180, "max": 180 },
+                "spreadAngle": { "min": -90, "max": -90 },
                 "emitterAngle": { "min": 0, "max": 0 },
                 "spawnSpeed": { "min": 0.03, "max": 0.2},
                 "spawnAngularSpeed": { "min": 0, "max": 0 },
-                "numParticles": 3000,
+                "numParticles": 5000,
                 "bPreWarm": true,
                 "bFireOnce": false
             },

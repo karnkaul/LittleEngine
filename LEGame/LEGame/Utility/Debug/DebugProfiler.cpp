@@ -11,8 +11,6 @@
 
 namespace LittleEngine::Debug::Profiler
 {
-using Lock = std::lock_guard<std::mutex>;
-
 namespace
 {
 LEContext* pContext = nullptr;

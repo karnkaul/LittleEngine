@@ -45,7 +45,7 @@ void SFText::OnUpdateRenderState(Fixed alpha)
 	DrawableState ds = GetDrawableState(alpha);
 	m_sfText.setOrigin(Cast(ds.origin));
 	m_sfText.setScale(Cast(s.scale));
-	m_sfText.setRotation(Cast(s.orientation));
+	m_sfText.setRotation(Cast(Vector2::ToOrientation(s.orientation)));
 	m_sfText.setPosition(Cast(s.position));
 	m_sfText.setFillColor(Cast(s.colour));
 	m_sfText.setOutlineThickness(Cast(ds.outline));

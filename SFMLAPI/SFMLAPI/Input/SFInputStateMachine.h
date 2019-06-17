@@ -31,7 +31,11 @@ private:
 
 	void OnKeyDown(const sf::Event::KeyEvent& key);
 	void OnKeyUp(const sf::Event::KeyEvent& key);
-	void SetPointerState(MouseInput pointerInput);
+	void OnMouseDown(const sf::Event::MouseButtonEvent& button);
+	void OnMouseUp(const sf::Event::MouseButtonEvent& button);
+	void OnMouseMove(Vector2 worldPosition);
+	void SetMouseWheelScroll(Fixed delta);
+	
 	void ResetKeyStates();
 	void ClearTextInput();
 	void OnTextInput(u32 unicode);
