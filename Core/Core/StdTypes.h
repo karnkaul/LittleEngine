@@ -62,6 +62,7 @@ using f64 = double;
 using String = std::string;
 using StringStream = std::stringstream;
 using Task = std::function<void()>;
+using Lock = std::lock_guard<std::mutex>;
 
 template <typename T>
 using InitList = std::initializer_list<T>;

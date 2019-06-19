@@ -1,7 +1,10 @@
 #include "stdafx.h"
+#include "Core/Jobs.h"
+#include "Core/Logger.h"
 #include "Quads.h"
 #include "Quad.h"
 #include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/SFTypes.h"
 #if ENABLED(RENDER_STATS)
 #include "SFMLAPI/Rendering/SFRenderer.h"
 #endif
@@ -14,79 +17,86 @@ extern RenderData g_renderData;
 
 Quads::Quads(LayerID layer) : APrimitive(layer)
 {
-	m_quads.reserve(1024);
 }
 
 Quads::~Quads() = default;
 
-Rect2 Quad::GetBounds() const
+Rect2 Quads::GetBounds(bool /*bWorld*/) const
 {
-	Vector2 size(Maths::Abs(m_vertexModel[0].x - m_vertexModel[1].x),
-				 Maths::Abs(m_vertexModel[1].y - m_vertexModel[2].y));
-	return Rect2::CentreSize(size);
+	return Rect2::Zero;
 }
 
 void Quads::ReconcileGameState()
 {
 	APrimitive::ReconcileGameState();
-	for (auto& uQuad : m_quads)
+	for (auto& quad : m_quads)
 	{
-		uQuad->ReconcileGameState();
+		quad.ReconcileGameState();
 	}
 }
 
 void Quads::SwapState()
 {
 	APrimitive::SwapState();
-	for (auto& uQuad : m_quads)
+	for (auto& quad : m_quads)
 	{
-		uQuad->SwapState();
+		quad.SwapState();
 	}
 }
 
 void Quads::OnUpdateRenderState(Fixed alpha)
 {
-	for (auto& uQuad : m_quads)
+	if (m_quads.size() < s_JOB_QUAD_LIMIT || !s_bUSE_JOBS)
 	{
-		uQuad->UpdateRenderState(alpha);
+		for (auto& quad : m_quads)
+		{
+			quad.UpdateRenderState(alpha);
+		}
+	}
+	else
+	{
+		Core::Jobs::ForEach([&](size_t idx) { m_quads[idx].UpdateRenderState(alpha); },
+							m_quads.size(), s_JOB_QUAD_LIMIT);
 	}
 }
 
 void Quads::OnDraw(SFViewport& viewport, sf::RenderStates& sfStates)
 {
-	Vec<Quad*> enabledQuads;
-	enabledQuads.reserve(m_quads.size());
-	for (auto& uQuad : m_quads)
+	size_t enabledCount = 0;
+	for (const auto& quad : m_quads)
 	{
-		if (uQuad->m_renderState.bEnabled)
+		if (quad.m_renderState.bEnabled)
 		{
-			enabledQuads.push_back(uQuad.get());
+			++enabledCount;
 		}
 	}
 
-	sf::VertexArray va(sf::Quads, enabledQuads.size() * 4);
+	sf::VertexArray va(sf::Quads, enabledCount * 4);
 	size_t idx = 0;
-	for (auto& pQuad : enabledQuads)
+	for (const auto& quad : m_quads)
 	{
-		for (size_t i = 0; i < pQuad->m_sfVertArr.getVertexCount(); ++i)
+		if (quad.m_renderState.bEnabled)
 		{
-			va[idx++] = pQuad->m_sfVertArr[i];
+			for (size_t i = 0; i < quad.m_sfVertArr.getVertexCount(); ++i)
+			{
+				va[idx++] = quad.m_sfVertArr[i];
+			}
 		}
 	}
 #if ENABLED(RENDER_STATS)
-	g_renderData._quadCount_Internal += enabledQuads.size();
+	g_renderData._quadCount_Internal += enabledCount;
 #endif
 	sfStates.texture = &m_pTexture->m_sfTexture;
 	viewport.draw(va, sfStates);
 }
 
-Rect2 Quads::GetBounds() const
+Quads* Quads::SetTexture(TextureAsset& texture, u32 maxQuadCount)
 {
-	return Rect2::Zero;
-}
-
-Quads* Quads::SetTexture(TextureAsset& texture)
-{
+	if (m_quads.capacity() == 0)
+	{
+		m_quads.reserve(maxQuadCount);
+		m_reserved = m_quads.capacity();
+	}
 	m_pTexture = &texture;
 	return this;
 }
@@ -94,13 +104,13 @@ Quads* Quads::SetTexture(TextureAsset& texture)
 Quad* Quads::AddQuad()
 {
 	Assert(m_pTexture, "Texture is null!");
-	if (m_pTexture)
+	Assert(m_quads.size() < m_reserved, "Max quads reached!");
+	if (m_pTexture && m_quads.size() < m_reserved)
 	{
-		UPtr<Quad> uQuad = MakeUnique<Quad>(m_layer);
-		uQuad->SetModel(Rect2::CentreSize(m_pTexture->GetTextureSize()))->SetTexture(*m_pTexture);
-		Quad* pQuad = uQuad.get();
-		m_quads.emplace_back(std::move(uQuad));
-		return pQuad;
+		Quad quad(m_layer);
+		quad.SetModel(Rect2::CentreSize(m_pTexture->GetTextureSize()))->SetTexture(*m_pTexture);
+		m_quads.emplace_back(std::move(quad));
+		return &m_quads.back();
 	}
 	return nullptr;
 }

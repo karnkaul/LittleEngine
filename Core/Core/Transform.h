@@ -1,48 +1,44 @@
 #pragma once
-#include "Vector2.h"
+#include "Matrix3.h"
 
 namespace Core
 {
-// \brief Class maintains a position and orientation in 2D space,
-// and provides an API for parenting to other Transforms.
-struct Transform
+class Transform final
 {
-public:
-	static const Transform IDENTITY;
-
 private:
-	Vec<Transform*> pChildren;
-	Transform* pParent = nullptr;
-
-public:
-	Vector2 localPosition; // screen centre is origin
-	Vector2 localScale;
-	Fixed localOrientation; // + is clockwise
+	mutable Matrix3 m_mat;
+	Vector2 m_position;
+	Vector2 m_orientation = Vector2::Right;
+	Vector2 m_scale = Vector2::One;
+	Vec<Transform*> m_children;
+	Transform* m_pParent = nullptr;
+	mutable bool m_bDirty = false;
 
 public:
 	Transform();
 	~Transform();
 
-	// Attaches this to another transform as its parent
-	void SetParent(Transform& parent, bool bModifyWorldSpace = true);
-	// Unsets parent, if any
-	void UnsetParent(bool bModifyWorldSpace = true);
+	void SetParent(Transform& parent);
+	void UnsetParent();
 
-	// Note: Might return nullptr
-	Transform* GetParent() const;
-	// Returns position from parent's origin as position in world space
-	Vector2 Position() const;
-	// Returns orientation in world space (+ is counter-clockwise)
-	Fixed Orientation() const;
-	// Returns parent-aware scale
-	Vector2 Scale() const;
-	// Call this to Rotate this and all children
-	void Rotate(Fixed angle);
+	Transform& SetPosition(Vector2 position);
+	Transform& SetOrientation(Vector2 orientation);
+	Transform& SetOrientation(Fixed degrees);
+	Transform& SetScale(Vector2 scale);
 
-	String ToString() const;
+	Vector2 GetPosition() const;
+	Vector2 GetOrientation() const;
+	Vector2 GetScale() const;
+
+	Vector2 GetWorldPosition() const;
+	Vector2 GetWorldOrientation() const;
+	Vector2 GetWorldScale() const;
+
+	const Matrix3& GetWorldMatrix(bool bForceRecalc = false) const;
 
 private:
 	void AddChild(Transform& child);
 	bool RemoveChild(Transform& child);
+	void SetDirty();
 };
 } // namespace Core

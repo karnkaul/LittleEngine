@@ -19,9 +19,6 @@ extern class LERepository* g_pRepository;
 class LERepository final
 {
 private:
-	using Lock = std::lock_guard<std::mutex>;
-
-private:
 	UPtr<Core::ArchiveReader> m_uCooked;
 	List<UPtr<class ManifestLoader>> m_uAsyncLoaders;
 	std::mutex m_mutex;
@@ -49,6 +46,8 @@ public:
 	bool Unload(String id);
 	// Unload all assets
 	void UnloadAll(bool bUnloadDefaultFont);
+
+	bool IsBusy() const;
 
 public:
 	LERepository(const LERepository&) = delete;

@@ -10,13 +10,12 @@ SFCircle::SFCircle(LayerID layer) : ASFDrawable(layer)
 
 SFCircle::~SFCircle() = default;
 
-Rect2 SFCircle::GetBounds() const
+Rect2 SFCircle::GetBounds(bool bWorld) const
 {
 	Fixed cSize(m_sfCircle.getRadius() * 2);
-	Vector2 pivot = Cast(m_sfCircle.getOrigin());
 	Vector2 size(cSize, cSize);
-	Vector2 offset = Fixed::OneHalf * size;
-	return Rect2::CentreSize(size, pivot + offset);
+	Vector2 centre = bWorld ? ScreenToWorld(m_gameState.tPosition.max) : Vector2::Zero;
+	return Rect2::CentreSize(size, centre);
 }
 
 void SFCircle::SwapState()
@@ -34,7 +33,7 @@ void SFCircle::OnUpdateRenderState(Fixed alpha)
 	DrawableState ds = GetDrawableState(alpha);
 	m_sfCircle.setOrigin(Cast(ds.origin));
 	m_sfCircle.setScale(Cast(s.scale));
-	m_sfCircle.setRotation(Cast(s.orientation));
+	m_sfCircle.setRotation(Cast(Vector2::ToOrientation(s.orientation)));
 	m_sfCircle.setPosition(Cast(s.position));
 	m_sfCircle.setFillColor(Cast(s.colour));
 	m_sfCircle.setOutlineThickness(Cast(ds.outline));

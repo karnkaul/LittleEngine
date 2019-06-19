@@ -43,9 +43,46 @@ bool LEInput::Frame::IsReleased(s32 keyCode) const
 	return Core::Search(released, static_cast<KeyType>(keyCode)) != released.end();
 }
 
+bool LEInput::Frame::IsPressed(InitList<s32> keys, bool bAny /* = true */) const
+{
+	return GetResult(keys, [&](s32 key) { return IsPressed(key); }, bAny);
+}
+
+bool LEInput::Frame::IsHeld(InitList<s32> keys, bool bAny /* = true */) const
+{
+	return GetResult(keys, [&](s32 key) { return IsHeld(key); }, bAny);
+}
+
+bool LEInput::Frame::IsReleased(InitList<s32> keys, bool bAny /* = true */) const
+{
+	return GetResult(keys, [&](s32 key) { return IsReleased(key); }, bAny);
+}
+
 bool LEInput::Frame::HasData() const
 {
 	return !pressed.empty() || !held.empty() || !released.empty();
+}
+
+Fixed LEInput::Frame::GetMouseWhellScroll() const
+{
+	return mouseInput.scrollDelta;
+}
+
+bool LEInput::Frame::GetResult(InitList<s32> keys, std::function<bool(s32)> subroutine, bool bAny) const
+{
+	bool bResult = bAny ? false : true;
+	for (auto key : keys)
+	{
+		if (bAny)
+		{
+			bResult |= subroutine(key);
+		}
+		else
+		{
+			bResult &= subroutine(key);
+		}
+	}
+	return bResult;
 }
 
 #if DEBUGGING
@@ -174,7 +211,7 @@ void LEInput::FireCallbacks()
 		m_oSudoContext.reset();
 	}
 
-	Frame dataFrame{pressed, held, released, m_textInput, m_joyInput};
+	Frame dataFrame{pressed, held, released, m_textInput, m_mouseInput, m_joyInput};
 	bool bHasData = dataFrame.HasData();
 	size_t prev = m_contexts.size();
 	Core::RemoveIf<InputContext>(

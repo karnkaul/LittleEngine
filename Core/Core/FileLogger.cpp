@@ -22,7 +22,6 @@ String GetPrologue(String header)
 	return ret + "\n";
 }
 } // namespace
-using Lock = std::lock_guard<std::mutex>;
 
 FileLogger::FileLogger(String filename, u8 backupCount, String header)
 	: m_filename(std::move(filename))

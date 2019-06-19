@@ -11,6 +11,8 @@ void Cleanup();
 
 JobHandle Enqueue(Task task, String name = "", bool bSilent = false);
 MultiJob* CreateMultiJob(String name);
+void ForEach(std::function<void(size_t)> indexedTask, size_t iterationCount, size_t iterationsPerJob, size_t startIdx = 0);
+
 void Update();
 bool AreWorkersIdle();
 } // namespace Jobs

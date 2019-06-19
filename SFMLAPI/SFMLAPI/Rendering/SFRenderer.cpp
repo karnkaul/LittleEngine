@@ -30,8 +30,7 @@ void SFRenderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 	{
 		m_pViewport->clear();
 		{
-			std::lock_guard<std::mutex> lock(buffer.m_mutex);
-			auto& matrix = buffer.GetActiveRenderMatrix();
+			
 #if ENABLED(RENDER_STATS)
 			static Time fpsTime;
 			static u32 frameCount = 0;
@@ -39,6 +38,9 @@ void SFRenderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 			u32 drawCalls = 0;
 			g_renderData._quadCount_Internal = 0;
 #endif
+			Lock lock(buffer.m_mutex);
+			auto& matrix = buffer.GetActiveRenderMatrix();
+
 			for (auto& vec : matrix)
 			{
 				for (auto& pPrimitive : vec)

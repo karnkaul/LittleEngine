@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
-#include "UIContext.h"
+#include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "LittleEngine/Context/LEContext.h"
+#include "UIContext.h"
+#include "UIWidget.h"
+#include "UIWidgetMatrix.h"
 #include "LEGame/Model/GameManager.h"
 #include "LEGame/Model/World/World.h"
 #include "LEGame/Model/UI/UIElement.h"
-#include "UIWidget.h"
-#include "UIWidgetMatrix.h"
 
 namespace LittleEngine
 {
@@ -107,7 +108,34 @@ void UIContext::Tick(Time dt)
 	{
 		uElement->Tick(dt);
 	}
-	m_uUIWidgets->ForEach([dt](UIContext::UUIWidget& uUIWidget) { uUIWidget->Tick(dt); });
+	UIWidget* pToActivate = nullptr;
+	m_uUIWidgets->ForEach(
+	[dt, &pToActivate](UIContext::UUIWidget& uUIWidget) {
+		Rect2 rect = uUIWidget->GetRoot()->GetRect()->GetBounds(true);
+		Vector2 mp = g_pGameManager->Input()->GetMouseState().worldPosition;
+		if (rect.IsPointIn(mp))
+		{
+			pToActivate = uUIWidget.get();
+		}
+		bool bIn = rect.IsPointIn(mp);
+		uUIWidget->Tick(dt);
+	});
+	if (pToActivate)
+	{
+		UIWidget* pSelected = GetSelected();
+		if (pSelected != pToActivate)
+		{
+			if (pSelected)
+			{
+				pSelected->Deselect();
+			}
+			pToActivate->Select();
+			if (!m_uUIWidgets->Select(pToActivate))
+			{
+				LOG_E("ERROR!");
+			}
+		}
+	}
 }
 
 void UIContext::OnCreated()
@@ -125,23 +153,23 @@ bool UIContext::OnInput(const LEInput::Frame& frame)
 		return false;
 	}
 
-	if (frame.IsPressed(KeyCode::Enter) || frame.IsPressed(KeyType::JOY_BTN_0))
+	if (frame.IsPressed({KeyCode::Enter, KeyType::JOY_BTN_0, KeyType::MOUSE_BTN_0}))
 	{
 		OnEnterPressed();
 	}
-	if (frame.IsReleased(KeyCode::Enter) || frame.IsReleased(KeyType::JOY_BTN_0))
+	if (frame.IsReleased({KeyCode::Enter, KeyType::JOY_BTN_0, KeyType::MOUSE_BTN_0}))
 	{
 		OnEnterReleased(m_bInteracting);
 	}
-	if (frame.IsReleased(KeyCode::Escape) || frame.IsReleased(KeyType::JOY_BTN_1))
+	if (frame.IsReleased({KeyCode::Escape, KeyType::JOY_BTN_1, KeyType::MOUSE_BTN_1}))
 	{
 		OnBackReleased();
 	}
-	if (frame.IsReleased(KeyCode::Up))
+	if (frame.IsReleased(KeyCode::Up) || frame.GetMouseWhellScroll() > Fixed::Zero)
 	{
 		OnUp();
 	}
-	if (frame.IsReleased(KeyCode::Down))
+	if (frame.IsReleased(KeyCode::Down) || frame.GetMouseWhellScroll() < Fixed::Zero)
 	{
 		OnDown();
 	}

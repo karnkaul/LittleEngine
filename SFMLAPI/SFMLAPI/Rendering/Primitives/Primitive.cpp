@@ -63,15 +63,15 @@ void APrimitive::Draw(SFViewport& viewport, Fixed alpha)
 	m_bRendered = true;
 }
 
-APrimitive* APrimitive::SetPosition(Vector2 worldPosition, bool bImmediate)
+APrimitive* APrimitive::SetPosition(Vector2 position, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.tPosition.Reset(WorldToScreen(worldPosition));
+		m_gameState.tPosition.Reset(WorldToScreen(position));
 	}
 	else
 	{
-		m_gameState.tPosition.Update(WorldToScreen(worldPosition));
+		m_gameState.tPosition.Update(WorldToScreen(position));
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -82,15 +82,15 @@ APrimitive* APrimitive::SetPosition(Vector2 worldPosition, bool bImmediate)
 	return this;
 }
 
-APrimitive* APrimitive::SetOrientation(Fixed worldOrientation, bool bImmediate)
+APrimitive* APrimitive::SetOrientation(Vector2 orientation, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.tOrientation.Reset(WorldToScreen(worldOrientation));
+		m_gameState.tOrientation.Reset(WorldToScreen(orientation));
 	}
 	else
 	{
-		m_gameState.tOrientation.Update(WorldToScreen(worldOrientation));
+		m_gameState.tOrientation.Update(WorldToScreen(orientation));
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -101,15 +101,15 @@ APrimitive* APrimitive::SetOrientation(Fixed worldOrientation, bool bImmediate)
 	return this;
 }
 
-APrimitive* APrimitive::SetScale(Vector2 worldScale, bool bImmediate)
+APrimitive* APrimitive::SetScale(Vector2 scale, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.tScale.Reset(worldScale);
+		m_gameState.tScale.Reset(scale);
 	}
 	else
 	{
-		m_gameState.tScale.Update(worldScale);
+		m_gameState.tScale.Update(scale);
 	}
 	if (m_bStatic || m_bMakeStatic)
 	{
@@ -187,7 +187,7 @@ Vector2 APrimitive::GetPosition() const
 	return ScreenToWorld(m_gameState.tPosition.max);
 }
 
-Fixed APrimitive::GetOrientation() const
+Vector2 APrimitive::GetOrientation() const
 {
 	return ScreenToWorld(m_gameState.tOrientation.max);
 }
@@ -200,14 +200,5 @@ Vector2 APrimitive::GetScale() const
 Colour APrimitive::GetPrimaryColour() const
 {
 	return m_gameState.tColour.max;
-}
-
-APrimitive::State APrimitive::GetState(Fixed alpha) const
-{
-	Vector2 s = m_renderState.tScale.Lerp(alpha);
-	Fixed o = m_renderState.tOrientation.Lerp(alpha);
-	Vector2 p = m_renderState.tPosition.Lerp(alpha);
-	Colour c = Colour::Lerp(m_renderState.tColour, alpha);
-	return {p, s, o, c};
 }
 } // namespace LittleEngine

@@ -21,8 +21,8 @@ TweakBool(asyncRendering, nullptr);
 
 LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 {
-#if ENABLED(TWEAKABLES) 
-	asyncRendering.BindCallback([&](const String& val) { 
+#if ENABLED(TWEAKABLES)
+	asyncRendering.BindCallback([&](const String& val) {
 		bool bEnable = Strings::ToBool(val);
 		if (bEnable)
 		{
@@ -72,6 +72,12 @@ LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 
 LEContext::~LEContext()
 {
+	m_uRenderer->StopRenderThread();
+	while (!Core::Jobs::AreWorkersIdle())
+	{
+		LOG_E("[LEContext] Engine destruction blocked by JobManager...");
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
 	m_uInput = nullptr;
 	m_uRenderer = nullptr;
 	m_uViewport = nullptr;
@@ -125,16 +131,15 @@ void LEContext::SetWindowStyle(SFViewportStyle newStyle)
 
 void LEContext::Terminate()
 {
-	if (!Core::Jobs::AreWorkersIdle())
+	if (g_pRepository->IsBusy())
 	{
-		Assert(false, "Terminate() called while job workers are active!");
-		LOG_E("[LEContext] Terminate() called while job workers are active!");
+		Assert(false, "Terminate() called while repository is busy!");
+		LOG_E("[LEContext] Terminate() called while LERepository is busy!");
 		m_bWaitingToTerminate = true;
 	}
 	else
 	{
 		m_bTerminating = true;
-		m_uRenderer->StopRenderThread();
 	}
 }
 
@@ -166,10 +171,11 @@ bool LEContext::Update()
 	}
 	else
 	{
+		m_uRenderer->StopRenderThread();
 		m_bTerminating = Core::Jobs::AreWorkersIdle();
 		if (!m_bTerminating)
 		{
-			LOG_W("[LEContext] Engine termination blocked by JobManager...");
+			LOG_W("[LEContext] Engine termination blocked by JobManager... Undefined Behaviour!");
 		}
 		return true;
 	}
@@ -183,7 +189,8 @@ void LEContext::SubmitFrame()
 {
 	if (m_oNewViewportSize)
 	{
-		LOG_I("[LEContext] Set viewport size to: %dx%d", (*m_oNewViewportSize)->width, (*m_oNewViewportSize)->height);
+		LOG_I("[LEContext] Set viewport size to: %dx%d", (*m_oNewViewportSize)->width,
+			  (*m_oNewViewportSize)->height);
 		m_uRenderer->RecreateViewport(SFViewportRecreateData(std::move(**m_oNewViewportSize)));
 		m_oNewViewportSize.reset();
 	}

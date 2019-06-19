@@ -27,9 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LittleEngine\Repository\LoadHelpers.cpp">
-      <Filter>LittleEngine\Repository</Filter>
-    </ClCompile>
     <ClCompile Include="LittleEngine\Repository\ManifestLoader.cpp">
       <Filter>LittleEngine\Repository</Filter>
     </ClCompile>
@@ -38,9 +35,6 @@
     </ClCompile>
     <ClCompile Include="LittleEngine\Context\LEContext.cpp">
       <Filter>LittleEngine\Context</Filter>
-    </ClCompile>
-    <ClCompile Include="LittleEngine\Input\Gamepad.cpp">
-      <Filter>LittleEngine\Input</Filter>
     </ClCompile>
     <ClCompile Include="LittleEngine\Input\KeyboardInput.cpp">
       <Filter>LittleEngine\Input</Filter>
@@ -78,11 +72,11 @@
     <ClCompile Include="LittleEngine\Renderer\ShaderRepository.cpp">
       <Filter>LittleEngine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="LittleEngine\Repository\AssetManifest.cpp">
+      <Filter>LittleEngine\Repository</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LittleEngine\Repository\LoadHelpers.h">
-      <Filter>LittleEngine\Repository</Filter>
-    </ClInclude>
     <ClInclude Include="LittleEngine\Repository\ManifestLoader.h">
       <Filter>LittleEngine\Repository</Filter>
     </ClInclude>
@@ -94,9 +88,6 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\Context\LEContext.h">
       <Filter>LittleEngine\Context</Filter>
-    </ClInclude>
-    <ClInclude Include="LittleEngine\Input\Gamepad.h">
-      <Filter>LittleEngine\Input</Filter>
     </ClInclude>
     <ClInclude Include="LittleEngine\Input\KeyboardInput.h">
       <Filter>LittleEngine\Input</Filter>
@@ -139,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="LittleEngine\Renderer\ShaderRepository.h">
       <Filter>LittleEngine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="LittleEngine\Repository\AssetManifest.h">
+      <Filter>LittleEngine\Repository</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

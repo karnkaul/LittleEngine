@@ -128,7 +128,7 @@ bool UITextInput::OnInput(const LEInput::Frame& frame)
 			OnInteractEnd(true);
 			return true;
 		}
-		if (frame.IsReleased(KeyCode::Escape))
+		if (frame.IsReleased({KeyCode::Escape, KeyType::JOY_BTN_1, KeyType::MOUSE_BTN_1}))
 		{
 			m_uKeyboard->m_liveLine.Set(m_prevText);
 			OnInteractEnd(true);

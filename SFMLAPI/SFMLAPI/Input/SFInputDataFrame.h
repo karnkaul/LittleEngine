@@ -27,7 +27,6 @@ enum KeyType
 	JOY_BTN_7  // Start
 };
 
-// \brief Wrapper struct to store state of sf::Event::KeyEvent
 struct KeyState
 {
 private:
@@ -44,7 +43,6 @@ public:
 	const char* GetNameStr() const;
 };
 
-// \brief Struct to hold synchronous input text as a string
 struct TextInput
 {
 	String text;
@@ -60,6 +58,7 @@ struct TextInput
 struct MouseInput
 {
 	Vector2 worldPosition;
+	Fixed scrollDelta;
 };
 
 struct JoyState

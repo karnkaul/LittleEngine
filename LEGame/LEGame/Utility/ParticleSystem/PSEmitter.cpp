@@ -49,21 +49,22 @@ Particle::Particle(Quads& quads, bool& bDraw) : m_pDraw(&bDraw)
 
 Particle::~Particle() = default;
 
-void Particle::Init(Vector2 u, Time ttl, Transform transform, Fixed w, TRange<UByte> alphaOverTime, TRange<Fixed> scaleOverTime, Colour colour)
+void Particle::Init(Vector2 u, Time ttl, Vector2 initPos, Vector2 scale, Fixed w, TRange<UByte> alphaOverTime, TRange<Fixed> scaleOverTime, Colour colour)
 {
 	m_bInUse = true;
 	m_ttl = ttl;
 	m_t = Time::Zero;
 	m_v = u;
 	m_w = w;
-	m_transform = transform;
+	m_transform.SetScale(scale);
+	m_transform.SetPosition(initPos);
+	m_transform.SetOrientation(Vector2::Right);
 	m_aot = alphaOverTime;
 	m_sot = scaleOverTime;
 	m_c = colour;
 
 	m_pQuad->SetScale({m_sot.min, m_sot.min}, true)
-		->SetOrientation(transform.localOrientation, true)
-		->SetPosition(transform.Position(), true);
+		->SetPosition(m_transform.GetPosition(), true);
 }
 
 void Particle::Tick(Time dt)
@@ -78,12 +79,14 @@ void Particle::Tick(Time dt)
 		m_bWasInUse = true;
 		m_pQuad->SetPrimaryColour(c, bImmediate)
 			->SetScale({s, s}, bImmediate)
-			->SetOrientation(m_transform.localOrientation, bImmediate)
-			->SetPosition(m_transform.Position(), bImmediate);
+			->SetOrientation(m_transform.GetOrientation(), bImmediate)
+			->SetPosition(m_transform.GetPosition(), bImmediate);
 
 		Fixed ms(dt.AsMilliseconds());
-		m_transform.localPosition += ms * m_v;
-		m_transform.localOrientation += ms * m_w;
+		Vector2 p = m_transform.GetPosition() + ms * m_v;
+		Fixed deg = Vector2::ToOrientation(m_transform.GetOrientation()) + ms * m_w;
+		m_transform.SetPosition(p);
+		m_transform.SetOrientation(deg);
 		m_t += dt;
 
 		m_bInUse = m_t < m_ttl;
@@ -96,7 +99,7 @@ Emitter::Emitter(EmitterData data, bool bSetEnabled)
 {
 	m_particles.reserve(m_data.spawnData.numParticles);
 	m_pQuads = g_pGameManager->Renderer()->New<Quads>(static_cast<LayerID>(LAYER_FX + m_data.layerDelta));
-	m_pQuads->SetTexture(m_data.GetTexture())->SetEnabled(true);
+	m_pQuads->SetTexture(m_data.GetTexture(), m_data.spawnData.numParticles)->SetEnabled(true);
 	for (size_t i = 0; i < m_data.spawnData.numParticles; ++i)
 	{
 		m_particles.emplace_back(*m_pQuads, m_bDraw);
@@ -236,18 +239,19 @@ void Emitter::InitParticle(Particle& p)
 		velocity = Vector2::ToOrientation(GetRandom(m_data.spawnData.spreadAngle));
 	}
 	velocity *= GetRandom(m_data.spawnData.spawnSpeed);
-	Transform transform = Transform::IDENTITY;
+	Vector2 initPos = GetRandom(m_data.spawnData.spawnPosition);
+	Vector2 scale = Vector2::One;
 	if (m_pParent)
 	{
-		transform.SetParent(*m_pParent);
+		initPos += m_pParent->GetWorldPosition();
+		scale = m_pParent->GetWorldScale();
 	}
-	transform.localPosition = GetRandom(m_data.spawnData.spawnPosition);
 	Time ttl = Time::Seconds(GetRandom(m_data.lifetimeData.ttlSecs).ToF32());
 	Fixed w = GetRandom(m_data.spawnData.spawnAngularSpeed);
 	TRange<UByte> aot = m_data.lifetimeData.alphaOverTime;
 	TRange<Fixed> sot = m_data.lifetimeData.scaleOverTime;
 	Colour colour = m_data.spawnData.spawnColour;
-	p.Init(velocity, ttl, transform, w, aot, sot, colour);
+	p.Init(velocity, ttl, initPos, scale, w, aot, sot, colour);
 }
 
 void Emitter::InitParticles()
@@ -262,22 +266,34 @@ void Emitter::InitParticles()
 void Emitter::TickInternal(Time dt, bool bPreWarming)
 {
 	// Update in use
-	size_t alive = 0;
-	Time _dt = dt;
-	for (auto& p : m_particles)
-	{
+	std::atomic<size_t> alive = 0;
+	auto updateParticle = [this, bPreWarming, &alive](size_t idx, Time dt) {
+		Particle& p = m_particles[idx];
 		if (bPreWarming)
 		{
 			Fixed ttlSecs = p.m_ttl.AsSeconds();
 			TRange<Fixed> dtRange(Fixed::Zero, ttlSecs);
-			_dt = Time::Seconds(GetRandom<Fixed>(dtRange).ToF32());
+			dt = Time::Seconds(GetRandom<Fixed>(dtRange).ToF32());
 		}
 		m_onTick(p);
-		p.Tick(_dt);
+		p.Tick(dt);
 		if (p.m_bInUse)
 		{
-			++alive;
+			alive.fetch_add(1);
 		}
+	};
+
+	if (bPreWarming || (m_particles.size() < Quads::s_JOB_QUAD_LIMIT || !Quads::s_bUSE_JOBS))
+	{
+		for (size_t i = 0; i < m_particles.size(); ++i)
+		{
+			updateParticle(i, dt);
+		}
+	}
+
+	else
+	{
+		Core::Jobs::ForEach([&](size_t idx) { updateParticle(idx, dt); }, m_particles.size(), Quads::s_JOB_QUAD_LIMIT);
 	}
 
 	// Re provision if required

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Core/GData.h"
 #include "Core/Utils.h"
-#include "LoadHelpers.h"
+#include "AssetManifest.h"
 
 namespace LittleEngine
 {

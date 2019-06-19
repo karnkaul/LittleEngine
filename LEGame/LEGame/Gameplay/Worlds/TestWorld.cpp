@@ -3,6 +3,7 @@
 #include "LEGame/GameFramework.h"
 #include "TestWorld.h"
 
+#include "SFMLAPI/System/SFTypes.h"
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "SFMLAPI/Rendering/Primitives/Quads.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"
@@ -63,12 +64,12 @@ void OnY()
 	{
 		if (!bParented)
 		{
-			pEntity0->m_transform.SetParent(pPlayer->m_transform, false);
+			pEntity0->m_transform.SetParent(pPlayer->m_transform);
 			bParented = true;
 		}
 		else
 		{
-			pEntity0->m_transform.UnsetParent(false);
+			pEntity0->m_transform.UnsetParent();
 			bParented = false;
 		}
 	}
@@ -109,7 +110,7 @@ void OnA()
 	if (!pEntity4)
 	{
 		pEntity4 = g_pGameManager->NewEntity<Entity>("SpriteSheetTest");
-		pEntity4->m_transform.localPosition = {-200, -200};
+		pEntity4->m_transform.SetPosition({-200, -200});
 		auto rc4 = pEntity4->AddComponent<RenderComponent>();
 		rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)), LAYER_FX);
 	}
@@ -155,7 +156,7 @@ void OnEnter()
 		Fixed x = Maths::Random::Range(-k, k);
 		Fixed y = Maths::Random::Range(-k, k);
 		Vector2 worldPos = g_pGameManager->Renderer()->Project({x, y}, false);
-		pParticleSystem1->m_transform.localPosition = worldPos;
+		pParticleSystem1->m_transform.SetPosition(worldPos);
 		pParticleSystem1->Start();
 		g_pGameManager->WorldCamera()->Shake();
 	}
@@ -187,45 +188,47 @@ void OnSelect()
 
 bool Test_OnInput(const LEInput::Frame& frame)
 {
-	if (frame.IsReleased(KeyType::JOY_BTN_0) || frame.IsReleased(KeyCode::Space))
+	if (frame.IsReleased({KeyType::JOY_BTN_0, KeyCode::Space}))
 	{
 		OnA();
 	}
 
-	if (frame.IsReleased(KeyType::JOY_BTN_1) || frame.IsReleased(KeyCode::E))
+	if (frame.IsReleased({KeyType::JOY_BTN_1, KeyCode::E}))
 	{
 		OnB();
 	}
 
-	if (frame.IsReleased(KeyType::JOY_BTN_2) || frame.IsReleased(KeyCode::R))
+	if (frame.IsReleased({KeyType::JOY_BTN_2, KeyCode::R}))
 	{
 		OnX();
 	}
 
-	if (frame.IsReleased(KeyType::JOY_BTN_3) || frame.IsReleased(KeyCode::F))
+	if (frame.IsReleased({KeyType::JOY_BTN_3, KeyCode::F}))
 	{
 		OnY();
 	}
 
-	if (frame.IsReleased(KeyType::JOY_BTN_7) || frame.IsReleased(KeyCode::Enter))
+	if (frame.IsReleased({KeyType::JOY_BTN_7, KeyCode::Enter}))
 	{
 		OnEnter();
 	}
 
-	if (frame.IsReleased(KeyType::JOY_BTN_4) || frame.IsReleased(KeyCode::Tab))
+	if (frame.IsReleased({KeyType::JOY_BTN_4, KeyCode::Tab}))
 	{
 		OnSelect();
 	}
 
-	if (frame.IsHeld(KeyCode::Left) && frame.IsHeld(KeyType::JOY_BTN_5))
+	if (frame.IsHeld(KeyCode::Left) && frame.IsHeld({KeyCode::LShift, KeyCode::RShift}))
 	{
-		g_pGameManager->WorldCamera()->m_transform.localPosition.x -= Fixed::Three;
+		Transform& t = g_pGameManager->WorldCamera()->m_transform;
+		t.SetPosition(t.GetWorldPosition() - Vector2(Fixed::Three, Fixed::Zero));
 		return true;
 	}
 
-	if (frame.IsHeld(KeyCode::Right) && frame.IsHeld(KeyType::JOY_BTN_5))
+	if (frame.IsHeld(KeyCode::Right) && frame.IsHeld({KeyCode::LShift, KeyCode::RShift}))
 	{
-		g_pGameManager->WorldCamera()->m_transform.localPosition.x += Fixed::Three;
+		Transform& t = g_pGameManager->WorldCamera()->m_transform;
+		t.SetPosition(t.GetWorldPosition() + Vector2(Fixed::Three, Fixed::Zero));
 		return true;
 	}
 	return false;
@@ -284,7 +287,7 @@ void StartTests()
 	{
 		psToken = pEmitter0->RegisterOnTick([](Particle& p) {
 			static Vector2 target = g_pGameManager->Renderer()->Project({Fixed::OneHalf, -Fixed(1.5f)}, false);
-			Vector2 wind = (target - p.m_transform.Position()).Normalised();
+			Vector2 wind = (target - p.m_transform.GetWorldPosition()).Normalised();
 			p.m_v.x = wind.x * Maths::Abs(p.m_v.y) * Fixed::OneHalf;
 		});
 	}
@@ -292,7 +295,7 @@ void StartTests()
 	pText = g_pRepository->Load<TextAsset>("VFX/Fire0/Fire0_noloop.psdata");
 	pParticleSystem1 = g_pGameManager->NewEntity<ParticleSystem>("Fire0");
 	pParticleSystem1->InitParticleSystem(ParticleSystemData(GData(pText->GetText())));
-	pParticleSystem1->m_transform.localScale = {Fixed::Two, Fixed::Two};
+	pParticleSystem1->m_transform.SetScale({Fixed::Two, Fixed::Two});
 	pParticleSystem1->Stop();
 
 	if (bSpawnColliderMinefield)
@@ -309,7 +312,7 @@ void StartTests()
 		pTex->SetRepeated(true);
 		pQuads0->SetTexture(*pTex)->SetEnabled(true);
 		pQuad0 = pQuads0->AddQuad();
-		pQuad0->SetPosition({600, 300}, true)->SetEnabled(true);
+		pQuad0->SetPosition({600, 300}, true)->SetEnabled(true)->SetScale({Fixed::OneHalf, Fixed::One}, true);
 	}
 }
 
@@ -460,13 +463,12 @@ void TestTick(Time dt)
 
 	if (pQuad0)
 	{
-		static Fixed u;
-		u += Fixed(dt.AsSeconds() * 0.1f);
-		if (u > Fixed::One)
-		{
-			u = Fixed::Zero;
-		}
-		pQuad0->SetUV(u, 0, u + Fixed::OneHalf, Fixed::One);
+		static f32 u;
+		u += dt.AsSeconds() * 0.1f;
+		pQuad0->SetUV(Fixed(u), Fixed::Zero, Fixed(u) + Fixed::OneHalf, Fixed::One);
+		Fixed o = Vector2::ToOrientation(pQuad0->GetOrientation());
+		Vector2 _o = Vector2::ToOrientation(o + 2);
+		pQuad0->SetOrientation(_o);
 	}
 
 	/*PROFILE_CUSTOM("TEST", Time::Milliseconds(3), Colour::White);
@@ -532,7 +534,7 @@ void TestWorld::OnDeactivating()
 
 bool TestWorld::OnInput(const LEInput::Frame& frame)
 {
-	if (frame.IsReleased(KeyType::JOY_BTN_6) || frame.IsReleased(KeyCode::Escape))
+	if (frame.IsReleased({KeyType::JOY_BTN_6, KeyCode::Escape}))
 	{
 		g_pGameManager->UI()->PushContext<UIOptions>("Options");
 		return true;

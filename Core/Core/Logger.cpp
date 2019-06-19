@@ -9,8 +9,6 @@
 
 namespace Core
 {
-using Lock = std::lock_guard<std::mutex>;
-
 LogSeverity g_MinLogSeverity = LogSeverity::Info;
 std::function<bool(LogArr&)> g_OnLogStr;
 

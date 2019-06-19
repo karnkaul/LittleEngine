@@ -1,7 +1,7 @@
 #pragma once
 #include <functional>
 #include <optional>
-#include "Gamepad.h"
+#include "SFMLAPI/Input/SFInputDataFrame.h"
 #if DEBUGGING
 #include "SFMLAPI/Rendering/Colour.h"
 #endif
@@ -25,14 +25,25 @@ public:
 		Vec<KeyType> held;
 		Vec<KeyType> released;
 		TextInput textInput;
+		MouseInput mouseInput;
 		JoyInput joyInput;
-		
+
 		static String GetClipboard();
 
 		bool IsPressed(s32 key) const;
 		bool IsHeld(s32 key) const;
 		bool IsReleased(s32 key) const;
+
+		bool IsPressed(InitList<s32> keys, bool bAny = true) const;
+		bool IsHeld(InitList<s32> keys, bool bAny = true) const;
+		bool IsReleased(InitList<s32> keys, bool bAny = true) const;
+
 		bool HasData() const;
+
+		Fixed GetMouseWhellScroll() const;
+
+	private:
+		bool GetResult(InitList<s32> keys, std::function<bool(s32)> subroutine, bool bAny) const;
 	};
 
 	using Delegate = std::function<bool(const Frame& frameData)>;

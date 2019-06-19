@@ -37,6 +37,12 @@ MultiJob* CreateMultiJob(String name)
 	return uManager->CreateMultiJob(std::move(name));
 }
 
+void ForEach(std::function<void(size_t)> indexedTask, size_t iterationCount, size_t iterationsPerJob, size_t startIdx)
+{
+	Assert(uManager, "JobManager is null!");
+	uManager->ForEach(indexedTask, iterationCount, iterationsPerJob, startIdx);
+}
+
 void Update()
 {
 	if (uManager)

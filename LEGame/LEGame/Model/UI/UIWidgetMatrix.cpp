@@ -89,6 +89,35 @@ UIWidget* UIWidgetMatrix::NextSelectableHorizontal(bool bRightwards)
 	return nullptr;
 }
 
+bool UIWidgetMatrix::Select(UIWidget* pToSelect)
+{
+	Reset(true);
+	UIWidget* pHead = Current();
+	UIWidget* pRowHead = pHead;
+	do
+	{
+		if (pRowHead == pToSelect)
+		{
+			return true;
+		}
+		Down();
+		UIWidget* pIter = Current();
+		while (pIter != pRowHead)
+		{
+			if (pIter == pToSelect)
+			{
+				return true;
+			}
+			Down();
+			pIter = Current();
+		}
+		Right();
+		pRowHead = Current();
+	} while (pRowHead != pHead);
+	Reset(true);
+	return false;
+}
+
 void UIWidgetMatrix::Up()
 {
 	CVec& vec = GetCurrentVec();

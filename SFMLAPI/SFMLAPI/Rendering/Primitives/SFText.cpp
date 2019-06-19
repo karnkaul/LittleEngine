@@ -12,13 +12,12 @@ SFText::SFText(LayerID layer) : ASFDrawable(layer)
 
 SFText::~SFText() = default;
 
-Rect2 SFText::GetBounds() const
+Rect2 SFText::GetBounds(bool bWorld) const
 {
 	sf::FloatRect bounds = m_sfText.getLocalBounds();
 	Vector2 size(Fixed(bounds.width), Fixed(bounds.height));
-	Vector2 offset = Fixed::OneHalf * size;
-	Vector2 pivot = Cast(m_sfText.getOrigin());
-	return Rect2::CentreSize(size, pivot + offset);
+	Vector2 centre = bWorld ? ScreenToWorld(m_gameState.tPosition.max) : Vector2::Zero;
+	return Rect2::CentreSize(size, centre);
 }
 
 void SFText::SwapState()
@@ -45,7 +44,7 @@ void SFText::OnUpdateRenderState(Fixed alpha)
 	DrawableState ds = GetDrawableState(alpha);
 	m_sfText.setOrigin(Cast(ds.origin));
 	m_sfText.setScale(Cast(s.scale));
-	m_sfText.setRotation(Cast(s.orientation));
+	m_sfText.setRotation(Cast(Vector2::ToOrientation(s.orientation)));
 	m_sfText.setPosition(Cast(s.position));
 	m_sfText.setFillColor(Cast(s.colour));
 	m_sfText.setOutlineThickness(Cast(ds.outline));

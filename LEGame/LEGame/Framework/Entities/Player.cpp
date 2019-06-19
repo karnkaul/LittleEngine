@@ -35,6 +35,7 @@ void Player::InitPlayer(PlayerData data)
 		pCollisionComponent->AddAABB(collider.bounds, collider.offset);
 	}
 	AddComponent<ControllerComponent>();
+	m_transform.SetOrientation(Vector2::Up);
 
 	LOG_D("%s %s", LogNameStr(), " Initialised");
 }

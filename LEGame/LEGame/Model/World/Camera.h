@@ -6,9 +6,6 @@ namespace LittleEngine
 class Camera : public GameObject
 {
 public:
-	using Transform = Core::Transform;
-
-public:
 	Transform m_transform;
 
 private:

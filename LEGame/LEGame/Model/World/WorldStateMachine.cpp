@@ -55,6 +55,16 @@ WorldID WorldStateMachine::GetActiveStateID() const
 	return m_pActiveState ? m_pActiveState->m_id : -1;
 }
 
+Vec<WorldID> WorldStateMachine::GetAllStateIDs() const
+{
+	Vec<WorldID> ret;
+	for (const auto& uState : s_uCreatedStates)
+	{
+		ret.push_back(uState->m_id);
+	}
+	return ret;
+}
+
 bool WorldStateMachine::LoadState(WorldID id)
 {
 	for (auto& uState : s_uCreatedStates)
@@ -164,12 +174,12 @@ void WorldStateMachine::LoadingTick(Time dt)
 bool WorldStateMachine::GameTick(Time dt)
 {
 	bool bYield = false;
-	if (m_bToActivateState)
+	if (m_bToActivateState && m_pActiveState)
 	{
 		m_pActiveState->Activate();
 		m_bToActivateState = false;
 		bYield = true;
-		LOG_I("[WSM] Loaded %s", m_pNextState->LogNameStr());
+		LOG_I("[WSM] Loaded %s", m_pActiveState->LogNameStr());
 	}
 
 	if (m_pActiveState)
@@ -190,14 +200,13 @@ bool WorldStateMachine::GameTick(Time dt)
 	return bYield;
 }
 
-Vec<WorldID> WorldStateMachine::GetAllStateIDs() const
+void WorldStateMachine::Quit()
 {
-	Vec<WorldID> ret;
-	for (const auto& uState : s_uCreatedStates)
+	if (m_pActiveState)
 	{
-		ret.push_back(uState->m_id);
+		m_pActiveState->Deactivate();
 	}
-	return ret;
+	m_pNextState = m_pActiveState = nullptr;
+	m_pContext->Terminate();
 }
-
 } // namespace LittleEngine

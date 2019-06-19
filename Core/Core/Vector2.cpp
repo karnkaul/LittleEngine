@@ -10,6 +10,7 @@ namespace Core
 const Vector2 Vector2::Zero = Vector2(Fixed::Zero, Fixed::Zero);
 const Vector2 Vector2::One = Vector2(Fixed::One, Fixed::One);
 const Vector2 Vector2::Up = Vector2(Fixed::Zero, Fixed::One);
+const Vector2 Vector2::Right = Vector2(Fixed::One, Fixed::Zero);
 
 Vector2::Vector2() : x(Fixed::Zero), y(Fixed::Zero)
 {
@@ -21,7 +22,8 @@ Vector2::Vector2(Fixed x, Fixed y) : x(std::move(x)), y(std::move(y))
 
 Vector2 Vector2::ToOrientation(Fixed degrees)
 {
-	return Vector2((Maths::DEG_TO_RAD * degrees).Sin(), (Maths::DEG_TO_RAD * degrees).Cos());
+	Fixed rad = Maths::DEG_TO_RAD * degrees;
+	return Vector2(rad.Cos(), rad.Sin());
 }
 
 Fixed Vector2::ToOrientation(Vector2 orientation)
@@ -31,9 +33,32 @@ Fixed Vector2::ToOrientation(Vector2 orientation)
 		return Fixed::Zero;
 	}
 	orientation.Normalise();
-	Vector2 up(Fixed::Zero, Fixed::One);
-	Fixed cos = orientation.Dot(up);
-	return cos.ArcCos();
+	Fixed cos = orientation.Dot(Right);
+	Fixed sin = orientation.Dot(Up);
+	Fixed degrees;
+	// +/- 90
+	if (cos == Fixed::Zero)
+	{
+		if (sin < Fixed::Zero)
+		{
+			degrees = -90;
+		}
+		else
+		{
+			degrees = 90;
+		}
+	}
+	else
+	{
+		// Will only return [-90, 90]
+		degrees = (sin / cos).ArcTan() * Maths::RAD_TO_DEG;
+	}
+	if (orientation.x < Fixed::Zero)
+	{
+		// So add 180 if facing left
+		degrees += 180;
+	}
+	return degrees;
 }
 
 Vector2& Vector2::operator+=(Vector2 rhs)
@@ -66,7 +91,7 @@ Vector2& Vector2::operator/=(Fixed fixed)
 
 Fixed Vector2::Dot(Vector2 rhs) const
 {
-	return Fixed((x * rhs.x) + (y * rhs.y));
+	return (x * rhs.x) + (y * rhs.y);
 }
 
 Vector2 Vector2::Normalised() const

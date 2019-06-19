@@ -18,7 +18,7 @@ protected:
 	{
 		TRange<Vector2> tPosition = Vector2::Zero;
 		TRange<Vector2> tScale = Vector2::One;
-		TRange<Fixed> tOrientation = Fixed::Zero;
+		TRange<Vector2> tOrientation = Vector2::Right;
 		TRange<Colour> tColour = Colour(255, 255, 255, 255);
 
 		bool bEnabled = false;
@@ -29,8 +29,8 @@ protected:
 	struct State
 	{
 		Vector2 position;
+		Vector2 orientation;
 		Vector2 scale;
-		Fixed orientation;
 		Colour colour;
 	};
 
@@ -58,7 +58,7 @@ public:
 	virtual ~APrimitive();
 
 public:
-	virtual Rect2 GetBounds() const = 0;
+	virtual Rect2 GetBounds(bool bWorld = false) const = 0;
 
 public:
 	virtual void ReconcileGameState();
@@ -81,9 +81,9 @@ private:
 
 public:
 	// Interpolated states
-	APrimitive* SetPosition(Vector2 worldPosition, bool bImmediate = false);
-	APrimitive* SetOrientation(Fixed worldOrientation, bool bImmediate = false);
-	APrimitive* SetScale(Vector2 worldScale, bool bImmediate = false);
+	APrimitive* SetPosition(Vector2 position, bool bImmediate = false);
+	APrimitive* SetOrientation(Vector2 orientation, bool bImmediate = false);
+	APrimitive* SetScale(Vector2 scale, bool bImmediate = false);
 	APrimitive* SetPrimaryColour(Colour colour, bool bImmediate = false);
 
 	// Regular states
@@ -96,12 +96,19 @@ public:
 	bool IsStatic() const;
 
 	Vector2 GetPosition() const;
-	Fixed GetOrientation() const;
+	Vector2 GetOrientation() const;
 	Vector2 GetScale() const;
 	Colour GetPrimaryColour() const;
 
 protected:
-	State GetState(Fixed alpha) const;
+	inline State GetState(Fixed alpha) const
+	{
+		Vector2 s = m_renderState.tScale.Lerp(alpha);
+		Vector2 o = m_renderState.tOrientation.Lerp(alpha);
+		Vector2 p = m_renderState.tPosition.Lerp(alpha);
+		Colour c = Colour::Lerp(m_renderState.tColour, alpha);
+		return {p, o, s, c};
+	}
 
 private:
 	friend class SFRenderer;

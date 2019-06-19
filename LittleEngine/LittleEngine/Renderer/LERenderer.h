@@ -56,6 +56,7 @@ private:
 	void ModifyTickRate(Time newTickRate);
 #endif
 
+private:
 	friend class LEContext;
 };
 
