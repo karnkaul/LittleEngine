@@ -47,7 +47,7 @@ void World::OnClearing()
 void World::Activate()
 {
 	Assert(m_pWSM, "WSM is null!");
-	LOG_D("%s Activated.", LogNameStr());
+	LOG_D("%s Activated", LogNameStr());
 	m_uWorldClock->Restart();
 	m_uGame = MakeUnique<GameManager>(*m_pWSM);
 	OnActivated();

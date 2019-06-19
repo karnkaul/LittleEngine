@@ -13,6 +13,13 @@ namespace LittleEngine
 // \brief Controller for a number of UIWidgets: allows player to cycle through and interact with all of them
 class UIContext : public UIObject
 {
+private:
+	struct MBState
+	{
+		bool bEnterPressed = false;
+		bool bEnterReleased = false;
+	};
+
 public:
 	using OnCancelled = Core::Delegate<>;
 private:
@@ -28,6 +35,8 @@ private:
 	Vec<UUIElement> m_uiElements;
 	Vec<LEInput::Token> m_inputTokens;
 	OnCancelled m_onCancelledDelegate;
+	MBState m_mbState;
+	UIWidget* m_pPointerOver = nullptr;
 	bool m_bInteracting = false;
 
 public:

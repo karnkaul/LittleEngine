@@ -59,7 +59,6 @@ void UIContext::SetActive(bool bActive, bool bResetSelection)
 		{
 			ResetSelection();
 		}
-		Tick();
 		m_inputTokens.push_back(g_pGameManager->Input()->Register(
 			[&](const LEInput::Frame& frame) -> bool { return OnInput(frame); }, true));
 	}
@@ -108,34 +107,62 @@ void UIContext::Tick(Time dt)
 	{
 		uElement->Tick(dt);
 	}
-	UIWidget* pToActivate = nullptr;
-	m_uUIWidgets->ForEach(
-	[dt, &pToActivate](UIContext::UUIWidget& uUIWidget) {
-		Rect2 rect = uUIWidget->GetRoot()->GetRect()->GetBounds(true);
-		Vector2 mp = g_pGameManager->Input()->GetMouseState().worldPosition;
-		if (rect.IsPointIn(mp))
+	UIWidget* pSelected = GetSelected();
+	const MouseInput& pointerState = g_pGameManager->Input()->GetMouseState();
+	bool bPointerSelection = false;
+	m_uUIWidgets->ForEach([this, &pSelected, &bPointerSelection, &pointerState](UIContext::UUIWidget& uUIWidget) {
+		Vector2 mp = pointerState.worldPosition;
+		if (!bPointerSelection && uUIWidget->IsPointInBounds(mp))
 		{
-			pToActivate = uUIWidget.get();
-		}
-		bool bIn = rect.IsPointIn(mp);
-		uUIWidget->Tick(dt);
-	});
-	if (pToActivate)
-	{
-		UIWidget* pSelected = GetSelected();
-		if (pSelected != pToActivate)
-		{
-			if (pSelected)
+			bPointerSelection = true;
+			auto pToActivate = uUIWidget.get();
+			if (pSelected != pToActivate)
 			{
-				pSelected->Deselect();
+				if (m_uUIWidgets->Select(pToActivate))
+				{
+					if (pSelected)
+					{
+						pSelected->Deselect();
+					}
+					pToActivate->Select();
+				}
+				else
+				{
+					bPointerSelection = false;
+					LOG_E("%s ERROR! %s not found in widget matrix!", m_logName.c_str(),
+						  pToActivate->m_logName.c_str());
+				}
 			}
-			pToActivate->Select();
-			if (!m_uUIWidgets->Select(pToActivate))
+		}
+	});
+
+	if (bPointerSelection)
+	{
+		// Pointer is inside a widget's bounds
+		m_pPointerOver = GetSelected();
+		if (m_pPointerOver)
+		{
+			if (m_mbState.bEnterPressed)
 			{
-				LOG_E("ERROR!");
+				OnEnterPressed();
+			}
+			else if (m_mbState.bEnterReleased)
+			{
+				OnEnterReleased(m_bInteracting);
 			}
 		}
 	}
+	else
+	{
+		if (m_bInteracting && m_pPointerOver)
+		{
+			// Pointer has moved out
+			OnEnterReleased(false);
+		}
+		m_pPointerOver = nullptr;
+	}
+
+	m_uUIWidgets->ForEach([dt](UIContext::UUIWidget& uUIWidget) { uUIWidget->Tick(dt); });
 }
 
 void UIContext::OnCreated()
@@ -153,23 +180,26 @@ bool UIContext::OnInput(const LEInput::Frame& frame)
 		return false;
 	}
 
-	if (frame.IsPressed({KeyCode::Enter, KeyType::JOY_BTN_0, KeyType::MOUSE_BTN_0}))
+	m_mbState.bEnterPressed = frame.IsPressed(KeyType::MOUSE_BTN_0);
+	m_mbState.bEnterReleased = frame.IsReleased(KeyType::MOUSE_BTN_0);
+	
+	if (frame.IsPressed({KeyCode::Enter, KeyType::JOY_BTN_0}))
 	{
 		OnEnterPressed();
 	}
-	if (frame.IsReleased({KeyCode::Enter, KeyType::JOY_BTN_0, KeyType::MOUSE_BTN_0}))
+	if (frame.IsReleased({KeyCode::Enter, KeyType::JOY_BTN_0}))
 	{
 		OnEnterReleased(m_bInteracting);
 	}
-	if (frame.IsReleased({KeyCode::Escape, KeyType::JOY_BTN_1, KeyType::MOUSE_BTN_1}))
+	if (frame.IsReleased({KeyCode::Escape, KeyType::JOY_BTN_1}))
 	{
 		OnBackReleased();
 	}
-	if (frame.IsReleased(KeyCode::Up) || frame.GetMouseWhellScroll() > Fixed::Zero)
+	if (frame.IsReleased(KeyCode::Up))
 	{
 		OnUp();
 	}
-	if (frame.IsReleased(KeyCode::Down) || frame.GetMouseWhellScroll() < Fixed::Zero)
+	if (frame.IsReleased(KeyCode::Down))
 	{
 		OnDown();
 	}

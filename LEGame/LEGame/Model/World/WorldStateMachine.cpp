@@ -187,7 +187,7 @@ bool WorldStateMachine::GameTick(Time dt)
 		m_pActiveState->Tick(dt);
 	}
 
-	if (m_pNextState != m_pActiveState)
+	if (m_pNextState && (m_pNextState != m_pActiveState))
 	{
 		LOG_D("[WSM] Loading %s...", m_pNextState->LogNameStr());
 		if (m_pActiveState)
@@ -197,7 +197,7 @@ bool WorldStateMachine::GameTick(Time dt)
 		m_pActiveState = m_pNextState;
 		m_bToActivateState = true;
 	}
-	return bYield;
+	return bYield | (m_pActiveState == nullptr);
 }
 
 void WorldStateMachine::Quit()

@@ -25,6 +25,7 @@ private:
 	UPtr<class UIManager> m_uUIManager;
 	UPtr<class CollisionManager> m_uCollisionManager;
 	UPtr<class Camera> m_uWorldCamera;
+	bool m_bQuitting = false;
 
 public:
 	static const Core::Version& GetGameVersion();

@@ -43,6 +43,7 @@ protected:
 	void SetState(UIWidgetState state);
 
 protected:
+	virtual bool IsPointInBounds(Vector2 point) const;
 	virtual void OnCreated();
 	virtual void OnSelected() = 0;
 	virtual void OnDeselected() = 0;

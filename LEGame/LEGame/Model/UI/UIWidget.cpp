@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
+#include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "UIWidget.h"
 #include "LEGame/Model/GameManager.h"
 #include "LEGame/Model/UI/UIElement.h"
@@ -44,6 +45,10 @@ void UIWidget::SetState(UIWidgetState state)
 	m_state = state;
 }
 
+bool UIWidget::IsPointInBounds(Vector2 point) const
+{
+	return GetRoot()->GetRect()->GetBounds(true).IsPointIn(point);
+}
 
 void UIWidget::OnCreated()
 {

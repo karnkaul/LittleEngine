@@ -101,7 +101,7 @@ Vec<WorldID> GameManager::GetAllWorldIDs() const
 
 void GameManager::Quit()
 {
-	m_pWSM->Quit();
+	m_bQuitting = true;
 }
 
 Camera* GameManager::WorldCamera() const
@@ -121,22 +121,29 @@ const char* GameManager::LogNameStr() const
 
 void GameManager::Tick(Time dt)
 {
-	m_uCollisionManager->Tick(dt);
-	for (auto& componentVec : m_uComponents)
+	if (m_bQuitting)
 	{
-		Core::RemoveIf<UPtr<AComponent>>(componentVec,
-										   [](UPtr<AComponent>& uC) { return uC->m_bDestroyed; });
-		for (auto& uComponent : componentVec)
+		m_pWSM->Quit();
+	}
+	else
+	{
+		m_uCollisionManager->Tick(dt);
+		for (auto& componentVec : m_uComponents)
 		{
-			uComponent->Tick(dt);
+			Core::RemoveIf<UPtr<AComponent>>(componentVec,
+											 [](UPtr<AComponent>& uC) { return uC->m_bDestroyed; });
+			for (auto& uComponent : componentVec)
+			{
+				uComponent->Tick(dt);
+			}
 		}
+		Core::RemoveIf<UPtr<Entity>>(m_uEntities, [](UPtr<Entity>& uE) { return uE->m_bDestroyed; });
+		for (auto& uEntity : m_uEntities)
+		{
+			uEntity->Tick(dt);
+		}
+		m_uUIManager->Tick(dt);
+		m_uWorldCamera->Tick(dt);
 	}
-	Core::RemoveIf<UPtr<Entity>>(m_uEntities, [](UPtr<Entity>& uE) { return uE->m_bDestroyed; });
-	for (auto& uEntity : m_uEntities)
-	{
-		uEntity->Tick(dt);
-	}
-	m_uUIManager->Tick(dt);
-	m_uWorldCamera->Tick(dt);
 }
 } // namespace LittleEngine
