@@ -3,6 +3,22 @@
 #include <algorithm>
 #include <stack>
 
+namespace Core
+{
+std::pair<f32, const char*> GetFriendlySize(u64 byteCount)
+{
+	static Array<const char*, 4> suffixes = {"B", "KiB", "MiB", "GiB"};
+	f32 bytes = static_cast<f32>(byteCount);
+	size_t idx = 0;
+	while (bytes > 1024.0f && idx < 4)
+	{
+		++idx;
+		bytes /= 1024.0f;
+	}
+	return std::make_pair(bytes, suffixes[idx]);
+}
+}
+
 namespace Strings
 {
 void ToLower(String& outString)

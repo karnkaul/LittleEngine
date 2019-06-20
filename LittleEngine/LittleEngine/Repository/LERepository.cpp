@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include <fstream>
 #include "Core/OS.h"
-#include "Core/Utils.h"
 #include "LERepository.h"
 #include "AssetManifest.h"
 #include "ManifestLoader.h"
@@ -92,10 +91,21 @@ ManifestLoader* LERepository::LoadAsync(String manifestPath, Task onComplete)
 	return pLoader;
 }
 
-bool LERepository::IsLoaded(const String& id)
+bool LERepository::IsLoaded(const String& id) const
 {
 	Lock lock(m_mutex);
 	return m_loaded.find(id) != m_loaded.end();
+}
+
+u64 LERepository::GetLoadedBytes() const
+{
+	Lock lock(m_mutex);
+	u64 total = 0;
+	for (auto& uAsset : m_loaded)
+	{
+		total += uAsset.second->GetByteCount();
+	}
+	return total;
 }
 
 bool LERepository::Unload(String id)

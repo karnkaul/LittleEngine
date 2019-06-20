@@ -7,7 +7,7 @@
         "y": 1080
     },
     "bRenderThread": true,
-    "logLevel": "Debug",
+    "logLevel": "Info",
     "ticksPerSecond": 35,
     "backupLogFileCount": 3,
     "colliderShapeBorderWidth": 2,

@@ -132,13 +132,9 @@ void WorldStateMachine::LoadingTick(Time dt)
 	if (m_bLoaded)
 	{
 		GameInit::LoadShaders();
-
+		auto size = Core::GetFriendlySize(g_pRepository->GetLoadedBytes());
 		loadTime = Time::Now() - loadTime;
-		if (s_bHasState)
-		{
-			LOG_D("[WSM] Manifest load complete in %.2fs. Loading World 0...",
-				  loadTime.AsSeconds());
-		}
+		LOG_I("[WSM] Manifest load completed in %.2fs. Repository size: %.2f%s", loadTime.AsSeconds(), size.first, size.second);
 #if DEBUGGING
 		if (s_bTEST_infiniteLoad)
 		{
@@ -154,6 +150,7 @@ void WorldStateMachine::LoadingTick(Time dt)
 		m_uLoadingUI = nullptr;
 		if (s_bHasState)
 		{
+			LOG_D("[WSM] Loading World 0...");
 			LoadState(0);
 		}
 		else

@@ -12,6 +12,7 @@ class Asset
 protected:
 	String m_id;
 	AssetType m_type;
+	u64 m_byteCount = 0;
 	bool m_bError = false;
 
 public:
@@ -19,9 +20,11 @@ public:
 	Asset() = delete;
 	Asset(String id, AssetType type);
 	virtual ~Asset();
+
 	const char* GetID() const;
 	bool IsError() const;
 	AssetType GetType() const;
+	u64 GetByteCount() const;
 
 public:
 	Asset(const Asset&) = delete;

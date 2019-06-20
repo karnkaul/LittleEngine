@@ -29,6 +29,9 @@ void EraseNullWeakPtrs(Vec<WPtr<T>>& vec);
 // Given a Vec<T> and T& value, returns an iterator using std::find
 template <typename T>
 typename Vec<T>::const_iterator Search(const Vec<T>& vec, const T& value);
+
+// Returns size in B / KiB / MiB / GiB
+std::pair<f32, const char*> GetFriendlySize(u64 byteCount);
 } // namespace Core
 
 namespace Strings
