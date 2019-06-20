@@ -25,14 +25,14 @@ void UIContext::OnCreate(String name, LayerID rootLayer)
 	SetNameAndType(std::move(name), "UIContext");
 	m_uUIWidgets = MakeUnique<UIWidgetMatrix>();
 	s32 layerDelta = rootLayer - LAYER_UI;
-	m_pRootElement = AddElement<UIElement>(String(GetNameStr()) + "_Root", nullptr, layerDelta);
+	m_pRoot = AddElement<UIElement>(String(GetNameStr()) + "_Root", nullptr, layerDelta);
 	OnCreated();
 	SetActive(true);
 }
 
 LayerID UIContext::GetMaxLayer() const
 {
-	LayerID maxLayer = m_pRootElement->m_layer;
+	LayerID maxLayer = m_pRoot->m_layer;
 	for (const auto& uElement : m_uiElements)
 	{
 		if (uElement->m_layer > maxLayer)
@@ -82,7 +82,7 @@ UIWidget* UIContext::GetSelected()
 
 UIElement* UIContext::GetRoot() const
 {
-	return m_pRootElement;
+	return m_pRoot;
 }
 
 UIContext::OnCancelled::Token UIContext::SetOnCancelled(OnCancelled::Callback callback, bool bAutoDestroy)

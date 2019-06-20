@@ -24,5 +24,6 @@ protected:
 	void OnInteractStart() override;
 	void OnInteractEnd(bool bInteract) override;
 	void OnSetInteractable(bool bInteractable) override;
+	void Tick(Time dt) override;
 };
 } // namespace LittleEngine

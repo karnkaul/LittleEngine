@@ -80,13 +80,13 @@ void UIContainer::Deserialise(String serialised)
 	GData root(std::move(serialised));
 	m_bAutoDestroyOnCancel = root.GetBool("isDestroyOnCancel", true);
 	// Setup root
-	m_pRootElement->m_transform.size = root.GetVector2("size");
+	m_pRoot->m_transform.size = root.GetVector2("size");
 	if (root.GetBool("isPanel"))
 	{
-		m_pRootElement->SetPanel(UIGameStyle::ParseColour(root.GetString("colour")));
+		m_pRoot->SetPanel(UIGameStyle::ParseColour(root.GetString("colour")));
 	}
 	// Setup children
-	SetupChildren(m_pRootElement, root.GetVectorGData("children"));
+	SetupChildren(m_pRoot, root.GetVectorGData("children"));
 }
 
 void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)

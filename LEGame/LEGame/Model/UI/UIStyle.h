@@ -10,6 +10,7 @@ struct UIStyle
 	Fixed border = Fixed::Zero;
 	Colour fill = Colour::Transparent;
 	Colour outline = Colour::Transparent;
+	Colour textColour = Colour::Black;
 	LayerID layer = LAYER_UI;
 };
 

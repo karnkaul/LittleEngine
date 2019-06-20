@@ -79,6 +79,11 @@ void UIElement::SetText(UIText uiText)
 	m_pText->SetSize(uiText.pixelSize);
 }
 
+void UIElement::SetTextColour(Colour colour)
+{
+	m_pText->SetPrimaryColour(colour);
+}
+
 void UIElement::SetFont(FontAsset& font)
 {
 	m_pText->SetFont(font);
