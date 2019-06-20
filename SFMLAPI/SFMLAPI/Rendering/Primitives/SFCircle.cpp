@@ -10,14 +10,6 @@ SFCircle::SFCircle(LayerID layer) : ASFDrawable(layer)
 
 SFCircle::~SFCircle() = default;
 
-Rect2 SFCircle::GetBounds(bool bWorld) const
-{
-	Fixed cSize(m_sfCircle.getRadius() * 2);
-	Vector2 size(cSize, cSize);
-	Vector2 centre = bWorld ? ScreenToWorld(m_gameState.tPosition.max) : Vector2::Zero;
-	return Rect2::CentreSize(size, centre);
-}
-
 void SFCircle::SwapState()
 {
 	ASFDrawable::SwapState();
@@ -43,6 +35,17 @@ void SFCircle::OnUpdateRenderState(Fixed alpha)
 void SFCircle::OnDraw(SFViewport& viewport, sf::RenderStates& sfStates)
 {
 	viewport.draw(m_sfCircle, sfStates);
+}
+
+Vector2 SFCircle::GetSFSize() const
+{
+	Fixed cSize(m_sfCircle.getRadius() * 2);
+	return {cSize, cSize};
+}
+
+sf::FloatRect SFCircle::GetSFBounds() const
+{
+	return m_sfCircle.getLocalBounds();
 }
 
 SFCircle* SFCircle::SetDiameter(Fixed diameter)

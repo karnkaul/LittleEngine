@@ -47,7 +47,7 @@ void UIWidget::SetState(UIWidgetState state)
 
 bool UIWidget::IsPointInBounds(Vector2 point) const
 {
-	return GetRoot()->GetRect()->GetBounds(true).IsPointIn(point);
+	return GetRoot()->GetRect()->GetBounds().IsPointIn(point);
 }
 
 void UIWidget::OnCreated()

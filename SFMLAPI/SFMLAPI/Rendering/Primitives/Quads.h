@@ -23,7 +23,7 @@ public:
 	~Quads() override;
 
 public:
-	Rect2 GetBounds(bool bWorld = false) const override;
+	Rect2 GetBounds() const override;
 
 public:
 	void ReconcileGameState() override;

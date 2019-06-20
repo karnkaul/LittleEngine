@@ -58,7 +58,7 @@ public:
 	virtual ~APrimitive();
 
 public:
-	virtual Rect2 GetBounds(bool bWorld = false) const = 0;
+	virtual Rect2 GetBounds() const = 0;
 
 public:
 	virtual void ReconcileGameState();

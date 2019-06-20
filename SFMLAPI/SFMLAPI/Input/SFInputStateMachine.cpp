@@ -117,6 +117,11 @@ void SFInputStateMachine::OnMouseMove(Vector2 worldPosition)
 	m_pointerInput.worldPosition = worldPosition;
 }
 
+void SFInputStateMachine::OnMouseChange(bool bInViewport)
+{
+	m_pointerInput.bInViewport = bInViewport;
+}
+
 void SFInputStateMachine::SetMouseWheelScroll(Fixed delta)
 {
 	m_pointerInput.scrollDelta = delta;

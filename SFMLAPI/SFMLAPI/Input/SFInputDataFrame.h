@@ -59,6 +59,7 @@ struct MouseInput
 {
 	Vector2 worldPosition;
 	Fixed scrollDelta;
+	bool bInViewport = false;
 };
 
 struct JoyState

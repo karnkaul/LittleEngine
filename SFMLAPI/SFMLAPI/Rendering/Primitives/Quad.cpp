@@ -20,11 +20,11 @@ Quad::Quad(LayerID layer) : APrimitive(layer), m_sfVertArr(sf::VertexArray(sf::Q
 
 Quad::~Quad() = default;
 
-Rect2 Quad::GetBounds(bool bWorld) const
+Rect2 Quad::GetBounds() const
 {
 	Vector2 size(Maths::Abs(m_vertexModel[0].x - m_vertexModel[1].x),
 				 Maths::Abs(m_vertexModel[1].y - m_vertexModel[2].y));
-	Vector2 centre = bWorld ? ScreenToWorld(m_gameState.tPosition.max) : Vector2::Zero;
+	Vector2 centre = ScreenToWorld(m_gameState.tPosition.max);
 	return Rect2::CentreSize(size, centre);
 }
 

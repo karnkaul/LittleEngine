@@ -12,14 +12,6 @@ SFText::SFText(LayerID layer) : ASFDrawable(layer)
 
 SFText::~SFText() = default;
 
-Rect2 SFText::GetBounds(bool bWorld) const
-{
-	sf::FloatRect bounds = m_sfText.getLocalBounds();
-	Vector2 size(Fixed(bounds.width), Fixed(bounds.height));
-	Vector2 centre = bWorld ? ScreenToWorld(m_gameState.tPosition.max) : Vector2::Zero;
-	return Rect2::CentreSize(size, centre);
-}
-
 void SFText::SwapState()
 {
 	ASFDrawable::SwapState();
@@ -55,6 +47,17 @@ void SFText::OnUpdateRenderState(Fixed alpha)
 void SFText::OnDraw(SFViewport& viewport, sf::RenderStates& states)
 {
 	viewport.draw(m_sfText, states);
+}
+
+Vector2 SFText::GetSFSize() const
+{
+	sf::FloatRect bounds = GetSFBounds();
+	return {Fixed(bounds.width), Fixed(bounds.height)};
+}
+
+sf::FloatRect SFText::GetSFBounds() const
+{
+	return m_sfText.getLocalBounds();
 }
 
 SFText* SFText::SetFont(FontAsset& font)

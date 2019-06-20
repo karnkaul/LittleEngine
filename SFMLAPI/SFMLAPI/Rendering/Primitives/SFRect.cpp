@@ -10,13 +10,6 @@ SFRect::SFRect(LayerID layer) : ASFDrawable(layer)
 
 SFRect::~SFRect() = default;
 
-Rect2 SFRect::GetBounds(bool bWorld) const
-{
-	Vector2 size = Cast(m_sfRect.getSize());
-	Vector2 centre = bWorld ? ScreenToWorld(m_gameState.tPosition.max) : Vector2::Zero;
-	return Rect2::CentreSize(size, centre);
-}
-
 void SFRect::SwapState()
 {
 	ASFDrawable::SwapState();
@@ -42,6 +35,16 @@ void SFRect::OnUpdateRenderState(Fixed alpha)
 void SFRect::OnDraw(SFViewport& viewport, sf::RenderStates& sfStates)
 {
 	viewport.draw(m_sfRect, sfStates);
+}
+
+Vector2 SFRect::GetSFSize() const
+{
+	return Cast(m_sfRect.getSize());
+}
+
+sf::FloatRect SFRect::GetSFBounds() const
+{
+	return m_sfRect.getLocalBounds();
 }
 
 SFRect* SFRect::SetSize(Vector2 size)

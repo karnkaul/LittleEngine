@@ -107,34 +107,37 @@ void UIContext::Tick(Time dt)
 	{
 		uElement->Tick(dt);
 	}
-	UIWidget* pSelected = GetSelected();
-	const MouseInput& pointerState = g_pGameManager->Input()->GetMouseState();
 	bool bPointerSelection = false;
-	m_uUIWidgets->ForEach([this, &pSelected, &bPointerSelection, &pointerState](UIContext::UUIWidget& uUIWidget) {
-		Vector2 mp = pointerState.worldPosition;
-		if (!bPointerSelection && uUIWidget->IsPointInBounds(mp))
-		{
-			bPointerSelection = true;
-			auto pToActivate = uUIWidget.get();
-			if (pSelected != pToActivate)
+	const MouseInput& pointerState = g_pGameManager->Input()->GetMouseState();
+	if (pointerState.bInViewport)
+	{
+		UIWidget* pSelected = GetSelected();
+		m_uUIWidgets->ForEach([this, &pSelected, &bPointerSelection, &pointerState](UIContext::UUIWidget& uUIWidget) {
+			Vector2 mp = pointerState.worldPosition;
+			if (!bPointerSelection && uUIWidget->IsPointInBounds(mp))
 			{
-				if (m_uUIWidgets->Select(pToActivate))
+				bPointerSelection = true;
+				auto pToActivate = uUIWidget.get();
+				if (pSelected != pToActivate)
 				{
-					if (pSelected)
+					if (m_uUIWidgets->Select(pToActivate))
 					{
-						pSelected->Deselect();
+						if (pSelected)
+						{
+							pSelected->Deselect();
+						}
+						pToActivate->Select();
 					}
-					pToActivate->Select();
-				}
-				else
-				{
-					bPointerSelection = false;
-					LOG_E("%s ERROR! %s not found in widget matrix!", m_logName.c_str(),
-						  pToActivate->m_logName.c_str());
+					else
+					{
+						bPointerSelection = false;
+						LOG_E("%s ERROR! %s not found in widget matrix!", m_logName.c_str(),
+							  pToActivate->m_logName.c_str());
+					}
 				}
 			}
-		}
-	});
+		});
+	}
 
 	if (bPointerSelection)
 	{

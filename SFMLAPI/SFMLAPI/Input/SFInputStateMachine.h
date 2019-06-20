@@ -34,6 +34,7 @@ private:
 	void OnMouseDown(const sf::Event::MouseButtonEvent& button);
 	void OnMouseUp(const sf::Event::MouseButtonEvent& button);
 	void OnMouseMove(Vector2 worldPosition);
+	void OnMouseChange(bool bInViewport);
 	void SetMouseWheelScroll(Fixed delta);
 	
 	void ResetKeyStates();

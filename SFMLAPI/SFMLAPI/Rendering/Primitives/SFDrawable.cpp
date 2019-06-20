@@ -90,6 +90,14 @@ Colour ASFDrawable::GetSecondaryColour() const
 	return m_drawableGameState.tSecondaryColour.max;
 }
 
+Rect2 ASFDrawable::GetBounds() const
+{
+	sf::FloatRect bounds = GetSFBounds();
+	Vector2 size(Fixed(bounds.width), Fixed(bounds.height));
+	Vector2 centre = ScreenToWorld(m_gameState.tPosition.max);
+	return Rect2::CentreSize(size, centre);
+}
+
 void ASFDrawable::ReconcileGameState()
 {
 	APrimitive::ReconcileGameState();
@@ -105,7 +113,7 @@ void ASFDrawable::SwapState()
 ASFDrawable::DrawableState ASFDrawable::GetDrawableState(Fixed alpha) const
 {
 	DrawableState ret;
-	Vector2 offset = Fixed::OneHalf * GetBounds().GetSize();
+	Vector2 offset = Fixed::OneHalf * GetSFSize();
 	Vector2 pivot = m_drawableRenderState.tPivot.Lerp(alpha);
 	ret.origin = Vector2(offset.x * pivot.x, offset.y * pivot.y) + offset;
 	ret.secondary = Colour::Lerp(m_drawableRenderState.tSecondaryColour, alpha);

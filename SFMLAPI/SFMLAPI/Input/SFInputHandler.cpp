@@ -58,6 +58,18 @@ SFViewportEventType SFInputHandler::PollEvents(SFViewport& sfWindow)
 			break;
 		}
 
+		case sf::Event::MouseEntered:
+		{
+			m_inputSM.OnMouseChange(true);
+			break;
+		}
+
+		case sf::Event::MouseLeft:
+		{
+			m_inputSM.OnMouseChange(false);
+			break;
+		}
+
 		case sf::Event::MouseButtonPressed:
 		{
 			m_inputSM.OnMouseDown(sfEvent.mouseButton);

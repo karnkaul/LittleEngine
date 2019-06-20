@@ -21,7 +21,7 @@ Quads::Quads(LayerID layer) : APrimitive(layer)
 
 Quads::~Quads() = default;
 
-Rect2 Quads::GetBounds(bool /*bWorld*/) const
+Rect2 Quads::GetBounds() const
 {
 	return Rect2::Zero;
 }
