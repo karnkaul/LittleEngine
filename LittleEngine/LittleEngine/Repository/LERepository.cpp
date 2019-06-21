@@ -10,10 +10,11 @@ namespace LittleEngine
 {
 LERepository* g_pRepository = nullptr;
 
-LERepository::LERepository(String archivePath, String rootDir)
-	: m_rootDir(std::move(rootDir)), m_pDefaultFont(nullptr)
+LERepository::LERepository(String defaultFontID, String archivePath, String rootDir)
+	: m_rootDir(std::move(rootDir))
 {
 	m_assetPathPrefix = m_rootDir.empty() ? String() : m_rootDir + "/";
+	m_uCooked = MakeUnique<Core::ArchiveReader>();
 	std::ifstream file(archivePath);
 	Assert(file.good(), "Cooked archive does not exist!");
 #if DEBUGGING
@@ -32,53 +33,54 @@ LERepository::LERepository(String archivePath, String rootDir)
 		throw FatalEngineException();
 #endif
 	}
-	m_uCooked = MakeUnique<Core::ArchiveReader>();
-	m_uCooked->Load(archivePath.c_str());
+	else
+	{
+		m_uCooked->Load(archivePath.c_str());
+	}
 	LOG_D("[Repository] Located cooked archive at [%s]", archivePath.c_str());
 
-	String fontID = "Fonts/main.ttf";
-	if (!m_uCooked->IsPresent(fontID.c_str()))
+	if (!m_uCooked->IsPresent(defaultFontID.c_str()))
 	{
-		LOG_E("[Repository] Cooked assets does not contain %s!", fontID.c_str());
+		LOG_E("[Repository] Cooked assets does not contain %s!", defaultFontID.c_str());
 	}
 	else
 	{
-		UPtr<FontAsset> uDefaultFont =
-			CreateAsset<FontAsset>(fontID, m_uCooked->Decompress(fontID.c_str()));
+		UPtr<FontAsset> uDefaultFont = CreateAsset<FontAsset>(defaultFontID, m_uCooked->Decompress(defaultFontID.c_str()));
 		if (uDefaultFont)
 		{
 			m_pDefaultFont = uDefaultFont.get();
-			m_loaded.emplace(fontID, std::move(uDefaultFont));
+			m_loaded.emplace(defaultFontID, std::move(uDefaultFont));
 		}
 		else
 		{
-			LOG_E("[Repository] Could not load %s from Cooked assets!", fontID.c_str());
+			LOG_E("[Repository] Could not load %s from Cooked assets!", defaultFontID.c_str());
 		}
 	}
 
 #if ENABLED(FILESYSTEM_ASSETS)
 	if (!m_pDefaultFont)
 	{
-		UPtr<FontAsset> uDefaultFont = RetrieveAsset<FontAsset>(fontID);
+		UPtr<FontAsset> uDefaultFont = RetrieveAsset<FontAsset>(defaultFontID);
 		if (uDefaultFont)
 		{
 			m_pDefaultFont = uDefaultFont.get();
-			m_loaded.emplace(fontID, std::move(uDefaultFont));
+			m_loaded.emplace(defaultFontID, std::move(uDefaultFont));
 		}
 		else
 		{
-			LOG_E("[Repository] Could not load %s from filesystem assets!", fontID.c_str());
+			LOG_E("[Repository] Could not load %s from filesystem assets!", defaultFontID.c_str());
 		}
 	}
 #endif
-	LOG_D("[Repository] constructed");
 	Assert(m_pDefaultFont, "Invariant violated: Default Font is null!");
 
 	g_pRepository = this;
+	LOG_D("[Repository] constructed");
 }
 
 FontAsset* LERepository::GetDefaultFont() const
 {
+	Assert(m_pDefaultFont, "Default Font has not been set!");
 	return m_pDefaultFont;
 }
 

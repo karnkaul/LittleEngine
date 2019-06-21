@@ -110,6 +110,8 @@ protected:
 		return {p, o, s, c};
 	}
 
+	void SetDirty(bool bReconcile);
+
 private:
 	friend class SFRenderer;
 };

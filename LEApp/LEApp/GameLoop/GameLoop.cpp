@@ -97,7 +97,7 @@ bool Init(s32 argc, char** argv)
 
 	try
 	{
-		uRepository = MakeUnique<LERepository>("GameAssets.cooked", "GameAssets");
+		uRepository = MakeUnique<LERepository>("Fonts/main.ttf", "GameAssets.cooked", "GameAssets");
 		uAudio = MakeUnique<LEAudio>();
 	}
 	catch (const FatalEngineException& /*e*/)

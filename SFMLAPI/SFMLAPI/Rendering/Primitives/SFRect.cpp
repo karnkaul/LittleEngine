@@ -50,6 +50,7 @@ sf::FloatRect SFRect::GetSFBounds() const
 SFRect* SFRect::SetSize(Vector2 size)
 {
 	m_rectGameState.size = size;
+	SetDirty(false);
 	return this;
 }
 } // namespace LittleEngine

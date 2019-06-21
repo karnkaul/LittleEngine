@@ -56,6 +56,7 @@ class FontAsset : public Asset
 {
 private:
 	Vec<u8> m_fontBuffer;
+
 public:
 	sf::Font m_sfFont;
 

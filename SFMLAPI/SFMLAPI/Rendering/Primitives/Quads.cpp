@@ -92,6 +92,7 @@ void Quads::OnDraw(SFViewport& viewport, sf::RenderStates& sfStates)
 
 Quads* Quads::SetTexture(TextureAsset& texture, u32 maxQuadCount)
 {
+	Assert(&texture, "Texture is null!");
 	if (m_quads.capacity() == 0)
 	{
 		m_quads.reserve(maxQuadCount);

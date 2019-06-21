@@ -62,8 +62,10 @@ sf::FloatRect SFText::GetSFBounds() const
 
 SFText* SFText::SetFont(FontAsset& font)
 {
+	Assert(&font, "Font is null!");
 	m_pFont = &font;
 	m_bTextChanged.store(true, std::memory_order_relaxed);
+	SetDirty(false);
 	return this;
 }
 
@@ -71,6 +73,7 @@ SFText* SFText::SetSize(u32 size)
 {
 	m_textGameState.size = size;
 	m_bTextChanged.store(true, std::memory_order_relaxed);
+	SetDirty(false);
 	return this;
 }
 
@@ -78,6 +81,7 @@ SFText* SFText::SetText(String text)
 {
 	m_textGameState.text = std::move(text);
 	m_bTextChanged.store(true, std::memory_order_relaxed);
+	SetDirty(false);
 	return this;
 }
 } // namespace LittleEngine

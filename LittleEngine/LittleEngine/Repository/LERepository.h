@@ -26,10 +26,10 @@ private:
 	UMap<String, Asset::Ptr> m_loaded;
 	String m_rootDir;
 	String m_assetPathPrefix;
-	class FontAsset* m_pDefaultFont;
+	class FontAsset* m_pDefaultFont = nullptr;
 
 public:
-	LERepository(String archivePath, String rootDir = "");
+	LERepository(String defaultFontID, String archivePath, String rootDir = "");
 	~LERepository();
 
 	// Loads Asset at path. T must derive from Asset!
@@ -273,7 +273,8 @@ UPtr<T> LERepository::CreateAsset(const String& id, Vec<u8> buffer)
 		return nullptr;
 	}
 	auto size = Core::GetFriendlySize(uT->GetByteCount());
-	LOG_I("== [%s] %s decompressed [%.2f%s]", id.c_str(), g_szAssetType[ToIdx(uT->GetType())], size.first, size.second);
+	LOG_I("== [%s] [%.2f%s] %s decompressed", id.c_str(), size.first, size.second,
+		  g_szAssetType[ToIdx(uT->GetType())]);
 	return std::move(uT);
 }
 
@@ -295,7 +296,8 @@ UPtr<T> LERepository::RetrieveAsset(const String& id)
 		return nullptr;
 	}
 	auto size = Core::GetFriendlySize(uT->GetByteCount());
-	LOG_I("== [%s] %s loaded from filesystem [%.2f%s]", id.c_str(), g_szAssetType[ToIdx(uT->GetType())], size.first, size.second);
+	LOG_I("== [%s] [%.2f%s] %s loaded from filesystem", id.c_str(), size.first, size.second,
+		  g_szAssetType[ToIdx(uT->GetType())]);
 	return std::move(uT);
 }
 #endif

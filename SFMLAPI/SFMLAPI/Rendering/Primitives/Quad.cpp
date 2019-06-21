@@ -85,6 +85,7 @@ Quad* Quad::SetModel(Rect2 xy)
 
 Quad* Quad::SetTexture(TextureAsset& texture)
 {
+	Assert(&texture, "Texture is null");
 	m_quadGameState.pTexture = &texture;
 	return this;
 }
@@ -99,12 +100,7 @@ Quad* Quad::SetUV(Rect2 uv, bool bImmediate)
 	{
 		m_quadGameState.tUV.Update(uv);
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 

@@ -9,6 +9,7 @@ namespace LittleEngine
 void UIButton::SetText(UIText uiText)
 {
 	m_pRoot->SetText(std::move(uiText));
+	m_pRoot->GetText()->SetPivot({0, -Fixed::OneHalf});
 }
 
 UIButton::OnClick::Token UIButton::AddCallback(UIButton::OnClick::Callback callback)

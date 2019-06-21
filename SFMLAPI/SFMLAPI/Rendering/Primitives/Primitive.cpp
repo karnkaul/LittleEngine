@@ -73,12 +73,7 @@ APrimitive* APrimitive::SetPosition(Vector2 position, bool bImmediate)
 	{
 		m_gameState.tPosition.Update(WorldToScreen(position));
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
@@ -92,12 +87,7 @@ APrimitive* APrimitive::SetOrientation(Vector2 orientation, bool bImmediate)
 	{
 		m_gameState.tOrientation.Update(WorldToScreen(orientation));
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
@@ -111,12 +101,7 @@ APrimitive* APrimitive::SetScale(Vector2 scale, bool bImmediate)
 	{
 		m_gameState.tScale.Update(scale);
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
@@ -130,12 +115,7 @@ APrimitive* APrimitive::SetPrimaryColour(Colour colour, bool bImmediate)
 	{
 		m_gameState.tColour.Update(colour);
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
@@ -200,5 +180,18 @@ Vector2 APrimitive::GetScale() const
 Colour APrimitive::GetPrimaryColour() const
 {
 	return m_gameState.tColour.max;
+}
+
+void APrimitive::SetDirty(bool bReconcile)
+{
+	if (m_bStatic || m_bMakeStatic)
+	{
+		if (bReconcile)
+		{
+			ReconcileGameState();
+		}
+		m_bStatic = false;
+		m_bMakeStatic = true;
+	}
 }
 } // namespace LittleEngine

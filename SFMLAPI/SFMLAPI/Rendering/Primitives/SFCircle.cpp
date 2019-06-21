@@ -51,6 +51,7 @@ sf::FloatRect SFCircle::GetSFBounds() const
 SFCircle* SFCircle::SetDiameter(Fixed diameter)
 {
 	m_circleGameState.diameter = diameter;
+	SetDirty(false);
 	return this;
 }
 } // namespace LittleEngine

@@ -28,12 +28,7 @@ ASFDrawable* ASFDrawable::SetPivot(Vector2 pivot, bool bImmediate)
 	{
 		m_drawableGameState.tPivot.Update(WorldToScreen(pivot));
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
@@ -47,12 +42,7 @@ ASFDrawable* ASFDrawable::SetOutline(Fixed outline, bool bImmediate)
 	{
 		m_drawableGameState.tOutline.Update(outline);
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
@@ -66,12 +56,7 @@ ASFDrawable* ASFDrawable::SetSecondaryColour(Colour colour, bool bImmediate)
 	{
 		m_drawableGameState.tSecondaryColour.Update(colour);
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
