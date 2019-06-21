@@ -1,4 +1,5 @@
 #pragma once
+#include "SFML/Window/Event.hpp"
 #include "Core/CoreTypes.h"
 #include "SFInputDataFrame.h"
 
@@ -14,6 +15,7 @@ private:
 	TextInput m_textInput;
 	MouseInput m_pointerInput;
 	JoyInput m_joyInput;
+	InputMap m_inputMap;
 	Vec<KeyState> m_keyStates;
 
 public:
@@ -24,7 +26,9 @@ public:
 	bool IsKeyPressed(KeyType key) const;
 	// Get KeyState for this KeyCode on the current frame
 	const KeyState* GetKeyState(KeyType key) const;
-	const SFInputDataFrame GetFrameInputData() const;
+	
+	void SetInputMapping(InputMap inputMap);
+	SFInputDataFrame GetFrameInputData() const;
 
 private:
 	KeyState& GetOrCreateKeyState(KeyType key);

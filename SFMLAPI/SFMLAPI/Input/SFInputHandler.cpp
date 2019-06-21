@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "SFML/Window/Event.hpp"
 #include "Core/Logger.h"
 #include "SFInputHandler.h"
 #include "SFMLAPI/Viewport/SFViewport.h"

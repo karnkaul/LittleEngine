@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <optional>
+#include "SFMLAPI/Input/SFInputHandler.h"
 #include "SFMLAPI/Input/SFInputDataFrame.h"
 #if DEBUGGING
 #include "SFMLAPI/Rendering/Colour.h"
@@ -14,7 +15,7 @@ namespace Debug
 class ConsoleInput;
 }
 
-class LEInput final
+class LEInput final : public SFInputHandler
 {
 public:
 	struct Frame
@@ -74,7 +75,7 @@ private:
 #endif
 
 public:
-	LEInput(LEContext& context);
+	LEInput(LEContext& context, InputMap inputMap);
 	~LEInput();
 
 public:
@@ -83,7 +84,7 @@ public:
 
 private:
 	Token RegisterSudo(Delegate callback);
-	void TakeSnapshot(const struct SFInputDataFrame& frameData);
+	void TakeSnapshot();
 	void FireCallbacks();
 #if DEBUGGING
 	void CreateDebugPointer();

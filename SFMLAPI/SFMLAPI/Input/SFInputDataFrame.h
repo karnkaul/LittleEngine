@@ -1,37 +1,15 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "SFML/Window.hpp"
 #include "Core/Utils.h"
+#include "SFInputMappings.h"
 
 namespace LittleEngine
 {
-using KeyCode = sf::Keyboard::Key;
-extern const u32 g_MAX_JOYSTICKS;
-
-enum KeyType
-{
-	// 0-499 : SFML
-
-	MOUSE_BTN_0 = 500, // Left
-	MOUSE_BTN_1,	   // Right
-	MOUSE_BTN_2,	   // Middle
-	MOUSE_BTN_3,
-	MOUSE_BTN_4,
-	JOY_BTN_0, // A
-	JOY_BTN_1, // B
-	JOY_BTN_2, // X
-	JOY_BTN_3, // Y
-	JOY_BTN_4, // LB
-	JOY_BTN_5, // RB
-	JOY_BTN_6, // Select
-	JOY_BTN_7  // Start
-};
-
 struct KeyState
 {
 private:
-	const char* szName;
 	s32 keyType;
+	const char* szName;
 
 public:
 	bool bPressed;

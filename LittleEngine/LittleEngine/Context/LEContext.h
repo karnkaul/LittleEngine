@@ -1,6 +1,6 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "SFMLAPI/Input/SFInputHandler.h"
+#include "SFMLAPI/Input/SFInputMappings.h"
 #include "SFMLAPI/Viewport/SFViewportData.h"
 
 namespace LittleEngine
@@ -8,6 +8,7 @@ namespace LittleEngine
 struct LEContextData
 {
 	SFViewportData viewportData;
+	InputMap inputMap;
 	Time tickRate = Time::Seconds(1.0f / 60.0f);
 	Time maxFrameTime = Time::Milliseconds(50);
 	Time renderThreadStartDelay = Time::Milliseconds(10);
@@ -19,7 +20,6 @@ class LEContext final
 {
 private:
 	LEContextData m_data;
-	SFInputHandler m_inputHandler;
 	UPtr<class LEInput> m_uInput;
 	UPtr<class SFViewport> m_uViewport;
 	UPtr<class LERenderer> m_uRenderer;
@@ -58,8 +58,5 @@ public:
 #if DEBUGGING
 	void ModifyTickRate(Time newTickRate);
 #endif
-
-private:
-	void PollEvents();
 };
 } // namespace LittleEngine

@@ -12,6 +12,14 @@
 
 using Version = Core::Version;
 
+#if DEBUGGING
+namespace LittleEngine
+{
+// To use for conditional breaks, etc
+bool g_bDEBUG = false;
+}
+#endif
+
 namespace
 {
 std::thread::id mainThreadID;

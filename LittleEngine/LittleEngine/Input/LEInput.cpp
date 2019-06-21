@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
 #include "Core/Utils.h"
-#include "SFMLAPI/Input/SFInputStateMachine.h"
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "LEInput.h"
 #include "LittleEngine/Context/LEContext.h"
@@ -89,8 +88,9 @@ bool LEInput::Frame::GetResult(InitList<s32> keys, std::function<bool(s32)> subr
 TweakBool(mouseXY, &bShowCrosshair);
 #endif
 
-LEInput::LEInput(LEContext& context) : m_pContext(&context)
+LEInput::LEInput(LEContext& context, InputMap inputMap) : m_pContext(&context)
 {
+	m_inputSM.SetInputMapping(std::move(inputMap));
 }
 
 LEInput::~LEInput() = default;
@@ -116,7 +116,7 @@ LEInput::Token LEInput::RegisterSudo(Delegate callback)
 	return token;
 }
 
-void LEInput::TakeSnapshot(const SFInputDataFrame& frameData)
+void LEInput::TakeSnapshot()
 {
 	auto uniqueInsert = [&](s32 toInsert) {
 		if (toInsert > 0)
@@ -128,6 +128,7 @@ void LEInput::TakeSnapshot(const SFInputDataFrame& frameData)
 			}
 		}
 	};
+	auto frameData = m_inputSM.GetFrameInputData();
 	m_previousSnapshot = m_currentSnapshot;
 	m_textInput = frameData.textInput;
 	m_mouseInput = frameData.mouseInput;

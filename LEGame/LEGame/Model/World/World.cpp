@@ -44,6 +44,13 @@ void World::OnClearing()
 {
 }
 
+void World::Tick(Time dt)
+{
+	PreTick(dt);
+	m_uGame->Tick(dt);
+	PostTick(dt);
+}
+
 void World::Activate()
 {
 	Assert(m_pWSM, "WSM is null!");
@@ -61,22 +68,10 @@ void World::Deactivate()
 	LOG_D("%s Deactivated", LogNameStr());
 }
 
-void World::Tick(Time dt)
-{
-	m_uGame->Tick(dt);
-}
-
 void World::Clear()
 {
 	OnClearing();
 	m_uGame = nullptr;
 	m_tokenHandler.Clear();
-}
-
-void World::OnActivated()
-{
-}
-void World::OnDeactivating()
-{
 }
 } // namespace LittleEngine

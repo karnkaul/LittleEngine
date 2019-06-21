@@ -88,6 +88,9 @@
     <ClInclude Include="SFMLAPI\Rendering\Primitives.h">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="SFMLAPI\Input\SFInputMappings.h">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SFMLAPI\Rendering\Colour.cpp">
@@ -146,6 +149,9 @@
     </ClCompile>
     <ClCompile Include="SFMLAPI\Rendering\Primitives\SFText.cpp">
       <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Input\SFInputMappings.cpp">
+      <Filter>SFMLAPI\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

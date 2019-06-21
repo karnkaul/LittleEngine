@@ -1,12 +1,11 @@
 #include "stdafx.h"
+#include "SFML/Window/Clipboard.hpp"
 #include "SFInputDataFrame.h"
 
 namespace LittleEngine
 {
-const u32 g_MAX_JOYSTICKS = 8;
-
 KeyState::KeyState(s32 keyType, const char* szName)
-	: szName(szName), keyType(keyType), bPressed(false)
+	: keyType(keyType), szName(szName), bPressed(false)
 {
 }
 

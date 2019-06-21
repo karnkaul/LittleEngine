@@ -17,6 +17,9 @@ public:
 	void SetText(UIText uiText);
 	OnClick::Token AddCallback(OnClick::Callback callback);
 
+public:
+	void Tick(Time dt = Time::Zero) override;
+
 protected:
 	void OnCreated() override;
 	void OnSelected() override;
@@ -24,6 +27,5 @@ protected:
 	void OnInteractStart() override;
 	void OnInteractEnd(bool bInteract) override;
 	void OnSetInteractable(bool bInteractable) override;
-	void Tick(Time dt) override;
 };
 } // namespace LittleEngine

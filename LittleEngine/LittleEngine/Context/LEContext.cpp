@@ -61,12 +61,12 @@ LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 	m_uViewport->SetData(std::move(m_data.viewportData));
 	m_uViewport->Create();
 
-	m_uInput = MakeUnique<LEInput>(*this);
+	m_uInput = MakeUnique<LEInput>(*this, std::move(m_data.inputMap));
 
 #if ENABLED(RENDER_STATS)
 	g_renderData.tickRate = m_data.tickRate;
 #endif
-	RendererData rData{m_data.tickRate, Time::Milliseconds(20), m_uViewport.get()};
+	RendererData rData{m_data.tickRate, Time::Milliseconds(20), m_data.bRenderThread};
 	m_uRenderer = MakeUnique<LERenderer>(*m_uViewport, rData);
 }
 
@@ -145,8 +145,8 @@ void LEContext::Terminate()
 
 void LEContext::PollInput()
 {
-	SFViewportEventType sfEvent = m_inputHandler.PollEvents(*m_uViewport);
-	m_uInput->TakeSnapshot(m_inputHandler.GetFrameInputData());
+	SFViewportEventType sfEvent = m_uInput->PollEvents(*m_uViewport);
+	m_uInput->TakeSnapshot();
 	switch (sfEvent)
 	{
 	case SFViewportEventType::Closed:
@@ -220,34 +220,4 @@ void LEContext::ModifyTickRate(Time newTickRate)
 	m_uRenderer->ModifyTickRate(newTickRate);
 }
 #endif
-
-void LEContext::PollEvents()
-{
-	SFViewportEventType windowEvent = m_inputHandler.PollEvents(*m_uViewport);
-	switch (windowEvent)
-	{
-	case SFViewportEventType::Closed:
-		Terminate();
-		break;
-
-	case SFViewportEventType::LostFocus:
-		if (m_data.bPauseOnFocusLoss)
-		{
-			m_bPauseTicking = true;
-			g_pAudio->PauseAll();
-		}
-		break;
-
-	case SFViewportEventType::GainedFocus:
-		if (m_data.bPauseOnFocusLoss)
-		{
-			m_bPauseTicking = false;
-			g_pAudio->ResumeAll();
-		}
-		break;
-
-	default:
-		break;
-	}
-}
 } // namespace LittleEngine

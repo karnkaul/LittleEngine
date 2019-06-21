@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
-#include "SFMLAPI/Input/SFInputDataFrame.h"
+#include "SFMLAPI/Input/SFInputMappings.h"
 #include "SFMLAPI/Input/SFInputStateMachine.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "LittleEngine/Debug/Tweakable.h"

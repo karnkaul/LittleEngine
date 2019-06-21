@@ -30,20 +30,38 @@ const Fixed SFInputStateMachine::JOY_DEADZONE = Fixed(25);
 SFInputStateMachine::SFInputStateMachine()
 {
 	// Pre-defined keys
-	m_keyStates.emplace_back(KeyCode::Left, "Left");
-	m_keyStates.emplace_back(KeyCode::Right, "Right");
-	m_keyStates.emplace_back(KeyCode::Up, "Up");
-	m_keyStates.emplace_back(KeyCode::Down, "Down");
-	m_keyStates.emplace_back(KeyCode::W, "W");
-	m_keyStates.emplace_back(KeyCode::A, "A");
-	m_keyStates.emplace_back(KeyCode::S, "S");
-	m_keyStates.emplace_back(KeyCode::D, "D");
-	m_keyStates.emplace_back(KeyCode::Space, "Space");
-	m_keyStates.emplace_back(KeyCode::Enter, "Enter");
-	m_keyStates.emplace_back(KeyCode::Escape, "Escape");
-	m_keyStates.emplace_back(KeyCode::Tab, "Tab");
-	m_keyStates.emplace_back(KeyCode::Tilde, "Backtick");
-	m_keyStates.emplace_back(KeyCode::Backspace, "Backspace");
+	m_keyStates = {
+		{KeyCode::Left, "Left"},
+		{KeyCode::Right, "Right"},
+		{KeyCode::Up, "Up"},
+		{KeyCode::Down, "Down"},
+		{KeyCode::W, "W"},
+		{KeyCode::A, "A"},
+		{KeyCode::S, "S"},
+		{KeyCode::D, "D"},
+		{KeyCode::Space, "Space"},
+		{KeyCode::Enter, "Enter"},
+		{KeyCode::Escape, "Escape"},
+		{KeyCode::Tab, "Tab"},
+		{KeyCode::Tilde, "Backtick"},
+		{KeyCode::Backspace, "Backspace"},
+		{KeyCode::Delete, "Delete"},
+
+		{KeyType::MOUSE_BTN_0, "Mouse0"},
+		{KeyType::MOUSE_BTN_1, "Mouse1"},
+		{KeyType::MOUSE_BTN_2, "Mouse2"},
+		{KeyType::MOUSE_BTN_3, "Mouse3"},
+		{KeyType::MOUSE_BTN_4, "Mouse4"},
+
+		{KeyType::JOY_BTN_0, "Joy0"},
+		{KeyType::JOY_BTN_1, "Joy1"},
+		{KeyType::JOY_BTN_2, "Joy2"},
+		{KeyType::JOY_BTN_3, "Joy3"},
+		{KeyType::JOY_BTN_4, "Joy4"},
+		{KeyType::JOY_BTN_5, "Joy5"},
+		{KeyType::JOY_BTN_6, "Joy6"},
+		{KeyType::JOY_BTN_7, "Joy7"},
+	};
 }
 
 SFInputStateMachine::~SFInputStateMachine() = default;
@@ -72,7 +90,12 @@ const KeyState* SFInputStateMachine::GetKeyState(KeyType key) const
 	return nullptr;
 }
 
-const SFInputDataFrame SFInputStateMachine::GetFrameInputData() const
+void SFInputStateMachine::SetInputMapping(InputMap inputMap)
+{
+	m_inputMap = std::move(inputMap);
+}
+
+SFInputDataFrame SFInputStateMachine::GetFrameInputData() const
 {
 	SFInputDataFrame frame;
 	for (const auto& iter : m_keyStates)
@@ -163,28 +186,28 @@ void SFInputStateMachine::OnTextInput(u32 unicode)
 void SFInputStateMachine::UpdateJoyInput()
 {
 	m_joyInput.m_states.clear();
-	for (u8 id = 0; id < g_MAX_JOYSTICKS; ++id)
+	for (u8 sfJoystickID = 0; sfJoystickID < g_MAX_JOYSTICKS; ++sfJoystickID)
 	{
-		if (sf::Joystick::isConnected(id))
+		if (sf::Joystick::isConnected(sfJoystickID))
 		{
 			JoyState state;
-			state.id = id;
-			u32 buttonCount = sf::Joystick::getButtonCount(id);
-			s32 key = KeyType::JOY_BTN_0;
-			for (u32 btnId = 0; btnId < buttonCount; ++btnId)
+			state.id = sfJoystickID;
+			u32 buttonCount = sf::Joystick::getButtonCount(sfJoystickID);
+			for (u32 sfButtonID = 0; sfButtonID < buttonCount; ++sfButtonID)
 			{
-				KeyState& toModify = GetOrCreateKeyState(static_cast<KeyType>(key++));
-				toModify.bPressed = sf::Joystick::isButtonPressed(id, btnId);
+				KeyType key = m_inputMap.GetKeyType(sfButtonID);
+				KeyState& toModify = GetOrCreateKeyState(key);
+				toModify.bPressed = sf::Joystick::isButtonPressed(sfJoystickID, sfButtonID);
 				state.pressed.push_back(static_cast<KeyType>(key));
 			}
-			state.xy.x = Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::X));
-			state.xy.y = -Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::Y));
-			state.zr.x = Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::Z));
-			state.zr.y = Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::R));
-			state.uv.x = Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::U));
-			state.uv.y = -Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::V));
-			state.pov.x = Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::PovX));
-			state.pov.y = Fixed(sf::Joystick::getAxisPosition(id, sf::Joystick::PovY));
+			state.xy.x = Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::X));
+			state.xy.y = -Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::Y));
+			state.zr.x = Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::Z));
+			state.zr.y = Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::R));
+			state.uv.x = Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::U));
+			state.uv.y = -Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::V));
+			state.pov.x = Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::PovX));
+			state.pov.y = Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::PovY));
 			m_joyInput.m_states.emplace_back(std::move(state));
 		}
 	}

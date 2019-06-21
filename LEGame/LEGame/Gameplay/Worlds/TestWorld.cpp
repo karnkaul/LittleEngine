@@ -520,11 +520,13 @@ void TestWorld::OnActivated()
 	BindInput(&Test_OnInput);
 }
 
-void TestWorld::Tick(Time dt)
+void TestWorld::PreTick(Time dt)
 {
-	Super::Tick(dt);
-
 	TestTick(dt);
+}
+
+void TestWorld::PostTick(Time /*dt*/)
+{
 }
 
 void TestWorld::OnDeactivating()

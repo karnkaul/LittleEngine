@@ -58,7 +58,7 @@ bool Init(s32 argc, char** argv)
 	config.Init();
 #if !SHIPPING
 	LOG_D("[GameLoop] Initialising event loop, loading config...");
-	config.Load("_config.gd");
+	config.Load("game.conf");
 #endif
 	Core::g_MinLogSeverity = config.GetLogLevel();
 	bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
@@ -124,6 +124,15 @@ void CreateContext(GameConfig& config)
 	data.bRenderThread = bRenderThread;
 	data.renderThreadStartDelay = config.GetRenderThreadStartDelay();
 	data.bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
+	Core::Property::Persistor inputMapPersistor;
+	if (inputMapPersistor.Load("InputMap.ini"))
+	{
+		u16 count = data.inputMap.Import(inputMapPersistor);
+		if (count > 0)
+		{
+			LOG_I("[GameLoop] Loaded %u custom Input Mappings successfully", count);
+		}
+	}
 	uContext = MakeUnique<LEContext>(std::move(data));
 }
 

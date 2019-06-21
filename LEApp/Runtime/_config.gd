@@ -1,16 +1,1 @@
-{
-    "maxFrameTimeMS": 50,
-    "titleBarText": "Async Little Engine",
-    "jobWorkerCount": 4,
-    "viewSize": {
-        "x": 1920,
-        "y": 1080
-    },
-    "bRenderThread": true,
-    "logLevel": "Info",
-    "ticksPerSecond": 35,
-    "backupLogFileCount": 3,
-    "colliderShapeBorderWidth": 2,
-    "renderThreadStartDelayMS": 3,
-    "bPauseOnFocusLoss": false
-}
+{maxFrameTimeMS:50,titleBarText:Async Little Engine,jobWorkerCount:4,bRenderThread:true,viewSize:{        "x": 1920,        "y": 1080    },logLevel:Debug,ticksPerSecond:35,colliderShapeBorderWidth:2,backupLogFileCount:3,renderThreadStartDelayMS:3,bPauseOnFocusLoss:false}
