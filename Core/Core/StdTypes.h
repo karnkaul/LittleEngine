@@ -1,9 +1,11 @@
 #pragma once
 #include <cstdint>
 #include <array>
+#include <functional>
 #include <list>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <set>
 #include <sstream>
 #include <string>

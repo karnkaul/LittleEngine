@@ -1,5 +1,4 @@
 #pragma once
-#include <functional>
 #include "Core/CircularVector.h"
 
 namespace LittleEngine

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include <ctime>
 #include <iostream>
-#include <mutex>
 #if _WIN64
 #include "Windows.h"
 #endif

@@ -1,5 +1,4 @@
 #pragma once
-#include <functional>
 #include "Core/CoreTypes.h"
 #include "AssetManifest.h"
 

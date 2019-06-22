@@ -1,5 +1,4 @@
 #pragma once
-#include <functional>
 #include <optional>
 #include "SFMLAPI/Input/SFInputHandler.h"
 #include "SFMLAPI/Input/SFInputDataFrame.h"

@@ -29,12 +29,24 @@ enum KeyType
 	JOY_BTN_7  // Start
 };
 
-struct InputMap
+enum class JoyAxis
 {
-	UMap<u32, KeyType> keyMap = {{0, JOY_BTN_0}, {1, JOY_BTN_1}, {2, JOY_BTN_2}, {3, JOY_BTN_3},
-								 {4, JOY_BTN_4}, {5, JOY_BTN_5}, {6, JOY_BTN_6}, {7, JOY_BTN_7}};
+	XY,
+	ZR,
+	UV,
+	PoV,
+};
 
+class InputMap
+{
+private:
+	UMap<u32, KeyType> m_keyMap = {{0, JOY_BTN_0}, {1, JOY_BTN_1}, {2, JOY_BTN_2}, {3, JOY_BTN_3},
+								 {4, JOY_BTN_4}, {5, JOY_BTN_5}, {6, JOY_BTN_6}, {7, JOY_BTN_7}};
+	UMap<JoyAxis, Fixed> m_deadZones;
+
+public:
 	KeyType GetKeyType(u32 button) const;
+	Fixed GetDeadZone(JoyAxis axis) const;
 
 	u16 Import(const Core::Property::Persistor& persistor);
 };

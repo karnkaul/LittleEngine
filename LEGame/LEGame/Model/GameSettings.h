@@ -12,6 +12,9 @@ using LogSeverity = Core::LogSeverity;
 // \brief Wrapper to maintain properties saved to / loaded from config.ini
 class GameSettings final
 {
+public:
+	static const char* szFILE_PATH;
+
 private:
 	Property m_viewportHeight;
 	Property m_borderless;
@@ -34,9 +37,18 @@ public:
 	SFViewportSize GetViewportSize(Vector2 viewSize) const;
 	Vector2 GetCullBounds(Vector2 viewSize) const;
 
+	template <typename T>
+	T GetProperty(const String& id);
+
 private:
 	void SetDefaults();
 	void LoadAndOverride();
 	void SaveAll();
 };
+
+template <typename T>
+T GameSettings::GetProperty(const String& id)
+{
+
+}
 } // namespace LittleEngine

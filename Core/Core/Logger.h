@@ -1,6 +1,6 @@
 #pragma once
-#include "StdTypes.h"
 #include <functional>
+#include "StdTypes.h"
 
 #define LOG_SEVERITY(msg, severity, ...) Core::Log(Core::LogSeverity::severity, msg, __VA_ARGS__)
 #define LOG_E(x, ...) LOG_SEVERITY(x, Error, __VA_ARGS__)

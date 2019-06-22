@@ -1,6 +1,6 @@
 #pragma once
-#include "StdTypes.h"
 #include <functional>
+#include "StdTypes.h"
 
 namespace Core
 {

@@ -187,18 +187,8 @@ bool ControllerComponent::OnInput(const LEInput::Frame& frame)
 			m_displacement = Vector2::Zero;
 			m_rotation = Fixed::Zero;
 		}
-		if (Maths::Abs(state.xy.x) > SFInputStateMachine::JOY_DEADZONE)
-		{
-			m_displacement.x += (state.xy.x / Fixed(100));
-		}
-		if (Maths::Abs(state.xy.y) > SFInputStateMachine::JOY_DEADZONE)
-		{
-			m_displacement.y += (state.xy.y / Fixed(100));
-		}
-		if (Maths::Abs(state.uv.x) > SFInputStateMachine::JOY_DEADZONE)
-		{
-			m_rotation -= (state.uv.x / Fixed(100));
-		}
+		m_displacement.x += state.xy.x;
+		m_displacement.y += state.xy.y;
 		if (Maths::Abs(state.uv.SqrMagnitude()) > 0.5f)
 		{
 			Vector2 t = state.uv.Normalised();

@@ -31,7 +31,7 @@ bool Property::Persistor::Load(String filePath)
 	Vec<String> lines = Strings::Tokenise(text, '\n', {});
 	for (const auto& line : lines)
 	{
-		if (line.length() <= 0 || line.c_str()[0] == '#')
+		if (line.empty() || line.c_str()[0] == '#')
 		{
 			continue;
 		}

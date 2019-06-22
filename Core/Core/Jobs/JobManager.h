@@ -1,9 +1,6 @@
 #pragma once
-#include <mutex>
-#include <functional>
-#include <future>
-#include "JobHandle.h"
 #include "Core/CoreTypes.h"
+#include "JobHandle.h"
 
 namespace Core
 {

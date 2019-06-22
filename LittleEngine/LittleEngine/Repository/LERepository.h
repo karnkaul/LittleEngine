@@ -1,5 +1,4 @@
 #pragma once
-#include <mutex>
 #include "Core/ArchiveReader.h"
 #include "Core/CoreTypes.h"
 #include "Core/Logger.h"

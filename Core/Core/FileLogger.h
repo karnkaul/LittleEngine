@@ -1,6 +1,5 @@
 #pragma once
 #include <atomic>
-#include <mutex>
 #include "CoreTypes.h"
 #include "OS.h"
 

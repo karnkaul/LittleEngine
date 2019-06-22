@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <functional>
 #include "DebugCommands.h"
 #if ENABLED(CONSOLE)
 #include "Core/Logger.h"

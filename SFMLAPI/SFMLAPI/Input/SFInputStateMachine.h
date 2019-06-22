@@ -8,9 +8,6 @@ namespace LittleEngine
 // \brief Concrete class that a Graphics can update KeyStates to every frame
 class SFInputStateMachine
 {
-public:
-	static const Fixed JOY_DEADZONE;
-
 private:
 	TextInput m_textInput;
 	MouseInput m_pointerInput;

@@ -29,6 +29,10 @@
         {
             "source": "./_config.gd",
             "destination": "_config.gd"
+        },
+        {
+            "source": "./InputMap.ini",
+            "destination": "InputMap.ini"
         }
     ],
     "directories": [

@@ -25,8 +25,6 @@ KeyState& SFInputStateMachine::GetOrCreateKeyState(KeyType key)
 	return m_keyStates.back();
 }
 
-const Fixed SFInputStateMachine::JOY_DEADZONE = Fixed(25);
-
 SFInputStateMachine::SFInputStateMachine()
 {
 	// Pre-defined keys
@@ -200,14 +198,25 @@ void SFInputStateMachine::UpdateJoyInput()
 				toModify.bPressed = sf::Joystick::isButtonPressed(sfJoystickID, sfButtonID);
 				state.pressed.push_back(static_cast<KeyType>(key));
 			}
-			state.xy.x = Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::X));
-			state.xy.y = -Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::Y));
-			state.zr.x = Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::Z));
-			state.zr.y = Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::R));
-			state.uv.x = Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::U));
-			state.uv.y = -Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::V));
-			state.pov.x = Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::PovX));
-			state.pov.y = Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sf::Joystick::PovY));
+			auto getAxis = [&](Fixed& var, JoyAxis axis, sf::Joystick::Axis sfAxis, bool bInverse) {
+				var = Fixed(sf::Joystick::getAxisPosition(sfJoystickID, sfAxis) / 100);
+				if (bInverse)
+				{
+					var = -var;
+				}
+				if (Maths::Abs(var) < m_inputMap.GetDeadZone(axis))
+				{
+					var = Fixed::Zero;
+				}
+			};
+			getAxis(state.xy.x, JoyAxis::XY, sf::Joystick::X, false);
+			getAxis(state.xy.y, JoyAxis::XY, sf::Joystick::Y, true);
+			getAxis(state.zr.x, JoyAxis::ZR, sf::Joystick::Z, false);
+			getAxis(state.zr.y, JoyAxis::ZR, sf::Joystick::R, false);
+			getAxis(state.uv.x, JoyAxis::UV, sf::Joystick::U, false);
+			getAxis(state.uv.y, JoyAxis::UV, sf::Joystick::V, true);
+			getAxis(state.pov.x, JoyAxis::PoV, sf::Joystick::PovX, false);
+			getAxis(state.pov.y, JoyAxis::PoV, sf::Joystick::PovY, false);
 			m_joyInput.m_states.emplace_back(std::move(state));
 		}
 	}

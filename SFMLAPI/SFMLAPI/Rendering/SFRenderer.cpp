@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <mutex>
 #include "SFML/Graphics.hpp"
 #include "Core/Utils.h"
 #include "Core/Logger.h"

@@ -8,11 +8,11 @@ namespace LittleEngine
 {
 namespace
 {
-const char* FILE_PATH = "Settings.ini";
-
 const char* VIEWPORT_HEIGHT_KEY = "RESOLUTION";
 const char* BORDERLESS_KEY = "BORDERLESS";
 } // namespace
+
+const char* GameSettings::szFILE_PATH = "Settings.ini";
 
 GameSettings* GameSettings::Instance()
 {
@@ -100,7 +100,7 @@ void GameSettings::SetDefaults()
 void GameSettings::LoadAndOverride()
 {
 	Property::Persistor persistor;
-	if (persistor.Load(FILE_PATH))
+	if (persistor.Load(szFILE_PATH))
 	{
 		auto pSaved = persistor.GetProp(VIEWPORT_HEIGHT_KEY);
 		if (pSaved)
@@ -121,6 +121,6 @@ void GameSettings::SaveAll()
 	Property::Persistor persistor;
 	persistor.SetProp(m_viewportHeight);
 	persistor.SetProp(m_borderless);
-	persistor.Save(FILE_PATH);
+	persistor.Save(szFILE_PATH);
 }
 } // namespace LittleEngine

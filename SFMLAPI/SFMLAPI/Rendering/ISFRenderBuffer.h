@@ -1,6 +1,4 @@
 #pragma once
-#include <mutex>
-#include <functional>
 #include "Core/CoreTypes.h"
 #include "Core/SimpleTime.h"
 #include "SFLayerID.h"
