@@ -1,6 +1,6 @@
 #pragma once
 #include "Core/Jobs/JobHandle.h"
-#include "Core/Jobs/MultiJob.h"
+#include "Core/Jobs/JobCatalog.h"
 
 namespace Core
 {
@@ -10,7 +10,7 @@ void Init(u32 workerCount);
 void Cleanup();
 
 JobHandle Enqueue(Task task, String name = "", bool bSilent = false);
-MultiJob* CreateMultiJob(String name);
+JobCatalog* CreateCatalog(String name);
 void ForEach(std::function<void(size_t)> indexedTask, size_t iterationCount, size_t iterationsPerJob, size_t startIdx = 0);
 
 void Update();

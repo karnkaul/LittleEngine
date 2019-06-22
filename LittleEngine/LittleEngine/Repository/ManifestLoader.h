@@ -4,7 +4,7 @@
 
 namespace Core
 {
-class MultiJob;
+class JobCatalog;
 }
 
 namespace LittleEngine
@@ -29,7 +29,7 @@ private:
 	Vec<NewAsset<class SoundAsset>> m_newSounds;
 	Vec<NewAsset<class TextAsset>> m_newTexts;
 	class LERepository* m_pRepository;
-	Core::MultiJob* m_pMultiJob = nullptr;
+	Core::JobCatalog* m_pJobCatalog = nullptr;
 	bool m_bCompleted = false;
 	bool m_bIdle = false;
 #if ENABLED(FILESYSTEM_ASSETS)

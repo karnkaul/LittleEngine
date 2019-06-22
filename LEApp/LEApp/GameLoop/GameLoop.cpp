@@ -39,7 +39,6 @@ TweakS32(ticksPerSec, nullptr);
 bool Init(s32 argc, char** argv)
 {
 	OS::Env()->SetVars(argc, argv);
-
 #if ENABLED(TWEAKABLES)
 	ticksPerSec.BindCallback([](const String& val) {
 		s32 newRate = Strings::ToS32(val);
@@ -55,20 +54,39 @@ bool Init(s32 argc, char** argv)
 		}
 	});
 #endif
+	try
+	{
+		uRepository = MakeUnique<LERepository>("Fonts/main.ttf", "GameAssets.cooked", "GameAssets");
+		uAudio = MakeUnique<LEAudio>();
+	}
+	catch (const FatalEngineException& /*e*/)
+	{
+		LOG_E("[GameLoop] ERROR! Could not initialise Engine Service!");
+		return false;
+	}
+
 	config.Init();
 #if !SHIPPING
 	LOG_D("[GameLoop] Initialising event loop, loading config...");
-	config.Load("game.conf");
+	config.Load(".game.conf");
 #endif
-	Core::g_MinLogSeverity = config.GetLogLevel();
+	auto pSettings = GameSettings::Instance();
+	
+	Core::g_MinLogSeverity = pSettings->GetLogLevel();
 	bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
 	bRenderThread = config.ShouldCreateRenderThread();
-	
+	ControllerComponent::s_orientationEpsilon = config.GetControllerOrientationEpsilon();
+#if DEBUGGING
+	ControllerComponent::s_orientationWidthHeight = config.GetControllerOrientationSize();
+	Entity::s_orientationWidthHeight = config.GetEntityOrientationSize();
+#endif
+
 	if (OS::Threads::GetVacantThreadCount() > 0)
 	{
 		String header = "Game: " + GameConfig::GetGameVersion().ToString() +
 						" Engine : " + GameConfig::GetEngineVersion().ToString();
-		uFileLogger = MakeUnique<Core::FileLogger>("Debug", 5, std::move(header));
+		u8 backupCount = config.GetBackupLogFileCount();
+		uFileLogger = MakeUnique<Core::FileLogger>("Debug", backupCount, std::move(header));
 	}
 
 	if (bRenderThread)
@@ -84,27 +102,16 @@ bool Init(s32 argc, char** argv)
 	}
 
 	Core::Jobs::Init(config.GetJobWorkerCount());
-	uShaders = MakeUnique<ShaderRepository>();
 
 #if DEBUGGING
 	Collider::s_debugShapeWidth = config.GetColliderBorderWidth();
 #endif
 	Vector2 viewSize = config.GetViewSize();
-	auto pSettings = GameSettings::Instance();
 	tickRate = config.GetTickRate();
 	maxFrameTime = config.GetMaxFrameTime();
 	cullBounds = pSettings->GetCullBounds(viewSize);
 
-	try
-	{
-		uRepository = MakeUnique<LERepository>("Fonts/main.ttf", "GameAssets.cooked", "GameAssets");
-		uAudio = MakeUnique<LEAudio>();
-	}
-	catch (const FatalEngineException& /*e*/)
-	{
-		LOG_E("[GameLoop] ERROR! Could not initialise Engine Service!");
-		return false;
-	}
+	uShaders = MakeUnique<ShaderRepository>();
 
 	Time::Reset();
 
@@ -125,7 +132,7 @@ void CreateContext(GameConfig& config)
 	data.renderThreadStartDelay = config.GetRenderThreadStartDelay();
 	data.bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
 	Core::Property::Persistor inputMapPersistor;
-	if (inputMapPersistor.Load("InputMap.ini"))
+	if (inputMapPersistor.Load(settings.GetValue("CUSTOM_INPUT_MAP")))
 	{
 		u16 count = data.inputMap.Import(inputMapPersistor);
 		if (count > 0)
@@ -206,7 +213,7 @@ void Cleanup()
 	uShaders = nullptr;
 	uRepository = nullptr;
 #if !SHIPPING
-	config.Save("_config.gd");
+	config.Save(".game.conf");
 #endif
 	Core::Jobs::Cleanup();
 	LOG_I("[GameLoop] Terminated");

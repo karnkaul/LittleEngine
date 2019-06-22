@@ -201,7 +201,7 @@
     <ClInclude Include="Core\Jobs\JobHandle.h" />
     <ClInclude Include="Core\Jobs\JobManager.h" />
     <ClInclude Include="Core\Jobs\JobWorker.h" />
-    <ClInclude Include="Core\Jobs\MultiJob.h" />
+    <ClInclude Include="Core\Jobs\JobCatalog.h" />
     <ClInclude Include="Core\Logger.h" />
     <ClInclude Include="Core\Maths.h" />
     <ClInclude Include="Core\Matrix3.h" />
@@ -229,7 +229,7 @@
     <ClCompile Include="Core\Jobs\JobHandle.cpp" />
     <ClCompile Include="Core\Jobs\JobManager.cpp" />
     <ClCompile Include="Core\Jobs\JobWorker.cpp" />
-    <ClCompile Include="Core\Jobs\MultiJob.cpp" />
+    <ClCompile Include="Core\Jobs\JobCatalog.cpp" />
     <ClCompile Include="Core\Logger.cpp" />
     <ClCompile Include="Core\Maths.cpp" />
     <ClCompile Include="Core\Matrix3.cpp" />

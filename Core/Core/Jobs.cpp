@@ -31,10 +31,10 @@ JobHandle Enqueue(Task task, String name /* = "" */, bool bSilent /* = false */)
 	return uManager->Enqueue(std::move(task), name, bSilent);
 }
 
-MultiJob* CreateMultiJob(String name)
+JobCatalog* CreateCatalog(String name)
 {
 	Assert(uManager, "JobManager is null!");
-	return uManager->CreateMultiJob(std::move(name));
+	return uManager->CreateCatalog(std::move(name));
 }
 
 void ForEach(std::function<void(size_t)> indexedTask, size_t iterationCount, size_t iterationsPerJob, size_t startIdx)

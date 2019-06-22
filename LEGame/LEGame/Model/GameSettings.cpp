@@ -10,6 +10,7 @@ namespace
 {
 const char* VIEWPORT_HEIGHT_KEY = "RESOLUTION";
 const char* BORDERLESS_KEY = "BORDERLESS";
+const char* LOG_LEVEL_KEY = "LOG_LEVEL";
 } // namespace
 
 const char* GameSettings::szFILE_PATH = "Settings.ini";
@@ -68,6 +69,15 @@ void GameSettings::SetBorderless(bool bBorderless)
 	}
 }
 
+void GameSettings::SetLogLevel(LogSeverity level)
+{
+	m_logLevel.stringValue = Core::ParseLogSeverity(level);
+	if (m_bAutoSave)
+	{
+		SaveAll();
+	}
+}
+
 SFViewportStyle GameSettings::GetViewportStyle() const
 {
 	SFViewportStyle ret = SFViewportStyle::Default;
@@ -91,36 +101,50 @@ Vector2 GameSettings::GetCullBounds(Vector2 viewSize) const
 	return Vector2(size.height, size.height);
 }
 
+LogSeverity GameSettings::GetLogLevel() const
+{
+	return Core::ParseLogSeverity(m_logLevel.stringValue);
+}
+
+String GameSettings::GetValue(const String& key) const
+{
+	auto pProp = m_persistor.GetProp(key);
+	if (pProp)
+	{
+		return pProp->stringValue;
+	}
+	return {};
+}
+
 void GameSettings::SetDefaults()
 {
 	m_viewportHeight = Property(VIEWPORT_HEIGHT_KEY, Strings::ToString(1080) + "p");
 	m_borderless = Property(BORDERLESS_KEY, Strings::ToString(false));
+	m_logLevel = Property(LOG_LEVEL_KEY, Core::ParseLogSeverity(LogSeverity::Info));
 }
 
 void GameSettings::LoadAndOverride()
 {
-	Property::Persistor persistor;
-	if (persistor.Load(szFILE_PATH))
+	if (m_persistor.Load(szFILE_PATH))
 	{
-		auto pSaved = persistor.GetProp(VIEWPORT_HEIGHT_KEY);
-		if (pSaved)
-		{
-			m_viewportHeight = *pSaved;
-		}
+		auto load = [&](Property& target, const char* szKey) {
+			if (auto pSaved = m_persistor.GetProp(szKey))
+			{
+				target = *pSaved;
+			}
+		};
 
-		pSaved = persistor.GetProp(BORDERLESS_KEY);
-		if (pSaved)
-		{
-			m_borderless = *pSaved;
-		}
+		load(m_viewportHeight, VIEWPORT_HEIGHT_KEY);
+		load(m_borderless, BORDERLESS_KEY);
+		load(m_logLevel, LOG_LEVEL_KEY);
 	}
 }
 
 void GameSettings::SaveAll()
 {
-	Property::Persistor persistor;
-	persistor.SetProp(m_viewportHeight);
-	persistor.SetProp(m_borderless);
-	persistor.Save(szFILE_PATH);
+	m_persistor.SetProp(m_viewportHeight);
+	m_persistor.SetProp(m_borderless);
+	m_persistor.SetProp(m_logLevel);
+	m_persistor.Save(szFILE_PATH);
 }
 } // namespace LittleEngine

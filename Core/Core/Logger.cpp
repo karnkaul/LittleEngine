@@ -20,6 +20,13 @@ Array<char, CACHE_SIZE> logCache;
 size_t bufferIdx = 0;
 LogArr logBuffer;
 Array<const char*, 5> prefixes = {"[H] ", "[D] ", "[I] ", "[W] ", "[E] "};
+
+UMap<Core::LogSeverity, String> severityMap = {{LogSeverity::Error, "Error"},
+											   {LogSeverity::Warning, "Warning"},
+											   {LogSeverity::Info, "Info"},
+											   {LogSeverity::Debug, "Debug"},
+											   {LogSeverity::HOT, "HOT"}};
+
 } // namespace
 
 
@@ -63,5 +70,22 @@ void Log(LogSeverity severity, const char* pText, ...)
 	va_start(argList, pText);
 	LogInternal(pText, severityIndex, argList);
 	va_end(argList);
+}
+
+String ParseLogSeverity(LogSeverity severity)
+{
+	return severityMap[severity];
+}
+
+LogSeverity ParseLogSeverity(const String& serialised)
+{
+	for (const auto& severity : severityMap)
+	{
+		if (severity.second == serialised)
+		{
+			return severity.first;
+		}
+	}
+	return Core::LogSeverity::Info;
 }
 } // namespace Core

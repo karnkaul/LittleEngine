@@ -18,31 +18,15 @@ const char* TICKS_PER_SECOND_KEY = "ticksPerSecond";
 const char* RENDER_THREAD_START_DELAY_MS_KEY = "renderThreadStartDelayMS";
 const char* MAX_FRAME_TIME_MS = "maxFrameTimeMS";
 const char* TITLEBAR_TEXT_KEY = "titleBarText";
-const char* LOG_LEVEL_KEY = "logLevel";
 const char* VIEW_SIZE_KEY = "viewSize";
 const char* COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
 const char* BACKUP_LOG_FILE_COUNT_KEY = "backupLogFileCount";
+const char* ENTITY_ORIENTATION_SIZE_KEY = "entityOrientationSize";
+const char* CONTROLLER_ORIENTATION_SIZE_KEY = "controllerOrientationSize";
+const char* CONTROLLER_ORIENTATION_EPSILON_KEY = "controllerOrientationEpsilon";
 
 Version engineVersion = "0.1.6";
 Version gameVersion = "0.0.1";
-
-UMap<Core::LogSeverity, String> severityMap = {{Core::LogSeverity::Error, "Error"},
-											   {Core::LogSeverity::Warning, "Warning"},
-											   {Core::LogSeverity::Info, "Info"},
-											   {Core::LogSeverity::Debug, "Debug"},
-											   {Core::LogSeverity::HOT, "HOT"}};
-
-Core::LogSeverity ParseLogLevel(String str)
-{
-	for (const auto& severity : severityMap)
-	{
-		if (severity.second == str)
-		{
-			return severity.first;
-		}
-	}
-	return Core::LogSeverity::Info;
-}
 
 bool SetStringIfEmpty(GData& data, String key, String value)
 {
@@ -127,11 +111,6 @@ u32 GameConfig::GetColliderBorderWidth() const
 	return static_cast<u32>(m_uData->GetS32(COLLIDER_SHAPE_WIDTH_KEY));
 }
 
-Core::LogSeverity GameConfig::GetLogLevel() const
-{
-	return ParseLogLevel(m_uData->GetString(LOG_LEVEL_KEY));
-}
-
 Vector2 GameConfig::GetViewSize() const
 {
 	return m_uData->GetVector2(VIEW_SIZE_KEY);
@@ -140,6 +119,21 @@ Vector2 GameConfig::GetViewSize() const
 u8 GameConfig::GetBackupLogFileCount() const
 {
 	return static_cast<u8>(m_uData->GetS32(BACKUP_LOG_FILE_COUNT_KEY));
+}
+
+Vector2 GameConfig::GetEntityOrientationSize() const
+{
+	return m_uData->GetVector2(ENTITY_ORIENTATION_SIZE_KEY);
+}
+
+Vector2 GameConfig::GetControllerOrientationSize() const
+{
+	return m_uData->GetVector2(CONTROLLER_ORIENTATION_SIZE_KEY);
+}
+
+Fixed GameConfig::GetControllerOrientationEpsilon() const
+{
+	return Fixed(m_uData->GetF64(CONTROLLER_ORIENTATION_EPSILON_KEY));
 }
 
 const Version& GameConfig::GetEngineVersion()
@@ -162,86 +156,21 @@ const Version& GameConfig::GetGameVersion()
 	return gameVersion;
 }
 
-bool GameConfig::SetCreateRenderThread(bool bCreate)
-{
-	return m_bDirty = m_uData->SetString(RENDER_THREAD_KEY, Strings::ToString(bCreate));
-}
-
-bool GameConfig::SetPauseOnFocusLoss(bool bPause)
-{
-	return m_bDirty = m_uData->SetString(PAUSE_ON_FOCUS_LOSS_KEY, Strings::ToString(bPause));
-}
-
-bool GameConfig::SetJobWorkerCount(u32 numThreads)
-{
-	return m_bDirty = m_uData->SetString(JOB_WORKER_COUNT_KEY, Strings::ToString(numThreads));
-}
-
-bool GameConfig::SetTicksPerSecond(u32 ticksPerSecond)
-{
-	return m_bDirty = m_uData->SetString(TICKS_PER_SECOND_KEY, Strings::ToString(ticksPerSecond));
-}
-
-
-bool GameConfig::SetRenderThreadStartDelay(u32 delayMS)
-{
-	return m_bDirty = m_uData->SetString(RENDER_THREAD_START_DELAY_MS_KEY, Strings::ToString(delayMS));
-}
-
-bool GameConfig::SetMaxFrameTimeMS(u32 maxFrameTimeMS)
-{
-	return m_bDirty = m_uData->SetString(MAX_FRAME_TIME_MS, Strings::ToString(maxFrameTimeMS));
-}
-
-bool GameConfig::SetTitleBarText(String text)
-{
-	return m_bDirty = m_uData->SetString(TITLEBAR_TEXT_KEY, std::move(text));
-}
-
-bool GameConfig::SetLogLevel(LogSeverity level)
-{
-	return m_bDirty = m_uData->SetString(LOG_LEVEL_KEY, severityMap[level]);
-}
-
-bool GameConfig::SetColliderBorderWidth(u32 shapeWidth)
-{
-	return m_bDirty = m_uData->SetString(COLLIDER_SHAPE_WIDTH_KEY, Strings::ToString(shapeWidth));
-}
-
-bool GameConfig::SetViewSize(Vector2 size)
-{
-	GData gData;
-	gData.SetString("x", size.x.ToString());
-	gData.SetString("y", size.y.ToString());
-	return m_bDirty = m_uData->AddField(VIEW_SIZE_KEY, gData);
-}
-
-bool GameConfig::SetBackupLogFileCount(u8 count)
-{
-	return m_bDirty = m_uData->SetString(BACKUP_LOG_FILE_COUNT_KEY, Strings::ToString(count));
-}
-
 void GameConfig::Verify()
 {
 	m_bDirty = false;
-	u32 backupLogFileCount = 5;
-#if DEBUGGING
-	backupLogFileCount = 3;
-#endif
 	m_bDirty |= SetStringIfEmpty(*m_uData, TITLEBAR_TEXT_KEY, "Async Little Engine");
-	m_bDirty |= SetStringIfEmpty(*m_uData, LOG_LEVEL_KEY, "Info");
 	m_bDirty |= SetStringIfEmpty(*m_uData, COLLIDER_SHAPE_WIDTH_KEY, "2");
 	m_bDirty |= SetStringIfEmpty(*m_uData, TICKS_PER_SECOND_KEY, Strings::ToString(35));
-	m_bDirty |= SetStringIfEmpty(*m_uData, RENDER_THREAD_START_DELAY_MS_KEY, Strings::ToString(5));
+	m_bDirty |= SetStringIfEmpty(*m_uData, RENDER_THREAD_START_DELAY_MS_KEY, Strings::ToString(3));
 	m_bDirty |= SetStringIfEmpty(*m_uData, MAX_FRAME_TIME_MS, Strings::ToString(50));
 	m_bDirty |= SetStringIfEmpty(*m_uData, RENDER_THREAD_KEY, Strings::ToString(true));
 	m_bDirty |= SetStringIfEmpty(*m_uData, JOB_WORKER_COUNT_KEY, Strings::ToString(4));
 	m_bDirty |= SetStringIfEmpty(*m_uData, PAUSE_ON_FOCUS_LOSS_KEY, Strings::ToString(s_bPauseOnFocusLoss));
-	m_bDirty |= SetStringIfEmpty(*m_uData, BACKUP_LOG_FILE_COUNT_KEY, Strings::ToString(backupLogFileCount));
-	if (m_uData->GetString(VIEW_SIZE_KEY).empty())
-	{
-		SetViewSize({1920, 1080});
-		m_bDirty = true;
-	}
+	m_bDirty |= SetStringIfEmpty(*m_uData, BACKUP_LOG_FILE_COUNT_KEY, Strings::ToString(5));
+	m_bDirty |= SetStringIfEmpty(*m_uData, VIEW_SIZE_KEY, "{x:1920,y:1080}");
+	m_bDirty |= SetStringIfEmpty(*m_uData, ENTITY_ORIENTATION_SIZE_KEY, "{x:100,y:2}");
+	m_bDirty |= SetStringIfEmpty(*m_uData, CONTROLLER_ORIENTATION_SIZE_KEY, "{x:120,y:3}");
+	m_bDirty |= SetStringIfEmpty(*m_uData, CONTROLLER_ORIENTATION_EPSILON_KEY, Strings::ToString(0.025));
 }
 } // namespace LittleEngine

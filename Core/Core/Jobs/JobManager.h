@@ -35,7 +35,7 @@ private:
 
 private:
 	Vec<UPtr<class JobWorker>> m_jobWorkers;
-	List<UPtr<class MultiJob>> m_uMultiJobs;
+	List<UPtr<class JobCatalog>> m_uCatalogs;
 	List<UPtr<Job>> m_jobQueue;
 	mutable std::mutex m_mutex;
 	s64 m_nextGameJobID = 0;
@@ -46,7 +46,7 @@ public:
 
 public:
 	JobHandle Enqueue(Task task, String name = "", bool bSilent = false);
-	MultiJob* CreateMultiJob(String name);
+	JobCatalog* CreateCatalog(String name);
 	void ForEach(std::function<void(size_t)> indexedTask,
 				 size_t iterationCount,
 				 size_t iterationsPerJob,

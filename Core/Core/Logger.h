@@ -33,4 +33,7 @@ extern std::function<bool(LogArr&)> g_OnLogStr;
 extern LogSeverity g_MinLogSeverity;
 
 void Log(LogSeverity severity, const char* pText, ...);
+
+String ParseLogSeverity(LogSeverity severity);
+LogSeverity ParseLogSeverity(const String& serialised);
 } // namespace Core

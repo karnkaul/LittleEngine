@@ -14,6 +14,8 @@ private:
 #if DEBUGGING
 public:
 	static bool s_bShowOrientation;
+	static Vector2 s_orientationWidthHeight;
+	static Array<Colour, 2> s_xyColours;
 protected:
 	class SFRect* m_pO_x = nullptr;
 	SFRect* m_pO_y = nullptr;

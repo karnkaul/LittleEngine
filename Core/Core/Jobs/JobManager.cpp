@@ -2,7 +2,7 @@
 #include <thread>
 #include "JobManager.h"
 #include "JobWorker.h"
-#include "MultiJob.h"
+#include "JobCatalog.h"
 #include "Core/Logger.h"
 #include "Core/Utils.h"
 #include "Core/OS.h"
@@ -69,10 +69,10 @@ JobHandle JobManager::Enqueue(Task task, String name, bool bSilent)
 	return Lock_Enqueue(std::move(uJob), m_jobQueue);
 }
 
-MultiJob* JobManager::CreateMultiJob(String name)
+JobCatalog* JobManager::CreateCatalog(String name)
 {
-	m_uMultiJobs.emplace_back(MakeUnique<MultiJob>(*this, std::move(name)));
-	return m_uMultiJobs.back().get();
+	m_uCatalogs.emplace_back(MakeUnique<JobCatalog>(*this, std::move(name)));
+	return m_uCatalogs.back().get();
 }
 
 void JobManager::ForEach(std::function<void(size_t)> indexedTask,
@@ -116,14 +116,14 @@ void JobManager::ForEach(std::function<void(size_t)> indexedTask,
 
 void JobManager::Update()
 {
-	auto iter = m_uMultiJobs.begin();
-	while (iter != m_uMultiJobs.end())
+	auto iter = m_uCatalogs.begin();
+	while (iter != m_uCatalogs.end())
 	{
 		(*iter)->Update();
 		if ((*iter)->m_bCompleted)
 		{
 			LOG_D("[JobManager] %s completed. Destroying instance.", (*iter)->LogNameStr());
-			iter = m_uMultiJobs.erase(iter);
+			iter = m_uCatalogs.erase(iter);
 			continue;
 		}
 		++iter;

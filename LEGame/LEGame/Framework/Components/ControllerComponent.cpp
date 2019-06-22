@@ -38,8 +38,12 @@ void ClampPosition(Vector2& outPosition, Vector2 padding)
 
 #if DEBUGGING
 bool ControllerComponent::s_bShowJoystickOrientation = false;
+Vector2 ControllerComponent::s_orientationWidthHeight = {120, 3};
+Colour ControllerComponent::s_orientationColour = Colour::Magenta;
 TweakBool(joystickOrientation, &ControllerComponent::s_bShowJoystickOrientation);
 #endif
+
+Fixed ControllerComponent::s_orientationEpsilon = Fixed(0.1f);
 
 ControllerComponent::ControllerComponent() = default;
 
@@ -76,8 +80,12 @@ void ControllerComponent::OnCreated()
 	Reset();
 
 #if DEBUGGING
-	m_pRect = g_pGameManager->Renderer()->New<SFRect>(LAYER_TOP);
-	m_pRect->SetSize({200, 3})->SetPivot({-1, 0})->SetPrimaryColour(Colour::Magenta)->SetEnabled(s_bShowJoystickOrientation);
+	LayerID layer = static_cast<LayerID>(LAYER_DEBUG_UI);
+	m_pRect = g_pGameManager->Renderer()->New<SFRect>(layer);
+	m_pRect->SetSize(s_orientationWidthHeight)
+		->SetPivot({-1, 0})
+		->SetPrimaryColour(s_orientationColour)
+		->SetEnabled(s_bShowJoystickOrientation);
 #endif
 }
 
@@ -95,14 +103,16 @@ void ControllerComponent::Tick(Time dt)
 		Vector2 pos = t.GetPosition() + (m_displacement * m_linearSpeed * dt.AsMilliseconds());
 		if (m_pRenderComponent)
 		{
-			ClampPosition(pos,
-						  m_pRenderComponent->m_pPrimitive->GetBounds().GetSize() * Fixed::OneHalf);
+			ClampPosition(pos, m_pRenderComponent->m_pPrimitive->GetBounds().GetSize() * Fixed::OneHalf);
 		}
 		t.SetPosition(pos);
 	}
 #if DEBUGGING
-	m_pRect->SetPosition(m_pOwner->m_transform.GetWorldPosition());
 	m_pRect->SetEnabled(s_bShowJoystickOrientation);
+	if (s_bShowJoystickOrientation)
+	{
+		m_pRect->SetPosition(m_pOwner->m_transform.GetWorldPosition());
+	}
 #endif
 }
 
@@ -196,24 +206,26 @@ bool ControllerComponent::OnInput(const LEInput::Frame& frame)
 			Vector2 s90 = {s.x.Cos() * s.y.Sin(), -s.x.Sin() * s.y.Cos()};
 			Fixed proj = s.Dot(t);
 			Fixed dir = s90.Dot(t);
-			if (Maths::Abs(proj) < Fixed(0.975f))
+			Fixed one = Fixed::One - s_orientationEpsilon;
+			if (Maths::Abs(proj) < one || proj < -one)
 			{
-				if ((proj > Fixed::Zero && dir > Fixed::Zero) || (proj < Fixed::Zero && dir > Fixed::Zero))
+				if ((proj > Fixed::Zero && dir > Fixed::Zero) || (proj <= Fixed::Zero && dir >= Fixed::Zero))
 				{
 					m_rotation = -Fixed::One;
 				}
-				else if ((proj > Fixed::Zero && dir < Fixed::Zero) || (proj < Fixed::Zero && dir < Fixed::Zero))
+				else if ((proj > Fixed::Zero && dir < Fixed::Zero) || (proj <= Fixed::Zero && dir <= Fixed::Zero))
 				{
 					m_rotation = Fixed::One;
 				}
 			}
 			else
 			{
+				LOG_D("projection: %.2f", proj.ToF32());
 				m_rotation = Fixed::Zero;
 				m_pOwner->m_transform.SetOrientation(t);
 			}
 #if DEBUGGING
-			if (m_pRect)
+			if (m_pRect && s_bShowJoystickOrientation)
 			{
 				m_pRect->SetOrientation(t);
 			}

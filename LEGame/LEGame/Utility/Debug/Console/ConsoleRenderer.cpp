@@ -29,6 +29,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	maxPadding = -minPadding;
 	maxPadding.y *= Fixed(1.1f);
 	m_uBG->m_transform.padding = maxPadding;
+	m_uBG->Tick();
 
 	// Separator
 	m_uSeparator = MakeUnique<UIElement>(static_cast<LayerID>(LAYER_TOP - 3), true);
@@ -37,6 +38,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uSeparator->m_transform.size = {bgSize.x, 2};
 	m_uSeparator->m_transform.nPosition = {0, -1};
 	m_uSeparator->m_transform.padding = {0, m_textSize + 5};
+	m_uSeparator->Tick();
 
 	// Carat
 	m_uCarat = MakeUnique<UIElement>(LAYER_TOP, true);
@@ -46,6 +48,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	s32 textPad = m_textSize * 1.3f;
 	m_uCarat->m_transform.padding = {0, textPad};
 	m_uCarat->SetText(UIText(">", m_textSize, m_liveTextColour));
+	m_uCarat->Tick();
 
 	// Live Line
 	m_uLiveText = MakeUnique<UIElement>(LAYER_TOP, true);
@@ -54,11 +57,13 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uLiveText->m_transform.anchor = {-1, 1};
 	m_uLiveText->m_transform.nPosition = {-Fixed(0.99f), -1};
 	m_uLiveText->m_transform.padding = {0, textPad};
+	m_uLiveText->Tick();
 
 	// Cursor
 	m_uCursor = MakeUnique<UIElement>(LAYER_TOP, true);
 	m_uCursor->OnCreate(context, "ConsoleCursor", &m_uBG->m_transform);
 	m_uCursor->SetText(UIText("|", m_textSize, m_liveTextColour));
+	m_uCursor->Tick();
 
 	// Log Lines
 	s32 iPad = textPad + 2;
@@ -71,6 +76,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 		uLogLineI->m_transform.nPosition = {-1, -1};
 		iPad += textPad;
 		uLogLineI->m_transform.padding = {0, iPad};
+		uLogLineI->Tick();
 		m_uLogTexts.emplace_back(std::move(uLogLineI));
 	}
 }

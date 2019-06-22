@@ -16,8 +16,10 @@ public:
 	static const char* szFILE_PATH;
 
 private:
+	Property::Persistor m_persistor;
 	Property m_viewportHeight;
 	Property m_borderless;
+	Property m_logLevel;
 	bool m_bAutoSave = false;
 
 public:
@@ -32,23 +34,18 @@ public:
 
 	void SetViewportHeight(u32 height);
 	void SetBorderless(bool bBorderless);
+	void SetLogLevel(LogSeverity level);
 
 	SFViewportStyle GetViewportStyle() const;
 	SFViewportSize GetViewportSize(Vector2 viewSize) const;
 	Vector2 GetCullBounds(Vector2 viewSize) const;
+	LogSeverity GetLogLevel() const;
 
-	template <typename T>
-	T GetProperty(const String& id);
+	String GetValue(const String& key) const;
 
 private:
 	void SetDefaults();
 	void LoadAndOverride();
 	void SaveAll();
 };
-
-template <typename T>
-T GameSettings::GetProperty(const String& id)
-{
-
-}
 } // namespace LittleEngine

@@ -13,6 +13,8 @@ namespace LittleEngine
 {
 #if DEBUGGING
 bool Entity::s_bShowOrientation = false;
+Vector2 Entity::s_orientationWidthHeight = {100, 2};
+Array<Colour, 2> Entity::s_xyColours = {Colour::Red, Colour::Green};
 TweakBool(orientationVectors, &Entity::s_bShowOrientation);
 #endif
 
@@ -45,11 +47,11 @@ void Entity::OnCreate(String name)
 {
 	SetNameAndType(std::move(name), "Entity");
 #if DEBUGGING
-	LayerID layer = static_cast<LayerID>(LAYER_UI - 10);
+	LayerID layer = static_cast<LayerID>(LAYER_DEBUG_UI);
 	m_pO_x = g_pGameManager->Renderer()->New<SFRect>(layer);
-	m_pO_x->SetSize({100, 2})->SetPivot({-1, 0})->SetPrimaryColour(Colour::Red);
+	m_pO_x->SetSize({100, 2})->SetPivot({-1, 0})->SetPrimaryColour(s_xyColours[0]);
 	m_pO_y = g_pGameManager->Renderer()->New<SFRect>(layer);
-	m_pO_y->SetSize({2, 100})->SetPivot({0, -1})->SetPrimaryColour(Colour::Green);
+	m_pO_y->SetSize({2, 100})->SetPivot({0, -1})->SetPrimaryColour(s_xyColours[1]);
 #endif
 	OnCreated();
 }

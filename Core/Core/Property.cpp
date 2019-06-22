@@ -19,7 +19,7 @@ String PropertiesToString(const Vec<Property>& vec)
 }
 } // namespace
 
-bool Property::Persistor::Load(String filePath)
+bool Property::Persistor::Load(const String& filePath)
 {
 	FileRW fileRW(std::move(filePath));
 	if (!fileRW.Exists())
@@ -45,13 +45,13 @@ bool Property::Persistor::Load(String filePath)
 	return true;
 }
 
-bool Property::Persistor::Save(String filePath) const
+bool Property::Persistor::Save(const String& filePath) const
 {
 	FileRW file(std::move(filePath));
 	return file.Write(PropertiesToString(properties));
 }
 
-const Property* Property::Persistor::GetProp(String key) const
+const Property* Property::Persistor::GetProp(const String& key) const
 {
 	auto iter = std::find_if(properties.begin(), properties.end(),
 							 [&](const Property& p) { return p.key == key; });
@@ -80,28 +80,17 @@ Property::Property(String key, String value) : key(std::move(key)), stringValue(
 
 s32 Property::ToS32(s32 defaultValue) const
 {
-	s32 value = defaultValue;
-	try
-	{
-		value = std::stoi(stringValue);
-	}
-	catch (const std::exception&)
-	{
-	}
-	return value;
+	return Strings::ToS32(stringValue, defaultValue);
 }
 
 f32 Property::ToF32(f32 defaultValue) const
 {
-	f32 value = defaultValue;
-	try
-	{
-		value = std::stof(stringValue);
-	}
-	catch (const std::exception&)
-	{
-	}
-	return value;
+	return Strings::ToF32(stringValue, defaultValue);
+}
+
+bool Property::ToBool(bool defaultValue /* = false */) const
+{
+	return Strings::ToBool(stringValue, defaultValue);
 }
 
 Property::operator String() const

@@ -47,21 +47,11 @@ public:
 	Time GetMaxFrameTime() const;
 	String GetTitleBarText() const;
 	u32 GetColliderBorderWidth() const;
-	LogSeverity GetLogLevel() const;
 	Vector2 GetViewSize() const;
 	u8 GetBackupLogFileCount() const;
-
-	bool SetCreateRenderThread(bool bCreate);
-	bool SetPauseOnFocusLoss(bool bPause);
-	bool SetJobWorkerCount(u32 numThreads);
-	bool SetTicksPerSecond(u32 ticksPerSecond);
-	bool SetRenderThreadStartDelay(u32 delayMS);
-	bool SetMaxFrameTimeMS(u32 maxFrameTimeMS);
-	bool SetTitleBarText(String text);
-	bool SetLogLevel(LogSeverity level);
-	bool SetColliderBorderWidth(u32 shapeWidth);
-	bool SetViewSize(Vector2 size);
-	bool SetBackupLogFileCount(u8 count);
+	Vector2 GetEntityOrientationSize() const;
+	Vector2 GetControllerOrientationSize() const;
+	Fixed GetControllerOrientationEpsilon() const;
 
 private:
 	void Verify();

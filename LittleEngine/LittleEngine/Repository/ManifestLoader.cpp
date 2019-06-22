@@ -93,8 +93,8 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 	if (bUsingFileSystem)
 	{
 		// Load
-		m_pMultiJob = Core::Jobs::CreateMultiJob(manifestPath + "(FSLoad)");
-		m_pMultiJob->AddJob(
+		m_pJobCatalog = Core::Jobs::CreateCatalog(manifestPath + "(FSLoad)");
+		m_pJobCatalog->AddJob(
 			[&]() {
 				for (auto& sound : m_newSounds)
 				{
@@ -105,7 +105,7 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 
 		for (auto& texture : m_newTextures)
 		{
-			m_pMultiJob->AddJob(
+			m_pJobCatalog->AddJob(
 				[&]() {
 					texture.asset = m_pRepository->RetrieveAsset<TextureAsset>(texture.assetID);
 				},
@@ -113,20 +113,20 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 		}
 		for (auto& font : m_newFonts)
 		{
-			m_pMultiJob->AddJob(
+			m_pJobCatalog->AddJob(
 				[&]() { font.asset = m_pRepository->RetrieveAsset<FontAsset>(font.assetID); }, font.assetID);
 		}
 		for (auto& text : m_newTexts)
 		{
-			m_pMultiJob->AddJob(
+			m_pJobCatalog->AddJob(
 				[&]() { text.asset = m_pRepository->RetrieveAsset<TextAsset>(text.assetID); }, text.assetID);
 		}
 	}
 	else
 #endif
 	{
-		m_pMultiJob = Core::Jobs::CreateMultiJob(manifestPath + "(Decompress)");
-		m_pMultiJob->AddJob(
+		m_pJobCatalog = Core::Jobs::CreateCatalog(manifestPath + "(Decompress)");
+		m_pJobCatalog->AddJob(
 			[&]() {
 				for (auto& sound : m_newSounds)
 				{
@@ -138,7 +138,7 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 
 		for (auto& texture : m_newTextures)
 		{
-			m_pMultiJob->AddJob(
+			m_pJobCatalog->AddJob(
 				[&]() {
 					texture.asset = m_pRepository->CreateAsset<TextureAsset>(
 						texture.assetID, m_pRepository->m_uCooked->Decompress(texture.assetID.c_str()));
@@ -147,7 +147,7 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 		}
 		for (auto& font : m_newFonts)
 		{
-			m_pMultiJob->AddJob(
+			m_pJobCatalog->AddJob(
 				[&]() {
 					font.asset = m_pRepository->CreateAsset<FontAsset>(
 						font.assetID, m_pRepository->m_uCooked->Decompress(font.assetID.c_str()));
@@ -156,7 +156,7 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 		}
 		for (auto& text : m_newTexts)
 		{
-			m_pMultiJob->AddJob(
+			m_pJobCatalog->AddJob(
 				[&]() {
 					text.asset = m_pRepository->CreateAsset<TextAsset>(
 						text.assetID, m_pRepository->m_uCooked->Decompress(text.assetID.c_str()));
@@ -164,12 +164,12 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 				text.assetID);
 		}
 	}
-	m_pMultiJob->StartJobs([&]() { m_bCompleted = true; });
+	m_pJobCatalog->StartJobs([&]() { m_bCompleted = true; });
 }
 
 Fixed ManifestLoader::GetProgress() const
 {
-	return m_pMultiJob ? m_pMultiJob->GetProgress() : -Fixed::One;
+	return m_pJobCatalog ? m_pJobCatalog->GetProgress() : -Fixed::One;
 }
 
 void ManifestLoader::Tick(Time /*dt*/)

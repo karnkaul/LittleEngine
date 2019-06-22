@@ -1,31 +1,31 @@
 #include "stdafx.h"
 #include "JobManager.h"
-#include "MultiJob.h"
+#include "JobCatalog.h"
 #include "Core/Logger.h"
 #include "Core/Utils.h"
 
 namespace Core
 {
-MultiJob::SubJob::SubJob(String name, Task job) : name(std::move(name)), job(std::move(job))
+JobCatalog::SubJob::SubJob(String name, Task job) : name(std::move(name)), job(std::move(job))
 {
 }
 
-MultiJob::MultiJob(JobManager& manager, String name)
+JobCatalog::JobCatalog(JobManager& manager, String name)
 	: m_logName("[" + std::move(name) + "]"), m_pManager(&manager)
 {
 }
 
-void MultiJob::AddJob(Task job, String name)
+void JobCatalog::AddJob(Task job, String name)
 {
 	String n = name;
 	if (name.empty())
 	{
-		n = "MultiJob_" + Strings::ToString(m_subJobs.size());
+		n = "JobCatalog_" + Strings::ToString(m_subJobs.size());
 	}
 	m_subJobs.emplace_back(n, std::move(job));
 }
 
-void MultiJob::StartJobs(Task onComplete)
+void JobCatalog::StartJobs(Task onComplete)
 {
 	LOG_D("%s started. Running and monitoring %d jobs", LogNameStr(), m_subJobs.size());
 	m_onComplete = onComplete;
@@ -37,13 +37,13 @@ void MultiJob::StartJobs(Task onComplete)
 	}
 }
 
-Fixed MultiJob::GetProgress() const
+Fixed JobCatalog::GetProgress() const
 {
 	u32 done = m_subJobs.size() - m_pendingJobs.size();
 	return Fixed(done, m_subJobs.size());
 }
 
-void MultiJob::Update()
+void JobCatalog::Update()
 {
 	auto iter = m_pendingJobs.begin();
 	while (iter != m_pendingJobs.end())
@@ -77,7 +77,7 @@ void MultiJob::Update()
 	}
 }
 
-const char* MultiJob::LogNameStr() const
+const char* JobCatalog::LogNameStr() const
 {
 	return m_logName.c_str();
 }

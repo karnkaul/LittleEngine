@@ -11,9 +11,9 @@ struct Property
 	class Persistor
 	{
 	public:
-		bool Load(String filePath);
-		bool Save(String filePath) const;
-		const Property* GetProp(String key) const;
+		bool Load(const String& filePath);
+		bool Save(const String& filePath) const;
+		const Property* GetProp(const String& key) const;
 		void SetProp(Property property);
 
 	private:
@@ -33,6 +33,7 @@ struct Property
 
 	s32 ToS32(s32 defaultValue = -1) const;
 	f32 ToF32(f32 defaultValue = -1) const;
+	bool ToBool(bool defaultValue = false) const;
 
 	operator String() const;
 };

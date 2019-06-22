@@ -3,7 +3,7 @@
 
 namespace Core
 {
-class MultiJob
+class JobCatalog
 {
 private:
 	struct SubJob
@@ -24,7 +24,7 @@ private:
 	bool m_bCompleted = false;
 
 public:
-	MultiJob(JobManager& manager, String name);
+	JobCatalog(JobManager& manager, String name);
 
 	void AddJob(Task job, String name = "");
 	void StartJobs(Task onComplete);
