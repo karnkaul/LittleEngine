@@ -3,7 +3,7 @@
 #include "Core/Logger.h"
 #include "Core/Utils.h"
 #include "LittleEngine/Context/LEContext.h"
-#include "LittleEngine/Physics/CollisionManager.h"
+#include "LittleEngine/Physics/LEPhysics.h"
 #include "LittleEngine/OS.h"
 #include "GameManager.h"
 #include "World/Component.h"
@@ -35,7 +35,7 @@ const Version& GameManager::GetGameVersion()
 GameManager::GameManager(WorldStateMachine& wsm) : m_logName("[GameManager]"), m_pWSM(&wsm)
 {
 	m_uUIManager = MakeUnique<UIManager>();
-	m_uCollisionManager = MakeUnique<CollisionManager>();
+	m_uCollisionManager = MakeUnique<LEPhysics>();
 	m_uWorldCamera = MakeUnique<Camera>();
 	m_uWorldCamera->SetName("WorldCamera");
 	g_pGameManager = this;
@@ -79,7 +79,7 @@ LEContext* GameManager::Context() const
 	return m_pWSM->m_pContext;
 }
 
-CollisionManager* GameManager::Physics() const
+LEPhysics* GameManager::Physics() const
 {
 	return m_uCollisionManager.get();
 }
@@ -101,16 +101,7 @@ Vec<WorldID> GameManager::GetAllWorldIDs() const
 
 void GameManager::Quit()
 {
-	if (!Core::Jobs::AreWorkersIdle())
-	{
-		Assert(false, "Quit() called while job workers are active!");
-		LOG_E("%s Quit() called while job workers are active!", m_logName.c_str());
-		m_bWaitingToTerminate = true;
-	}
-	else
-	{
-		m_pWSM->m_pContext->Terminate();
-	}
+	m_bQuitting = true;
 }
 
 Camera* GameManager::WorldCamera() const
@@ -130,22 +121,29 @@ const char* GameManager::LogNameStr() const
 
 void GameManager::Tick(Time dt)
 {
-	m_uCollisionManager->Tick(dt);
-	for (auto& componentVec : m_uComponents)
+	if (m_bQuitting)
 	{
-		Core::RemoveIf<UPtr<AComponent>>(componentVec,
-										   [](UPtr<AComponent>& uC) { return uC->m_bDestroyed; });
-		for (auto& uComponent : componentVec)
+		m_pWSM->Quit();
+	}
+	else
+	{
+		m_uCollisionManager->Tick(dt);
+		for (auto& componentVec : m_uComponents)
 		{
-			uComponent->Tick(dt);
+			Core::RemoveIf<UPtr<AComponent>>(componentVec,
+											 [](UPtr<AComponent>& uC) { return uC->m_bDestroyed; });
+			for (auto& uComponent : componentVec)
+			{
+				uComponent->Tick(dt);
+			}
 		}
+		Core::RemoveIf<UPtr<Entity>>(m_uEntities, [](UPtr<Entity>& uE) { return uE->m_bDestroyed; });
+		for (auto& uEntity : m_uEntities)
+		{
+			uEntity->Tick(dt);
+		}
+		m_uUIManager->Tick(dt);
+		m_uWorldCamera->Tick(dt);
 	}
-	Core::RemoveIf<UPtr<Entity>>(m_uEntities, [](UPtr<Entity>& uE) { return uE->m_bDestroyed; });
-	for (auto& uEntity : m_uEntities)
-	{
-		uEntity->Tick(dt);
-	}
-	m_uUIManager->Tick(dt);
-	m_uWorldCamera->Tick(dt);
 }
 } // namespace LittleEngine

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "SFSystem.h"
-#include "SFAudio.h"
-#include "SFInput.h"
-#include "SFRendering.h"
-#include "SFWindowing.h"
+#include "SFMLAPI/System.h"
+#include "SFMLAPI/Audio/AudioPlayer.h"
+#include "SFMLAPI/Input.h"
+#include "SFMLAPI/Rendering.h"
+#include "SFMLAPI/Viewport.h"

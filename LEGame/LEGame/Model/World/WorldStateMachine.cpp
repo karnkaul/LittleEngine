@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Core/ArchiveReader.h"
 #include "Core/Logger.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/Assets.h"
 #include "WSMLoadingUI.h"
 #include "WSMErrorUI.h"
 #include "WorldStateMachine.h"
@@ -55,6 +55,16 @@ WorldID WorldStateMachine::GetActiveStateID() const
 	return m_pActiveState ? m_pActiveState->m_id : -1;
 }
 
+Vec<WorldID> WorldStateMachine::GetAllStateIDs() const
+{
+	Vec<WorldID> ret;
+	for (const auto& uState : s_uCreatedStates)
+	{
+		ret.push_back(uState->m_id);
+	}
+	return ret;
+}
+
 bool WorldStateMachine::LoadState(WorldID id)
 {
 	for (auto& uState : s_uCreatedStates)
@@ -80,7 +90,7 @@ void WorldStateMachine::Start(String manifestPath, String gameStyleID)
 		m_pAssetLoader = g_pRepository->LoadAsync(m_manifestPath, [&, gameStyleID]() {
 			if (!gameStyleID.empty())
 			{
-				TextAsset* pText = g_pRepository->Load<TextAsset>(gameStyleID);
+				auto pText = g_pRepository->Load<TextAsset>(gameStyleID);
 				if (pText)
 				{
 					UIGameStyle::Load(pText->GetText());
@@ -122,13 +132,9 @@ void WorldStateMachine::LoadingTick(Time dt)
 	if (m_bLoaded)
 	{
 		GameInit::LoadShaders();
-
+		auto size = Core::GetFriendlySize(g_pRepository->GetLoadedBytes());
 		loadTime = Time::Now() - loadTime;
-		if (s_bHasState)
-		{
-			LOG_D("[WSM] Manifest load complete in %.2fs. Loading World 0...",
-				  loadTime.AsSeconds());
-		}
+		LOG_I("[WSM] Manifest load completed in %.2fs. Repository size: %.2f%s", loadTime.AsSeconds(), size.first, size.second);
 #if DEBUGGING
 		if (s_bTEST_infiniteLoad)
 		{
@@ -144,6 +150,7 @@ void WorldStateMachine::LoadingTick(Time dt)
 		m_uLoadingUI = nullptr;
 		if (s_bHasState)
 		{
+			LOG_D("[WSM] Loading World 0...");
 			LoadState(0);
 		}
 		else
@@ -164,12 +171,12 @@ void WorldStateMachine::LoadingTick(Time dt)
 bool WorldStateMachine::GameTick(Time dt)
 {
 	bool bYield = false;
-	if (m_bToActivateState)
+	if (m_bToActivateState && m_pActiveState)
 	{
 		m_pActiveState->Activate();
 		m_bToActivateState = false;
 		bYield = true;
-		LOG_I("[WSM] Loaded %s", m_pNextState->LogNameStr());
+		LOG_I("[WSM] Loaded %s", m_pActiveState->LogNameStr());
 	}
 
 	if (m_pActiveState)
@@ -177,7 +184,7 @@ bool WorldStateMachine::GameTick(Time dt)
 		m_pActiveState->Tick(dt);
 	}
 
-	if (m_pNextState != m_pActiveState)
+	if (m_pNextState && (m_pNextState != m_pActiveState))
 	{
 		LOG_D("[WSM] Loading %s...", m_pNextState->LogNameStr());
 		if (m_pActiveState)
@@ -187,17 +194,16 @@ bool WorldStateMachine::GameTick(Time dt)
 		m_pActiveState = m_pNextState;
 		m_bToActivateState = true;
 	}
-	return bYield;
+	return bYield | (m_pActiveState == nullptr);
 }
 
-Vec<WorldID> WorldStateMachine::GetAllStateIDs() const
+void WorldStateMachine::Quit()
 {
-	Vec<WorldID> ret;
-	for (const auto& uState : s_uCreatedStates)
+	if (m_pActiveState)
 	{
-		ret.push_back(uState->m_id);
+		m_pActiveState->Deactivate();
 	}
-	return ret;
+	m_pNextState = m_pActiveState = nullptr;
+	m_pContext->Terminate();
 }
-
 } // namespace LittleEngine

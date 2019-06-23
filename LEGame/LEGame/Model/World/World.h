@@ -13,7 +13,7 @@ protected:
 	using Super = World;
 
 private:
-	UPtr<class GameClock> m_uWorldClock;
+	UPtr<class WorldClock> m_uWorldClock;
 	class WorldStateMachine* m_pWSM = nullptr;
 	
 protected:
@@ -24,9 +24,6 @@ public:
 	World(String name);
 	~World() override;
 
-	// TODO: Remove all this
-	void PlaySFX(class SoundAsset* pSound, Fixed volume, Fixed direction, bool bLoop);
-	void PlayMusic(String path, Fixed volume, Time fadeTime, bool bLoop);
 	bool LoadWorld(WorldID id);
 	void Quit();
 
@@ -34,16 +31,19 @@ public:
 	class LEInput* Input() const;
 
 protected:
-	virtual void Tick(Time dt);
+	virtual void PreTick(Time dt) = 0;
+	virtual void PostTick(Time dt) = 0;
+	virtual void OnActivated() = 0;
+	virtual void OnDeactivating() = 0;
+
+protected:
 	virtual void OnClearing();
 
 private:
+	void Tick(Time dt);
 	void Activate();
 	void Deactivate();
 	void Clear();
-
-	virtual void OnActivated();
-	virtual void OnDeactivating();
 
 private:
 	friend class WorldStateMachine;

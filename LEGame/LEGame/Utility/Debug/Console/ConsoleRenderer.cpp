@@ -3,16 +3,14 @@
 #if ENABLED(CONSOLE)
 #include "Core/Logger.h"
 #include "Core/Utils.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "LittleEngine/Context/LEContext.h"
 #include "LittleEngine/Repository/LERepository.h"
 #include "LEGame/Model/UI/UIElement.h"
 #include "LogLine.h"
 
-namespace LittleEngine
-{
-namespace Debug
+namespace LittleEngine::Debug
 {
 ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_SIZE)
 {
@@ -31,6 +29,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	maxPadding = -minPadding;
 	maxPadding.y *= Fixed(1.1f);
 	m_uBG->m_transform.padding = maxPadding;
+	m_uBG->Tick();
 
 	// Separator
 	m_uSeparator = MakeUnique<UIElement>(static_cast<LayerID>(LAYER_TOP - 3), true);
@@ -39,7 +38,8 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uSeparator->m_transform.size = {bgSize.x, 2};
 	m_uSeparator->m_transform.nPosition = {0, -1};
 	m_uSeparator->m_transform.padding = {0, m_textSize + 5};
-	
+	m_uSeparator->Tick();
+
 	// Carat
 	m_uCarat = MakeUnique<UIElement>(LAYER_TOP, true);
 	m_uCarat->OnCreate(context, "ConsoleCarat", &m_uBG->m_transform);
@@ -48,7 +48,8 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	s32 textPad = m_textSize * 1.3f;
 	m_uCarat->m_transform.padding = {0, textPad};
 	m_uCarat->SetText(UIText(">", m_textSize, m_liveTextColour));
-	
+	m_uCarat->Tick();
+
 	// Live Line
 	m_uLiveText = MakeUnique<UIElement>(LAYER_TOP, true);
 	m_uLiveText->OnCreate(context, "ConsoleLiveText", &m_uBG->m_transform);
@@ -56,12 +57,14 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uLiveText->m_transform.anchor = {-1, 1};
 	m_uLiveText->m_transform.nPosition = {-Fixed(0.99f), -1};
 	m_uLiveText->m_transform.padding = {0, textPad};
-	
+	m_uLiveText->Tick();
+
 	// Cursor
 	m_uCursor = MakeUnique<UIElement>(LAYER_TOP, true);
 	m_uCursor->OnCreate(context, "ConsoleCursor", &m_uBG->m_transform);
 	m_uCursor->SetText(UIText("|", m_textSize, m_liveTextColour));
-	
+	m_uCursor->Tick();
+
 	// Log Lines
 	s32 iPad = textPad + 2;
 	m_logLinesCount = (m_uBG->m_transform.size.y.ToU32() / textPad) - 1;
@@ -73,6 +76,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 		uLogLineI->m_transform.nPosition = {-1, -1};
 		iPad += textPad;
 		uLogLineI->m_transform.padding = {0, iPad};
+		uLogLineI->Tick();
 		m_uLogTexts.emplace_back(std::move(uLogLineI));
 	}
 }
@@ -109,7 +113,7 @@ void ConsoleRenderer::Tick(Time dt)
 	m_uCarat->Tick(dt);
 	m_uLiveText->Tick(dt);
 	m_uCursor->Tick(dt);
-	
+
 	Vector2 cursorPosition = m_uLiveText->GetText()->GetPosition();
 	Fixed xOffset = m_cursorNPos * m_uLiveText->GetText()->GetBounds().GetSize().x;
 	cursorPosition.x += xOffset;
@@ -141,6 +145,5 @@ void ConsoleRenderer::UpdateLog(Vec<LogLine> logLines)
 		++iter;
 	}
 }
-} // namespace Debug
-} // namespace LittleEngine
+} // namespace LittleEngine::Debug
 #endif

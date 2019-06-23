@@ -72,4 +72,9 @@ Vector2 Rect2::GetBottomRight() const
 	return bottomRight;
 }
 
+bool Rect2::IsPointIn(Vector2 point) const
+{
+	return point.x >= topLeft.x && point.x <= bottomRight.x && point.y >= bottomRight.y &&
+		   point.y <= topLeft.y;
+}
 } // namespace Core

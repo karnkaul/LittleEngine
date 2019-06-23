@@ -28,12 +28,7 @@ ASFDrawable* ASFDrawable::SetPivot(Vector2 pivot, bool bImmediate)
 	{
 		m_drawableGameState.tPivot.Update(WorldToScreen(pivot));
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
@@ -47,12 +42,7 @@ ASFDrawable* ASFDrawable::SetOutline(Fixed outline, bool bImmediate)
 	{
 		m_drawableGameState.tOutline.Update(outline);
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
@@ -66,12 +56,7 @@ ASFDrawable* ASFDrawable::SetSecondaryColour(Colour colour, bool bImmediate)
 	{
 		m_drawableGameState.tSecondaryColour.Update(colour);
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
@@ -90,27 +75,34 @@ Colour ASFDrawable::GetSecondaryColour() const
 	return m_drawableGameState.tSecondaryColour.max;
 }
 
-void ASFDrawable::OnSwapState()
+Rect2 ASFDrawable::GetBounds() const
 {
-	m_drawableRenderState = m_drawableGameState;
+	sf::FloatRect bounds = GetSFBounds();
+	Vector2 size(Fixed(bounds.width), Fixed(bounds.height));
+	Vector2 centre = ScreenToWorld(m_gameState.tPosition.max);
+	return Rect2::CentreSize(size, centre);
 }
 
 void ASFDrawable::ReconcileGameState()
 {
 	APrimitive::ReconcileGameState();
-
 	m_drawableGameState.Reconcile();
+}
+
+void ASFDrawable::SwapState()
+{
+	APrimitive::SwapState();
+	m_drawableRenderState = m_drawableGameState;
 }
 
 ASFDrawable::DrawableState ASFDrawable::GetDrawableState(Fixed alpha) const
 {
 	DrawableState ret;
-	Vector2 offset = Fixed::OneHalf * GetBounds().GetSize();
+	Vector2 offset = Fixed::OneHalf * GetSFSize();
 	Vector2 pivot = m_drawableRenderState.tPivot.Lerp(alpha);
 	ret.origin = Vector2(offset.x * pivot.x, offset.y * pivot.y) + offset;
-	//ret.origin = m_drawableRenderState.tPivot.Lerp(alpha) + offset;
 	ret.secondary = Colour::Lerp(m_drawableRenderState.tSecondaryColour, alpha);
 	ret.outline = m_drawableRenderState.tOutline.Lerp(alpha);
 	return ret;
 }
-}
+} // namespace LittleEngine

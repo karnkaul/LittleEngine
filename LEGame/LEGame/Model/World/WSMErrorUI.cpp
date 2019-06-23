@@ -26,7 +26,7 @@ WSMErrorUI::WSMErrorUI(LEContext& context, bool bTerminateOnKey) : m_pContext(&c
 		m_uFooter->m_transform.nPosition = {0, -Fixed::OneThird * 2};
 		m_uFooter->SetText(UIText("Press any key to quit...", 15, Colour(200, 200, 200)));
 		m_uFooter->Tick(dt);
-		m_token = m_pContext->Input()->Register([&](const LEInput::Frame&) -> bool {
+		m_token = m_pContext->Input()->Register([&](const LEInput::Frame& /*frame*/) -> bool {
 			m_pContext->Terminate();
 			return true;
 		});

@@ -2,7 +2,7 @@
 #include <thread>
 #include "JobManager.h"
 #include "JobWorker.h"
-#include "MultiJob.h"
+#include "JobCatalog.h"
 #include "Core/Logger.h"
 #include "Core/Utils.h"
 #include "Core/OS.h"
@@ -50,7 +50,7 @@ JobManager::JobManager(u32 workerCount)
 	{
 		m_jobWorkers.emplace_back(MakeUnique<JobWorker>(*this, i + 100, false));
 	}
-	LOG_I("[JobManager] Detected [%d] max threads; spawned [%d] JobWorkers", maxThreads, workerCount);
+	LOG_D("[JobManager] Detected [%d] max threads; spawned [%d] JobWorkers", maxThreads, workerCount);
 }
 
 JobManager::~JobManager()
@@ -69,22 +69,61 @@ JobHandle JobManager::Enqueue(Task task, String name, bool bSilent)
 	return Lock_Enqueue(std::move(uJob), m_jobQueue);
 }
 
-MultiJob* JobManager::CreateMultiJob(String name)
+JobCatalog* JobManager::CreateCatalog(String name)
 {
-	m_uMultiJobs.emplace_back(MakeUnique<MultiJob>(*this, std::move(name)));
-	return m_uMultiJobs.back().get();
+	m_uCatalogs.emplace_back(MakeUnique<JobCatalog>(*this, std::move(name)));
+	return m_uCatalogs.back().get();
+}
+
+void JobManager::ForEach(std::function<void(size_t)> indexedTask,
+						 size_t iterationCount,
+						 size_t iterationsPerJob,
+						 size_t startIdx /* = 0 */)
+{
+	size_t idx = startIdx;
+	Vec<Core::JobHandle> handles;
+	u16 buckets = iterationCount / iterationsPerJob;
+	for (u16 bucket = 0; bucket < buckets; ++bucket)
+	{
+		size_t start = idx;
+		size_t end = Maths::Clamp(start + iterationsPerJob, start, iterationCount);
+		handles.emplace_back(Enqueue(
+			[start, end, &indexedTask]() {
+				for (size_t i = start; i < end; ++i)
+				{
+					indexedTask(i);
+				}
+			},
+			"", true));
+		idx += iterationsPerJob;
+	}
+	if (idx < iterationCount)
+	{
+		handles.emplace_back(Enqueue(
+			[&]() {
+				while (idx < iterationCount)
+				{
+					indexedTask(idx++);
+				}
+			},
+			"", true));
+	}
+	for (auto& handle : handles)
+	{
+		handle->Wait();
+	}
 }
 
 void JobManager::Update()
 {
-	auto iter = m_uMultiJobs.begin();
-	while (iter != m_uMultiJobs.end())
+	auto iter = m_uCatalogs.begin();
+	while (iter != m_uCatalogs.end())
 	{
 		(*iter)->Update();
 		if ((*iter)->m_bCompleted)
 		{
 			LOG_D("[JobManager] %s completed. Destroying instance.", (*iter)->LogNameStr());
-			iter = m_uMultiJobs.erase(iter);
+			iter = m_uCatalogs.erase(iter);
 			continue;
 		}
 		++iter;
@@ -111,7 +150,7 @@ JobHandle JobManager::Lock_Enqueue(UPtr<Job>&& uJob, List<UPtr<Job>>& jobQueue)
 	return sHandle;
 }
 
-bool JobManager::AreWorkersIdle()
+bool JobManager::AreWorkersIdle() const
 {
 	for (auto& gameWorker : m_jobWorkers)
 	{

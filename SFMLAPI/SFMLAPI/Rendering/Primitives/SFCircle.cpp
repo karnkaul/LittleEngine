@@ -10,6 +10,12 @@ SFCircle::SFCircle(LayerID layer) : ASFDrawable(layer)
 
 SFCircle::~SFCircle() = default;
 
+void SFCircle::SwapState()
+{
+	ASFDrawable::SwapState();
+	m_circleRenderState = m_circleGameState;
+}
+
 void SFCircle::OnUpdateRenderState(Fixed alpha)
 {
 	m_sfCircle.setRadius(Cast(m_circleRenderState.diameter * Fixed::OneHalf));
@@ -19,37 +25,33 @@ void SFCircle::OnUpdateRenderState(Fixed alpha)
 	DrawableState ds = GetDrawableState(alpha);
 	m_sfCircle.setOrigin(Cast(ds.origin));
 	m_sfCircle.setScale(Cast(s.scale));
-	m_sfCircle.setRotation(Cast(s.orientation));
+	m_sfCircle.setRotation(Cast(Vector2::ToOrientation(s.orientation)));
 	m_sfCircle.setPosition(Cast(s.position));
 	m_sfCircle.setFillColor(Cast(s.colour));
 	m_sfCircle.setOutlineThickness(Cast(ds.outline));
 	m_sfCircle.setOutlineColor(Cast(ds.secondary));
 }
 
-void SFCircle::OnDraw(SFViewport& viewport, sf::RenderStates& sfStates)
+void SFCircle::OnDraw(Viewport& viewport, sf::RenderStates& sfStates)
 {
 	viewport.draw(m_sfCircle, sfStates);
 }
 
-void SFCircle::OnSwapState()
-{
-	ASFDrawable::OnSwapState();
-
-	m_circleRenderState = m_circleGameState;
-}
-
-Rect2 SFCircle::GetBounds() const
+Vector2 SFCircle::GetSFSize() const
 {
 	Fixed cSize(m_sfCircle.getRadius() * 2);
-	Vector2 pivot = Cast(m_sfCircle.getOrigin());
-	Vector2 size(cSize, cSize);
-	Vector2 offset = Fixed::OneHalf * size;
-	return Rect2::CentreSize(size, pivot + offset);
+	return {cSize, cSize};
+}
+
+sf::FloatRect SFCircle::GetSFBounds() const
+{
+	return m_sfCircle.getLocalBounds();
 }
 
 SFCircle* SFCircle::SetDiameter(Fixed diameter)
 {
 	m_circleGameState.diameter = diameter;
+	SetDirty(false);
 	return this;
 }
-}
+} // namespace LittleEngine

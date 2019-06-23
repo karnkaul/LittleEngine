@@ -3,7 +3,7 @@
 #include "SFMLAPI/Rendering/Primitives/SFCircle.h"
 #include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "LittleEngine/Physics/Collider.h"
-#include "LittleEngine/Physics/CollisionManager.h"
+#include "LittleEngine/Physics/LEPhysics.h"
 #include "LittleEngine/Renderer/LERenderer.h"
 #include "LEGame/Model/World/Entity.h"
 #include "LEGame/Model/GameManager.h"
@@ -11,6 +11,8 @@
 
 namespace LittleEngine
 {
+CollisionComponent::CollisionComponent() = default;
+
 CollisionComponent::~CollisionComponent()
 {
 	for (auto& data : m_pColliders)
@@ -39,7 +41,7 @@ void CollisionComponent::AddCircle(Fixed diameter, Vector2 offset)
 	pCollider->m_name += ("_" + Strings::ToString(m_pColliders.size()));
 	pCollider->SetCircle(diameter);
 #if DEBUGGING
-	SFCircle* pCircle = g_pGameManager->Renderer()->New<SFCircle>(static_cast<LayerID>(LAYER_UI - 10));
+	auto pCircle = g_pGameManager->Renderer()->New<SFCircle>(static_cast<LayerID>(LAYER_DEBUG_UI));
 	pCircle->SetDiameter(diameter)
 		->SetOutline(Collider::s_debugShapeWidth)
 		->SetSecondaryColour(Colour::Green)
@@ -60,7 +62,7 @@ void CollisionComponent::AddAABB(const AABBData& aabbData, Vector2 offset)
 	pCollider->m_name += ("_" + Strings::ToString(m_pColliders.size()));
 	pCollider->SetAABB(aabbData);
 #if DEBUGGING
-	SFRect* pRect = g_pGameManager->Renderer()->New<SFRect>(static_cast<LayerID>(LAYER_UI - 10));
+	auto pRect = g_pGameManager->Renderer()->New<SFRect>(static_cast<LayerID>(LAYER_DEBUG_UI));
 	pRect->SetSize(2 * aabbData.upperBound)
 		->SetOutline(Collider::s_debugShapeWidth)
 		->SetSecondaryColour(Colour::Green)
@@ -83,7 +85,7 @@ void CollisionComponent::Tick(Time /*dt*/)
 {
 	for (auto& data : m_pColliders)
 	{
-		Vector2 worldPosition = m_pOwner->m_transform.Position();
+		Vector2 worldPosition = m_pOwner->m_transform.GetWorldPosition();
 		data.pCollider->m_position = worldPosition;
 #if DEBUGGING
 		data.pShape->SetPosition(worldPosition + data.offset);

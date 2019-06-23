@@ -1,22 +1,22 @@
 #include "stdafx.h"
 #include "Core/Asserts.h"
 #include "Core/Logger.h"
-#include "SFMLAPI/Rendering/ISFRenderBuffer.h"
-#include "SFMLAPI/Viewport/SFViewportData.h"
-#include "SFMLAPI/Viewport/SFViewport.h"
+#include "SFMLAPI/Rendering/IRenderBuffer.h"
+#include "SFMLAPI/Viewport/ViewportData.h"
+#include "SFMLAPI/Viewport/Viewport.h"
 #include "LERenderer.h"
 #include "LittleEngine/OS.h"
 #include "LittleEngine/Debug/Profiler.h"
 
 namespace LittleEngine 
 {
-LERenderer::LERenderer(SFViewport& sfViewport, RendererData data)
-	: SFRenderer(sfViewport), m_data(data)
+LERenderer::LERenderer(Viewport& viewport, RendererData data)
+	: Renderer(viewport), m_data(data)
 {
-	SFViewportSize max = SFViewport::GetMaxSize();
+	ViewportSize max = Viewport::GetMaxSize();
 	Vec<u32> heights = {360, 540, 720, 900, 1080, 1440, 2160};
 	m_viewportSizes.clear();
-	sf::Vector2u w = sfViewport.getSize();
+	sf::Vector2u w = viewport.getSize();
 	for (auto height : heights)
 	{
 		u32 width = (w.x * height) / w.y;
@@ -26,7 +26,6 @@ LERenderer::LERenderer(SFViewport& sfViewport, RendererData data)
 		}
 	}
 
-	m_uFactory = MakeUnique<RenderFactory>();	
 	Start();
 }
 
@@ -36,10 +35,9 @@ LERenderer::~LERenderer()
 	{
 		Stop();
 	}
-	m_uFactory = nullptr;
 }
 
-void LERenderer::RecreateViewport(SFViewportRecreateData data)
+void LERenderer::RecreateViewport(ViewportRecreateData data)
 {
 	Assert(OS::IsMainThread(), "Renderer::RecreateWindow() not called from Main thread!");
 	Stop();
@@ -47,16 +45,16 @@ void LERenderer::RecreateViewport(SFViewportRecreateData data)
 	m_pViewport->Destroy();
 	m_pViewport->OverrideData(std::move(data));
 	m_pViewport->Create();
-	LOG_D("[Renderer] Activated SFViewport on this thread and recreated it");
+	LOG_D("[Renderer] Activated Viewport on this thread and recreated it");
 	Start();
 }
 
-const Map<u32, SFViewportSize>& LERenderer::GetValidViewportSizes() const
+const Map<u32, ViewportSize>& LERenderer::GetValidViewportSizes() const
 {
 	return m_viewportSizes;
 }
 
-SFViewportSize* LERenderer::TryGetViewportSize(u32 height)
+ViewportSize* LERenderer::TryGetViewportSize(u32 height)
 {
 	auto search = m_viewportSizes.find(height);
 	if (search != m_viewportSizes.end())
@@ -76,11 +74,6 @@ Vector2 LERenderer::Project(Vector2 nPos, bool bPreClamp) const
 	return m_pViewport->Project(nPos, bPreClamp);
 }
 
-Time LERenderer::GetLastSwapTime() const
-{
-	return m_uFactory->GetLastSwapTime();
-}
-
 void LERenderer::Lock_Swap()
 {
 #if ENABLED(RENDER_STATS) 
@@ -88,23 +81,18 @@ void LERenderer::Lock_Swap()
 #endif
 	PROFILE_CUSTOM("LOCK", m_data.tickRate, Colour(255, 72, 0)); 
 	m_bPauseRendering.store(true, std::memory_order_release);
-	std::lock_guard<std::mutex> lock(m_uFactory->m_mutex);
+	Lock lock(m_mutex);
 	PROFILE_STOP("LOCK");
 
 	PROFILE_CUSTOM("SWAP", m_data.tickRate, Colour(255, 72, 0));
-	m_uFactory->Swap();
+	Swap();
 	m_bPauseRendering.store(false, std::memory_order_release);
 	PROFILE_STOP("SWAP");
 }
 
-void LERenderer::Reconcile()
-{
-	m_uFactory->Reconcile();
-}
-
 void LERenderer::Render(Fixed alpha)
 {
-	RenderFrame(*m_uFactory, alpha);
+	RenderFrame(*this, alpha);
 }
 
 void LERenderer::StopRenderThread()
@@ -126,7 +114,7 @@ void LERenderer::Start()
 	{
 		m_pViewport->setActive(false);
 		m_bRendering.store(true, std::memory_order_relaxed);
-		LOG_D("[Renderer] Deactivated SFViewport on this thread, starting render thread");
+		LOG_D("[Renderer] Deactivated Viewport on this thread, starting render thread");
 		m_threadHandle = OS::Threads::Spawn([&]() { Async_Run(m_data.threadStartDelay); });
 	}
 }
@@ -150,7 +138,7 @@ void LERenderer::Async_Run(Time startDelay)
 	m_pViewport->setActive(true);
 	m_pViewport->setVerticalSyncEnabled(true);
 	std::this_thread::sleep_for(std::chrono::milliseconds(startDelay.AsMilliseconds()));
-	LOG_D("R[Renderer] Activated SFViewport on this thread, starting render loop");
+	LOG_D("R[Renderer] Activated Viewport on this thread, starting render loop");
 	while (m_bRendering.load(std::memory_order_relaxed))
 	{
 		if (m_bPauseRendering.load(std::memory_order_acquire))
@@ -159,15 +147,15 @@ void LERenderer::Async_Run(Time startDelay)
 		}
 		else
 		{
-			Time renderElapsed = Time::Now() - m_uFactory->GetLastSwapTime();
+			Time renderElapsed = Time::Now() - GetLastSwapTime();
 			Fixed alpha = Maths::ComputeAlpha(renderElapsed, m_data.tickRate);
 			PROFILE_CUSTOM("RENDER", dt60Hz, Colour(219, 10, 87));
-			RenderFrame(*m_uFactory, alpha);
+			RenderFrame(*this, alpha);
 			PROFILE_STOP("RENDER");
 		}
 	}
 	m_pViewport->setActive(false);
-	LOG_D("R[Renderer] Deactivated SFViewport on this thread, terminating render loop");
+	LOG_D("R[Renderer] Deactivated Viewport on this thread, terminating render loop");
 }
 
 #if DEBUGGING

@@ -24,17 +24,15 @@
     <ClCompile Include="LittleEngine\Debug\Profiler.cpp" />
     <ClCompile Include="LittleEngine\Debug\Tweakable.cpp" />
     <ClCompile Include="LittleEngine\Input\LEInput.cpp" />
-    <ClCompile Include="LittleEngine\Input\Gamepad.cpp" />
     <ClCompile Include="LittleEngine\Input\KeyboardInput.cpp" />
     <ClCompile Include="LittleEngine\OS.cpp" />
     <ClCompile Include="LittleEngine\Physics\Collider.cpp" />
     <ClCompile Include="LittleEngine\Physics\ColliderData.cpp" />
-    <ClCompile Include="LittleEngine\Physics\CollisionManager.cpp" />
+    <ClCompile Include="LittleEngine\Physics\LEPhysics.cpp" />
     <ClCompile Include="LittleEngine\Renderer\LERenderer.cpp" />
-    <ClCompile Include="LittleEngine\Renderer\RenderFactory.cpp" />
-    <ClCompile Include="LittleEngine\Renderer\ShaderRepository.cpp" />
+    <ClCompile Include="LittleEngine\Renderer\LEShaders.cpp" />
     <ClCompile Include="LittleEngine\Repository\LERepository.cpp" />
-    <ClCompile Include="LittleEngine\Repository\LoadHelpers.cpp" />
+    <ClCompile Include="LittleEngine\Repository\AssetManifest.cpp" />
     <ClCompile Include="LittleEngine\Repository\ManifestLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -44,19 +42,16 @@
     <ClInclude Include="LittleEngine\Debug\Tweakable.h" />
     <ClInclude Include="LittleEngine\FatalEngineException.h" />
     <ClInclude Include="LittleEngine\Input\LEInput.h" />
-    <ClInclude Include="LittleEngine\Input\Gamepad.h" />
     <ClInclude Include="LittleEngine\Input\KeyboardInput.h" />
     <ClInclude Include="LittleEngine\LittleEngine.h" />
     <ClInclude Include="LittleEngine\OS.h" />
     <ClInclude Include="LittleEngine\Physics\Collider.h" />
     <ClInclude Include="LittleEngine\Physics\ColliderData.h" />
-    <ClInclude Include="LittleEngine\Physics\CollisionManager.h" />
-    <ClInclude Include="LittleEngine\Physics\Physics.h" />
+    <ClInclude Include="LittleEngine\Physics\LEPhysics.h" />
     <ClInclude Include="LittleEngine\Renderer\LERenderer.h" />
-    <ClInclude Include="LittleEngine\Renderer\RenderFactory.h" />
-    <ClInclude Include="LittleEngine\Renderer\ShaderRepository.h" />
+    <ClInclude Include="LittleEngine\Renderer\LEShaders.h" />
     <ClInclude Include="LittleEngine\Repository\LERepository.h" />
-    <ClInclude Include="LittleEngine\Repository\LoadHelpers.h" />
+    <ClInclude Include="LittleEngine\Repository\AssetManifest.h" />
     <ClInclude Include="LittleEngine\Repository\ManifestLoader.h" />
   </ItemGroup>
   <ItemGroup>

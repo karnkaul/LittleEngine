@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/CoreTypes.h"
 #include "SFMLAPI/Rendering/Colour.h"
-#include "SFMLAPI/Rendering/SFLayerID.h"
+#include "SFMLAPI/Rendering/LayerID.h"
 #include "UIObject.h"
 #include "UITransform.h"
 #include "UIText.h"
@@ -32,6 +32,7 @@ public:
 	void SetPanel(Colour fill, Fixed border = Fixed::Zero, Colour outline = Colour::Transparent);
 	//void SetImage(class TextureAsset& texture, Colour colour = Colour::White);
 	void SetText(UIText uiText);
+	void SetTextColour(Colour colour);
 	void SetFont(class FontAsset& font);
 
 	SFRect* GetRect() const;

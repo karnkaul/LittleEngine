@@ -10,45 +10,47 @@ SFRect::SFRect(LayerID layer) : ASFDrawable(layer)
 
 SFRect::~SFRect() = default;
 
+void SFRect::SwapState()
+{
+	ASFDrawable::SwapState();
+	m_rectRenderState = m_rectGameState;
+}
+
 void SFRect::OnUpdateRenderState(Fixed alpha)
 {
 	m_sfRect.setSize(Cast(m_rectRenderState.size));
-	
+
 	// sfRect size needs to be set above before GetBounds() can be called here
 	State s = GetState(alpha);
 	DrawableState ds = GetDrawableState(alpha);
 	m_sfRect.setOrigin(Cast(ds.origin));
 	m_sfRect.setScale(Cast(s.scale));
-	m_sfRect.setRotation(Cast(s.orientation));
+	m_sfRect.setRotation(Cast(Vector2::ToOrientation(s.orientation)));
 	m_sfRect.setPosition(Cast(s.position));
 	m_sfRect.setFillColor(Cast(s.colour));
 	m_sfRect.setOutlineThickness(Cast(ds.outline));
 	m_sfRect.setOutlineColor(Cast(ds.secondary));
 }
 
-void SFRect::OnDraw(SFViewport& viewport, sf::RenderStates& sfStates)
+void SFRect::OnDraw(Viewport& viewport, sf::RenderStates& sfStates)
 {
 	viewport.draw(m_sfRect, sfStates);
 }
 
-void SFRect::OnSwapState()
+Vector2 SFRect::GetSFSize() const
 {
-	ASFDrawable::OnSwapState();
-
-	m_rectRenderState = m_rectGameState;
+	return Cast(m_sfRect.getSize());
 }
 
-Rect2 SFRect::GetBounds() const
+sf::FloatRect SFRect::GetSFBounds() const
 {
-	Vector2 pivot = Cast(m_sfRect.getOrigin());
-	Vector2 size = Cast(m_sfRect.getSize());
-	Vector2 offset = Fixed::OneHalf * size;
-	return Rect2::CentreSize(size, pivot + offset);
+	return m_sfRect.getLocalBounds();
 }
 
 SFRect* SFRect::SetSize(Vector2 size)
 {
 	m_rectGameState.size = size;
+	SetDirty(false);
 	return this;
 }
-}
+} // namespace LittleEngine

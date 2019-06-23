@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
 #include "SFText.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/System/SFTypes.h"
 
 namespace LittleEngine
@@ -12,13 +12,10 @@ SFText::SFText(LayerID layer) : ASFDrawable(layer)
 
 SFText::~SFText() = default;
 
-Rect2 SFText::GetBounds() const
+void SFText::SwapState()
 {
-	sf::FloatRect bounds = m_sfText.getLocalBounds();
-	Vector2 size(Fixed(bounds.width), Fixed(bounds.height));
-	Vector2 offset = Fixed::OneHalf * size;
-	Vector2 pivot = Cast(m_sfText.getOrigin());
-	return Rect2::CentreSize(size, pivot + offset);
+	ASFDrawable::SwapState();
+	m_textRenderState = m_textGameState;
 }
 
 void SFText::OnUpdateRenderState(Fixed alpha)
@@ -39,7 +36,7 @@ void SFText::OnUpdateRenderState(Fixed alpha)
 	DrawableState ds = GetDrawableState(alpha);
 	m_sfText.setOrigin(Cast(ds.origin));
 	m_sfText.setScale(Cast(s.scale));
-	m_sfText.setRotation(Cast(s.orientation));
+	m_sfText.setRotation(Cast(Vector2::ToOrientation(s.orientation)));
 	m_sfText.setPosition(Cast(s.position));
 	m_sfText.setFillColor(Cast(s.colour));
 	m_sfText.setOutlineThickness(Cast(ds.outline));
@@ -47,22 +44,28 @@ void SFText::OnUpdateRenderState(Fixed alpha)
 	m_sfText.setCharacterSize(m_textRenderState.size);
 }
 
-void SFText::OnDraw(SFViewport& viewport, sf::RenderStates& states)
+void SFText::OnDraw(Viewport& viewport, sf::RenderStates& states)
 {
 	viewport.draw(m_sfText, states);
 }
 
-void SFText::OnSwapState()
+Vector2 SFText::GetSFSize() const
 {
-	ASFDrawable::OnSwapState();
+	sf::FloatRect bounds = GetSFBounds();
+	return {Fixed(bounds.width), Fixed(bounds.height)};
+}
 
-	m_textRenderState = m_textGameState;
+sf::FloatRect SFText::GetSFBounds() const
+{
+	return m_sfText.getLocalBounds();
 }
 
 SFText* SFText::SetFont(FontAsset& font)
 {
+	Assert(&font, "Font is null!");
 	m_pFont = &font;
 	m_bTextChanged.store(true, std::memory_order_relaxed);
+	SetDirty(false);
 	return this;
 }
 
@@ -70,6 +73,7 @@ SFText* SFText::SetSize(u32 size)
 {
 	m_textGameState.size = size;
 	m_bTextChanged.store(true, std::memory_order_relaxed);
+	SetDirty(false);
 	return this;
 }
 
@@ -77,6 +81,7 @@ SFText* SFText::SetText(String text)
 {
 	m_textGameState.text = std::move(text);
 	m_bTextChanged.store(true, std::memory_order_relaxed);
+	SetDirty(false);
 	return this;
 }
 } // namespace LittleEngine

@@ -11,7 +11,7 @@ private:
 
 public:
 	JobHandleBlock() = default;
-	JobHandleBlock(s64 jobID, Deferred<void>&& future);
+	JobHandleBlock(s64 jobID, Deferred<void>&& deferred);
 
 	s64 GetID() const;
 
@@ -24,4 +24,4 @@ private:
 };
 
 using JobHandle = SPtr<JobHandleBlock>;
-} // namespace LittleEngine
+} // namespace Core

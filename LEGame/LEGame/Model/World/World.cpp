@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "World.h"
 #include "Core/Utils.h"
-#include "SFMLAPI/System/SFAssets.h"
-#include "SFMLAPI/System/SFGameClock.h"
+#include "SFMLAPI/System/Assets.h"
 #include "LittleEngine/Audio/LEAudio.h"
 #include "LittleEngine/Context/LEContext.h"
 #include "LittleEngine/Repository/LERepository.h"
+#include "WorldClock.h"
 #include "WorldStateMachine.h"
 #include "LEGame/Model/GameManager.h"
 
@@ -13,23 +13,10 @@ namespace LittleEngine
 {
 World::World(String name) : GameObject(std::move(name), "World")
 {
-	m_uWorldClock = MakeUnique<GameClock>();
+	m_uWorldClock = MakeUnique<WorldClock>();
 }
 
 World::~World() = default;
-
-void World::PlaySFX(SoundAsset* pSound, Fixed volume, Fixed direction, bool bLoop)
-{
-	if (pSound)
-	{
-		g_pAudio->PlaySFX(*pSound, volume, direction, bLoop);
-	}
-}
-
-void World::PlayMusic(String path, Fixed volume, Time fadeTime, bool bLoop)
-{
-	g_pAudio->PlayMusic(path, volume, fadeTime, bLoop);
-}
 
 bool World::LoadWorld(WorldID id)
 {
@@ -57,10 +44,17 @@ void World::OnClearing()
 {
 }
 
+void World::Tick(Time dt)
+{
+	PreTick(dt);
+	m_uGame->Tick(dt);
+	PostTick(dt);
+}
+
 void World::Activate()
 {
 	Assert(m_pWSM, "WSM is null!");
-	LOG_D("%s Activated.", LogNameStr());
+	LOG_D("%s Activated", LogNameStr());
 	m_uWorldClock->Restart();
 	m_uGame = MakeUnique<GameManager>(*m_pWSM);
 	OnActivated();
@@ -74,22 +68,10 @@ void World::Deactivate()
 	LOG_D("%s Deactivated", LogNameStr());
 }
 
-void World::Tick(Time dt)
-{
-	m_uGame->Tick(dt);
-}
-
 void World::Clear()
 {
 	OnClearing();
 	m_uGame = nullptr;
 	m_tokenHandler.Clear();
-}
-
-void World::OnActivated()
-{
-}
-void World::OnDeactivating()
-{
 }
 } // namespace LittleEngine

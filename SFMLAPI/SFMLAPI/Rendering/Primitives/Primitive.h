@@ -3,8 +3,8 @@
 #include "Core/CoreTypes.h"
 #include "Core/TRange.h"
 #include "SFMLAPI/Rendering/Colour.h"
-#include "SFMLAPI/Rendering/SFLayerID.h"
-#include "SFMLAPI/Viewport/SFViewport.h"
+#include "SFMLAPI/Rendering/LayerID.h"
+#include "SFMLAPI/Viewport/Viewport.h"
 
 namespace LittleEngine
 {
@@ -18,9 +18,9 @@ protected:
 	{
 		TRange<Vector2> tPosition = Vector2::Zero;
 		TRange<Vector2> tScale = Vector2::One;
-		TRange<Fixed> tOrientation = Fixed::Zero;
+		TRange<Vector2> tOrientation = Vector2::Right;
 		TRange<Colour> tColour = Colour(255, 255, 255, 255);
-		
+
 		bool bEnabled = false;
 
 		void Reconcile();
@@ -29,13 +29,14 @@ protected:
 	struct State
 	{
 		Vector2 position;
+		Vector2 orientation;
 		Vector2 scale;
-		Fixed orientation;
 		Colour colour;
 	};
 
 #if DEBUGGING
-		public : bool m_bDEBUG = false;
+public:
+	bool m_bDEBUG = false;
 #endif
 protected:
 	TState m_gameState;
@@ -45,7 +46,7 @@ public:
 	const LayerID m_layer = LAYER_DEFAULT;
 
 protected:
-	class SFShader* m_pShader = nullptr;
+	class Shader* m_pShader = nullptr;
 	bool m_bDestroyed = false;
 	bool m_bWasDisabled = false;
 	bool m_bStatic = false;
@@ -56,37 +57,38 @@ public:
 	APrimitive(LayerID layer);
 	virtual ~APrimitive();
 
-protected:
-	virtual void OnUpdateRenderState(Fixed alpha) = 0;
-	virtual void OnSwapState() = 0;
-	virtual void OnDraw(SFViewport& viewport, sf::RenderStates& sfStates) = 0;
-
 public:
 	virtual Rect2 GetBounds() const = 0;
+
+public:
 	virtual void ReconcileGameState();
+	virtual void SwapState();
+	void UpdateRenderState(Fixed alpha);
+
+protected:
+	virtual void OnUpdateRenderState(Fixed alpha) = 0;
+	virtual void OnDraw(Viewport& viewport, sf::RenderStates& sfStates) = 0;
 
 public:
 	template <typename T>
 	T* CastTo();
 
 public:
-	void SwapState();
-	void UpdateRenderState(Fixed alpha);
 	void Destroy();
 
 private:
-	void Draw(SFViewport& viewport, Fixed alpha);
+	void Draw(Viewport& viewport, Fixed alpha);
 
 public:
 	// Interpolated states
-	APrimitive* SetPosition(Vector2 worldPosition, bool bImmediate = false);
-	APrimitive* SetOrientation(Fixed worldOrientation, bool bImmediate = false);
-	APrimitive* SetScale(Vector2 worldScale, bool bImmediate = false);
+	APrimitive* SetPosition(Vector2 position, bool bImmediate = false);
+	APrimitive* SetOrientation(Vector2 orientation, bool bImmediate = false);
+	APrimitive* SetScale(Vector2 scale, bool bImmediate = false);
 	APrimitive* SetPrimaryColour(Colour colour, bool bImmediate = false);
-	
+
 	// Regular states
 	APrimitive* SetEnabled(bool bEnabled);
-	APrimitive* SetShader(SFShader* pShader);
+	APrimitive* SetShader(Shader* pShader);
 	APrimitive* SetStatic(bool bStatic);
 
 	bool IsDestroyed() const;
@@ -94,15 +96,24 @@ public:
 	bool IsStatic() const;
 
 	Vector2 GetPosition() const;
-	Fixed GetOrientation() const;
+	Vector2 GetOrientation() const;
 	Vector2 GetScale() const;
 	Colour GetPrimaryColour() const;
 
 protected:
-	State GetState(Fixed alpha) const;
+	inline State GetState(Fixed alpha) const
+	{
+		Vector2 s = m_renderState.tScale.Lerp(alpha);
+		Vector2 o = m_renderState.tOrientation.Lerp(alpha);
+		Vector2 p = m_renderState.tPosition.Lerp(alpha);
+		Colour c = Colour::Lerp(m_renderState.tColour, alpha);
+		return {p, o, s, c};
+	}
+
+	void SetDirty(bool bReconcile);
 
 private:
-	friend class SFRenderer;
+	friend class Renderer;
 };
 
 template <typename T>

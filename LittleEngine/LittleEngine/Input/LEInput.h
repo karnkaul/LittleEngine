@@ -1,6 +1,7 @@
 #pragma once
-#include <functional>
-#include "Gamepad.h"
+#include <optional>
+#include "SFMLAPI/Input/InputHandler.h"
+#include "SFMLAPI/Input/InputDataFrame.h"
 #if DEBUGGING
 #include "SFMLAPI/Rendering/Colour.h"
 #endif
@@ -13,29 +14,36 @@ namespace Debug
 class ConsoleInput;
 }
 
-class LEInput final
+class LEInput final : public InputHandler
 {
 public:
 	struct Frame
 	{
-		using GameInputs = Vec<GameInputType>;
+		using GameInputs = Vec<KeyType>;
 
-		Vec<GameInputType> pressed;
-		Vec<GameInputType> held;
-		Vec<GameInputType> released;
+		Vec<KeyType> pressed;
+		Vec<KeyType> held;
+		Vec<KeyType> released;
 		TextInput textInput;
-		
+		MouseInput mouseInput;
+		JoyInput joyInput;
+
 		static String GetClipboard();
 
-		Frame(Vec<GameInputType> pressed,
-			  Vec<GameInputType> held,
-			  Vec<GameInputType> released,
-			  TextInput textInput);
+		bool IsPressed(s32 key) const;
+		bool IsHeld(s32 key) const;
+		bool IsReleased(s32 key) const;
 
-		bool IsPressed(GameInputType keyCode) const;
-		bool IsHeld(GameInputType keyCode) const;
-		bool IsReleased(GameInputType keyCode) const;
+		bool IsPressed(InitList<s32> keys, bool bAny = true) const;
+		bool IsHeld(InitList<s32> keys, bool bAny = true) const;
+		bool IsReleased(InitList<s32> keys, bool bAny = true) const;
+
 		bool HasData() const;
+
+		Fixed GetMouseWhellScroll() const;
+
+	private:
+		bool GetResult(InitList<s32> keys, std::function<bool(s32)> subroutine, bool bAny) const;
 	};
 
 	using Delegate = std::function<bool(const Frame& frameData)>;
@@ -48,37 +56,35 @@ private:
 	{
 		Delegate callback;
 		WToken wToken;
-
-		InputContext(Delegate callback, Token& sToken);
+		bool bForce = false;
 	};
 
 private:
-	Vec<GameInputType> m_previousSnapshot;
-	Vec<GameInputType> m_currentSnapshot;
+	Vec<KeyType> m_previousSnapshot;
+	Vec<KeyType> m_currentSnapshot;
 	TextInput m_textInput;
 	MouseInput m_mouseInput;
+	JoyInput m_joyInput;
 	Vec<InputContext> m_contexts;
-	UPtr<InputContext> m_uSudoContext;
+	std::optional<InputContext> m_oSudoContext;
 	class LEContext* m_pContext;
-	Gamepad m_gamepad;
 #if DEBUGGING
 	class Quad* m_pMouseH = nullptr;
 	Quad* m_pMouseV = nullptr;
 #endif
 
 public:
-	LEInput(LEContext& context);
+	LEInput(LEContext& context, InputMap inputMap);
 	~LEInput();
 
 public:
-	Token Register(Delegate callback);
+	Token Register(Delegate callback, bool bForce = false);
 	MouseInput GetMouseState() const;
 
 private:
 	Token RegisterSudo(Delegate callback);
-	void TakeSnapshot(const struct SFInputDataFrame& frameData);
+	void TakeSnapshot();
 	void FireCallbacks();
-	void BindDefaults();
 #if DEBUGGING
 	void CreateDebugPointer();
 #endif

@@ -50,10 +50,8 @@ void BootWorld::OnActivated()
 	}
 }
 
-void BootWorld::Tick(Time dt)
+void BootWorld::PreTick(Time /*dt*/)
 {
-	Super::Tick(dt);
-
 	// Fade logo
 	if (m_pLogoDrawer && m_pLogoHeader)
 	{
@@ -67,7 +65,8 @@ void BootWorld::Tick(Time dt)
 #if DEBUGGING
 	if (bLoadWorld1Now)
 	{
-		LoadWorld(1);
+		WorldID self = g_pGameManager->GetActiveWorldID();
+		LoadWorld(self + 1);
 		bLoadWorld1Now = false;
 	}
 	if (g_bTerminateOnReady)
@@ -75,6 +74,10 @@ void BootWorld::Tick(Time dt)
 		bLoadWorld1Now = true;
 	}
 #endif
+}
+
+void BootWorld::PostTick(Time /*dt*/)
+{
 }
 
 void BootWorld::OnDeactivating()

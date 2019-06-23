@@ -2,7 +2,7 @@
 #include "Core/ArchiveReader.h"
 #include "Core/GData.h"
 #include "Core/Logger.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/Assets.h"
 #include "LittleEngine/Repository/LERepository.h"
 #include "LEGame/Model/GameManager.h"
 #include "LEGame/Framework/UI/UI.h"
@@ -50,7 +50,7 @@ void CMD_UIContainer::FillExecuteResult(String params)
 		}
 		else
 		{
-			TextAsset* pGData = g_pRepository->Load<TextAsset>(params, true);
+			auto pGData = g_pRepository->Load<TextAsset>(params, true);
 			if (!pGData)
 			{
 				m_executeResult.emplace_back("Asset ID not found: " + params, g_logWarningColour);
@@ -72,10 +72,7 @@ void CMD_UIContainer::FillExecuteResult(String params)
 } // namespace Debug
 #endif
 
-UIContainer::UIContainer()
-{
-}
-
+UIContainer::UIContainer() = default;
 UIContainer::~UIContainer() = default;
 
 void UIContainer::Deserialise(String serialised)
@@ -83,13 +80,13 @@ void UIContainer::Deserialise(String serialised)
 	GData root(std::move(serialised));
 	m_bAutoDestroyOnCancel = root.GetBool("isDestroyOnCancel", true);
 	// Setup root
-	m_pRootElement->m_transform.size = root.GetVector2("size");
+	m_pRoot->m_transform.size = root.GetVector2("size");
 	if (root.GetBool("isPanel"))
 	{
-		m_pRootElement->SetPanel(UIGameStyle::ParseColour(root.GetString("colour")));
+		m_pRoot->SetPanel(UIGameStyle::ParseColour(root.GetString("colour")));
 	}
 	// Setup children
-	SetupChildren(m_pRootElement, root.GetVectorGData("children"));
+	SetupChildren(m_pRoot, root.GetVectorGData("children"));
 }
 
 void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
@@ -129,7 +126,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 		Strings::ToLower(widgetType);
 		if (widgetType.empty())
 		{
-			UIElement* pElement = AddElement<UIElement>(name, &pParent->m_transform, layerDelta);
+			auto pElement = AddElement<UIElement>(name, &pParent->m_transform, layerDelta);
 			pElement->m_transform.bAutoPad = data.GetBool("isAutoPad");
 			pElement->m_transform.nPosition = position;
 			if (size.x > Fixed::Zero && size.y > Fixed::Zero)
@@ -164,7 +161,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 				{
 					pStyle->widgetSize = size;
 				}
-				UIButton* pButton = AddWidget<UIButton>(name, pStyle, bNewColumn);
+				auto pButton = AddWidget<UIButton>(name, pStyle, bNewColumn);
 				if (!text.empty())
 				{
 					pButton->SetText(UIText(text, textSize, textColour));
@@ -178,7 +175,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 				{
 					style = UIGameStyle::GetStyle("UIToggle");
 				}
-				UIToggle* pToggle = AddWidget<UIToggle>(name, pStyle, bNewColumn);
+				auto pToggle = AddWidget<UIToggle>(name, pStyle, bNewColumn);
 				pToggle->SetOn(data.GetBool("isOn", true));
 				if (size.x > 0 & size.y > 0)
 				{
@@ -208,7 +205,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 
 			else if (widgetType == "selection")
 			{
-				UISelection* pSelection = AddWidget<UISelection>(name, pStyle, bNewColumn);
+				auto pSelection = AddWidget<UISelection>(name, pStyle, bNewColumn);
 				pSelection->SetText(UIText(text, textSize, textColour));
 				pSelection->SetOptions(data.GetVector("options"));
 				pWidget = pSelection;
@@ -216,7 +213,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 
 			else if (widgetType == "textInput")
 			{
-				UITextInput* pTextInput = AddWidget<UITextInput>(name, pStyle, bNewColumn);
+				auto pTextInput = AddWidget<UITextInput>(name, pStyle, bNewColumn);
 				pWidget = pTextInput;
 			}
 

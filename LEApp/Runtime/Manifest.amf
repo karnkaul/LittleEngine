@@ -36,7 +36,7 @@
 		},
 		{
 			"pathPrefix": "Misc/STRESS_TEST",
-			"count": 5,
+			"count": 20,
 			"assetSuffix": ".png"
 		}
 	],

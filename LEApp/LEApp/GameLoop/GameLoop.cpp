@@ -4,6 +4,7 @@
 #include "LittleEngine/FatalEngineException.h"
 #include "LittleEngine/Debug/Profiler.h"
 #include "LEGame/Model/GameConfig.h"
+#include "LEGame/Model/World/WorldClock.h"
 #include "LEGame/GameFramework.h"
 #include "LEGame/Utility/Debug/Console/DebugConsole.h"
 #include "LEGame/Utility/Debug/DebugProfiler.h"
@@ -21,7 +22,7 @@ using namespace LittleEngine;
 // Globals
 UPtr<FileLogger> uFileLogger;
 UPtr<LERepository> uRepository;
-UPtr<ShaderRepository> uShaders;
+UPtr<LEShaders> uShaders;
 UPtr<LEAudio> uAudio;
 
 // LEContext
@@ -39,7 +40,6 @@ TweakS32(ticksPerSec, nullptr);
 bool Init(s32 argc, char** argv)
 {
 	OS::Env()->SetVars(argc, argv);
-
 #if ENABLED(TWEAKABLES)
 	ticksPerSec.BindCallback([](const String& val) {
 		s32 newRate = Strings::ToS32(val);
@@ -55,20 +55,39 @@ bool Init(s32 argc, char** argv)
 		}
 	});
 #endif
+	try
+	{
+		uRepository = MakeUnique<LERepository>("Fonts/main.ttf", "GameAssets.cooked", "GameAssets");
+		uAudio = MakeUnique<LEAudio>();
+	}
+	catch (const FatalEngineException& /*e*/)
+	{
+		LOG_E("[GameLoop] ERROR! Could not initialise Engine Service!");
+		return false;
+	}
+
 	config.Init();
 #if !SHIPPING
-	LOG_I("[GameLoop] Initialising event loop, loading config...");
-	config.Load("_config.gd");
+	LOG_D("[GameLoop] Initialising event loop, loading config...");
+	config.Load(".game.conf");
 #endif
-	Core::g_MinLogSeverity = config.GetLogLevel();
+	auto pSettings = GameSettings::Instance();
+	
+	Core::g_MinLogSeverity = pSettings->GetLogLevel();
 	bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
 	bRenderThread = config.ShouldCreateRenderThread();
-	
+	ControllerComponent::s_orientationEpsilon = config.GetControllerOrientationEpsilon();
+#if DEBUGGING
+	ControllerComponent::s_orientationWidthHeight = config.GetControllerOrientationSize();
+	Entity::s_orientationWidthHeight = config.GetEntityOrientationSize();
+#endif
+
 	if (OS::Threads::GetVacantThreadCount() > 0)
 	{
 		String header = "Game: " + GameConfig::GetGameVersion().ToString() +
 						" Engine : " + GameConfig::GetEngineVersion().ToString();
-		uFileLogger = MakeUnique<Core::FileLogger>("Debug", 5, std::move(header));
+		u8 backupCount = config.GetBackupLogFileCount();
+		uFileLogger = MakeUnique<Core::FileLogger>("Debug", backupCount, std::move(header));
 	}
 
 	if (bRenderThread)
@@ -84,27 +103,16 @@ bool Init(s32 argc, char** argv)
 	}
 
 	Core::Jobs::Init(config.GetJobWorkerCount());
-	uShaders = MakeUnique<ShaderRepository>();
 
 #if DEBUGGING
 	Collider::s_debugShapeWidth = config.GetColliderBorderWidth();
 #endif
 	Vector2 viewSize = config.GetViewSize();
-	auto pSettings = GameSettings::Instance();
 	tickRate = config.GetTickRate();
 	maxFrameTime = config.GetMaxFrameTime();
 	cullBounds = pSettings->GetCullBounds(viewSize);
 
-	try
-	{
-		uRepository = MakeUnique<LERepository>("GameAssets.cooked", "GameAssets");
-		uAudio = MakeUnique<LEAudio>();
-	}
-	catch (const FatalEngineException& /*e*/)
-	{
-		LOG_E("[GameLoop] ERROR! Could not initialise Engine Service!");
-		return false;
-	}
+	uShaders = MakeUnique<LEShaders>();
 
 	Time::Reset();
 
@@ -124,6 +132,15 @@ void CreateContext(GameConfig& config)
 	data.bRenderThread = bRenderThread;
 	data.renderThreadStartDelay = config.GetRenderThreadStartDelay();
 	data.bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
+	Core::Property::Persistor inputMapPersistor;
+	if (inputMapPersistor.Load(settings.GetValue("CUSTOM_INPUT_MAP")))
+	{
+		u16 count = data.inputMap.Import(inputMapPersistor);
+		if (count > 0)
+		{
+			LOG_I("[GameLoop] Loaded %u custom Input Mappings successfully", count);
+		}
+	}
 	uContext = MakeUnique<LEContext>(std::move(data));
 }
 
@@ -197,7 +214,7 @@ void Cleanup()
 	uShaders = nullptr;
 	uRepository = nullptr;
 #if !SHIPPING
-	config.Save("_config.gd");
+	config.Save(".game.conf");
 #endif
 	Core::Jobs::Cleanup();
 	LOG_I("[GameLoop] Terminated");
@@ -222,7 +239,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 #if ENABLED(PROFILER)
 	Profiler::Init(*uContext, Time::Milliseconds(10));
 #endif
-	GameClock::Reset();
+	WorldClock::Reset();
 	uWSM->Start("Manifest.amf", "Texts/Game.style");
 
 	Time t;
@@ -249,7 +266,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 			accumulator += frameTime;
 			while (accumulator >= dt)
 			{
-				GameClock::Tick(dt);
+				WorldClock::Tick(dt);
 				bool bYield = Tick(dt);
 #if ENABLED(CONSOLE)
 				Debug::Console::Tick(dt);

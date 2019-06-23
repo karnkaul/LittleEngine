@@ -2,7 +2,7 @@
 #include "Core/Asserts.h"
 #include "Core/CoreTypes.h"
 #include "Core/Delegate.h"
-#include "SFMLAPI/Rendering/SFLayerID.h"
+#include "SFMLAPI/Rendering/LayerID.h"
 #include "LittleEngine/Input/LEInput.h"
 #include "LEGame/Model/UI/UIObject.h"
 #include "LEGame/Model/UI/UIGameStyle.h"
@@ -13,6 +13,13 @@ namespace LittleEngine
 // \brief Controller for a number of UIWidgets: allows player to cycle through and interact with all of them
 class UIContext : public UIObject
 {
+private:
+	struct MBState
+	{
+		bool bEnterPressed = false;
+		bool bEnterReleased = false;
+	};
+
 public:
 	using OnCancelled = Core::Delegate<>;
 private:
@@ -22,12 +29,14 @@ private:
 public:
 	bool m_bAutoDestroyOnCancel = false;
 protected:
-	UIElement* m_pRootElement = nullptr;
+	UIElement* m_pRoot = nullptr;
 private:
 	UPtr<class UIWidgetMatrix> m_uUIWidgets;
 	Vec<UUIElement> m_uiElements;
 	Vec<LEInput::Token> m_inputTokens;
 	OnCancelled m_onCancelledDelegate;
+	MBState m_mbState;
+	UIWidget* m_pPointerOver = nullptr;
 	bool m_bInteracting = false;
 
 public:
@@ -82,7 +91,7 @@ T* UIContext::AddWidget(String name, UIWidgetStyle* pStyleToCopy, bool bNewColum
 	{
 		pStyleToCopy = &defaultStyle;
 	}
-	pStyleToCopy->baseLayer = static_cast<LayerID>(m_pRootElement->m_layer + 1);
+	pStyleToCopy->baseLayer = static_cast<LayerID>(m_pRoot->m_layer + 1);
 	uT->OnCreate(std::move(name), *this, pStyleToCopy);
 	m_uUIWidgets->EmplaceWidget(std::move(uT), bNewColumn);
 	LOG_D("%s constructed", pT->LogNameStr());
@@ -95,15 +104,15 @@ T* UIContext::AddElement(String name, UITransform* pParent, s32 layerDelta)
 	Assert(g_pGameManager, "GameManager is null!");
 	LayerID layer = LAYER_UI;
 	static_assert(std::is_base_of<UIElement, T>::value, "T must derive from UIWidget!");
- 	if (m_pRootElement)
+ 	if (m_pRoot)
 	{
-		layer = static_cast<LayerID>(m_pRootElement->m_layer + 1);
+		layer = static_cast<LayerID>(m_pRoot->m_layer + 1);
 	}
 	layer = static_cast<LayerID>(layer + layerDelta);
 	UPtr<T> uT = MakeUnique<T>(layer, false);
-	if (!pParent && m_pRootElement)
+	if (!pParent && m_pRoot)
 	{
-		pParent = &m_pRootElement->m_transform;
+		pParent = &m_pRoot->m_transform;
 	}
 	uT->OnCreate(*g_pGameManager->Context(), std::move(name), pParent);
 	

@@ -2,28 +2,17 @@
 #include "Profiler.h"
 #if ENABLED(PROFILER)
 #include "Core/Logger.h"
-#include "SFMLAPI/System/SFGameClock.h"
 #include "LittleEngine/Debug/Tweakable.h"
 #include "LittleEngine/Context/LEContext.h"
 
-namespace LittleEngine
-{
-namespace Debug
-{
-namespace Profiler
+namespace LittleEngine::Debug::Profiler
 {
 Time maxTickDeltaTime;
 std::mutex entriesMutex;
 UMap<String, Entry> entries;
 
-using Lock = std::lock_guard<std::mutex>;
-
 Entry::Entry(String id, Colour colour, Time startTime, Time maxTime, bool bCustom)
-	: id(std::move(id)),
-	  colour(colour),
-	  startTime(startTime),
-	  maxTime(maxTime),
-	  bCustom(bCustom)
+	: id(std::move(id)), colour(colour), startTime(startTime), maxTime(maxTime), bCustom(bCustom)
 {
 }
 
@@ -79,7 +68,5 @@ void Stop(String id)
 		entry.timeRatio = entry.Ratio();
 	}
 }
-} // namespace Profiler
-} // namespace Debug
-} // namespace LittleEngine
+} // namespace LittleEngine::Debug::Profiler
 #endif

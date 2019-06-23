@@ -32,5 +32,7 @@ public:
 	Vector2 GetTopRight() const;
 	Vector2 GetBottomLeft() const;
 	Vector2 GetBottomRight() const;
+
+	bool IsPointIn(Vector2 point) const;
 };
 } // namespace Core

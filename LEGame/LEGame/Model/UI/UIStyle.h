@@ -1,6 +1,6 @@
 #pragma once
 #include "SFMLAPI/Rendering/Colour.h"
-#include "SFMLAPI/Rendering/SFLayerID.h"
+#include "SFMLAPI/Rendering/LayerID.h"
 
 namespace LittleEngine
 {
@@ -10,6 +10,7 @@ struct UIStyle
 	Fixed border = Fixed::Zero;
 	Colour fill = Colour::Transparent;
 	Colour outline = Colour::Transparent;
+	Colour textColour = Colour::Black;
 	LayerID layer = LAYER_UI;
 };
 

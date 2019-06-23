@@ -201,6 +201,9 @@
     <ClCompile Include="LEGame\Model\World\GameObject.cpp">
       <Filter>LEGame\Model\World</Filter>
     </ClCompile>
+    <ClCompile Include="LEGame\Model\World\WorldClock.cpp">
+      <Filter>LEGame\Model\World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LEGame\Framework\UI\Elements\UIProgressBar.h">
@@ -369,6 +372,9 @@
       <Filter>LEGame\Model\World</Filter>
     </ClInclude>
     <ClInclude Include="LEGame\Model\World\GameObject.h">
+      <Filter>LEGame\Model\World</Filter>
+    </ClInclude>
+    <ClInclude Include="LEGame\Model\World\WorldClock.h">
       <Filter>LEGame\Model\World</Filter>
     </ClInclude>
   </ItemGroup>

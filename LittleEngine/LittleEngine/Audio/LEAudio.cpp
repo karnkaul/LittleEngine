@@ -2,7 +2,7 @@
 #include "Core/ArchiveReader.h"
 #include "Core/Logger.h"
 #include "Core/Utils.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/Assets.h"
 #include "LEAudio.h"
 #include "LittleEngine/Repository/LERepository.h"
 

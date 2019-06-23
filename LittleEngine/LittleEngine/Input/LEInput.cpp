@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
 #include "Core/Utils.h"
-#include "SFMLAPI/Input/SFInputStateMachine.h"
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "LEInput.h"
 #include "LittleEngine/Context/LEContext.h"
@@ -25,58 +24,81 @@ bool bShowCrosshair = false;
 
 String LEInput::Frame::GetClipboard()
 {
-	return SFInputDataFrame::GetClipboard();
+	return InputDataFrame::GetClipboard();
 }
 
-LEInput::Frame::Frame(Vec<GameInputType> pressed, Vec<GameInputType> held, Vec<GameInputType> released, TextInput textInput)
-	: pressed(std::move(pressed)),
-	  held(std::move(held)),
-	  released(std::move(released)),
-	  textInput(std::move(textInput))
+bool LEInput::Frame::IsPressed(s32 keyCode) const
 {
+	return Core::Search(pressed, static_cast<KeyType>(keyCode)) != pressed.end();
 }
 
-bool LEInput::Frame::IsPressed(GameInputType keyCode) const
+bool LEInput::Frame::IsHeld(s32 keyCode) const
 {
-	return Core::Search(pressed, keyCode) != pressed.end();
+	return Core::Search(held, static_cast<KeyType>(keyCode)) != held.end();
 }
 
-bool LEInput::Frame::IsHeld(GameInputType keyCode) const
+bool LEInput::Frame::IsReleased(s32 keyCode) const
 {
-	return Core::Search(held, keyCode) != held.end();
+	return Core::Search(released, static_cast<KeyType>(keyCode)) != released.end();
 }
 
-bool LEInput::Frame::IsReleased(GameInputType keyCode) const
+bool LEInput::Frame::IsPressed(InitList<s32> keys, bool bAny /* = true */) const
 {
-	return Core::Search(released, keyCode) != released.end();
+	return GetResult(keys, [&](s32 key) { return IsPressed(key); }, bAny);
+}
+
+bool LEInput::Frame::IsHeld(InitList<s32> keys, bool bAny /* = true */) const
+{
+	return GetResult(keys, [&](s32 key) { return IsHeld(key); }, bAny);
+}
+
+bool LEInput::Frame::IsReleased(InitList<s32> keys, bool bAny /* = true */) const
+{
+	return GetResult(keys, [&](s32 key) { return IsReleased(key); }, bAny);
 }
 
 bool LEInput::Frame::HasData() const
 {
-	return !pressed.empty() || !held.empty() || !released.empty() || !textInput.specials.empty() ||
-		   !textInput.text.empty();
+	return !pressed.empty() || !held.empty() || !released.empty();
 }
 
-LEInput::InputContext::InputContext(Delegate callback, Token& sToken)
-	: callback(std::move(callback)), wToken(sToken)
+Fixed LEInput::Frame::GetMouseWhellScroll() const
 {
+	return mouseInput.scrollDelta;
+}
+
+bool LEInput::Frame::GetResult(InitList<s32> keys, std::function<bool(s32)> subroutine, bool bAny) const
+{
+	bool bResult = bAny ? false : true;
+	for (auto key : keys)
+	{
+		if (bAny)
+		{
+			bResult |= subroutine(key);
+		}
+		else
+		{
+			bResult &= subroutine(key);
+		}
+	}
+	return bResult;
 }
 
 #if DEBUGGING
 TweakBool(mouseXY, &bShowCrosshair);
 #endif
 
-LEInput::LEInput(LEContext& context) : m_pContext(&context)
+LEInput::LEInput(LEContext& context, InputMap inputMap) : m_pContext(&context)
 {
-	BindDefaults();
+	m_inputSM.SetInputMapping(std::move(inputMap));
 }
 
 LEInput::~LEInput() = default;
 
-LEInput::Token LEInput::Register(Delegate callback)
+LEInput::Token LEInput::Register(Delegate callback, bool bForce)
 {
 	Token token = CreateToken();
-	InputContext newTop(std::move(callback), token);
+	InputContext newTop{std::move(callback), token, bForce};
 	m_contexts.emplace_back(newTop);
 	return token;
 }
@@ -89,26 +111,51 @@ MouseInput LEInput::GetMouseState() const
 LEInput::Token LEInput::RegisterSudo(Delegate callback)
 {
 	Token token = CreateToken();
-	m_uSudoContext = MakeUnique<InputContext>(std::move(callback), token);
+	InputContext sudo{std::move(callback), token, true};
+	m_oSudoContext.emplace(sudo);
 	return token;
 }
 
-void LEInput::TakeSnapshot(const SFInputDataFrame& frameData)
+void LEInput::TakeSnapshot()
 {
+	auto uniqueInsert = [&](s32 toInsert) {
+		if (toInsert > 0)
+		{
+			KeyType key = static_cast<KeyType>(toInsert);
+			if (Core::Search(m_currentSnapshot, key) == m_currentSnapshot.end())
+			{
+				m_currentSnapshot.push_back(key);
+			}
+		}
+	};
+	auto frameData = m_inputSM.GetFrameInputData();
 	m_previousSnapshot = m_currentSnapshot;
 	m_textInput = frameData.textInput;
 	m_mouseInput = frameData.mouseInput;
+	m_joyInput = frameData.joyInput;
 	m_currentSnapshot.clear();
 	for (const auto& key : frameData.pressed)
 	{
-		GameInputType input = m_gamepad.ToGameInputType(key);
-		if (input != GameInputType::Invalid)
+		uniqueInsert(key.GetKeyType());
+	}
+	for (const auto& state : frameData.joyInput.m_states)
+	{
+		// POV
+		if (state.pov.x > Fixed::OneHalf)
 		{
-			auto duplicate = Core::Search(m_currentSnapshot, input);
-			if (duplicate == m_currentSnapshot.end())
-			{
-				m_currentSnapshot.push_back(input);
-			}
+			uniqueInsert(KeyCode::Right);
+		}
+		if (state.pov.x < -Fixed::OneHalf)
+		{
+			uniqueInsert(KeyCode::Left);
+		}
+		if (state.pov.y > Fixed::OneHalf)
+		{
+			uniqueInsert(KeyCode::Up);
+		}
+		if (state.pov.y < -Fixed::OneHalf)
+		{
+			uniqueInsert(KeyCode::Down);
 		}
 	}
 #if DEBUGGING
@@ -116,9 +163,16 @@ void LEInput::TakeSnapshot(const SFInputDataFrame& frameData)
 	{
 		CreateDebugPointer();
 	}
-	Colour c = m_mouseInput.bLeftPressed
-				   ? MOUSE_LEFT_COLOUR
-				   : m_mouseInput.bRightPressed ? MOUSE_RIGHT_COLOUR : MOUSE_DEFAULT_COLOUR;
+	Colour c = MOUSE_DEFAULT_COLOUR;
+	if (Core::Search(m_currentSnapshot, KeyType::MOUSE_BTN_0) != m_currentSnapshot.end())
+	{
+		c = MOUSE_LEFT_COLOUR;
+	}
+	if (Core::Search(m_currentSnapshot, KeyType::MOUSE_BTN_1) != m_currentSnapshot.end())
+	{
+		c = MOUSE_RIGHT_COLOUR;
+	}
+
 	if (m_pMouseH)
 	{
 		m_pMouseH->SetPosition({m_mouseInput.worldPosition.x, 0})->SetEnabled(bShowCrosshair)->SetPrimaryColour(c);
@@ -132,7 +186,9 @@ void LEInput::TakeSnapshot(const SFInputDataFrame& frameData)
 
 void LEInput::FireCallbacks()
 {
-	Vec<GameInputType> pressed, held, released;
+	Vec<KeyType> pressed;
+	Vec<KeyType> held;
+	Vec<KeyType> released;
 
 	// Build "pressed" and "held" vectors
 	for (auto input : m_currentSnapshot)
@@ -149,35 +205,35 @@ void LEInput::FireCallbacks()
 	}
 
 	released = m_previousSnapshot;
-	Core::RemoveIf<GameInputType>(released, [&held](GameInputType type) {
-		return Core::Search(held, type) != held.end();
-	});
-	if (m_uSudoContext && m_uSudoContext->wToken.expired())
+	Core::RemoveIf<KeyType>(
+		released, [&held](KeyType type) { return Core::Search(held, type) != held.end(); });
+	if (m_oSudoContext && m_oSudoContext->wToken.expired())
 	{
-		m_uSudoContext = nullptr;
+		m_oSudoContext.reset();
 	}
 
-	Frame dataFrame(pressed, held, released, m_textInput);
-	if (dataFrame.HasData())
+	Frame dataFrame{pressed, held, released, m_textInput, m_mouseInput, m_joyInput};
+	bool bHasData = dataFrame.HasData();
+	size_t prev = m_contexts.size();
+	Core::RemoveIf<InputContext>(
+		m_contexts, [](const InputContext& context) { return context.wToken.expired(); });
+	size_t curr = m_contexts.size();
+	if (curr != prev)
 	{
-		size_t prev = m_contexts.size();
-		Core::RemoveIf<InputContext>(
-			m_contexts, [](InputContext& context) { return context.wToken.expired(); });
-		size_t curr = m_contexts.size();
-		if (curr != prev)
-		{
-			LOG_D("[Input] Deleted %d stale contexts", prev - curr);
-		}
+		LOG_D("[Input] Deleted %d stale contexts", prev - curr);
+	}
 
-		if (m_uSudoContext)
+	if (m_oSudoContext)
+	{
+		if (m_oSudoContext->callback(dataFrame))
 		{
-			if (m_uSudoContext->callback(dataFrame))
-			{
-				return;
-			}
+			return;
 		}
+	}
 
-		for (auto iter = m_contexts.rbegin(); iter != m_contexts.rend(); ++iter)
+	for (auto iter = m_contexts.rbegin(); iter != m_contexts.rend(); ++iter)
+	{
+		if (bHasData || iter->bForce)
 		{
 			if (iter->callback(dataFrame))
 			{
@@ -185,26 +241,6 @@ void LEInput::FireCallbacks()
 			}
 		}
 	}
-}
-
-void LEInput::BindDefaults()
-{
-	m_gamepad.Bind(GameInputType::Up, {KeyCode::Up, KeyCode::W});
-	m_gamepad.Bind(GameInputType::Down, {KeyCode::Down, KeyCode::S});
-	m_gamepad.Bind(GameInputType::Left, {KeyCode::Left, KeyCode::A});
-	m_gamepad.Bind(GameInputType::Right, {KeyCode::Right, KeyCode::D});
-	m_gamepad.Bind(GameInputType::Enter, KeyCode::Enter);
-	m_gamepad.Bind(GameInputType::Back, KeyCode::Escape);
-	m_gamepad.Bind(GameInputType::Select, KeyCode::Tab);
-
-	m_gamepad.Bind(GameInputType::X, KeyCode::Space);
-	m_gamepad.Bind(GameInputType::Y, KeyCode::E);
-	m_gamepad.Bind(GameInputType::A, KeyCode::R);
-	m_gamepad.Bind(GameInputType::B, KeyCode::F);
-	m_gamepad.Bind(GameInputType::LB, {KeyCode::LControl, KeyCode::RControl});
-	m_gamepad.Bind(GameInputType::RB, {KeyCode::LShift, KeyCode::RShift});
-
-	m_gamepad.Bind(GameInputType::Debug0, KeyCode::F12);
 }
 
 #if DEBUGGING

@@ -4,7 +4,7 @@
 #include <thread>
 #include "Core/SimpleTime.h"
 #include "SFMLAPI/Rendering/Colour.h"
-#include "SFMLAPI/Rendering/SFLayerID.h"
+#include "SFMLAPI/Rendering/LayerID.h"
 
 #define PROFILE_START(id, colour) Debug::Profiler::StartTicked(id, colour)
 #define PROFILE_CUSTOM(id, maxTime, colour) Debug::Profiler::StartCustom(id, maxTime, colour)

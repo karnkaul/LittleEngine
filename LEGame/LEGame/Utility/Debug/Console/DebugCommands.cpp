@@ -1,13 +1,12 @@
 #include "stdafx.h"
-#include <functional>
 #include "DebugCommands.h"
 #if ENABLED(CONSOLE)
 #include "Core/Logger.h"
 #include "Core/Utils.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/Assets.h"
 #include "LittleEngine/Debug/Tweakable.h"
 #include "LittleEngine/Context/LEContext.h"
-#include "LittleEngine/Physics/CollisionManager.h"
+#include "LittleEngine/Physics/LEPhysics.h"
 #include "LittleEngine/Renderer/LERenderer.h"
 #include "LittleEngine/Repository/LERepository.h"
 #include "DebugConsole.h"
@@ -19,9 +18,7 @@
 #include "LEGame/Model/World/WorldStateMachine.h"
 #include "LEGame/Utility/Debug/DebugProfiler.h"
 
-namespace LittleEngine
-{
-namespace Debug
+namespace LittleEngine::Debug
 {
 namespace Console
 {
@@ -34,7 +31,7 @@ namespace
 {
 LEContext* pContext = nullptr;
 Vec<LogLine> GetAllCommands();
-}
+} // namespace
 
 #pragma region Commands
 Command::Command(const char* szName) : m_name(szName)
@@ -49,7 +46,7 @@ Vec<LogLine> Command::Execute(String params)
 	return std::move(m_executeResult);
 }
 
-Vec<String> Command::AutoCompleteParams(const String&)
+Vec<String> Command::AutoCompleteParams(const String& /*incomplete*/)
 {
 	return Vec<String>();
 }
@@ -232,7 +229,7 @@ class Resolution : public ParameterisedCommand
 public:
 	Resolution() : ParameterisedCommand("resolution")
 	{
-		const Map<u32, SFViewportSize>& windowSizes = pContext->Renderer()->GetValidViewportSizes();
+		const Map<u32, ViewportSize>& windowSizes = pContext->Renderer()->GetValidViewportSizes();
 		for (const auto& kvp : windowSizes)
 		{
 			const auto& windowSize = kvp.second;
@@ -266,7 +263,7 @@ public:
 		}
 
 		String id;
-		if (tokens.size() >= 1)
+		if (!tokens.empty())
 		{
 			id = std::move(tokens[0]);
 		}
@@ -317,7 +314,7 @@ public:
 		m_bTakesCustomParam = true;
 	}
 
-	void FillExecuteResult(String params)
+	void FillExecuteResult(String params) override
 	{
 		if (params.empty())
 		{
@@ -534,6 +531,5 @@ AutoCompleteResults AutoComplete(const String& incompleteQuery)
 }
 } // namespace Commands
 #pragma endregion
-} // namespace Debug
-} // namespace LittleEngine
+} // namespace LittleEngine::Debug
 #endif

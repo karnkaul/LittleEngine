@@ -4,65 +4,11 @@
     <ClInclude Include="SFMLAPI\Rendering\Colour.h">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="SFMLAPI\SFRendering.h">
-      <Filter>SFMLAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Input\SFInputStateMachine.h">
-      <Filter>SFMLAPI\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Audio\SFAudioPlayer.h">
-      <Filter>SFMLAPI\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\SFAudio.h">
-      <Filter>SFMLAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\SFInput.h">
-      <Filter>SFMLAPI</Filter>
-    </ClInclude>
     <ClInclude Include="SFMLAPI\SFMLAPI.h">
       <Filter>SFMLAPI</Filter>
     </ClInclude>
-    <ClInclude Include="SFMLAPI\SFWindowing.h">
-      <Filter>SFMLAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\System\SFAssets.h">
-      <Filter>SFMLAPI\System</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\System\SFGameClock.h">
-      <Filter>SFMLAPI\System</Filter>
-    </ClInclude>
     <ClInclude Include="SFMLAPI\System\SFTypes.h">
       <Filter>SFMLAPI\System</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\SFSystem.h">
-      <Filter>SFMLAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Rendering\SFRenderer.h">
-      <Filter>SFMLAPI\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Input\SFInputDataFrame.h">
-      <Filter>SFMLAPI\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Rendering\SFLayerID.h">
-      <Filter>SFMLAPI\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\System\SFAssetType.h">
-      <Filter>SFMLAPI\System</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Rendering\ISFRenderBuffer.h">
-      <Filter>SFMLAPI\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Input\SFInputHandler.h">
-      <Filter>SFMLAPI\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Viewport\SFViewport.h">
-      <Filter>SFMLAPI\Viewport</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Viewport\SFViewportData.h">
-      <Filter>SFMLAPI\Viewport</Filter>
-    </ClInclude>
-    <ClInclude Include="SFMLAPI\Rendering\SFShader.h">
-      <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="SFMLAPI\Rendering\Primitives\Quad.h">
       <Filter>SFMLAPI\Rendering\Primitives</Filter>
@@ -88,43 +34,67 @@
     <ClInclude Include="SFMLAPI\Rendering\Primitives.h">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\PrimitiveFactory.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\LayerID.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\Renderer.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Audio\AudioPlayer.h">
+      <Filter>SFMLAPI\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Input\InputDataFrame.h">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Input\InputHandler.h">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Input\InputMappings.h">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Input\InputStateMachine.h">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\System\Assets.h">
+      <Filter>SFMLAPI\System</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\System\AssetType.h">
+      <Filter>SFMLAPI\System</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Viewport\Viewport.h">
+      <Filter>SFMLAPI\Viewport</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Viewport\ViewportData.h">
+      <Filter>SFMLAPI\Viewport</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Input.h">
+      <Filter>SFMLAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering.h">
+      <Filter>SFMLAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\System.h">
+      <Filter>SFMLAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Viewport.h">
+      <Filter>SFMLAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\IRenderBuffer.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SFMLAPI\Rendering\Shader.h">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SFMLAPI\Rendering\Colour.cpp">
       <Filter>SFMLAPI\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="SFMLAPI\Input\SFInputStateMachine.cpp">
-      <Filter>SFMLAPI\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\Audio\SFAudioPlayer.cpp">
-      <Filter>SFMLAPI\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\System\SFAssets.cpp">
-      <Filter>SFMLAPI\System</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\System\SFGameClock.cpp">
-      <Filter>SFMLAPI\System</Filter>
-    </ClCompile>
     <ClCompile Include="SFMLAPI\System\SFTypes.cpp">
       <Filter>SFMLAPI\System</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\Rendering\SFRenderer.cpp">
-      <Filter>SFMLAPI\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\Input\SFInputDataFrame.cpp">
-      <Filter>SFMLAPI\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\Input\SFInputHandler.cpp">
-      <Filter>SFMLAPI\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\Viewport\SFViewport.cpp">
-      <Filter>SFMLAPI\Viewport</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\Viewport\SFViewportData.cpp">
-      <Filter>SFMLAPI\Viewport</Filter>
-    </ClCompile>
-    <ClCompile Include="SFMLAPI\Rendering\SFShader.cpp">
-      <Filter>SFMLAPI\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="SFMLAPI\Rendering\Primitives\Quad.cpp">
       <Filter>SFMLAPI\Rendering\Primitives</Filter>
@@ -146,6 +116,39 @@
     </ClCompile>
     <ClCompile Include="SFMLAPI\Rendering\Primitives\SFText.cpp">
       <Filter>SFMLAPI\Rendering\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\PrimitiveFactory.cpp">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\Renderer.cpp">
+      <Filter>SFMLAPI\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Audio\AudioPlayer.cpp">
+      <Filter>SFMLAPI\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Input\InputDataFrame.cpp">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Input\InputHandler.cpp">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Input\InputMappings.cpp">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Input\InputStateMachine.cpp">
+      <Filter>SFMLAPI\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\System\Assets.cpp">
+      <Filter>SFMLAPI\System</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Viewport\Viewport.cpp">
+      <Filter>SFMLAPI\Viewport</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Viewport\ViewportData.cpp">
+      <Filter>SFMLAPI\Viewport</Filter>
+    </ClCompile>
+    <ClCompile Include="SFMLAPI\Rendering\Shader.cpp">
+      <Filter>SFMLAPI\Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

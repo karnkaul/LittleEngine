@@ -1,10 +1,10 @@
 #pragma once
-#include <mutex>
 #include "Core/ArchiveReader.h"
 #include "Core/CoreTypes.h"
 #include "Core/Logger.h"
 #include "Core/Jobs.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "Core/Utils.h"
+#include "SFMLAPI/System/Assets.h"
 
 namespace Core
 {
@@ -19,19 +19,16 @@ extern class LERepository* g_pRepository;
 class LERepository final
 {
 private:
-	using Lock = std::lock_guard<std::mutex>;
-
-private:
 	UPtr<Core::ArchiveReader> m_uCooked;
 	List<UPtr<class ManifestLoader>> m_uAsyncLoaders;
-	std::mutex m_mutex;
+	mutable std::mutex m_mutex;
 	UMap<String, Asset::Ptr> m_loaded;
 	String m_rootDir;
 	String m_assetPathPrefix;
-	class FontAsset* m_pDefaultFont;
+	class FontAsset* m_pDefaultFont = nullptr;
 
 public:
-	LERepository(String archivePath, String rootDir = "");
+	LERepository(String defaultFontID, String archivePath, String rootDir = "");
 	~LERepository();
 
 	// Loads Asset at path. T must derive from Asset!
@@ -44,11 +41,14 @@ public:
 
 	FontAsset* GetDefaultFont() const;
 
-	bool IsLoaded(const String& id);
+	bool IsLoaded(const String& id) const;
+	u64 GetLoadedBytes() const;
 
 	bool Unload(String id);
 	// Unload all assets
 	void UnloadAll(bool bUnloadDefaultFont);
+
+	bool IsBusy() const;
 
 public:
 	LERepository(const LERepository&) = delete;
@@ -271,7 +271,9 @@ UPtr<T> LERepository::CreateAsset(const String& id, Vec<u8> buffer)
 	{
 		return nullptr;
 	}
-	LOG_I("== [%s] %s decompressed", id.c_str(), g_szAssetType[ToIdx(uT->GetType())]);
+	auto size = Core::GetFriendlySize(uT->GetByteCount());
+	LOG_I("== [%s] [%.2f%s] %s decompressed", id.c_str(), size.first, size.second,
+		  g_szAssetType[ToIdx(uT->GetType())]);
 	return std::move(uT);
 }
 
@@ -292,7 +294,9 @@ UPtr<T> LERepository::RetrieveAsset(const String& id)
 	{
 		return nullptr;
 	}
-	LOG_I("== [%s] %s loaded from filesystem", id.c_str(), g_szAssetType[ToIdx(uT->GetType())]);
+	auto size = Core::GetFriendlySize(uT->GetByteCount());
+	LOG_I("== [%s] [%.2f%s] %s loaded from filesystem", id.c_str(), size.first, size.second,
+		  g_szAssetType[ToIdx(uT->GetType())]);
 	return std::move(uT);
 }
 #endif

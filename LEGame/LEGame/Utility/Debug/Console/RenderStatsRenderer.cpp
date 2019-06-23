@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RenderStatsRenderer.h"
 #if ENABLED(RENDER_STATS)
-#include "SFMLAPI/Rendering/SFRenderer.h"
+#include "SFMLAPI/Rendering/Renderer.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "LittleEngine/Debug/Tweakable.h"
 #include "LittleEngine/Context/LEContext.h"
@@ -10,9 +10,7 @@
 #include "LEGame/Model/GameManager.h"
 #include "LEGame/Model/UI/UIElement.h"
 
-namespace LittleEngine
-{
-namespace Debug
+namespace LittleEngine::Debug
 {
 namespace
 {
@@ -104,6 +102,5 @@ VersionRenderer::VersionRenderer(LEContext& context)
 
 VersionRenderer::~VersionRenderer() = default;
 #endif
-} // namespace Debug
-} // namespace LittleEngine
+} // namespace LittleEngine::Debug
 #endif

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Core/ArchiveReader.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/Assets.h"
 #include "LittleEngine/Repository/LERepository.h"
 #include "LEGame/Model/GameManager.h"
 #include "LEGame/Model/UI/UIGameStyle.h"

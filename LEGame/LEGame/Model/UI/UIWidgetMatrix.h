@@ -1,5 +1,4 @@
 #pragma once
-#include <functional>
 #include "Core/CircularVector.h"
 
 namespace LittleEngine
@@ -21,6 +20,7 @@ public:
 	UIWidget* Current();
 	UIWidget* NextSelectableVertical(bool bDownwards);
 	UIWidget* NextSelectableHorizontal(bool bRightwards);
+	bool Select(UIWidget* pToSelect);
 
 	void Up();
 	void Down();

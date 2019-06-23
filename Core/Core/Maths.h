@@ -8,6 +8,7 @@ namespace Maths
 using Fixed = Core::Fixed;
 using Time = Core::Time;
 
+const f32 EPSILON = 0.001f;
 const Fixed PI = Fixed(3.14159265359);
 const Fixed DEG_TO_RAD = Fixed(PI / 180);
 const Fixed RAD_TO_DEG = Fixed(180 / PI);
@@ -39,7 +40,9 @@ T TransformRange(T value, T oldMin, T oldMax, T newMin, T newMax);
 template <typename T>
 T Lerp(T min, T max, Fixed alpha);
 
-bool IsNearlyEqual(f32 lhs, f32 rhs, f32 epsilon = 0.01f);
+Rect2 Lerp(Rect2 min, Rect2 max, Fixed alpha);
+
+bool IsNearlyEqual(f32 lhs, f32 rhs, f32 epsilon = EPSILON);
 
 Fixed ComputeAlpha(Time dt, Time totalTime);
 

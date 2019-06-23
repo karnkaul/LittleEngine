@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "UIObject.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/Assets.h"
 #include "LittleEngine/Context/LEContext.h"
 #include "LittleEngine/Repository/LERepository.h"
 

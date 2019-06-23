@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Core/FileLogger.h"
 #include "Core/Jobs.h"
-#include "SFMLAPI/System/SFAssets.h"
-#include "SFMLAPI/Viewport/SFViewport.h"
-#include "SFMLAPI/Viewport/SFViewportData.h"
+#include "SFMLAPI/System/Assets.h"
+#include "SFMLAPI/Viewport/Viewport.h"
+#include "SFMLAPI/Viewport/ViewportData.h"
 #include "LEContext.h"
 #include "LittleEngine/Audio/LEAudio.h"
 #include "LittleEngine/Debug/Profiler.h"
@@ -21,8 +21,8 @@ TweakBool(asyncRendering, nullptr);
 
 LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 {
-#if ENABLED(TWEAKABLES) 
-	asyncRendering.BindCallback([&](const String& val) { 
+#if ENABLED(TWEAKABLES)
+	asyncRendering.BindCallback([&](const String& val) {
 		bool bEnable = Strings::ToBool(val);
 		if (bEnable)
 		{
@@ -57,21 +57,27 @@ LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 	});
 #endif
 	m_bTerminating = false;
-	m_uViewport = MakeUnique<SFViewport>();
+	m_uViewport = MakeUnique<Viewport>();
 	m_uViewport->SetData(std::move(m_data.viewportData));
 	m_uViewport->Create();
 
-	m_uInput = MakeUnique<LEInput>(*this);
+	m_uInput = MakeUnique<LEInput>(*this, std::move(m_data.inputMap));
 
 #if ENABLED(RENDER_STATS)
 	g_renderData.tickRate = m_data.tickRate;
 #endif
-	RendererData rData{m_data.tickRate, Time::Milliseconds(20), m_uViewport.get()};
+	RendererData rData{m_data.tickRate, Time::Milliseconds(20), m_data.bRenderThread};
 	m_uRenderer = MakeUnique<LERenderer>(*m_uViewport, rData);
 }
 
 LEContext::~LEContext()
 {
+	m_uRenderer->StopRenderThread();
+	while (!Core::Jobs::AreWorkersIdle())
+	{
+		LOG_E("[LEContext] Engine destruction blocked by JobManager...");
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
 	m_uInput = nullptr;
 	m_uRenderer = nullptr;
 	m_uViewport = nullptr;
@@ -118,33 +124,32 @@ bool LEContext::TrySetViewportSize(u32 height)
 	return true;
 }
 
-void LEContext::SetWindowStyle(SFViewportStyle newStyle)
+void LEContext::SetWindowStyle(ViewportStyle newStyle)
 {
 	m_oNewViewportStyle.emplace(std::move(newStyle));
 }
 
 void LEContext::Terminate()
 {
-	if (!Core::Jobs::AreWorkersIdle())
+	if (g_pRepository->IsBusy())
 	{
-		Assert(false, "Terminate() called while job workers are active!");
-		LOG_E("[LEContext] Terminate() called while job workers are active!");
+		Assert(false, "Terminate() called while repository is busy!");
+		LOG_E("[LEContext] Terminate() called while LERepository is busy!");
 		m_bWaitingToTerminate = true;
 	}
 	else
 	{
 		m_bTerminating = true;
-		m_uRenderer->StopRenderThread();
 	}
 }
 
 void LEContext::PollInput()
 {
-	SFViewportEventType sfEvent = m_inputHandler.PollEvents(*m_uViewport);
-	m_uInput->TakeSnapshot(m_inputHandler.GetFrameInputData());
+	ViewportEventType sfEvent = m_uInput->PollEvents(*m_uViewport);
+	m_uInput->TakeSnapshot();
 	switch (sfEvent)
 	{
-	case SFViewportEventType::Closed:
+	case ViewportEventType::Closed:
 		Terminate();
 		return;
 
@@ -166,10 +171,11 @@ bool LEContext::Update()
 	}
 	else
 	{
+		m_uRenderer->StopRenderThread();
 		m_bTerminating = Core::Jobs::AreWorkersIdle();
 		if (!m_bTerminating)
 		{
-			LOG_W("[LEContext] Engine termination blocked by JobManager...");
+			LOG_W("[LEContext] Engine termination blocked by JobManager... Undefined Behaviour!");
 		}
 		return true;
 	}
@@ -183,15 +189,16 @@ void LEContext::SubmitFrame()
 {
 	if (m_oNewViewportSize)
 	{
-		LOG_I("[LEContext] Set viewport size to: %dx%d", (*m_oNewViewportSize)->width, (*m_oNewViewportSize)->height);
-		m_uRenderer->RecreateViewport(SFViewportRecreateData(std::move(**m_oNewViewportSize)));
+		LOG_I("[LEContext] Set viewport size to: %dx%d", (*m_oNewViewportSize)->width,
+			  (*m_oNewViewportSize)->height);
+		m_uRenderer->RecreateViewport(ViewportRecreateData(std::move(**m_oNewViewportSize)));
 		m_oNewViewportSize.reset();
 	}
 
 	if (m_oNewViewportStyle)
 	{
 		LOG_I("[LEContext] Changed viewport style");
-		m_uRenderer->RecreateViewport(SFViewportRecreateData(*m_oNewViewportStyle));
+		m_uRenderer->RecreateViewport(ViewportRecreateData(*m_oNewViewportStyle));
 		m_oNewViewportStyle.reset();
 	}
 	m_uRenderer->Lock_Swap();
@@ -213,34 +220,4 @@ void LEContext::ModifyTickRate(Time newTickRate)
 	m_uRenderer->ModifyTickRate(newTickRate);
 }
 #endif
-
-void LEContext::PollEvents()
-{
-	SFViewportEventType windowEvent = m_inputHandler.PollEvents(*m_uViewport);
-	switch (windowEvent)
-	{
-	case SFViewportEventType::Closed:
-		Terminate();
-		break;
-
-	case SFViewportEventType::LostFocus:
-		if (m_data.bPauseOnFocusLoss)
-		{
-			m_bPauseTicking = true;
-			g_pAudio->PauseAll();
-		}
-		break;
-
-	case SFViewportEventType::GainedFocus:
-		if (m_data.bPauseOnFocusLoss)
-		{
-			m_bPauseTicking = false;
-			g_pAudio->ResumeAll();
-		}
-		break;
-
-	default:
-		break;
-	}
-}
 } // namespace LittleEngine

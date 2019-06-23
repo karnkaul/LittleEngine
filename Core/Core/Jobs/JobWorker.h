@@ -33,4 +33,4 @@ private:
 	String m_logName;
 	void Run();
 };
-} // namespace LittleEngine
+} // namespace Core

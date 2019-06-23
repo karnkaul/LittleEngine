@@ -28,15 +28,38 @@ Colour Cast(const sf::Color& sfColor)
 	return Colour(sfColor.r, sfColor.g, sfColor.b, sfColor.a);
 }
 
-sf::Uint8 Cast(SFViewportStyle style)
+sf::Uint8 Cast(ViewportStyle style)
 {
 	switch (style)
 	{
 	default:
 		return sf::Style::Close;
 
-	case SFViewportStyle::Bordlerless:
+	case ViewportStyle::Bordlerless:
 		return sf::Style::None;
+	}
+}
+
+KeyType Cast(sf::Mouse::Button button)
+{
+	switch (button)
+	{
+	default:
+		return static_cast<KeyType>(-1);
+	case sf::Mouse::Button::Left:
+		return KeyType::MOUSE_BTN_0;
+
+	case sf::Mouse::Button::Right:
+		return KeyType::MOUSE_BTN_1;
+
+	case sf::Mouse::Button::Middle:
+		return KeyType::MOUSE_BTN_2;
+
+	case sf::Mouse::Button::XButton1:
+		return KeyType::MOUSE_BTN_3;
+
+	case sf::Mouse::Button::XButton2:
+		return KeyType::MOUSE_BTN_4;
 	}
 }
 

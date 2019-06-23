@@ -42,11 +42,18 @@ public:
 	Fixed GetOutline() const;
 	Colour GetSecondaryColour() const;
 
+public:
+	Rect2 GetBounds() const override;
+
 protected:
-	void OnSwapState() override;
 	void ReconcileGameState() override;
+	void SwapState() override;
 
 protected:
 	DrawableState GetDrawableState(Fixed alpha) const;
+
+protected:
+	virtual sf::FloatRect GetSFBounds() const = 0;
+	virtual Vector2 GetSFSize() const = 0;
 };
-}
+} // namespace LittleEngine

@@ -27,8 +27,12 @@
             "destination": "Settings.ini"
         },
         {
-            "source": "./_config.gd",
-            "destination": "_config.gd"
+            "source": "./.game.conf",
+            "destination": ".game.conf"
+        },
+        {
+            "source": "./InputMap.ini",
+            "destination": "InputMap.ini"
         }
     ],
     "directories": [

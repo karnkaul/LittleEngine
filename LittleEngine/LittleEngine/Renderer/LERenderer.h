@@ -2,9 +2,9 @@
 #include "Core/CoreTypes.h"
 #include "Core/Jobs.h"
 #include "Core/OS.h"
-#include "SFMLAPI/Rendering/SFLayerID.h"
-#include "SFMLAPI/Rendering/SFRenderer.h"
-#include "RenderFactory.h"
+#include "SFMLAPI/Rendering/LayerID.h"
+#include "SFMLAPI/Rendering/Renderer.h"
+#include "SFMLAPI/Rendering/PrimitiveFactory.h"
 
 namespace LittleEngine
 {
@@ -15,33 +15,27 @@ struct RendererData
 	bool bStartThread;
 };
 
-// \warning: Ensure SFViewport remains alive until destruction is complete!
-class LERenderer final : public SFRenderer
+// \warning: Ensure Viewport remains alive until destruction is complete!
+class LERenderer final : public Renderer, public PrimitiveFactory
 {
 private:
 	RendererData m_data;
-	Map<u32, SFViewportSize> m_viewportSizes;
-	UPtr<RenderFactory> m_uFactory;	
+	Map<u32, ViewportSize> m_viewportSizes;
 	OS::Threads::Handle m_threadHandle;
 	std::atomic<bool> m_bPauseRendering = true; // Used to reduce inexplicable lock contention on main thread
 	
 public:
-	LERenderer(class SFViewport& sfViewport, RendererData data);
+	LERenderer(class Viewport& viewport, RendererData data);
 	~LERenderer() override;
 
-	void RecreateViewport(struct SFViewportRecreateData data);
-	const Map<u32, SFViewportSize>& GetValidViewportSizes() const;
-	struct SFViewportSize* TryGetViewportSize(u32 height);
+	void RecreateViewport(struct ViewportRecreateData data);
+	const Map<u32, ViewportSize>& GetValidViewportSizes() const;
+	struct ViewportSize* TryGetViewportSize(u32 height);
 	Vector2 GetViewSize() const;
 	Vector2 Project(Vector2 nPos, bool bPreClamp) const;
 
-	template <typename T>
-	T* New(LayerID layer);
-
-	Time GetLastSwapTime() const;
 	void Lock_Swap();
-	void Reconcile();
-	
+
 	void Render(Fixed alpha);
 	void StopRenderThread();
 
@@ -56,12 +50,7 @@ private:
 	void ModifyTickRate(Time newTickRate);
 #endif
 
+private:
 	friend class LEContext;
 };
-
-template <typename T>
-T* LERenderer::New(LayerID layer)
-{
-	return m_uFactory->template New<T>(layer);
-}
 } // namespace LittleEngine

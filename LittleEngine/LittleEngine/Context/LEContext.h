@@ -1,13 +1,14 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "SFMLAPI/Input/SFInputHandler.h"
-#include "SFMLAPI/Viewport/SFViewportData.h"
+#include "SFMLAPI/Input/InputMappings.h"
+#include "SFMLAPI/Viewport/ViewportData.h"
 
 namespace LittleEngine
 {
 struct LEContextData
 {
-	SFViewportData viewportData;
+	ViewportData viewportData;
+	InputMap inputMap;
 	Time tickRate = Time::Seconds(1.0f / 60.0f);
 	Time maxFrameTime = Time::Milliseconds(50);
 	Time renderThreadStartDelay = Time::Milliseconds(10);
@@ -19,16 +20,15 @@ class LEContext final
 {
 private:
 	LEContextData m_data;
-	SFInputHandler m_inputHandler;
 	UPtr<class LEInput> m_uInput;
-	UPtr<class SFViewport> m_uViewport;
+	UPtr<class Viewport> m_uViewport;
 	UPtr<class LERenderer> m_uRenderer;
 	bool m_bTerminating = false;
 	bool m_bWaitingToTerminate = false;
 	bool m_bPauseTicking = false;
 
-	std::optional<SFViewportStyle> m_oNewViewportStyle;
-	std::optional<SFViewportSize*> m_oNewViewportSize;
+	std::optional<ViewportStyle> m_oNewViewportStyle;
+	std::optional<ViewportSize*> m_oNewViewportSize;
 	
 	
 public:
@@ -45,7 +45,7 @@ public:
 	Time GetMaxFrameTime() const;
 
 	bool TrySetViewportSize(u32 height);
-	void SetWindowStyle(SFViewportStyle newStyle);
+	void SetWindowStyle(ViewportStyle newStyle);
 	void Terminate();
 
 	
@@ -58,8 +58,5 @@ public:
 #if DEBUGGING
 	void ModifyTickRate(Time newTickRate);
 #endif
-
-private:
-	void PollEvents();
 };
 } // namespace LittleEngine

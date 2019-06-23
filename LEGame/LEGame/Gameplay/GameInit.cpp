@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "GameInit.h"
-#include "LittleEngine/Renderer/ShaderRepository.h"
+#include "LittleEngine/Renderer/LEShaders.h"
 #include "LEGame/Framework.h"
 #include "LEGame/Gameplay/Worlds.h"
 
@@ -19,6 +19,6 @@ void GameInit::LoadShaders()
 {
 	// Load SFShaders here
 
-	ShaderRepository::LoadShader<SFShader>("Default", ShaderType::VertFrag);
+	LEShaders::LoadShader<Shader>("Default", ShaderType::VertFrag);
 }
 } // namespace LittleEngine

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
 #include "WSMLoadingUI.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"
 #include "LittleEngine/Context/LEContext.h"
 #include "LittleEngine/Repository/LERepository.h"
@@ -31,6 +31,7 @@ WSMLoadingUI::WSMLoadingUI(LEContext& context) : m_pContext(&context)
 	m_uBG = MakeUnique<UIElement>();
 	m_uBG->OnCreate(context, "WSMLoadingBG");
 	m_uBG->SetPanel(Colour(40, 15, 50));
+	m_uBG->Tick();
 	m_uTitle = MakeUnique<UIElement>(static_cast<LayerID>(m_uBG->GetLayer() + 1));
 	m_uTitle->OnCreate(context, "WSMLoadingTitle");
 	m_uTitle->SetFont(*pFont);
@@ -46,6 +47,7 @@ WSMLoadingUI::WSMLoadingUI(LEContext& context) : m_pContext(&context)
 	m_uProgressBar->OnCreate(context, "WSMAssetLoadProgress");
 	progressBarSize = {m_pContext->GetViewSize().x, 10};
 	m_uProgressBar->SetPanel(Colour::White);
+	m_uProgressBar->m_transform.size = {0, progressBarSize.y};
 	m_uProgressBar->m_transform.anchor = {-1, 0};
 	m_uProgressBar->m_transform.padding = {0, progressBarSize.y * Fixed::OneHalf};
 	m_uProgressBar->m_transform.nPosition = {-Fixed::One, -Fixed::One};

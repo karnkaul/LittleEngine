@@ -19,11 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SFMLAPI\Audio\SFAudioPlayer.h" />
-    <ClInclude Include="SFMLAPI\Input\SFInputHandler.h" />
-    <ClInclude Include="SFMLAPI\Input\SFInputDataFrame.h" />
-    <ClInclude Include="SFMLAPI\Input\SFInputStateMachine.h" />
+    <ClInclude Include="SFMLAPI\Audio\AudioPlayer.h" />
+    <ClInclude Include="SFMLAPI\Input\InputHandler.h" />
+    <ClInclude Include="SFMLAPI\Input\InputDataFrame.h" />
+    <ClInclude Include="SFMLAPI\Input\InputStateMachine.h" />
+    <ClInclude Include="SFMLAPI\Input\InputMappings.h" />
     <ClInclude Include="SFMLAPI\Rendering\Colour.h" />
+    <ClInclude Include="SFMLAPI\Rendering\PrimitiveFactory.h" />
     <ClInclude Include="SFMLAPI\Rendering\Primitives.h" />
     <ClInclude Include="SFMLAPI\Rendering\Primitives\Primitive.h" />
     <ClInclude Include="SFMLAPI\Rendering\Primitives\Quad.h" />
@@ -32,29 +34,29 @@
     <ClInclude Include="SFMLAPI\Rendering\Primitives\SFDrawable.h" />
     <ClInclude Include="SFMLAPI\Rendering\Primitives\SFRect.h" />
     <ClInclude Include="SFMLAPI\Rendering\Primitives\SFText.h" />
-    <ClInclude Include="SFMLAPI\Rendering\ISFRenderBuffer.h" />
-    <ClInclude Include="SFMLAPI\Rendering\SFLayerID.h" />
-    <ClInclude Include="SFMLAPI\Rendering\SFRenderer.h" />
-    <ClInclude Include="SFMLAPI\Rendering\SFShader.h" />
-    <ClInclude Include="SFMLAPI\SFAudio.h" />
-    <ClInclude Include="SFMLAPI\SFInput.h" />
+    <ClInclude Include="SFMLAPI\Rendering\IRenderBuffer.h" />
+    <ClInclude Include="SFMLAPI\Rendering\LayerID.h" />
+    <ClInclude Include="SFMLAPI\Rendering\Renderer.h" />
+    <ClInclude Include="SFMLAPI\Rendering\Shader.h" />
+    <ClInclude Include="SFMLAPI\Input.h" />
     <ClInclude Include="SFMLAPI\SFMLAPI.h" />
-    <ClInclude Include="SFMLAPI\SFRendering.h" />
-    <ClInclude Include="SFMLAPI\SFSystem.h" />
-    <ClInclude Include="SFMLAPI\SFWindowing.h" />
-    <ClInclude Include="SFMLAPI\System\SFAssets.h" />
-    <ClInclude Include="SFMLAPI\System\SFAssetType.h" />
-    <ClInclude Include="SFMLAPI\System\SFGameClock.h" />
+    <ClInclude Include="SFMLAPI\Rendering.h" />
+    <ClInclude Include="SFMLAPI\System.h" />
+    <ClInclude Include="SFMLAPI\Viewport.h" />
+    <ClInclude Include="SFMLAPI\System\Assets.h" />
+    <ClInclude Include="SFMLAPI\System\AssetType.h" />
     <ClInclude Include="SFMLAPI\System\SFTypes.h" />
-    <ClInclude Include="SFMLAPI\Viewport\SFViewport.h" />
-    <ClInclude Include="SFMLAPI\Viewport\SFViewportData.h" />
+    <ClInclude Include="SFMLAPI\Viewport\Viewport.h" />
+    <ClInclude Include="SFMLAPI\Viewport\ViewportData.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SFMLAPI\Audio\SFAudioPlayer.cpp" />
-    <ClCompile Include="SFMLAPI\Input\SFInputHandler.cpp" />
-    <ClCompile Include="SFMLAPI\Input\SFInputDataFrame.cpp" />
-    <ClCompile Include="SFMLAPI\Input\SFInputStateMachine.cpp" />
+    <ClCompile Include="SFMLAPI\Audio\AudioPlayer.cpp" />
+    <ClCompile Include="SFMLAPI\Input\InputHandler.cpp" />
+    <ClCompile Include="SFMLAPI\Input\InputDataFrame.cpp" />
+    <ClCompile Include="SFMLAPI\Input\InputStateMachine.cpp" />
+    <ClCompile Include="SFMLAPI\Input\InputMappings.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\Colour.cpp" />
+    <ClCompile Include="SFMLAPI\Rendering\PrimitiveFactory.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\Primitives\Primitive.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\Primitives\Quad.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\Primitives\Quads.cpp" />
@@ -62,13 +64,12 @@
     <ClCompile Include="SFMLAPI\Rendering\Primitives\SFDrawable.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\Primitives\SFRect.cpp" />
     <ClCompile Include="SFMLAPI\Rendering\Primitives\SFText.cpp" />
-    <ClCompile Include="SFMLAPI\Rendering\SFRenderer.cpp" />
-    <ClCompile Include="SFMLAPI\Rendering\SFShader.cpp" />
-    <ClCompile Include="SFMLAPI\System\SFAssets.cpp" />
-    <ClCompile Include="SFMLAPI\System\SFGameClock.cpp" />
+    <ClCompile Include="SFMLAPI\Rendering\Renderer.cpp" />
+    <ClCompile Include="SFMLAPI\Rendering\Shader.cpp" />
+    <ClCompile Include="SFMLAPI\System\Assets.cpp" />
     <ClCompile Include="SFMLAPI\System\SFTypes.cpp" />
-    <ClCompile Include="SFMLAPI\Viewport\SFViewport.cpp" />
-    <ClCompile Include="SFMLAPI\Viewport\SFViewportData.cpp" />
+    <ClCompile Include="SFMLAPI\Viewport\Viewport.cpp" />
+    <ClCompile Include="SFMLAPI\Viewport\ViewportData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">

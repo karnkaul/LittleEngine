@@ -17,7 +17,7 @@ public:
 	~GameObject() override;
 
 protected:
-	void BindInput(LEInput::Delegate callback);
+	void BindInput(LEInput::Delegate callback, bool bForceEveryFrame = false);
 	class LERenderer* Renderer() const;
 
 private:

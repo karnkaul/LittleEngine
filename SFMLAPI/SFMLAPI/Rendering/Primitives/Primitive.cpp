@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Primitive.h"
 #include "SFMLAPI/System/SFTypes.h"
-#include "SFMLAPI/Rendering/SFShader.h"
+#include "SFMLAPI/Rendering/Shader.h"
 
 namespace LittleEngine
 {
@@ -27,7 +27,6 @@ void APrimitive::ReconcileGameState()
 void APrimitive::SwapState()
 {
 	m_renderState = m_gameState;
-	OnSwapState();
 }
 
 void APrimitive::UpdateRenderState(Fixed alpha)
@@ -51,7 +50,7 @@ void APrimitive::Destroy()
 	m_bDestroyed = true;
 }
 
-void APrimitive::Draw(SFViewport& viewport, Fixed alpha)
+void APrimitive::Draw(Viewport& viewport, Fixed alpha)
 {
 	UpdateRenderState(alpha);
 	sf::RenderStates states;
@@ -64,60 +63,45 @@ void APrimitive::Draw(SFViewport& viewport, Fixed alpha)
 	m_bRendered = true;
 }
 
-APrimitive* APrimitive::SetPosition(Vector2 worldPosition, bool bImmediate)
+APrimitive* APrimitive::SetPosition(Vector2 position, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.tPosition.Reset(WorldToScreen(worldPosition));
+		m_gameState.tPosition.Reset(WorldToScreen(position));
 	}
 	else
 	{
-		m_gameState.tPosition.Update(WorldToScreen(worldPosition));
+		m_gameState.tPosition.Update(WorldToScreen(position));
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
-APrimitive* APrimitive::SetOrientation(Fixed worldOrientation, bool bImmediate)
+APrimitive* APrimitive::SetOrientation(Vector2 orientation, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.tOrientation.Reset(WorldToScreen(worldOrientation));
+		m_gameState.tOrientation.Reset(WorldToScreen(orientation));
 	}
 	else
 	{
-		m_gameState.tOrientation.Update(WorldToScreen(worldOrientation));
+		m_gameState.tOrientation.Update(WorldToScreen(orientation));
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
-APrimitive* APrimitive::SetScale(Vector2 worldScale, bool bImmediate)
+APrimitive* APrimitive::SetScale(Vector2 scale, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.tScale.Reset(worldScale);
+		m_gameState.tScale.Reset(scale);
 	}
 	else
 	{
-		m_gameState.tScale.Update(worldScale);
+		m_gameState.tScale.Update(scale);
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
@@ -131,12 +115,7 @@ APrimitive* APrimitive::SetPrimaryColour(Colour colour, bool bImmediate)
 	{
 		m_gameState.tColour.Update(colour);
 	}
-	if (m_bStatic || m_bMakeStatic)
-	{
-		ReconcileGameState();
-		m_bStatic = false;
-		m_bMakeStatic = true;
-	}
+	SetDirty(true);
 	return this;
 }
 
@@ -146,7 +125,7 @@ APrimitive* APrimitive::SetEnabled(bool bEnabled)
 	return this;
 }
 
-APrimitive* APrimitive::SetShader(SFShader* pShader)
+APrimitive* APrimitive::SetShader(Shader* pShader)
 {
 	m_pShader = pShader;
 	return this;
@@ -188,7 +167,7 @@ Vector2 APrimitive::GetPosition() const
 	return ScreenToWorld(m_gameState.tPosition.max);
 }
 
-Fixed APrimitive::GetOrientation() const
+Vector2 APrimitive::GetOrientation() const
 {
 	return ScreenToWorld(m_gameState.tOrientation.max);
 }
@@ -203,12 +182,16 @@ Colour APrimitive::GetPrimaryColour() const
 	return m_gameState.tColour.max;
 }
 
-APrimitive::State APrimitive::GetState(Fixed alpha) const
+void APrimitive::SetDirty(bool bReconcile)
 {
-	Vector2 s = m_renderState.tScale.Lerp(alpha);
-	Fixed o = m_renderState.tOrientation.Lerp(alpha);
-	Vector2 p = m_renderState.tPosition.Lerp(alpha);
-	Colour c = Colour::Lerp(m_renderState.tColour, alpha);
-	return {p, s, o, c};
+	if (m_bStatic || m_bMakeStatic)
+	{
+		if (bReconcile)
+		{
+			ReconcileGameState();
+		}
+		m_bStatic = false;
+		m_bMakeStatic = true;
+	}
 }
 } // namespace LittleEngine

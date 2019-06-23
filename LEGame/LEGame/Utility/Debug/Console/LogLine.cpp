@@ -3,9 +3,7 @@
 #include "LEGame/Model/UI/UIText.h"
 #if ENABLED(CONSOLE)
 
-namespace LittleEngine
-{
-namespace Debug
+namespace LittleEngine::Debug
 {
 extern Colour g_logTextColour;
 
@@ -79,6 +77,5 @@ void LogBook::Append(LogLine logLine)
 	m_logLines.emplace_back(std::move(logLine));
 	Reset();
 }
-} // namespace Debug
-} // namespace LittleEngine
+} // namespace LittleEngine::Debug
 #endif

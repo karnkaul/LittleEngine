@@ -43,7 +43,7 @@ void Deferred<T>::SafeWait()
 	}
 }
 
-template<typename T>
+template <typename T>
 bool Deferred<T>::IsValid() const
 {
 	return m_future.valid();
@@ -54,4 +54,4 @@ bool Deferred<T>::IsReady() const
 {
 	return m_future.valid() && m_future.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready;
 }
-}
+} // namespace Core

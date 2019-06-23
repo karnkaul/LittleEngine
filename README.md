@@ -1,6 +1,6 @@
 # Little Engine
 
-Written in **C++14**, utilising [**SFML v2.5.1**](https://www.sfml-dev.org/) and [**PhysicsFS 3.0.1**](https://icculus.org/physfs/), Little Engine is a hobby project with little defined ambition or scope; in other words, let's see where we can take this!
+Written in **C++17**, utilising [**SFML v2.5.1**](https://www.sfml-dev.org/) and [**PhysicsFS 3.0.1**](https://icculus.org/physfs/), Little Engine is a hobby project with little defined ambition or scope; in other words, let's see where we can take this!
 
 ## Using LittleEngine
 ### Requirements
@@ -18,7 +18,7 @@ Written in **C++14**, utilising [**SFML v2.5.1**](https://www.sfml-dev.org/) and
 >*Note: Ensure to unzip all libraries before linking.*
 
 ### Introduction
-**LittleEngine** uses two core threads: the main thread integrates at a fixed time slice, and a render thread runs at the display's refresh rate (via VSYNC) and interpolates between render states to draw entities on screen, though async rendering can be disabled via `GameConfig`. Depending on CPU availability, there will be a file logging thread as well, and a number of job workers for gameplay code to delegate long-running tasks without blocking the main thread. As an example, asynchronous loading of assets is performed entirely via the job system.
+**LittleEngine** uses two core threads: the main thread integrates at a fixed time slice, and a render thread runs at the display's refresh rate (via VSYNC) and interpolates between render states to draw entities on screen, though async rendering can be disabled via `GameConfig`. Depending on CPU availability, there will be a file logging thread as well, and a number of job workers for gameplay code to delegate tasks without blocking the main thread. As an example of long-running tasks, the asset manifest is loaded entirely via the job system's `JobCatalog` (collection of tasks with an optional main-thread callback); whereas `Quads` and `PSEmitter` objects exploit the `Jobs::ForEach()` API to distribute the updation of thousands of primitives among all the available workers within the time of a single frame.
 
 >*Note: There must be at least one worker for the engine to start (without async rendering); thus the Engine cannot be run on single-threaded machines.*
 

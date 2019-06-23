@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Core/Utils.h"
 #include "Core/ArchiveReader.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/Assets.h"
 #include "LittleEngine/Context/LEContext.h"
 #include "LittleEngine/Renderer/LERenderer.h"
 #include "LittleEngine/Repository/LERepository.h"
@@ -58,8 +58,8 @@ void UIOptions::OnCreated()
 	pBorderlessToggle->SetOn(GameSettings::Instance()->IsBorderless());
 	m_tokens.push_back(pBorderlessToggle->AddCallback([&](bool bBorderless) {
 		GameSettings::Instance()->SetBorderless(bBorderless);
-		g_pGameManager->Context()->SetWindowStyle(bBorderless ? SFViewportStyle::Bordlerless
-															  : SFViewportStyle::Default);
+		g_pGameManager->Context()->SetWindowStyle(bBorderless ? ViewportStyle::Bordlerless
+															  : ViewportStyle::Default);
 	}));
 
 	auto pCloseButton = Find<UIButton>("close_button");

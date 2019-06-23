@@ -10,9 +10,9 @@
                 "fill": "#ff8745"
             },
             "selected": {
-                "fill": "#ff8745",
-                "border": 5,
-                "outline": "#128ba5"
+                "fill": "#bf3c13",
+                "textColour": "white",
+                "border": 0
             },
             "interacting": {
                 "fill": "#ff96ff"
@@ -24,8 +24,22 @@
                 "fill": "#ef798a"
             },
             "selected": {
-                "fill": "#ef798a",
-                "outline": "#128ba5"
+                "fill": "#8a4f7d",
+                "textColour": "white",
+                "border": 3
+            },
+            "interacting": {
+                "fill": "#ff96ff"
+            }
+        },
+        {
+            "id": "UIToggle",
+            "notSelected": {
+                "fill": "#ef798a"
+            },
+            "selected": {
+                "fill": "#8a4f7d",
+                "border": 5
             },
             "interacting": {
                 "fill": "#ff96ff"

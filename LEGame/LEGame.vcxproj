@@ -60,6 +60,7 @@
     <ClCompile Include="LEGame\Model\World\GameObject.cpp" />
     <ClCompile Include="LEGame\Model\World\TileMap.cpp" />
     <ClCompile Include="LEGame\Model\World\World.cpp" />
+    <ClCompile Include="LEGame\Model\World\WorldClock.cpp" />
     <ClCompile Include="LEGame\Model\World\WorldStateMachine.cpp" />
     <ClCompile Include="LEGame\Model\World\WSMErrorUI.cpp" />
     <ClCompile Include="LEGame\Model\World\WSMLoadingUI.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="LEGame\Model\World\InputTokenHandler.h" />
     <ClInclude Include="LEGame\Model\World\TileMap.h" />
     <ClInclude Include="LEGame\Model\World\World.h" />
+    <ClInclude Include="LEGame\Model\World\WorldClock.h" />
     <ClInclude Include="LEGame\Model\World\WorldStateMachine.h" />
     <ClInclude Include="LEGame\Model\World\WSMErrorUI.h" />
     <ClInclude Include="LEGame\Model\World\WSMLoadingUI.h" />

@@ -17,8 +17,6 @@ struct PhysFSState
 	~PhysFSState();
 };
 
-static PhysFSState* s_pState = nullptr;
-
 PhysFSState::PhysFSState()
 {
 	s32 success = PHYSFS_init(ArchiveReader::s_argv0);
@@ -30,6 +28,8 @@ PhysFSState::~PhysFSState()
 	PHYSFS_deinit();
 }
 } // namespace
+
+static PhysFSState* s_pState = nullptr;
 
 ArchiveReader::ArchiveReader()
 {

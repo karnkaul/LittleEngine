@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Core/Logger.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "UIElement.h"
 #include "UIText.h"
@@ -79,6 +79,11 @@ void UIElement::SetText(UIText uiText)
 	m_pText->SetSize(uiText.pixelSize);
 }
 
+void UIElement::SetTextColour(Colour colour)
+{
+	m_pText->SetPrimaryColour(colour);
+}
+
 void UIElement::SetFont(FontAsset& font)
 {
 	m_pText->SetFont(font);
@@ -94,7 +99,7 @@ SFText* UIElement::GetText() const
 	return m_pText;
 }
 
-void UIElement::Tick(Time)
+void UIElement::Tick(Time /*dt*/)
 {
 	if (m_bDestroyed)
 	{
@@ -114,8 +119,8 @@ void UIElement::Tick(Time)
 	}
 	m_pRect->SetScale(Vector2::One, true);
 	m_pText->SetScale(Vector2::One, true);
-	m_pRect->SetOrientation(Fixed::Zero, true);
-	m_pText->SetOrientation(Fixed::Zero, true);
+	m_pRect->SetOrientation(Vector2::Right, true);
+	m_pText->SetOrientation(Vector2::Right, true);
 	Vector2 viewSize = Renderer()->GetViewSize();
 	m_pRect->SetPosition(m_transform.GetWorldPosition(viewSize));
 	m_pText->SetPosition(m_transform.GetWorldPosition(viewSize));

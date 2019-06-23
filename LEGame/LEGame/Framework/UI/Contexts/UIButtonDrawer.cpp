@@ -29,8 +29,8 @@ bool UIButtonDrawer::SetHorizontal(bool bHorizontal)
 UIButtonDrawer* UIButtonDrawer::SetPanel(UIStyle panelStyle)
 {
 	m_data.panelStyle = std::move(panelStyle);
-	m_pRootElement->m_transform.size = m_data.panelStyle.size;
-	m_pRootElement->SetPanel(m_data.panelStyle.fill, m_data.panelStyle.border, m_data.panelStyle.outline);
+	m_pRoot->m_transform.size = m_data.panelStyle.size;
+	m_pRoot->SetPanel(m_data.panelStyle.fill, m_data.panelStyle.border, m_data.panelStyle.outline);
 	return this;
 }
 
@@ -39,20 +39,23 @@ UIButton::OnClick::Token UIButtonDrawer::AddButton(UIText buttonText,
 												   UIButton** ppButton)
 {
 	String buttonName = "Button" + Strings::ToString(m_uiButtons.size());
-	UIButton* pButton = AddWidget<UIButton>(buttonName, nullptr, m_data.bHorizontal);
+	auto pButton = AddWidget<UIButton>(buttonName, nullptr, m_data.bHorizontal);
 	pButton->SetText(std::move(buttonText));
 	m_uiButtons.push_back(pButton);
 	SetButtonPositions();
 	if (ppButton)
+	{
 		*ppButton = pButton;
+	}
 	return pButton->AddCallback(std::move(onInteracted));
 }
 
 void UIButtonDrawer::OnCreated()
 {
 	SetType("UIButtonDrawer");
-	m_pRootElement->m_transform.size = m_data.panelStyle.size;
-	m_pRootElement->SetPanel(m_data.panelStyle.fill, m_data.panelStyle.border, m_data.panelStyle.outline);
+	m_pRoot->m_transform.size = m_data.panelStyle.size;
+	m_pRoot->SetPanel(m_data.panelStyle.fill, m_data.panelStyle.border, m_data.panelStyle.outline);
+	m_pRoot->SetTextColour(m_data.panelStyle.textColour);
 }
 
 void UIButtonDrawer::SetButtonPositions()

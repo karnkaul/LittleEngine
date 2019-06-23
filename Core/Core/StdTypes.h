@@ -1,9 +1,11 @@
 #pragma once
 #include <cstdint>
 #include <array>
+#include <functional>
 #include <list>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <set>
 #include <sstream>
 #include <string>
@@ -62,6 +64,7 @@ using f64 = double;
 using String = std::string;
 using StringStream = std::stringstream;
 using Task = std::function<void()>;
+using Lock = std::lock_guard<std::mutex>;
 
 template <typename T>
 using InitList = std::initializer_list<T>;

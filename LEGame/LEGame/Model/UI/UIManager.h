@@ -1,6 +1,6 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "SFMLAPI/Rendering/SFLayerID.h"
+#include "SFMLAPI/Rendering/LayerID.h"
 
 namespace LittleEngine
 {

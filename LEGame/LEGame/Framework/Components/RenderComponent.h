@@ -1,7 +1,7 @@
 #pragma once
 #include <optional>
 #include "LEGame/Model/World/Component.h"
-#include "LittleEngine/Renderer/ShaderRepository.h"
+#include "LittleEngine/Renderer/LEShaders.h"
 
 namespace LittleEngine
 {
@@ -66,6 +66,7 @@ public:
 	bool m_bFlippingSprites = false;
 
 public:
+	RenderComponent();
 	~RenderComponent() override;
 
 	TimingType GetComponentTiming() const override;
@@ -80,7 +81,7 @@ public:
 	RenderComponent* SetSpriteSheet(SpriteSheet sheet, LayerID layer);
 	RenderComponent* UnsetSpriteSheet();
 	RenderComponent* SetSpriteFlip(bool bFlip);
-	RenderComponent* SetShader(SFShader* pShader);
+	RenderComponent* SetShader(Shader* pShader);
 	template <typename T>
 	RenderComponent* SetShader(const String& id);
 

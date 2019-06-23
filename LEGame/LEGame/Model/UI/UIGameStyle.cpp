@@ -67,7 +67,6 @@ void UIGameStyle::Load(String serialised)
 	{
 		UIWidgetStyle newStyle;
 		String id = styleData.GetString("id");
-		Strings::ToLower(id);
 		newStyle.widgetSize = styleData.GetVector2("size", defaultStyle.widgetSize);
 		newStyle.background = ParseColour(styleData.GetString("background"));
 
@@ -75,21 +74,25 @@ void UIGameStyle::Load(String serialised)
 		newStyle.uninteractable.fill = ParseColour(temp.GetString("fill", "#969696"));
 		newStyle.uninteractable.border = temp.GetS32("border", 0);
 		newStyle.uninteractable.outline = ParseColour(temp.GetString("outline", "transparent"));
+		newStyle.uninteractable.textColour = ParseColour(temp.GetString("textColour", "black"));
 
 		temp = styleData.GetGData("selected");
 		newStyle.selected.fill = ParseColour(temp.GetString("fill", "#ff8745"));
 		newStyle.selected.outline = ParseColour(temp.GetString("outline", "#128ba5"));
 		newStyle.selected.border = temp.GetS32("border", 5);
+		newStyle.selected.textColour = ParseColour(temp.GetString("textColour", "black"));
 
 		temp = styleData.GetGData("notSelected");
 		newStyle.notSelected.fill = ParseColour(temp.GetString("fill", "#ff8745"));
 		newStyle.notSelected.outline = ParseColour(temp.GetString("outline", "transparent"));
 		newStyle.notSelected.border = temp.GetS32("border", 0);
+		newStyle.notSelected.textColour = ParseColour(temp.GetString("textColour", "black"));
 
 		temp = styleData.GetGData("interacting");
 		newStyle.interacting.fill = ParseColour(temp.GetString("fill", "#ff96ff"));
 		newStyle.interacting.outline = ParseColour(temp.GetString("outline", "transparent"));
 		newStyle.interacting.border = temp.GetS32("border", 0);
+		newStyle.interacting.textColour = ParseColour(temp.GetString("textColour", "black"));
 
 		if (id.empty() || id == "default")
 		{

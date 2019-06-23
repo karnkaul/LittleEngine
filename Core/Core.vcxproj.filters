@@ -84,9 +84,6 @@
     <ClInclude Include="Core\Jobs\JobWorker.h">
       <Filter>Core\Jobs</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Jobs\MultiJob.h">
-      <Filter>Core\Jobs</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Jobs.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -101,6 +98,9 @@
     </ClInclude>
     <ClInclude Include="Core\Matrix3.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Jobs\JobCatalog.h">
+      <Filter>Core\Jobs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -158,9 +158,6 @@
     <ClCompile Include="Core\Jobs\JobWorker.cpp">
       <Filter>Core\Jobs</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Jobs\MultiJob.cpp">
-      <Filter>Core\Jobs</Filter>
-    </ClCompile>
     <ClCompile Include="Core\Jobs.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -175,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="Core\Matrix3.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Jobs\JobCatalog.cpp">
+      <Filter>Core\Jobs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

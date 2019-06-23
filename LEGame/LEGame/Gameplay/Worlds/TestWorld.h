@@ -10,7 +10,8 @@ public:
 
 private:
 	void OnActivated() override;
-	void Tick(Time dt) override;
+	void PreTick(Time dt) override;
+	void PostTick(Time dt) override;
 	void OnDeactivating() override;
 
 	bool OnInput(const LEInput::Frame& frame);

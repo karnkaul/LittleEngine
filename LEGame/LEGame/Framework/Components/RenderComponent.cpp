@@ -2,7 +2,7 @@
 #include "Core/ArchiveReader.h"
 #include "Core/GData.h"
 #include "SFMLAPI/Rendering/Primitives.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/Assets.h"
 #include "LEGame/Model/World/Entity.h"
 #include "LEGame/Model/GameManager.h"
 #include "LittleEngine/Repository/LERepository.h"
@@ -109,6 +109,8 @@ void SpriteSheet::Next()
 		m_iterator = m_data.indices.begin();
 	}
 }
+
+RenderComponent::RenderComponent() = default;
 
 RenderComponent::~RenderComponent()
 {
@@ -230,7 +232,7 @@ RenderComponent* RenderComponent::SetSpriteFlip(bool bFlip)
 	return this;
 }
 
-RenderComponent* RenderComponent::SetShader(SFShader* pShader)
+RenderComponent* RenderComponent::SetShader(Shader* pShader)
 {
 #if ENABLED(DEBUG_LOGGING)
 	if (pShader)
@@ -273,15 +275,15 @@ void RenderComponent::UpdatePrimitive(Time dt)
 		if (m_pPrimitive)
 		{
 			auto pQuad = m_pPrimitive->CastTo<Quad>();
-			pQuad->SetUV(m_oSpriteSheet->GetFrame());
+			pQuad->SetUV(m_oSpriteSheet->GetFrame(), true);
 		}
 	}
 
 	if (m_pPrimitive)
 	{
-		m_pPrimitive->SetScale(m_pOwner->m_transform.Scale(), m_pOwner->m_bResetRenderState);
-		m_pPrimitive->SetOrientation(m_pOwner->m_transform.Orientation(), m_pOwner->m_bResetRenderState);
-		m_pPrimitive->SetPosition(m_pOwner->m_transform.Position(), m_pOwner->m_bResetRenderState);
+		m_pPrimitive->SetScale(m_pOwner->m_transform.GetWorldScale(), m_pOwner->m_bResetRenderState);
+		m_pPrimitive->SetOrientation(m_pOwner->m_transform.GetWorldOrientation(), m_pOwner->m_bResetRenderState);
+		m_pPrimitive->SetPosition(m_pOwner->m_transform.GetWorldPosition(), m_pOwner->m_bResetRenderState);
 		m_pOwner->m_bResetRenderState = false;
 	}
 }

@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "SFMLAPI/Viewport/SFViewport.h"
-#include "SFMLAPI/Viewport/SFViewportData.h"
+#include "SFMLAPI/Viewport/Viewport.h"
+#include "SFMLAPI/Viewport/ViewportData.h"
 #include "OS.h"
 
 namespace OS
@@ -13,10 +13,10 @@ Screen* Screen::Instance()
 	static Screen screen;
 	if (screen.height == 0 || screen.width == 0)
 	{
-		SFViewportSize windowSize = SFViewport::GetMaxSize();
+		ViewportSize windowSize = Viewport::GetMaxSize();
 		screen.height = windowSize.height;
 		screen.width = windowSize.width;
 	}
 	return &screen;
 }
-}
+} // namespace OS

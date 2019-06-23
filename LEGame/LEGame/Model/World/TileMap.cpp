@@ -3,7 +3,7 @@
 #include "Core/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "SFMLAPI/Rendering/Primitives/Quads.h"
-#include "SFMLAPI/System/SFAssets.h"
+#include "SFMLAPI/System/Assets.h"
 #include "LittleEngine/Renderer/LERenderer.h"
 #include "TileMap.h"
 

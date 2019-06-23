@@ -42,14 +42,17 @@ public:
 protected:
 	void SetState(UIWidgetState state);
 
+public:
+	void Tick(Time dt = Time::Zero) override;
+
 protected:
+	virtual bool IsPointInBounds(Vector2 point) const;
 	virtual void OnCreated();
 	virtual void OnSelected() = 0;
 	virtual void OnDeselected() = 0;
 	virtual void OnInteractStart() = 0;
 	virtual void OnInteractEnd(bool bInteract) = 0;
 	virtual void OnSetInteractable(bool bInteractable) = 0;
-	void Tick(Time dt) override;
 
 // UIContext friend functions
 private:

@@ -39,7 +39,8 @@ public:
 	OnEditComplete::Token SetOnEditComplete(OnEditComplete::Callback callback);
 
 public:
-	
+	void Tick(Time dt) override;
+
 protected:
 	void OnCreated() override;
 	void OnSelected() override;
@@ -47,8 +48,6 @@ protected:
 	void OnInteractStart() override;
 	void OnInteractEnd(bool bInteract) override;
 	void OnSetInteractable(bool bInteractable) override;
-
-	void Tick(Time dt) override;
 
 private:
 	bool OnInput(const LEInput::Frame& frame);

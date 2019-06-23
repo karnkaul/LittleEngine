@@ -1,8 +1,9 @@
 #pragma once
 #include "Core/CoreTypes.h"
 #include "SFML/Graphics.hpp"
+#include "SFMLAPI/Input/InputStateMachine.h"
 #include "SFMLAPI/Rendering/Colour.h"
-#include "SFMLAPI/Viewport/SFViewportData.h"
+#include "SFMLAPI/Viewport/ViewportData.h"
 
 namespace LittleEngine
 {
@@ -16,7 +17,9 @@ Vector2 Cast(const sf::Vector2<T>& vec2);
 sf::Color Cast(Colour colour);
 Colour Cast(const sf::Color& sfColor);
 
-sf::Uint8 Cast(SFViewportStyle style);
+sf::Uint8 Cast(ViewportStyle style);
+
+KeyType Cast(sf::Mouse::Button sfButton);
 
 Vector2 WorldToScreen(Vector2 worldPoint);
 Fixed WorldToScreen(Fixed worldOrientation);

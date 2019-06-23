@@ -14,7 +14,7 @@ UITransform::UITransform(LEContext* pContext)
 }
 
 UITransform::UITransform(Vector2 size, Vector2 nPosition, Vector2 anchor, Vector2 pixelPad)
-	: size(size), nPosition(nPosition), anchor(anchor), padding(pixelPad)
+	: size(std::move(size)), nPosition(std::move(nPosition)), anchor(std::move(anchor)), padding(std::move(pixelPad))
 {
 }
 

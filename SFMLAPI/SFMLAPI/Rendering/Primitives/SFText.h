@@ -24,17 +24,18 @@ public:
 	SFText(LayerID layer);
 	~SFText() override;
 
+public:
+	void SwapState() override;
+
 protected:
 	void OnUpdateRenderState(Fixed alpha) override;
-	void OnDraw(SFViewport& viewport, sf::RenderStates& states) override;
-	void OnSwapState() override;
-
-public:
-	Rect2 GetBounds() const override;
+	void OnDraw(Viewport& viewport, sf::RenderStates& sfStates) override;
+	Vector2 GetSFSize() const override;
+	sf::FloatRect GetSFBounds() const override;
 
 public:
 	SFText* SetFont(FontAsset& font);
 	SFText* SetSize(u32 size);
 	SFText* SetText(String text);
 };
-}
+} // namespace LittleEngine

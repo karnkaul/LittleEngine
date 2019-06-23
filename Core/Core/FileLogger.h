@@ -1,6 +1,5 @@
 #pragma once
 #include <atomic>
-#include <mutex>
 #include "CoreTypes.h"
 #include "OS.h"
 
@@ -25,4 +24,4 @@ private:
 	void Async_StartLogging();
 	void RenameOldFiles(u16 countToKeep);
 };
-} // namespace LittleEngine
+} // namespace Core
