@@ -15,7 +15,7 @@ Written in **C++17**, utilising [**SFML v2.5.1**](https://www.sfml-dev.org/) and
 1. [VS2017/2019 LLVM Compiler Toolchain plugin](https://marketplace.visualstudio.com/items?itemName=LLVMExtensions.llvm-toolchain)
 1. Windows 10 SDK
 
->*Note: Ensure to unzip all libraries before linking.*
+>*Note: Make sure you unzip all libraries before linking.*
 
 ### Introduction
 **LittleEngine** uses two core threads: the main thread integrates at a fixed time slice, and a render thread runs at the display's refresh rate (via VSYNC) and interpolates between render states to draw entities on screen, though async rendering can be disabled via `GameConfig`. Depending on CPU availability, there will be a file logging thread as well, and a number of job workers for gameplay code to delegate tasks without blocking the main thread. As an example of long-running tasks, the asset manifest is loaded entirely via the job system's `JobCatalog` (collection of tasks with an optional main-thread callback); whereas `Quads` and `PSEmitter` objects exploit the `Jobs::ForEach()` API to distribute the updation of thousands of primitives among all the available workers within the time of a single frame.
