@@ -1,0 +1,54 @@
+#pragma once
+#include "Core/CoreTypes.h"
+#include "AssetManifest.h"
+
+namespace Core
+{
+class JobCatalog;
+}
+
+namespace LittleEngine
+{
+class ManifestLoader final
+{
+private:
+	template <typename T>
+	struct NewAsset
+	{
+		UPtr<T> asset;
+		String assetID;
+
+		NewAsset(String id) : assetID(std::move(id)) {}
+	};
+
+	Task m_onDone;
+	String m_manifestPath;
+	Vec<NewAsset<class TextureAsset>> m_newTextures;
+	Vec<NewAsset<class FontAsset>> m_newFonts;
+	Vec<NewAsset<class SoundAsset>> m_newSounds;
+	Vec<NewAsset<class TextAsset>> m_newTexts;
+	class LERepository* m_pRepository;
+	Core::JobCatalog* m_pJobCatalog = nullptr;
+	bool m_bUnloading = false;
+	bool m_bCompleted = false;
+	bool m_bIdle = false;
+#if ENABLED(FILESYSTEM_ASSETS)
+	bool m_bManifestFilePresent = false;
+#endif
+
+public:
+	ManifestLoader(LERepository& repository, String manifestPath, Task onDone, bool bUnload);
+
+	Fixed Progress() const;
+
+private:
+	void Tick(Time dt);
+
+	void AddTextureIDs(AssetIDContainer IDs);
+	void AddFontIDs(AssetIDContainer IDs);
+	void AddSoundIDs(AssetIDContainer IDs);
+	void AddTextIDs(AssetIDContainer IDs);
+
+	friend class LERepository;
+};
+} // namespace LittleEngine

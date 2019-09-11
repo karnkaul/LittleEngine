@@ -1,0 +1,38 @@
+# Directories
+**/__pycache__/*
+**/SourceArt/*
+_Build/*
+Project*/*
+Runtime/Frameworks/*
+Runtime/Lib/*
+Runtime/Redist/*
+Runtime/Resources/*
+Source/ThirdParty/SFML/*
+
+# IDE/OS files
+**/.vs/*
+**/*.aps
+**/vc-fileutils.settings
+**/*.vcxproj.user
+**/CMakeSettings.json
+**/.DS_Store
+
+# Runtime files
+!Runtime
+Runtime/*
+!Runtime/GameAssets
+Runtime/GameAssets/*
+!Runtime/GameAssets/*.amf
+!Runtime/Utils
+!Runtime/.game.conf
+!Runtime/InputMap.ini
+*.exe
+*.lx*
+*.mx
+
+# Custom files
+*.pyc
+Runtime/*.exe
+Runtime/*.lx
+Runtime/*.lxa
+Runtime/*.mx

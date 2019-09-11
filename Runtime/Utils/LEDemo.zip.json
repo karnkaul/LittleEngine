@@ -1,0 +1,16 @@
+{
+	"zipName": "LEDemo",
+	"zipExtension": ".zip",
+	"files": [
+		{
+			"source": "../Redist/Intermediate/LEDemo.game",
+			"destination": "LEDemo.game",
+			"isRequired": "True"
+		},
+		{
+			"source": "./installer.py",
+			"destination": "installer.py",
+			"isRequired": "True"
+		}        
+	]
+}

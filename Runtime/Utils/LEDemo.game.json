@@ -1,0 +1,67 @@
+{
+	"zipName": "LEDemo",
+	"zipExtension": ".game",
+	"compress": "True",
+	"files": [
+		{
+			"source": "../LEDemo.exe",
+			"destination": "Win64/LEDemo.exe",
+			"isRequired": "True"
+		},
+		{
+			"source": "../openal32.dll",
+			"destination": "Win64/openal32.dll",
+			"isRequired": "True"
+		},
+		{
+			"source": "../LEDemo.lx",
+			"destination": "Linux/LEDemo",
+			"isRequired": "True"
+		},
+		{
+			"source": "./Linux-Lib.tar.xz",
+			"destination": "Linux/Lib.tar.xz",
+			"isRequired": "True"
+		},
+		{
+			"source": "../Resources/Icon.png",
+			"destination": "Linux/Icon.png"
+		},
+		{
+			"source": "../Resources/.desktop",
+			"destination": "Linux/LEDemo.desktop"
+		},
+		{
+			"source": "../LEDemo.mx",
+			"destination": "OSX/LEDemo"
+		},
+		{
+			"source": "./OSX-Lib.tar.gz",
+			"destination": "OSX/Lib.tar.gz"
+		},
+		{
+			"source": "./OSX-Frameworks.tar.gz",
+			"destination": "OSX/Frameworks.tar.gz"
+		},
+		{
+			"source": "../Resources/Icon.icns",
+			"destination": "OSX/Icon.icns"
+		},
+		{
+			"source": "../Resources/Info.plist",
+			"destination": "OSX/Info.plist"
+		},
+		{
+			"source": "../GameAssets.cooked",
+			"destination": "GameAssets.cooked",
+			"isRequired": "True"
+		}
+	],
+	"directories": [
+		{
+			"source": "../GameMusic",
+			"destination": "GameMusic",
+			"isRequired": "True"
+		}
+	]
+}

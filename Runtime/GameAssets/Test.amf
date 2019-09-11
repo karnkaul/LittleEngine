@@ -1,0 +1,43 @@
+{
+	"textures":[
+		"Misc/06.png",
+		"Misc/Test.png",
+		"Textures/Ship.png",
+		"Textures/TestSheet_64x64_6x6.png"
+	],
+	"texts": [
+		"Misc/BinaryText.txt",
+		"Textures/TestSheet_64x64_6x6.spritesheet",
+		"VFX/Fire0/Fire0_noloop.psdata",
+		"VFX/Fire0/Fire0_loop.psdata",
+		"VFX/Stars0/Stars0.psdata"
+	],
+	"sounds": [
+		"Sounds/TestSound.wav",
+		"Sounds/TestSound_b.wav"
+	],
+	"textureSets": [
+		{
+			"pathPrefix": "VFX/Fire0",
+			"count": 3,
+			"assetSuffix": ".png"
+		},
+		{
+			"pathPrefix": "VFX/Stars0",
+			"count": 1,
+			"assetSuffix": ".png"
+		},
+		{
+			"pathPrefix": "Misc/STRESS_TEST",
+			"count": 5,
+			"assetSuffix": ".png"
+		}
+	],
+	"soundSets": [
+		{
+			"pathPrefix": "VFX/Fire0",
+			"count": 2,
+			"assetSuffix": ".wav"
+		}
+	]
+}

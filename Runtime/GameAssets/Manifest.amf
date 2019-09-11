@@ -1,0 +1,18 @@
+{
+	"textures": [
+		"Textures/Tiles/SpaceTile0.png",
+		"Textures/LoadingIcon.png"
+	],
+	"fonts": [
+		"Fonts/main.ttf",
+		"Fonts/UIFont.ttf",
+		"Fonts/Sunscreen.otf"
+	],
+	"texts": [
+		"Texts/Game.style",
+		"Texts/Layouts/UIOptions.uil",
+		"Texts/Locale/en.loc",
+		"Texts/Shaders/Default.vsh",
+		"Texts/Shaders/Default.fsh"
+	]
+}

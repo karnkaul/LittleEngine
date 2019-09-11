@@ -1,0 +1,23 @@
+branches:
+  only:
+    - master
+    - release
+    - dev
+cache:
+  directories:
+    - BuildCache
+
+language: cpp
+
+compiler:
+  - clang
+
+before_install:
+  - chmod a+x .travis/*.sh
+  - test -f .travis/before-install.sh && .travis/before-install.sh
+
+install:
+  - test -f .travis/install.sh && .travis/install.sh
+
+script:
+  - .travis/script.sh

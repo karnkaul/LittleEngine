@@ -1,0 +1,48 @@
+{
+	"zipName": "LittleEngine",
+	"zipExtension": ".zip",
+	"compress": "True",
+	"files": [
+		{
+			"source": "../Redist/Intermediate/LEDemo.zip",
+			"destination": "LEDemo.zip",
+			"isRequired": "True"
+		},
+		{
+			"source": "../LEDemo-Develop.exe",
+			"destination": "Win64/LEDemo-Develop.exe"
+		},
+		{
+			"source": "../LEDemo-Release.exe",
+			"destination": "Win64/LEDemo-Release.exe"
+		},
+		{
+			"source": "../LEDemo-Develop.lx",
+			"destination": "Linux/LEDemo-Develop"
+		},
+		{
+			"source": "../LEDemo-Release.lx",
+			"destination": "Linux/LEDemo-Release"
+		},
+		{
+			"source": "../LEDemo-Develop.mx",
+			"destination": "OSX/LEDemo-Develop"
+		},
+		{
+			"source": "../LEDemo-Release.mx",
+			"destination": "OSX/LEDemo-Release"
+		},
+		{
+			"source": "../Settings.ini",
+			"destination": "Settings.ini"
+		},
+		{
+			"source": "../.game.conf",
+			"destination": ".game.conf"
+		},
+		{
+			"source": "../InputMap.ini",
+			"destination": "InputMap.ini"
+		}
+	]
+}

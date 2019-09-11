@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>MacOSX</string>
+	</array>
+    <key>CFBundleIconFile</key>
+    <string>Icon</string>
+	<key>CFBundleShortVersionString</key>
+	<string>@BUILD_VERSION_MAJOR@.@BUILD_VERSION_MINOR@.@BUILD_VERSION_PATCH@.@BUILD_VERSION_PRE@</string>
+</dict>
+</plist>
