@@ -3,12 +3,8 @@ project(Core CXX)
 ################################################################################
 # Generated sources
 ################################################################################
-configure_file(
-	"${CMAKE_CURRENT_SOURCE_DIR}/Core/BuildVersion.h.in"
-	"${CMAKE_CURRENT_BINARY_DIR}/Core/BuildVersion.h"
-)
-
 set(EXTRA_FILES Core/BuildVersion.h)
+configure_files_src_to_bin("${EXTRA_FILES}")
 set_source_files_properties(${EXTRA_FILES} PROPERTIES GENERATED TRUE)
 
 ################################################################################

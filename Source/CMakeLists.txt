@@ -66,7 +66,7 @@ string(STRIP "${BUILD_COMMIT_HASH}" BUILD_COMMIT_HASH)
 set(BUILD_VERSION_MAJOR 0 CACHE STRING "Build Version Major" FORCE)
 set(BUILD_VERSION_MINOR 4 CACHE STRING "Build Version Minor" FORCE)
 set(BUILD_VERSION_PATCH 7 CACHE STRING "Build Version Patch" FORCE)
-set(BUILD_VERSION_PRE 2 CACHE STRING "Build Version Pre" FORCE)
+set(BUILD_VERSION_PRE 3 CACHE STRING "Build Version Pre" FORCE)
 set(BUILD_COMMIT_HASH ${BUILD_COMMIT_HASH} CACHE STRING "Build Version Commit" FORCE)
 
 ################################################################################
