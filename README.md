@@ -1,8 +1,10 @@
 # Little Engine
 
+<img align="right" src="https://github.com/karnkaul/LittleEngine/blob/dev/Source/App/App/Resources/Icon.png" width="64" />
+
 Written in **C++17**, utilising [**SFML**](https://www.sfml-dev.org/) and [**PhysicsFS**](https://icculus.org/physfs/), Little Engine is a 2D game engine hobby project with little defined ambition or scope; in other words, let's see where we can take this!
 
-[![Build Status](https://travis-ci.org/karnkaul/LittleEngine.svg?branch=master)](https://travis-ci.org/karnkaul/LittleEngine)
+[![Build Status](https://travis-ci.org/karnkaul/LittleEngine.svg?branch=master)](https://travis-ci.org/karnkaul/LittleEngine) [![Licence](https://img.shields.io/github/license/karnkaul/LittleEngine)](LICENSE) [![Twitter](https://img.shields.io/twitter/url/https/karnkaul?label=Follow&style=social)](https://twitter.com/KarnKaul)
 
 ### Features
 - **CMake** project - develop/build (almost) anywhere
@@ -68,6 +70,10 @@ Quick Start:
     1. Debug/run the built/installed executable
 
 [Short video](https://youtu.be/Ox5c96EflZU) demonstrating full project setup from scratch on Linux (v0.4.7.0).
+
+### Contact
+
+* [Twitter](https://twitter.com/KarnKaul)
 
 ### Licence
 LittleEngine uses the [GNU GPLv3 licence](LICENSE).
