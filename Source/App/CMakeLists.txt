@@ -29,7 +29,6 @@ set_source_files_properties(${GENERATED_SOURCES} PROPERTIES GENERATED TRUE)
 ## Generated
 set(GENERATED_FILES
 	${GENERATED_SOURCES}
-	App/Resources/Win64/App.rc
 	App/Resources/Linux/.desktop
 	App/Resources/OSX/Info.plist
 )
@@ -43,7 +42,8 @@ source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${ALL_FILES})
 ################################################################################
 add_executable(${PROJECT_NAME} ${ALL_FILES})
 
-output_name(LEDemo$<$<NOT:$<CONFIG:Ship>>:-$<CONFIG>>${EXE_SUFFIX})
+set(EXE_NAME LEDemo$<$<NOT:$<CONFIG:Ship>>:-$<CONFIG>>${EXE_SUFFIX})
+output_name(${EXE_NAME})
 output_directory("${BUILD_PATH}/Exe")
 recursive_include("${CMAKE_CURRENT_SOURCE_DIR}")
 add_target_compile_definitions()
@@ -80,4 +80,4 @@ install(FILES
 	"${CMAKE_CURRENT_BINARY_DIR}/App/Resources/Linux/.desktop"
 	DESTINATION "${RUNTIME_PATH}/Resources"
 )
-install_runtime()
+install_runtime(${EXE_NAME})

@@ -1,13 +1,19 @@
 #!/bin/bash
 
+# This script runs cmake/ninja/make install on all `Project`
+# directory suffixes passed to it
+# Requirements:
+# - cmake
+# - ninja / make (cmake 3.15+ for Win64)
+# - VCVARS env var (path to `vcvarsall.bat`, Win64)
+# - build_all.bat (Win64)
+
 if [[ $# < 1 ]]; then
 	echo "Syntax for ../../Project<X>: install_builds.sh <X0> [X1] [X2...]"
 	exit 1
 fi
 
-if [[ "$(pwd)" == *"Runtime" ]]; then
-	cd Utils
-fi
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 ## Confirm paths exist
 for SUFFIX in "${@}"; do

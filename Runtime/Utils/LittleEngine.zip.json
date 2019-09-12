@@ -25,12 +25,12 @@
 			"destination": "Linux/LEDemo-Release"
 		},
 		{
-			"source": "../LEDemo-Develop.mx",
-			"destination": "OSX/LEDemo-Develop"
+			"source": "../LEDemo-Develop.app.tar.gz",
+			"destination": "OSX/LEDemo-Develop.tar.gz"
 		},
 		{
-			"source": "../LEDemo-Release.mx",
-			"destination": "OSX/LEDemo-Release"
+			"source": "../LEDemo-Release.app.tar.gz",
+			"destination": "OSX/LEDemo-Release.app.tar.gz"
 		},
 		{
 			"source": "../Settings.ini",

@@ -1,7 +1,8 @@
 ##################################
 # Init
 ##################################
-set(SFML_STATIC_LIBS ON CACHE BOOL "" FORCE)
+# Disable dynamic ThirdParty libraries
+set(SFML_STATIC_LIBS ON CACHE INTERNAL "")
 set(CMAKE_VS_PLATFORM_NAME "x64" CACHE STRING "" FORCE)
 
 set(W_MSBUILD 0)
@@ -97,7 +98,7 @@ function(ensure_dependencies_present)
 	copy_file_list("${PLATFORM_DLLS}" "${BUILD_THIRD_PARTY_PATH}/Lib" "${RUNTIME_PATH}")
 endfunction()
 
-function(install_runtime)
+function(install_runtime EXE_NAME)
 	install_file_list("${PLATFORM_DLLS}" "${BUILD_THIRD_PARTY_PATH}/Lib" "${RUNTIME_PATH}")
 endfunction()
 

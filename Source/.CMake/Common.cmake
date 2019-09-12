@@ -19,7 +19,6 @@
 ##################################
 # Init
 ##################################
-option(SFML_STATIC_LIBS "Whether using static libs" ON)
 set(STATIC_LIB_NAMES
 	physfs
 )

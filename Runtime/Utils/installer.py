@@ -89,8 +89,7 @@ if (os_name == 'Linux'):
 	else:
 		if (not extract_to('Linux/' + game_file, install_dir)):
 			fatal_error = files_missing_msg
-		if (not extract_to('Linux/Lib.tar.xz', install_dir)):
-			fatal_error = files_missing_msg
+	extract_to('Linux/Lib.tar.xz', install_dir)
 	extract_to('Linux/' + game_file + '.desktop', install_dir)
 	extract_to('Linux/Icon.png', install_dir)
 
@@ -101,14 +100,8 @@ elif (os_name == 'Windows'):
 		fatal_error = files_missing_msg
 
 elif (os_name == 'MacOSX'):
-	if (not extract_to('OSX/' + game_file, install_dir)):
+	if (not extract_to('OSX/' + game_file  + '.app.tar.gz', install_dir)):
 		fatal_error = files_missing_msg
-	if (not extract_to('OSX/Lib.tar.gz', install_dir)):
-		fatal_error = files_missing_msg
-	if (not extract_to('OSX/Frameworks.tar.gz', install_dir)):
-		fatal_error = files_missing_msg
-	extract_to('OSX/Icon.icns', install_dir)
-	extract_to('OSX/Info.plist', install_dir)
 
 else:
 	fatal_error = os_name + ' not supported!'
@@ -127,9 +120,11 @@ with zipfile.ZipFile(game_file + '.game', 'r') as archive:
 		archive.extract(target.zip_info, target.dest)
 
 if (os_name == 'Linux'):
-	with tarfile.open(install_dir + '/Lib.tar.xz', 'r:*') as archive:
-		archive.extractall(install_dir + '/Lib/')
-	remove_from_install(['Lib.tar.xz'])
+	lib_archive = '/Lib.tar.xz'
+	if (os.path.isfile(install_dir + '/' + lib_archive)):
+		with tarfile.open(lib_archive, 'r:*') as archive:
+			archive.extractall(install_dir + '/Lib/')
+		remove_from_install([lib_archive])
 	desktop_file = install_dir + '/' + game_file + '.desktop'
 	if (os.path.isfile(desktop_file)):
 		f = open(desktop_file, 'a+')
@@ -137,28 +132,17 @@ if (os_name == 'Linux'):
 		f.write('Icon=' + install_dir + '/Icon.png\n')
 		home = os.path.expanduser('~')
 		os.makedirs(home + '/.local/share/applications', 0o777, True)
-		os.rename(desktop_file, os.path.join(home, '.local/share/applications/' + game_file + '.desktop'))
+		shutil.move(desktop_file, os.path.join(home, '.local/share/applications/' + game_file + '.desktop'))
 	os.chmod(install_dir + '/' + game_file, 0o751)
+elif (os_name == 'MacOSX'):
+	archive_file = game_file + '.app.tar.gz'
+	with tarfile.open(install_dir + '/' + archive_file) as archive:
+		archive.extractall(install_dir)
+	remove_from_install([archive_file])
+	for archive_file in os.listdir('../OSX'):
+		if (archive_file.endswith('tar.gz')):
+			with tarfile.open('../OSX/' + archive_file) as archive:
+				archive.extractall('../OSX')
 
-if (os_name == 'MacOSX'):
-	with tarfile.open(install_dir + '/Lib.tar.gz', 'r:*') as archive:
-		archive.extractall(install_dir + '/Lib')
-	os.remove(install_dir + '/Lib.tar.gz')
-	with tarfile.open(install_dir + '/Frameworks.tar.gz', 'r:*') as archive:
-		archive.extractall(install_dir + '/Frameworks/')
-	remove_from_install(['Lib.tar.gz, Frameworks.tar.gz'])
-	os.chmod(install_dir + '/' + game_file, 0o751)
-	plist = install_dir + '/Info.plist'
-	icon = install_dir + '/Icon.icns'
-	if (os.path.isfile(plist)):
-		shutil.rmtree(install_dir + '/' + game_file + '_', True)
-		makedirs_in_install([game_file + '_/Contents/MacOS', game_file + '_/Contents/Resources'])
-		move_in_install(game_file, game_file + '_/Contents/MacOS')
-		move_in_install('Lib', game_file + '_/Contents/MacOS')
-		move_in_install('Frameworks', game_file + '_/Contents/MacOS')
-		move_in_install('Info.plist', game_file + '_/Contents')
-		if (os.path.isfile(icon)):
-			move_in_install('Icon.icns', game_file + '_/Contents/Resources')
-		shutil.rmtree(install_dir + '/' + game_file + '.app', True)
-		os.rename(install_dir + '/' + game_file + '_', install_dir + '/' + game_file + '.app')
+
 print('  Installation complete!')

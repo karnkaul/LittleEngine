@@ -1,12 +1,14 @@
 #!/bin/bash
 
+# This script runs clang-format on all Source files (except `ThirdParty`)
+# Requirements:
+#  - clang-format
+
 SOURCE_ROOT=../..
 SOURCE_PATH=$SOURCE_ROOT/Source
 EXCLUDE=*ThirdParty/*
 
-if [[ "$(pwd)" == *"Runtime" ]]; then
-	cd Utils
-fi
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 if [[ ! -d $SOURCE_PATH ]]; then
 	echo -e "Error! $SOURCE_PATH does not exist!"

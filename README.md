@@ -28,7 +28,7 @@ LittleEngine pre-releases containing a demo game with Win64, Linux-x64, and MacO
 1. Operating System:
     1. Windows 7/8/10: [Microsoft VC++ Runtime (x64)](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
     1. Linux: OpenAL libraries (`libopenal-dev`)
-    1. MacOSX: Python 3 (`installer.py` creates the app bundle)
+    1. MacOSX: Python 3 (app bundles are unsigned; `installer.py` eases the UX)
 
 #### Installing LittleEngine
 1. Obtain the game zip (present inside a GitHub Release zip)
