@@ -105,18 +105,17 @@ function(set_target_compile_options)
 		$<$<OR:$<CONFIG:Debug>,$<CONFIG:Develop>>:
 			-O0
 		>
-		$<$<OR:$<CONFIG:Release>,$<CONFIG:Ship>>:
+		$<$<CONFIG:Release>:
 			-O2
 			-Werror
 		>
-		$<$<NOT:$<CONFIG:Ship>>:
+		$<$<NOT:$<CONFIG:Release>>:
 			-g
 		>
 		-Wextra
 		-Werror=return-type
 		-fexceptions
 		$<${LX_GCC}:-utf-8>
-		$<${LX_CLANG}:-std=c++17>
 	)
 endfunction()
 

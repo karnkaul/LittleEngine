@@ -84,11 +84,13 @@ function(set_target_compile_options)
 		$<$<OR:$<CONFIG:Debug>,$<CONFIG:Develop>>:
 			-O0
 		>
-		$<$<OR:$<CONFIG:Release>,$<CONFIG:Ship>>:
+		$<$<CONFIG:Release>:
 			-O2
 			-Werror
 		>
-		-g
+		$<$<NOT:$<CONFIG:Release>>:
+			-g
+		>
 		-Wextra
 		-Werror=return-type
 		-fexceptions

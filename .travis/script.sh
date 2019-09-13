@@ -22,5 +22,5 @@ build() {
 }
 
 # Ship
-build Ship
+build Release
 build Develop

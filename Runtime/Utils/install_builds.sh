@@ -9,11 +9,11 @@
 # - build_all.bat (Win64)
 
 if [[ $# < 1 ]]; then
-	echo "Syntax for ../../Project<X>: install_builds.sh <X0> [X1] [X2...]"
+	echo "Syntax for Project<X>: install_builds.sh <X0> [X1] [X2...]"
 	exit 1
 fi
 
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
 ## Confirm paths exist
 for SUFFIX in "${@}"; do

@@ -103,18 +103,17 @@ function(install_runtime EXE_NAME)
 endfunction()
 
 function(set_target_compile_options)
-	set(W_CLANG_FLAGS_SHIP -Werror)
 	set(W_CLANG_FLAGS_COMMON /W4 -Werror=return-type -Wextra -Wconversion -Wunreachable-code -Wdeprecated-declarations -Wtype-limits)
 	if(W_GCC)
 		target_compile_options(${PROJECT_NAME} PRIVATE
 			$<$<OR:$<CONFIG:Debug>,$<CONFIG:Develop>>:
 				-O0
 			>
-			$<$<OR:$<CONFIG:Release>,$<CONFIG:Ship>>:
+			$<$<CONFIG:Release>:
 				-O2
 				-Werror
 			>
-			$<$<NOT:$<CONFIG:Ship>>:
+			$<$<NOT:$<CONFIG:Release>>:
 				-g
 			>
 			-Wextra
@@ -132,22 +131,18 @@ function(set_target_compile_options)
 				/Od
 				/MD
 			>
-			$<$<OR:$<CONFIG:Release>,$<CONFIG:Ship>>:
+			$<$<CONFIG:Release>:
 				/O2
 				/Oi
 				/Ot
 				$<$<BOOL:${W_MSBUILD}>:/GL>
 				/Gy
 				/MD
-				$<$<BOOL:${W_CLANG}>:${W_CLANG_FLAGS_SHIP}>
-			>
-			$<$<CONFIG:Release>:
-				/Zo
+				$<$<BOOL:${W_CLANG}>:-Werror>
 			>
 			/sdl
 			/Z7
 			/EHsc
-			/std:c++17
 			$<$<BOOL:${W_CLANG}>:${W_CLANG_FLAGS_COMMON}>
 			$<$<BOOL:${W_MSBUILD}>:/MP>
 		)
@@ -161,7 +156,7 @@ function(set_target_link_options)
 				/SUBSYSTEM:CONSOLE
 				/OPT:NOREF
 			>
-			$<$<OR:$<CONFIG:Release>,$<CONFIG:Ship>>:
+			$<$<CONFIG:Release>:
 				/ENTRY:mainCRTStartup
 				/SUBSYSTEM:WINDOWS
 				/OPT:REF

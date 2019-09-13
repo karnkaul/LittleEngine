@@ -18,10 +18,6 @@
 		{
 			"namespace": "Release",
 			"buildRoot": "${projectDir}/../Project_Release"
-		},
-		{
-			"namespace": "Ship",
-			"buildRoot": "${projectDir}/../Project_Ship"
 		}
 	],
 	
@@ -93,36 +89,6 @@
 			"configurationType": "Release",
 			"inheritEnvironments": [ "clang_cl_x64" ],
 			"buildRoot": "${Release.buildRoot}",
-			"variables": [
-				{
-					"name": "CMAKE_C_COMPILER",
-					"value": "${env.cCompiler}",
-					"type": "FILEPATH"
-				},
-				{
-					"name": "CMAKE_CXX_COMPILER",
-					"value": "${env.cxxCompiler}",
-					"type": "FILEPATH"
-				},
-				{
-					"name": "CMAKE_LINKER",
-					"value": "${env.linker}",
-					"type": "FILEPATH"
-				},
-				{
-					"name": "CMAKE_MAKE_PROGRAM",
-					"value": "${env.makeProgram}",
-					"type": "FILEPATH"
-				}
-			]
-		},
-		{
-			"name": "x64-Ship",
-			"cmakeExecutable": "${env.cmake}",
-			"generator": "Ninja",
-			"configurationType": "Ship",
-			"inheritEnvironments": [ "clang_cl_x64" ],
-			"buildRoot": "${Ship.buildRoot}",
 			"variables": [
 				{
 					"name": "CMAKE_C_COMPILER",

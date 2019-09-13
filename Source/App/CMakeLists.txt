@@ -42,7 +42,7 @@ source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${ALL_FILES})
 ################################################################################
 add_executable(${PROJECT_NAME} ${ALL_FILES})
 
-set(EXE_NAME LEDemo$<$<NOT:$<CONFIG:Ship>>:-$<CONFIG>>${EXE_SUFFIX})
+set(EXE_NAME LEDemo$<$<NOT:$<CONFIG:Release>>:-$<CONFIG>>${EXE_SUFFIX})
 output_name(${EXE_NAME})
 output_directory("${BUILD_PATH}/Exe")
 recursive_include("${CMAKE_CURRENT_SOURCE_DIR}")

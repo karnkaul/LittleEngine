@@ -14,22 +14,17 @@ set(CMAKE_CONFIGURATION_TYPES
 	Debug
 	Develop
 	Release
-	Ship
 	CACHE STRING "" FORCE
 )
 
 set(INSTALL_CONFIGS
 	Develop
 	Release
-	Ship
 )
 
 set(CMAKE_C_FLAGS_DEVELOP "${CMAKE_C_FLAGS_DEBUG}")
-set(CMAKE_C_FLAGS_SHIP "${CMAKE_C_FLAGS_RELEASE}")
 set(CMAKE_CXX_FLAGS_DEVELOP "${CMAKE_C_FLAGS_DEBUG}")
-set(CMAKE_CXX_FLAGS_SHIP "${CMAKE_C_FLAGS_RELEASE}")
 set(CMAKE_EXE_LINKER_FLAGS_DEVELOP "${CMAKE_EXE_LINKER_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS_SHIP "${CMAKE_EXE_LINKER_FLAGS}")
 
 ################################################################################
 # Init
