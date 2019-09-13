@@ -35,4 +35,4 @@ Runtime/GameAssets/*
 Runtime/*.exe
 Runtime/*.lx
 Runtime/*.lxa
-Runtime/*.mx
+Runtime/*.app

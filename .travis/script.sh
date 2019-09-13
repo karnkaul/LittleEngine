@@ -15,12 +15,12 @@ build() {
 		mkdir Project_$CONFIG
 	fi
 	cd Project_$CONFIG
-	cmake -GNinja ../Source -DCMAKE_BUILD_TYPE=$CONFIG -DCI_BUILD=1
+	cmake -GNinja ../Source -DCMAKE_BUILD_TYPE=$CONFIG -DCI_BUILD=1 -DSFML_STATIC_LIBS=0
 	ninja -v
 	cmake --install .
 	cd ..
 }
 
 # Ship
-build Ship
+build Release
 build Develop

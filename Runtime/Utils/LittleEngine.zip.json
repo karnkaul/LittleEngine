@@ -13,24 +13,12 @@
 			"destination": "Win64/LEDemo-Develop.exe"
 		},
 		{
-			"source": "../LEDemo-Release.exe",
-			"destination": "Win64/LEDemo-Release.exe"
-		},
-		{
 			"source": "../LEDemo-Develop.lx",
 			"destination": "Linux/LEDemo-Develop"
 		},
 		{
-			"source": "../LEDemo-Release.lx",
-			"destination": "Linux/LEDemo-Release"
-		},
-		{
-			"source": "../LEDemo-Develop.mx",
-			"destination": "OSX/LEDemo-Develop"
-		},
-		{
-			"source": "../LEDemo-Release.mx",
-			"destination": "OSX/LEDemo-Release"
+			"source": "../LEDemo-Develop.app.tar.gz",
+			"destination": "OSX/LEDemo-Develop.tar.gz"
 		},
 		{
 			"source": "../Settings.ini",

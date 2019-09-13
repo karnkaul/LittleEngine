@@ -1,7 +1,7 @@
 ##################################
 # Init
 ##################################
-set(SFML_STATIC_LIBS OFF CACHE BOOL "" FORCE)
+option(SFML_STATIC_LIBS "Whether using static libs" ON)
 
 set(LX_CLANG 0)
 set(LX_GCC 0)
@@ -25,12 +25,17 @@ foreach(LIB_NAME ${STATIC_LIB_NAMES})
 	list(APPEND PLATFORM_STATIC_LIBS_DEBUG "lib${LIB_NAME}-d.a")
 endforeach()
 foreach(LIB_NAME ${SFML_LIB_NAMES})
-	list(APPEND PLATFORM_SHARED_LIBS_RELEASE "lib${LIB_NAME}.so")
-	list(APPEND PLATFORM_SHARED_LIBS_RELEASE "lib${LIB_NAME}.so.2.5")
-	list(APPEND PLATFORM_SHARED_LIBS_RELEASE "lib${LIB_NAME}.so.2.5.1")
-	list(APPEND PLATFORM_SHARED_LIBS_DEBUG "lib${LIB_NAME}-d.so")
-	list(APPEND PLATFORM_SHARED_LIBS_DEBUG "lib${LIB_NAME}-d.so.2.5")
-	list(APPEND PLATFORM_SHARED_LIBS_DEBUG "lib${LIB_NAME}-d.so.2.5.1")
+	if(NOT SFML_STATIC_LIBS)
+		list(APPEND PLATFORM_SHARED_LIBS_RELEASE "lib${LIB_NAME}.so")
+		list(APPEND PLATFORM_SHARED_LIBS_RELEASE "lib${LIB_NAME}.so.2.5")
+		list(APPEND PLATFORM_SHARED_LIBS_RELEASE "lib${LIB_NAME}.so.2.5.1")
+		list(APPEND PLATFORM_SHARED_LIBS_DEBUG "lib${LIB_NAME}-d.so")
+		list(APPEND PLATFORM_SHARED_LIBS_DEBUG "lib${LIB_NAME}-d.so.2.5")
+		list(APPEND PLATFORM_SHARED_LIBS_DEBUG "lib${LIB_NAME}-d.so.2.5.1")
+	else()
+		list(APPEND PLATFORM_STATIC_LIBS_RELEASE "lib${LIB_NAME}-s.a")
+		list(APPEND PLATFORM_STATIC_LIBS_DEBUG "lib${LIB_NAME}-s-d.a")
+	endif()
 endforeach()
 
 set(EXE_SUFFIX ".lx")
@@ -45,6 +50,20 @@ function(set_target_platform_libraries)
 	if ("${PROJECT_NAME}" STREQUAL "Core")
 		target_link_libraries(${PROJECT_NAME} PUBLIC
 			pthread
+			X11
+			Xrandr
+		)
+	elseif("${PROJECT_NAME}" STREQUAL "Engine" AND SFML_STATIC_LIBS)
+		target_link_libraries(${PROJECT_NAME} PRIVATE
+			freetype
+			FLAC
+			GL
+			ogg
+			openal
+			udev
+			vorbis
+			vorbisenc
+			vorbisfile
 			X11
 			Xrandr
 		)
@@ -76,7 +95,7 @@ function(ensure_dependencies_present)
 	ensure_files_present("${BUILD_THIRD_PARTY_PATH}/Lib" "${LIB_FILENAMES}")
 endfunction()
 
-function(install_runtime)
+function(install_runtime EXE_NAME)
 	install_file_list("${PLATFORM_SHARED_LIBS_RELEASE}" "${BUILD_THIRD_PARTY_PATH}/Lib" "${RUNTIME_PATH}/Lib")
 endfunction()
 
@@ -86,18 +105,17 @@ function(set_target_compile_options)
 		$<$<OR:$<CONFIG:Debug>,$<CONFIG:Develop>>:
 			-O0
 		>
-		$<$<OR:$<CONFIG:Release>,$<CONFIG:Ship>>:
+		$<$<CONFIG:Release>:
 			-O2
 			-Werror
 		>
-		$<$<NOT:$<CONFIG:Ship>>:
+		$<$<NOT:$<CONFIG:Release>>:
 			-g
 		>
 		-Wextra
 		-Werror=return-type
 		-fexceptions
 		$<${LX_GCC}:-utf-8>
-		$<${LX_CLANG}:-std=c++17>
 	)
 endfunction()
 

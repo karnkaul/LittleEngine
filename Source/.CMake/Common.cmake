@@ -19,7 +19,6 @@
 ##################################
 # Init
 ##################################
-option(SFML_STATIC_LIBS "Whether using static libs" ON)
 set(STATIC_LIB_NAMES
 	physfs
 )
@@ -60,10 +59,10 @@ function(add_target_compile_definitions)
 		$<$<NOT:$<CONFIG:Debug>>:
 			NDEBUG
 		>
-		$<$<NOT:$<CONFIG:Ship>>:
+		$<$<NOT:$<CONFIG:Release>>:
 			DEBUGGING
 		>
-		$<$<OR:$<CONFIG:Release>,$<CONFIG:Ship>>:
+		$<$<CONFIG:Release>:
 			SHIPPING
 		>
 	)

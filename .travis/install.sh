@@ -8,13 +8,11 @@ if [ -d BuildCache/ThirdParty ]; then
     echo "Restoring ThirdParty via BuildCache..."
     cp -r BuildCache/ThirdParty _Build
 else
-    echo "Building ThirdParty"
     sudo apt-get install -y $SFML_DEPENDENCIES
-
-    # Build ThirdParty
+    echo "Building ThirdParty"
     mkdir Project_ThirdParty
     cd Project_ThirdParty
-    cmake -GNinja ../Source/ThirdParty
+    cmake -GNinja ../Source/ThirdParty -DBUILD_SHARED_LIBS=1
     ninja -v
     cd ..
 

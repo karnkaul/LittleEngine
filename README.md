@@ -1,8 +1,10 @@
 # Little Engine
 
+<img align="right" src="https://github.com/karnkaul/LittleEngine/blob/dev/Source/App/App/Resources/Icon.png" width="64" />
+
 Written in **C++17**, utilising [**SFML**](https://www.sfml-dev.org/) and [**PhysicsFS**](https://icculus.org/physfs/), Little Engine is a 2D game engine hobby project with little defined ambition or scope; in other words, let's see where we can take this!
 
-[![Build Status](https://travis-ci.org/karnkaul/LittleEngine.svg?branch=master)](https://travis-ci.org/karnkaul/LittleEngine)
+[![Build Status](https://travis-ci.org/karnkaul/LittleEngine.svg?branch=master)](https://travis-ci.org/karnkaul/LittleEngine) [![Licence](https://img.shields.io/github/license/karnkaul/LittleEngine)](LICENSE) [![Twitter](https://img.shields.io/twitter/url/https/karnkaul?label=Follow&style=social)](https://twitter.com/KarnKaul)
 
 ### Features
 - **CMake** project - develop/build (almost) anywhere
@@ -22,19 +24,15 @@ LittleEngine pre-releases containing a demo game with Win64, Linux-x64, and MacO
 
 #### Requirements
 1. x64 CPU with at least two threads
+1. (Optional) Python 3.5+ (for `installer.py`)
 1. Operating System:
-    1. Windows 7/8/10
-        1. [Microsoft VC++ Runtime (x64)](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
-    1. Linux: the following installed to standard paths
-        1. X11, XRandr, OpenAL libraries and development headers
-    1. MacOSX
-        1. Python is recommended, as the installer creates the app bundle
-1. Python 3.5+ (optional: for `installer.py`)
+    1. Windows 7/8/10: [Microsoft VC++ Runtime (x64)](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
+    1. Linux: OpenAL libraries (`libopenal-dev`)
+    1. MacOSX: Python 3 (app bundles are unsigned; `installer.py` eases the UX)
 
 #### Installing LittleEngine
-1. Obtain the game zip (present inside a GitHub Release zip)
-1. Move it to the installation directory and unzip it
-1. Run installer.py via Python 3 (or unzip ".game" manually and copy the contents of "[Your OS]" into its parent directory)
+1. Obtain the game zip (present inside a [GitHub Release](https://github.com/karnkaul/LittleEngine/releases) zip)
+1. Unzip it to the installation directory and run `installer.py` via Python 3 (or unzip ".game" manually and copy the contents of "[Your OS]" into the installation directory)
 
 > *Note: OSX builds are in alpha and may not be stable.*
 
@@ -68,6 +66,10 @@ Quick Start:
     1. Debug/run the built/installed executable
 
 [Short video](https://youtu.be/Ox5c96EflZU) demonstrating full project setup from scratch on Linux (v0.4.7.0).
+
+### Contact
+
+* [Twitter](https://twitter.com/KarnKaul)
 
 ### Licence
 LittleEngine uses the [GNU GPLv3 licence](LICENSE).
