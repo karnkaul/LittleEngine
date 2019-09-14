@@ -25,7 +25,8 @@ Runtime/GameAssets/*
 !Runtime/GameAssets/*.amf
 !Runtime/Utils
 !Runtime/.game.conf
-!Runtime/InputMap.ini
+!Runtime/InputMap.txt
+!Runtime/Settings.txt
 *.exe
 *.lx*
 *.mx
@@ -35,4 +36,4 @@ Runtime/GameAssets/*
 Runtime/*.exe
 Runtime/*.lx
 Runtime/*.lxa
-Runtime/*.mx
+Runtime/*.app

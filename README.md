@@ -1,12 +1,14 @@
 # Little Engine
 
+<img align="right" src="https://github.com/karnkaul/LittleEngine/blob/dev/Source/App/App/Resources/Icon.png" width="64" />
+
 Written in **C++17**, utilising [**SFML**](https://www.sfml-dev.org/) and [**PhysicsFS**](https://icculus.org/physfs/), Little Engine is a 2D game engine hobby project with little defined ambition or scope; in other words, let's see where we can take this!
 
-[![Build Status](https://travis-ci.org/karnkaul/LittleEngine.svg?branch=master)](https://travis-ci.org/karnkaul/LittleEngine)
+[![Build Status](https://travis-ci.org/karnkaul/LittleEngine.svg?branch=master)](https://travis-ci.org/karnkaul/LittleEngine) [![Licence](https://img.shields.io/github/license/karnkaul/LittleEngine)](LICENSE) [![Twitter](https://img.shields.io/twitter/url/https/karnkaul?label=Follow&style=social)](https://twitter.com/KarnKaul)
 
 ### Features
 - **CMake** project - develop/build (almost) anywhere
-- Full keyboard, mouse and single joystick support
+- Full **keyboard**, **mouse** and single **joystick** support
 - Custom 2D coordinate system using **3x3 matrices**
 - **Quad**, **Quads**, **Rectangle**, **Circle**, and **Text** primitives
 - **Asynchronous rendering** on a dedicated thread; light main/game thread
@@ -15,26 +17,22 @@ Written in **C++17**, utilising [**SFML**](https://www.sfml-dev.org/) and [**Phy
 - Engine **Repository** with async loading, asset manifests, and sounds & music playback
 - In-game **Console**, **Tweakable** variables, **Profiler**, and other debugging tools
 - Stack and Context-based **UI Framework**
-- Various Python3 tools for asset cooking, app packaging, etc
+- Various Python3 tools for **asset cooking**, **app packaging**, **bundle archiving**, etc
 
 ### Installation
 LittleEngine pre-releases containing a demo game with Win64, Linux-x64, and MacOSX binaries can be found [here](https://github.com/karnkaul/LittleEngine/releases).
 
 #### Requirements
 1. x64 CPU with at least two threads
+1. (Optional) Python 3.5+ (for `installer.py`)
 1. Operating System:
-    1. Windows 7/8/10
-        1. [Microsoft VC++ Runtime (x64)](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
-    1. Linux: the following installed to standard paths
-        1. X11, XRandr, OpenAL libraries and development headers
-    1. MacOSX
-        1. Python is recommended, as the installer creates the app bundle
-1. Python 3.5+ (optional: for `installer.py`)
+    1. Windows 7/8/10: [Microsoft VC++ Runtime (x64)](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
+    1. Linux: OpenAL libraries (`libopenal-dev`)
+    1. MacOSX: Python 3 (app bundles are unsigned; `installer.py` eases the UX)
 
 #### Installing LittleEngine
-1. Obtain the game zip (present inside a GitHub Release zip)
-1. Move it to the installation directory and unzip it
-1. Run installer.py via Python 3 (or unzip ".game" manually and copy the contents of "[Your OS]" into its parent directory)
+1. Obtain the game zip (present inside a [GitHub Release](https://github.com/karnkaul/LittleEngine/releases) zip)
+1. Unzip it to the installation directory and run `installer.py` via Python 3 (or unzip ".game" manually and copy the contents of "[Your OS]" into the installation directory)
 
 > *Note: OSX builds are in alpha and may not be stable.*
 
@@ -48,7 +46,7 @@ Visit the [Little Engine wiki](https://github.com/karnkaul/LittleEngine/wiki/Dev
 1. (Linux) libstdc++-7; all SFML dependencies (X11, Xrandr, OpenGL, UDev, Freetype, Vorbis, Flac, etc)
 1. (Win 10) [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk) for ninja/MSBuild / Clang/VC++ or [MinGW](http://www.mingw.org/) for MinGW / g++
 1. (MacOSX) Xcode
-1. (Optional) [Python 3](https://www.python.org/downloads/) (all tools scripts are in Python)
+1. (Optional) Bash (native/MinGW/WSL), [Python 3](https://www.python.org/downloads/) (all tools scripts are in Bash/Python)
 
 >*Note: Due to GitHub's limitations with (free) LFS, Runtime Assets have been moved to DropBox since 0.4.4.0.*
 
@@ -68,6 +66,10 @@ Quick Start:
     1. Debug/run the built/installed executable
 
 [Short video](https://youtu.be/Ox5c96EflZU) demonstrating full project setup from scratch on Linux (v0.4.7.0).
+
+### Contact
+
+* [Twitter](https://twitter.com/KarnKaul)
 
 ### Licence
 LittleEngine uses the [GNU GPLv3 licence](LICENSE).

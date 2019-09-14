@@ -10,7 +10,7 @@ namespace LittleEngine
 using Property = Core::Property;
 using LogSeverity = Core::LogSeverity;
 
-// \brief Wrapper to maintain properties saved to / loaded from config.ini
+// \brief Wrapper to maintain properties saved to / loaded from Settings.txt
 class GameSettings final
 {
 public:

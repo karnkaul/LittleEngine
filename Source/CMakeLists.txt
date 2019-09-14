@@ -14,22 +14,17 @@ set(CMAKE_CONFIGURATION_TYPES
 	Debug
 	Develop
 	Release
-	Ship
 	CACHE STRING "" FORCE
 )
 
 set(INSTALL_CONFIGS
 	Develop
 	Release
-	Ship
 )
 
 set(CMAKE_C_FLAGS_DEVELOP "${CMAKE_C_FLAGS_DEBUG}")
-set(CMAKE_C_FLAGS_SHIP "${CMAKE_C_FLAGS_RELEASE}")
 set(CMAKE_CXX_FLAGS_DEVELOP "${CMAKE_C_FLAGS_DEBUG}")
-set(CMAKE_CXX_FLAGS_SHIP "${CMAKE_C_FLAGS_RELEASE}")
 set(CMAKE_EXE_LINKER_FLAGS_DEVELOP "${CMAKE_EXE_LINKER_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS_SHIP "${CMAKE_EXE_LINKER_FLAGS}")
 
 ################################################################################
 # Init
@@ -41,7 +36,11 @@ if(NOT SRC_IDX EQUAL -1)
 endif()
 
 get_filename_component(ROOT_PATH "${CMAKE_SOURCE_DIR}/.." ABSOLUTE)
-set(BUILD_PATH "${ROOT_PATH}/_Build")
+if(CI_BUILD)
+	set(BUILD_PATH "${ROOT_PATH}/_Build/CI")
+else()
+	set(BUILD_PATH "${ROOT_PATH}/_Build")
+endif()
 set(BUILD_THIRD_PARTY_PATH "${BUILD_PATH}/ThirdParty")
 set(RUNTIME_PATH "${ROOT_PATH}/Runtime")
 
@@ -66,7 +65,7 @@ string(STRIP "${BUILD_COMMIT_HASH}" BUILD_COMMIT_HASH)
 set(BUILD_VERSION_MAJOR 0 CACHE STRING "Build Version Major" FORCE)
 set(BUILD_VERSION_MINOR 4 CACHE STRING "Build Version Minor" FORCE)
 set(BUILD_VERSION_PATCH 7 CACHE STRING "Build Version Patch" FORCE)
-set(BUILD_VERSION_PRE 2 CACHE STRING "Build Version Pre" FORCE)
+set(BUILD_VERSION_PRE 4 CACHE STRING "Build Version Pre" FORCE)
 set(BUILD_COMMIT_HASH ${BUILD_COMMIT_HASH} CACHE STRING "Build Version Commit" FORCE)
 
 ################################################################################

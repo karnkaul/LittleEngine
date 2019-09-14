@@ -6,6 +6,8 @@ import os
 import sys
 import zipfile
 
+os.chdir(sys.path[0])
+
 # Cook vars
 manifest_ext = '.amf'
 assets_root_dir = '../GameAssets'

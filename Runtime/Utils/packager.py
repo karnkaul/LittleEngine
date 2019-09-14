@@ -3,6 +3,8 @@ import os
 import sys
 import zipfile
 
+os.chdir(sys.path[0])
+
 # Vars
 out_path = '../Redist'
 cooker_script = './AssetCooker.py'

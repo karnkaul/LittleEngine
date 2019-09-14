@@ -15,13 +15,12 @@
 		},
 		{
 			"source": "../LEDemo.lx",
-			"destination": "Linux/LEDemo",
+			"destination": "Linux/LEDemo.lx",
 			"isRequired": "True"
 		},
 		{
-			"source": "./Linux-Lib.tar.xz",
-			"destination": "Linux/Lib.tar.xz",
-			"isRequired": "True"
+			"source": "../LEDemo.lxa",
+			"destination": "Linux/LEDemo.lxa"
 		},
 		{
 			"source": "../Resources/Icon.png",
@@ -32,24 +31,8 @@
 			"destination": "Linux/LEDemo.desktop"
 		},
 		{
-			"source": "../LEDemo.mx",
-			"destination": "OSX/LEDemo"
-		},
-		{
-			"source": "./OSX-Lib.tar.gz",
-			"destination": "OSX/Lib.tar.gz"
-		},
-		{
-			"source": "./OSX-Frameworks.tar.gz",
-			"destination": "OSX/Frameworks.tar.gz"
-		},
-		{
-			"source": "../Resources/Icon.icns",
-			"destination": "OSX/Icon.icns"
-		},
-		{
-			"source": "../Resources/Info.plist",
-			"destination": "OSX/Info.plist"
+			"source": "../LEDemo.app.tar.gz",
+			"destination": "MacOSX/LEDemo.app.tar.gz"
 		},
 		{
 			"source": "../GameAssets.cooked",

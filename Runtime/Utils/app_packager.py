@@ -2,9 +2,10 @@ from shutil import rmtree
 import datetime
 import os
 import sys
-
 import asset_cooker
 import packager
+
+os.chdir(sys.path[0])
 
 ledemo_game_manifest = './LEDemo.game.json'
 ledemo_zip_manifest = './LEDemo.zip.json'

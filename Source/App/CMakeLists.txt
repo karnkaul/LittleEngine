@@ -7,34 +7,34 @@ endif()
 ################################################################################
 # Source groups
 ################################################################################
-set(ALL_CODE
-	App/Main.cpp
+## Code
+file(GLOB_RECURSE ALL_FILES
+	"*.h"
+	"*.cpp"
 )
 
+## Platform Resources
+set(GENERATED_SOURCES "")
 if(PLATFORM STREQUAL "Win64")
-	set(IDE_RESOURCES_SOURCES
-		App/Resources/MSVC/App.rc
+	list(APPEND GENERATED_SOURCES
+		App/Resources/Win64/App.rc
 	)
-	set(IDE_RESOURCES_FILES
-		App/Resources/MSVC/resource.h
-		App/Resources/MSVC/Icon.ico)
-	set(IDE_RESOURCES
-		${IDE_RESOURCES_SOURCES}
-		${IDE_RESOURCES_FILES}
+	list(APPEND ALL_FILES
+		App/Resources/Win64/Icon.ico
 	)
+	configure_files_copyonly("App/Resources/Win64/Icon.ico")
 endif()
+set_source_files_properties(${GENERATED_SOURCES} PROPERTIES GENERATED TRUE)
 
-set(APP_RESOURCES
-	App/Resources/Icon.png
+## Generated
+set(GENERATED_FILES
+	${GENERATED_SOURCES}
+	App/Resources/Linux/.desktop
+	App/Resources/OSX/Info.plist
 )
+configure_files_src_to_bin("${GENERATED_FILES}")
 
-set(ALL_FILES
-	${ALL_CODE}
-	${APP_RESOURCES}
-	${IDE_RESOURCES}
-)
-
-set_source_files_properties(${IDE_RESOURCES} PROPERTIES GENERATED TRUE)
+list(APPEND ALL_FILES ${GENERATED_SOURCES})
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${ALL_FILES})
 
 ################################################################################
@@ -42,21 +42,8 @@ source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${ALL_FILES})
 ################################################################################
 add_executable(${PROJECT_NAME} ${ALL_FILES})
 
-set(RESOURCE_ROOT App/Resources)
-set(RESOURCE_FILES
-	MSVC/App.rc
-	Linux/.desktop
-	OSX/Info.plist
-)
-
-list(TRANSFORM RESOURCE_FILES PREPEND "${RESOURCE_ROOT}/")
-configure_files_src_to_bin("${RESOURCE_FILES};${IDE_RESOURCES_SOURCES}")
-configure_files_copyonly("${IDE_RESOURCES_FILES}")
-
-################################################################################
-# Executable configuration
-################################################################################
-output_name(LEDemo$<$<NOT:$<CONFIG:Ship>>:-$<CONFIG>>${EXE_SUFFIX})
+set(EXE_NAME LEDemo$<$<NOT:$<CONFIG:Release>>:-$<CONFIG>>${EXE_SUFFIX})
+output_name(${EXE_NAME})
 output_directory("${BUILD_PATH}/Exe")
 recursive_include("${CMAKE_CURRENT_SOURCE_DIR}")
 add_target_compile_definitions()
@@ -93,4 +80,4 @@ install(FILES
 	"${CMAKE_CURRENT_BINARY_DIR}/App/Resources/Linux/.desktop"
 	DESTINATION "${RUNTIME_PATH}/Resources"
 )
-install_runtime()
+install_runtime(${EXE_NAME})

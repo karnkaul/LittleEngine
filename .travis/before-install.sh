@@ -6,7 +6,7 @@ if [ ! -d "BuildCache" ]; then
     mkdir BuildCache
 else
     CACHE=$(ls -R BuildCache)
-    echo -e "BuildCache contents:\n$CACHE"
+    echo -e "== BuildCache contents:\n$CACHE"
 fi
 
 # Dependencies

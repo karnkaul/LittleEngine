@@ -14,7 +14,7 @@ const char* LOG_LEVEL_KEY = "LOG_LEVEL";
 const char* LOCALE_KEY = "LOCALE";
 } // namespace
 
-const char* GameSettings::szFILE_PATH = "Settings.ini";
+const char* GameSettings::szFILE_PATH = "Settings.txt";
 
 GameSettings* GameSettings::Instance()
 {

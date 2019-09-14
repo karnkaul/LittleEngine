@@ -13,36 +13,28 @@
 			"destination": "Win64/LEDemo-Develop.exe"
 		},
 		{
-			"source": "../LEDemo-Release.exe",
-			"destination": "Win64/LEDemo-Release.exe"
-		},
-		{
 			"source": "../LEDemo-Develop.lx",
-			"destination": "Linux/LEDemo-Develop"
+			"destination": "Linux/LEDemo-Develop.lx"
 		},
 		{
-			"source": "../LEDemo-Release.lx",
-			"destination": "Linux/LEDemo-Release"
+			"source": "../LEDemo-Develop.lxa",
+			"destination": "Linux/LEDemo-Develop.lxa"
 		},
 		{
-			"source": "../LEDemo-Develop.mx",
-			"destination": "OSX/LEDemo-Develop"
+			"source": "../LEDemo-Develop.app.tar.gz",
+			"destination": "MacOSX/LEDemo-Develop.tar.gz"
 		},
 		{
-			"source": "../LEDemo-Release.mx",
-			"destination": "OSX/LEDemo-Release"
-		},
-		{
-			"source": "../Settings.ini",
-			"destination": "Settings.ini"
+			"source": "../Settings.txt",
+			"destination": "Settings.txt"
 		},
 		{
 			"source": "../.game.conf",
 			"destination": ".game.conf"
 		},
 		{
-			"source": "../InputMap.ini",
-			"destination": "InputMap.ini"
+			"source": "../InputMap.txt",
+			"destination": "InputMap.txt"
 		}
 	]
 }
