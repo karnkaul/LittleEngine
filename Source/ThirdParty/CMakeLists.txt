@@ -45,7 +45,14 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES TRUE)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD TRUE)
 
-set(OUTPUT_PATH "${PROJECT_SOURCE_DIR}/../../_Build/ThirdParty/Lib")
+get_filename_component(ROOT_PATH "${PROJECT_SOURCE_DIR}/../.." ABSOLUTE)
+if(CI_BUILD)
+	set(BUILD_PATH "${ROOT_PATH}/_Build/CI")
+else()
+	set(BUILD_PATH "${ROOT_PATH}/_Build")
+endif()
+set(BUILD_THIRD_PARTY_PATH "${BUILD_PATH}/ThirdParty")
+set(OUTPUT_PATH "${BUILD_THIRD_PARTY_PATH}/Lib")
 
 # Force set output paths
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_PATH} CACHE STRING "" FORCE)
@@ -147,7 +154,7 @@ if(PLATFORM STREQUAL "Win64")
 	file(COPY ${MSVC_EXT_LIBS} DESTINATION "${OUTPUT_PATH}")
 elseif(PLATFORM STREQUAL "OSX")
 	file(GLOB OSX_FRAMEWORKS LIST_DIRECTORIES true "${SFML_EXTLIBS_PATH}/libs-osx/Frameworks/*.*")
-	file(COPY ${OSX_FRAMEWORKS} DESTINATION "${OUTPUT_PATH}/../Frameworks")
+	file(COPY ${OSX_FRAMEWORKS} DESTINATION "${BUILD_THIRD_PARTY_PATH}/Frameworks")
 endif()
 
 ################################################################################

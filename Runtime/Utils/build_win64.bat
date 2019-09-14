@@ -8,8 +8,8 @@ if "%VCVARS%" == "" (
 call "%VCVARS%\vcvars64.bat"
 
 for %%x in (%*) do (
-	echo. &  echo == Configuring [Project%%x] & echo.
-	cmake ..\..\Project%%x
-	echo. & echo == Building [Project%%x] & echo.
-	cmake --build ..\..\Project%%x
+	echo. &  echo == Configuring [%%x] & echo.
+	cmake %%x
+	echo. & echo == Building [%%x] & echo.
+	cmake --build %%x
 )

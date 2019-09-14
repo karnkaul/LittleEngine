@@ -36,7 +36,11 @@ if(NOT SRC_IDX EQUAL -1)
 endif()
 
 get_filename_component(ROOT_PATH "${CMAKE_SOURCE_DIR}/.." ABSOLUTE)
-set(BUILD_PATH "${ROOT_PATH}/_Build")
+if(CI_BUILD)
+	set(BUILD_PATH "${ROOT_PATH}/_Build/CI")
+else()
+	set(BUILD_PATH "${ROOT_PATH}/_Build")
+endif()
 set(BUILD_THIRD_PARTY_PATH "${BUILD_PATH}/ThirdParty")
 set(RUNTIME_PATH "${ROOT_PATH}/Runtime")
 

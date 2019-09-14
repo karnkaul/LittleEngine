@@ -15,10 +15,17 @@ fi
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-## Confirm paths exist
+declare -a DIRS
+ALL_DIRS=""
+IDX=0
 for SUFFIX in "${@}"; do
-	PROJ_DIR=Project$SUFFIX
-	PROJ_PATH=../../$PROJ_DIR
+	DIRS[IDX]=../../Project$SUFFIX
+	ALL_DIRS="$ALL_DIRS ${DIRS[IDX]}"
+	let IDX=$IDX+1
+done
+
+## Confirm paths exist
+for PROJ_PATH in "${DIRS[@]}"; do
 	if [[ ! -d $PROJ_PATH ]]; then
 		echo -e "\nError! [$PROJ_PATH] does not exist!"
 		exit 1
@@ -43,7 +50,7 @@ if [[ ! -z "$MS" ]] || [[ ! -z "$MW" ]]; then
 	fi
 	if [[ -f ./$BUILD_SCRIPT ]]; then
 		echo -e "\n  Found local build script [$BUILD_SCRIPT], running before installing...\n"
-		$BUILD_CMD$BUILD_SCRIPT $*
+		$BUILD_CMD$BUILD_SCRIPT $ALL_DIRS
 		if [[ $? != 0 ]]; then
 			echo -e "\n  Build failed!"
 			exit 1
@@ -55,12 +62,10 @@ if [[ ! -z "$MS" ]] || [[ ! -z "$MW" ]]; then
 fi
 
 ## Build and/or Install
-for SUFFIX in "${@}"; do
-	PROJ_DIR=Project$SUFFIX
-	PROJ_PATH=../../$PROJ_DIR
-	INSTALLING="\n== Installing [$PROJ_DIR]\n"
+for PROJ_PATH in "${DIRS[@]}"; do
+	INSTALLING="\n== Installing [$PROJ_PATH]\n"
 	if [[ $GENERATE == TRUE ]]; then
-		echo -e "\n== Configuring [$PROJ_DIR]\n"
+		echo -e "\n== Configuring [$PROJ_PATH]\n"
 		cmake $PROJ_PATH
 		if [[ -f "$PROJ_PATH/build.ninja" ]]; then
 			echo -e "$INSTALLING"
@@ -69,7 +74,7 @@ for SUFFIX in "${@}"; do
 			echo -e "$INSTALLING"
 			make install -C $PROJ_PATH
 		else
-			echo "\n ERROR: Install [$PROJ_DIR] failed! (Unsupported build system)"
+			echo "\n ERROR: Install [$PROJ_PATH] failed! (Unsupported build system)"
 		fi
 	else
 		echo -e "$INSTALLING"

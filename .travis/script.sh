@@ -10,7 +10,7 @@ ninja --version
 
 build() {
 	CONFIG=$1
-	echo "Building LittleEngine | $CONFIG..."
+	echo "== Building LittleEngine | $CONFIG..."
 	if [ ! -d Project_$CONFIG ]; then
 		mkdir Project_$CONFIG
 	fi
