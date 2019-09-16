@@ -50,8 +50,6 @@ Visit the [Little Engine wiki](https://github.com/karnkaul/LittleEngine/wiki/Dev
 
 >*Note: Due to GitHub's limitations with (free) LFS, Runtime Assets have been moved to DropBox since 0.4.4.0.*
 
->*Note: Scripts in `Runtime/Utils` are only designed to work when run from `Runtime` or `Runtime/Utils`.*
-
 #### Setting up the project(s)
 Quick Start:
 1. Build `ThirdParty`
