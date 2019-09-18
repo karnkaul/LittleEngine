@@ -8,10 +8,10 @@ namespace LittleEngine
 class Shader
 {
 public:
-	enum Flag
+	enum class Flag : u8
 	{
-		VERT = 0,
-		FRAG
+		Vertex = 0,
+		Fragment
 	};
 
 	using Type = std::bitset<2>;

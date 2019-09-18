@@ -88,7 +88,7 @@ void OnA()
 		if (pEntity2)
 		{
 			auto rc0 = pEntity2->AddComponent<RenderComponent>();
-			rc0->SetCircle(LAYER_DEFAULT)->SetDiameter(200)->SetPrimaryColour(Colour::Yellow);
+			rc0->SetCircle(LayerID::Default)->SetDiameter(200)->SetPrimaryColour(Colour::Yellow);
 			auto t0 = pEntity2->AddComponent<CollisionComponent>();
 			t0->AddCircle(200);
 		}
@@ -97,7 +97,7 @@ void OnA()
 		if (pEntity3)
 		{
 			auto rc1 = pEntity3->AddComponent<RenderComponent>();
-			rc1->SetRectangle(LAYER_DEFAULT)->SetSize({600, 100})->SetPrimaryColour(Colour::Blue);
+			rc1->SetRectangle(LayerID::Default)->SetSize({600, 100})->SetPrimaryColour(Colour::Blue);
 			auto t1 = pEntity3->AddComponent<CollisionComponent>();
 			t1->AddAABB(AABBData({600, 100}));
 		}
@@ -116,7 +116,7 @@ void OnA()
 		pEntity4 = g_pGameManager->NewEntity<Entity>("SpriteSheetTest");
 		pEntity4->m_transform.SetPosition({-200, -200});
 		auto rc4 = pEntity4->AddComponent<RenderComponent>();
-		rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)), LAYER_FX);
+		rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)), LayerID::FX);
 	}
 	else
 	{
@@ -149,7 +149,7 @@ void OnB(const LEInput::Frame& frame)
 			if (pEntity)
 			{
 				auto rc = pEntity->AddComponent<RenderComponent>();
-				rc->SetRectangle(LAYER_DEFAULT)->SetSize({200, 10})->SetPrimaryColour(Colour::Magenta);
+				rc->SetRectangle(LayerID::Default)->SetSize({200, 10})->SetPrimaryColour(Colour::Magenta);
 				pEntity->AddComponent<ProjectileComponent>();
 			}
 			return pEntity;
@@ -313,12 +313,12 @@ void StartTests()
 {
 	pEntity0 = g_pGameManager->NewEntity<Entity>("Entity0", {300, 200});
 	auto rc0 = pEntity0->AddComponent<RenderComponent>();
-	rc0->SetRectangle(LAYER_DEFAULT)->SetSize({300, 100})->SetPrimaryColour(Colour::Cyan)->SetEnabled(true);
+	rc0->SetRectangle(LayerID::Default)->SetSize({300, 100})->SetPrimaryColour(Colour::Cyan)->SetEnabled(true);
 
 	pEntity1 = g_pGameManager->NewEntity<Entity>("Entity1", g_pGameManager->Renderer()->Project({0, Fixed(0.9f)}, false));
 	auto rc1 = pEntity1->AddComponent<RenderComponent>();
 	FontAsset* pFont = g_pRepository->Load<FontAsset>("Fonts/Sunscreen.otf");
-	rc1->SetText(LAYER_DEFAULT)
+	rc1->SetText(LayerID::Default)
 		->SetText(LOC("LOC_HELLO_WORLD!"))
 		->SetFont(pFont ? *pFont : *g_pRepository->DefaultFont())
 		->SetSize(50)
@@ -363,7 +363,7 @@ void StartTests()
 	auto pTex = g_pRepository->Load<TextureAsset>("Misc/Test.png");
 	if (pTex)
 	{
-		pQuads0 = g_pGameManager->Renderer()->New<Quads>(LAYER_DEFAULT);
+		pQuads0 = g_pGameManager->Renderer()->New<Quads>(LayerID::Default);
 		pTex->SetRepeated(true);
 		pQuads0->SetTexture(*pTex)->SetEnabled(true);
 		pQuad0 = pQuads0->AddQuad();

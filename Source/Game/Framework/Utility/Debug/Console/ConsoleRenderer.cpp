@@ -14,10 +14,10 @@ namespace LittleEngine::Debug
 ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_SIZE)
 {
 	m_pFont = g_pRepository->DefaultFont();
-	LayerID textLayer = static_cast<LayerID>(LAYER_MAX - 2);
+	LayerID textLayer = static_cast<LayerID>(ToS32(LayerID::Max) - 2);
 
 	// BG
-	m_uBG = MakeUnique<UIElement>(static_cast<LayerID>(textLayer - 5), true);
+	m_uBG = MakeUnique<UIElement>(static_cast<LayerID>(ToS32(textLayer) - 5), true);
 	m_uBG->OnCreate(context, "ConsoleBG");
 	m_uBG->SetPanel(m_bgColour);
 	Vector2 bgSize = m_uBG->m_transform.size;
@@ -32,7 +32,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uBG->Tick();
 
 	// Separator
-	m_uSeparator = MakeUnique<UIElement>(static_cast<LayerID>(textLayer - 3), true);
+	m_uSeparator = MakeUnique<UIElement>(static_cast<LayerID>(ToS32(textLayer) - 3), true);
 	m_uSeparator->OnCreate(context, "ConsoleSeparator", &m_uBG->m_transform);
 	m_uSeparator->SetPanel(Colour(255, 255, 255, 150));
 	m_uSeparator->m_transform.size = {bgSize.x, 2};

@@ -11,11 +11,11 @@ namespace Core
 {
 namespace
 {
-enum class ResponseType
+enum class ResponseType : u8
 {
 	Assert = 0,
-	Ignore = 1,
-	Disable = 2,
+	Ignore,
+	Disable,
 };
 
 std::unordered_set<std::string> disabledIDs;

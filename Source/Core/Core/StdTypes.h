@@ -116,6 +116,12 @@ constexpr size_t ToIdx(T t)
 	return static_cast<size_t>(t);
 }
 
+template <typename T>
+constexpr s32 ToS32(T t)
+{
+	return static_cast<s32>(t);
+}
+
 class DependencyException : public std::exception
 {
 };

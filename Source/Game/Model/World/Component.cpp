@@ -17,7 +17,7 @@ AComponent::~AComponent()
 
 TimingType AComponent::Timing() const
 {
-	return TimingType::DEFAULT;
+	return TimingType::Default;
 }
 
 void AComponent::SetEnabled(bool bEnabled)

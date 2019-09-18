@@ -3,10 +3,10 @@ namespace LittleEngine
 {
 enum class TimingType
 {
-	FIRST = 0,
-	PRE,
-	DEFAULT,
-	POST,
-	LAST,
+	First = 0,
+	Pre,
+	Default,
+	Post,
+	Last,
 };
 } // namespace LittleEngine

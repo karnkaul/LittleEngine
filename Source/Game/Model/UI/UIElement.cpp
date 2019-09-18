@@ -171,7 +171,7 @@ void UIElement::Regenerate(LayerID newLayer)
 	m_layer = newLayer;
 	auto pFont = m_pFont ? m_pFont : g_pRepository->Load<FontAsset>("Fonts/UIFont.ttf");
 	m_pRect = Renderer()->New<SFRect>(m_layer);
-	m_pText = Renderer()->New<SFText>(static_cast<LayerID>(m_layer + 1));
+	m_pText = Renderer()->New<SFText>(static_cast<LayerID>(ToS32(m_layer) + 1));
 	m_pRect->SetStatic(true)->SetEnabled(true);
 	m_pText->SetFont(pFont ? *pFont : *g_pRepository->DefaultFont())->SetStatic(true)->SetEnabled(true);
 	ApplyText();

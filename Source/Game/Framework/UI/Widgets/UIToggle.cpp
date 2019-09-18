@@ -41,7 +41,7 @@ UIToggle* UIToggle::SetOn(bool bOn)
 {
 	m_bOn = bOn;
 	Colour fill = m_bOn ? m_data.onColour : m_data.offColour;
-	UIStyle& style = m_state == UIWidgetState::Selected ? m_style.selected : m_style.notSelected;
+	UIStyle& style = m_state == State::Selected ? m_style.selected : m_style.notSelected;
 	m_pToggle->SetPanel(fill, style.border, style.outline);
 	m_pToggle->SetTextColour(style.textColour);
 	return this;

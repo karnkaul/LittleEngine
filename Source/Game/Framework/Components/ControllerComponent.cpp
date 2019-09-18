@@ -68,8 +68,7 @@ void ControllerComponent::OnCreated()
 	Reset();
 
 #if defined(DEBUGGING)
-	LayerID layer = static_cast<LayerID>(LAYER_DEBUG_UI);
-	m_pRect = g_pGameManager->Renderer()->New<SFRect>(layer);
+	m_pRect = g_pGameManager->Renderer()->New<SFRect>(LayerID::Debug_UI);
 	m_pRect->SetSize(s_orientationWidthHeight)
 		->SetPivot({-1, 0})
 		->SetPrimaryColour(s_orientationColour)
@@ -108,7 +107,7 @@ void ControllerComponent::Tick(Time dt)
 
 TimingType ControllerComponent::Timing() const
 {
-	return TimingType::PRE;
+	return TimingType::Pre;
 }
 
 void ControllerComponent::SetEnabled(bool bEnabled)

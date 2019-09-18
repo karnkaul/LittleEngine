@@ -18,6 +18,6 @@ void GameInit::LoadShaders()
 {
 	// Load SFShaders here
 
-	LEShaders::LoadShader<Shader>("Default", Shader::Type().set(Shader::Flag::VERT).set(Shader::Flag::FRAG));
+	LEShaders::LoadShader<Shader>("Default", Shader::Type().set(ToIdx(Shader::Flag::Vertex)).set(ToIdx(Shader::Flag::Fragment)));
 }
 } // namespace LittleEngine

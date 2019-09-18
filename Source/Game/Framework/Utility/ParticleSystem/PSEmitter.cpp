@@ -34,8 +34,8 @@ Fixed Lerp(TRange<Fixed> tRange, Fixed t)
 
 UByte Lerp(TRange<UByte> tRange, Fixed alpha)
 {
-	float _t = (Fixed::One - alpha).ToF32();
-	float t = alpha.ToF32();
+	f32 _t = (Fixed::One - alpha).ToF32();
+	f32 t = alpha.ToF32();
 	return _t * tRange.min + t * tRange.max;
 }
 } // namespace
@@ -99,7 +99,7 @@ Emitter::Emitter(EmitterData data, bool bSetEnabled) : m_data(std::move(data)), 
 {
 	Assert(m_pOwner, "Invariant violated");
 	m_particles.reserve(m_data.spawnData.numParticles);
-	m_pQuads = g_pGameManager->Renderer()->New<Quads>(static_cast<LayerID>(LAYER_FX + m_data.layerDelta));
+	m_pQuads = g_pGameManager->Renderer()->New<Quads>(static_cast<LayerID>(ToS32(LayerID::FX) + m_data.layerDelta));
 	m_pQuads->SetTexture(m_data.Texture(), m_data.spawnData.numParticles)->SetEnabled(m_bEnabled);
 	for (size_t i = 0; i < m_data.spawnData.numParticles; ++i)
 	{

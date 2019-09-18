@@ -1,10 +1,10 @@
 #pragma once
 #include "Core/CoreTypes.h"
 #if ENABLED(TWEAKABLES)
-#define TweakBool(id, address) LittleEngine::Debug::Tweakable id(#id, LittleEngine::Debug::TweakType::BOOL, "false", address)
+#define TweakBool(id, address) LittleEngine::Debug::Tweakable id(#id, LittleEngine::Debug::TweakType::Bool, "false", address)
 #define TweakS32(id, address) LittleEngine::Debug::Tweakable id(#id, LittleEngine::Debug::TweakType::S32, "-1", address)
 #define TweakF32(id, address) LittleEngine::Debug::Tweakable id(#id, LittleEngine::Debug::TweakType::F32, "-1.0", address)
-#define TweakString(id, address) LittleEngine::Debug::Tweakable id(#id, LittleEngine::Debug::TweakType::STRING, "", address)
+#define TweakString(id, address) LittleEngine::Debug::Tweakable id(#id, LittleEngine::Debug::TweakType::String, "", address)
 #else
 #define TweakBool(_disabled0, _disabled1)
 #define TweakS32(_disabled0, _disabled1)
@@ -17,12 +17,12 @@ namespace LittleEngine
 {
 namespace Debug
 {
-enum TweakType
+enum class TweakType : u8
 {
-	STRING = 0,
-	F32 = 1,
-	S32 = 2,
-	BOOL = 3,
+	String = 0,
+	F32,
+	S32,
+	Bool,
 };
 
 class Tweakable final
@@ -34,7 +34,7 @@ private:
 public:
 	String m_id;
 	String m_value;
-	TweakType m_type = TweakType::STRING;
+	TweakType m_type = TweakType::String;
 
 public:
 	Tweakable(String id, TweakType type, String value = "", void* pTarget = nullptr);

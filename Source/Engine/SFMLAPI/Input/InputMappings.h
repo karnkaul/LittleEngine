@@ -10,7 +10,7 @@ extern const u32 g_MAX_JOYSTICK_BUTTONS;
 
 using KeyCode = sf::Keyboard::Key;
 
-enum KeyType
+enum KeyType : u16
 {
 	// 0-499 : SFML
 
@@ -29,9 +29,9 @@ enum KeyType
 	JOY_BTN_7  // Start
 };
 
-enum class JoyAxis
+enum class JoyAxis : u8
 {
-	XY,
+	XY = 0,
 	ZR,
 	UV,
 	PoV,

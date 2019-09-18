@@ -19,7 +19,7 @@ namespace
 {
 enum class State
 {
-	Idle,
+	Idle = 0,
 	Loading,
 	Running,
 	Quitting
@@ -27,7 +27,7 @@ enum class State
 
 enum class Transition
 {
-	None,
+	None = 0,
 	UnloadLoad,
 	UnloadRun,
 	LoadRun,

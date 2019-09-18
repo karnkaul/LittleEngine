@@ -17,13 +17,13 @@
 
 namespace Core
 {
-enum class LogSeverity
+enum class LogSeverity : u8
 {
 	HOT = 0,
-	Debug = 1,
-	Info = 2,
-	Warning = 3,
-	Error = 4
+	Debug,
+	Info,
+	Warning,
+	Error
 };
 
 extern LogSeverity g_MinLogSeverity;

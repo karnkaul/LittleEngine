@@ -20,8 +20,8 @@ LoadingHUD::LoadingHUD()
 {
 	Vector2 viewSize = g_pGameManager->Renderer()->ViewSize();
 	Vector2 halfView = viewSize * Fixed::OneHalf;
-	LayerID bg = LAYER_TOP;
-	LayerID hud = static_cast<LayerID>(bg + 1);
+	LayerID bg = LayerID::Top;
+	LayerID hud = static_cast<LayerID>(ToS32(bg) + 1);
 	auto pMainFont = g_pRepository->DefaultFont();
 	auto pTitleFont = PreloadAsset<FontAsset>("Fonts/Sunscreen.otf");
 	auto pSubtitleFont = PreloadAsset<FontAsset>("Fonts/UIFont.ttf");

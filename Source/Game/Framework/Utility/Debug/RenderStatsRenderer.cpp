@@ -27,10 +27,10 @@ RenderStatsRenderer::RenderStatsRenderer(LEContext& context)
 	Vector2 pad(-40, 40);
 	Colour bg(20, 20, 20, 230);
 	LERenderer* pRenderer = context.Renderer();
-	LayerID layer = static_cast<LayerID>(LAYER_TOP + 2);
+	LayerID layer = static_cast<LayerID>(ToS32(LayerID::Top) + 2);
 	auto pFont = g_pRepository->DefaultFont();
 
-	m_pBG = pRenderer->New<SFRect>(static_cast<LayerID>(layer - 1));
+	m_pBG = pRenderer->New<SFRect>(static_cast<LayerID>(ToS32(layer) - 1));
 	Vector2 pos = pRenderer->Project({1, -1}, false) + pad;
 	m_pBG->SetSize(size)
 		->SetPivot({1, -1}, true)
@@ -86,7 +86,7 @@ VersionRenderer::VersionRenderer(LEContext& context)
 {
 	LERenderer* pRenderer = context.Renderer();
 	auto pFont = g_pRepository->Load<FontAsset>("Fonts/UIFont.ttf");
-	m_pBuildVersion = pRenderer->New<SFText>(LAYER_TOP);
+	m_pBuildVersion = pRenderer->New<SFText>(LayerID::Top);
 	m_pBuildVersion->SetText(Core::Version::szBUILD_VERSION_WITH_COMMIT)
 		->SetSize(textSize + 5U)
 		->SetFont(pFont ? *pFont : *g_pRepository->DefaultFont())

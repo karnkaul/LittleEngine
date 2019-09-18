@@ -69,7 +69,7 @@ LERepository::LERepository(String defaultFontID, String archivePath, String root
 		m_uCooked->Load(archivePath.c_str());
 	}
 
-	auto uFont = ConjureAsset<FontAsset>(defaultFontID, false, {FILESYSTEM, COOKED});
+	auto uFont = ConjureAsset<FontAsset>(defaultFontID, false, {Search::Filesystem, Search::Cooked});
 	if (uFont)
 	{
 		m_pDefaultFont = uFont.get();

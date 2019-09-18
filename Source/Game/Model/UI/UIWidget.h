@@ -6,24 +6,25 @@
 
 namespace LittleEngine
 {
-enum class UIWidgetState
-{
-	Uninteractable,
-	NotSelected,
-	Selected,
-	Interacting
-};
-
 // \brief Base UI interactable class: must be used in conjunction with an owning UIContext
 class UIWidget : public UIObject
 {
+protected:
+	enum class State
+	{
+		Uninteractable,
+		NotSelected,
+		Selected,
+		Interacting
+	};
+
 protected:
 	UIWidgetStyle m_style;
 	Vec<UPtr<class UIElement>> m_uiElements;
 	class UIContext* m_pOwner = nullptr;
 	class UIElement* m_pRoot = nullptr;
-	UIWidgetState m_state = UIWidgetState::NotSelected;
-	UIWidgetState m_prevState;
+	State m_state = State::NotSelected;
+	State m_prevState;
 
 public:
 	UIWidget();
@@ -41,7 +42,7 @@ public:
 	bool IsInteractable() const;
 
 protected:
-	void SetState(UIWidgetState state);
+	void SetState(State state);
 
 public:
 	void Tick(Time dt = Time::Zero) override;
@@ -74,7 +75,7 @@ template <typename T>
 UIElement* UIWidget::AddElement(String name, UITransform* pParent, s32 layerDelta)
 {
 	static_assert(std::is_base_of<UIElement, T>::value, "T must derive from UIElement. Check Output Window for erroneous call");
-	UPtr<T> uT = MakeUnique<T>(static_cast<LayerID>(m_style.baseLayer + layerDelta), false);
+	UPtr<T> uT = MakeUnique<T>(static_cast<LayerID>(ToS32(m_style.baseLayer) + layerDelta), false);
 	T* pT = uT.get();
 	m_uiElements.push_back(std::move(uT));
 	InitElement(std::move(name), pT, pParent);

@@ -14,10 +14,10 @@ class Delegate
 {
 public:
 	using Callback = std::function<void(T... t)>;
-	using Token = SPtr<int>;
+	using Token = SPtr<s32>;
 
 private:
-	using WToken = std::weak_ptr<int>;
+	using WToken = std::weak_ptr<s32>;
 	struct Wrapper
 	{
 		Callback callback;
@@ -49,7 +49,7 @@ Delegate<T...>::Wrapper::Wrapper(Callback callback, Token token) : callback(std:
 template <typename... T>
 typename Delegate<T...>::Token Delegate<T...>::Register(Callback callback)
 {
-	Token token = MakeShared<int>(static_cast<int>(m_callbacks.size()));
+	Token token = MakeShared<s32>(static_cast<s32>(m_callbacks.size()));
 	m_callbacks.emplace_back(std::move(callback), token);
 	return token;
 }
@@ -58,16 +58,11 @@ template <typename... T>
 u32 Delegate<T...>::operator()(T... t)
 {
 	Cleanup();
-	u32 count = 0;
 	for (const auto& c : m_callbacks)
 	{
-		if (!c.wToken.expired())
-		{
-			c.callback(t...);
-			++count;
-		}
+		c.callback(t...);
 	}
-	return count;
+	return static_cast<u32>(m_callbacks.size());
 }
 
 template <typename... T>

@@ -67,7 +67,7 @@ void Entity::OnCreate(String name)
 {
 	SetNameAndType(std::move(name), "Entity");
 #if defined(DEBUGGING)
-	LayerID layer = static_cast<LayerID>(LAYER_DEBUG_UI);
+	LayerID layer = LayerID::Debug_UI;
 	m_pO_x = g_pGameManager->Renderer()->New<SFRect>(layer);
 	m_pO_x->SetSize({100, 2})->SetPivot({-1, 0})->SetPrimaryColour(s_xyColours[0]);
 	m_pO_y = g_pGameManager->Renderer()->New<SFRect>(layer);

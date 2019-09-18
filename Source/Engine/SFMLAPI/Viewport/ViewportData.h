@@ -6,7 +6,7 @@ namespace LittleEngine
 {
 enum class ViewportStyle
 {
-	Default,
+	Default = 0,
 	Bordlerless
 };
 

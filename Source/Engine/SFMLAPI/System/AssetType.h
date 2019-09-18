@@ -2,7 +2,7 @@
 
 namespace LittleEngine
 {
-enum class AssetType
+enum class AssetType : u8
 {
 	Texture = 0,
 	Font,

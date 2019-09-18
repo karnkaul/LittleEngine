@@ -48,7 +48,7 @@ private:
 
 Renderer::Renderer()
 {
-	auto top_1 = static_cast<LayerID>(LAYER_TOP - 1);
+	auto top_1 = static_cast<LayerID>(ToS32(LayerID::Top) - 1);
 	m_uLabelRoot = MakeUnique<UIElement>(top_1, true);
 	m_uLabelRoot->OnCreate(*pContext, "ProfilerLabels");
 	m_uLabelRoot->m_transform.size = {textWidth, profilerHeight};
@@ -67,8 +67,8 @@ Renderer::Renderer()
 	for (u32 i = 0; i < maxEntries; ++i)
 	{
 		UIEntry newEntry;
-		newEntry.uProgressBar = MakeUnique<UIProgressBar>(LAYER_TOP, true);
-		newEntry.uLabelElement = MakeUnique<UIElement>(LAYER_TOP, true);
+		newEntry.uProgressBar = MakeUnique<UIProgressBar>(LayerID::Top, true);
+		newEntry.uLabelElement = MakeUnique<UIElement>(LayerID::Top, true);
 		newEntry.uProgressBar->OnCreate(*pContext, "", &m_uBarRoot->m_transform);
 		newEntry.uLabelElement->OnCreate(*pContext, "", &m_uLabelRoot->m_transform);
 		colour.a = barAlpha;

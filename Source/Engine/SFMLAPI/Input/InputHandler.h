@@ -3,9 +3,9 @@
 
 namespace LittleEngine
 {
-enum class ViewportEventType
+enum class ViewportEventType : u8
 {
-	None,
+	None = 0,
 	Closed,
 	LostFocus,
 	GainedFocus,

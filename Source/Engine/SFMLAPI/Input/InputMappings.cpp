@@ -45,7 +45,7 @@ u16 InputMap::Import(const Core::Property::Persistor& persistor)
 
 	// Joystick Buttons
 	String prefix = "JOY_BTN_";
-	s32 btnID = JOY_BTN_0;
+	s32 btnID = KeyType::JOY_BTN_0;
 	u16 mapped = 0;
 	for (u32 sfBtnID = 0; sfBtnID < g_MAX_JOYSTICK_BUTTONS; ++sfBtnID)
 	{

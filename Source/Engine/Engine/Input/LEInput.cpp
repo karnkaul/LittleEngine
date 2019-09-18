@@ -230,8 +230,8 @@ void LEInput::FireCallbacks()
 void LEInput::CreateDebugPointer()
 {
 	Vector2 viewSize = m_pContext->ViewSize();
-	m_pMouseH = m_pContext->Renderer()->New<Quad>(LAYER_TOP);
-	m_pMouseV = m_pContext->Renderer()->New<Quad>(LAYER_TOP);
+	m_pMouseH = m_pContext->Renderer()->New<Quad>(LayerID::Top);
+	m_pMouseV = m_pContext->Renderer()->New<Quad>(LayerID::Top);
 	m_pMouseH->SetModel(Rect2::SizeCentre({MOUSE_QUAD_WIDTH, viewSize.y}))
 		->SetStatic(true)
 		->SetPrimaryColour(MOUSE_DEFAULT_COLOUR)

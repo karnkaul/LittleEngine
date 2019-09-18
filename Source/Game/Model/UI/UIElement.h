@@ -38,7 +38,7 @@ private:
 	bool m_bStopTicking = false;
 
 public:
-	UIElement(LayerID layer = LAYER_UI, bool bSilent = false);
+	UIElement(LayerID layer = LayerID::UI, bool bSilent = false);
 	~UIElement() override;
 
 	void SetParent(UITransform& parent);

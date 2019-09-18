@@ -153,7 +153,7 @@ bool JobManager::AreWorkersIdle() const
 	Lock lock(m_queueMutex);
 	for (auto& gameWorker : m_jobWorkers)
 	{
-		if (gameWorker->GetState() == JobWorker::State::WORKING)
+		if (gameWorker->GetState() == JobWorker::State::Busy)
 		{
 			return false;
 		}

@@ -43,7 +43,7 @@ protected:
 	TState m_renderState;
 
 public:
-	const LayerID m_layer = LAYER_DEFAULT;
+	const LayerID m_layer = LayerID::Default;
 
 protected:
 	class Shader* m_pShader = nullptr;

@@ -13,7 +13,7 @@ extern class GameManager* g_pGameManager;
 class GameManager final
 {
 private:
-	static constexpr size_t COMPONENT_LINES = ToIdx(TimingType::LAST) + 1;
+	static constexpr size_t COMPONENT_LINES = ToIdx(TimingType::Last) + 1;
 
 private:
 	String m_logName;
