@@ -20,9 +20,9 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uBG = MakeUnique<UIElement>(static_cast<LayerID>(ToS32(textLayer) - 5), true);
 	m_uBG->OnCreate(context, "ConsoleBG");
 	m_uBG->SetPanel(m_bgColour);
-	Vector2 bgSize = m_uBG->m_transform.size;
+	Vector2 bgSize = m_uBG->RectSize();
 	bgSize.y *= Fixed::OneThird;
-	m_uBG->m_transform.size = bgSize;
+	m_uBG->SetRectSize(bgSize);
 	m_uBG->m_transform.padding = {0, -Fixed::OneHalf * bgSize.y};
 	m_uBG->m_transform.nPosition = {0, 1};
 	minPadding = m_uBG->m_transform.padding;
@@ -35,7 +35,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uSeparator = MakeUnique<UIElement>(static_cast<LayerID>(ToS32(textLayer) - 3), true);
 	m_uSeparator->OnCreate(context, "ConsoleSeparator", &m_uBG->m_transform);
 	m_uSeparator->SetPanel(Colour(255, 255, 255, 150));
-	m_uSeparator->m_transform.size = {bgSize.x, 2};
+	m_uSeparator->SetRectSize({bgSize.x, 2});
 	m_uSeparator->m_transform.nPosition = {0, -1};
 	m_uSeparator->m_transform.padding = {0, m_textSize + 5};
 	m_uSeparator->Tick();
@@ -67,7 +67,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 
 	// Log Lines
 	u16 iPad = textPad + 2;
-	m_logLinesCount = (m_uBG->m_transform.size.y.ToU32() / textPad) - 1;
+	m_logLinesCount = (m_uBG->RectSize().y.ToU32() / textPad) - 1;
 	for (size_t i = 0; i < ToIdx(m_logLinesCount); ++i)
 	{
 		UPtr<UIElement> uLogLineI = MakeUnique<UIElement>(textLayer, true);

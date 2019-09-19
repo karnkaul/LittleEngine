@@ -188,14 +188,18 @@ void LEContext::SubmitFrame()
 	if (m_oNewViewportSize)
 	{
 		LOG_I("[LEContext] Set viewport size to: %dx%d", (*m_oNewViewportSize)->width, (*m_oNewViewportSize)->height);
-		m_uRenderer->RecreateViewport(ViewportRecreateData(std::move(**m_oNewViewportSize)));
+		ViewportRecreateData data;
+		data.oViewportSize = **m_oNewViewportSize;
+		m_uRenderer->RecreateViewport(std::move(data));
 		m_oNewViewportSize.reset();
 	}
 
 	if (m_oNewViewportStyle)
 	{
 		LOG_I("[LEContext] Changed viewport style");
-		m_uRenderer->RecreateViewport(ViewportRecreateData(*m_oNewViewportStyle));
+		ViewportRecreateData data;
+		data.oStyle = *m_oNewViewportStyle;
+		m_uRenderer->RecreateViewport(std::move(data));
 		m_oNewViewportStyle.reset();
 	}
 	m_uRenderer->Lock_Swap();

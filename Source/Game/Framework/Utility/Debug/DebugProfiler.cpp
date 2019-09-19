@@ -51,14 +51,12 @@ Renderer::Renderer()
 	auto top_1 = static_cast<LayerID>(ToS32(LayerID::Top) - 1);
 	m_uLabelRoot = MakeUnique<UIElement>(top_1, true);
 	m_uLabelRoot->OnCreate(*pContext, "ProfilerLabels");
-	m_uLabelRoot->m_transform.size = {textWidth, profilerHeight};
-	m_uLabelRoot->m_transform.bAutoPad = true;
+	m_uLabelRoot->SetRectSize({textWidth, profilerHeight}, true);
 	m_uLabelRoot->m_transform.nPosition = {-1, Fixed(-0.75f)};
 	// m_uLabelRoot->SetPanel(Colour(100, 100, 100, 100));
 	m_uBarRoot = MakeUnique<UIElement>(top_1, true);
 	m_uBarRoot->OnCreate(*pContext, "ProfilerBars");
-	m_uBarRoot->m_transform.size = Vector2(progressBarSize.x, profilerHeight);
-	m_uBarRoot->m_transform.bAutoPad = true;
+	m_uBarRoot->SetRectSize(Vector2(progressBarSize.x, profilerHeight), true);
 	m_uBarRoot->m_transform.nPosition = {Fixed(0.8f), Fixed(-0.75f)};
 	m_uBarRoot->Tick();
 	m_uLabelRoot->Tick();

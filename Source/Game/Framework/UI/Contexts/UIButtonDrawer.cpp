@@ -48,11 +48,11 @@ void UIButtonDrawer::OnCreated()
 void UIButtonDrawer::SetBaseStyle(UIStyle style, Vector2 nPosition)
 {
 	m_data.panelStyle = std::move(style);
-	m_pRoot->m_transform.size = m_data.panelStyle.size;
+	m_pRoot->SetRectSize(m_data.panelStyle.size);
 	m_pRoot->SetPanel(m_data.panelStyle.fill, m_data.panelStyle.border, m_data.panelStyle.outline);
 	m_pRoot->SetTextColour(m_data.panelStyle.textColour);
 	m_pRoot->m_transform.nPosition = nPosition;
-	m_pRoot->SetStatic(true);
+	m_pRoot->SetStatic(true);	// set dirty (will Tick once)
 }
 
 void UIButtonDrawer::SetButtonPositions()

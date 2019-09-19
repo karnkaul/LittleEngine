@@ -20,19 +20,4 @@ ViewportData::ViewportData(ViewportSize viewportSize, Vector2 viewSize, String t
 	: viewportSize(std::move(viewportSize)), viewSize(std::move(viewSize)), title(std::move(title)), style(style)
 {
 }
-
-ViewportRecreateData::ViewportRecreateData(ViewportSize size)
-{
-	oViewportSize.emplace(std::move(size));
-}
-
-ViewportRecreateData::ViewportRecreateData(ViewportStyle style)
-{
-	this->oSstyle.emplace(style);
-}
-
-ViewportRecreateData::ViewportRecreateData(String title)
-{
-	this->oTitle.emplace(std::move(title));
-}
 } // namespace LittleEngine

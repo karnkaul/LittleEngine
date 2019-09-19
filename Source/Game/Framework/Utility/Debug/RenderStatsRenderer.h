@@ -26,13 +26,14 @@ public:
 	RenderStatsRenderer(LEContext& context);
 	~RenderStatsRenderer();
 
-	void Tick(Time dt);
+	void Update();
 };
 
 #if defined(DEBUGGING)
 class VersionRenderer
 {
 private:
+	static const Vector2 projection;
 	SFText* m_pBuildVersion;
 
 public:

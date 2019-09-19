@@ -399,7 +399,7 @@ void SpawnToggle()
 	Fixed x = 400;
 	Fixed y = 200;
 	auto* pParent = g_pGameManager->UI()->PushContext<UIContext>("TestToggleUIC");
-	pParent->Root()->m_transform.size = {x, y};
+	pParent->Root()->SetRectSize({x, y});
 	UIWidgetStyle toggleStyle = UIGameStyle::GetStyle("");
 	toggleStyle.widgetSize = {x, y * Fixed::OneHalf};
 	toggleStyle.background = Colour::Yellow;
@@ -408,10 +408,10 @@ void SpawnToggle()
 	auto* pToggle1 = pParent->AddWidget<UIToggle>("Toggle1", &toggleStyle);
 
 	debugTokens.push_back(pToggle0->AddCallback([](bool bVal) { LOG_W("Toggle0 changed! %d", bVal); }));
-	pToggle0->Root()->m_transform.bAutoPad = true;
+	pToggle0->Root()->SetAutoPad(true);
 	pToggle0->SetText("Toggle 0")->SetOn(false)->Root()->m_transform.nPosition = {0, 1};
 	debugTokens.push_back(pToggle1->AddCallback([](bool bValue) { LOG_W("Toggle1 changed! %d", bValue); }));
-	pToggle1->Root()->m_transform.bAutoPad = true;
+	pToggle1->Root()->SetAutoPad(true);
 	pToggle1->SetText("Toggle 1")->SetOn(true)->Root()->m_transform.nPosition = {0, -1};
 
 	pParent->m_bAutoDestroyOnCancel = true;

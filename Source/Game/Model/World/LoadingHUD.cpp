@@ -18,8 +18,6 @@ Vector2 progressBarSize;
 
 LoadingHUD::LoadingHUD()
 {
-	Vector2 viewSize = g_pGameManager->Renderer()->ViewSize();
-	Vector2 halfView = viewSize * Fixed::OneHalf;
 	LayerID bg = LayerID::Top;
 	LayerID hud = static_cast<LayerID>(ToS32(bg) + 1);
 	auto pMainFont = g_pRepository->DefaultFont();
@@ -28,25 +26,30 @@ LoadingHUD::LoadingHUD()
 	auto pTexture = PreloadAsset<TextureAsset>("Textures/LoadingIcon.png");
 
 	m_pBG = g_pGameManager->Renderer()->New<Quad>(bg);
-	m_pBG->SetModel(Rect2::SizeCentre(viewSize));
-	m_pBG->SetPrimaryColour(Colour(20, 5, 30, 0))->SetEnabled(true);
-
 	m_pTitle = g_pGameManager->Renderer()->New<SFText>(hud);
 	m_pSubtitle = g_pGameManager->Renderer()->New<SFText>(hud);
+	m_pProgressBar = g_pGameManager->Renderer()->New<SFRect>(hud);
+	m_pRotator = g_pGameManager->Renderer()->New<Quad>(hud);
+	
+	// Layout
+	Vector2 viewSize = g_pGameManager->Renderer()->ViewSize();
+	Vector2 halfView = viewSize * Fixed::OneHalf;
+	Vector2 rotatorPos = halfView - Vector2(100, 100);
+	Fixed yPad = progressBarSize.y * Fixed::OneHalf;
+	progressBarSize = {viewSize.x, 8};
+	m_pBG->SetModel(Rect2::SizeCentre(viewSize));
+	m_pProgressBar->SetPosition({-halfView.x, -halfView.y + yPad}, true);
+	m_pRotator->SetPosition(rotatorPos, true);
+
+	m_pBG->SetPrimaryColour(Colour(20, 5, 30, 0))->SetEnabled(true);
 	m_pTitle->SetFont(pTitleFont ? *pTitleFont : *pMainFont);
 	m_pSubtitle->SetFont(pSubtitleFont ? *pSubtitleFont : pTitleFont ? *pTitleFont : *pMainFont);
 	m_pTitle->SetPosition({0, 70})->SetEnabled(true);
 	m_pSubtitle->SetPosition({0, -30})->SetEnabled(true);
 
-	progressBarSize = {viewSize.x, 10};
-	m_pProgressBar = g_pGameManager->Renderer()->New<SFRect>(hud);
 	m_pProgressBar->SetSize({Fixed::Zero, progressBarSize.y})->SetPivot({-1, 0})->SetPrimaryColour(Colour::White)->SetEnabled(true);
-	Fixed yPad = progressBarSize.y * Fixed::OneHalf;
-	m_pProgressBar->SetPosition({-halfView.x, -halfView.y + yPad}, true);
-
-	Vector2 pos = halfView - Vector2(100, 100);
-	m_pRotator = g_pGameManager->Renderer()->New<Quad>(hud);
-	m_pRotator->SetModel(Rect2::SizeCentre({75, 75}))->SetPosition(pos, true)->SetEnabled(true);
+	
+	m_pRotator->SetModel(Rect2::SizeCentre({75, 75}))->SetEnabled(true);
 	if (pTexture)
 	{
 		m_pRotator->SetTexture(*pTexture);

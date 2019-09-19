@@ -34,13 +34,7 @@ struct ViewportData
 struct ViewportRecreateData
 {
 	std::optional<ViewportSize> oViewportSize;
-	std::optional<ViewportStyle> oSstyle;
+	std::optional<ViewportStyle> oStyle;
 	std::optional<String> oTitle;
-
-	ViewportRecreateData(ViewportSize size);
-	ViewportRecreateData(ViewportStyle style);
-	ViewportRecreateData(String title);
-	ViewportRecreateData(ViewportRecreateData&&) = default;
-	ViewportRecreateData& operator=(ViewportRecreateData&&) = default;
 };
 } // namespace LittleEngine

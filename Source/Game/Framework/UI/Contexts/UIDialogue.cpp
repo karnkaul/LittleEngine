@@ -16,19 +16,18 @@ void UIDialogue::OnCreated()
 	SetType("UIDialogue");
 	const Fixed contentHeight = m_data.size.y - (headerHeight + footerHeight);
 	m_bAutoDestroyOnCancel = true;
-	m_pRoot->m_transform.size = {m_data.size.x, m_data.size.y};
+	m_pRoot->SetRectSize({m_data.size.x, m_data.size.y});
 	m_pRoot->SetPanel(Colour::White);
 	m_pRoot->SetStatic(true);
 
 	m_pHeader = AddElement<UIElement>(String(NameStr()) + " Header");
-	m_pHeader->m_transform.size = {m_data.size.x, headerHeight};
-	m_pHeader->m_transform.bAutoPad = true;
+	m_pHeader->SetRectSize({m_data.size.x, headerHeight}, true);
 	m_pHeader->m_transform.nPosition = {0, 1};
 	m_pHeader->SetPanel(m_data.headerBG);
 	m_pHeader->SetStatic(true);
 
 	m_pContent = AddElement<UIElement>(String(NameStr()) + " Content");
-	m_pContent->m_transform.size = {m_data.size.x, contentHeight};
+	m_pContent->SetRectSize({m_data.size.x, contentHeight});
 	m_pContent->m_transform.nPosition = {0, 1};
 	m_pContent->m_transform.padding = {0, -(headerHeight + contentHeight * Fixed::OneHalf)};
 	m_pContent->SetPanel(m_data.contentBG);
@@ -40,11 +39,11 @@ UIDialogue* UIDialogue::SetContent(UIText text, const Colour* pBackground, const
 	{
 		m_data.size = *pSize;
 		const Fixed contentHeight = m_data.size.y - (headerHeight + footerHeight);
-		m_pContent->m_transform.size = {m_data.size.x, contentHeight};
-		m_pHeader->m_transform.size = {m_data.size.x, headerHeight};
+		m_pContent->SetRectSize({m_data.size.x, contentHeight});
+		m_pHeader->SetRectSize({m_data.size.x, headerHeight});
 		if (m_pFooter)
 		{
-			m_pFooter->m_transform.size = {m_data.size.x, footerHeight};
+			m_pFooter->SetRectSize({m_data.size.x, footerHeight});
 		}
 	}
 
@@ -80,8 +79,7 @@ UIButton::OnClick::Token UIDialogue::AddMainButton(UIText text, UIButton::OnClic
 	}
 
 	m_pFooter = AddElement<UIElement>(String(NameStr()) + " Footer");
-	m_pFooter->m_transform.size = {m_data.size.x, footerHeight};
-	m_pFooter->m_transform.bAutoPad = true;
+	m_pFooter->SetRectSize({m_data.size.x, footerHeight}, true);
 	m_pFooter->m_transform.nPosition = {0, -1};
 
 	m_pMainButton = AddWidget<UIButton>(String(NameStr()) + " Button 0");

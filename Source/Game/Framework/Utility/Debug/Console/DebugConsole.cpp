@@ -86,7 +86,7 @@ void ConsoleImpl::Tick(Time dt)
 		// Log Lines
 		m_renderer.UpdateLog(Console::g_uLogBook->LogPage());
 	}
-	m_renderStats.Tick(dt);
+	m_renderStats.Update();
 }
 } // namespace
 

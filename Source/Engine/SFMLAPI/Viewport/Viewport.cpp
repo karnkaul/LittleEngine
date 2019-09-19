@@ -73,9 +73,9 @@ void Viewport::Destroy()
 
 void Viewport::OverrideData(ViewportRecreateData data)
 {
-	if (data.oSstyle)
+	if (data.oStyle)
 	{
-		m_data.style = *data.oSstyle;
+		m_data.style = *data.oStyle;
 	}
 	if (data.oTitle)
 	{
@@ -83,7 +83,7 @@ void Viewport::OverrideData(ViewportRecreateData data)
 	}
 	if (data.oViewportSize)
 	{
-		m_data.viewportSize = std::move(*data.oViewportSize);
+		m_data.viewportSize = *data.oViewportSize;
 	}
 }
 
