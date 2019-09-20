@@ -2,7 +2,6 @@
 #include "Core/Version.h"
 #include "Engine/FatalEngineException.h"
 #include "Engine/Debug/Profiler.h"
-#include "Engine/Locale/Locale.h"
 #include "Model/GameConfig.h"
 #include "Model/World/WorldClock.h"
 #include "Framework/Framework.h"
@@ -28,14 +27,11 @@ UPtr<LEAudio> uAudio;
 
 // LEContext
 GameConfig config;
-UPtr<LEContext> uContext;
-UPtr<WorldStateMachine> uWSM;
+UPtr<GameManager> uGM;
 
 // Game Loop
-Time tickRate;
 Time maxFrameTime;
 bool bPauseOnFocusLoss = false;
-bool bRenderThread = true;
 
 TweakS32(ticksPerSec, nullptr);
 
@@ -75,9 +71,9 @@ bool Init(s32 argc, char** argv)
 		s32 newRate = Strings::ToS32(val);
 		if (newRate > 0 && newRate < 250)
 		{
-			tickRate = Time::Seconds(1.0f / newRate);
-			uContext->ModifyTickRate(tickRate);
-			LOG_I("[GameLoop] Tick Rate changed to %.2f ms", tickRate.AsSeconds() * 1000.0f);
+			Time newTickRate = Time::Seconds(1.0f / newRate);
+			uGM->ModifyTickRate(newTickRate);
+			LOG_I("[GameLoop] Tick Rate changed to %.2f ms", newTickRate.AsSeconds() * 1000.0f);
 		}
 		else
 		{
@@ -98,21 +94,20 @@ bool Init(s32 argc, char** argv)
 
 	Core::g_MinLogSeverity = pSettings->LogLevel();
 	bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
-	bRenderThread = config.ShouldCreateRenderThread();
 	ControllerComponent::s_orientationEpsilon = config.ControllerOrientationEpsilon();
 #if defined(DEBUGGING)
 	ControllerComponent::s_orientationWidthHeight = config.ControllerOrientationSize();
 	Entity::s_orientationWidthHeight = config.EntityOrientationSize();
 #endif
 
-	if (bRenderThread)
+	if (config.ShouldCreateRenderThread())
 	{
 		if (OS::Threads::VacantThreadCount() == 0)
 		{
 			LOG_W("[GameLoop] Insufficient threads to create render thread!\n!ERROR! Async Renderer "
 				  "not "
 				  "available!");
-			bRenderThread = false;
+			config.m_bRenderThread = false;
 		}
 	}
 
@@ -121,7 +116,6 @@ bool Init(s32 argc, char** argv)
 #if defined(DEBUGGING)
 	Collider::s_debugShapeWidth = config.ColliderBorderWidth();
 #endif
-	tickRate = config.TickRate();
 	maxFrameTime = config.MaxFrameTime();
 
 	uShaders = MakeUnique<LEShaders>();
@@ -132,43 +126,12 @@ bool Init(s32 argc, char** argv)
 	return true;
 }
 
-void CreateContext(GameConfig& config)
-{
-	GameSettings& settings = *GameSettings::Instance();
-	LEContextData data;
-	Vector2 viewSize = config.ViewSize();
-	data.viewportData.viewportSize = settings.SafeGetViewportSize(viewSize);
-	data.viewportData.viewSize = viewSize;
-	data.viewportData.title = LOC(config.TitleBarText());
-	data.viewportData.style = settings.GetViewportStyle();
-	data.tickRate = tickRate;
-	data.bRenderThread = bRenderThread;
-	data.renderThreadStartDelay = config.RenderThreadStartDelay();
-	data.bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
-	Core::Property::Persistor inputMapPersistor;
-	auto pInputMapFile = settings.GetValue("CUSTOM_INPUT_MAP");
-	if (pInputMapFile)
-	{
-		String inputMapFile = OS::Env()->FullPath(pInputMapFile->c_str());
-		if (inputMapPersistor.Load(inputMapFile))
-		{
-			u16 count = data.inputMap.Import(inputMapPersistor);
-			if (count > 0)
-			{
-				LOG_I("[GameLoop] Loaded %u custom Input Mappings successfully", count);
-			}
-		}
-	}
-	uContext = MakeUnique<LEContext>(std::move(data));
-}
-
 bool Tick(Time dt)
 {
 	PROFILE_START("TICK", Colour(127, 0, 255));
 	uRepository->Tick(dt);
 	bool bYield = false;
-	uWSM->Tick(dt, bYield);
-	bYield |= uContext->Update();
+	uGM->Tick(dt, bYield);
 	uAudio->Tick(dt);
 #if ENABLED(CONSOLE)
 	Console::Tick(dt);
@@ -225,8 +188,7 @@ void Cleanup()
 #if ENABLED(PROFILER)
 	Profiler::Cleanup();
 #endif
-	uWSM = nullptr;
-	uContext = nullptr;
+	uGM = nullptr;
 	uAudio = nullptr;
 	uShaders = nullptr;
 	uRepository = nullptr;
@@ -248,35 +210,37 @@ s32 GameLoop::Run(s32 argc, char** argv)
 		return -1;
 	}
 
-	CreateContext(config);
-	uWSM = MakeUnique<WorldStateMachine>(*uContext);
+	uGM = MakeUnique<GameManager>();
+	uGM->CreateContext(config);
 #if ENABLED(CONSOLE)
-	Console::Init(*uContext);
+	Console::Init();
 #endif
 #if ENABLED(PROFILER)
-	Profiler::Init(*uContext, Time::Milliseconds(10));
+	Profiler::Init(Time::Milliseconds(10));
 #endif
 	WorldClock::Reset();
-	uWSM->Start("Manifest.amf", "Texts/Game.style", &GameInit::LoadShaders);
-
+	uGM->Start("Manifest.amf", "Texts/Game.style", &GameInit::LoadShaders);
+		
+	const Time tickRate = config.TickRate();
 	Time accumulator;
 	Time currentTime = Time::Now();
-	while (!uContext->IsTerminating())
+	LEContext* pContext = uGM->Context();
+	while (!pContext->IsTerminating())
 	{
 		Time frameElapsed;
-		uContext->PollInput();
+		pContext->PollInput();
 		// Break and exit if Window closed
-		if (uContext->IsTerminating())
+		if (pContext->IsTerminating())
 		{
 			break;
 		}
 
-		if (!uContext->IsPaused())
+		if (!pContext->IsPaused())
 		{
-			uContext->StartFrame();
-			Time dt = tickRate;
-			Time newTime = Time::Now();
-			Time frameTime = Time::Clamp(newTime - currentTime, Time::Zero, maxFrameTime);
+			pContext->StartFrame();
+			const Time dt = tickRate;
+			const Time newTime = Time::Now();
+			const Time frameTime = Time::Clamp(newTime - currentTime, Time::Zero, maxFrameTime);
 			currentTime = newTime;
 
 			accumulator += frameTime;
@@ -296,9 +260,9 @@ s32 GameLoop::Run(s32 argc, char** argv)
 				accumulator -= dt;
 			}
 
-			uContext->SubmitFrame();
+			pContext->SubmitFrame();
 
-			if (uContext->IsTerminating())
+			if (pContext->IsTerminating())
 			{
 				break;
 			}
@@ -309,7 +273,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 		}
 		else
 		{
-			frameElapsed = tickRate.Scale(Fixed(0.25f));
+			frameElapsed = tickRate.Scaled(Fixed(0.25f));
 		}
 		Sleep(tickRate - frameElapsed);
 	}

@@ -18,9 +18,10 @@ private:
 private:
 	String m_logName;
 	Vec<Task> m_initCallbacks;
-	class WorldStateMachine* m_pWSM;
 	Vec<UPtr<class Entity>> m_uEntities;
 	Array<Vec<UPtr<class AComponent>>, COMPONENT_LINES> m_uComponents;
+	UPtr<class LEContext> m_uContext;
+	UPtr<class WorldStateMachine> m_uWSM;
 	UPtr<class UIManager> m_uUIManager;
 	UPtr<class LEPhysics> m_uCollisionManager;
 	UPtr<class Camera> m_uWorldCamera;
@@ -28,7 +29,7 @@ private:
 	bool m_bPaused = false;
 
 public:
-	GameManager(WorldStateMachine& wsm);
+	GameManager();
 	~GameManager();
 
 	UIManager* UI() const;
@@ -42,12 +43,18 @@ public:
 	WorldID ActiveWorldID() const;
 	Vec<WorldID> AllWorldIDs() const;
 
+	void Start(String coreManifestID = "", String gameStyleID = "", Task onManifestLoaded = nullptr);
 	void SetPaused(bool bPaused);
 	void Quit();
 	void SetWorldCamera(UPtr<Camera> uCamera);
 
 	bool IsPaused() const;
 	bool IsPlayerControllable() const;
+
+	//Vector2 WorldSize() const;
+	//Vector2 UISize() const;
+	//Vector2 WorldProjection(Vector2 nPos) const;
+	//Vector2 UIProjection(Vector2 nPos) const;
 
 public:
 	template <typename T>
@@ -57,12 +64,11 @@ public:
 
 	const char* LogNameStr() const;
 
-private:
+public:
+	void CreateContext(const class GameConfig& config);
+	void ModifyTickRate(Time newTickRate);
 	void Reset();
-	void Tick(Time dt);
-
-	friend class World;
-	friend class WorldStateMachine;
+	void Tick(Time dt, bool& bYieldIntegration);
 };
 
 template <typename T>

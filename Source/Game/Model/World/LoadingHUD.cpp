@@ -31,16 +31,6 @@ LoadingHUD::LoadingHUD()
 	m_pProgressBar = g_pGameManager->Renderer()->New<SFRect>(hud);
 	m_pRotator = g_pGameManager->Renderer()->New<Quad>(hud);
 	
-	// Layout
-	Vector2 viewSize = g_pGameManager->Renderer()->ViewSize();
-	Vector2 halfView = viewSize * Fixed::OneHalf;
-	Vector2 rotatorPos = halfView - Vector2(100, 100);
-	Fixed yPad = progressBarSize.y * Fixed::OneHalf;
-	progressBarSize = {viewSize.x, 8};
-	m_pBG->SetModel(Rect2::SizeCentre(viewSize));
-	m_pProgressBar->SetPosition({-halfView.x, -halfView.y + yPad}, true);
-	m_pRotator->SetPosition(rotatorPos, true);
-
 	m_pBG->SetPrimaryColour(Colour(20, 5, 30, 0))->SetEnabled(true);
 	m_pTitle->SetFont(pTitleFont ? *pTitleFont : *pMainFont);
 	m_pSubtitle->SetFont(pSubtitleFont ? *pSubtitleFont : pTitleFont ? *pTitleFont : *pMainFont);
@@ -55,6 +45,17 @@ LoadingHUD::LoadingHUD()
 		m_pRotator->SetTexture(*pTexture);
 	}
 
+	// Layout
+	Vector2 viewSize = g_pGameManager->Renderer()->ViewSize();
+	Vector2 halfView = viewSize * Fixed::OneHalf;
+	Vector2 rotatorPos = halfView - Vector2(100, 100);
+	Fixed yPad = progressBarSize.y * Fixed::OneHalf;
+	progressBarSize = {viewSize.x, 8};
+	m_pBG->SetModel(Rect2::SizeCentre(viewSize));
+	m_pProgressBar->SetPosition({-halfView.x, -halfView.y + yPad}, true);
+	m_pRotator->SetPosition(rotatorPos, true);
+
+	
 	SetEnabled(false);
 	LOG_D("[Loading UI] constructed");
 }

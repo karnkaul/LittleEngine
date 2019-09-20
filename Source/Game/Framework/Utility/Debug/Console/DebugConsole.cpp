@@ -90,12 +90,13 @@ void ConsoleImpl::Tick(Time dt)
 }
 } // namespace
 
-void Console::Init(LEContext& context)
+void Console::Init()
 {
-	pContext = &context;
+	Assert(g_pGameManager, "GameManager is null!");
+	pContext = g_pGameManager->Context();
 	bQuit = false;
 	uConsole = MakeUnique<ConsoleImpl>();
-	Commands::Init(context);
+	Commands::Init(*pContext);
 }
 
 void Console::Tick(Time dt)

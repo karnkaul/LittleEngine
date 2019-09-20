@@ -17,7 +17,7 @@ namespace Debug
 {
 namespace Profiler
 {
-void Init(LEContext& context, Time maxTickTime);
+void Init(Time maxTickTime);
 void Toggle();
 void Toggle(bool bEnable);
 void Cleanup();

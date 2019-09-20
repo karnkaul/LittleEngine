@@ -6,6 +6,7 @@
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Context/LEContext.h"
 #include "Model/World/WorldClock.h"
+#include "Model/GameManager.h"
 #include "Framework/UI/Elements/UIProgressBar.h"
 
 namespace LittleEngine::Debug::Profiler
@@ -179,9 +180,10 @@ URenderer uRenderer = nullptr;
 TweakBool(profiler, nullptr);
 TweakF32(pflr_maxDT, nullptr);
 
-void Init(LEContext& context, Time maxTickTime)
+void Init(Time maxTickTime)
 {
-	pContext = &context;
+	Assert(g_pGameManager, "GameManager is null!");
+	pContext = g_pGameManager->Context();
 	maxTickDeltaTime = Time::Milliseconds(10);
 	maxTickDeltaTime = maxTickTime;
 	textWidth = 300;

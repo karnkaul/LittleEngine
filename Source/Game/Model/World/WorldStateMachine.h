@@ -7,10 +7,30 @@ namespace LittleEngine
 class WorldStateMachine final
 {
 private:
+	enum class State
+	{
+		Idle = 0,
+		Loading,
+		Running,
+		Quitting
+	};
+
+	enum class Transition
+	{
+		None = 0,
+		UnloadLoad,
+		UnloadRun,
+		LoadRun,
+		Run
+	};
+
+private:
 	Core::Delegate<>::Token m_onSubmitToken;
 	LEInput::Token m_inputToken;
 	class LEContext* m_pContext;
 	static Vec<UPtr<class World>> s_createdWorlds;
+	State m_state;
+	Transition m_transition;
 
 #ifdef DEBUGGING
 public:

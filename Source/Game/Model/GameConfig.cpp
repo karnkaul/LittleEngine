@@ -145,5 +145,7 @@ void GameConfig::Verify()
 	m_bDirty |= SetStringIfEmpty(*m_uData, ENTITY_ORIENTATION_SIZE_KEY, "{x:100,y:2}");
 	m_bDirty |= SetStringIfEmpty(*m_uData, CONTROLLER_ORIENTATION_SIZE_KEY, "{x:120,y:3}");
 	m_bDirty |= SetStringIfEmpty(*m_uData, CONTROLLER_ORIENTATION_EPSILON_KEY, Strings::ToString(0.025));
+	
+	m_bRenderThread = ShouldCreateRenderThread();
 }
 } // namespace LittleEngine

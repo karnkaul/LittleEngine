@@ -19,9 +19,13 @@ private:
 	// Set this to determine whether the engine will pause ticking if the window loses focus
 	static const bool s_bPauseOnFocusLoss;
 
+public:
+	bool m_bRenderThread = true;
+
+private:
 	UPtr<Core::GData> m_uData;
 	bool m_bDirty = false;
-
+	
 public:
 	GameConfig();
 	~GameConfig();
