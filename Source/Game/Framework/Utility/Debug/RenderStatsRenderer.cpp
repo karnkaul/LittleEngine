@@ -3,6 +3,7 @@
 #if ENABLED(RENDER_STATS)
 #include "SFMLAPI/Rendering/Renderer.h"
 #include "SFMLAPI/Rendering/Primitives.h"
+#include "Engine/GFX.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/Renderer/LERenderer.h"
@@ -53,7 +54,7 @@ RenderStatsRenderer::RenderStatsRenderer(LEContext& context)
 	Fixed dx(150);
 	Vector2 pad(-40, 40);
 
-	Vector2 pos = pRenderer->Project({1, -1}, false) + pad;
+	Vector2 pos = g_pGFX->UIProjection({1, -1}) + pad;
 	m_pBG->SetPosition(pos, true);
 	Vector2 bgSize = m_pBG->Size();
 	pos.x -= (bgSize.x + pad.x);
@@ -98,7 +99,7 @@ VersionRenderer::VersionRenderer(LEContext& context)
 		->SetSize(textSize + 5U)
 		->SetFont(pFont ? *pFont : *g_pRepository->DefaultFont())
 		->SetPivot({-1, 0})
-		->SetPosition(pRenderer->Project(projection, false))
+		->SetPosition(g_pGFX->UIProjection(projection))
 		->SetPrimaryColour(g_logTextColour)
 		->SetEnabled(true);
 }

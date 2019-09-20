@@ -182,12 +182,12 @@ TweakF32(pflr_maxDT, nullptr);
 
 void Init(Time maxTickTime)
 {
-	Assert(g_pGameManager, "GameManager is null!");
+	Assert(g_pGameManager && g_pGFX, "GameManager/GFX is null!");
 	pContext = g_pGameManager->Context();
 	maxTickDeltaTime = Time::Milliseconds(10);
 	maxTickDeltaTime = maxTickTime;
 	textWidth = 300;
-	Vector2 worldSize = pContext->ViewSize();
+	Vector2 worldSize = g_pGFX->UIViewSize();
 	profilerHeight = worldSize.y * Fixed(18, 30);
 	Fixed vpWidth = worldSize.x;
 	progressBarSize = Vector2(vpWidth - textWidth - 50, 10);

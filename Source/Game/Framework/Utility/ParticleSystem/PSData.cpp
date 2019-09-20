@@ -1,5 +1,6 @@
 #include "Core/ArchiveReader.h"
 #include "SFMLAPI/System/Assets.h"
+#include "Engine/GFX.h"
 #include "Engine/Repository/LERepository.h"
 #include "Model/GameManager.h"
 #include "Model/UI/UIGameStyle.h"
@@ -35,6 +36,11 @@ ParticleSpawnData::ParticleSpawnData(u32 numParticles) : numParticles(numParticl
 void ParticleSpawnData::Deserialise(const GData& gData)
 {
 	spawnPosition = TRangeV2(gData.GetGData("spawnPosition"));
+	if (gData.GetBool("normalisedPosition", false))
+	{
+		spawnPosition.min = g_pGFX->WorldProjection(spawnPosition.min);
+		spawnPosition.max = g_pGFX->WorldProjection(spawnPosition.max);
+	}
 	spawnColour = UIGameStyle::ParseColour(gData.GetString("spawnColour"));
 	DESERIALISE_TFIXED(gData, spreadAngle);
 	DESERIALISE_TFIXED(gData, emitterAngle);

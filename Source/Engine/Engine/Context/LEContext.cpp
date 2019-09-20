@@ -9,7 +9,7 @@
 #include "Engine/Input/LEInput.h"
 #include "Engine/Renderer/LERenderer.h"
 #include "Engine/Repository/LERepository.h"
-
+#include "Engine/GFX.h"
 #include "SFMLAPI/Rendering/Primitives/Primitive.h"
 
 namespace LittleEngine
@@ -101,11 +101,6 @@ LERenderer* LEContext::Renderer() const
 	return m_uRenderer.get();
 }
 
-Vector2 LEContext::ViewSize() const
-{
-	return m_uRenderer->ViewSize();
-}
-
 Time LEContext::MaxFrameTime() const
 {
 	return m_data.maxFrameTime;
@@ -113,7 +108,7 @@ Time LEContext::MaxFrameTime() const
 
 bool LEContext::TrySetViewportSize(u32 height)
 {
-	m_oNewViewportSize.emplace(m_uRenderer->TryGetViewportSize(height));
+	m_oNewViewportSize.emplace(g_pGFX->TryGetViewportSize(height));
 	if (!m_oNewViewportSize)
 	{
 		LOG_W("[LEContext] No resolution that matches given height: %d", height);

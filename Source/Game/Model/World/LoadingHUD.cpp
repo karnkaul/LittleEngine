@@ -46,7 +46,7 @@ LoadingHUD::LoadingHUD()
 	}
 
 	// Layout
-	Vector2 viewSize = g_pGameManager->Renderer()->ViewSize();
+	Vector2 viewSize = g_pGFX->UIViewSize();
 	Vector2 halfView = viewSize * Fixed::OneHalf;
 	Vector2 rotatorPos = halfView - Vector2(100, 100);
 	Fixed yPad = progressBarSize.y * Fixed::OneHalf;

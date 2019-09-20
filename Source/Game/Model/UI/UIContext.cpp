@@ -137,7 +137,7 @@ void UIContext::Tick(Time dt)
 		{
 			UIWidget* pSelected = Selected();
 			m_uUIWidgets->ForEach([this, &pSelected, &bPointerSelection, &pointerState](UIContext::UUIWidget& uUIWidget) {
-				Vector2 mp = pointerState.worldPosition;
+				Vector2 mp = g_pGFX->WorldToUI(pointerState.worldPosition);
 				if (!bPointerSelection && uUIWidget->IsPointInBounds(mp))
 				{
 					bPointerSelection = true;

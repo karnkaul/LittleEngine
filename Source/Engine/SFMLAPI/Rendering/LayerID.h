@@ -9,12 +9,17 @@ enum class LayerID : s32
 	Live = 200,
 	FX = 300,
 #if defined(DEBUGGING)
-	Debug_UI = 390,
+	DebugWorld = 390,
 #endif
 	UI = 400,
 	Top = 490,
 	Max = 499,
+#if defined(DEBUGGING)
+	TopFull = 500,
+	_COUNT = TopFull + 20
+#else
 	_COUNT = Max + 1,
+#endif
 };
 
 // enum class LayerID : s32

@@ -2,6 +2,7 @@
 #include "SFMLAPI/Input/InputMappings.h"
 #include "SFMLAPI/Input/InputStateMachine.h"
 #include "SFMLAPI/Rendering/Primitives.h"
+#include "Engine/GFX.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Renderer/LERenderer.h"
 #include "Model/World/Entity.h"
@@ -15,7 +16,7 @@ namespace
 {
 void ClampPosition(Vector2& outPosition, Vector2 padding)
 {
-	Vector2 worldSize = g_pGameManager->Renderer()->ViewSize() * Fixed::OneHalf;
+	Vector2 worldSize = g_pGFX->WorldViewSize() * Fixed::OneHalf;
 	if (outPosition.x + padding.x > worldSize.x)
 	{
 		outPosition.x = (worldSize.x - padding.x);
@@ -68,7 +69,7 @@ void ControllerComponent::OnCreated()
 	Reset();
 
 #if defined(DEBUGGING)
-	m_pRect = g_pGameManager->Renderer()->New<SFRect>(LayerID::Debug_UI);
+	m_pRect = g_pGameManager->Renderer()->New<SFRect>(LayerID::DebugWorld);
 	m_pRect->SetSize(s_orientationWidthHeight)
 		->SetPivot({-1, 0})
 		->SetPrimaryColour(s_orientationColour)

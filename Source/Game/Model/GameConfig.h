@@ -45,11 +45,13 @@ public:
 	Time MaxFrameTime() const;
 	String TitleBarText() const;
 	u16 ColliderBorderWidth() const;
-	Vector2 ViewSize() const;
+	Vector2 UIViewSize() const;
+	Fixed WorldViewHeight() const;
 	u8 BackupLogFileCount() const;
 	Vector2 EntityOrientationSize() const;
 	Vector2 ControllerOrientationSize() const;
 	Fixed ControllerOrientationEpsilon() const;
+	f64 ForceViewportAR() const;
 
 private:
 	void Verify();

@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/CoreTypes.h"
 #include "Core/Logger.h"
+#include "Engine/GFX.h"
 #include "Model/World/ComponentTimingType.h"
 
 namespace LittleEngine
@@ -25,6 +26,7 @@ private:
 	UPtr<class UIManager> m_uUIManager;
 	UPtr<class LEPhysics> m_uCollisionManager;
 	UPtr<class Camera> m_uWorldCamera;
+	GFX m_gfx;
 	bool m_bQuitting = false;
 	bool m_bPaused = false;
 
@@ -66,7 +68,9 @@ public:
 
 public:
 	void CreateContext(const class GameConfig& config);
+#ifdef DEBUGGING
 	void ModifyTickRate(Time newTickRate);
+#endif
 	void Reset();
 	void Tick(Time dt, bool& bYieldIntegration);
 };

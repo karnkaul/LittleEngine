@@ -70,7 +70,7 @@ void CollisionComponent::AddCircle(Fixed diameter, Vector2 offset)
 	pCollider->m_name += ("_" + Strings::ToString(m_pColliders.size()));
 	pCollider->SetCircle(diameter);
 #if defined(DEBUGGING)
-	auto pCircle = g_pGameManager->Renderer()->New<SFCircle>(LayerID::Debug_UI);
+	auto pCircle = g_pGameManager->Renderer()->New<SFCircle>(LayerID::DebugWorld);
 	pCircle->SetDiameter(diameter)
 		->SetOutline(Collider::s_debugShapeWidth)
 		->SetSecondaryColour(Colour::Green)
@@ -91,7 +91,7 @@ void CollisionComponent::AddAABB(const AABBData& aabbData, Vector2 offset)
 	pCollider->m_name += ("_" + Strings::ToString(m_pColliders.size()));
 	pCollider->SetAABB(aabbData);
 #if defined(DEBUGGING)
-	auto pRect = g_pGameManager->Renderer()->New<SFRect>(LayerID::Debug_UI);
+	auto pRect = g_pGameManager->Renderer()->New<SFRect>(LayerID::DebugWorld);
 	pRect->SetSize(2 * aabbData.upperBound)
 		->SetOutline(Collider::s_debugShapeWidth)
 		->SetSecondaryColour(Colour::Green)

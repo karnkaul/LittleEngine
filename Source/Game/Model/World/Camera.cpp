@@ -31,7 +31,7 @@ void Camera::FillViewWithTiles(class TextureAsset& texture)
 	{
 		m_uTileMap = MakeUnique<TileMap>(*pRenderer->New<Quads>(LayerID::Zero), true);
 	}
-	m_uTileMap->FillView(pRenderer->ViewSize(), texture);
+	m_uTileMap->FillView(g_pGFX->WorldViewSize(), texture);
 }
 
 void Camera::ClearTiles()

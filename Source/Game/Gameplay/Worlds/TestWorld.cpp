@@ -178,7 +178,7 @@ void OnB(const LEInput::Frame& frame)
 		const Fixed r(0.25f);
 		Fixed x = Maths::Random::Range(-r, r);
 		Fixed y = Maths::Random::Range(-r, r);
-		auto pos = g_pGameManager->Renderer()->Project({x, y}, false);
+		auto pos = g_pGFX->WorldProjection({x, y});
 		auto pEntity = uPool->New(pos);
 		auto pc = pEntity->GetComponent<ProjectileComponent>();
 		if (pc)
@@ -215,7 +215,7 @@ void OnEnter()
 		Fixed k(9, 10);
 		Fixed x = Maths::Random::Range(-k, k);
 		Fixed y = Maths::Random::Range(-k, k);
-		Vector2 worldPos = g_pGameManager->Renderer()->Project({x, y}, false);
+		Vector2 worldPos = g_pGFX->WorldProjection({x, y});
 		pParticleSystem1->m_transform.SetPosition(worldPos);
 		pParticleSystem1->Start();
 		g_pGameManager->WorldCamera()->Shake();
@@ -315,7 +315,7 @@ void StartTests()
 	auto rc0 = pEntity0->AddComponent<RenderComponent>();
 	rc0->SetRectangle(LayerID::Default)->SetSize({300, 100})->SetPrimaryColour(Colour::Cyan)->SetEnabled(true);
 
-	pEntity1 = g_pGameManager->NewEntity<Entity>("Entity1", g_pGameManager->Renderer()->Project({0, Fixed(0.9f)}, false));
+	pEntity1 = g_pGameManager->NewEntity<Entity>("Entity1", g_pGFX->WorldProjection({0, Fixed(0.9f)}));
 	auto rc1 = pEntity1->AddComponent<RenderComponent>();
 	FontAsset* pFont = g_pRepository->Load<FontAsset>("Fonts/Sunscreen.otf");
 	rc1->SetText(LayerID::Default)
@@ -341,7 +341,7 @@ void StartTests()
 	if (pEmitter0)
 	{
 		psToken = pEmitter0->RegisterOnTick([](Particle& p) {
-			static Vector2 target = g_pGameManager->Renderer()->Project({Fixed::OneHalf, -Fixed(1.5f)}, false);
+			static Vector2 target = g_pGFX->WorldProjection({Fixed::OneHalf, -Fixed(1.5f)});
 			Vector2 wind = (target - p.m_pos).Normalised();
 			p.m_v.x = wind.x * Maths::Abs(p.m_v.y) * Fixed::OneHalf;
 		});

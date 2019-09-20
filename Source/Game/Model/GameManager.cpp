@@ -120,14 +120,6 @@ bool GameManager::IsPlayerControllable() const
 	return !m_bPaused && !(UI()->Active());
 }
 
-//Vector2 GameManager::WorldSize() const {}
-//
-//Vector2 GameManager::UISize() const {}
-//
-//Vector2 GameManager::WorldProjection(Vector2 nPos) const {}
-//
-//Vector2 GameManager::UIProjection(Vector2 nPos) const {}
-
 const char* GameManager::LogNameStr() const
 {
 	return m_logName.c_str();
@@ -136,10 +128,16 @@ const char* GameManager::LogNameStr() const
 void GameManager::CreateContext(const GameConfig& config)
 {
 	GameSettings& settings = *GameSettings::Instance();
+	m_gfx.uiViewSize = config.UIViewSize();
+	m_gfx.viewportHeight = static_cast<s32>(settings.ViewportHeight());
+	m_gfx.worldViewHeight = config.WorldViewHeight();
+#ifdef DEBUGGING
+	m_gfx.overrideNativeAR = config.ForceViewportAR();
+#endif
+	m_gfx.Recompute();
+
 	LEContextData data;
-	Vector2 viewSize = config.ViewSize();
-	data.viewportData.viewportSize = settings.SafeGetViewportSize(viewSize);
-	data.viewportData.viewSize = viewSize;
+	data.viewportData.viewportSize = settings.SafeGetViewportSize();
 	data.viewportData.title = LOC(config.TitleBarText());
 	data.viewportData.style = settings.GetViewportStyle();
 	data.tickRate = config.TickRate();
@@ -169,10 +167,12 @@ void GameManager::CreateContext(const GameConfig& config)
 	m_uCollisionManager = MakeUnique<LEPhysics>();
 }
 
+#ifdef DEBUGGING
 void GameManager::ModifyTickRate(Time newTickRate)
 {
 	m_uContext->ModifyTickRate(newTickRate);
 }
+#endif
 
 void GameManager::Reset()
 {

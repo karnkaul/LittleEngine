@@ -8,6 +8,8 @@ constexpr u32 WIDTH = 1280;
 constexpr u32 HEIGHT = 720;
 } // namespace
 
+ViewportSize::ViewportSize(u32 width, u32 height) : width(width), height(height) {}
+
 String ViewportSize::ToString() const
 {
 	Array<char, 40> buf;
@@ -15,9 +17,9 @@ String ViewportSize::ToString() const
 	return String(buf.data());
 }
 
-ViewportData::ViewportData() : viewportSize{WIDTH, HEIGHT}, viewSize(WIDTH, HEIGHT), title("Untitled") {}
-ViewportData::ViewportData(ViewportSize viewportSize, Vector2 viewSize, String title, ViewportStyle style)
-	: viewportSize(std::move(viewportSize)), viewSize(std::move(viewSize)), title(std::move(title)), style(style)
+ViewportData::ViewportData() : viewportSize{WIDTH, HEIGHT}, title("Untitled") {}
+ViewportData::ViewportData(ViewportSize viewportSize, String title, ViewportStyle style)
+	: viewportSize(std::move(viewportSize)), title(std::move(title)), style(style)
 {
 }
 } // namespace LittleEngine

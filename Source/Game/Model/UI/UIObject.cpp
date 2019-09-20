@@ -1,5 +1,6 @@
 #include "UIObject.h"
 #include "SFMLAPI/System/Assets.h"
+#include "Engine/GFX.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/Repository/LERepository.h"
 
@@ -18,7 +19,7 @@ void UIObject::SetContext(LEContext& context)
 
 Vector2 UIObject::ViewSize() const
 {
-	return m_pContext ? m_pContext->ViewSize() : Vector2::Zero;
+	return g_pGFX ? g_pGFX->UIViewSize() : Vector2::Zero;
 }
 
 LERenderer* UIObject::Renderer() const

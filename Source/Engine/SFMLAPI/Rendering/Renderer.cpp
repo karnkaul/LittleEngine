@@ -4,10 +4,11 @@
 #include "Renderer.h"
 #include "IRenderBuffer.h"
 #include "SFMLAPI/Rendering/Shader.h"
+#include "SFMLAPI/System/SFTypes.h"
 #include "SFMLAPI/Viewport/Viewport.h"
 #include "SFMLAPI/Viewport/ViewportData.h"
-
 #include "SFMLAPI/Rendering/Primitives/Primitive.h"
+#include "Engine/GFX.h"
 
 namespace LittleEngine
 {
@@ -32,10 +33,28 @@ void Renderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 	u32 drawCalls = 0;
 	g_renderData._quadCount_Internal = 0;
 #endif
+	sf::View worldView(Cast(Vector2::Zero), Cast(g_pGFX->WorldViewSize()));
+	sf::View uiView(Cast(Vector2::Zero), Cast(g_pGFX->UIViewSize()));
+	uiView.setViewport(g_pGFX->UIViewCrop());
+	
+	// Set World View
+	m_pViewport->setView(worldView);
+	
 	auto& matrix = buffer.ActiveRenderMatrix();
-
-	for (auto& vec : matrix)
+	for (size_t layer = 0; layer < matrix.size(); ++layer)
 	{
+		if (layer == static_cast<size_t>(LayerID::UI))
+		{
+			m_pViewport->setView(uiView);
+		}
+
+#ifdef DEBUGGING
+		if (layer == static_cast<size_t>(LayerID::TopFull))
+		{
+			m_pViewport->setView(worldView);
+		}
+#endif
+		auto& vec = matrix[layer];
 		for (auto& pPrimitive : vec)
 		{
 			if (!pPrimitive->m_bDestroyed && pPrimitive->m_renderState.bEnabled)

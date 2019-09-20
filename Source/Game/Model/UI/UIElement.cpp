@@ -168,7 +168,7 @@ void UIElement::Tick(Time /*dt*/)
 	m_pText->SetScale(Vector2::One, true);
 	m_pRect->SetOrientation(Vector2::Right, true);
 	m_pText->SetOrientation(Vector2::Right, true);
-	Vector2 worldPosition = m_transform.WorldPosition(Renderer()->ViewSize());
+	Vector2 worldPosition = m_transform.WorldPosition(g_pGFX->UIViewSize());
 	m_pRect->SetPosition(worldPosition);
 	m_pText->SetPosition(worldPosition);
 

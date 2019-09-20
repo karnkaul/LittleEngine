@@ -1,6 +1,7 @@
 #include "Core/Utils.h"
 #include "Core/ArchiveReader.h"
 #include "SFMLAPI/System/Assets.h"
+#include "Engine/GFX.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/Physics/Collider.h"
 #include "Engine/Renderer/LERenderer.h"
@@ -44,7 +45,7 @@ void UIOptions::OnCreated()
 	auto pResolutionSelection = Find<UISelection>("resolution_selection");
 	if (pResolutionSelection)
 	{
-		const auto& resolutions = LERenderer::ValidViewportSizes();
+		const auto& resolutions = g_pGFX->ValidViewportSizes();
 		Vec<u32> resolutionHeights;
 		std::for_each(resolutions.begin(), resolutions.end(),
 					  [&resolutionHeights](const auto& kvp) { resolutionHeights.push_back(kvp.second.height); });

@@ -15,12 +15,14 @@ const char* TICKS_PER_SECOND_KEY = "ticksPerSecond";
 const char* RENDER_THREAD_START_DELAY_MS_KEY = "renderThreadStartDelayMS";
 const char* MAX_FRAME_TIME_MS = "maxFrameTimeMS";
 const char* TITLEBAR_TEXT_KEY = "titleBarText";
-const char* VIEW_SIZE_KEY = "viewSize";
+const char* VIEW_SIZE_KEY = "uiViewSize";
+const char* WORLD_HEIGHT_KEY = "worldViewHeight";
 const char* COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
 const char* BACKUP_LOG_FILE_COUNT_KEY = "backupLogFileCount";
 const char* ENTITY_ORIENTATION_SIZE_KEY = "entityOrientationSize";
 const char* CONTROLLER_ORIENTATION_SIZE_KEY = "controllerOrientationSize";
 const char* CONTROLLER_ORIENTATION_EPSILON_KEY = "controllerOrientationEpsilon";
+const char* FORCE_VIEWPORT_ASPECT_KEY = "forceViewportAR";
 
 bool SetStringIfEmpty(GData& data, String key, String value)
 {
@@ -104,9 +106,14 @@ u16 GameConfig::ColliderBorderWidth() const
 	return static_cast<u16>(m_uData->GetS32(COLLIDER_SHAPE_WIDTH_KEY));
 }
 
-Vector2 GameConfig::ViewSize() const
+Vector2 GameConfig::UIViewSize() const
 {
 	return m_uData->GetVector2(VIEW_SIZE_KEY);
+}
+
+Fixed GameConfig::WorldViewHeight() const 
+{
+	return Fixed(m_uData->GetF64(WORLD_HEIGHT_KEY));
 }
 
 u8 GameConfig::BackupLogFileCount() const
@@ -129,6 +136,11 @@ Fixed GameConfig::ControllerOrientationEpsilon() const
 	return Fixed(m_uData->GetF64(CONTROLLER_ORIENTATION_EPSILON_KEY));
 }
 
+f64 GameConfig::ForceViewportAR() const 
+{
+	return m_uData->GetF64(FORCE_VIEWPORT_ASPECT_KEY);
+}
+
 void GameConfig::Verify()
 {
 	m_bDirty = false;
@@ -142,6 +154,7 @@ void GameConfig::Verify()
 	m_bDirty |= SetStringIfEmpty(*m_uData, PAUSE_ON_FOCUS_LOSS_KEY, Strings::ToString(s_bPauseOnFocusLoss));
 	m_bDirty |= SetStringIfEmpty(*m_uData, BACKUP_LOG_FILE_COUNT_KEY, Strings::ToString(5));
 	m_bDirty |= SetStringIfEmpty(*m_uData, VIEW_SIZE_KEY, "{x:1920,y:1080}");
+	m_bDirty |= SetStringIfEmpty(*m_uData, WORLD_HEIGHT_KEY, "1080");
 	m_bDirty |= SetStringIfEmpty(*m_uData, ENTITY_ORIENTATION_SIZE_KEY, "{x:100,y:2}");
 	m_bDirty |= SetStringIfEmpty(*m_uData, CONTROLLER_ORIENTATION_SIZE_KEY, "{x:120,y:3}");
 	m_bDirty |= SetStringIfEmpty(*m_uData, CONTROLLER_ORIENTATION_EPSILON_KEY, Strings::ToString(0.025));
