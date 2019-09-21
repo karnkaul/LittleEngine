@@ -5,9 +5,11 @@ enum class LayerID : s32
 {
 	Zero = 0,
 	Background = 10,
+	UnderlayFX = 50,
 	Default = 100,
 	Live = 200,
-	FX = 300,
+	WorldFX = 300,
+	OverlayFX = 350,
 #if defined(DEBUGGING)
 	DebugWorld = 390,
 #endif

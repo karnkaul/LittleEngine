@@ -20,7 +20,8 @@ struct ParticleSpawnData
 	Colour spawnColour = Colour::White;
 	u32 numParticles;
 	bool bPreWarm = false;
-	bool bNPosition = false;
+	bool bIsOverlay = false;
+	bool bIsUnderlay = false;
 	bool bFireOnce = false;
 
 	ParticleSpawnData(u32 numParticles);

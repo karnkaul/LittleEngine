@@ -16,6 +16,7 @@ private:
 	sf::FloatRect uiViewCrop;
 	Vector2 letterBoxInverse;
 	Vector2 worldSpace;
+	Vector2 overlaySpace;
 	f64 nativeAspectRatio;
 	f64 uiAspectRatio;
 
@@ -42,6 +43,7 @@ public:
 	const Vector2& UISpace() const;
 	const sf::FloatRect& UIViewCrop() const;
 	const Vector2& WorldSpace() const;
+	const Vector2& OverlaySpace() const;
 	f64 NativeAspectRatio() const;
 	f64 UIAspectRatio() const;
 
@@ -49,6 +51,7 @@ public:
 	Vector2 Projection(Vector2 nPos, Vector2 size) const;
 	Vector2 UIProjection(Vector2 nPos) const;
 	Vector2 WorldProjection(Vector2 nPos) const;
+	Vector2 OverlayProjection(Vector2 nPos) const;
 	Vector2 WorldToUI(Vector2 world) const;
 	Vector2 ViewportToWorld(s32 vpX, s32 vpY) const;
 

@@ -116,7 +116,7 @@ void OnA()
 		pEntity4 = g_pGameManager->NewEntity<Entity>("SpriteSheetTest");
 		pEntity4->m_transform.SetPosition({-200, -200});
 		auto rc4 = pEntity4->AddComponent<RenderComponent>();
-		rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)), LayerID::FX);
+		rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)), LayerID::WorldFX);
 	}
 	else
 	{

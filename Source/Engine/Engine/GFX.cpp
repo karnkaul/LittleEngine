@@ -71,6 +71,11 @@ const Vector2& GFX::WorldSpace() const
 	return worldSpace;
 }
 
+const Vector2& GFX::OverlaySpace() const
+{
+	return overlaySpace;
+}
+
 f64 GFX::NativeAspectRatio() const
 {
 	return nativeAspectRatio;
@@ -104,6 +109,17 @@ Vector2 GFX::WorldProjection(Vector2 nPos) const
 	return Projection(nPos, worldSpace);
 }
 
+Vector2 GFX::OverlayProjection(Vector2 nPos) const
+{
+	return Projection(nPos, overlaySpace);
+}
+
+Vector2 GFX::WorldToUI(Vector2 world) const
+{
+	Vector2 full = Projection(NormalisedPosition(world, worldSpace), uiSpace);
+	return Vector2(full.x * letterBoxInverse.x, full.y * letterBoxInverse.y);
+}
+
 Vector2 GFX::ViewportToWorld(s32 vpX, s32 vpY) const
 {
 	Vector2 vpPoint(vpX, vpY);
@@ -111,12 +127,6 @@ Vector2 GFX::ViewportToWorld(s32 vpX, s32 vpY) const
 	Vector2 aspectRatio(worldSpace.x / vpSize.x, worldSpace.y / vpSize.y);
 	vpPoint -= (Fixed::OneHalf * vpSize);
 	return Vector2(vpPoint.x * aspectRatio.x, -vpPoint.y * aspectRatio.y);
-}
-
-Vector2 GFX::WorldToUI(Vector2 world) const
-{
-	Vector2 full = Projection(NormalisedPosition(world, worldSpace), uiSpace);
-	return Vector2(full.x * letterBoxInverse.x, full.y * letterBoxInverse.y);
 }
 
 void GFX::Recompute()
@@ -130,6 +140,7 @@ void GFX::Recompute()
 	}
 #endif
 	uiAspectRatio = uiSpace.x.ToF64() / uiSpace.y.ToF64();
+	overlaySpace = uiSpace;
 	u32 viewportWidth = static_cast<u32>(viewportHeight.ToF64() * nativeAspectRatio);
 	viewportSize = ViewportSize(viewportWidth, viewportHeight.ToU32());
 	Fixed worldWidth(worldHeight.ToF64() * nativeAspectRatio);
@@ -141,6 +152,7 @@ void GFX::Recompute()
 		f64 widthRatio = Maths::Abs((static_cast<f64>(viewportWidth) - uiWidth) / static_cast<f64>(viewportWidth));
 		uiViewCrop.left = static_cast<f32>(widthRatio * 0.5);
 		uiViewCrop.width = static_cast<f32>(1.0 - widthRatio);
+		overlaySpace.x = Fixed(static_cast<f32>(uiSpace.y.ToF64() * nativeAspectRatio));
 	}
 	else if (uiAspectRatio > nativeAspectRatio)
 	{
@@ -148,6 +160,7 @@ void GFX::Recompute()
 		f64 heightRatio = Maths::Abs((viewportHeight.ToF64() - uiHeight) / viewportHeight.ToF64());
 		uiViewCrop.top = static_cast<f32>(heightRatio * 0.5);
 		uiViewCrop.height = static_cast<f32>(1.0 - heightRatio);
+		overlaySpace.y = Fixed(static_cast<f32>(uiSpace.x.ToF64() / nativeAspectRatio));
 	}
 	letterBoxInverse = Vector2(Fixed(1.0f / uiViewCrop.width), Fixed(1.0f / uiViewCrop.height));
 	viewportSizes.clear();
