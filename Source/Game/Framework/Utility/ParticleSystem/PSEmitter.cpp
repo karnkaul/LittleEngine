@@ -241,7 +241,13 @@ void Emitter::InitParticle(Particle& p)
 		velocity = Vector2::ToOrientation(GetRandom(m_data.spawnData.spreadAngle));
 	}
 	velocity *= GetRandom(m_data.spawnData.spawnSpeed);
-	Vector2 initPos = GetRandom(m_data.spawnData.spawnPosition);
+	TRange<Vector2> tSpawnPos = m_data.spawnData.spawnPosition;
+	if (m_data.spawnData.bNPosition)
+	{
+		tSpawnPos.min = g_pGFX->WorldProjection(tSpawnPos.min);
+		tSpawnPos.max = g_pGFX->WorldProjection(tSpawnPos.max);
+	}
+	Vector2 initPos = GetRandom(tSpawnPos);
 	Time ttl = Time::Seconds(GetRandom(m_data.lifetimeData.ttlSecs).ToF32());
 	Fixed w = GetRandom(m_data.spawnData.spawnAngularSpeed);
 	TRange<UByte> aot = m_data.lifetimeData.alphaOverTime;

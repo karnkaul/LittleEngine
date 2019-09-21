@@ -15,7 +15,7 @@ const char* TICKS_PER_SECOND_KEY = "ticksPerSecond";
 const char* RENDER_THREAD_START_DELAY_MS_KEY = "renderThreadStartDelayMS";
 const char* MAX_FRAME_TIME_MS = "maxFrameTimeMS";
 const char* TITLEBAR_TEXT_KEY = "titleBarText";
-const char* VIEW_SIZE_KEY = "uiSpace";
+const char* UI_SPACE_KEY = "uiSpace";
 const char* WORLD_HEIGHT_KEY = "worldHeight";
 const char* COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
 const char* BACKUP_LOG_FILE_COUNT_KEY = "backupLogFileCount";
@@ -108,7 +108,7 @@ u16 GameConfig::ColliderBorderWidth() const
 
 Vector2 GameConfig::UISpace() const
 {
-	return m_uData->GetVector2(VIEW_SIZE_KEY);
+	return m_uData->GetVector2(UI_SPACE_KEY);
 }
 
 Fixed GameConfig::WorldHeight() const 
@@ -153,7 +153,7 @@ void GameConfig::Verify()
 	m_bDirty |= SetStringIfEmpty(*m_uData, JOB_WORKER_COUNT_KEY, Strings::ToString(4));
 	m_bDirty |= SetStringIfEmpty(*m_uData, PAUSE_ON_FOCUS_LOSS_KEY, Strings::ToString(s_bPauseOnFocusLoss));
 	m_bDirty |= SetStringIfEmpty(*m_uData, BACKUP_LOG_FILE_COUNT_KEY, Strings::ToString(5));
-	m_bDirty |= SetStringIfEmpty(*m_uData, VIEW_SIZE_KEY, "{x:1920,y:1080}");
+	m_bDirty |= SetStringIfEmpty(*m_uData, UI_SPACE_KEY, "{x:1920,y:1080}");
 	m_bDirty |= SetStringIfEmpty(*m_uData, WORLD_HEIGHT_KEY, "1080");
 	m_bDirty |= SetStringIfEmpty(*m_uData, ENTITY_ORIENTATION_SIZE_KEY, "{x:100,y:2}");
 	m_bDirty |= SetStringIfEmpty(*m_uData, CONTROLLER_ORIENTATION_SIZE_KEY, "{x:120,y:3}");

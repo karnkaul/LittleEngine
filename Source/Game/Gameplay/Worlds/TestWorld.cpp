@@ -291,6 +291,16 @@ bool Test_OnInput(const LEInput::Frame& frame)
 		t.SetPosition(t.WorldPosition() + Vector2(Fixed::Three, Fixed::Zero));
 		return true;
 	}
+
+	if (frame.IsHeld(KeyCode::Up) && frame.IsHeld({KeyCode::LShift, KeyCode::RShift}))
+	{
+		g_pGameManager->WorldCamera()->SetZoom(g_pGameManager->WorldCamera()->Zoom() + Fixed(0.01f));
+	}
+
+	if (frame.IsHeld(KeyCode::Down) && frame.IsHeld({KeyCode::LShift, KeyCode::RShift}))
+	{
+		g_pGameManager->WorldCamera()->SetZoom(g_pGameManager->WorldCamera()->Zoom() - Fixed(0.01f));
+	}
 	return false;
 }
 

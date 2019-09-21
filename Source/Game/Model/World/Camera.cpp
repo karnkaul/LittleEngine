@@ -8,7 +8,7 @@
 
 namespace LittleEngine
 {
-Camera::Camera() : GameObject("Camera", "Camera") {}
+Camera::Camera() : GameObject("Camera", "Camera"), m_orgWorldHeight(g_pGFX->worldHeight) {}
 
 Camera::~Camera() = default;
 
@@ -24,19 +24,44 @@ void Camera::Shake(Fixed intensity, Time duration)
 	m_shakeElapsed = Time::Zero;
 }
 
-void Camera::FillViewWithTiles(class TextureAsset& texture)
+void Camera::FillViewWithTiles(TextureAsset& texture)
 {
+	m_pTexture = &texture;
 	LERenderer* pRenderer = g_pGameManager->Renderer();
 	if (!m_uTileMap)
 	{
 		m_uTileMap = MakeUnique<TileMap>(*pRenderer->New<Quads>(LayerID::Zero), true);
 	}
-	m_uTileMap->FillView(g_pGFX->WorldSpace(), texture);
+	m_uTileMap->FillSpace(g_pGFX->WorldSpace(), *m_pTexture);
+	m_bViewfilled = true;
 }
 
 void Camera::ClearTiles()
 {
 	m_uTileMap = nullptr;
+	m_bViewfilled = false;
+	m_pTexture = nullptr;
+}
+
+Fixed Camera::Zoom() const
+{
+	return m_zoom;
+}
+
+void Camera::SetZoom(Fixed zoom)
+{
+	if (zoom < Fixed::Zero)
+	{
+		LOG_E("[Camera] Cannot set negative zoom! (%.2f)", zoom.ToF32());
+		return;
+	}
+	m_zoom = zoom;
+	g_pGFX->worldHeight = m_orgWorldHeight * m_zoom;
+	g_pGFX->Recompute();
+	if (m_uTileMap && m_pTexture && m_bViewfilled)
+	{
+		m_uTileMap->FillSpace(g_pGFX->WorldSpace(), *m_pTexture);
+	}
 }
 
 void Camera::Reset()
@@ -44,6 +69,7 @@ void Camera::Reset()
 	m_transform.SetPosition(Vector2::Zero);
 	m_transform.SetOrientation(Vector2::Right);
 	m_transform.SetScale(Vector2::One);
+	SetZoom(Fixed::One);
 }
 
 void Camera::Tick(Time dt)

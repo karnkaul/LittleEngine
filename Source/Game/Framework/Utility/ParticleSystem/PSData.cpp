@@ -36,11 +36,7 @@ ParticleSpawnData::ParticleSpawnData(u32 numParticles) : numParticles(numParticl
 void ParticleSpawnData::Deserialise(const GData& gData)
 {
 	spawnPosition = TRangeV2(gData.GetGData("spawnPosition"));
-	if (gData.GetBool("normalisedPosition", false))
-	{
-		spawnPosition.min = g_pGFX->WorldProjection(spawnPosition.min);
-		spawnPosition.max = g_pGFX->WorldProjection(spawnPosition.max);
-	}
+	bNPosition = gData.GetBool("normalisedPosition", false) || gData.GetBool("nPosition", false);
 	spawnColour = UIGameStyle::ParseColour(gData.GetString("spawnColour"));
 	DESERIALISE_TFIXED(gData, spreadAngle);
 	DESERIALISE_TFIXED(gData, emitterAngle);

@@ -9,7 +9,7 @@ Written in **C++17**, utilising [**SFML**](https://www.sfml-dev.org/) and [**Phy
 ### Features
 - **CMake** project - develop/build (almost) anywhere
 - Full **keyboard**, **mouse** and single **joystick** support
-- Custom 2D coordinate system using **3x3 matrices**
+- Multiple 2D coordinate systems (world space, UI space, viewport) using **3x3 matrices**
 - **Quad**, **Quads**, **Rectangle**, **Circle**, and **Text** primitives
 - **Asynchronous rendering** on a dedicated thread; light main/game thread
 - Dynamic game **Entities/Components** with **Circle** and **AABB** collision detection
