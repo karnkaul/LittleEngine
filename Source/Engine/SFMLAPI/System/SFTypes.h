@@ -28,7 +28,7 @@ Fixed ViewportToWorld(Fixed vpOrientation);
 
 inline Vector2 Cast(const sf::Vector2<u32> vec2u)
 {
-	return Vector2(static_cast<s32>(vec2u.x), static_cast<s32>(vec2u.y));
+	return Vector2(ToS32(vec2u.x), ToS32(vec2u.y));
 }
 
 inline Vector2 Cast(const sf::Vector2i& vec2)

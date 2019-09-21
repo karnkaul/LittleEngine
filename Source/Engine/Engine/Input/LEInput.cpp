@@ -4,6 +4,7 @@
 #include "LEInput.h"
 #include "Engine/Context/LEContext.h"
 #if defined(DEBUGGING)
+#include "Engine/GFX.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Renderer/LERenderer.h"
 #endif
@@ -158,13 +159,16 @@ void LEInput::TakeSnapshot()
 		c = MOUSE_RIGHT_COLOUR;
 	}
 
+	Vector2 uiPos = g_pGFX->WorldToUI(m_mouseInput.worldPosition);
 	if (m_pMouseH)
 	{
-		m_pMouseH->SetPosition({m_mouseInput.worldPosition.x, 0})->SetEnabled(bShowCrosshair)->SetPrimaryColour(c);
+		const Vector2& p = m_pMouseH->m_layer >= LayerID::TopFull ? m_mouseInput.worldPosition : uiPos;
+		m_pMouseH->SetPosition({p.x, 0})->SetEnabled(bShowCrosshair)->SetPrimaryColour(c);
 	}
 	if (m_pMouseV)
 	{
-		m_pMouseV->SetPosition({0, m_mouseInput.worldPosition.y})->SetEnabled(bShowCrosshair)->SetPrimaryColour(c);
+		const Vector2& p = m_pMouseV->m_layer >= LayerID::TopFull ? m_mouseInput.worldPosition : uiPos;
+		m_pMouseV->SetPosition({0, p.y})->SetEnabled(bShowCrosshair)->SetPrimaryColour(c);
 	}
 #endif
 }
@@ -229,14 +233,14 @@ void LEInput::FireCallbacks()
 #if defined(DEBUGGING)
 void LEInput::CreateDebugPointer()
 {
-	Vector2 viewSize = m_pContext->ViewSize();
-	m_pMouseH = m_pContext->Renderer()->New<Quad>(LayerID::Top);
-	m_pMouseV = m_pContext->Renderer()->New<Quad>(LayerID::Top);
-	m_pMouseH->SetModel(Rect2::SizeCentre({MOUSE_QUAD_WIDTH, viewSize.y}))
+	Vector2 space = mouseLayer >= LayerID::TopFull ? g_pGFX->WorldSpace() : g_pGFX->UISpace();
+	m_pMouseH = m_pContext->Renderer()->New<Quad>(mouseLayer);
+	m_pMouseV = m_pContext->Renderer()->New<Quad>(mouseLayer);
+	m_pMouseH->SetModel(Rect2::SizeCentre({MOUSE_QUAD_WIDTH, space.y}))
 		->SetStatic(true)
 		->SetPrimaryColour(MOUSE_DEFAULT_COLOUR)
 		->SetEnabled(true);
-	m_pMouseV->SetModel(Rect2::SizeCentre({viewSize.x, MOUSE_QUAD_WIDTH}))
+	m_pMouseV->SetModel(Rect2::SizeCentre({space.x, MOUSE_QUAD_WIDTH}))
 		->SetStatic(true)
 		->SetPrimaryColour(MOUSE_DEFAULT_COLOUR)
 		->SetEnabled(true);
@@ -245,6 +249,6 @@ void LEInput::CreateDebugPointer()
 
 LEInput::Token LEInput::CreateToken() const
 {
-	return MakeShared<s32>(static_cast<s32>(m_contexts.size() + 1));
+	return MakeShared<s32>(ToS32(m_contexts.size() + 1));
 }
 } // namespace LittleEngine

@@ -12,62 +12,6 @@
 
 namespace LittleEngine
 {
-Map<u32, ViewportSize> LERenderer::s_viewportSizes;
-
-void LERenderer::PopulateViewportSizes(Fixed aspectRatio)
-{
-	s_viewportSizes.clear();
-	ViewportSize max = Viewport::MaxSize();
-	Vec<Fixed> heights = {360, 540, 720, 900, 1080, 1440, 2160};
-	for (auto h : heights)
-	{
-		u32 height = h.ToU32();
-		u32 width = (h * aspectRatio).ToU32();
-		if ((width + 1) % 10 == 0)
-		{
-			width += 1;
-		}
-		if (width <= max.width && height <= max.height)
-		{
-			s_viewportSizes[height] = {width, height};
-		}
-	}
-}
-
-const Map<u32, ViewportSize>& LERenderer::ValidViewportSizes()
-{
-	return s_viewportSizes;
-}
-
-const ViewportSize* LERenderer::MaxViewportSize(bool bBorderless)
-{
-	Assert(!s_viewportSizes.empty(), "No viewport sizes stored!");
-	ViewportSize hardMax = Viewport::MaxSize();
-	const ViewportSize* pMax = nullptr;
-	const ViewportSize* pNextMax = nullptr;
-	bool bReturnNextMax = false;
-	for (const auto& size : s_viewportSizes)
-	{
-		if (!pMax || size.first > pMax->height)
-		{
-			pNextMax = pMax;
-			pMax = &size.second;
-			bReturnNextMax = !bBorderless && (pMax->height >= hardMax.height || pMax->width >= hardMax.width);
-		}
-	}
-	return bReturnNextMax ? pNextMax : pMax;
-}
-
-ViewportSize* LERenderer::TryGetViewportSize(u32 height)
-{
-	auto search = s_viewportSizes.find(height);
-	if (search != s_viewportSizes.end())
-	{
-		return &search->second;
-	}
-	return nullptr;
-}
-
 LERenderer::LERenderer(Viewport& viewport, RendererData data) : Renderer(viewport), m_data(data)
 {
 #if ENABLED(RENDER_STATS)
@@ -96,16 +40,6 @@ void LERenderer::RecreateViewport(ViewportRecreateData data)
 	m_pViewport->Create(m_data.maxFPS);
 	LOG_D("[Renderer] Activated viewport on this thread");
 	Start();
-}
-
-Vector2 LERenderer::ViewSize() const
-{
-	return m_pViewport->ViewSize();
-}
-
-Vector2 LERenderer::Project(Vector2 nPos, bool bPreClamp) const
-{
-	return m_pViewport->Project(nPos, bPreClamp);
 }
 
 void LERenderer::Lock_Swap()

@@ -2,6 +2,7 @@
 #include "Core/Logger.h"
 #include "InputHandler.h"
 #include "SFMLAPI/Viewport/Viewport.h"
+#include "Engine/GFX.h"
 
 namespace LittleEngine
 {
@@ -90,7 +91,7 @@ ViewportEventType InputHandler::PollEvents(Viewport& sfWindow)
 
 		case sf::Event::MouseMoved:
 		{
-			m_inputSM.OnMouseMove(sfWindow.ViewportToWorld(sfEvent.mouseMove.x, sfEvent.mouseMove.y));
+			m_inputSM.OnMouseMove(g_pGFX->ViewportToWorld(sfEvent.mouseMove.x, sfEvent.mouseMove.y));
 			break;
 		}
 

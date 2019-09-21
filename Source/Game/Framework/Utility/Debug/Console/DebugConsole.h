@@ -22,7 +22,7 @@ namespace Console
 extern bool g_bEnabled;
 extern UPtr<LogBook> g_uLogBook;
 
-void Init(LEContext& context);
+void Init();
 void Tick(Time dt);
 void Cleanup();
 } // namespace Console

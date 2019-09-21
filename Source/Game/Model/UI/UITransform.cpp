@@ -1,22 +1,8 @@
 #include "Core/Utils.h"
 #include "UITransform.h"
-#include "Engine/Context/LEContext.h"
 
 namespace LittleEngine
 {
-UITransform::UITransform(LEContext* pContext)
-{
-	if (pContext)
-	{
-		size = pContext->ViewSize();
-	}
-}
-
-UITransform::UITransform(Vector2 size, Vector2 nPosition, Vector2 anchor, Vector2 pixelPad)
-	: size(std::move(size)), nPosition(std::move(nPosition)), anchor(std::move(anchor)), padding(std::move(pixelPad))
-{
-}
-
 UITransform::~UITransform()
 {
 	if (pParent)
@@ -53,7 +39,7 @@ void UITransform::UnsetParent()
 
 void UITransform::SetAutoPadNPosition(Vector2 nPosition, bool bClamp)
 {
-	padding = -Fixed::OneHalf * size;
+	posDelta = -Fixed::OneHalf * size;
 	if (bClamp)
 	{
 		this->nPosition.x = Maths::Clamp_11(nPosition.x);
@@ -63,15 +49,15 @@ void UITransform::SetAutoPadNPosition(Vector2 nPosition, bool bClamp)
 	{
 		this->nPosition = nPosition;
 	}
-	padding.x *= this->nPosition.x;
-	padding.y *= this->nPosition.y;
+	posDelta.x *= this->nPosition.x;
+	posDelta.y *= this->nPosition.y;
 }
 
-Vector2 UITransform::WorldPosition(Vector2 viewSize) const
+Vector2 UITransform::WorldPosition(Vector2 worldSize) const
 {
-	Vector2 offset = pParent ? pParent->WorldPosition(viewSize) : Vector2::Zero;
-	Vector2 scale = pParent ? Fixed::OneHalf * pParent->size : Fixed::OneHalf * viewSize;
-	return Vector2(nPosition.x * scale.x, nPosition.y * scale.y) + offset + padding;
+	Vector2 offset = pParent ? pParent->WorldPosition(worldSize) : Vector2::Zero;
+	Vector2 scale = pParent ? Fixed::OneHalf * pParent->size : Fixed::OneHalf * worldSize;
+	return Vector2(nPosition.x * scale.x, nPosition.y * scale.y) + offset + posDelta;
 }
 
 void UITransform::AddChild(UITransform& child)

@@ -48,7 +48,11 @@ public:
 	void SetText(UIText uiText);
 	void SetTextColour(Colour colour);
 	void SetFont(class FontAsset& font);
+	void SetRectSize(Vector2 size, bool bAutoPad = false);
+	void SetRectMaxSize();
+	void SetAutoPad(bool bAutoPad);
 
+	Vector2 RectSize() const;
 	SFRect* Rect() const;
 	SFText* Text() const;
 

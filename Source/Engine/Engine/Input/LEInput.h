@@ -4,6 +4,7 @@
 #include "SFMLAPI/Input/InputDataFrame.h"
 #if defined(DEBUGGING)
 #include "SFMLAPI/Rendering/Colour.h"
+#include "SFMLAPI/Rendering/LayerID.h"
 #endif
 
 namespace LittleEngine
@@ -84,6 +85,7 @@ private:
 	std::optional<InputContext> m_oSudoContext;
 	class LEContext* m_pContext;
 #if defined(DEBUGGING)
+	LayerID mouseLayer = LayerID::TopFull;
 	class Quad* m_pMouseH = nullptr;
 	Quad* m_pMouseV = nullptr;
 #endif

@@ -16,11 +16,6 @@ void UIObject::SetContext(LEContext& context)
 	m_pContext = &context;
 }
 
-Vector2 UIObject::ViewSize() const
-{
-	return m_pContext ? m_pContext->ViewSize() : Vector2::Zero;
-}
-
 LERenderer* UIObject::Renderer() const
 {
 	Assert(m_pContext, "Context is null!");

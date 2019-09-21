@@ -46,7 +46,9 @@ void UIWidget::SetState(State state)
 
 bool UIWidget::IsPointInBounds(Vector2 point) const
 {
-	return Root()->Rect()->RenderBounds().IsPointIn(point);
+	//Rect2 uiRect = g_pGFX->WorldToUI(Root()->Rect()->GameBounds());
+	Rect2 uiRect = Root()->Rect()->GameBounds();
+	return uiRect.IsPointIn(point);
 }
 
 void UIWidget::OnCreated() {}
@@ -105,7 +107,7 @@ void UIWidget::OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCo
 	m_pOwner = &owner;
 	m_style = pStyleToCopy ? *pStyleToCopy : UIGameStyle::GetStyle("");
 	m_pRoot = AddElement<UIElement>(String(NameStr()) + "_Root");
-	m_pRoot->m_transform.size = m_style.widgetSize;
+	m_pRoot->SetRectSize(m_style.widgetSize);
 	OnCreated();
 	SetInteractable(true);
 }

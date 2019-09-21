@@ -161,7 +161,7 @@ void OnB(const LEInput::Frame& frame)
 		if (!pooled.empty())
 		{
 			auto iter = pooled.begin();
-			s32 rand = Maths::Random::Range(0, static_cast<s32>(pooled.size() - 1));
+			s32 rand = Maths::Random::Range(0, ToS32(pooled.size() - 1));
 			while (rand > 0)
 			{
 				++iter;
@@ -178,7 +178,7 @@ void OnB(const LEInput::Frame& frame)
 		const Fixed r(0.25f);
 		Fixed x = Maths::Random::Range(-r, r);
 		Fixed y = Maths::Random::Range(-r, r);
-		auto pos = g_pGameManager->Renderer()->Project({x, y}, false);
+		auto pos = g_pGFX->WorldProjection({x, y});
 		auto pEntity = uPool->New(pos);
 		auto pc = pEntity->GetComponent<ProjectileComponent>();
 		if (pc)
@@ -215,7 +215,7 @@ void OnEnter()
 		Fixed k(9, 10);
 		Fixed x = Maths::Random::Range(-k, k);
 		Fixed y = Maths::Random::Range(-k, k);
-		Vector2 worldPos = g_pGameManager->Renderer()->Project({x, y}, false);
+		Vector2 worldPos = g_pGFX->WorldProjection({x, y});
 		pParticleSystem1->m_transform.SetPosition(worldPos);
 		pParticleSystem1->Start();
 		g_pGameManager->WorldCamera()->Shake();
@@ -315,7 +315,7 @@ void StartTests()
 	auto rc0 = pEntity0->AddComponent<RenderComponent>();
 	rc0->SetRectangle(LayerID::Default)->SetSize({300, 100})->SetPrimaryColour(Colour::Cyan)->SetEnabled(true);
 
-	pEntity1 = g_pGameManager->NewEntity<Entity>("Entity1", g_pGameManager->Renderer()->Project({0, Fixed(0.9f)}, false));
+	pEntity1 = g_pGameManager->NewEntity<Entity>("Entity1", g_pGFX->WorldProjection({0, Fixed(0.9f)}));
 	auto rc1 = pEntity1->AddComponent<RenderComponent>();
 	FontAsset* pFont = g_pRepository->Load<FontAsset>("Fonts/Sunscreen.otf");
 	rc1->SetText(LayerID::Default)
@@ -341,7 +341,7 @@ void StartTests()
 	if (pEmitter0)
 	{
 		psToken = pEmitter0->RegisterOnTick([](Particle& p) {
-			static Vector2 target = g_pGameManager->Renderer()->Project({Fixed::OneHalf, -Fixed(1.5f)}, false);
+			static Vector2 target = g_pGFX->WorldProjection({Fixed::OneHalf, -Fixed(1.5f)});
 			Vector2 wind = (target - p.m_pos).Normalised();
 			p.m_v.x = wind.x * Maths::Abs(p.m_v.y) * Fixed::OneHalf;
 		});
@@ -399,7 +399,7 @@ void SpawnToggle()
 	Fixed x = 400;
 	Fixed y = 200;
 	auto* pParent = g_pGameManager->UI()->PushContext<UIContext>("TestToggleUIC");
-	pParent->Root()->m_transform.size = {x, y};
+	pParent->Root()->SetRectSize({x, y});
 	UIWidgetStyle toggleStyle = UIGameStyle::GetStyle("");
 	toggleStyle.widgetSize = {x, y * Fixed::OneHalf};
 	toggleStyle.background = Colour::Yellow;
@@ -408,10 +408,10 @@ void SpawnToggle()
 	auto* pToggle1 = pParent->AddWidget<UIToggle>("Toggle1", &toggleStyle);
 
 	debugTokens.push_back(pToggle0->AddCallback([](bool bVal) { LOG_W("Toggle0 changed! %d", bVal); }));
-	pToggle0->Root()->m_transform.bAutoPad = true;
+	pToggle0->Root()->SetAutoPad(true);
 	pToggle0->SetText("Toggle 0")->SetOn(false)->Root()->m_transform.nPosition = {0, 1};
 	debugTokens.push_back(pToggle1->AddCallback([](bool bValue) { LOG_W("Toggle1 changed! %d", bValue); }));
-	pToggle1->Root()->m_transform.bAutoPad = true;
+	pToggle1->Root()->SetAutoPad(true);
 	pToggle1->SetText("Toggle 1")->SetOn(true)->Root()->m_transform.nPosition = {0, -1};
 
 	pParent->m_bAutoDestroyOnCancel = true;

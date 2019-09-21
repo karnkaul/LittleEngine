@@ -25,7 +25,7 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 	{
 		if (eData.spawnData.numParticles > 100)
 		{
-			Fixed numParticles = static_cast<s32>(eData.spawnData.numParticles);
+			Fixed numParticles = ToS32(eData.spawnData.numParticles);
 			numParticles *= g_maxParticlesScale;
 			eData.spawnData.numParticles = numParticles.ToU32();
 		}

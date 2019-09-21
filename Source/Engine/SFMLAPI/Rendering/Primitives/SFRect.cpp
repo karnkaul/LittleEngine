@@ -9,7 +9,7 @@ SFRect::~SFRect() = default;
 
 Rect2 SFRect::GameBounds() const
 {
-	return Rect2::SizeCentre(m_rectGameState.tSize.max, m_gameState.tPosition.max);
+	return Rect2::SizeCentre(m_rectGameState.tSize.max, ViewportToWorld(m_gameState.tPosition.max));
 }
 
 void SFRect::SwapState()

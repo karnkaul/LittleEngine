@@ -87,7 +87,7 @@ void UIButton::Resize()
 	}
 	if (bSetNewSize)
 	{
-		m_pRoot->m_transform.size = newSize;
+		m_pRoot->SetRectSize(newSize);
 	}
 }
 } // namespace LittleEngine

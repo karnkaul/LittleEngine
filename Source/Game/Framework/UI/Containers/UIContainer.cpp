@@ -78,7 +78,10 @@ void UIContainer::Deserialise(String serialised)
 	m_bAutoDestroyOnCancel = root.GetBool("isDestroyOnCancel", true);
 
 	// Setup root
-	m_pRoot->m_transform.size = root.GetVector2("size");
+	if (root.Contains("size"))
+	{
+		m_pRoot->SetRectSize(root.GetVector2("size"));
+	}
 	if (root.GetBool("isPanel"))
 	{
 		m_pRoot->SetPanel(UIGameStyle::ParseColour(root.GetString("colour")));
@@ -117,6 +120,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 		String text = uiTextData.GetString("text");
 		u16 textSize = static_cast<u16>(uiTextData.GetS32("size", UIText::s_DEFAULT_PIXEL_SIZE));
 		Colour textColour = UIGameStyle::ParseColour(uiTextData.GetString("colour"));
+		bool bAutoPad = data.GetBool("isAutoPad", false);
 		if (text.empty())
 		{
 			text = data.GetString("text");
@@ -126,11 +130,10 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 		if (widgetType.empty())
 		{
 			auto pElement = AddElement<UIElement>(name, &pParent->m_transform, layerDelta);
-			pElement->m_transform.bAutoPad = data.GetBool("isAutoPad");
 			pElement->m_transform.nPosition = position;
 			if (size.x > Fixed::Zero && size.y > Fixed::Zero)
 			{
-				pElement->m_transform.size = size;
+				pElement->SetRectSize(size, bAutoPad);
 			}
 			if (!text.empty())
 			{
@@ -175,7 +178,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 				}
 				auto pToggle = AddWidget<UIToggle>(name, pStyle, bNewColumn);
 				pToggle->SetOn(data.GetBool("isOn", true));
-				if (size.x > 0 & size.y > 0)
+				if (size.x > Fixed::Zero && size.y > Fixed::Zero)
 				{
 					pToggle->SetBoxSize(size);
 				}
@@ -228,11 +231,10 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 
 				pNextParent = pWidget->Root();
 				pNextParent->m_transform.nPosition = position;
-				pNextParent->m_transform.bAutoPad = data.GetBool("isAutoPad", false);
-				pNextParent->m_transform.padding = data.GetVector2("padding", Vector2::Zero);
-				if (size.x > 0 && size.y > 0)
+				pNextParent->m_transform.posDelta = data.GetVector2("padding", Vector2::Zero);
+				if (size.x > Fixed::Zero && size.y > Fixed::Zero)
 				{
-					pNextParent->m_transform.size = size;
+					pNextParent->SetRectSize(size, bAutoPad);
 				}
 			}
 		}

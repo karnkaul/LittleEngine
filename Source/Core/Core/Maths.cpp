@@ -44,16 +44,16 @@ s32 Random::Range(s32 min, s32 max)
 
 size_t Random::Range(size_t min, size_t max)
 {
-	return static_cast<size_t>(Range(static_cast<s32>(min), static_cast<s32>(max)));
+	return static_cast<size_t>(Range(ToS32(min), ToS32(max)));
 }
 
 Fixed Random::Range(Fixed min, Fixed max, u32 precision)
 {
 	Assert(precision > 0, "Precision cannot be zero!");
-	s32 sMin = static_cast<s32>(min.ToF32() * precision);
-	s32 sMax = static_cast<s32>(max.ToF32() * precision);
+	s32 sMin = ToS32(min.ToF32() * precision);
+	s32 sMax = ToS32(max.ToF32() * precision);
 	s32 random = Range(sMin, sMax);
-	return Fixed(random, static_cast<s32>(precision));
+	return Fixed(random, ToS32(precision));
 }
 
 s32 Random::NextDeterministic()

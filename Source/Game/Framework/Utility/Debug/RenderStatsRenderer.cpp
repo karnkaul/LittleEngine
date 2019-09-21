@@ -3,6 +3,7 @@
 #if ENABLED(RENDER_STATS)
 #include "SFMLAPI/Rendering/Renderer.h"
 #include "SFMLAPI/Rendering/Primitives.h"
+#include "Engine/GFX.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/Renderer/LERenderer.h"
@@ -20,21 +21,15 @@ TweakBool(renderStats, &RenderStatsRenderer::s_bConsoleRenderStatsEnabled);
 
 RenderStatsRenderer::RenderStatsRenderer(LEContext& context)
 {
-	Fixed nY(-55, 100);
-	Fixed x(68, 100);
-	Fixed dx(17, 100);
 	Vector2 size(300, 220);
-	Vector2 pad(-40, 40);
 	Colour bg(20, 20, 20, 230);
 	LERenderer* pRenderer = context.Renderer();
 	LayerID layer = static_cast<LayerID>(ToS32(LayerID::Top) + 2);
 	auto pFont = g_pRepository->DefaultFont();
 
 	m_pBG = pRenderer->New<SFRect>(static_cast<LayerID>(ToS32(layer) - 1));
-	Vector2 pos = pRenderer->Project({1, -1}, false) + pad;
 	m_pBG->SetSize(size)
 		->SetPivot({1, -1}, true)
-		->SetPosition(pos, true)
 		->SetPrimaryColour(bg, true)
 		->SetStatic(true)
 		->SetEnabled(s_bConsoleRenderStatsEnabled);
@@ -45,7 +40,6 @@ RenderStatsRenderer::RenderStatsRenderer(LEContext& context)
 		->SetFont(*pFont)
 		->SetPivot({-1, 1}, true)
 		->SetPrimaryColour(g_logTextColour, true)
-		->SetPosition(pRenderer->Project({x, nY}, false), true)
 		->SetStatic(true)
 		->SetEnabled(s_bConsoleRenderStatsEnabled);
 
@@ -54,8 +48,20 @@ RenderStatsRenderer::RenderStatsRenderer(LEContext& context)
 		->SetSize(textSize)
 		->SetPivot({-1, 1}, true)
 		->SetPrimaryColour(g_logTextColour, true)
-		->SetPosition(pRenderer->Project({x + dx, nY}, false), true)
 		->SetEnabled(s_bConsoleRenderStatsEnabled);
+
+	// Position
+	Fixed dx(150);
+	Vector2 pad(-40, 40);
+
+	Vector2 pos = g_pGFX->UIProjection({1, -1}) + pad;
+	m_pBG->SetPosition(pos, true);
+	Vector2 bgSize = m_pBG->Size();
+	pos.x -= (bgSize.x + pad.x);
+	pos.y += (bgSize.y - Fixed(10));
+	m_pTitles->SetPosition(pos, true);
+	pos.x += dx;
+	m_pValues->SetPosition(pos, true);
 }
 
 RenderStatsRenderer::~RenderStatsRenderer()
@@ -65,7 +71,7 @@ RenderStatsRenderer::~RenderStatsRenderer()
 	m_pValues->Destroy();
 }
 
-void RenderStatsRenderer::Tick(Time /*dt*/)
+void RenderStatsRenderer::Update()
 {
 	m_pBG->SetEnabled(s_bConsoleRenderStatsEnabled);
 	m_pTitles->SetEnabled(s_bConsoleRenderStatsEnabled);
@@ -82,6 +88,8 @@ void RenderStatsRenderer::Tick(Time /*dt*/)
 }
 
 #if defined(DEBUGGING)
+const Vector2 VersionRenderer::projection = {-Fixed(0.95f), -Fixed(0.90f)};
+
 VersionRenderer::VersionRenderer(LEContext& context)
 {
 	LERenderer* pRenderer = context.Renderer();
@@ -91,7 +99,7 @@ VersionRenderer::VersionRenderer(LEContext& context)
 		->SetSize(textSize + 5U)
 		->SetFont(pFont ? *pFont : *g_pRepository->DefaultFont())
 		->SetPivot({-1, 0})
-		->SetPosition(pRenderer->Project({-Fixed(0.95f), -Fixed(0.90f)}, false))
+		->SetPosition(g_pGFX->UIProjection(projection))
 		->SetPrimaryColour(g_logTextColour)
 		->SetEnabled(true);
 }

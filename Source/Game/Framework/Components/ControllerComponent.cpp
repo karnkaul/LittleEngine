@@ -2,6 +2,7 @@
 #include "SFMLAPI/Input/InputMappings.h"
 #include "SFMLAPI/Input/InputStateMachine.h"
 #include "SFMLAPI/Rendering/Primitives.h"
+#include "Engine/GFX.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Renderer/LERenderer.h"
 #include "Model/World/Entity.h"
@@ -15,22 +16,22 @@ namespace
 {
 void ClampPosition(Vector2& outPosition, Vector2 padding)
 {
-	Vector2 worldSize = g_pGameManager->Renderer()->ViewSize() * Fixed::OneHalf;
-	if (outPosition.x + padding.x > worldSize.x)
+	Vector2 halfSize = g_pGFX->WorldSpace() * Fixed::OneHalf;
+	if (outPosition.x + padding.x > halfSize.x)
 	{
-		outPosition.x = (worldSize.x - padding.x);
+		outPosition.x = (halfSize.x - padding.x);
 	}
-	else if (outPosition.x - padding.x < -worldSize.x)
+	else if (outPosition.x - padding.x < -halfSize.x)
 	{
-		outPosition.x = -(worldSize.x - padding.x);
+		outPosition.x = -(halfSize.x - padding.x);
 	}
-	if (outPosition.y + padding.y > worldSize.y)
+	if (outPosition.y + padding.y > halfSize.y)
 	{
-		outPosition.y = (worldSize.y - padding.y);
+		outPosition.y = (halfSize.y - padding.y);
 	}
-	else if (outPosition.y - padding.y < -worldSize.y)
+	else if (outPosition.y - padding.y < -halfSize.y)
 	{
-		outPosition.y = -(worldSize.y - padding.y);
+		outPosition.y = -(halfSize.y - padding.y);
 	}
 }
 } // namespace
@@ -68,7 +69,7 @@ void ControllerComponent::OnCreated()
 	Reset();
 
 #if defined(DEBUGGING)
-	m_pRect = g_pGameManager->Renderer()->New<SFRect>(LayerID::Debug_UI);
+	m_pRect = g_pGameManager->Renderer()->New<SFRect>(LayerID::DebugWorld);
 	m_pRect->SetSize(s_orientationWidthHeight)
 		->SetPivot({-1, 0})
 		->SetPrimaryColour(s_orientationColour)
