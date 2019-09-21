@@ -67,7 +67,7 @@ void Entity::OnCreate(String name)
 {
 	SetNameAndType(std::move(name), "Entity");
 #if defined(DEBUGGING)
-	LayerID layer = static_cast<LayerID>(LAYER_DEBUG_UI);
+	LayerID layer = LayerID::DebugWorld;
 	m_pO_x = g_pGameManager->Renderer()->New<SFRect>(layer);
 	m_pO_x->SetSize({100, 2})->SetPivot({-1, 0})->SetPrimaryColour(s_xyColours[0]);
 	m_pO_y = g_pGameManager->Renderer()->New<SFRect>(layer);
@@ -118,9 +118,7 @@ bool Entity::IsDestroyed() const
 
 Matrix3 Entity::WorldMatrix() const
 {
-	const Matrix3& view = g_pGameManager->WorldCamera()->m_transform.WorldMatrix();
-	const Matrix3& model = m_transform.WorldMatrix();
-	return model * view;
+	return m_transform.WorldMatrix();
 }
 
 void Entity::OnCreated() {}

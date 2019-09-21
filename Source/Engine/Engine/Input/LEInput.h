@@ -4,6 +4,7 @@
 #include "SFMLAPI/Input/InputDataFrame.h"
 #if defined(DEBUGGING)
 #include "SFMLAPI/Rendering/Colour.h"
+#include "SFMLAPI/Rendering/LayerID.h"
 #endif
 
 namespace LittleEngine

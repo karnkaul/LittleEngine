@@ -1,5 +1,6 @@
 #include "Core/ArchiveReader.h"
 #include "SFMLAPI/System/Assets.h"
+#include "Engine/GFX.h"
 #include "Engine/Repository/LERepository.h"
 #include "Model/GameManager.h"
 #include "Model/UI/UIGameStyle.h"
@@ -35,6 +36,7 @@ ParticleSpawnData::ParticleSpawnData(u32 numParticles) : numParticles(numParticl
 void ParticleSpawnData::Deserialise(const GData& gData)
 {
 	spawnPosition = TRangeV2(gData.GetGData("spawnPosition"));
+	
 	spawnColour = UIGameStyle::ParseColour(gData.GetString("spawnColour"));
 	DESERIALISE_TFIXED(gData, spreadAngle);
 	DESERIALISE_TFIXED(gData, emitterAngle);
@@ -43,6 +45,8 @@ void ParticleSpawnData::Deserialise(const GData& gData)
 	numParticles = static_cast<u32>(gData.GetS32("numParticles"));
 	DESERIALISE_BOOL(gData, bPreWarm);
 	DESERIALISE_BOOL(gData, bFireOnce);
+	DESERIALISE_BOOL(gData, bIsOverlay);
+	DESERIALISE_BOOL(gData, bIsUnderlay);
 }
 
 void ParticleLifetimeData::Deserialise(const GData& gData)

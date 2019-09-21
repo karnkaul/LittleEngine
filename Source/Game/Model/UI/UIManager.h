@@ -57,7 +57,7 @@ T* UIManager::PushContext(String id)
 			auto& uContext = *iter;
 			if (uContext->m_name == id)
 			{
-				LayerID baseLayer = static_cast<LayerID>(uHead->MaxLayer() + 2);
+				LayerID baseLayer = static_cast<LayerID>(ToS32(uHead->MaxLayer()) + 2);
 				std::swap(uHead, uContext);
 				uHead->Regenerate(baseLayer);
 				uHead->SetActive(true);
@@ -87,7 +87,7 @@ UPtr<T> UIManager::Inactive(const String& id)
 		auto uContext = std::move(search->second);
 		Assert(dynamic_cast<T*>(uContext.get()), "Type-ID mismatch!");
 		m_inactive.erase(search);
-		LayerID baseLayer = m_contexts.empty() ? LAYER_UI : static_cast<LayerID>(m_contexts.back()->MaxLayer() + 2);
+		LayerID baseLayer = m_contexts.empty() ? LayerID::UI : static_cast<LayerID>(ToS32(m_contexts.back()->MaxLayer()) + 2);
 		uContext->Regenerate(baseLayer);
 		return UPtr<T>(dynamic_cast<T*>(uContext.release()));
 	}
@@ -98,7 +98,7 @@ template <typename T>
 UPtr<T> UIManager::CreateContext(String id)
 {
 	UPtr<T> uT = MakeUnique<T>();
-	LayerID baseLayer = m_contexts.empty() ? LAYER_UI : static_cast<LayerID>(m_contexts.back()->MaxLayer() + 2);
+	LayerID baseLayer = m_contexts.empty() ? LayerID::UI : static_cast<LayerID>(ToS32(m_contexts.back()->MaxLayer()) + 2);
 	InitContext(*uT, std::move(id), baseLayer);
 	return (uT);
 }

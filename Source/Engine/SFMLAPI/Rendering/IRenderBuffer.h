@@ -9,7 +9,7 @@ class IRenderBuffer
 {
 public:
 	using PrimVec = Vec<UPtr<class APrimitive>>;
-	using PrimMat = Array<PrimVec, _LAYER_COUNT>;
+	using PrimMat = Array<PrimVec, ToIdx(LayerID::_COUNT)>;
 
 public:
 	virtual ~IRenderBuffer() = default;

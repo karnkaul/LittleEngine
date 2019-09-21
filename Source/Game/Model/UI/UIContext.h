@@ -105,7 +105,7 @@ T* UIContext::AddWidget(String name, UIWidgetStyle* pStyleToCopy, bool bNewColum
 	{
 		pStyleToCopy = &defaultStyle;
 	}
-	pStyleToCopy->baseLayer = static_cast<LayerID>(m_pRoot->m_layer + 1);
+	pStyleToCopy->baseLayer = static_cast<LayerID>(ToS32(m_pRoot->m_layer) + 1);
 	uT->OnCreate(std::move(name), *this, pStyleToCopy);
 	m_uUIWidgets->EmplaceWidget(std::move(uT), bNewColumn);
 	LOG_D("%s constructed", pT->LogNameStr());
@@ -116,13 +116,13 @@ template <typename T>
 T* UIContext::AddElement(String name, UITransform* pParent, s32 layerDelta)
 {
 	Assert(g_pGameManager, "GameManager is null!");
-	LayerID layer = LAYER_UI;
+	LayerID layer = LayerID::UI;
 	static_assert(std::is_base_of<UIElement, T>::value, "T must derive from UIWidget!");
 	if (m_pRoot)
 	{
-		layer = static_cast<LayerID>(m_pRoot->m_layer + 1);
+		layer = static_cast<LayerID>(ToS32(m_pRoot->m_layer) + 1);
 	}
-	layer = static_cast<LayerID>(layer + layerDelta);
+	layer = static_cast<LayerID>(ToS32(layer) + layerDelta);
 	UPtr<T> uT = MakeUnique<T>(layer, false);
 	if (!pParent && m_pRoot)
 	{

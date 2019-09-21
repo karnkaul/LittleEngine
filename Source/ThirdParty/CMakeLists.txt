@@ -109,33 +109,42 @@ endif()
 ################################################################################
 # Remote dependencies
 ################################################################################
-# SFML
-set(SFML_VERSION SFML-2.5.1)
-if(EXISTS "${PROJECT_SOURCE_DIR}/${SFML_VERSION}")
-	file(RENAME "${PROJECT_SOURCE_DIR}/${SFML_VERSION}" "${PROJECT_SOURCE_DIR}/SFML")
-endif()
-if(NOT EXISTS "${PROJECT_SOURCE_DIR}/SFML")
-	set(DELETE_ZIP OFF)
-	if(NOT EXISTS "${PROJECT_SOURCE_DIR}/${SFML_VERSION}-sources.zip")
-		message(STATUS "Downloading https://www.sfml-dev.org/files/${SFML_VERSION}-sources.zip...")
-		file(DOWNLOAD
-			"https://www.sfml-dev.org/files/${SFML_VERSION}-sources.zip" 
-			"${PROJECT_SOURCE_DIR}/${SFML_VERSION}-sources.zip"
+function(download_extract_archive ARCHIVE_NAME SRC_URL ORG_NAME DEST_NAME)
+	if(EXISTS "${PROJECT_SOURCE_DIR}/${ORG_NAME}")
+		file(RENAME "${PROJECT_SOURCE_DIR}/${ORG_NAME}" "${PROJECT_SOURCE_DIR}/${DEST_NAME}")
+	endif()
+	if(NOT EXISTS "${PROJECT_SOURCE_DIR}/${DEST_NAME}")
+		set(DELETE_ZIP OFF)
+		if(NOT EXISTS "${PROJECT_SOURCE_DIR}/${ARCHIVE_NAME}")
+			message(STATUS "Downloading ${SRC_URL}...")
+			file(DOWNLOAD
+				"${SRC_URL}"
+				"${PROJECT_SOURCE_DIR}/${ARCHIVE_NAME}"
+			)
+			set(DELETE_ZIP ON)
+		endif()
+		message(STATUS "Extracting ${ARCHIVE_NAME} to ${DEST_NAME}...")
+		execute_process(COMMAND 
+			${CMAKE_COMMAND} -E tar -xf "${PROJECT_SOURCE_DIR}/${ARCHIVE_NAME}"
+			WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+			OUTPUT_QUIET
+			ERROR_QUIET
 		)
-		set(DELETE_ZIP ON)
+		file(RENAME "${PROJECT_SOURCE_DIR}/${ORG_NAME}" "${PROJECT_SOURCE_DIR}/${DEST_NAME}")
+		if(DELETE_ZIP)
+			file(REMOVE "${PROJECT_SOURCE_DIR}/${ARCHIVE_NAME}")
+		endif()
 	endif()
-	message(STATUS "Extracting ${SFML_VERSION}-sources.zip to SFML...")
-	execute_process(COMMAND 
-		${CMAKE_COMMAND} -E tar -xf "${PROJECT_SOURCE_DIR}/${SFML_VERSION}-sources.zip"
-		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
-		OUTPUT_QUIET
-		ERROR_QUIET
-	)
-	file(RENAME "${PROJECT_SOURCE_DIR}/${SFML_VERSION}" "${PROJECT_SOURCE_DIR}/SFML")
-	if(DELETE_ZIP)
-		file(REMOVE "${PROJECT_SOURCE_DIR}/${SFML_VERSION}-sources.zip")
-	endif()
-endif()
+endfunction()
+
+# SFML
+set(SFML_VERSION 2.5.1)
+download_extract_archive(
+	"SFML-${SFML_VERSION}-sources.zip" 
+	"https://www.sfml-dev.org/files/SFML-${SFML_VERSION}-sources.zip" 
+	"SFML-${SFML_VERSION}" 
+	"SFML"
+)
 
 ################################################################################
 # Local dependencies

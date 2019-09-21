@@ -6,17 +6,17 @@ namespace LittleEngine
 {
 struct TileData
 {
-	Vector2 startPos = Vector2::Zero;
 	class TextureAsset* pTexture = nullptr;
-	u8 rows = 0;
-	u8 columns = 0;
+	u16 xRows = 0;
+	u16 xCols = 0;
 
-	void FillView(Vector2 viewSize, TextureAsset& texture);
+	void FillSpace(Vector2 space, TextureAsset& texture);
 };
 
 class TileMap
 {
 private:
+	Vec<class Quad*> m_quads;
 	class Quads* m_pQuads;
 	bool m_bDestroyPrimitive;
 
@@ -25,6 +25,6 @@ public:
 	virtual ~TileMap();
 
 	void CreateTiles(TileData data);
-	void FillView(Vector2 viewSize, TextureAsset& texture);
+	void FillSpace(Vector2 space, TextureAsset& texture);
 };
 } // namespace LittleEngine

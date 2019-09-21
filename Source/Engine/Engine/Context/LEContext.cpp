@@ -9,7 +9,7 @@
 #include "Engine/Input/LEInput.h"
 #include "Engine/Renderer/LERenderer.h"
 #include "Engine/Repository/LERepository.h"
-
+#include "Engine/GFX.h"
 #include "SFMLAPI/Rendering/Primitives/Primitive.h"
 
 namespace LittleEngine
@@ -101,11 +101,6 @@ LERenderer* LEContext::Renderer() const
 	return m_uRenderer.get();
 }
 
-Vector2 LEContext::ViewSize() const
-{
-	return m_uRenderer->ViewSize();
-}
-
 Time LEContext::MaxFrameTime() const
 {
 	return m_data.maxFrameTime;
@@ -113,7 +108,7 @@ Time LEContext::MaxFrameTime() const
 
 bool LEContext::TrySetViewportSize(u32 height)
 {
-	m_oNewViewportSize.emplace(m_uRenderer->TryGetViewportSize(height));
+	m_oNewViewportSize.emplace(g_pGFX->TryGetViewportSize(height));
 	if (!m_oNewViewportSize)
 	{
 		LOG_W("[LEContext] No resolution that matches given height: %d", height);
@@ -188,14 +183,18 @@ void LEContext::SubmitFrame()
 	if (m_oNewViewportSize)
 	{
 		LOG_I("[LEContext] Set viewport size to: %dx%d", (*m_oNewViewportSize)->width, (*m_oNewViewportSize)->height);
-		m_uRenderer->RecreateViewport(ViewportRecreateData(std::move(**m_oNewViewportSize)));
+		ViewportRecreateData data;
+		data.oViewportSize = **m_oNewViewportSize;
+		m_uRenderer->RecreateViewport(std::move(data));
 		m_oNewViewportSize.reset();
 	}
 
 	if (m_oNewViewportStyle)
 	{
 		LOG_I("[LEContext] Changed viewport style");
-		m_uRenderer->RecreateViewport(ViewportRecreateData(*m_oNewViewportStyle));
+		ViewportRecreateData data;
+		data.oStyle = *m_oNewViewportStyle;
+		m_uRenderer->RecreateViewport(std::move(data));
 		m_oNewViewportStyle.reset();
 	}
 	m_uRenderer->Lock_Swap();

@@ -19,9 +19,13 @@ private:
 	// Set this to determine whether the engine will pause ticking if the window loses focus
 	static const bool s_bPauseOnFocusLoss;
 
+public:
+	bool m_bRenderThread = true;
+
+private:
 	UPtr<Core::GData> m_uData;
 	bool m_bDirty = false;
-
+	
 public:
 	GameConfig();
 	~GameConfig();
@@ -41,11 +45,13 @@ public:
 	Time MaxFrameTime() const;
 	String TitleBarText() const;
 	u16 ColliderBorderWidth() const;
-	Vector2 ViewSize() const;
+	Vector2 UISpace() const;
+	Fixed WorldHeight() const;
 	u8 BackupLogFileCount() const;
 	Vector2 EntityOrientationSize() const;
 	Vector2 ControllerOrientationSize() const;
 	Fixed ControllerOrientationEpsilon() const;
+	f64 ForceViewportAR() const;
 
 private:
 	void Verify();

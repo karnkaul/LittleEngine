@@ -25,13 +25,13 @@ public:
 #endif
 
 public:
-	enum Scope
+	enum class Search : u8
 	{
-		COOKED,
-		FILESYSTEM,
+		Cooked,
+		Filesystem,
 	};
 
-	enum class State
+	enum class State : u8
 	{
 		Idle,
 		Active
@@ -100,7 +100,7 @@ private:
 #endif
 
 	template <typename T>
-	UPtr<T> ConjureAsset(const String& id, bool bSilent, InitList<Scope> searchOrder);
+	UPtr<T> ConjureAsset(const String& id, bool bSilent, InitList<Search> searchOrder);
 
 #if ENABLED(FILESYSTEM_ASSETS)
 	bool DoesFileAssetExist(const String& id);
@@ -371,7 +371,7 @@ UPtr<T> LERepository::RetrieveAsset(const String& id)
 #endif
 
 template <typename T>
-UPtr<T> LERepository::ConjureAsset(const String& id, bool bSilent, InitList<Scope> searchOrder)
+UPtr<T> LERepository::ConjureAsset(const String& id, bool bSilent, InitList<Search> searchOrder)
 {
 	UPtr<T> uT;
 
@@ -411,10 +411,10 @@ UPtr<T> LERepository::ConjureAsset(const String& id, bool bSilent, InitList<Scop
 		switch (search)
 		{
 		default:
-		case Scope::COOKED:
+		case Search::Cooked:
 			createAsset();
 			break;
-		case Scope::FILESYSTEM:
+		case Search::Filesystem:
 #if ENABLED(FILESYSTEM_ASSETS)
 			retrieveAsset();
 #endif

@@ -18,8 +18,8 @@ private:
 	UISelectionData m_data;
 	OnChanged m_onChanged;
 	class UIButtonDrawer* m_pDrawer = nullptr;
-	SPtr<int> m_buttonToken;
-	Vec<SPtr<int>> m_drawerTokens;
+	OnClick::Token m_buttonToken;
+	Vec<OnClick::Token> m_drawerTokens;
 	Vec<String> m_options;
 	String m_value;
 

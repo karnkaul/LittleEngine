@@ -14,30 +14,30 @@ namespace LittleEngine::Debug
 ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_SIZE)
 {
 	m_pFont = g_pRepository->DefaultFont();
-	LayerID textLayer = static_cast<LayerID>(LAYER_MAX - 2);
+	LayerID textLayer = static_cast<LayerID>(ToS32(LayerID::Max) - 2);
 
 	// BG
-	m_uBG = MakeUnique<UIElement>(static_cast<LayerID>(textLayer - 5), true);
+	m_uBG = MakeUnique<UIElement>(static_cast<LayerID>(ToS32(textLayer) - 5), true);
 	m_uBG->OnCreate(context, "ConsoleBG");
 	m_uBG->SetPanel(m_bgColour);
-	Vector2 bgSize = m_uBG->m_transform.size;
+	Vector2 bgSize = m_uBG->RectSize();
 	bgSize.y *= Fixed::OneThird;
-	m_uBG->m_transform.size = bgSize;
-	m_uBG->m_transform.padding = {0, -Fixed::OneHalf * bgSize.y};
+	m_uBG->SetRectSize(bgSize);
+	m_uBG->m_transform.posDelta = {0, -Fixed::OneHalf * bgSize.y};
 	m_uBG->m_transform.nPosition = {0, 1};
-	minPadding = m_uBG->m_transform.padding;
+	minPadding = m_uBG->m_transform.posDelta;
 	maxPadding = -minPadding;
 	maxPadding.y *= Fixed(1.1f);
-	m_uBG->m_transform.padding = maxPadding;
+	m_uBG->m_transform.posDelta = maxPadding;
 	m_uBG->Tick();
 
 	// Separator
-	m_uSeparator = MakeUnique<UIElement>(static_cast<LayerID>(textLayer - 3), true);
+	m_uSeparator = MakeUnique<UIElement>(static_cast<LayerID>(ToS32(textLayer) - 3), true);
 	m_uSeparator->OnCreate(context, "ConsoleSeparator", &m_uBG->m_transform);
 	m_uSeparator->SetPanel(Colour(255, 255, 255, 150));
-	m_uSeparator->m_transform.size = {bgSize.x, 2};
+	m_uSeparator->SetRectSize({bgSize.x, 2});
 	m_uSeparator->m_transform.nPosition = {0, -1};
-	m_uSeparator->m_transform.padding = {0, m_textSize + 5};
+	m_uSeparator->m_transform.posDelta = {0, m_textSize + 5};
 	m_uSeparator->Tick();
 
 	// Carat
@@ -46,7 +46,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uCarat->m_transform.anchor = {-1, 1};
 	m_uCarat->m_transform.nPosition = {-1, -1};
 	u16 textPad = static_cast<u16>(m_textSize * 1.3f);
-	m_uCarat->m_transform.padding = {0, textPad};
+	m_uCarat->m_transform.posDelta = {0, textPad};
 	m_uCarat->SetText(UIText(">", m_textSize, m_liveTextColour));
 	m_uCarat->Tick();
 
@@ -56,7 +56,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uLiveText->m_transform.SetParent(m_uBG->m_transform);
 	m_uLiveText->m_transform.anchor = {-1, 1};
 	m_uLiveText->m_transform.nPosition = {-Fixed(0.99f), -1};
-	m_uLiveText->m_transform.padding = {0, textPad};
+	m_uLiveText->m_transform.posDelta = {0, textPad};
 	m_uLiveText->Tick();
 
 	// Cursor
@@ -67,7 +67,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 
 	// Log Lines
 	u16 iPad = textPad + 2;
-	m_logLinesCount = (m_uBG->m_transform.size.y.ToU32() / textPad) - 1;
+	m_logLinesCount = (m_uBG->RectSize().y.ToU32() / textPad) - 1;
 	for (size_t i = 0; i < ToIdx(m_logLinesCount); ++i)
 	{
 		UPtr<UIElement> uLogLineI = MakeUnique<UIElement>(textLayer, true);
@@ -75,7 +75,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 		uLogLineI->m_transform.anchor = {-1, 1};
 		uLogLineI->m_transform.nPosition = {-1, -1};
 		iPad += textPad;
-		uLogLineI->m_transform.padding = {0, iPad};
+		uLogLineI->m_transform.posDelta = {0, iPad};
 		uLogLineI->Tick();
 		m_uLogTexts.emplace_back(std::move(uLogLineI));
 	}
@@ -88,24 +88,24 @@ void ConsoleRenderer::Tick(Time dt)
 	Fixed dy(dt.AsMilliseconds());
 	if (Console::g_bEnabled)
 	{
-		if (m_uBG->m_transform.padding.y > minPadding.y)
+		if (m_uBG->m_transform.posDelta.y > minPadding.y)
 		{
-			m_uBG->m_transform.padding.y -= dy;
+			m_uBG->m_transform.posDelta.y -= dy;
 		}
-		if (m_uBG->m_transform.padding.y < minPadding.y)
+		if (m_uBG->m_transform.posDelta.y < minPadding.y)
 		{
-			m_uBG->m_transform.padding.y = minPadding.y;
+			m_uBG->m_transform.posDelta.y = minPadding.y;
 		}
 	}
 	if (!Console::g_bEnabled)
 	{
-		if (m_uBG->m_transform.padding.y < maxPadding.y)
+		if (m_uBG->m_transform.posDelta.y < maxPadding.y)
 		{
-			m_uBG->m_transform.padding.y += dy;
+			m_uBG->m_transform.posDelta.y += dy;
 		}
-		if (m_uBG->m_transform.padding.y > maxPadding.y)
+		if (m_uBG->m_transform.posDelta.y > maxPadding.y)
 		{
-			m_uBG->m_transform.padding.y = maxPadding.y;
+			m_uBG->m_transform.posDelta.y = maxPadding.y;
 		}
 	}
 	m_uBG->Tick(dt);

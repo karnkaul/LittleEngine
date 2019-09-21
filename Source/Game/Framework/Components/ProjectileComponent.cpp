@@ -31,7 +31,7 @@ void ProjectileComponent::Tick(Time dt)
 
 TimingType ProjectileComponent::Timing() const
 {
-	return TimingType::PRE;
+	return TimingType::Pre;
 }
 
 void ProjectileComponent::SetEnabled(bool bEnabled)

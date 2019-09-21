@@ -39,7 +39,7 @@ public:
 	void SetLogLevel(LogSeverity level);
 
 	ViewportStyle GetViewportStyle() const;
-	ViewportSize SafeGetViewportSize(Vector2 viewSize);
+	ViewportSize SafeGetViewportSize();
 	LogSeverity LogLevel() const;
 	String LocdataID() const;
 	const String& ENLocdataID() const;

@@ -22,7 +22,7 @@ void Player::OnCreated()
 void Player::InitPlayer(PlayerData data)
 {
 	auto pRenderComponent = AddComponent<RenderComponent>();
-	auto layer = static_cast<LayerID>(LAYER_LIVE + 5);
+	auto layer = static_cast<LayerID>(ToS32(LayerID::Live) + 5);
 	pRenderComponent->SetSprite(*data.pMainTexture, layer);
 
 	auto pCollisionComponent = AddComponent<CollisionComponent>();

@@ -7,7 +7,7 @@ Tweakable::Tweakable(String id, TweakType type, String value /* = "" */, void* p
 	: m_pTarget(pTarget), m_value(std::move(value)), m_type(type)
 {
 	static Array<const char*, 4> suffix = {"", "_f32", "_s32", "_b"};
-	m_id = std::move(id) + suffix[m_type];
+	m_id = std::move(id) + suffix[static_cast<size_t>(m_type)];
 	TweakManager::Instance()->m_tweakables.emplace(m_id, this);
 }
 
@@ -21,7 +21,7 @@ void Tweakable::Set(String stringValue)
 	switch (m_type)
 	{
 	default:
-	case TweakType::STRING:
+	case TweakType::String:
 		SyncString(std::move(stringValue));
 		break;
 
@@ -33,7 +33,7 @@ void Tweakable::Set(String stringValue)
 		SyncS32(std::move(stringValue));
 		break;
 
-	case TweakType::BOOL:
+	case TweakType::Bool:
 		SyncBool(std::move(stringValue));
 		break;
 	}

@@ -13,9 +13,9 @@ namespace LittleEngine
 class AudioPlayer
 {
 public:
-	enum class Status
+	enum class Status : u8
 	{
-		NoMedia,
+		NoMedia = 0,
 		Stopped,
 		Playing,
 		Paused

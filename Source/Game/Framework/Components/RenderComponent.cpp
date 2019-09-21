@@ -128,7 +128,7 @@ void RenderComponent::Tick(Time dt)
 
 TimingType RenderComponent::Timing() const
 {
-	return TimingType::POST;
+	return TimingType::Post;
 }
 
 void RenderComponent::SetEnabled(bool bEnabled)

@@ -6,7 +6,7 @@ namespace LittleEngine
 class CollisionComponent : public AComponent
 {
 public:
-	static constexpr TimingType TIMING = TimingType::LAST;
+	static constexpr TimingType TIMING = TimingType::Last;
 
 protected:
 	struct ColliderData

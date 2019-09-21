@@ -21,14 +21,14 @@ sf::Uint8 Cast(ViewportStyle style);
 
 KeyType Cast(sf::Mouse::Button sfButton);
 
-Vector2 WorldToViewport(Vector2 worldPoint);
-Fixed WorldToViewport(Fixed worldOrientation);
-Vector2 ViewportToWorld(Vector2 vpPoint);
-Fixed ViewportToWorld(Fixed vpOrientation);
+Vector2 WorldToSFML(Vector2 worldPoint);
+Fixed WorldToSFML(Fixed worldOrientation);
+Vector2 SFMLToWorld(Vector2 vpPoint);
+Fixed SFMLToWorld(Fixed vpOrientation);
 
 inline Vector2 Cast(const sf::Vector2<u32> vec2u)
 {
-	return Vector2(static_cast<s32>(vec2u.x), static_cast<s32>(vec2u.y));
+	return Vector2(ToS32(vec2u.x), ToS32(vec2u.y));
 }
 
 inline Vector2 Cast(const sf::Vector2i& vec2)

@@ -30,8 +30,8 @@ Time WorldClock::GameTime()
 String WorldClock::ToString(Time time)
 {
 	s32 milliseconds = time.AsMilliseconds();
-	s32 secs = static_cast<s32>(time.AsSeconds());
-	s32 mins = (secs < 60) ? 0 : static_cast<s32>(time.AsSeconds() / 60);
+	s32 secs = ToS32(time.AsSeconds());
+	s32 mins = (secs < 60) ? 0 : ToS32(time.AsSeconds() / 60);
 	secs %= 60;
 	String m = Strings::ToString(mins);
 	if (mins < 10)

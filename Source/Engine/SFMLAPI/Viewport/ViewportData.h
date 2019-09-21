@@ -6,7 +6,7 @@ namespace LittleEngine
 {
 enum class ViewportStyle
 {
-	Default,
+	Default = 0,
 	Bordlerless
 };
 
@@ -15,18 +15,20 @@ struct ViewportSize
 	u32 width = 0;
 	u32 height = 0;
 
+	ViewportSize() = default;
+	ViewportSize(u32 width, u32 height);
+
 	String ToString() const;
 };
 
 struct ViewportData
 {
 	ViewportSize viewportSize;
-	Vector2 viewSize;
 	String title;
 	ViewportStyle style = ViewportStyle::Default;
 
 	ViewportData();
-	ViewportData(ViewportSize viewportSize, Vector2 viewSize, String title, ViewportStyle style);
+	ViewportData(ViewportSize viewportSize, String title, ViewportStyle style);
 	ViewportData(ViewportData&&) = default;
 	ViewportData& operator=(ViewportData&&) = default;
 };
@@ -34,13 +36,7 @@ struct ViewportData
 struct ViewportRecreateData
 {
 	std::optional<ViewportSize> oViewportSize;
-	std::optional<ViewportStyle> oSstyle;
+	std::optional<ViewportStyle> oStyle;
 	std::optional<String> oTitle;
-
-	ViewportRecreateData(ViewportSize size);
-	ViewportRecreateData(ViewportStyle style);
-	ViewportRecreateData(String title);
-	ViewportRecreateData(ViewportRecreateData&&) = default;
-	ViewportRecreateData& operator=(ViewportRecreateData&&) = default;
 };
 } // namespace LittleEngine

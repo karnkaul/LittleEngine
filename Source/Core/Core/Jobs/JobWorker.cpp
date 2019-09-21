@@ -34,7 +34,7 @@ void JobWorker::Run()
 	while (m_bWork.load(std::memory_order_relaxed))
 	{
 		// Reset
-		m_state = State::IDLE;
+		m_state = State::Idle;
 
 		auto oJob = m_pManager->Lock_PopJob();
 		if (!oJob)
@@ -44,7 +44,7 @@ void JobWorker::Run()
 
 		else
 		{
-			m_state = State::WORKING;
+			m_state = State::Busy;
 
 			String suffix = m_bEngineWorker ? " Engine Job " : " Job ";
 			if (!oJob->m_bSilent)

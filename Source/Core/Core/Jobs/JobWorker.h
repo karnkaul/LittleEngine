@@ -8,10 +8,10 @@ namespace Core
 class JobWorker final
 {
 public:
-	enum class State
+	enum class State : u8
 	{
-		IDLE,
-		WORKING,
+		Idle,
+		Busy,
 	};
 
 private:
@@ -19,7 +19,7 @@ private:
 	class JobManager* m_pManager = nullptr;
 	OS::Threads::Handle m_threadHandle;
 	std::atomic<bool> m_bWork;
-	State m_state = State::IDLE;
+	State m_state = State::Idle;
 	const bool m_bEngineWorker;
 
 public:
