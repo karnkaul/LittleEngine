@@ -1,33 +1,44 @@
 #pragma once
 #include "Core/CoreTypes.h"
+#include "Core/TRange.h"
 #include "SFMLAPI/Viewport/ViewportData.h"
 #include "SFML/Graphics/Rect.hpp"
 
 namespace LittleEngine
 {
-extern struct GFX* g_pGFX;
+extern class GFX* g_pGFX;
 
-struct GFX final
+class GFX final
 {
 private:
+	template <typename T>
+	using TRange = Core::TRange<T>;
+
+	struct TState
+	{
+		TRange<Fixed> worldHeight = Fixed::Zero;
+	};
+
+private:
+	TState m_renderState;
+	TState m_gameState;
 	// Derived
-	Map<u32, ViewportSize> viewportSizes;
-	ViewportSize viewportSize;
-	sf::FloatRect uiViewCrop;
-	Vector2 letterBoxInverse;
-	Vector2 worldSpace;
-	Vector2 overlaySpace;
-	f64 nativeAspectRatio;
-	f64 uiAspectRatio;
+	Map<u32, ViewportSize> m_viewportSizes;
+	ViewportSize m_viewportSize;
+	sf::FloatRect m_uiViewCrop;
+	Vector2 m_letterBoxInverse;
+	Vector2 m_worldSpace;
+	Vector2 m_overlaySpace;
+	f64 m_nativeAspectRatio;
+	f64 m_uiAspectRatio;
 
 public:
 	// Set by game
-	ViewportSize maxViewportSize;
-	Vector2 uiSpace;
-	Fixed viewportHeight;
-	Fixed worldHeight;
+	ViewportSize m_maxViewportSize;
+	Vector2 m_uiSpace;
+	Fixed m_viewportHeight;
 #ifdef DEBUGGING
-	f64 overrideNativeAR = 0.0;
+	f64 m_overrideNativeAR = 0.0;
 #endif
 
 public:
@@ -35,6 +46,8 @@ public:
 	~GFX();
 
 public:
+	void Init();
+	
 	const Map<u32, ViewportSize>& ValidViewportSizes() const;
 	const ViewportSize* MaxViewportSize(bool bBorderless) const;
 	const ViewportSize* TryGetViewportSize(u32 height) const;
@@ -42,6 +55,7 @@ public:
 	const ViewportSize& GetViewportSize() const;
 	const Vector2& UISpace() const;
 	const sf::FloatRect& UIViewCrop() const;
+	Fixed WorldHeight() const;
 	const Vector2& WorldSpace() const;
 	const Vector2& OverlaySpace() const;
 	f64 NativeAspectRatio() const;
@@ -55,6 +69,10 @@ public:
 	Vector2 WorldToUI(Vector2 world) const;
 	Vector2 ViewportToWorld(s32 vpX, s32 vpY) const;
 
-	void Recompute();
+	void SetWorldHeight(Fixed height, bool bImmediate);
+
+	void Reconcile();
+	void SwapState();
+	Vector2 LerpedWorldSpace(Fixed alpha);
 };
 } // namespace LittleEngine

@@ -17,19 +17,66 @@ GFX::~GFX()
 	g_pGFX = nullptr;
 }
 
+void GFX::Init()
+{
+	ViewportSize max = Viewport::MaxSize();
+	m_nativeAspectRatio = static_cast<f64>(max.width) / static_cast<f64>(max.height);
+#ifdef DEBUGGING
+	if (m_overrideNativeAR > 0.0)
+	{
+		m_nativeAspectRatio = m_overrideNativeAR;
+	}
+#endif
+	m_uiAspectRatio = m_uiSpace.x.ToF64() / m_uiSpace.y.ToF64();
+	m_overlaySpace = m_uiSpace;
+	u32 viewportWidth = static_cast<u32>(m_viewportHeight.ToF64() * m_nativeAspectRatio);
+	m_viewportSize = ViewportSize(viewportWidth, m_viewportHeight.ToU32());
+	m_uiViewCrop = sf::FloatRect(0.0f, 0.0f, 1.0f, 1.0f);
+	if (m_uiAspectRatio < m_nativeAspectRatio)
+	{
+		f64 uiWidth = m_uiAspectRatio * m_viewportHeight.ToF64();
+		f64 widthRatio = Maths::Abs((static_cast<f64>(viewportWidth) - uiWidth) / static_cast<f64>(viewportWidth));
+		m_uiViewCrop.left = static_cast<f32>(widthRatio * 0.5);
+		m_uiViewCrop.width = static_cast<f32>(1.0 - widthRatio);
+		m_overlaySpace.x = Fixed(static_cast<f32>(m_uiSpace.y.ToF64() * m_nativeAspectRatio));
+	}
+	else if (m_uiAspectRatio > m_nativeAspectRatio)
+	{
+		f64 uiHeight = static_cast<f64>(viewportWidth) / m_uiAspectRatio;
+		f64 heightRatio = Maths::Abs((m_viewportHeight.ToF64() - uiHeight) / m_viewportHeight.ToF64());
+		m_uiViewCrop.top = static_cast<f32>(heightRatio * 0.5);
+		m_uiViewCrop.height = static_cast<f32>(1.0 - heightRatio);
+		m_overlaySpace.y = Fixed(static_cast<f32>(m_uiSpace.x.ToF64() / m_nativeAspectRatio));
+	}
+	m_letterBoxInverse = Vector2(Fixed(1.0f / m_uiViewCrop.width), Fixed(1.0f / m_uiViewCrop.height));
+	m_viewportSizes.clear();
+	Vec<Fixed> heights = {360, 540, 720, 900, 1080, 1440, 2160};
+	for (auto h : heights)
+	{
+		u32 height = h.ToU32();
+		u32 width = static_cast<u32>(h.ToF64() * m_nativeAspectRatio);
+		if (width <= max.width && height <= max.height)
+		{
+			m_viewportSizes[height] = ViewportSize(width, height);
+		}
+	}
+	Fixed worldWidth(m_gameState.worldHeight.max.ToF64() * m_nativeAspectRatio);
+	m_worldSpace = Vector2(worldWidth, m_gameState.worldHeight.max);
+}
+
 const Map<u32, ViewportSize>& GFX::ValidViewportSizes() const
 {
-	return viewportSizes;
+	return m_viewportSizes;
 }
 
 const ViewportSize* GFX::MaxViewportSize(bool bBorderless) const
 {
-	Assert(!viewportSizes.empty(), "No viewport sizes stored!");
+	Assert(!m_viewportSizes.empty(), "No viewport sizes stored!");
 	ViewportSize hardMax = Viewport::MaxSize();
 	const ViewportSize* pMax = nullptr;
 	const ViewportSize* pNextMax = nullptr;
 	bool bReturnNextMax = false;
-	for (const auto& size : viewportSizes)
+	for (const auto& size : m_viewportSizes)
 	{
 		if (!pMax || size.first > pMax->height)
 		{
@@ -43,8 +90,8 @@ const ViewportSize* GFX::MaxViewportSize(bool bBorderless) const
 
 const ViewportSize* GFX::TryGetViewportSize(u32 height) const
 {
-	auto search = viewportSizes.find(height);
-	if (search != viewportSizes.end())
+	auto search = m_viewportSizes.find(height);
+	if (search != m_viewportSizes.end())
 	{
 		return &search->second;
 	}
@@ -53,37 +100,42 @@ const ViewportSize* GFX::TryGetViewportSize(u32 height) const
 
 const ViewportSize& GFX::GetViewportSize() const
 {
-	return viewportSize;
+	return m_viewportSize;
 }
 
 const Vector2& GFX::UISpace() const
 {
-	return uiSpace;
+	return m_uiSpace;
 }
 
 const sf::FloatRect& GFX::UIViewCrop() const
 {
-	return uiViewCrop;
+	return m_uiViewCrop;
+}
+
+Fixed GFX::WorldHeight() const
+{
+	return m_gameState.worldHeight.max;
 }
 
 const Vector2& GFX::WorldSpace() const
 {
-	return worldSpace;
+	return m_worldSpace;
 }
 
 const Vector2& GFX::OverlaySpace() const
 {
-	return overlaySpace;
+	return m_overlaySpace;
 }
 
 f64 GFX::NativeAspectRatio() const
 {
-	return nativeAspectRatio;
+	return m_nativeAspectRatio;
 }
 
 f64 GFX::UIAspectRatio() const
 {
-	return uiAspectRatio;
+	return m_uiAspectRatio;
 }
 
 Vector2 GFX::NormalisedPosition(Vector2 position, Vector2 size) const
@@ -101,78 +153,60 @@ Vector2 GFX::Projection(Vector2 nPos, Vector2 size) const
 
 Vector2 GFX::UIProjection(Vector2 nPos) const
 {
-	return Projection(nPos, uiSpace);
+	return Projection(nPos, m_uiSpace);
 }
 
 Vector2 GFX::WorldProjection(Vector2 nPos) const
 {
-	return Projection(nPos, worldSpace);
+	return Projection(nPos, m_worldSpace);
 }
 
 Vector2 GFX::OverlayProjection(Vector2 nPos) const
 {
-	return Projection(nPos, overlaySpace);
+	return Projection(nPos, m_overlaySpace);
 }
 
 Vector2 GFX::WorldToUI(Vector2 world) const
 {
-	Vector2 full = Projection(NormalisedPosition(world, worldSpace), uiSpace);
-	return Vector2(full.x * letterBoxInverse.x, full.y * letterBoxInverse.y);
+	Vector2 full = Projection(NormalisedPosition(world, m_worldSpace), m_uiSpace);
+	return Vector2(full.x * m_letterBoxInverse.x, full.y * m_letterBoxInverse.y);
 }
 
 Vector2 GFX::ViewportToWorld(s32 vpX, s32 vpY) const
 {
 	Vector2 vpPoint(vpX, vpY);
-	Vector2 vpSize(ToS32(viewportSize.width), ToS32(viewportSize.height));
-	Vector2 aspectRatio(worldSpace.x / vpSize.x, worldSpace.y / vpSize.y);
+	Vector2 vpSize(ToS32(m_viewportSize.width), ToS32(m_viewportSize.height));
+	Vector2 aspectRatio(m_worldSpace.x / vpSize.x, m_worldSpace.y / vpSize.y);
 	vpPoint -= (Fixed::OneHalf * vpSize);
 	return Vector2(vpPoint.x * aspectRatio.x, -vpPoint.y * aspectRatio.y);
 }
 
-void GFX::Recompute()
+void GFX::SetWorldHeight(Fixed height, bool bImmediate)
 {
-	ViewportSize max = Viewport::MaxSize();
-	nativeAspectRatio = static_cast<f64>(max.width) / static_cast<f64>(max.height);
-#ifdef DEBUGGING
-	if (overrideNativeAR > 0.0)
+	if (bImmediate)
 	{
-		nativeAspectRatio = overrideNativeAR;
+		m_gameState.worldHeight.Reset(height);
 	}
-#endif
-	uiAspectRatio = uiSpace.x.ToF64() / uiSpace.y.ToF64();
-	overlaySpace = uiSpace;
-	u32 viewportWidth = static_cast<u32>(viewportHeight.ToF64() * nativeAspectRatio);
-	viewportSize = ViewportSize(viewportWidth, viewportHeight.ToU32());
-	Fixed worldWidth(worldHeight.ToF64() * nativeAspectRatio);
-	worldSpace = Vector2(worldWidth, worldHeight);
-	uiViewCrop = sf::FloatRect(0.0f, 0.0f, 1.0f, 1.0f);
-	if (uiAspectRatio < nativeAspectRatio)
+	else
 	{
-		f64 uiWidth = uiAspectRatio * viewportHeight.ToF64();
-		f64 widthRatio = Maths::Abs((static_cast<f64>(viewportWidth) - uiWidth) / static_cast<f64>(viewportWidth));
-		uiViewCrop.left = static_cast<f32>(widthRatio * 0.5);
-		uiViewCrop.width = static_cast<f32>(1.0 - widthRatio);
-		overlaySpace.x = Fixed(static_cast<f32>(uiSpace.y.ToF64() * nativeAspectRatio));
+		m_gameState.worldHeight.Update(height);
 	}
-	else if (uiAspectRatio > nativeAspectRatio)
-	{
-		f64 uiHeight = static_cast<f64>(viewportWidth) / uiAspectRatio;
-		f64 heightRatio = Maths::Abs((viewportHeight.ToF64() - uiHeight) / viewportHeight.ToF64());
-		uiViewCrop.top = static_cast<f32>(heightRatio * 0.5);
-		uiViewCrop.height = static_cast<f32>(1.0 - heightRatio);
-		overlaySpace.y = Fixed(static_cast<f32>(uiSpace.x.ToF64() / nativeAspectRatio));
-	}
-	letterBoxInverse = Vector2(Fixed(1.0f / uiViewCrop.width), Fixed(1.0f / uiViewCrop.height));
-	viewportSizes.clear();
-	Vec<Fixed> heights = {360, 540, 720, 900, 1080, 1440, 2160};
-	for (auto h : heights)
-	{
-		u32 height = h.ToU32();
-		u32 width = static_cast<u32>(h.ToF64() * nativeAspectRatio);
-		if (width <= max.width && height <= max.height)
-		{
-			viewportSizes[height] = ViewportSize(width, height);
-		}
-	}
+}
+
+void GFX::Reconcile()
+{
+	m_gameState.worldHeight.min = m_gameState.worldHeight.max;
+}
+
+void GFX::SwapState() 
+{
+	m_renderState = m_gameState;
+}
+
+Vector2 GFX::LerpedWorldSpace(Fixed alpha) 
+{
+	Fixed worldWidth(m_renderState.worldHeight.Lerp(alpha).ToF64() * m_nativeAspectRatio);
+	m_worldSpace = Vector2(worldWidth, m_gameState.worldHeight.max);
+	return m_worldSpace;
 }
 } // namespace LittleEngine

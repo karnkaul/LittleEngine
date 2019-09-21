@@ -8,7 +8,7 @@
 
 namespace LittleEngine
 {
-Camera::Camera() : GameObject("Camera", "Camera"), m_orgWorldHeight(g_pGFX->worldHeight) {}
+Camera::Camera() : GameObject("Camera", "Camera"), m_orgWorldHeight(g_pGFX->WorldHeight()) {}
 
 Camera::~Camera() = default;
 
@@ -48,7 +48,7 @@ Fixed Camera::Zoom() const
 	return m_zoom;
 }
 
-void Camera::SetZoom(Fixed zoom)
+void Camera::SetZoom(Fixed zoom, bool bImmediate)
 {
 	if (zoom < Fixed::Zero)
 	{
@@ -56,8 +56,7 @@ void Camera::SetZoom(Fixed zoom)
 		return;
 	}
 	m_zoom = zoom;
-	g_pGFX->worldHeight = m_orgWorldHeight * m_zoom;
-	g_pGFX->Recompute();
+	g_pGFX->SetWorldHeight(m_orgWorldHeight * m_zoom, bImmediate);
 	if (m_uTileMap && m_pTexture && m_bViewfilled)
 	{
 		m_uTileMap->FillSpace(g_pGFX->WorldSpace(), *m_pTexture);
@@ -69,7 +68,7 @@ void Camera::Reset()
 	m_transform.SetPosition(Vector2::Zero);
 	m_transform.SetOrientation(Vector2::Right);
 	m_transform.SetScale(Vector2::One);
-	SetZoom(Fixed::One);
+	SetZoom(Fixed::One, true);
 }
 
 void Camera::Tick(Time dt)

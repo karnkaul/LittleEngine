@@ -294,12 +294,12 @@ bool Test_OnInput(const LEInput::Frame& frame)
 
 	if (frame.IsHeld(KeyCode::Up) && frame.IsHeld({KeyCode::LShift, KeyCode::RShift}))
 	{
-		g_pGameManager->WorldCamera()->SetZoom(g_pGameManager->WorldCamera()->Zoom() + Fixed(0.01f));
+		g_pGameManager->WorldCamera()->SetZoom(g_pGameManager->WorldCamera()->Zoom() + Fixed(0.01f), false);
 	}
 
 	if (frame.IsHeld(KeyCode::Down) && frame.IsHeld({KeyCode::LShift, KeyCode::RShift}))
 	{
-		g_pGameManager->WorldCamera()->SetZoom(g_pGameManager->WorldCamera()->Zoom() - Fixed(0.01f));
+		g_pGameManager->WorldCamera()->SetZoom(g_pGameManager->WorldCamera()->Zoom() - Fixed(0.01f), false);
 	}
 	return false;
 }

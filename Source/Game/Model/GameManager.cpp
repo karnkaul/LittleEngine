@@ -128,13 +128,13 @@ const char* GameManager::LogNameStr() const
 void GameManager::CreateContext(const GameConfig& config)
 {
 	GameSettings& settings = *GameSettings::Instance();
-	m_gfx.uiSpace = config.UISpace();
-	m_gfx.viewportHeight = ToS32(settings.ViewportHeight());
-	m_gfx.worldHeight = config.WorldHeight();
+	m_gfx.m_uiSpace = config.UISpace();
+	m_gfx.m_viewportHeight = ToS32(settings.ViewportHeight());
+	m_gfx.SetWorldHeight(config.WorldHeight(), true);
 #ifdef DEBUGGING
-	m_gfx.overrideNativeAR = config.ForceViewportAR();
+	m_gfx.m_overrideNativeAR = config.ForceViewportAR();
 #endif
-	m_gfx.Recompute();
+	m_gfx.Init();
 
 	LEContextData data;
 	data.viewportData.viewportSize = settings.SafeGetViewportSize();

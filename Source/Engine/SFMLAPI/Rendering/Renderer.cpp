@@ -34,34 +34,48 @@ void Renderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 	g_renderData._quadCount_Internal = 0;
 #endif
 	sf::Vector2 zero = Cast(Vector2::Zero);
-	sf::View worldView(zero, Cast(g_pGFX->WorldSpace()));
+	sf::View worldView(zero, Cast(g_pGFX->LerpedWorldSpace(alpha)));
 	sf::View uiView(zero, Cast(g_pGFX->UISpace()));
 	sf::View overlayView(zero, Cast(g_pGFX->OverlaySpace()));
 	uiView.setViewport(g_pGFX->UIViewCrop());
-	
+
 	// Set World View
 	m_pViewport->setView(worldView);
 
 	auto& matrix = buffer.ActiveRenderMatrix();
 	for (size_t layer = 0; layer < matrix.size(); ++layer)
 	{
-		static auto setViewIf = [&](InitList<LayerID> matches, const sf::View& view) {
-			for (auto match : matches)
-			{
-				if (layer == ToIdx(match))
-				{
-					m_pViewport->setView(view);
-				}
-			}
-		};
+		switch (layer)
+		{
+		default:
+			break;
 
-		setViewIf({LayerID::UnderlayFX, LayerID::OverlayFX}, overlayView);
-		setViewIf({LayerID::Default}, worldView);
-		setViewIf({LayerID::UI}, uiView);
-
+		case ToIdx(LayerID::UnderlayFX):
+		case ToIdx(LayerID::OverlayFX):
+		{
+			m_pViewport->setView(overlayView);
+			break;
+		}
+		case ToIdx(LayerID::Default):
+		{
+			m_pViewport->setView(worldView);
+			break;
+		}
+		case ToIdx(LayerID::UI):
+		{
+			m_pViewport->setView(uiView);
+			break;
+		}
 #ifdef DEBUGGING
-		setViewIf({LayerID::TopFull, LayerID::DebugWorld}, worldView);
+		case ToIdx(LayerID::DebugWorld):
+		case ToIdx(LayerID::TopFull):
+		{
+			m_pViewport->setView(worldView);
+			break;
+		}
 #endif
+		}
+
 		auto& vec = matrix[layer];
 		for (auto& pPrimitive : vec)
 		{

@@ -29,7 +29,7 @@ public:
 	void ClearTiles();
 
 	Fixed Zoom() const;
-	void SetZoom(Fixed zoom);
+	void SetZoom(Fixed zoom, bool bImmediate);
 
 protected:
 	virtual void Reset();
