@@ -1,5 +1,6 @@
 #include "Core/Logger.h"
 #include "PrimitiveFactory.h"
+#include "Engine/GFX.h"
 
 namespace LittleEngine
 {
@@ -46,6 +47,7 @@ void PrimitiveFactory::Swap()
 		vec.emplace_back(std::move(uP));
 	}
 	m_standby.clear();
+	g_pGFX->SwapState();
 	m_lastSwapTime = Time::Now();
 }
 
@@ -62,6 +64,7 @@ void PrimitiveFactory::Reconcile()
 			uP->ReconcileGameState();
 		}
 	}
+	g_pGFX->Reconcile();
 }
 
 PrimitiveFactory::PrimMat& PrimitiveFactory::ActiveRenderMatrix()

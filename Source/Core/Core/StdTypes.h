@@ -61,6 +61,7 @@ using f32 = float;
 using f64 = double;
 
 using String = std::string;
+using VString = std::string_view;
 using StringStream = std::stringstream;
 using Task = std::function<void()>;
 using Lock = std::lock_guard<std::mutex>;
@@ -114,6 +115,12 @@ template <typename T>
 constexpr size_t ToIdx(T t)
 {
 	return static_cast<size_t>(t);
+}
+
+template <typename T>
+constexpr s32 ToS32(T t)
+{
+	return static_cast<s32>(t);
 }
 
 class DependencyException : public std::exception

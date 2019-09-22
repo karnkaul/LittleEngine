@@ -279,11 +279,11 @@ bool IsDebuggerAttached()
 #elif defined(TARGET_LINUX)
 	char buf[4096];
 
-	const int status_fd = ::open("/proc/self/status", O_RDONLY);
+	const auto status_fd = ::open("/proc/self/status", O_RDONLY);
 	if (status_fd == -1)
 		return false;
 
-	const ssize_t num_read = ::read(status_fd, buf, sizeof(buf) - 1);
+	const auto num_read = ::read(status_fd, buf, sizeof(buf) - 1);
 	if (num_read <= 0)
 		return false;
 
@@ -296,9 +296,13 @@ bool IsDebuggerAttached()
 	for (const char* characterPtr = tracer_pid_ptr + sizeof(tracerPidString) - 1; characterPtr <= buf + num_read; ++characterPtr)
 	{
 		if (::isspace(*characterPtr))
+		{
 			continue;
+		}
 		else
+		{
 			ret = ::isdigit(*characterPtr) != 0 && *characterPtr != '0';
+		}
 	}
 #endif
 	return ret;

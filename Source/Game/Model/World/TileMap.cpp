@@ -8,23 +8,21 @@
 
 namespace LittleEngine
 {
-void TileData::FillView(Vector2 viewSize, TextureAsset& texture)
+void TileData::FillSpace(Vector2 space, TextureAsset& texture)
 {
 	pTexture = &texture;
 	Vector2 texSize = pTexture->TextureSize();
-	Vector2 halfTexSize = Fixed::OneHalf * texSize;
-	startPos = {-Fixed::OneHalf * viewSize.x, Fixed::OneHalf * viewSize.y};
-	startPos.x += halfTexSize.x;
-	startPos.y -= halfTexSize.y;
-	columns = static_cast<u8>((viewSize.x / texSize.x).ToS32());
-	if (viewSize.x.ToS32() % texSize.x.ToS32() > 0)
+	Fixed xResidue = space.x - texSize.x;
+	while (xResidue > Fixed::Zero)
 	{
-		++columns;
+		++xCols;
+		xResidue -= (2 * texSize.x);
 	}
-	rows = static_cast<u8>((viewSize.y / texSize.y).ToS32());
-	if (viewSize.y.ToS32() % texSize.y.ToS32() > 0)
+	Fixed yResidue = space.y - texSize.y;
+	while (yResidue > Fixed::Zero)
 	{
-		++rows;
+		++xRows;
+		yResidue -= (2 * texSize.y);
 	}
 }
 
@@ -42,26 +40,51 @@ void TileMap::CreateTiles(TileData data)
 {
 	Assert(data.pTexture, "Creating Tiles without texture!");
 	m_pQuads->SetTexture(*data.pTexture);
-	Vector2 textureSize = data.pTexture->TextureSize();
-	Vector2 centre = data.startPos;
-	for (u16 row = 0; row < data.rows; ++row)
-	{
-		for (u16 col = 0; col < data.columns; ++col)
+	Vector2 size = data.pTexture->TextureSize();
+	
+	Fixed x, y;
+	size_t idx = 0;
+
+	auto create = [&](Vector2 centre) {
+		Quad* pQuad;
+		if (idx < m_quads.size())
 		{
-			Quad* pQuad = m_pQuads->AddQuad();
-			pQuad->SetPosition(centre)->SetEnabled(true);
-			centre.x += textureSize.x;
+			pQuad = m_quads[idx];
 		}
-		centre.x = data.startPos.x;
-		centre.y -= textureSize.y;
+		else
+		{
+			pQuad = m_pQuads->AddQuad();
+			m_quads.push_back(pQuad);
+		}
+		++idx;
+		pQuad->SetPosition(centre)->SetEnabled(true);
+	};
+	auto createRow = [&]() {
+		x = Fixed::Zero;
+		create({x, y});
+		for (u16 col = 1; col <= data.xCols; ++col)
+		{
+			x = col * size.x;
+			create({x, y});
+			create({-x, y});
+		}
+	};
+	// Centre
+	createRow();
+	for (u16 row = 1; row <= data.xRows; ++row)
+	{
+		y = row * size.y;
+		createRow();
+		y = -y;
+		createRow();
 	}
 	m_pQuads->SetEnabled(true);
 }
 
-void TileMap::FillView(Vector2 viewSize, TextureAsset& texture)
+void TileMap::FillSpace(Vector2 space, TextureAsset& texture)
 {
 	TileData data;
-	data.FillView(viewSize, texture);
+	data.FillSpace(space, texture);
 	CreateTiles(data);
 }
 } // namespace LittleEngine

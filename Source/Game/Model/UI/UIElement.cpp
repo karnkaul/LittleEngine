@@ -40,7 +40,7 @@ void UIElement::OnCreated() {}
 
 void UIElement::Construct()
 {
-	m_transform.size = ViewSize();
+	SetRectMaxSize();
 	Regenerate(m_layer);
 }
 
@@ -102,6 +102,28 @@ void UIElement::SetFont(FontAsset& font)
 	m_pText->SetFont(font);
 }
 
+void UIElement::SetRectSize(Vector2 size, bool bAutoPad /* = false */)
+{
+	m_transform.size = size;
+	m_transform.bAutoPad = bAutoPad;
+}
+
+void UIElement::SetRectMaxSize()
+{
+	m_transform.size = g_pGFX->UISpace();
+	m_transform.bAutoPad = false;
+}
+
+void UIElement::SetAutoPad(bool bAutoPad)
+{
+	m_transform.bAutoPad = bAutoPad;
+}
+
+Vector2 UIElement::RectSize() const
+{
+	return m_transform.size;
+}
+
 SFRect* UIElement::Rect() const
 {
 	return m_pRect;
@@ -146,9 +168,9 @@ void UIElement::Tick(Time /*dt*/)
 	m_pText->SetScale(Vector2::One, true);
 	m_pRect->SetOrientation(Vector2::Right, true);
 	m_pText->SetOrientation(Vector2::Right, true);
-	Vector2 viewSize = Renderer()->ViewSize();
-	m_pRect->SetPosition(m_transform.WorldPosition(viewSize));
-	m_pText->SetPosition(m_transform.WorldPosition(viewSize));
+	Vector2 uiPos = m_transform.WorldPosition(g_pGFX->UISpace());
+	m_pRect->SetPosition(uiPos);
+	m_pText->SetPosition(uiPos);
 
 	m_bDoTick = !m_bStopTicking;
 }
@@ -160,25 +182,30 @@ LayerID UIElement::GetLayer() const
 
 void UIElement::Regenerate(LayerID newLayer)
 {
+	bool bRectStatic = true;
+	bool bTextStatic = true;
 	if (m_pRect)
 	{
+		bRectStatic = m_pRect->IsStatic();
 		m_pRect->Destroy();
 	}
 	if (m_pText)
 	{
+		bTextStatic = m_pText->IsStatic();
 		m_pText->Destroy();
 	}
 	m_layer = newLayer;
 	auto pFont = m_pFont ? m_pFont : g_pRepository->Load<FontAsset>("Fonts/UIFont.ttf");
 	m_pRect = Renderer()->New<SFRect>(m_layer);
-	m_pText = Renderer()->New<SFText>(static_cast<LayerID>(m_layer + 1));
-	m_pRect->SetStatic(true)->SetEnabled(true);
-	m_pText->SetFont(pFont ? *pFont : *g_pRepository->DefaultFont())->SetStatic(true)->SetEnabled(true);
+	m_pText = Renderer()->New<SFText>(static_cast<LayerID>(ToS32(m_layer) + 1));
+	m_pRect->SetStatic(bRectStatic)->SetEnabled(true);
+	m_pText->SetFont(pFont ? *pFont : *g_pRepository->DefaultFont())->SetStatic(bTextStatic)->SetEnabled(true);
 	ApplyText();
 	if (m_bPanel)
 	{
 		ApplyPanel();
 	}
+	m_bDoTick = true;
 }
 
 void UIElement::SetStatic(bool bStatic)

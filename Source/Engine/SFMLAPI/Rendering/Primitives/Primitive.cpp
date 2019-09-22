@@ -65,11 +65,11 @@ APrimitive* APrimitive::SetPosition(Vector2 position, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.tPosition.Reset(WorldToViewport(position));
+		m_gameState.tPosition.Reset(WorldToSFML(position));
 	}
 	else
 	{
-		m_gameState.tPosition.Update(WorldToViewport(position));
+		m_gameState.tPosition.Update(WorldToSFML(position));
 	}
 	SetDirty(true);
 	return this;
@@ -79,11 +79,11 @@ APrimitive* APrimitive::SetOrientation(Vector2 orientation, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_gameState.tOrientation.Reset(WorldToViewport(orientation));
+		m_gameState.tOrientation.Reset(WorldToSFML(orientation));
 	}
 	else
 	{
-		m_gameState.tOrientation.Update(WorldToViewport(orientation));
+		m_gameState.tOrientation.Update(WorldToSFML(orientation));
 	}
 	SetDirty(true);
 	return this;
@@ -176,12 +176,12 @@ bool APrimitive::IsStatic() const
 
 Vector2 APrimitive::Position() const
 {
-	return ViewportToWorld(m_gameState.tPosition.max);
+	return SFMLToWorld(m_gameState.tPosition.max);
 }
 
 Vector2 APrimitive::Orientation() const
 {
-	return ViewportToWorld(m_gameState.tOrientation.max);
+	return SFMLToWorld(m_gameState.tOrientation.max);
 }
 
 Vector2 APrimitive::Scale() const

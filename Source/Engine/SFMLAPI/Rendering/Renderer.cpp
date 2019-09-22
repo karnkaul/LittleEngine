@@ -4,10 +4,11 @@
 #include "Renderer.h"
 #include "IRenderBuffer.h"
 #include "SFMLAPI/Rendering/Shader.h"
+#include "SFMLAPI/System/SFTypes.h"
 #include "SFMLAPI/Viewport/Viewport.h"
 #include "SFMLAPI/Viewport/ViewportData.h"
-
 #include "SFMLAPI/Rendering/Primitives/Primitive.h"
+#include "Engine/GFX.h"
 
 namespace LittleEngine
 {
@@ -32,10 +33,54 @@ void Renderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 	u32 drawCalls = 0;
 	g_renderData._quadCount_Internal = 0;
 #endif
-	auto& matrix = buffer.ActiveRenderMatrix();
+	sf::Vector2 zero = Cast(Vector2::Zero);
+	sf::View worldView(Cast(g_pGFX->LerpedWorldPosition(alpha)), Cast(g_pGFX->LerpedWorldSpace(alpha)));
+	sf::View uiView(zero, Cast(g_pGFX->UISpace()));
+	sf::View overlayView(zero, Cast(g_pGFX->OverlaySpace()));
+	uiView.setViewport(g_pGFX->UIViewCrop());
 
-	for (auto& vec : matrix)
+	// Set World View
+	m_pViewport->setView(worldView);
+
+	auto& matrix = buffer.ActiveRenderMatrix();
+	for (size_t layer = 0; layer < matrix.size(); ++layer)
 	{
+		switch (layer)
+		{
+		default:
+			break;
+
+		case ToIdx(LayerID::UnderlayFX):
+		case ToIdx(LayerID::OverlayFX):
+		case ToIdx(LayerID::Background):
+#ifdef DEBUGGING
+		case ToIdx(LayerID::TopOverlay):
+#endif
+		{
+			m_pViewport->setView(overlayView);
+			break;
+		}
+		case ToIdx(LayerID::Default):
+		{
+			m_pViewport->setView(worldView);
+			break;
+		}
+		case ToIdx(LayerID::UI):
+		{
+			m_pViewport->setView(uiView);
+			break;
+		}
+#ifdef DEBUGGING
+		case ToIdx(LayerID::DebugWorld):
+		case ToIdx(LayerID::TopWorld):
+		{
+			m_pViewport->setView(worldView);
+			break;
+		}
+#endif
+		}
+
+		auto& vec = matrix[layer];
 		for (auto& pPrimitive : vec)
 		{
 			if (!pPrimitive->m_bDestroyed && pPrimitive->m_renderState.bEnabled)

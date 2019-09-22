@@ -16,13 +16,13 @@ const Time Time::Zero = Time(0);
 String Time::ToString(Time time)
 {
 	String hours;
-	s32 h = static_cast<s32>(time.AsSeconds() / 60 / 60);
+	s32 h = ToS32(time.AsSeconds() / 60 / 60);
 	if (h > 0)
 	{
 		hours = Strings::ToString(h) + ":";
 	}
 	String mins;
-	s32 m = static_cast<s32>((time.AsSeconds() / 60) - (h * 60));
+	s32 m = ToS32((time.AsSeconds() / 60) - (h * 60));
 	if (m > 0)
 	{
 		mins = Strings::ToString(m) + ":";
@@ -156,7 +156,7 @@ f32 Time::AsSeconds() const
 
 s32 Time::AsMilliseconds() const
 {
-	return static_cast<s32>(microSeconds / 1000);
+	return ToS32(microSeconds / 1000);
 }
 
 s64 Time::AsMicroseconds() const

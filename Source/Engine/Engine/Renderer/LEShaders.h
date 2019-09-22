@@ -32,6 +32,8 @@ public:
 
 	template <typename T>
 	static T* LoadShader(const String& id, Shader::Type asType);
+
+	void UnloadAll();
 };
 
 template <typename T>
@@ -83,7 +85,7 @@ T* LEShaders::LoadShader(const String& id, Shader::Type asType)
 	String vertCode;
 	String fragCode;
 
-	if (asType[Shader::Flag::VERT])
+	if (asType[ToIdx(Shader::Flag::Vertex)])
 	{
 		String vsAssetID = assetID + s_data.vertExt;
 		auto pText = g_pRepository->Load<TextAsset>(vsAssetID);
@@ -93,7 +95,7 @@ T* LEShaders::LoadShader(const String& id, Shader::Type asType)
 		}
 	}
 
-	if (asType[Shader::Flag::FRAG])
+	if (asType[ToIdx(Shader::Flag::Fragment)])
 	{
 		String fsAssetID = assetID + s_data.fragExt;
 		auto pText = g_pRepository->Load<TextAsset>(fsAssetID);

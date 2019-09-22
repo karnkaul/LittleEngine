@@ -6,9 +6,9 @@
 namespace LittleEngine
 {
 UMap<Shader::Type, const char*> g_szShaderTypes = {{Shader::Type(), "Invalid"},
-												   {Shader::Type().set(Shader::Flag::VERT), "Vertex"},
-												   {Shader::Type().set(Shader::Flag::FRAG), "Fragment"},
-												   {Shader::Type().set(Shader::Flag::VERT).set(Shader::Flag::FRAG), "VertFrag"}};
+												   {Shader::Type().set(ToIdx(Shader::Flag::Vertex)), "Vertex"},
+												   {Shader::Type().set(ToIdx(Shader::Flag::Fragment)), "Fragment"},
+												   {Shader::Type().set(ToIdx(Shader::Flag::Vertex)).set(ToIdx(Shader::Flag::Fragment)), "VertFrag"}};
 
 Shader::Shader(String id) : m_id(std::move(id)) {}
 
@@ -21,7 +21,7 @@ void Shader::Compile(const String& code, Type type)
 		if (!code.empty())
 		{
 			m_type = type;
-			sf::Shader::Type sfType = m_type[VERT] ? sf::Shader::Vertex : sf::Shader::Fragment;
+			sf::Shader::Type sfType = m_type[ToIdx(Flag::Vertex)] ? sf::Shader::Vertex : sf::Shader::Fragment;
 			if (m_sfShader.loadFromMemory(code, sfType))
 			{
 				m_bError = false;
@@ -45,7 +45,7 @@ void Shader::Compile(const String& vertCode, const String& fragCode)
 			if (m_sfShader.loadFromMemory(vertCode, sf::Shader::Vertex))
 			{
 				m_bError = false;
-				m_type.set(VERT);
+				m_type.set(ToIdx(Flag::Vertex));
 			}
 		}
 
@@ -54,7 +54,7 @@ void Shader::Compile(const String& vertCode, const String& fragCode)
 			if (m_sfShader.loadFromMemory(fragCode, sf::Shader::Fragment))
 			{
 				m_bError = false;
-				m_type.set(FRAG);
+				m_type.set(ToIdx(Flag::Fragment));
 			}
 		}
 	}

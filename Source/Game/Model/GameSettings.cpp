@@ -1,6 +1,7 @@
 #include "Core/FileRW.h"
 #include "Core/Utils.h"
 #include "SFMLAPI/Viewport/Viewport.h"
+#include "Engine/GFX.h"
 #include "Engine/Renderer/LERenderer.h"
 #include "GameSettings.h"
 
@@ -86,41 +87,24 @@ ViewportStyle GameSettings::GetViewportStyle() const
 	return ret;
 }
 
-ViewportSize GameSettings::SafeGetViewportSize(Vector2 viewSize)
+ViewportSize GameSettings::SafeGetViewportSize()
 {
-	LERenderer::PopulateViewportSizes(viewSize.x / viewSize.y);
-	auto pMaxSize = LERenderer::MaxViewportSize(IsBorderless());
+	auto pMaxSize = g_pGFX->MaxViewportSize(IsBorderless());
 	u32 h = ViewportHeight();
-	u32 w = (viewSize.x.ToU32() * h) / viewSize.y.ToU32();
-	if ((w + 1) % 10 == 0)
-	{
-		w += 1;
-	}
+	u32 w = static_cast<u32>(g_pGFX->NativeAspectRatio() * h);
 	if (h > pMaxSize->height || w > pMaxSize->width)
 	{
-		f32 screenAspect = pMaxSize->width / static_cast<f32>(pMaxSize->height);
-		f32 viewAspect = (viewSize.x / viewSize.y).ToF32();
-		if (viewAspect > screenAspect)
+		if (w > pMaxSize->width)
 		{
 			w = pMaxSize->width;
-			h = static_cast<u32>(w / viewAspect);
-			if ((h + 1) % 10 == 0)
-			{
-				h += 1;
-			}
 		}
-		else
+		if (h > pMaxSize->height)
 		{
 			h = pMaxSize->height;
-			w = static_cast<u32>(h * viewAspect);
-			if ((w + 1) % 10 == 0)
-			{
-				w += 1;
-			}
 		}
 		SetViewportHeight(h);
 	}
-	return {w, h};
+	return ViewportSize(w, h);
 }
 
 LogSeverity GameSettings::LogLevel() const
@@ -151,8 +135,9 @@ const String* GameSettings::GetValue(const String& key) const
 
 void GameSettings::SetDefaults()
 {
-	m_viewportHeight = Property(VIEWPORT_HEIGHT_KEY, Strings::ToString(1080) + "p");
-	m_borderless = Property(BORDERLESS_KEY, Strings::ToString(false));
+	ViewportSize native = Viewport::MaxSize();
+	m_viewportHeight = Property(VIEWPORT_HEIGHT_KEY, Strings::ToString(native.height) + "p");
+	m_borderless = Property(BORDERLESS_KEY, Strings::ToString(true));
 	m_logLevel = Property(LOG_LEVEL_KEY, Core::ParseLogSeverity(LogSeverity::Info));
 	m_locale = Property(LOCALE_KEY, "en");
 }

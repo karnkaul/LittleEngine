@@ -16,7 +16,7 @@ namespace
 {
 Pair<String, u64> FilesystemPath(const String& id, const String& pathPrefix)
 {
-	String path = (pathPrefix.empty() ? "" : pathPrefix + "/") + id;
+	String path = OS::Env()->FullPath(((pathPrefix.empty() ? "" : pathPrefix + "/") + id).c_str());
 	u64 size = OS::FileSize(path.c_str());
 	return std::make_pair(std::move(path), size);
 }

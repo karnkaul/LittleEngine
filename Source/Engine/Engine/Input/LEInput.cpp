@@ -4,6 +4,7 @@
 #include "LEInput.h"
 #include "Engine/Context/LEContext.h"
 #if defined(DEBUGGING)
+#include "Engine/GFX.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Renderer/LERenderer.h"
 #endif
@@ -158,13 +159,14 @@ void LEInput::TakeSnapshot()
 		c = MOUSE_RIGHT_COLOUR;
 	}
 
+	Vector2 pos = g_pGFX->WorldToOverlay(m_mouseInput.worldPosition);
 	if (m_pMouseH)
 	{
-		m_pMouseH->SetPosition({m_mouseInput.worldPosition.x, 0})->SetEnabled(bShowCrosshair)->SetPrimaryColour(c);
+		m_pMouseH->SetPosition({pos.x, 0})->SetEnabled(bShowCrosshair)->SetPrimaryColour(c);
 	}
 	if (m_pMouseV)
 	{
-		m_pMouseV->SetPosition({0, m_mouseInput.worldPosition.y})->SetEnabled(bShowCrosshair)->SetPrimaryColour(c);
+		m_pMouseV->SetPosition({0, pos.y})->SetEnabled(bShowCrosshair)->SetPrimaryColour(c);
 	}
 #endif
 }
@@ -229,14 +231,14 @@ void LEInput::FireCallbacks()
 #if defined(DEBUGGING)
 void LEInput::CreateDebugPointer()
 {
-	Vector2 viewSize = m_pContext->ViewSize();
-	m_pMouseH = m_pContext->Renderer()->New<Quad>(LAYER_TOP);
-	m_pMouseV = m_pContext->Renderer()->New<Quad>(LAYER_TOP);
-	m_pMouseH->SetModel(Rect2::SizeCentre({MOUSE_QUAD_WIDTH, viewSize.y}))
+	m_pMouseH = m_pContext->Renderer()->New<Quad>(LayerID::TopOverlay);
+	m_pMouseV = m_pContext->Renderer()->New<Quad>(LayerID::TopOverlay);
+	Vector2 space = g_pGFX->OverlaySpace();
+	m_pMouseH->SetModel(Rect2::SizeCentre({MOUSE_QUAD_WIDTH, space.y}))
 		->SetStatic(true)
 		->SetPrimaryColour(MOUSE_DEFAULT_COLOUR)
 		->SetEnabled(true);
-	m_pMouseV->SetModel(Rect2::SizeCentre({viewSize.x, MOUSE_QUAD_WIDTH}))
+	m_pMouseV->SetModel(Rect2::SizeCentre({space.x, MOUSE_QUAD_WIDTH}))
 		->SetStatic(true)
 		->SetPrimaryColour(MOUSE_DEFAULT_COLOUR)
 		->SetEnabled(true);
@@ -245,6 +247,6 @@ void LEInput::CreateDebugPointer()
 
 LEInput::Token LEInput::CreateToken() const
 {
-	return MakeShared<s32>(static_cast<s32>(m_contexts.size() + 1));
+	return MakeShared<s32>(ToS32(m_contexts.size() + 1));
 }
 } // namespace LittleEngine

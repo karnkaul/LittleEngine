@@ -7,16 +7,37 @@ namespace LittleEngine
 class WorldStateMachine final
 {
 private:
+	enum class State
+	{
+		Idle = 0,
+		Loading,
+		Running,
+		Quitting
+	};
+
+	enum class Transition
+	{
+		None = 0,
+		UnloadLoad,
+		UnloadRun,
+		LoadRun,
+		Run
+	};
+
+private:
 	Core::Delegate<>::Token m_onSubmitToken;
 	LEInput::Token m_inputToken;
 	class LEContext* m_pContext;
 	static Vec<UPtr<class World>> s_createdWorlds;
+	State m_state;
+	Transition m_transition;
 
-#ifdef DEBUGGING
 public:
+#ifdef DEBUGGING
 	static bool s_bRunning;
 #endif
-
+	static bool s_bClearWorldsOnDestruct;
+	
 public:
 	template <typename T>
 	static WorldID CreateWorld();
@@ -56,7 +77,7 @@ WorldID WorldStateMachine::CreateWorld()
 	UPtr<T> uWorld = MakeUnique<T>();
 	if (uWorld)
 	{
-		id = static_cast<s32>(s_createdWorlds.size());
+		id = ToS32(s_createdWorlds.size());
 		uWorld->m_id = id;
 		s_createdWorlds.push_back(std::move(uWorld));
 	}

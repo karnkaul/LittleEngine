@@ -94,7 +94,7 @@ void LiveLine::MoveCursorToExtreme(bool bStart)
 
 Fixed LiveLine::CursorNPos() const
 {
-	return liveString.empty() ? Fixed::One : Fixed(static_cast<s32>(cursorIdx), static_cast<s32>(liveString.size()));
+	return liveString.empty() ? Fixed::One : Fixed(ToS32(cursorIdx), ToS32(liveString.size()));
 }
 
 void KeyboardInput::Update(const LEInput::Frame& frame)

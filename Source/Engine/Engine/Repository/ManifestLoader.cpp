@@ -28,7 +28,7 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 	}
 	else
 	{
-		auto uManifest = repository.ConjureAsset<TextAsset>(m_manifestPath, false, {LERepository::FILESYSTEM, LERepository::COOKED});
+		auto uManifest = repository.ConjureAsset<TextAsset>(m_manifestPath, false, {LERepository::Search::Filesystem, LERepository::Search::Cooked});
 		pManifest = uManifest.get();
 		if (uManifest)
 		{

@@ -16,6 +16,11 @@ LEShaders::LEShaders(ShadersData data)
 LEShaders::~LEShaders()
 {
 	g_pShaders = nullptr;
+	UnloadAll();
+}
+
+void LEShaders::UnloadAll() 
+{
 	s_shaderMap.clear();
 }
 } // namespace LittleEngine

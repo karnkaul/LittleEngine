@@ -29,24 +29,26 @@ void UIWidget::SetStyle(const UIWidgetStyle& style)
 
 void UIWidget::SetInteractable(bool bInteractable)
 {
-	SetState(bInteractable ? UIWidgetState::NotSelected : UIWidgetState::Uninteractable);
+	SetState(bInteractable ? State::NotSelected : State::Uninteractable);
 	OnSetInteractable(bInteractable);
 }
 
 bool UIWidget::IsInteractable() const
 {
-	return m_state != UIWidgetState::Uninteractable;
+	return m_state != State::Uninteractable;
 }
 
-void UIWidget::SetState(UIWidgetState state)
+void UIWidget::SetState(State state)
 {
-	m_prevState = m_state == UIWidgetState::Interacting ? state : m_state;
+	m_prevState = m_state == State::Interacting ? state : m_state;
 	m_state = state;
 }
 
 bool UIWidget::IsPointInBounds(Vector2 point) const
 {
-	return Root()->Rect()->RenderBounds().IsPointIn(point);
+	//Rect2 uiRect = g_pGFX->WorldToUI(Root()->Rect()->GameBounds());
+	Rect2 uiRect = Root()->Rect()->GameBounds();
+	return uiRect.IsPointIn(point);
 }
 
 void UIWidget::OnCreated() {}
@@ -67,7 +69,7 @@ void UIWidget::Select()
 {
 	if (IsInteractable())
 	{
-		SetState(UIWidgetState::Selected);
+		SetState(State::Selected);
 		OnSelected();
 	}
 }
@@ -76,7 +78,7 @@ void UIWidget::Deselect()
 {
 	if (IsInteractable())
 	{
-		SetState(UIWidgetState::NotSelected);
+		SetState(State::NotSelected);
 		OnDeselected();
 	}
 }
@@ -85,7 +87,7 @@ void UIWidget::InteractStart()
 {
 	if (IsInteractable())
 	{
-		SetState(UIWidgetState::Interacting);
+		SetState(State::Interacting);
 		OnInteractStart();
 	}
 }
@@ -94,7 +96,7 @@ void UIWidget::InteractEnd(bool bInteract)
 {
 	if (IsInteractable())
 	{
-		SetState(UIWidgetState::Selected);
+		SetState(State::Selected);
 		OnInteractEnd(bInteract);
 	}
 }
@@ -105,7 +107,7 @@ void UIWidget::OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCo
 	m_pOwner = &owner;
 	m_style = pStyleToCopy ? *pStyleToCopy : UIGameStyle::GetStyle("");
 	m_pRoot = AddElement<UIElement>(String(NameStr()) + "_Root");
-	m_pRoot->m_transform.size = m_style.widgetSize;
+	m_pRoot->SetRectSize(m_style.widgetSize);
 	OnCreated();
 	SetInteractable(true);
 }
@@ -121,7 +123,7 @@ void UIWidget::InitElement(String name, UIElement* pNewElement, UITransform* pPa
 
 LayerID UIWidget::MaxLayer() const
 {
-	LayerID maxLayer = LAYER_ZERO;
+	LayerID maxLayer = LayerID::Zero;
 	for (const auto& uElement : m_uiElements)
 	{
 		if (uElement->m_layer > maxLayer)

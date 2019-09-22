@@ -33,7 +33,7 @@ private:
 	bool m_bPauseTicking = false;
 
 	std::optional<ViewportStyle> m_oNewViewportStyle;
-	std::optional<ViewportSize*> m_oNewViewportSize;
+	std::optional<const ViewportSize*> m_oNewViewportSize;
 
 public:
 	LEContext(LEContextData data);
@@ -45,7 +45,6 @@ public:
 	LEInput* Input() const;
 	LERenderer* Renderer() const;
 
-	Vector2 ViewSize() const;
 	Time MaxFrameTime() const;
 
 	bool TrySetViewportSize(u32 height);

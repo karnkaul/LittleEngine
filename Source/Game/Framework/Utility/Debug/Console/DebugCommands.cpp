@@ -3,6 +3,7 @@
 #include "Core/Logger.h"
 #include "Core/Utils.h"
 #include "SFMLAPI/System/Assets.h"
+#include "Engine/GFX.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/Physics/LEPhysics.h"
@@ -216,7 +217,7 @@ class Resolution : public ParameterisedCommand
 public:
 	Resolution() : ParameterisedCommand("resolution")
 	{
-		const Map<u32, ViewportSize>& windowSizes = LERenderer::ValidViewportSizes();
+		const Map<u32, ViewportSize>& windowSizes = g_pGFX->ValidViewportSizes();
 		for (const auto& kvp : windowSizes)
 		{
 			const auto& windowSize = kvp.second;

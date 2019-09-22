@@ -65,7 +65,7 @@ void LaunchMessageBox()
 		XMapWindow(pD, w);
 
 		const KeySym sym_1 = XStringToKeysym("1");
-		const s32 sym_1_int = static_cast<s32>(XKeysymToKeycode(pD, sym_1));
+		const s32 sym_1_int = ToS32(XKeysymToKeycode(pD, sym_1));
 
 		while (true)
 		{
@@ -83,7 +83,7 @@ void LaunchMessageBox()
 			}
 			if (e.type == KeyPress || e.type == DestroyNotify)
 			{
-				s32 key = static_cast<s32>(e.xkey.keycode) - sym_1_int;
+				s32 key = ToS32(e.xkey.keycode) - sym_1_int;
 				LOG_I("Key pressed: %d", key);
 				switch (key)
 				{

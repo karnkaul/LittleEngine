@@ -11,7 +11,7 @@ struct UIStyle
 	Colour fill = Colour::Transparent;
 	Colour outline = Colour::Transparent;
 	Colour textColour = Colour::Black;
-	LayerID layer = LAYER_UI;
+	LayerID layer = LayerID::UI;
 };
 
 struct UIWidgetStyle
@@ -22,7 +22,7 @@ struct UIWidgetStyle
 	UIStyle interacting;
 	Vector2 widgetSize;
 	class FontAsset* pFont = nullptr;
-	LayerID baseLayer = LAYER_UI;
+	LayerID baseLayer = LayerID::UI;
 	Colour background;
 };
 } // namespace LittleEngine

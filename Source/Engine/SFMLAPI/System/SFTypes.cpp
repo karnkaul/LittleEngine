@@ -62,22 +62,22 @@ KeyType Cast(sf::Mouse::Button button)
 	}
 }
 
-Vector2 WorldToViewport(Vector2 worldPoint)
+Vector2 WorldToSFML(Vector2 worldPoint)
 {
 	return Vector2(worldPoint.x, -worldPoint.y);
 }
 
-Fixed WorldToViewport(Fixed worldOrientation)
+Fixed WorldToSFML(Fixed worldOrientation)
 {
 	return -worldOrientation;
 }
 
-Vector2 ViewportToWorld(Vector2 vpPoint)
+Vector2 SFMLToWorld(Vector2 vpPoint)
 {
 	return Vector2(vpPoint.x, -vpPoint.y);
 }
 
-Fixed ViewportToWorld(Fixed vpOrientation)
+Fixed SFMLToWorld(Fixed vpOrientation)
 {
 	return -vpOrientation;
 }

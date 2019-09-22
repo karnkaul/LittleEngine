@@ -19,11 +19,11 @@ ASFDrawable* ASFDrawable::SetPivot(Vector2 pivot, bool bImmediate)
 {
 	if (bImmediate)
 	{
-		m_drawableGameState.tPivot.Reset(WorldToViewport(pivot));
+		m_drawableGameState.tPivot.Reset(WorldToSFML(pivot));
 	}
 	else
 	{
-		m_drawableGameState.tPivot.Update(WorldToViewport(pivot));
+		m_drawableGameState.tPivot.Update(WorldToSFML(pivot));
 	}
 	SetDirty(true);
 	return this;
@@ -76,7 +76,7 @@ Rect2 ASFDrawable::RenderBounds() const
 {
 	sf::FloatRect bounds = SFBounds();
 	Vector2 size(Fixed(bounds.width), Fixed(bounds.height));
-	Vector2 centre = ViewportToWorld(m_renderState.tPosition.max);
+	Vector2 centre = SFMLToWorld(m_renderState.tPosition.max);
 	return Rect2::SizeCentre(size, centre);
 }
 

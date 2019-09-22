@@ -4,9 +4,9 @@
 		"Textures/LoadingIcon.png"
 	],
 	"fonts": [
-		"Fonts/main.ttf",
+		"Fonts/Default.ttf",
 		"Fonts/UIFont.ttf",
-		"Fonts/Sunscreen.otf"
+		"Fonts/Sunscreen.otf" 
 	],
 	"texts": [
 		"Texts/Game.style",

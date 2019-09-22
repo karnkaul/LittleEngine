@@ -31,7 +31,7 @@ void JobCatalog::StartJobs(Task onComplete)
 Fixed JobCatalog::Progress() const
 {
 	u32 done = static_cast<u32>(m_subJobs.size() - m_pendingJobs.size());
-	return Fixed(static_cast<s32>(done), static_cast<s32>(m_subJobs.size()));
+	return Fixed(ToS32(done), ToS32(m_subJobs.size()));
 }
 
 void JobCatalog::Update()

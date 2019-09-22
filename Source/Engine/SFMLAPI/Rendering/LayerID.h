@@ -1,23 +1,31 @@
 #pragma once
 namespace LittleEngine
 {
-enum LayerID
+enum class LayerID : s32
 {
-	LAYER_ZERO = 0,
-	LAYER_BACKGROUND = 10,
-	LAYER_DEFAULT = 100,
-	LAYER_LIVE = 200,
-	LAYER_FX = 300,
+	Zero = 0,
+	Background = 10,
+	UnderlayFX = 50,
+	Default = 100,
+	Live = 200,
+	WorldFX = 300,
+	OverlayFX = 350,
 #if defined(DEBUGGING)
-	LAYER_DEBUG_UI = 390,
+	DebugWorld = 390,
 #endif
-	LAYER_UI = 400,
-	LAYER_TOP = 490,
-	LAYER_MAX = 499,
-	_LAYER_COUNT = LAYER_MAX + 1,
+	UI = 400,
+	Top = 490,
+	Max = 499,
+#if defined(DEBUGGING)
+	TopWorld = 500,
+	TopOverlay = 550,
+	_COUNT = TopOverlay + 20
+#else
+	_COUNT = Max + 1,
+#endif
 };
 
-// enum LayerID
+// enum class LayerID : s32
 //{
 //	LAYER_ZERO = 0,
 //	LAYER_BACKGROUND = 1,

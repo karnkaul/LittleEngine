@@ -17,22 +17,7 @@ namespace LittleEngine
 {
 namespace
 {
-enum class State
-{
-	Idle,
-	Loading,
-	Running,
-	Quitting
-};
 
-enum class Transition
-{
-	None,
-	UnloadLoad,
-	UnloadRun,
-	LoadRun,
-	Run
-};
 
 static bool bCreated = false;
 
@@ -42,21 +27,19 @@ String manifestPath;
 Time loadTime;
 Task onLoaded;
 UPtr<class ILoadingHUD> uLoadHUD;
-UPtr<class GameManager> uGame;
 SFText* pLoadingTitle = nullptr;
 SFText* pLoadingSubtitle = nullptr;
 Quad* pSpinner = nullptr;
 World* pActiveWorld = nullptr;
 World* pNextWorld = nullptr;
 class ManifestLoader* pLoader = nullptr;
-State state;
-Transition transition;
 } // namespace
 
 #ifdef DEBUGGING
 bool WorldStateMachine::s_bRunning = false;
 #endif
 
+bool WorldStateMachine::s_bClearWorldsOnDestruct = true;
 Vec<UPtr<World>> WorldStateMachine::s_createdWorlds;
 
 WorldStateMachine::WorldStateMachine(LEContext& context) : m_pContext(&context)
@@ -71,7 +54,6 @@ WorldStateMachine::WorldStateMachine(LEContext& context) : m_pContext(&context)
 		uWorld->Init(*this);
 	}
 	LOG_I("[WSM] Processed %u created Worlds", s_createdWorlds.size());
-	uGame = MakeUnique<GameManager>(*this);
 	uLoadHUD = MakeUnique<LoadingHUD>();
 	pLoadingTitle = &uLoadHUD->Title();
 	pLoadingTitle->SetSize(titleSize);
@@ -87,16 +69,19 @@ WorldStateMachine::WorldStateMachine(LEContext& context) : m_pContext(&context)
 WorldStateMachine::~WorldStateMachine()
 {
 	UnloadActiveWorld();
-	s_createdWorlds.clear();
-	uGame = nullptr;
+	if (s_bClearWorldsOnDestruct)
+	{
+		s_createdWorlds.clear();
+	}
 	uLoadHUD = nullptr;
+	bCreated = false;
 	LOG_D("[WSM] destroyed");
 }
 
 void WorldStateMachine::Start(String coreManifestID, String gameStyleID, Task onManifestLoaded)
 {
 	manifestPath = std::move(coreManifestID);
-	state = State::Loading;
+	m_state = State::Loading;
 	onLoaded = [&, onManifestLoaded]() {
 		if (!s_createdWorlds.empty())
 		{
@@ -111,7 +96,7 @@ void WorldStateMachine::Start(String coreManifestID, String gameStyleID, Task on
 			LOG_E("[WSM] No Worlds created! Call "
 				  "`WorldStateMachine::CreateWorlds<T...>()` before `GameLoop::Run()`");
 			uLoadHUD->SetEnabled(true);
-			m_inputToken = uGame->Input()->Register([&](const LEInput::Frame&) {
+			m_inputToken = g_pGameManager->Input()->Register([&](const LEInput::Frame&) {
 				Quit();
 				return true;
 			});
@@ -138,7 +123,7 @@ void WorldStateMachine::Start(String coreManifestID, String gameStyleID, Task on
 					UIGameStyle::Load(pText->Text());
 				}
 			}
-			transition = Transition::Run;
+			m_transition = Transition::Run;
 			pLoader = nullptr;
 		});
 		loadTime = Time::Now();
@@ -151,21 +136,21 @@ void WorldStateMachine::Start(String coreManifestID, String gameStyleID, Task on
 	}
 	else
 	{
-		transition = Transition::Run;
+		m_transition = Transition::Run;
 	}
 }
 
 void WorldStateMachine::Tick(Time dt, bool& bYieldIntegration)
 {
 #ifdef DEBUGGING
-	s_bRunning = state == State::Running;
+	s_bRunning = m_state == State::Running;
 #endif
 	bYieldIntegration = false;
-	switch (transition)
+	switch (m_transition)
 	{
 	case Transition::None:
 	{
-		switch (state)
+		switch (m_state)
 		{
 		// Persistent states
 		case State::Loading:
@@ -183,12 +168,11 @@ void WorldStateMachine::Tick(Time dt, bool& bYieldIntegration)
 			uLoadHUD->Tick(dt, Fixed::One);
 			if (pActiveWorld && pActiveWorld->m_state == World::State::Active)
 			{
-				if (!(uGame->IsPaused() && !pActiveWorld->m_bTickWhenPaused))
+				if (!(g_pGameManager->IsPaused() && !pActiveWorld->m_bTickWhenPaused))
 				{
 					pActiveWorld->Tick(dt);
 				}
 			}
-			uGame->Tick(dt);
 			break;
 		}
 
@@ -196,8 +180,8 @@ void WorldStateMachine::Tick(Time dt, bool& bYieldIntegration)
 		{
 			m_pContext->Terminate();
 			pNextWorld = pActiveWorld = nullptr;
-			transition = Transition::None;
-			state = State::Idle;
+			m_transition = Transition::None;
+			m_state = State::Idle;
 			bYieldIntegration = true;
 			break;
 		}
@@ -218,7 +202,7 @@ bool WorldStateMachine::LoadWorld(WorldID id)
 {
 	if (id >= 0 && static_cast<size_t>(id) < s_createdWorlds.size())
 	{
-		if (state != State::Running && state != State::Idle)
+		if (m_state != State::Running && m_state != State::Idle)
 		{
 			LOG_E("[WSM] Cannot Load another World while WSM is busy!");
 			return false;
@@ -235,12 +219,12 @@ bool WorldStateMachine::LoadWorld(WorldID id)
 		uLoadHUD->SetEnabled(true);
 		if (g_pRepository->IsPresent(manifestPath))
 		{
-			transition = Transition::UnloadLoad;
+			m_transition = Transition::UnloadLoad;
 			pNextWorld->m_state = World::State::Loading;
 		}
 		else
 		{
-			transition = Transition::UnloadRun;
+			m_transition = Transition::UnloadRun;
 			manifestPath.clear();
 		}
 		LOG_D("[WSM] Load Enqueued: %s", pNextWorld->LogNameStr());
@@ -277,29 +261,29 @@ Vec<WorldID> WorldStateMachine::AllWorldIDs() const
 
 void WorldStateMachine::ChangeState()
 {
-	switch (transition)
+	switch (m_transition)
 	{
 	case Transition::UnloadLoad:
 	{
 		UnloadActiveWorld();
-		transition = Transition::LoadRun;
+		m_transition = Transition::LoadRun;
 		break;
 	}
 
 	case Transition::UnloadRun:
 	{
 		UnloadActiveWorld();
-		transition = Transition::Run;
+		m_transition = Transition::Run;
 		break;
 	}
 
 	case Transition::LoadRun:
 	{
 		loadTime = Time::Now();
-		pLoader = g_pRepository->LoadManifest(manifestPath, [&]() { transition = Transition::Run; });
+		pLoader = g_pRepository->LoadManifest(manifestPath, [&]() { m_transition = Transition::Run; });
 		uLoadHUD->Tick(Time::Zero, Fixed::Zero);
-		state = State::Loading;
-		transition = Transition::None;
+		m_state = State::Loading;
+		m_transition = Transition::None;
 		break;
 	}
 
@@ -321,8 +305,8 @@ void WorldStateMachine::ChangeState()
 			pActiveWorld->Activate();
 			pNextWorld = nullptr;
 		}
-		state = State::Running;
-		transition = Transition::None;
+		m_state = State::Running;
+		m_transition = Transition::None;
 		if (onLoaded)
 		{
 			onLoaded();
@@ -347,12 +331,12 @@ void WorldStateMachine::UnloadActiveWorld()
 			m_onSubmitToken = m_pContext->RegisterOnSubmitted([manifestID]() { g_pRepository->UnloadManifest(manifestID); });
 		}
 	}
-	uGame->Reset();
+	g_pGameManager->Reset();
 }
 
 void WorldStateMachine::Quit()
 {
 	UnloadActiveWorld();
-	state = State::Quitting;
+	m_state = State::Quitting;
 }
 } // namespace LittleEngine

@@ -88,7 +88,7 @@ void OnA()
 		if (pEntity2)
 		{
 			auto rc0 = pEntity2->AddComponent<RenderComponent>();
-			rc0->SetCircle(LAYER_DEFAULT)->SetDiameter(200)->SetPrimaryColour(Colour::Yellow);
+			rc0->SetCircle(LayerID::Default)->SetDiameter(200)->SetPrimaryColour(Colour::Yellow);
 			auto t0 = pEntity2->AddComponent<CollisionComponent>();
 			t0->AddCircle(200);
 		}
@@ -97,7 +97,7 @@ void OnA()
 		if (pEntity3)
 		{
 			auto rc1 = pEntity3->AddComponent<RenderComponent>();
-			rc1->SetRectangle(LAYER_DEFAULT)->SetSize({600, 100})->SetPrimaryColour(Colour::Blue);
+			rc1->SetRectangle(LayerID::Default)->SetSize({600, 100})->SetPrimaryColour(Colour::Blue);
 			auto t1 = pEntity3->AddComponent<CollisionComponent>();
 			t1->AddAABB(AABBData({600, 100}));
 		}
@@ -116,7 +116,7 @@ void OnA()
 		pEntity4 = g_pGameManager->NewEntity<Entity>("SpriteSheetTest");
 		pEntity4->m_transform.SetPosition({-200, -200});
 		auto rc4 = pEntity4->AddComponent<RenderComponent>();
-		rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)), LAYER_FX);
+		rc4->SetSpriteSheet(SpriteSheet("Textures/TestSheet_64x64_6x6", Time::Seconds(1.0f)), LayerID::WorldFX);
 	}
 	else
 	{
@@ -149,7 +149,7 @@ void OnB(const LEInput::Frame& frame)
 			if (pEntity)
 			{
 				auto rc = pEntity->AddComponent<RenderComponent>();
-				rc->SetRectangle(LAYER_DEFAULT)->SetSize({200, 10})->SetPrimaryColour(Colour::Magenta);
+				rc->SetRectangle(LayerID::Default)->SetSize({200, 10})->SetPrimaryColour(Colour::Magenta);
 				pEntity->AddComponent<ProjectileComponent>();
 			}
 			return pEntity;
@@ -161,7 +161,7 @@ void OnB(const LEInput::Frame& frame)
 		if (!pooled.empty())
 		{
 			auto iter = pooled.begin();
-			s32 rand = Maths::Random::Range(0, static_cast<s32>(pooled.size() - 1));
+			s32 rand = Maths::Random::Range(0, ToS32(pooled.size() - 1));
 			while (rand > 0)
 			{
 				++iter;
@@ -178,7 +178,7 @@ void OnB(const LEInput::Frame& frame)
 		const Fixed r(0.25f);
 		Fixed x = Maths::Random::Range(-r, r);
 		Fixed y = Maths::Random::Range(-r, r);
-		auto pos = g_pGameManager->Renderer()->Project({x, y}, false);
+		auto pos = g_pGFX->WorldProjection({x, y});
 		auto pEntity = uPool->New(pos);
 		auto pc = pEntity->GetComponent<ProjectileComponent>();
 		if (pc)
@@ -215,7 +215,7 @@ void OnEnter()
 		Fixed k(9, 10);
 		Fixed x = Maths::Random::Range(-k, k);
 		Fixed y = Maths::Random::Range(-k, k);
-		Vector2 worldPos = g_pGameManager->Renderer()->Project({x, y}, false);
+		Vector2 worldPos = g_pGFX->WorldProjection({x, y});
 		pParticleSystem1->m_transform.SetPosition(worldPos);
 		pParticleSystem1->Start();
 		g_pGameManager->WorldCamera()->Shake();
@@ -280,16 +280,26 @@ bool Test_OnInput(const LEInput::Frame& frame)
 
 	if (frame.IsHeld(KeyCode::Left) && frame.IsHeld({KeyCode::LShift, KeyCode::RShift}))
 	{
-		Transform& t = g_pGameManager->WorldCamera()->m_transform;
-		t.SetPosition(t.WorldPosition() - Vector2(Fixed::Three, Fixed::Zero));
+		Vector2 p = g_pGameManager->WorldCamera()->Position();
+		g_pGameManager->WorldCamera()->SetPosition(p - Vector2(3, 0));
 		return true;
 	}
 
 	if (frame.IsHeld(KeyCode::Right) && frame.IsHeld({KeyCode::LShift, KeyCode::RShift}))
 	{
-		Transform& t = g_pGameManager->WorldCamera()->m_transform;
-		t.SetPosition(t.WorldPosition() + Vector2(Fixed::Three, Fixed::Zero));
+		Vector2 p = g_pGameManager->WorldCamera()->Position();
+		g_pGameManager->WorldCamera()->SetPosition(p + Vector2(3, 0));
 		return true;
+	}
+
+	if (frame.IsHeld(KeyCode::Up) && frame.IsHeld({KeyCode::LShift, KeyCode::RShift}))
+	{
+		g_pGameManager->WorldCamera()->SetZoom(g_pGameManager->WorldCamera()->Zoom() + Fixed(0.01f), false);
+	}
+
+	if (frame.IsHeld(KeyCode::Down) && frame.IsHeld({KeyCode::LShift, KeyCode::RShift}))
+	{
+		g_pGameManager->WorldCamera()->SetZoom(g_pGameManager->WorldCamera()->Zoom() - Fixed(0.01f), false);
 	}
 	return false;
 }
@@ -313,12 +323,12 @@ void StartTests()
 {
 	pEntity0 = g_pGameManager->NewEntity<Entity>("Entity0", {300, 200});
 	auto rc0 = pEntity0->AddComponent<RenderComponent>();
-	rc0->SetRectangle(LAYER_DEFAULT)->SetSize({300, 100})->SetPrimaryColour(Colour::Cyan)->SetEnabled(true);
+	rc0->SetRectangle(LayerID::Default)->SetSize({300, 100})->SetPrimaryColour(Colour::Cyan)->SetEnabled(true);
 
-	pEntity1 = g_pGameManager->NewEntity<Entity>("Entity1", g_pGameManager->Renderer()->Project({0, Fixed(0.9f)}, false));
+	pEntity1 = g_pGameManager->NewEntity<Entity>("Entity1", g_pGFX->WorldProjection({0, Fixed(0.9f)}));
 	auto rc1 = pEntity1->AddComponent<RenderComponent>();
 	FontAsset* pFont = g_pRepository->Load<FontAsset>("Fonts/Sunscreen.otf");
-	rc1->SetText(LAYER_DEFAULT)
+	rc1->SetText(LayerID::Default)
 		->SetText(LOC("LOC_HELLO_WORLD!"))
 		->SetFont(pFont ? *pFont : *g_pRepository->DefaultFont())
 		->SetSize(50)
@@ -341,7 +351,7 @@ void StartTests()
 	if (pEmitter0)
 	{
 		psToken = pEmitter0->RegisterOnTick([](Particle& p) {
-			static Vector2 target = g_pGameManager->Renderer()->Project({Fixed::OneHalf, -Fixed(1.5f)}, false);
+			static Vector2 target = g_pGFX->WorldProjection({Fixed::OneHalf, -Fixed(1.5f)});
 			Vector2 wind = (target - p.m_pos).Normalised();
 			p.m_v.x = wind.x * Maths::Abs(p.m_v.y) * Fixed::OneHalf;
 		});
@@ -363,7 +373,7 @@ void StartTests()
 	auto pTex = g_pRepository->Load<TextureAsset>("Misc/Test.png");
 	if (pTex)
 	{
-		pQuads0 = g_pGameManager->Renderer()->New<Quads>(LAYER_DEFAULT);
+		pQuads0 = g_pGameManager->Renderer()->New<Quads>(LayerID::Default);
 		pTex->SetRepeated(true);
 		pQuads0->SetTexture(*pTex)->SetEnabled(true);
 		pQuad0 = pQuads0->AddQuad();
@@ -399,7 +409,7 @@ void SpawnToggle()
 	Fixed x = 400;
 	Fixed y = 200;
 	auto* pParent = g_pGameManager->UI()->PushContext<UIContext>("TestToggleUIC");
-	pParent->Root()->m_transform.size = {x, y};
+	pParent->Root()->SetRectSize({x, y});
 	UIWidgetStyle toggleStyle = UIGameStyle::GetStyle("");
 	toggleStyle.widgetSize = {x, y * Fixed::OneHalf};
 	toggleStyle.background = Colour::Yellow;
@@ -408,10 +418,10 @@ void SpawnToggle()
 	auto* pToggle1 = pParent->AddWidget<UIToggle>("Toggle1", &toggleStyle);
 
 	debugTokens.push_back(pToggle0->AddCallback([](bool bVal) { LOG_W("Toggle0 changed! %d", bVal); }));
-	pToggle0->Root()->m_transform.bAutoPad = true;
+	pToggle0->Root()->SetAutoPad(true);
 	pToggle0->SetText("Toggle 0")->SetOn(false)->Root()->m_transform.nPosition = {0, 1};
 	debugTokens.push_back(pToggle1->AddCallback([](bool bValue) { LOG_W("Toggle1 changed! %d", bValue); }));
-	pToggle1->Root()->m_transform.bAutoPad = true;
+	pToggle1->Root()->SetAutoPad(true);
 	pToggle1->SetText("Toggle 1")->SetOn(true)->Root()->m_transform.nPosition = {0, -1};
 
 	pParent->m_bAutoDestroyOnCancel = true;

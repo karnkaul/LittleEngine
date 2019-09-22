@@ -12,7 +12,7 @@ void UIProgressBar::InitProgressBar(Vector2 size, Colour colour, Fixed initProgr
 	m_size = size;
 	m_transform.anchor = {-1, 0};
 	m_transform.nPosition = {-1, 0};
-	m_transform.size = m_size;
+	SetRectSize(size);
 	SetPanel(colour);
 	SetProgress(initProgress);
 	Rect()->SetStatic(false);
@@ -21,7 +21,7 @@ void UIProgressBar::InitProgressBar(Vector2 size, Colour colour, Fixed initProgr
 void UIProgressBar::SetProgress(Fixed progress)
 {
 	Fixed width = m_size.x * Maths::Clamp01(progress);
-	m_transform.size.x = width;
+	SetRectSize({width, RectSize().y});
 }
 
 void UIProgressBar::OnCreated()

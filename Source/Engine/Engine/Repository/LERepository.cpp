@@ -1,5 +1,4 @@
 #include <fstream>
-#include <optional>
 #include "Core/OS.h"
 #include "LERepository.h"
 #include "AssetManifest.h"
@@ -8,23 +7,6 @@
 
 namespace LittleEngine
 {
-namespace
-{
-std::optional<String> FindFile(const String& name, Vec<String> paths)
-{
-	std::optional<String> ret;
-	for (const auto& path : paths)
-	{
-		if (std::ifstream(path + "/" + name).good())
-		{
-			ret = path;
-			break;
-		}
-	}
-	return ret;
-}
-} // namespace
-
 LERepository* g_pRepository = nullptr;
 #if ENABLED(FILESYSTEM_ASSETS)
 bool LERepository::s_bUseFileAssets = true;
@@ -32,20 +14,13 @@ bool LERepository::s_bUseFileAssets = true;
 
 LERepository::LERepository(String defaultFontID, String archivePath, String rootDir) : m_rootDir(std::move(rootDir))
 {
-	OS::EnvData* pEnv = OS::Env();
-	auto prefix = FindFile(archivePath, {".", pEnv->ExePath(), pEnv->RuntimePath()});
-	if (prefix)
-	{
-		archivePath = *prefix + "/" + std::move(archivePath);
-		m_rootDir = std::move(*prefix) + "/" + std::move(m_rootDir);
-	}
-
 	m_assetPathPrefix = m_rootDir.empty() ? String() : m_rootDir + "/";
 	m_uCooked = MakeUnique<Core::ArchiveReader>();
 
 	LOG_D("[Repository] Assets Root Dir: %s", m_rootDir.c_str());
 
-	std::ifstream file(archivePath.c_str());
+	String filePath = OS::Env()->FullPath(archivePath.c_str());
+	std::ifstream file(filePath.c_str());
 	Assert(file.good(), "Cooked archive does not exist!");
 #if defined(DEBUGGING)
 	if (OS::IsDebuggerAttached())
@@ -53,7 +28,7 @@ LERepository::LERepository(String defaultFontID, String archivePath, String root
 		// If you are debugging and have broken here,
 		// no need to restart the session, just fix the
 		// missing archive before continuing!
-		file = std::ifstream(archivePath);
+		file = std::ifstream(filePath.c_str());
 	}
 #endif
 	if (!file.good())
@@ -66,17 +41,10 @@ LERepository::LERepository(String defaultFontID, String archivePath, String root
 	else
 	{
 		LOG_D("[Repository] Located cooked archive at [%s]", archivePath.c_str());
-		m_uCooked->Load(archivePath.c_str());
+		m_uCooked->Load(filePath.c_str());
 	}
 
-	auto uFont = ConjureAsset<FontAsset>(defaultFontID, false, {FILESYSTEM, COOKED});
-	if (uFont)
-	{
-		m_pDefaultFont = uFont.get();
-		m_loaded.emplace(std::move(defaultFontID), std::move(uFont));
-	}
-
-	Assert(m_pDefaultFont, "Invariant violated: Default Font is null!");
+	LoadDefaultFont(std::move(defaultFontID));
 	g_pRepository = this;
 	LOG_D("[Repository] constructed");
 }
@@ -87,6 +55,21 @@ LERepository::~LERepository()
 	m_pDefaultFont = nullptr;
 	m_loaded.clear();
 	LOG_D("[Repository] destroyed");
+}
+
+void LERepository::LoadDefaultFont(String id) 
+{
+	if (m_loaded.find(id) == m_loaded.end())
+	{
+		m_pDefaultFont = nullptr;
+		auto uFont = ConjureAsset<FontAsset>(id, false, {Search::Filesystem, Search::Cooked});
+		if (uFont)
+		{
+			m_pDefaultFont = uFont.get();
+			m_loaded.emplace(std::move(id), std::move(uFont));
+		}
+	}
+	Assert(m_pDefaultFont, "Invariant violated: Default Font is null!");
 }
 
 FontAsset* LERepository::DefaultFont() const
@@ -172,6 +155,11 @@ bool LERepository::IsBusy() const
 	return bLoading;
 }
 
+void LERepository::ResetState() 
+{
+	m_state = State::Idle;
+}
+
 void LERepository::Tick(Time dt)
 {
 	m_state = State::Active;
@@ -196,7 +184,7 @@ bool LERepository::DoesFileAssetExist(const String& id)
 }
 String LERepository::FileAssetPath(const String& id) const
 {
-	return m_assetPathPrefix + id;
+	return OS::Env()->FullPath((m_assetPathPrefix + id).c_str());
 }
 #endif
 } // namespace LittleEngine

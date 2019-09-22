@@ -18,7 +18,6 @@ public:
 	virtual void Tick(Time dt = Time::Zero) = 0;
 
 	void SetContext(LEContext& context);
-	Vector2 ViewSize() const;
 
 protected:
 	class LERenderer* Renderer() const;

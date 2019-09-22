@@ -20,14 +20,14 @@ Quad::~Quad() = default;
 Rect2 Quad::GameBounds() const
 {
 	Vector2 size(Maths::Abs(m_vertexModel[0].x - m_vertexModel[1].x), Maths::Abs(m_vertexModel[1].y - m_vertexModel[2].y));
-	Vector2 centre = ViewportToWorld(m_gameState.tPosition.max);
+	Vector2 centre = SFMLToWorld(m_gameState.tPosition.max);
 	return Rect2::SizeCentre(size, centre);
 }
 
 Rect2 Quad::RenderBounds() const
 {
 	Vector2 size(Maths::Abs(m_vertexModel[0].x - m_vertexModel[1].x), Maths::Abs(m_vertexModel[1].y - m_vertexModel[2].y));
-	Vector2 centre = ViewportToWorld(m_renderState.tPosition.max);
+	Vector2 centre = SFMLToWorld(m_renderState.tPosition.max);
 	return Rect2::SizeCentre(size, centre);
 }
 
@@ -78,9 +78,9 @@ void Quad::OnDraw(Viewport& viewport, sf::RenderStates& sfStates)
 
 Quad* Quad::SetModel(Rect2 xy)
 {
-	m_vertexModel = {WorldToViewport(xy.TopLeft()), WorldToViewport(xy.TopRight()), WorldToViewport(xy.BottomRight()),
-					 WorldToViewport(xy.BottomLeft())};
-	m_gameState.tPosition = WorldToViewport(xy.Centre());
+	m_vertexModel = {WorldToSFML(xy.TopLeft()), WorldToSFML(xy.TopRight()), WorldToSFML(xy.BottomRight()),
+					 WorldToSFML(xy.BottomLeft())};
+	m_gameState.tPosition = WorldToSFML(xy.Centre());
 	return this;
 }
 
