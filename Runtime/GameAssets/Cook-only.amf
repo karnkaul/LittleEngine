@@ -1,0 +1,8 @@
+{
+	"textures":[
+		"Misc/06.png"
+	],
+	"texts": [
+		"Misc/BinaryText.txt"
+	]
+}

@@ -69,14 +69,7 @@ LERepository::LERepository(String defaultFontID, String archivePath, String root
 		m_uCooked->Load(archivePath.c_str());
 	}
 
-	auto uFont = ConjureAsset<FontAsset>(defaultFontID, false, {Search::Filesystem, Search::Cooked});
-	if (uFont)
-	{
-		m_pDefaultFont = uFont.get();
-		m_loaded.emplace(std::move(defaultFontID), std::move(uFont));
-	}
-
-	Assert(m_pDefaultFont, "Invariant violated: Default Font is null!");
+	LoadDefaultFont(std::move(defaultFontID));
 	g_pRepository = this;
 	LOG_D("[Repository] constructed");
 }
@@ -87,6 +80,21 @@ LERepository::~LERepository()
 	m_pDefaultFont = nullptr;
 	m_loaded.clear();
 	LOG_D("[Repository] destroyed");
+}
+
+void LERepository::LoadDefaultFont(String id) 
+{
+	if (m_loaded.find(id) == m_loaded.end())
+	{
+		m_pDefaultFont = nullptr;
+		auto uFont = ConjureAsset<FontAsset>(id, false, {Search::Filesystem, Search::Cooked});
+		if (uFont)
+		{
+			m_pDefaultFont = uFont.get();
+			m_loaded.emplace(std::move(id), std::move(uFont));
+		}
+	}
+	Assert(m_pDefaultFont, "Invariant violated: Default Font is null!");
 }
 
 FontAsset* LERepository::DefaultFont() const
@@ -170,6 +178,11 @@ bool LERepository::IsBusy() const
 		bLoading |= !uLoader->m_bUnloading;
 	}
 	return bLoading;
+}
+
+void LERepository::ResetState() 
+{
+	m_state = State::Idle;
 }
 
 void LERepository::Tick(Time dt)

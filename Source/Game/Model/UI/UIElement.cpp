@@ -205,6 +205,7 @@ void UIElement::Regenerate(LayerID newLayer)
 	{
 		ApplyPanel();
 	}
+	m_bDoTick = true;
 }
 
 void UIElement::SetStatic(bool bStatic)

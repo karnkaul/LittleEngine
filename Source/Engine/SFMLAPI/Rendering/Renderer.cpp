@@ -52,6 +52,7 @@ void Renderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 
 		case ToIdx(LayerID::UnderlayFX):
 		case ToIdx(LayerID::OverlayFX):
+		case ToIdx(LayerID::Background):
 #ifdef DEBUGGING
 		case ToIdx(LayerID::TopOverlay):
 #endif

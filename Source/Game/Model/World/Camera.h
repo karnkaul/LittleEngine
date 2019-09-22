@@ -15,7 +15,6 @@ private:
 	Fixed m_zoom = Fixed::One;
 	class TextureAsset* m_pTexture = nullptr;
 	bool m_bShaking = false;
-	bool m_bViewfilled = false;
 
 public:
 	Camera();

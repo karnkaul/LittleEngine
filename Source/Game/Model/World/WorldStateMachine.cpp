@@ -39,6 +39,7 @@ class ManifestLoader* pLoader = nullptr;
 bool WorldStateMachine::s_bRunning = false;
 #endif
 
+bool WorldStateMachine::s_bClearWorldsOnDestruct = true;
 Vec<UPtr<World>> WorldStateMachine::s_createdWorlds;
 
 WorldStateMachine::WorldStateMachine(LEContext& context) : m_pContext(&context)
@@ -68,8 +69,12 @@ WorldStateMachine::WorldStateMachine(LEContext& context) : m_pContext(&context)
 WorldStateMachine::~WorldStateMachine()
 {
 	UnloadActiveWorld();
-	s_createdWorlds.clear();
+	if (s_bClearWorldsOnDestruct)
+	{
+		s_createdWorlds.clear();
+	}
 	uLoadHUD = nullptr;
+	bCreated = false;
 	LOG_D("[WSM] destroyed");
 }
 

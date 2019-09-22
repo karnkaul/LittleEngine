@@ -180,22 +180,27 @@ void LEContext::StartFrame()
 
 void LEContext::SubmitFrame()
 {
+	bool bRecreateViewport = false;
+	ViewportRecreateData data;
 	if (m_oNewViewportSize)
 	{
 		LOG_I("[LEContext] Set viewport size to: %dx%d", (*m_oNewViewportSize)->width, (*m_oNewViewportSize)->height);
-		ViewportRecreateData data;
 		data.oViewportSize = **m_oNewViewportSize;
-		m_uRenderer->RecreateViewport(std::move(data));
+		g_pGFX->m_viewportHeight = ToS32((*m_oNewViewportSize)->height);
+		bRecreateViewport = true;
 		m_oNewViewportSize.reset();
 	}
-
 	if (m_oNewViewportStyle)
 	{
 		LOG_I("[LEContext] Changed viewport style");
-		ViewportRecreateData data;
 		data.oStyle = *m_oNewViewportStyle;
-		m_uRenderer->RecreateViewport(std::move(data));
+		bRecreateViewport = true;
 		m_oNewViewportStyle.reset();
+	}
+	if (bRecreateViewport)
+	{
+		m_uRenderer->RecreateViewport(std::move(data));
+		g_pGFX->Init();
 	}
 	m_uRenderer->Lock_Swap();
 	if (!m_data.bRenderThread)
@@ -215,7 +220,7 @@ void LEContext::SubmitFrame()
 	m_onSubmitted.Clear();
 }
 
-Core::Delegate<>::Token LEContext::RegisterOnSubmitted(Core::Delegate<>::Callback onFrameSubmitted)
+LEContext::OnSubmit::Token LEContext::RegisterOnSubmitted(OnSubmit::Callback onFrameSubmitted)
 {
 	return m_onSubmitted.Register(onFrameSubmitted);
 }

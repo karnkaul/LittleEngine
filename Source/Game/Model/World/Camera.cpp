@@ -29,16 +29,14 @@ void Camera::FillViewWithTiles(TextureAsset& texture)
 	LERenderer* pRenderer = g_pGameManager->Renderer();
 	if (!m_uTileMap)
 	{
-		m_uTileMap = MakeUnique<TileMap>(*pRenderer->New<Quads>(LayerID::Zero), true);
+		m_uTileMap = MakeUnique<TileMap>(*pRenderer->New<Quads>(LayerID::Background), true);
 	}
 	m_uTileMap->FillSpace(g_pGFX->WorldSpace(), *m_pTexture);
-	m_bViewfilled = true;
 }
 
 void Camera::ClearTiles()
 {
 	m_uTileMap = nullptr;
-	m_bViewfilled = false;
 	m_pTexture = nullptr;
 }
 
@@ -56,10 +54,6 @@ void Camera::SetZoom(Fixed zoom, bool bImmediate)
 	}
 	m_zoom = zoom;
 	g_pGFX->SetWorldHeight(m_orgWorldHeight * m_zoom, bImmediate);
-	if (m_uTileMap && m_pTexture && m_bViewfilled)
-	{
-		m_uTileMap->FillSpace(g_pGFX->WorldSpace(), *m_pTexture);
-	}
 }
 
 Vector2 Camera::Position() const

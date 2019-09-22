@@ -21,6 +21,21 @@ using namespace Core;
 using namespace LittleEngine;
 
 // Globals
+namespace IDs
+{
+const String ASSETS_ROOT = "GameAssets";
+const String COOKED_ASSETS = "GameAssets.cooked";
+const String MAIN_MANIFEST = "GameAssets/Manifest.amf";
+const String DEFAULT_FONT = "Fonts/Default.ttf";
+const String GAME_STYLE = "Texts/Game.style";
+#if !defined(SHIPPNG)
+const String GAME_CONFIG_FILE = ".game.conf";
+#endif
+} // namespace IDs
+
+bool bInit = false;
+bool bReloadContext = false;
+bool bReloadRepository = false;
 UPtr<LERepository> uRepository;
 UPtr<LEShaders> uShaders;
 UPtr<LEAudio> uAudio;
@@ -33,16 +48,17 @@ UPtr<GameManager> uGM;
 Time maxFrameTime;
 bool bPauseOnFocusLoss = false;
 
+TweakS32(reloadApp, nullptr);
 TweakS32(ticksPerSec, nullptr);
 
 bool Init(s32 argc, char** argv)
 {
-	OS::Env()->SetVars(argc, argv, {"GameAssets.cooked", "GameAssets/Manifest.amf"});
+	OS::Env()->SetVars(argc, argv, {IDs::COOKED_ASSETS.c_str(), IDs::MAIN_MANIFEST.c_str()});
 
 	config.Init();
 #if !defined(SHIPPING)
 	LOG_D("[GameLoop] Initialising event loop, loading config...");
-	config.Load(OS::Env()->FullPath(".game.conf"));
+	config.Load(OS::Env()->FullPath(IDs::GAME_CONFIG_FILE.c_str()));
 #endif
 	auto pSettings = GameSettings::Instance();
 
@@ -80,11 +96,21 @@ bool Init(s32 argc, char** argv)
 			LOG_W("[GameLoop] Invalid value for ticks per second: %s", val.c_str());
 		}
 	});
+	reloadApp.BindCallback([](const String& val) {
+		s32 option = Strings::ToS32(val, -1);
+		if (option > 0)
+		{
+			bReloadRepository = option > 1;
+			bReloadContext = true;
+		}
+		reloadApp.m_value = Strings::ToString(0);
+	});
 #endif
 	try
 	{
-		uRepository = MakeUnique<LERepository>("Fonts/main.ttf", "GameAssets.cooked", "GameAssets");
+		uRepository = MakeUnique<LERepository>(IDs::DEFAULT_FONT, IDs::COOKED_ASSETS, IDs::ASSETS_ROOT);
 		uAudio = MakeUnique<LEAudio>();
+		uShaders = MakeUnique<LEShaders>();
 	}
 	catch (const FatalEngineException& /*e*/)
 	{
@@ -95,9 +121,11 @@ bool Init(s32 argc, char** argv)
 	Core::g_MinLogSeverity = pSettings->LogLevel();
 	bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
 	ControllerComponent::s_orientationEpsilon = config.ControllerOrientationEpsilon();
+	maxFrameTime = config.MaxFrameTime();
 #if defined(DEBUGGING)
 	ControllerComponent::s_orientationWidthHeight = config.ControllerOrientationSize();
 	Entity::s_orientationWidthHeight = config.EntityOrientationSize();
+	Collider::s_debugShapeWidth = config.ColliderBorderWidth();
 #endif
 
 	if (config.ShouldCreateRenderThread())
@@ -112,18 +140,22 @@ bool Init(s32 argc, char** argv)
 	}
 
 	Core::Jobs::Init(config.JobWorkerCount());
-
-#if defined(DEBUGGING)
-	Collider::s_debugShapeWidth = config.ColliderBorderWidth();
-#endif
-	maxFrameTime = config.MaxFrameTime();
-
-	uShaders = MakeUnique<LEShaders>();
-
 	Locale::Init(pSettings->LocdataID(), pSettings->ENLocdataID());
 	Time::Reset();
 
 	return true;
+}
+
+void Stage() 
+{
+	uGM = MakeUnique<GameManager>();
+	uGM->CreateContext(config);
+#if ENABLED(CONSOLE)
+	Console::Init();
+#endif
+#if ENABLED(PROFILER)
+	Profiler::Init(Time::Milliseconds(10));
+#endif
 }
 
 bool Tick(Time dt)
@@ -179,9 +211,9 @@ void Sleep(Time time)
 		std::this_thread::sleep_for(std::chrono::milliseconds(time.AsMilliseconds()));
 	}
 }
-
-void Cleanup()
+void Unstage() 
 {
+	uGM->Reset();
 #if ENABLED(CONSOLE)
 	Console::Cleanup();
 #endif
@@ -189,11 +221,23 @@ void Cleanup()
 	Profiler::Cleanup();
 #endif
 	uGM = nullptr;
+	if (bReloadRepository)
+	{
+		uShaders->UnloadAll();
+		uRepository->UnloadAll(true);
+		uRepository->LoadDefaultFont(IDs::DEFAULT_FONT);
+	}
+	uRepository->ResetState();
+}
+
+void Cleanup()
+{
+	Unstage();
 	uAudio = nullptr;
 	uShaders = nullptr;
 	uRepository = nullptr;
 #if !defined(SHIPPING)
-	config.Save(OS::Env()->FullPath(".game.conf"));
+	config.Save(OS::Env()->FullPath(IDs::GAME_CONFIG_FILE.c_str()));
 #endif
 	Core::Jobs::Cleanup();
 	LOG_I("[GameLoop] Terminated");
@@ -201,32 +245,29 @@ void Cleanup()
 }
 } // namespace
 
+
 s32 GameLoop::Run(s32 argc, char** argv)
 {
-	if (!Init(argc, argv))
+	if (!bInit)
 	{
-		LOG_E("[GameLoop] Fatal Error initialising GameLoop!");
-		Cleanup();
-		return -1;
+		if (!(bInit = Init(argc, argv)))
+		{
+			LOG_E("[GameLoop] Fatal Error initialising GameLoop!");
+			Cleanup();
+			return 1;
+		}
 	}
 
-	uGM = MakeUnique<GameManager>();
-	uGM->CreateContext(config);
-#if ENABLED(CONSOLE)
-	Console::Init();
-#endif
-#if ENABLED(PROFILER)
-	Profiler::Init(Time::Milliseconds(10));
-#endif
+	Stage();
 	WorldClock::Reset();
-	uGM->Start("Manifest.amf", "Texts/Game.style", &GameInit::LoadShaders);
+	uGM->Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE, &GameInit::LoadShaders);
 		
 	const Time tickRate = config.TickRate();
 	Time accumulator;
 	Time currentTime = Time::Now();
-	LEContext* pContext = uGM->Context();
-	while (!pContext->IsTerminating())
+	while (!uGM->Context()->IsTerminating())
 	{
+		LEContext* pContext = uGM->Context();
 		Time frameElapsed;
 		pContext->PollInput();
 		// Break and exit if Window closed
@@ -269,6 +310,22 @@ s32 GameLoop::Run(s32 argc, char** argv)
 #if defined(DEBUGGING)
 			ProfileFrameTime(Time::Now() - currentTime, tickRate);
 #endif
+			if (bReloadContext)
+			{
+				bool bCache = WorldStateMachine::s_bClearWorldsOnDestruct;
+				WorldStateMachine::s_bClearWorldsOnDestruct = false;
+				Unstage();
+				Stage();
+				uGM->Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE, []() {
+					if (bReloadRepository)
+					{
+						GameInit::LoadShaders();
+						bReloadRepository = false;
+					}
+				});
+				bReloadContext = false;
+				WorldStateMachine::s_bClearWorldsOnDestruct = bCache;
+			}
 			frameElapsed = Time::Now() - currentTime;
 		}
 		else
@@ -280,5 +337,22 @@ s32 GameLoop::Run(s32 argc, char** argv)
 
 	Cleanup();
 	return 0;
+}
+
+bool ReloadContext(bool bUnloadAssets)
+{
+	if (!bInit)
+	{
+		LOG_E("[GameLoop] Cannot reload context without initialisation!");
+		return false;
+	}
+	if (!uGM)
+	{
+		LOG_E("[GameLoop] Cannot reload empty context!");
+		return false;
+	}
+	bReloadRepository = bUnloadAssets;
+	bReloadContext = true;
+	return true;
 }
 } // namespace LittleEngine

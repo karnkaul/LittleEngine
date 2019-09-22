@@ -41,6 +41,9 @@ T TransformRange(T value, T oldMin, T oldMax, T newMin, T newMax);
 template <typename T>
 T Lerp(T min, T max, Fixed alpha);
 
+template <typename T>
+T Scale(T val, f32 coeff);
+
 Rect2 Lerp(Rect2 min, Rect2 max, Fixed alpha);
 
 bool IsNearlyEqual(f32 lhs, f32 rhs, f32 epsilon = EPSILON);
@@ -117,5 +120,11 @@ template <typename T>
 inline T Lerp(T min, T max, Fixed alpha)
 {
 	return min + alpha * (max - min);
+}
+
+template <typename T>
+inline T Scale(T val, f32 coeff)
+{
+	return static_cast<T>(static_cast<f32>(val) * coeff);
 }
 } // namespace Maths

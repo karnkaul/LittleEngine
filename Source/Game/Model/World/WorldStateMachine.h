@@ -32,11 +32,12 @@ private:
 	State m_state;
 	Transition m_transition;
 
-#ifdef DEBUGGING
 public:
+#ifdef DEBUGGING
 	static bool s_bRunning;
 #endif
-
+	static bool s_bClearWorldsOnDestruct;
+	
 public:
 	template <typename T>
 	static WorldID CreateWorld();

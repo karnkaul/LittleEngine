@@ -32,6 +32,8 @@ public:
 
 	template <typename T>
 	static T* LoadShader(const String& id, Shader::Type asType);
+
+	void UnloadAll();
 };
 
 template <typename T>

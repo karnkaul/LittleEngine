@@ -51,6 +51,8 @@ public:
 	LERepository(String defaultFontID, String archivePath, String rootDir = "");
 	~LERepository();
 
+	void LoadDefaultFont(String id);
+
 	// Loads Asset at path. T must derive from Asset!
 	template <typename T>
 	T* Load(String id, bool bReload = false);
@@ -71,6 +73,8 @@ public:
 	void UnloadAll(bool bUnloadDefaultFont);
 
 	bool IsBusy() const;
+
+	void ResetState();
 
 public:
 	LERepository(const LERepository&) = delete;

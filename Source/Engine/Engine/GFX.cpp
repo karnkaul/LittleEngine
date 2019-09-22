@@ -73,6 +73,8 @@ const ViewportSize* GFX::MaxViewportSize(bool bBorderless) const
 {
 	Assert(!m_viewportSizes.empty(), "No viewport sizes stored!");
 	ViewportSize hardMax = Viewport::MaxSize();
+	u32 padWidth = Maths::Scale(hardMax.width, 0.9f);
+	u32 padHeight = Maths::Scale(hardMax.height, 0.9f);
 	const ViewportSize* pMax = nullptr;
 	const ViewportSize* pNextMax = nullptr;
 	bool bReturnNextMax = false;
@@ -82,7 +84,7 @@ const ViewportSize* GFX::MaxViewportSize(bool bBorderless) const
 		{
 			pNextMax = pMax;
 			pMax = &size.second;
-			bReturnNextMax = !bBorderless && (pMax->height >= hardMax.height || pMax->width >= hardMax.width);
+			bReturnNextMax = !bBorderless && (pMax->height > padHeight || pMax->width > padWidth);
 		}
 	}
 	return bReturnNextMax ? pNextMax : pMax;
