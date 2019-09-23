@@ -5,10 +5,11 @@
 
 namespace LittleEngine
 {
-UMap<Shader::Type, const char*> g_szShaderTypes = {{Shader::Type(), "Invalid"},
-												   {Shader::Type().set(ToIdx(Shader::Flag::Vertex)), "Vertex"},
-												   {Shader::Type().set(ToIdx(Shader::Flag::Fragment)), "Fragment"},
-												   {Shader::Type().set(ToIdx(Shader::Flag::Vertex)).set(ToIdx(Shader::Flag::Fragment)), "VertFrag"}};
+UMap<Shader::Type, const char*> g_szShaderTypes = {
+	{Shader::Type(), "Invalid"},
+	{Shader::Type().set(ToIdx(Shader::Flag::Vertex)), "Vertex"},
+	{Shader::Type().set(ToIdx(Shader::Flag::Fragment)), "Fragment"},
+	{Shader::Type().set(ToIdx(Shader::Flag::Vertex)).set(ToIdx(Shader::Flag::Fragment)), "VertFrag"}};
 
 Shader::Shader(String id) : m_id(std::move(id)) {}
 

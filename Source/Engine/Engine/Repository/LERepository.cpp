@@ -8,13 +8,18 @@
 namespace LittleEngine
 {
 LERepository* g_pRepository = nullptr;
+FontAsset* g_pDefaultFont = nullptr;
 #if ENABLED(FILESYSTEM_ASSETS)
 bool LERepository::s_bUseFileAssets = true;
 #endif
 
 LERepository::LERepository(String defaultFontID, String archivePath, String rootDir) : m_rootDir(std::move(rootDir))
 {
-	m_assetPathPrefix = m_rootDir.empty() ? String() : m_rootDir + "/";
+	if (!m_rootDir.empty())
+	{
+		m_rootDir += "/";
+	}
+	Asset::s_pathPrefix = m_rootDir;
 	m_uCooked = MakeUnique<Core::ArchiveReader>();
 
 	LOG_D("[Repository] Assets Root Dir: %s", m_rootDir.c_str());
@@ -52,30 +57,24 @@ LERepository::LERepository(String defaultFontID, String archivePath, String root
 LERepository::~LERepository()
 {
 	g_pRepository = nullptr;
-	m_pDefaultFont = nullptr;
+	g_pDefaultFont = nullptr;
 	m_loaded.clear();
 	LOG_D("[Repository] destroyed");
 }
 
-void LERepository::LoadDefaultFont(String id) 
+void LERepository::LoadDefaultFont(String id)
 {
 	if (m_loaded.find(id) == m_loaded.end())
 	{
-		m_pDefaultFont = nullptr;
+		g_pDefaultFont = nullptr;
 		auto uFont = ConjureAsset<FontAsset>(id, false, {Search::Filesystem, Search::Cooked});
 		if (uFont)
 		{
-			m_pDefaultFont = uFont.get();
+			g_pDefaultFont = uFont.get();
 			m_loaded.emplace(std::move(id), std::move(uFont));
 		}
 	}
-	Assert(m_pDefaultFont, "Invariant violated: Default Font is null!");
-}
-
-FontAsset* LERepository::DefaultFont() const
-{
-	Assert(m_pDefaultFont, "Default Font has not been set!");
-	return m_pDefaultFont;
+	Assert(g_pDefaultFont, "Invariant violated: Default Font is null!");
 }
 
 ManifestLoader* LERepository::LoadManifest(String manifestPath, Task onComplete)
@@ -115,7 +114,7 @@ bool LERepository::IsPresent(const String& id) const
 {
 	bool bRet = m_uCooked->IsPresent(id.c_str());
 #if ENABLED(FILESYSTEM_ASSETS)
-	bRet |= std::ifstream(FileAssetPath(id)).good();
+	bRet |= Asset::DoesFileExist(id);
 #endif
 	return bRet;
 }
@@ -133,13 +132,14 @@ bool LERepository::Unload(String id)
 
 void LERepository::UnloadAll(bool bUnloadDefaultFont)
 {
-	if (bUnloadDefaultFont || !m_pDefaultFont)
+	if (bUnloadDefaultFont || !g_pDefaultFont)
 	{
 		m_loaded.clear();
+		g_pDefaultFont = nullptr;
 	}
 	else
 	{
-		String fontID = m_pDefaultFont->ID();
+		String fontID = g_pDefaultFont->ID();
 		Core::RemoveIf<String, UPtr<Asset>>(m_loaded, [fontID](UPtr<Asset>& uAsset) { return uAsset->ID() != fontID; });
 	}
 	LOG_D("[Repository] cleared");
@@ -155,7 +155,7 @@ bool LERepository::IsBusy() const
 	return bLoading;
 }
 
-void LERepository::ResetState() 
+void LERepository::ResetState()
 {
 	m_state = State::Idle;
 }
@@ -175,16 +175,4 @@ void LERepository::Tick(Time dt)
 		++iter;
 	}
 }
-
-#if ENABLED(FILESYSTEM_ASSETS)
-bool LERepository::DoesFileAssetExist(const String& id)
-{
-	std::ifstream file(FileAssetPath(id).c_str());
-	return file.good();
-}
-String LERepository::FileAssetPath(const String& id) const
-{
-	return OS::Env()->FullPath((m_assetPathPrefix + id).c_str());
-}
-#endif
 } // namespace LittleEngine

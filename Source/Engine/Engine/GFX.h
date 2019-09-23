@@ -48,7 +48,7 @@ public:
 
 public:
 	void Init();
-	
+
 	const Map<u32, ViewportSize>& ValidViewportSizes() const;
 	const ViewportSize* MaxViewportSize(bool bBorderless) const;
 	const ViewportSize* TryGetViewportSize(u32 height) const;

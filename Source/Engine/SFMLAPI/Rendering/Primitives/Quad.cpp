@@ -78,8 +78,7 @@ void Quad::OnDraw(Viewport& viewport, sf::RenderStates& sfStates)
 
 Quad* Quad::SetModel(Rect2 xy)
 {
-	m_vertexModel = {WorldToSFML(xy.TopLeft()), WorldToSFML(xy.TopRight()), WorldToSFML(xy.BottomRight()),
-					 WorldToSFML(xy.BottomLeft())};
+	m_vertexModel = {WorldToSFML(xy.TopLeft()), WorldToSFML(xy.TopRight()), WorldToSFML(xy.BottomRight()), WorldToSFML(xy.BottomLeft())};
 	m_gameState.tPosition = WorldToSFML(xy.Centre());
 	return this;
 }

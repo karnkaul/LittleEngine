@@ -9,21 +9,27 @@ namespace LittleEngine
 // \brief An Asset represents live data in memory that's ready to be used
 class Asset
 {
-protected:
+public:
 	static String s_pathPrefix;
+
+protected:
 	Vec<u8> m_buffer;
 	String m_id;
+	Pair<String, u64> m_pathSize;
 	AssetType m_type;
 	u64 m_byteCount = 0;
 	bool m_bError = true;
 
 public:
-	using Ptr = UPtr<Asset>;
+	static bool DoesFileExist(const String& id);
+	static Pair<String, u64> FilePathAndSize(const String& id);
+
+public:
 	Asset() = delete;
 	virtual ~Asset();
 
 protected:
-	Asset(String id, const String& pathPrefix, AssetType type = AssetType::File);
+	Asset(String id, AssetType type = AssetType::File);
 	Asset(String id, Vec<u8> buffer, AssetType type = AssetType::File);
 
 public:
@@ -45,7 +51,7 @@ public:
 	sf::Texture m_sfTexture;
 
 public:
-	TextureAsset(String id, const String& pathPrefix);
+	TextureAsset(String id);
 	TextureAsset(String id, Vec<u8> buffer);
 
 	TextureAsset* SetRepeated(bool bRepeat);
@@ -65,7 +71,7 @@ public:
 	sf::Font m_sfFont;
 
 public:
-	FontAsset(String id, const String& pathPrefix);
+	FontAsset(String id);
 	FontAsset(String id, Vec<u8> buffer);
 
 private:
@@ -81,7 +87,7 @@ public:
 	Fixed m_volumeScale = Fixed::One;
 
 public:
-	SoundAsset(String id, const String& pathPrefix, Fixed volumeScale = Fixed::One);
+	SoundAsset(String id, Fixed volumeScale = Fixed::One);
 	SoundAsset(String id, Vec<u8> buffer, Fixed volumeScale = Fixed::One);
 
 private:
@@ -94,7 +100,7 @@ private:
 	String m_text;
 
 public:
-	TextAsset(String id, const String& pathPrefix);
+	TextAsset(String id);
 	TextAsset(String id, Vec<u8> buffer);
 
 	const String& Text() const;

@@ -330,7 +330,7 @@ void StartTests()
 	FontAsset* pFont = g_pRepository->Load<FontAsset>("Fonts/Sunscreen.otf");
 	rc1->SetText(LayerID::Default)
 		->SetText(LOC("LOC_HELLO_WORLD!"))
-		->SetFont(pFont ? *pFont : *g_pRepository->DefaultFont())
+		->SetFont(pFont ? *pFont : *g_pDefaultFont)
 		->SetSize(50)
 		->SetPrimaryColour(Colour(200, 150, 50))
 		->SetEnabled(true);

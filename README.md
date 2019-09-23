@@ -14,7 +14,7 @@ Written in **C++17**, utilising [**SFML**](https://www.sfml-dev.org/) and [**Phy
 - **Asynchronous rendering** on a dedicated thread; light main/game thread
 - Dynamic game **Entities/Components** with **Circle** and **AABB** collision detection
 - Cache-friendly **Particle Systems** with distributed updation
-- Engine **Repository** with async loading, asset manifests, and sounds & music playback
+- Engine **Repository** with async loading and asset manifests
 - In-game **Console**, **Tweakable** variables, **Profiler**, and other debugging tools
 - Stack and Context-based **UI Framework**
 - Various Python3 tools for **asset cooking**, **app packaging**, **bundle archiving**, etc

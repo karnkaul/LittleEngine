@@ -48,7 +48,7 @@ void UIElement::ApplyText()
 {
 	if (!m_pText->IsFontSet())
 	{
-		m_pText->SetFont(m_pFont ? *m_pFont : *g_pRepository->DefaultFont());
+		m_pText->SetFont(m_pFont ? *m_pFont : *g_pDefaultFont);
 	}
 	m_pText->SetPrimaryColour(m_uiText.colour);
 	m_pText->SetSize(m_uiText.pixelSize);
@@ -199,7 +199,7 @@ void UIElement::Regenerate(LayerID newLayer)
 	m_pRect = Renderer()->New<SFRect>(m_layer);
 	m_pText = Renderer()->New<SFText>(static_cast<LayerID>(ToS32(m_layer) + 1));
 	m_pRect->SetStatic(bRectStatic)->SetEnabled(true);
-	m_pText->SetFont(pFont ? *pFont : *g_pRepository->DefaultFont())->SetStatic(bTextStatic)->SetEnabled(true);
+	m_pText->SetFont(pFont ? *pFont : *g_pDefaultFont)->SetStatic(bTextStatic)->SetEnabled(true);
 	ApplyText();
 	if (m_bPanel)
 	{

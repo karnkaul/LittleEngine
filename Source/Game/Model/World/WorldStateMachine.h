@@ -37,7 +37,7 @@ public:
 	static bool s_bRunning;
 #endif
 	static bool s_bClearWorldsOnDestruct;
-	
+
 public:
 	template <typename T>
 	static WorldID CreateWorld();

@@ -50,3 +50,5 @@ if [ -f Resources/Icon.icns ]; then
     cp Resources/Icon.icns $1_/Contents/Resources/
 fi
 mv $1_ $1.app
+
+exit

@@ -111,7 +111,7 @@ Vector2 GameConfig::UISpace() const
 	return m_uData->GetVector2(UI_SPACE_KEY);
 }
 
-Fixed GameConfig::WorldHeight() const 
+Fixed GameConfig::WorldHeight() const
 {
 	return Fixed(m_uData->GetF64(WORLD_HEIGHT_KEY));
 }
@@ -136,7 +136,7 @@ Fixed GameConfig::ControllerOrientationEpsilon() const
 	return Fixed(m_uData->GetF64(CONTROLLER_ORIENTATION_EPSILON_KEY));
 }
 
-f64 GameConfig::ForceViewportAR() const 
+f64 GameConfig::ForceViewportAR() const
 {
 	return m_uData->GetF64(FORCE_VIEWPORT_ASPECT_KEY);
 }
@@ -158,7 +158,7 @@ void GameConfig::Verify()
 	m_bDirty |= SetStringIfEmpty(*m_uData, ENTITY_ORIENTATION_SIZE_KEY, "{x:100,y:2}");
 	m_bDirty |= SetStringIfEmpty(*m_uData, CONTROLLER_ORIENTATION_SIZE_KEY, "{x:120,y:3}");
 	m_bDirty |= SetStringIfEmpty(*m_uData, CONTROLLER_ORIENTATION_EPSILON_KEY, Strings::ToString(0.025));
-	
+
 	m_bRenderThread = ShouldCreateRenderThread();
 }
 } // namespace LittleEngine

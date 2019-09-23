@@ -175,7 +175,7 @@ Vector2 GFX::WorldToUI(Vector2 world) const
 	return Vector2(full.x * m_letterBoxInverse.x, full.y * m_letterBoxInverse.y);
 }
 
-Vector2 GFX::WorldToOverlay(Vector2 world) const 
+Vector2 GFX::WorldToOverlay(Vector2 world) const
 {
 	return Projection(NormalisedPosition(world, m_worldSpace), m_overlaySpace);
 }
@@ -219,20 +219,20 @@ void GFX::Reconcile()
 	m_gameState.position.min = m_gameState.position.max;
 }
 
-void GFX::SwapState() 
+void GFX::SwapState()
 {
 	m_renderState = m_gameState;
 }
 
-Vector2 GFX::LerpedWorldSpace(Fixed alpha) 
+Vector2 GFX::LerpedWorldSpace(Fixed alpha)
 {
 	Fixed worldWidth(m_renderState.worldHeight.Lerp(alpha).ToF64() * m_nativeAspectRatio);
 	m_worldSpace = Vector2(worldWidth, m_gameState.worldHeight.max);
 	return m_worldSpace;
 }
 
-Vector2 GFX::LerpedWorldPosition(Fixed alpha) 
-{ 
+Vector2 GFX::LerpedWorldPosition(Fixed alpha)
+{
 	return m_renderState.position.Lerp(alpha);
 }
 } // namespace LittleEngine

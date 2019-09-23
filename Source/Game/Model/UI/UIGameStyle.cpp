@@ -42,7 +42,7 @@ Colour HexStrToColour(String hex, Colour defaultColour = Colour::White)
 
 void SetupDefaultStyle()
 {
-	defaultStyle.pFont = g_pRepository->DefaultFont();
+	defaultStyle.pFont = g_pDefaultFont;
 
 	defaultStyle.widgetSize = {200, 60};
 	defaultStyle.background = Colour::White;

@@ -46,7 +46,7 @@ void UIWidget::SetState(State state)
 
 bool UIWidget::IsPointInBounds(Vector2 point) const
 {
-	//Rect2 uiRect = g_pGFX->WorldToUI(Root()->Rect()->GameBounds());
+	// Rect2 uiRect = g_pGFX->WorldToUI(Root()->Rect()->GameBounds());
 	Rect2 uiRect = Root()->Rect()->GameBounds();
 	return uiRect.IsPointIn(point);
 }

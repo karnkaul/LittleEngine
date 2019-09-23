@@ -25,14 +25,10 @@ RenderStatsRenderer::RenderStatsRenderer(LEContext& context)
 	Colour bg(20, 20, 20, 230);
 	LERenderer* pRenderer = context.Renderer();
 	LayerID layer = static_cast<LayerID>(ToS32(LayerID::Top) + 2);
-	auto pFont = g_pRepository->DefaultFont();
+	auto pFont = g_pDefaultFont;
 
 	m_pBG = pRenderer->New<SFRect>(static_cast<LayerID>(ToS32(layer) - 1));
-	m_pBG->SetSize(size)
-		->SetPivot({1, -1}, true)
-		->SetPrimaryColour(bg, true)
-		->SetStatic(true)
-		->SetEnabled(s_bConsoleRenderStatsEnabled);
+	m_pBG->SetSize(size)->SetPivot({1, -1}, true)->SetPrimaryColour(bg, true)->SetStatic(true)->SetEnabled(s_bConsoleRenderStatsEnabled);
 
 	m_pTitles = pRenderer->New<SFText>(layer);
 	m_pTitles->SetText("Quads\nDraw Calls\nDynamic\nStatic\nTicks/s\nFPS\nGame Frame\nRender Frame")
@@ -97,7 +93,7 @@ VersionRenderer::VersionRenderer(LEContext& context)
 	m_pBuildVersion = pRenderer->New<SFText>(LayerID::Top);
 	m_pBuildVersion->SetText(Core::Version::szBUILD_VERSION_WITH_COMMIT)
 		->SetSize(textSize + 5U)
-		->SetFont(pFont ? *pFont : *g_pRepository->DefaultFont())
+		->SetFont(pFont ? *pFont : *g_pDefaultFont)
 		->SetPivot({-1, 0})
 		->SetPosition(g_pGFX->UIProjection(projection))
 		->SetPrimaryColour(g_logTextColour)

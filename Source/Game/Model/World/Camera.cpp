@@ -61,7 +61,7 @@ Vector2 Camera::Position() const
 	return m_position;
 }
 
-void Camera::SetPosition(Vector2 position) 
+void Camera::SetPosition(Vector2 position)
 {
 	m_position = position;
 }

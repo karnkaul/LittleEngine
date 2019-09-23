@@ -7,5 +7,5 @@ namespace GameLoop
 {
 s32 Run(s32 argc, char** argv);
 bool ReloadContext(bool bUnloadAssets = false);
-};
+}; // namespace GameLoop
 } // namespace LittleEngine

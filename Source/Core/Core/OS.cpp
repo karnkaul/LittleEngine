@@ -324,16 +324,24 @@ void DebugBreak()
 u64 FileSize(const char* szPath)
 {
 	u64 size = 0;
+	if (DoesFileExist(szPath))
+	{
 #ifdef CXX_MS_CRT
-	std::error_code e;
-	size = static_cast<u64>(std::filesystem::file_size(szPath, e));
-	return e ? 0 : size;
+		std::error_code e;
+		size = static_cast<u64>(std::filesystem::file_size(szPath, e));
+		return e ? 0 : size;
 #else
-	std::ifstream mySource(szPath, std::ios_base::binary);
-	mySource.seekg(0, std::ios_base::end);
-	size = static_cast<u64>(mySource.tellg());
+		std::ifstream mySource(szPath, std::ios_base::binary);
+		mySource.seekg(0, std::ios_base::end);
+		size = static_cast<u64>(mySource.tellg());
 #endif
+	}
 	return size;
+}
+
+bool DoesFileExist(const char* szPath)
+{
+	return std::ifstream(szPath).good();
 }
 
 bool IsDEBUGGING()

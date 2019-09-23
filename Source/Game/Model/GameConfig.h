@@ -25,7 +25,7 @@ public:
 private:
 	UPtr<Core::GData> m_uData;
 	bool m_bDirty = false;
-	
+
 public:
 	GameConfig();
 	~GameConfig();

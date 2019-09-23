@@ -14,6 +14,7 @@ class ArchiveReader;
 namespace LittleEngine
 {
 extern class LERepository* g_pRepository;
+extern FontAsset* g_pDefaultFont;
 
 // \brief Class that handles all Asset Loading. (Maintains a clearable cache)
 class LERepository final
@@ -41,11 +42,9 @@ private:
 	UPtr<Core::ArchiveReader> m_uCooked;
 	List<UPtr<class ManifestLoader>> m_loaders;
 	mutable std::mutex m_loadedMutex;
-	UMap<String, Asset::Ptr> m_loaded;
+	UMap<String, UPtr<Asset>> m_loaded;
 	String m_rootDir;
-	String m_assetPathPrefix;
 	State m_state;
-	class FontAsset* m_pDefaultFont = nullptr;
 
 public:
 	LERepository(String defaultFontID, String archivePath, String rootDir = "");
@@ -61,8 +60,6 @@ public:
 
 	ManifestLoader* LoadManifest(String manifestPath, Task onComplete = nullptr);
 	ManifestLoader* UnloadManifest(String manifestPath, Task onComplete = nullptr);
-
-	FontAsset* DefaultFont() const;
 
 	bool IsLoaded(const String& id) const;
 	u64 LoadedBytes() const;
@@ -106,11 +103,6 @@ private:
 	template <typename T>
 	UPtr<T> ConjureAsset(const String& id, bool bSilent, InitList<Search> searchOrder);
 
-#if ENABLED(FILESYSTEM_ASSETS)
-	bool DoesFileAssetExist(const String& id);
-	String FileAssetPath(const String& id) const;
-#endif
-
 	friend class ManifestLoader;
 	friend class ILoadingHUD;
 };
@@ -141,7 +133,7 @@ T* LERepository::Load(String id, bool bReload)
 
 	bool bInCooked = m_uCooked->IsPresent(id.c_str());
 #if ENABLED(FILESYSTEM_ASSETS)
-	bool bOnFilesystem = DoesFileAssetExist(id) && s_bUseFileAssets;
+	bool bOnFilesystem = Asset::DoesFileExist(id) && s_bUseFileAssets;
 	// Asset doesn't exist
 	if (!bInCooked && !bOnFilesystem)
 	{
@@ -203,7 +195,7 @@ Deferred<T*> LERepository::LoadAsync(String id)
 
 	bool bInCooked = m_uCooked->IsPresent(id.c_str());
 #if ENABLED(FILESYSTEM_ASSETS)
-	bool bOnFilesystem = DoesFileAssetExist(id) && s_bUseFileAssets;
+	bool bOnFilesystem = Asset::DoesFileExist(id) && s_bUseFileAssets;
 	if (!bInCooked && !bOnFilesystem)
 	{
 		LOG_E("[Repository] Asset not present in cooked archive or on filesystem! [%s]", id.c_str());
@@ -256,7 +248,7 @@ T* LERepository::Preload(const String& id)
 	}
 	bool bInCooked = m_uCooked->IsPresent(id.c_str());
 #if ENABLED(FILESYSTEM_ASSETS)
-	bool bOnFilesystem = DoesFileAssetExist(id) && s_bUseFileAssets;
+	bool bOnFilesystem = Asset::DoesFileExist(id) && s_bUseFileAssets;
 	// Asset doesn't exist
 	if (!bInCooked && !bOnFilesystem)
 	{
@@ -359,11 +351,11 @@ UPtr<T> LERepository::RetrieveAsset(const String& id)
 {
 	struct enable_smart : public T
 	{
-		enable_smart(String id, const String& pathPrefix) : T(std::move(id), pathPrefix) {}
+		enable_smart(String id) : T(std::move(id)) {}
 	};
 
 	UPtr<enable_smart> uT;
-	uT = MakeUnique<enable_smart>(id, m_rootDir);
+	uT = MakeUnique<enable_smart>(id);
 	if (!uT || uT->IsError())
 	{
 		return nullptr;
@@ -381,7 +373,7 @@ UPtr<T> LERepository::ConjureAsset(const String& id, bool bSilent, InitList<Sear
 
 #if ENABLED(FILESYSTEM_ASSETS)
 	auto retrieveAsset = [&]() {
-		if (!DoesFileAssetExist(id))
+		if (!Asset::DoesFileExist(id))
 		{
 			if (!bSilent)
 			{

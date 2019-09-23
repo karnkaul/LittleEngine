@@ -75,6 +75,7 @@ bool IsDebuggerAttached();
 void DebugBreak();
 
 u64 FileSize(const char* szPath);
+bool DoesFileExist(const char* szPath);
 
 bool IsDEBUGGING();
 bool IsSHIPPING();

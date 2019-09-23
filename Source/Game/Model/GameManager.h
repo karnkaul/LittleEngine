@@ -53,11 +53,6 @@ public:
 	bool IsPaused() const;
 	bool IsPlayerControllable() const;
 
-	//Vector2 WorldSize() const;
-	//Vector2 UISize() const;
-	//Vector2 WorldProjection(Vector2 nPos) const;
-	//Vector2 UIProjection(Vector2 nPos) const;
-
 public:
 	template <typename T>
 	T* NewEntity(String name = "Untitled", Vector2 position = Vector2::Zero, Vector2 orientation = Vector2::Right);

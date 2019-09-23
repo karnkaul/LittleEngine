@@ -10,7 +10,7 @@ public:
 	Vector2 nPosition = Vector2::Zero;
 	Vector2 anchor = Vector2::Zero;
 	Vector2 posDelta;
-	
+
 private:
 	Vector2 size;
 	Vec<UITransform*> children;

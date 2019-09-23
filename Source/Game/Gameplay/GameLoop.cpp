@@ -55,7 +55,7 @@ TweakS32(ticksPerSec, nullptr);
 
 bool Init(s32 argc, char** argv)
 {
-	OS::Env()->SetVars(argc, argv, {IDs::COOKED_ASSETS.c_str(),  MAIN_MANIFEST_FILE.c_str()});
+	OS::Env()->SetVars(argc, argv, {IDs::COOKED_ASSETS.c_str(), MAIN_MANIFEST_FILE.c_str()});
 
 	config.Init();
 #if !defined(SHIPPING)
@@ -148,7 +148,7 @@ bool Init(s32 argc, char** argv)
 	return true;
 }
 
-void Stage() 
+void Stage()
 {
 	uGM = MakeUnique<GameManager>();
 	uGM->CreateContext(config);
@@ -213,7 +213,7 @@ void Sleep(Time time)
 		std::this_thread::sleep_for(std::chrono::milliseconds(time.AsMilliseconds()));
 	}
 }
-void Unstage() 
+void Unstage()
 {
 	uGM->Reset();
 #if ENABLED(CONSOLE)
@@ -247,7 +247,6 @@ void Cleanup()
 }
 } // namespace
 
-
 s32 GameLoop::Run(s32 argc, char** argv)
 {
 	if (!bInit)
@@ -263,7 +262,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 	Stage();
 	WorldClock::Reset();
 	uGM->Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE, &GameInit::LoadShaders);
-		
+
 	const Time tickRate = config.TickRate();
 	Time accumulator;
 	Time currentTime = Time::Now();

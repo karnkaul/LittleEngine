@@ -17,8 +17,6 @@ namespace LittleEngine
 {
 namespace
 {
-
-
 static bool bCreated = false;
 
 u32 titleSize = 75;

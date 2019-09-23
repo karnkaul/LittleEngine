@@ -20,3 +20,5 @@ for BUNDLE in $BUNDLES; do
 		tar -czf $BUNDLE.tar.gz $BUNDLE
 	fi
 done
+
+exit

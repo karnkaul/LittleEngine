@@ -61,3 +61,5 @@ build LE_MinGW
 #build LE_clang-cl CMD
 
 echo -e "  Passed"
+
+exit

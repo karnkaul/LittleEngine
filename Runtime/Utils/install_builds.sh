@@ -58,3 +58,5 @@ for PROJ_PATH in "${DIRS[@]}"; do
 		$CMAKE --build $PROJ_PATH
 	fi
 done
+
+exit

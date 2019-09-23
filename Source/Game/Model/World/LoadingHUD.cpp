@@ -20,7 +20,7 @@ LoadingHUD::LoadingHUD()
 {
 	LayerID bg = LayerID::Top;
 	LayerID hud = static_cast<LayerID>(ToS32(bg) + 1);
-	auto pMainFont = g_pRepository->DefaultFont();
+	auto pMainFont = g_pDefaultFont;
 	auto pTitleFont = PreloadAsset<FontAsset>("Fonts/Sunscreen.otf");
 	auto pSubtitleFont = PreloadAsset<FontAsset>("Fonts/UIFont.ttf");
 	auto pTexture = PreloadAsset<TextureAsset>("Textures/LoadingIcon.png");
@@ -30,7 +30,7 @@ LoadingHUD::LoadingHUD()
 	m_pSubtitle = g_pGameManager->Renderer()->New<SFText>(hud);
 	m_pProgressBar = g_pGameManager->Renderer()->New<SFRect>(hud);
 	m_pRotator = g_pGameManager->Renderer()->New<Quad>(hud);
-	
+
 	m_pBG->SetPrimaryColour(Colour(20, 5, 30, 0))->SetEnabled(true);
 	m_pTitle->SetFont(pTitleFont ? *pTitleFont : *pMainFont);
 	m_pSubtitle->SetFont(pSubtitleFont ? *pSubtitleFont : pTitleFont ? *pTitleFont : *pMainFont);
@@ -38,7 +38,7 @@ LoadingHUD::LoadingHUD()
 	m_pSubtitle->SetPosition({0, -30})->SetEnabled(true);
 
 	m_pProgressBar->SetSize({Fixed::Zero, progressBarSize.y})->SetPivot({-1, 0})->SetPrimaryColour(Colour::White)->SetEnabled(true);
-	
+
 	m_pRotator->SetModel(Rect2::SizeCentre({75, 75}))->SetEnabled(true);
 	if (pTexture)
 	{
@@ -55,7 +55,6 @@ LoadingHUD::LoadingHUD()
 	m_pProgressBar->SetPosition({-halfView.x, -halfView.y + yPad}, true);
 	m_pRotator->SetPosition(rotatorPos, true);
 
-	
 	SetEnabled(false);
 	LOG_D("[Loading UI] constructed");
 }

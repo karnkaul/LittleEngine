@@ -29,7 +29,7 @@ public:
 	~LERenderer() override;
 
 	void RecreateViewport(struct ViewportRecreateData data);
-	
+
 	void Lock_Swap();
 
 	void Render(Fixed alpha);

@@ -4,11 +4,13 @@
 # Requirements:
 #  - clang-format
 
-SOURCE_ROOT=../..
+SOURCE_ROOT=..
 SOURCE_PATH=$SOURCE_ROOT/Source
 EXCLUDE=*ThirdParty/*
 
+
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
+. ./Utils/os.sh
 
 if [[ ! -d $SOURCE_PATH ]]; then
 	echo -e "Error! $SOURCE_PATH does not exist!"
@@ -17,5 +19,7 @@ fi
 
 FILES=$(find $SOURCE_PATH -not -path "$EXCLUDE" \( -name "*.h" -o -name "*.cpp" \))
 
-clang-format -i $FILES
+$CLANG_FORMAT -i $FILES
 echo "Ran clang-format on $SOURCE_PATH (except ThirdParty)..."
+
+exit

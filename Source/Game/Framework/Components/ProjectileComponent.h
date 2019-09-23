@@ -7,7 +7,7 @@ class ProjectileComponent : public AComponent
 {
 private:
 	Vector2 m_direction = Vector2::Right;
-	Fixed m_speed = 1000;
+	Fixed m_speed = 3000;
 	Time m_ttl = Time::Seconds(1.0f);
 	Time m_elapsed;
 	bool m_bSelfDestruct = true;

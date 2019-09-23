@@ -13,7 +13,7 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 {
 	AssetManifestData data;
 #if ENABLED(FILESYSTEM_ASSETS)
-	std::ifstream fileManifest(repository.FileAssetPath(m_manifestPath).c_str());
+	std::ifstream fileManifest(Asset::FilePathAndSize(m_manifestPath).first.c_str());
 	m_bManifestFilePresent = fileManifest.good();
 	if (!m_bManifestFilePresent)
 	{
@@ -28,7 +28,8 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 	}
 	else
 	{
-		auto uManifest = repository.ConjureAsset<TextAsset>(m_manifestPath, false, {LERepository::Search::Filesystem, LERepository::Search::Cooked});
+		auto uManifest =
+			repository.ConjureAsset<TextAsset>(m_manifestPath, false, {LERepository::Search::Filesystem, LERepository::Search::Cooked});
 		pManifest = uManifest.get();
 		if (uManifest)
 		{
