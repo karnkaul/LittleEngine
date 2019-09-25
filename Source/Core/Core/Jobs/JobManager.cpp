@@ -11,20 +11,15 @@ JobManager::Job::Job() = default;
 
 JobManager::Job::Job(s64 id, Task task, String name, bool bSilent) : m_task(std::move(task)), m_id(id), m_bSilent(bSilent)
 {
+	m_logName = "[";
+	m_logName += std::to_string(id);
 	if (!name.empty())
 	{
-		SPRINTF(szLogName.data(), szLogName.size(), "[%" PRId64 "-%s]", id, name.c_str());
+		m_logName += "-";
+		m_logName += std::move(name);
 	}
-	else
-	{
-		SPRINTF(szLogName.data(), szLogName.size(), "[%" PRId64 "]", id);
-	}
+	m_logName += "]";
 	m_sHandle = MakeShared<JobHandleBlock>(id, m_promise.get_future());
-}
-
-const char* JobManager::Job::ToStr() const
-{
-	return szLogName.data();
 }
 
 void JobManager::Job::Run()
@@ -36,7 +31,7 @@ void JobManager::Job::Run()
 	catch (const std::exception& e)
 	{
 		AssertVar(false, e.what());
-		m_szException = e.what();
+		m_exception = e.what();
 	}
 }
 
@@ -126,7 +121,7 @@ void JobManager::Update()
 		uCatalog->Update();
 		if (uCatalog->m_bCompleted)
 		{
-			LOG_D("[JobManager] %s completed. Destroying instance.", uCatalog->LogNameStr());
+			LOG_D("[JobManager] %s completed. Destroying instance.", uCatalog->m_logName.c_str());
 			iter = m_catalogs.erase(iter);
 		}
 		else

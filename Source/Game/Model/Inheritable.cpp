@@ -8,14 +8,15 @@ Inheritable::Inheritable(bool bSilent) : m_bSilent(bSilent) {}
 Inheritable::Inheritable(String name, String className, bool bSilent)
 	: m_name(std::move(name)), m_typeName(std::move(className)), m_bSilent(bSilent)
 {
-	RegenerateLogNameStr();
+	String suffix = m_typeName.empty() ? "" : "/" + m_typeName;
+	m_logName = "[" + m_name + suffix + "]";
 }
 
 Inheritable::~Inheritable()
 {
 	if (!m_bSilent)
 	{
-		LOG_D("%s destroyed", LogNameStr());
+		LOG_D("%s destroyed", m_logName.data());
 	}
 }
 
@@ -38,14 +39,14 @@ void Inheritable::SetNameAndType(String name, String className)
 	RegenerateLogNameStr();
 }
 
-const char* Inheritable::NameStr() const
+VString Inheritable::Name() const
 {
-	return m_name.c_str();
+	return m_name;
 }
 
-const char* Inheritable::LogNameStr() const
+VString Inheritable::LogName() const
 {
-	return m_logName.c_str();
+	return m_logName;
 }
 
 void Inheritable::RegenerateLogNameStr()

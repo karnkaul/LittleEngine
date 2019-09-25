@@ -42,7 +42,7 @@ private:
 	UPtr<Core::ArchiveReader> m_uCooked;
 	Vec<SPtr<class ManifestLoader>> m_loaders;
 	mutable std::mutex m_loadedMutex;
-	UMap<String, UPtr<Asset>> m_loaded;
+	UMap<VString, UPtr<Asset>> m_loaded;
 	String m_rootDir;
 	State m_state;
 
@@ -89,7 +89,7 @@ private:
 	UPtr<T> CreateAsset(U... args);
 
 	template <typename T>
-	UPtr<T> ConjureAsset(const String& id, bool bSilent, InitList<Search> searchOrder);
+	UPtr<T> ConjureAsset(VString id, bool bSilent, InitList<Search> searchOrder);
 
 	friend class ManifestLoader;
 	friend class ILoadingHUD;
@@ -119,7 +119,7 @@ T* LERepository::Load(String id, bool bReload)
 			  id.c_str());
 	}
 
-	bool bInCooked = m_uCooked->IsPresent(id.c_str());
+	bool bInCooked = m_uCooked->IsPresent(id);
 #if ENABLED(FILESYSTEM_ASSETS)
 	bool bOnFilesystem = Asset::DoesFileExist(id) && s_bUseFileAssets;
 	// Asset doesn't exist
@@ -181,7 +181,7 @@ Deferred<T*> LERepository::LoadAsync(String id)
 		return deferred;
 	}
 
-	bool bInCooked = m_uCooked->IsPresent(id.c_str());
+	bool bInCooked = m_uCooked->IsPresent(id);
 #if ENABLED(FILESYSTEM_ASSETS)
 	bool bOnFilesystem = Asset::DoesFileExist(id) && s_bUseFileAssets;
 	if (!bInCooked && !bOnFilesystem)
@@ -234,7 +234,7 @@ T* LERepository::Preload(const String& id)
 	{
 		return pT;
 	}
-	bool bInCooked = m_uCooked->IsPresent(id.c_str());
+	bool bInCooked = m_uCooked->IsPresent(id);
 #if ENABLED(FILESYSTEM_ASSETS)
 	bool bOnFilesystem = Asset::DoesFileExist(id) && s_bUseFileAssets;
 	// Asset doesn't exist
@@ -288,12 +288,12 @@ template <typename T>
 T* LERepository::LoadFromArchive(String id)
 {
 	T* pT = nullptr;
-	UPtr<T> uT = CreateAsset<T>(id, m_uCooked->Decompress(id.c_str()));
+	UPtr<T> uT = CreateAsset<T>(std::move(id), m_uCooked->Decompress(id.c_str()));
 	if (uT)
 	{
 		pT = uT.get();
 		Lock lock(m_loadedMutex);
-		m_loaded.emplace(std::move(id), std::move(uT));
+		m_loaded[uT->ID()] = std::move(uT);
 	}
 	return pT;
 }
@@ -303,12 +303,12 @@ template <typename T>
 T* LERepository::LoadFromFilesystem(String id)
 {
 	T* pT = nullptr;
-	UPtr<T> uT = CreateAsset<T>(id);
+	UPtr<T> uT = CreateAsset<T>(std::move(id));
 	if (uT)
 	{
 		pT = uT.get();
 		Lock lock(m_loadedMutex);
-		m_loaded.emplace(std::move(id), std::move(uT));
+		m_loaded[uT->ID()] = std::move(uT);
 	}
 	return pT;
 }
@@ -324,12 +324,12 @@ UPtr<T> LERepository::CreateAsset(U... args)
 		return nullptr;
 	}
 	auto size = Core::FriendlySize(uT->ByteCount());
-	LOG_I("== [%s] [%.2f%s] %s decompressed", uT->ID(), size.first, size.second, g_szAssetType[ToIdx(uT->Type())]);
+	LOG_I("== [%s] [%.2f%s] %s created", uT->ID().data(), size.first, size.second.data(), g_szAssetType[ToIdx(uT->Type())].data());
 	return (uT);
 }
 
 template <typename T>
-UPtr<T> LERepository::ConjureAsset(const String& id, bool bSilent, InitList<Search> searchOrder)
+UPtr<T> LERepository::ConjureAsset(VString id, bool bSilent, InitList<Search> searchOrder)
 {
 	UPtr<T> uT;
 
@@ -339,34 +339,34 @@ UPtr<T> LERepository::ConjureAsset(const String& id, bool bSilent, InitList<Sear
 		{
 			if (!bSilent)
 			{
-				LOG_E("[Repository] Asset %s not present on filesystem!", id.c_str());
+				LOG_E("[Repository] Asset %s not present on filesystem!", id.data());
 			}
 		}
 		else
 		{
-			uT = CreateAsset<T>(id);
+			uT = CreateAsset<T>(String(id));
 			if (!bSilent && (!uT || uT->IsError()))
 			{
-				LOG_E("[Repository] Could not load %s from filesystem assets!", id.c_str());
+				LOG_E("[Repository] Could not load %s from filesystem assets!", id.data());
 			}
 		}
 	};
 #endif
 
 	auto decompressAsset = [&]() {
-		if (!m_uCooked->IsPresent(id.c_str()))
+		if (!m_uCooked->IsPresent(id))
 		{
 			if (!bSilent)
 			{
-				LOG_E("[Repository] Asset %s not present in cooked archive!", id.c_str());
+				LOG_E("[Repository] Asset %s not present in cooked archive!", id.data());
 			}
 		}
 		else
 		{
-			uT = CreateAsset<T>(id, m_uCooked->Decompress(id.c_str()));
+			uT = CreateAsset<T>(String(id), m_uCooked->Decompress(id));
 			if (!bSilent && (!uT || uT->IsError()))
 			{
-				LOG_E("[Repository] Could not load %s from cooked assets!", id.c_str());
+				LOG_E("[Repository] Could not load %s from cooked assets!", id.data());
 			}
 		}
 	};

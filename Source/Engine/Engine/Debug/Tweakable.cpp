@@ -6,8 +6,9 @@ namespace LittleEngine::Debug
 Tweakable::Tweakable(String id, TweakType type, String value /* = "" */, void* pTarget /* = nullptr */)
 	: m_pTarget(pTarget), m_value(std::move(value)), m_type(type)
 {
-	static Array<const char*, 4> suffix = {"", "_f32", "_s32", "_b"};
-	m_id = std::move(id) + suffix[static_cast<size_t>(m_type)];
+	static Array<VString, 4> suffix = {"", "_f32", "_s32", "_b"};
+	m_id = std::move(id);
+	m_id += suffix[ToIdx(m_type)];
 	TweakManager::Instance()->m_tweakables.emplace(m_id, this);
 }
 

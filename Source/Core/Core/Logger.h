@@ -28,10 +28,10 @@ enum class LogSeverity : u8
 
 extern LogSeverity g_MinLogSeverity;
 
-void Log(LogSeverity severity, const char* pText, ...);
+void Log(LogSeverity severity, const char* szText, ...);
 
-String ParseLogSeverity(LogSeverity severity);
-LogSeverity ParseLogSeverity(const String& serialised);
+VString ParseLogSeverity(LogSeverity severity);
+LogSeverity ParseLogSeverity(VString serialised);
 
 void StartFileLogging(String path, u8 backupCount, String header);
 void StopFileLogging();

@@ -4,9 +4,9 @@
 
 namespace Core
 {
-Pair<f32, const char*> FriendlySize(u64 byteCount)
+Pair<f32, VString> FriendlySize(u64 byteCount)
 {
-	static Array<const char*, 4> suffixes = {"B", "KiB", "MiB", "GiB"};
+	static Array<VString, 4> suffixes = {"B", "KiB", "MiB", "GiB"};
 	f32 bytes = static_cast<f32>(byteCount);
 	size_t idx = 0;
 	while (bytes > 1024.0f && idx < 4)
@@ -146,7 +146,7 @@ void RemoveWhitespace(String& outInput)
 	RemoveChars(outInput, {' '});
 }
 
-Vec<String> Tokenise(const String& s, char delimiter, InitList<Dual<char>> escape)
+Vec<String> Tokenise(VString s, char delimiter, InitList<Dual<char>> escape)
 {
 	auto end = s.cend();
 	auto start = end;

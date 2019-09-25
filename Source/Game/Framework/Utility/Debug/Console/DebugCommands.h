@@ -33,12 +33,12 @@ public:
 
 	Vec<LogLine> Execute(String params);
 
-	virtual Vec<String> AutoCompleteParams(const String& /*query*/);
+	virtual Vec<String> AutoCompleteParams(VString /*query*/);
 
 protected:
 	Vec<LogLine> m_executeResult;
 
-	Command(const char* szName);
+	Command(VString szName);
 
 	virtual void FillExecuteResult(String params) = 0;
 };
@@ -46,8 +46,8 @@ protected:
 void Init(LEContext& context);
 void Cleanup();
 void AddCommand(UPtr<Command> uCommand);
-Vec<LogLine> Execute(const String& query);
-AutoCompleteResults AutoComplete(const String& incompleteQuery);
+Vec<LogLine> Execute(VString query);
+AutoCompleteResults AutoComplete(VString incompleteQuery);
 } // namespace Commands
 } // namespace Debug
 } // namespace LittleEngine

@@ -191,7 +191,7 @@ void LEAudio::Tick(Time dt)
 String LEAudio::GetPath(String id) const
 {
 	static Array<char, 256> buf;
-	SPRINTF(buf.data(), buf.size(), "%s/%s/%s", OS::Env()->RuntimePath().c_str(), m_rootMusicDir.c_str(), id.c_str());
+	SPRINTF(buf.data(), buf.size(), "%s/%s/%s", OS::Env()->RuntimePath().data(), m_rootMusicDir.c_str(), id.c_str());
 	return String(buf.data());
 }
 

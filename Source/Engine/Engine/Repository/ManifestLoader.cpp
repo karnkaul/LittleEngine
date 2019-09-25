@@ -86,7 +86,7 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 		}
 
 		default:
-			LOG_W("[ManifestLoader] Unsupported Asset Type [%s] for asynchronous loading!", g_szAssetType[ToIdx(definition.type)]);
+			LOG_W("[ManifestLoader] Unsupported Asset Type [%s] for asynchronous loading!", g_szAssetType[ToIdx(definition.type)].data());
 		}
 	}
 
@@ -131,10 +131,9 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 				},
 				"Load All Sounds");
 
-			for (auto& texture : m_newTextures)
+			for (auto& tx : m_newTextures)
 			{
-				m_pJobCatalog->AddJob([&]() { texture.asset = m_pRepository->CreateAsset<TextureAsset>(texture.assetID); },
-									  texture.assetID);
+				m_pJobCatalog->AddJob([&]() { tx.asset = m_pRepository->CreateAsset<TextureAsset>(tx.assetID); }, tx.assetID);
 			}
 			for (auto& font : m_newFonts)
 			{
@@ -159,14 +158,14 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 				},
 				"Load All Sounds");
 
-			for (auto& texture : m_newTextures)
+			for (auto& tx : m_newTextures)
 			{
 				m_pJobCatalog->AddJob(
 					[&]() {
-						texture.asset = m_pRepository->CreateAsset<TextureAsset>(
-							texture.assetID, m_pRepository->m_uCooked->Decompress(texture.assetID.c_str()));
+						tx.asset =
+							m_pRepository->CreateAsset<TextureAsset>(tx.assetID, m_pRepository->m_uCooked->Decompress(tx.assetID.c_str()));
 					},
-					texture.assetID);
+					tx.assetID);
 			}
 			for (auto& font : m_newFonts)
 			{
@@ -207,28 +206,28 @@ void ManifestLoader::Tick(Time /*dt*/)
 			{
 				if (newAsset.asset)
 				{
-					m_pRepository->m_loaded.emplace(newAsset.assetID, std::move(newAsset.asset));
+					m_pRepository->m_loaded[newAsset.asset->ID()] = std::move(newAsset.asset);
 				}
 			}
 			for (auto& newAsset : m_newFonts)
 			{
 				if (newAsset.asset)
 				{
-					m_pRepository->m_loaded.emplace(newAsset.assetID, std::move(newAsset.asset));
+					m_pRepository->m_loaded[newAsset.asset->ID()] = std::move(newAsset.asset);
 				}
 			}
 			for (auto& newAsset : m_newSounds)
 			{
 				if (newAsset.asset)
 				{
-					m_pRepository->m_loaded.emplace(newAsset.assetID, std::move(newAsset.asset));
+					m_pRepository->m_loaded[newAsset.asset->ID()] = std::move(newAsset.asset);
 				}
 			}
 			for (auto& newAsset : m_newTexts)
 			{
 				if (newAsset.asset)
 				{
-					m_pRepository->m_loaded.emplace(newAsset.assetID, std::move(newAsset.asset));
+					m_pRepository->m_loaded[newAsset.asset->ID()] = std::move(newAsset.asset);
 				}
 			}
 		}

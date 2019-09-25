@@ -31,9 +31,9 @@ Array<char, CACHE_SIZE> logCache;
 size_t bufferIdx = 0;
 using LogArr = Array<char, LOG_BUFFER_SIZE>;
 LogArr logBuffer;
-Array<const char*, 5> prefixes = {"[H] ", "[D] ", "[I] ", "[W] ", "[E] "};
+Array<VString, 5> prefixes = {"[H] ", "[D] ", "[I] ", "[W] ", "[E] "};
 
-UMap<Core::LogSeverity, String> severityMap = {{LogSeverity::Error, "Error"},
+UMap<Core::LogSeverity, VString> severityMap = {{LogSeverity::Error, "Error"},
 											   {LogSeverity::Warning, "Warning"},
 											   {LogSeverity::Info, "Info"},
 											   {LogSeverity::Debug, "Debug"},
@@ -185,7 +185,7 @@ void LogInternal(const char* pText, u32 severityIndex, va_list argList)
 		bInit = true;
 	}
 	Lock lock(_mutex);
-	auto prefixLength = static_cast<size_t>(SPRINTF(logCache.data(), logCache.size(), "%s", prefixes[severityIndex]));
+	auto prefixLength = static_cast<size_t>(SPRINTF(logCache.data(), logCache.size(), "%s", prefixes[severityIndex].data()));
 	auto totalLength =
 		static_cast<size_t>(vsnprintf(logCache.data() + prefixLength, logCache.size() - prefixLength, pText, argList)) + prefixLength;
 	using namespace std::chrono;
@@ -210,7 +210,7 @@ void LogInternal(const char* pText, u32 severityIndex, va_list argList)
 	}
 }
 
-void Log(LogSeverity severity, const char* pText, ...)
+void Log(LogSeverity severity, const char* szText, ...)
 {
 	u32 severityIndex = static_cast<u32>(severity);
 	if (severityIndex < static_cast<u32>(g_MinLogSeverity))
@@ -219,17 +219,17 @@ void Log(LogSeverity severity, const char* pText, ...)
 	}
 
 	va_list argList;
-	va_start(argList, pText);
-	LogInternal(pText, severityIndex, argList);
+	va_start(argList, szText);
+	LogInternal(szText, severityIndex, argList);
 	va_end(argList);
 }
 
-String ParseLogSeverity(LogSeverity severity)
+VString ParseLogSeverity(LogSeverity severity)
 {
 	return severityMap[severity];
 }
 
-LogSeverity ParseLogSeverity(const String& serialised)
+LogSeverity ParseLogSeverity(VString serialised)
 {
 	for (const auto& severity : severityMap)
 	{

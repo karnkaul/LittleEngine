@@ -15,22 +15,20 @@ private:
 	{
 	private:
 		std::promise<void> m_promise;
-		Array<char, 256> szLogName;
 
 	public:
+		String m_logName;
+		String m_exception;
 		JobHandle m_sHandle;
 		Task m_task;
 		s64 m_id;
 		bool m_bSilent = false;
-		const char* m_szException = nullptr;
-
+		
 	public:
 		Job();
 		Job(s64 id, Task task, String name, bool bSilent);
 		Job(Job&& rhs) = default;
 		Job& operator=(Job&& rhs) = default;
-
-		const char* ToStr() const;
 
 		void Run();
 		void Fulfil();

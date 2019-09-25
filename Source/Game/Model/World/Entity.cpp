@@ -41,7 +41,7 @@ void Entity::SetEnabled(bool bEnabled)
 	{
 		pComponent->SetEnabled(bEnabled);
 	}
-	LOG_D("%s %s", LogNameStr(), m_bEnabled ? "enabled" : "disabled");
+	LOG_D("%s %s", m_logName.c_str(), m_bEnabled ? "enabled" : "disabled");
 }
 
 void Entity::Tick(Time /*dt*/)

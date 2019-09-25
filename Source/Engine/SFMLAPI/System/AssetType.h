@@ -12,5 +12,5 @@ enum class AssetType : u8
 	_COUNT
 };
 
-extern Array<const char*, ToIdx(AssetType::_COUNT)> g_szAssetType;
+extern Array<VString, ToIdx(AssetType::_COUNT)> g_szAssetType;
 } // namespace LittleEngine

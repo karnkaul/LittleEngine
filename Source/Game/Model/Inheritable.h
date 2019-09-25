@@ -24,8 +24,8 @@ public:
 	void SetName(String name);
 	void SetType(String typeName);
 	void SetNameAndType(String name, String className);
-	const char* NameStr() const;
-	const char* LogNameStr() const;
+	VString Name() const;
+	VString LogName() const;
 
 protected:
 	virtual void RegenerateLogNameStr();

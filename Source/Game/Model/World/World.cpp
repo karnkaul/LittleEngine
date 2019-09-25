@@ -55,7 +55,7 @@ void World::Activate()
 	m_state = State::Active;
 	m_uWorldClock->Restart();
 	OnActivated();
-	LOG_D("%s Activated", LogNameStr());
+	LOG_D("%s Activated", m_logName.c_str());
 }
 
 void World::Deactivate()
@@ -63,6 +63,6 @@ void World::Deactivate()
 	m_tokenHandler.Clear();
 	OnDeactivating();
 	m_state = State::Inactive;
-	LOG_D("%s Deactivated", LogNameStr());
+	LOG_D("%s Deactivated", m_logName.c_str());
 }
 } // namespace LittleEngine

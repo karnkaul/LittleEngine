@@ -94,7 +94,7 @@ u32 VacantThreadCount()
 }
 } // namespace Threads
 
-void EnvData::SetVars(s32 argc, char** argv, InitList<const char*> runtimeFiles)
+void EnvData::SetVars(s32 argc, char** argv, InitList<VString> runtimeFiles)
 {
 #ifdef TARGET_LINUX
 	s32 threadStatus = XInitThreads();
@@ -132,15 +132,15 @@ void EnvData::SetVars(s32 argc, char** argv, InitList<const char*> runtimeFiles)
 	}
 #endif
 
-	for (auto szFilename : runtimeFiles)
+	for (auto file : runtimeFiles)
 	{
-		String filename = m_cwd + "/" + szFilename;
+		String filename = m_cwd + "/" + String(file);
 		if (std::ifstream(filename.c_str()).good())
 		{
 			m_runtimePath = m_cwd;
 			break;
 		}
-		filename = m_exePath + "/" + szFilename;
+		filename = m_exePath + "/" + filename;
 		if (std::ifstream(filename.c_str()).good())
 		{
 			m_runtimePath = m_exePath;
@@ -223,26 +223,26 @@ Pair<s32, char**> EnvData::OrgVars() const
 	return std::make_pair(m_argc, m_argv);
 }
 
-const String& EnvData::ExePath() const
+VString EnvData::ExePath() const
 {
 	return m_exePath;
 }
 
-const String& EnvData::RuntimePath() const
+VString EnvData::RuntimePath() const
 {
 	return m_runtimePath;
 }
 
-const String& EnvData::CWD() const
+VString EnvData::CWD() const
 {
 	return m_cwd;
 }
 
-String EnvData::FullPath(const char* szRelativePath) const
+String EnvData::FullPath(VString relativePath) const
 {
 	String path = m_runtimePath;
 	path += "/";
-	path += szRelativePath;
+	path += relativePath;
 	return path;
 }
 
@@ -321,17 +321,17 @@ void DebugBreak()
 #endif
 }
 
-u64 FileSize(const char* szPath)
+u64 FileSize(VString path)
 {
 	u64 size = 0;
-	if (DoesFileExist(szPath))
+	if (DoesFileExist(path))
 	{
 #ifdef CXX_MS_CRT
 		std::error_code e;
-		size = static_cast<u64>(std::filesystem::file_size(szPath, e));
+		size = static_cast<u64>(std::filesystem::file_size(path, e));
 		return e ? 0 : size;
 #else
-		std::ifstream mySource(szPath, std::ios_base::binary);
+		std::ifstream mySource(path.data(), std::ios_base::binary);
 		mySource.seekg(0, std::ios_base::end);
 		size = static_cast<u64>(mySource.tellg());
 #endif
@@ -339,9 +339,9 @@ u64 FileSize(const char* szPath)
 	return size;
 }
 
-bool DoesFileExist(const char* szPath)
+bool DoesFileExist(VString path)
 {
-	return std::ifstream(szPath).good();
+	return std::ifstream(path.data()).good();
 }
 
 bool IsDEBUGGING()

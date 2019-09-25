@@ -106,7 +106,7 @@ void UIWidget::OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCo
 	SetNameAndType(std::move(name), "UIWidget");
 	m_pOwner = &owner;
 	m_style = pStyleToCopy ? *pStyleToCopy : UIGameStyle::GetStyle("");
-	m_pRoot = AddElement<UIElement>(String(NameStr()) + "_Root");
+	m_pRoot = AddElement<UIElement>(m_name + "_Root");
 	m_pRoot->SetRectSize(m_style.widgetSize);
 	OnCreated();
 	SetInteractable(true);

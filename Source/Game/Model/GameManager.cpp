@@ -120,11 +120,6 @@ bool GameManager::IsPlayerControllable() const
 	return !m_bPaused && !(UI()->Active());
 }
 
-const char* GameManager::LogNameStr() const
-{
-	return m_logName.c_str();
-}
-
 void GameManager::CreateContext(const GameConfig& config)
 {
 	GameSettings& settings = *GameSettings::Instance();

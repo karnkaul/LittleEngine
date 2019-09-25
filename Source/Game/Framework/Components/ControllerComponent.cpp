@@ -63,7 +63,7 @@ void ControllerComponent::OnCreated()
 	m_pRenderComponent = m_pOwner->GetComponent<RenderComponent>();
 	if (!m_pRenderComponent)
 	{
-		LOG_E("%s : %s has ControllerComponent but no RenderComponent!", LogNameStr(), m_pOwner->LogNameStr());
+		LOG_E("%s : %s has ControllerComponent but no RenderComponent!", m_logName.data(), m_pOwner->LogName().data());
 	}
 	BindInput([&](const LEInput::Frame& x) -> bool { return OnInput(x); }, true);
 	Reset();

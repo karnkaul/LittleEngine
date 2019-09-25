@@ -3,16 +3,16 @@
 
 namespace LittleEngine
 {
-KeyState::KeyState(s32 keyType, const char* szName) : keyType(keyType), szName(szName), bPressed(false) {}
+KeyState::KeyState(s32 keyType, VString name) : keyType(keyType), name(name), bPressed(false) {}
 
 KeyType KeyState::GetKeyType() const
 {
 	return static_cast<KeyType>(keyType);
 }
 
-const char* KeyState::NameStr() const
+VString KeyState::Name() const
 {
-	return szName;
+	return name;
 }
 
 bool TextInput::ContainsChar(char c) const

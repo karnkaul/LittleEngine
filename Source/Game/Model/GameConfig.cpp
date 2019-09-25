@@ -8,23 +8,23 @@ namespace LittleEngine
 {
 namespace
 {
-const char* RENDER_THREAD_KEY = "bRenderThread";
-const char* PAUSE_ON_FOCUS_LOSS_KEY = "bPauseOnFocusLoss";
-const char* JOB_WORKER_COUNT_KEY = "jobWorkerCount";
-const char* TICKS_PER_SECOND_KEY = "ticksPerSecond";
-const char* RENDER_THREAD_START_DELAY_MS_KEY = "renderThreadStartDelayMS";
-const char* MAX_FRAME_TIME_MS = "maxFrameTimeMS";
-const char* TITLEBAR_TEXT_KEY = "titleBarText";
-const char* UI_SPACE_KEY = "uiSpace";
-const char* WORLD_HEIGHT_KEY = "worldHeight";
-const char* COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
-const char* BACKUP_LOG_FILE_COUNT_KEY = "backupLogFileCount";
-const char* ENTITY_ORIENTATION_SIZE_KEY = "entityOrientationSize";
-const char* CONTROLLER_ORIENTATION_SIZE_KEY = "controllerOrientationSize";
-const char* CONTROLLER_ORIENTATION_EPSILON_KEY = "controllerOrientationEpsilon";
-const char* FORCE_VIEWPORT_ASPECT_KEY = "forceViewportAR";
+const String RENDER_THREAD_KEY = "bRenderThread";
+const String PAUSE_ON_FOCUS_LOSS_KEY = "bPauseOnFocusLoss";
+const String JOB_WORKER_COUNT_KEY = "jobWorkerCount";
+const String TICKS_PER_SECOND_KEY = "ticksPerSecond";
+const String RENDER_THREAD_START_DELAY_MS_KEY = "renderThreadStartDelayMS";
+const String MAX_FRAME_TIME_MS = "maxFrameTimeMS";
+const String TITLEBAR_TEXT_KEY = "titleBarText";
+const String UI_SPACE_KEY = "uiSpace";
+const String WORLD_HEIGHT_KEY = "worldHeight";
+const String COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
+const String BACKUP_LOG_FILE_COUNT_KEY = "backupLogFileCount";
+const String ENTITY_ORIENTATION_SIZE_KEY = "entityOrientationSize";
+const String CONTROLLER_ORIENTATION_SIZE_KEY = "controllerOrientationSize";
+const String CONTROLLER_ORIENTATION_EPSILON_KEY = "controllerOrientationEpsilon";
+const String FORCE_VIEWPORT_ASPECT_KEY = "forceViewportAR";
 
-bool SetStringIfEmpty(GData& data, String key, String value)
+bool SetStringIfEmpty(GData& data, const String& key, String value)
 {
 	if (data.GetString(key, "NULL") == "NULL")
 	{

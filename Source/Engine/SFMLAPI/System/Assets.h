@@ -21,8 +21,8 @@ protected:
 	bool m_bError = true;
 
 public:
-	static bool DoesFileExist(const String& id);
-	static Pair<String, u64> FilePathAndSize(const String& id);
+	static bool DoesFileExist(VString id);
+	static Pair<String, u64> FilePathAndSize(VString id);
 
 public:
 	Asset() = delete;
@@ -33,7 +33,7 @@ protected:
 	Asset(String id, Vec<u8> buffer, AssetType type = AssetType::File);
 
 public:
-	const char* ID() const;
+	VString ID() const;
 	bool IsError() const;
 	AssetType Type() const;
 	u64 ByteCount() const;

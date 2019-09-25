@@ -34,7 +34,7 @@ Vec<LogLine> AllCommands();
 } // namespace
 
 #pragma region Commands
-Command::Command(const char* szName) : m_name(szName) {}
+Command::Command(VString name) : m_name(name) {}
 
 Vec<LogLine> Command::Execute(String params)
 {
@@ -44,7 +44,7 @@ Vec<LogLine> Command::Execute(String params)
 	return (m_executeResult);
 }
 
-Vec<String> Command::AutoCompleteParams(const String& /*incomplete*/)
+Vec<String> Command::AutoCompleteParams(VString /*incomplete*/)
 {
 	return Vec<String>();
 }
@@ -74,7 +74,7 @@ public:
 		}
 	}
 
-	Vec<String> AutoCompleteParams(const String& incompleteParams) final
+	Vec<String> AutoCompleteParams(VString incompleteParams) final
 	{
 		Vec<String> params;
 		for (const auto& p : m_paramCallbackMap)
@@ -90,7 +90,7 @@ public:
 protected:
 	Map<String, std::function<void(Vec<LogLine>&)>> m_paramCallbackMap;
 
-	ParameterisedCommand(const char* name) : Command(name) {}
+	ParameterisedCommand(VString name) : Command(name) {}
 
 	virtual LogLine OnEmptyParams()
 	{
@@ -101,7 +101,7 @@ protected:
 class BooleanCommand : public ParameterisedCommand
 {
 public:
-	BooleanCommand(const char* name) : ParameterisedCommand(name)
+	BooleanCommand(VString name) : ParameterisedCommand(name)
 	{
 		m_paramCallbackMap.emplace("true", [&](Vec<LogLine>& executeResult) { OnTrue(executeResult); });
 		m_paramCallbackMap.emplace("false", [&](Vec<LogLine>& executeResult) { OnFalse(executeResult); });
@@ -278,7 +278,7 @@ public:
 		m_executeResult.emplace_back("\t" + pTweakable->m_id + " = " + pTweakable->m_value, g_logTextColour);
 	}
 
-	Vec<String> AutoCompleteParams(const String& incompleteParams) override
+	Vec<String> AutoCompleteParams(VString incompleteParams) override
 	{
 		Vec<String> matches;
 		auto& tweakables = TweakManager::Instance()->m_tweakables;
@@ -355,7 +355,7 @@ Vec<LogLine> AllCommands()
 	return result;
 }
 
-String StripPaddedSpaces(const String& input)
+String StripPaddedSpaces(VString input)
 {
 	size_t firstNonSpaceIdx = 0;
 	while (input[firstNonSpaceIdx] == ' ' && firstNonSpaceIdx < input.length())
@@ -367,29 +367,30 @@ String StripPaddedSpaces(const String& input)
 	{
 		--lastNonSpaceIdx;
 	}
-	return input.substr(firstNonSpaceIdx, lastNonSpaceIdx - firstNonSpaceIdx + 1);
+	return String(input.substr(firstNonSpaceIdx, lastNonSpaceIdx - firstNonSpaceIdx + 1));
 }
 
-void SplitQuery(String& outQuery, String& outCommand, String& outParams)
+String SplitQuery(VString query, String& outCommand, String& outParams)
 {
-	outQuery = StripPaddedSpaces(outQuery);
+	String ret = StripPaddedSpaces(query);
 	outParams = "";
-	if (outQuery.empty())
+	if (ret.empty())
 	{
 		outCommand = "";
-		return;
+		return ret;
 	}
 
 	size_t delimiterIdx = 0;
-	while (outQuery[delimiterIdx] != ' ' && delimiterIdx != outQuery.length())
+	while (ret[delimiterIdx] != ' ' && delimiterIdx != ret.length())
 	{
 		++delimiterIdx;
 	}
-	outCommand = outQuery.substr(0, delimiterIdx);
-	if (delimiterIdx + 1 < outQuery.length())
+	outCommand = ret.substr(0, delimiterIdx);
+	if (delimiterIdx + 1 < ret.length())
 	{
-		outParams = outQuery.substr(delimiterIdx + 1, outQuery.length() - delimiterIdx);
+		outParams = ret.substr(delimiterIdx + 1, ret.length() - delimiterIdx);
 	}
+	return ret;
 }
 
 Vec<LogLine> ExecuteQuery(const String& command, String params)
@@ -450,12 +451,11 @@ void AddCommand(UPtr<Command> uCommand)
 	commands.insert(iter, std::move(uCommand));
 }
 
-Vec<LogLine> Execute(const String& query)
+Vec<LogLine> Execute(VString query)
 {
-	String cleanedQuery(query);
 	String command;
 	String params;
-	SplitQuery(cleanedQuery, command, params);
+	String cleanedQuery = SplitQuery(query, command, params);
 	Vec<LogLine> ret;
 	if (!cleanedQuery.empty())
 	{
@@ -468,13 +468,11 @@ Vec<LogLine> Execute(const String& query)
 	return ret;
 }
 
-AutoCompleteResults AutoComplete(const String& incompleteQuery)
+AutoCompleteResults AutoComplete(VString incompleteQuery)
 {
-	String cleanedQuery(incompleteQuery);
 	String incompleteCommand;
 	String incompleteParams;
-	SplitQuery(cleanedQuery, incompleteCommand, incompleteParams);
-
+	String cleanedQuery = SplitQuery(incompleteQuery, incompleteCommand, incompleteParams);
 	Vec<Command*> matchedCommands = FindCommands(incompleteCommand, true);
 	AutoCompleteResults results;
 	if (!matchedCommands.empty())

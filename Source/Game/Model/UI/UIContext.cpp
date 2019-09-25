@@ -23,7 +23,7 @@ void UIContext::OnCreate(String id, LayerID rootLayer)
 	SetNameAndType(std::move(id), "UIContext");
 	m_uUIWidgets = MakeUnique<UIWidgetMatrix>();
 	s32 layerDelta = ToS32(rootLayer) - ToS32(LayerID::UI);
-	m_pRoot = AddElement<UIElement>(String(NameStr()) + "_Root", nullptr, layerDelta);
+	m_pRoot = AddElement<UIElement>(m_name + "_Root", nullptr, layerDelta);
 	m_pRoot->SetStatic(true);
 	OnCreated();
 	SetActive(true);

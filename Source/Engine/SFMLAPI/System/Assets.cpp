@@ -13,20 +13,24 @@
 
 namespace LittleEngine
 {
-Array<const char*, ToIdx(AssetType::_COUNT)> g_szAssetType = {"TextureAsset", "FontAsset", "SoundAsset", "TextAsset", "FileAsset"};
+Array<VString, ToIdx(AssetType::_COUNT)> g_szAssetType = {"TextureAsset", "FontAsset", "SoundAsset", "TextAsset", "FileAsset"};
 
 String Asset::s_pathPrefix;
 
-bool Asset::DoesFileExist(const String& id)
+bool Asset::DoesFileExist(VString id)
 {
-	return OS::DoesFileExist(OS::Env()->FullPath((s_pathPrefix + id).c_str()).c_str());
+	String fullPath = s_pathPrefix;
+	fullPath += id;
+	return OS::DoesFileExist(OS::Env()->FullPath(fullPath));
 }
 
-Pair<String, u64> Asset::FilePathAndSize(const String& id)
+Pair<String, u64> Asset::FilePathAndSize(VString id)
 {
-	String path = OS::Env()->FullPath((s_pathPrefix + id).c_str());
-	u64 size = OS::FileSize(path.c_str());
-	return std::make_pair(std::move(path), size);
+	String fullPath = s_pathPrefix;
+	fullPath += id;
+	fullPath = OS::Env()->FullPath(fullPath.c_str());
+	u64 size = OS::FileSize(fullPath.c_str());
+	return std::make_pair(std::move(fullPath), size);
 }
 
 Asset::Asset(String id, AssetType type) : m_id(std::move(id)), m_type(type)
@@ -60,13 +64,13 @@ Asset::~Asset()
 {
 	if (!m_bError)
 	{
-		LOG_I("-- [%s] %s destroyed", m_id.c_str(), g_szAssetType[ToIdx(m_type)]);
+		LOG_I("-- [%s] %s destroyed", m_id.c_str(), g_szAssetType[ToIdx(m_type)].data());
 	}
 }
 
-const char* Asset::ID() const
+VString Asset::ID() const
 {
-	return m_id.c_str();
+	return m_id;
 }
 
 bool Asset::IsError() const
@@ -123,7 +127,7 @@ bool Asset::WriteBytes(const String& path)
 	if (bSuccess)
 	{
 		auto size = Core::FriendlySize(m_byteCount);
-		LOG_D("[%s] %s wrote [%.2f%s] to [%s]", m_id.c_str(), g_szAssetType[ToIdx(m_type)], size.first, size.second,
+		LOG_D("[%s] %s wrote [%.2f%s] to [%s]", m_id.c_str(), g_szAssetType[ToIdx(m_type)].data(), size.first, size.second,
 			  m_pathSize.first.c_str());
 	}
 #endif

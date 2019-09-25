@@ -53,18 +53,18 @@ private:
 	char** m_argv = nullptr;
 
 public:
-	void SetVars(s32 argc, char** argv, InitList<const char*> runtimeFiles);
+	void SetVars(s32 argc, char** argv, InitList<VString> runtimeFiles);
 
 	bool HasVar(const String& key) const;
 	std::optional<String> GetVar(const String& key) const;
 	Pair<s32, char**> OrgVars() const;
 
-	const String& ExePath() const;
-	const String& RuntimePath() const;
-	const String& CWD() const;
+	VString ExePath() const;
+	VString RuntimePath() const;
+	VString CWD() const;
 
 	// Appends "PWD/"
-	String FullPath(const char* szRelativePath) const;
+	String FullPath(VString relativePath) const;
 };
 
 EnvData* Env();
@@ -74,8 +74,8 @@ bool IsMainThread();
 bool IsDebuggerAttached();
 void DebugBreak();
 
-u64 FileSize(const char* szPath);
-bool DoesFileExist(const char* szPath);
+u64 FileSize(VString path);
+bool DoesFileExist(VString path);
 
 bool IsDEBUGGING();
 bool IsSHIPPING();

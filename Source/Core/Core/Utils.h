@@ -31,7 +31,7 @@ template <typename T>
 typename Vec<T>::const_iterator Search(const Vec<T>& vec, const T& value);
 
 // Returns size in B / KiB / MiB / GiB
-Pair<f32, const char*> FriendlySize(u64 byteCount);
+Pair<f32, VString> FriendlySize(u64 byteCount);
 } // namespace Core
 
 namespace Strings
@@ -63,7 +63,7 @@ void Trim(String& outInput, InitList<char> toRemove);
 // Removes all tabs and spaces
 void RemoveWhitespace(String& outInput);
 // Tokenises a string via a delimiter, skipping over any delimiters within escape characters
-Vec<String> Tokenise(const String& s, char delimiter, InitList<Dual<char>> escape);
+Vec<String> Tokenise(VString s, char delimiter, InitList<Dual<char>> escape);
 // Substitutes an input set of chars with a given replacement
 void SubstituteChars(String& outInput, InitList<Dual<char>> replacements);
 // Returns true if str[idx - 1] = wrapper.first && str[idx + 1] == wrapper.second

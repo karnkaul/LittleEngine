@@ -14,9 +14,10 @@ using LogSeverity = Core::LogSeverity;
 class GameSettings final
 {
 public:
-	static const char* szFILE_PATH;
+	static const String FILE_PATH;
 
 private:
+	String SAVE_PATH;
 	Property::Persistor m_persistor;
 	Property m_viewportHeight;
 	Property m_borderless;

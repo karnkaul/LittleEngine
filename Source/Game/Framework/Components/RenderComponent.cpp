@@ -216,7 +216,7 @@ RenderComponent* RenderComponent::SetSpriteSheet(SpriteSheet sheet, LayerID laye
 		m_framePeriod = Time::Seconds(sheet.m_period.AsSeconds() / sheet.m_data.indices.size());
 		m_oSpriteSheet.emplace(std::move(sheet));
 		m_bFlippingSprites = true;
-		LOG_D("Set up SpriteSheet on %s", LogNameStr());
+		LOG_D("Set up SpriteSheet on %s", m_logName.c_str());
 		m_pPrimitive = pQuad;
 	}
 	return this;
@@ -226,7 +226,7 @@ RenderComponent* RenderComponent::UnsetSpriteSheet()
 {
 	m_oSpriteSheet.reset();
 	m_bFlippingSprites = false;
-	LOG_D("Unset SpriteSheet on %s", LogNameStr());
+	LOG_D("Unset SpriteSheet on %s", m_logName.c_str());
 	return this;
 }
 
@@ -241,8 +241,8 @@ RenderComponent* RenderComponent::SetShader(Shader* pShader)
 #if ENABLED(DEBUG_LOGGING)
 	if (pShader)
 	{
-		const char* szType = g_szShaderTypes[pShader->GetType()];
-		LOG_D("%s %s %s Shader set", m_logName.c_str(), pShader->ID().c_str(), szType);
+		VString type = g_szShaderTypes[pShader->GetType()];
+		LOG_D("%s %s %s Shader set", m_logName.c_str(), pShader->ID().c_str(), type.data());
 	}
 	else
 	{

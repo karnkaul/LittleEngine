@@ -49,16 +49,16 @@ void JobWorker::Run()
 			String suffix = m_bEngineWorker ? " Engine Job " : " Job ";
 			if (!oJob->m_bSilent)
 			{
-				LOG_D("%s Starting %s %s", m_logName.c_str(), m_bEngineWorker ? "Engine Job" : "Job", oJob->ToStr());
+				LOG_D("%s Starting %s %s", m_logName.c_str(), m_bEngineWorker ? "Engine Job" : "Job", oJob->m_logName.c_str());
 			}
 			oJob->Run();
-			if (!oJob->m_bSilent && !oJob->m_szException)
+			if (!oJob->m_bSilent && oJob->m_exception.empty())
 			{
-				LOG_D("%s Completed %s %s", m_logName.c_str(), m_bEngineWorker ? "Engine Job" : "Job", oJob->ToStr());
+				LOG_D("%s Completed %s %s", m_logName.c_str(), m_bEngineWorker ? "Engine Job" : "Job", oJob->m_logName.c_str());
 			}
-			if (oJob->m_szException)
+			if (!oJob->m_exception.empty())
 			{
-				LOG_E("%s Threw an exception running %s\n\t%s!", m_logName.c_str(), oJob->ToStr(), oJob->m_szException);
+				LOG_E("%s Threw an exception running %s\n\t%s!", m_logName.c_str(), oJob->m_logName.c_str(), oJob->m_exception.c_str());
 			}
 			oJob->Fulfil();
 		}

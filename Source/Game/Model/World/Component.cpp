@@ -12,7 +12,7 @@ AComponent::AComponent() : GameObject("Untitled", "Component", true)
 
 AComponent::~AComponent()
 {
-	LOG_D("%s destroyed", LogNameStr());
+	LOG_D("%s destroyed", m_logName.c_str());
 }
 
 TimingType AComponent::Timing() const

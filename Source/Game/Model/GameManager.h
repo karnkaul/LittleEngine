@@ -59,8 +59,6 @@ public:
 	template <typename T>
 	T* NewComponent(Entity& owner);
 
-	const char* LogNameStr() const;
-
 public:
 	void CreateContext(const class GameConfig& config);
 #ifdef DEBUGGING
@@ -80,7 +78,7 @@ T* GameManager::NewEntity(String name, Vector2 position, Vector2 orientation)
 	pT->OnCreate(std::move(name));
 	pT->m_transform.SetPosition(position);
 	pT->m_transform.SetOrientation(orientation);
-	LOG_D("%s spawned", pT->LogNameStr());
+	LOG_D("%s spawned", pT->LogName().data());
 	return pT;
 }
 
@@ -95,7 +93,7 @@ T* GameManager::NewComponent(Entity& owner)
 	uT->OnCreate(owner);
 	T* pT = uT.get();
 	componentVec.emplace_back(std::move(uT));
-	LOG_D("%s spawned", pT->LogNameStr());
+	LOG_D("%s spawned", pT->LogName().data());
 	return pT;
 }
 } // namespace LittleEngine

@@ -47,7 +47,7 @@ private:
 	friend class APrimitive;
 };
 
-extern UMap<Shader::Type, const char*> g_szShaderTypes;
+extern UMap<Shader::Type, VString> g_szShaderTypes;
 
 template <typename T>
 void Shader::SetUniform(String id, T value)

@@ -225,7 +225,7 @@ bool WorldStateMachine::LoadWorld(WorldID id)
 			m_transition = Transition::UnloadRun;
 			manifestPath.clear();
 		}
-		LOG_D("[WSM] Load Enqueued: %s", pNextWorld->LogNameStr());
+		LOG_D("[WSM] Load Enqueued: %s", pNextWorld->LogName().data());
 		return true;
 	}
 	LOG_E("[WSM] World ID [%d] does not exist!", id);

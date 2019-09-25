@@ -91,7 +91,7 @@ VersionRenderer::VersionRenderer(LEContext& context)
 	LERenderer* pRenderer = context.Renderer();
 	auto pFont = g_pRepository->Load<FontAsset>("Fonts/UIFont.ttf");
 	m_pBuildVersion = pRenderer->New<SFText>(LayerID::Top);
-	m_pBuildVersion->SetText(Core::Version::szBUILD_VERSION_WITH_COMMIT)
+	m_pBuildVersion->SetText(String(Core::Version::szBUILD_VERSION_WITH_COMMIT))
 		->SetSize(textSize + 5U)
 		->SetFont(pFont ? *pFont : *g_pDefaultFont)
 		->SetPivot({-1, 0})

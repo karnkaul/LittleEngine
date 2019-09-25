@@ -24,7 +24,7 @@ LERepository::LERepository(String defaultFontID, String archivePath, String root
 
 	LOG_D("[Repository] Assets Root Dir: %s", m_rootDir.c_str());
 
-	String filePath = OS::Env()->FullPath(archivePath.c_str());
+	String filePath = OS::Env()->FullPath(archivePath);
 	std::ifstream file(filePath.c_str());
 	Assert(file.good(), "Cooked archive does not exist!");
 #if defined(DEBUGGING)
@@ -108,7 +108,7 @@ u64 LERepository::LoadedBytes() const
 
 bool LERepository::IsPresent(const String& id) const
 {
-	bool bRet = m_uCooked->IsPresent(id.c_str());
+	bool bRet = m_uCooked->IsPresent(id);
 #if ENABLED(FILESYSTEM_ASSETS)
 	bRet |= Asset::DoesFileExist(id);
 #endif
@@ -135,8 +135,7 @@ void LERepository::UnloadAll(bool bUnloadDefaultFont)
 	}
 	else
 	{
-		String fontID = g_pDefaultFont->ID();
-		Core::RemoveIf<String, UPtr<Asset>>(m_loaded, [fontID](UPtr<Asset>& uAsset) { return String(uAsset->ID()) != fontID; });
+		Core::RemoveIf<VString, UPtr<Asset>>(m_loaded, [](UPtr<Asset>& uAsset) { return String(uAsset->ID()) != g_pDefaultFont->ID(); });
 	}
 	LOG_D("[Repository] cleared");
 }

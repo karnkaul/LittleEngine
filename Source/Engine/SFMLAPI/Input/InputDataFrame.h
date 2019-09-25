@@ -9,16 +9,16 @@ struct KeyState
 {
 private:
 	s32 keyType;
-	const char* szName;
+	VString name;
 
 public:
 	bool bPressed;
 
 public:
-	KeyState(s32 keyType, const char* szName = "Unknown");
+	KeyState(s32 keyType, VString name = "Unknown");
 
 	KeyType GetKeyType() const;
-	const char* NameStr() const;
+	VString Name() const;
 };
 
 struct TextInput
