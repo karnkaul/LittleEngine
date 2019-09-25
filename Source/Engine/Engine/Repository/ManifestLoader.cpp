@@ -126,23 +126,23 @@ ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Ta
 				[&]() {
 					for (auto& sound : m_newSounds)
 					{
-						sound.asset = m_pRepository->RetrieveAsset<SoundAsset>(sound.assetID);
+						sound.asset = m_pRepository->CreateAsset<SoundAsset>(sound.assetID);
 					}
 				},
 				"Load All Sounds");
 
 			for (auto& texture : m_newTextures)
 			{
-				m_pJobCatalog->AddJob([&]() { texture.asset = m_pRepository->RetrieveAsset<TextureAsset>(texture.assetID); },
+				m_pJobCatalog->AddJob([&]() { texture.asset = m_pRepository->CreateAsset<TextureAsset>(texture.assetID); },
 									  texture.assetID);
 			}
 			for (auto& font : m_newFonts)
 			{
-				m_pJobCatalog->AddJob([&]() { font.asset = m_pRepository->RetrieveAsset<FontAsset>(font.assetID); }, font.assetID);
+				m_pJobCatalog->AddJob([&]() { font.asset = m_pRepository->CreateAsset<FontAsset>(font.assetID); }, font.assetID);
 			}
 			for (auto& text : m_newTexts)
 			{
-				m_pJobCatalog->AddJob([&]() { text.asset = m_pRepository->RetrieveAsset<TextAsset>(text.assetID); }, text.assetID);
+				m_pJobCatalog->AddJob([&]() { text.asset = m_pRepository->CreateAsset<TextAsset>(text.assetID); }, text.assetID);
 			}
 		}
 		else

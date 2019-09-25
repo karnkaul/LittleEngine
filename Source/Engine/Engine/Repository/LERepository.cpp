@@ -77,20 +77,16 @@ void LERepository::LoadDefaultFont(String id)
 	Assert(g_pDefaultFont, "Invariant violated: Default Font is null!");
 }
 
-ManifestLoader* LERepository::LoadManifest(String manifestPath, Task onComplete)
+SPtr<ManifestLoader> LERepository::LoadManifest(String manifestPath, Task onComplete)
 {
-	UPtr<ManifestLoader> uLoader = MakeUnique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), false);
-	ManifestLoader* pLoader = uLoader.get();
-	m_loaders.emplace_back(std::move(uLoader));
-	return pLoader;
+	SPtr<ManifestLoader> sLoader = MakeShared<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), false);
+	m_loaders.push_back(sLoader);
+	return sLoader;
 }
 
-ManifestLoader* LERepository::UnloadManifest(String manifestPath, Task onComplete /* = nullptr */)
+void LERepository::UnloadManifest(String manifestPath, Task onComplete /* = nullptr */)
 {
-	UPtr<ManifestLoader> uLoader = MakeUnique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), true);
-	ManifestLoader* pLoader = uLoader.get();
-	m_loaders.emplace_back(std::move(uLoader));
-	return pLoader;
+	m_loaders.emplace_back(MakeUnique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), true));
 }
 
 bool LERepository::IsLoaded(const String& id) const
@@ -140,19 +136,21 @@ void LERepository::UnloadAll(bool bUnloadDefaultFont)
 	else
 	{
 		String fontID = g_pDefaultFont->ID();
-		Core::RemoveIf<String, UPtr<Asset>>(m_loaded, [fontID](UPtr<Asset>& uAsset) { return uAsset->ID() != fontID; });
+		Core::RemoveIf<String, UPtr<Asset>>(m_loaded, [fontID](UPtr<Asset>& uAsset) { return String(uAsset->ID()) != fontID; });
 	}
 	LOG_D("[Repository] cleared");
 }
 
 bool LERepository::IsBusy() const
 {
-	bool bLoading = false;
-	for (auto& uLoader : m_loaders)
+	for (auto& sLoader : m_loaders)
 	{
-		bLoading |= !uLoader->m_bUnloading;
+		if (!sLoader->m_bUnloading)
+		{
+			return true;
+		}
 	}
-	return bLoading;
+	return false;
 }
 
 void LERepository::ResetState()
@@ -163,16 +161,7 @@ void LERepository::ResetState()
 void LERepository::Tick(Time dt)
 {
 	m_state = State::Active;
-	auto iter = m_loaders.begin();
-	while (iter != m_loaders.end())
-	{
-		(*iter)->Tick(dt);
-		if ((*iter)->m_bIdle)
-		{
-			iter = m_loaders.erase(iter);
-			continue;
-		}
-		++iter;
-	}
+	std::for_each(m_loaders.begin(), m_loaders.end(), [dt](auto& sLoader) { sLoader->Tick(dt); });
+	Core::RemoveIf<SPtr<ManifestLoader>>(m_loaders, [](auto& sLoader) { return sLoader->m_bIdle; });
 }
 } // namespace LittleEngine

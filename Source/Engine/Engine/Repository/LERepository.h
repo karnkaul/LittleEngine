@@ -17,7 +17,7 @@ extern class LERepository* g_pRepository;
 extern FontAsset* g_pDefaultFont;
 
 // \brief Class that handles all Asset Loading. (Maintains a clearable cache)
-class LERepository final
+class LERepository final : private NoCopy
 {
 #if ENABLED(FILESYSTEM_ASSETS)
 public:
@@ -40,7 +40,7 @@ public:
 
 private:
 	UPtr<Core::ArchiveReader> m_uCooked;
-	List<UPtr<class ManifestLoader>> m_loaders;
+	Vec<SPtr<class ManifestLoader>> m_loaders;
 	mutable std::mutex m_loadedMutex;
 	UMap<String, UPtr<Asset>> m_loaded;
 	String m_rootDir;
@@ -52,53 +52,41 @@ public:
 
 	void LoadDefaultFont(String id);
 
-	// Loads Asset at path. T must derive from Asset!
+	template <typename T>
+	T* Preload(const String& id);
 	template <typename T>
 	T* Load(String id, bool bReload = false);
 	template <typename T>
 	Deferred<T*> LoadAsync(String id);
 
-	ManifestLoader* LoadManifest(String manifestPath, Task onComplete = nullptr);
-	ManifestLoader* UnloadManifest(String manifestPath, Task onComplete = nullptr);
+	SPtr<ManifestLoader> LoadManifest(String manifestPath, Task onComplete = nullptr);
+	void UnloadManifest(String manifestPath, Task onComplete = nullptr);
 
 	bool IsLoaded(const String& id) const;
 	u64 LoadedBytes() const;
 	bool IsPresent(const String& id) const;
 
 	bool Unload(String id);
-	// Unload all assets
 	void UnloadAll(bool bUnloadDefaultFont);
 
-	bool IsBusy() const;
-
 	void ResetState();
-
-public:
-	LERepository(const LERepository&) = delete;
-	LERepository& operator=(const LERepository&) = delete;
-
 	void Tick(Time dt);
 
-	template <typename T>
-	T* Preload(const String& id);
+	bool IsBusy() const;
 
 private:
 	template <typename T>
 	T* GetLoaded(const String& id);
 
 	template <typename T>
-	T* LoadFromArchive(const String& id);
+	T* LoadFromArchive(String id);
 #if ENABLED(FILESYSTEM_ASSETS)
 	template <typename T>
-	T* LoadFromFilesystem(const String& id);
+	T* LoadFromFilesystem(String id);
 #endif
 
-	template <typename T>
-	UPtr<T> CreateAsset(const String& id, Vec<u8> buffer);
-#if ENABLED(FILESYSTEM_ASSETS)
-	template <typename T>
-	UPtr<T> RetrieveAsset(const String& id);
-#endif
+	template <typename T, typename... U>
+	UPtr<T> CreateAsset(U... args);
 
 	template <typename T>
 	UPtr<T> ConjureAsset(const String& id, bool bSilent, InitList<Search> searchOrder);
@@ -297,7 +285,7 @@ T* LERepository::GetLoaded(const String& id)
 }
 
 template <typename T>
-T* LERepository::LoadFromArchive(const String& id)
+T* LERepository::LoadFromArchive(String id)
 {
 	T* pT = nullptr;
 	UPtr<T> uT = CreateAsset<T>(id, m_uCooked->Decompress(id.c_str()));
@@ -305,66 +293,40 @@ T* LERepository::LoadFromArchive(const String& id)
 	{
 		pT = uT.get();
 		Lock lock(m_loadedMutex);
-		m_loaded.emplace(id, std::move(uT));
+		m_loaded.emplace(std::move(id), std::move(uT));
 	}
 	return pT;
 }
 
 #if ENABLED(FILESYSTEM_ASSETS)
 template <typename T>
-T* LERepository::LoadFromFilesystem(const String& id)
+T* LERepository::LoadFromFilesystem(String id)
 {
 	T* pT = nullptr;
-	UPtr<T> uT = RetrieveAsset<T>(id);
+	UPtr<T> uT = CreateAsset<T>(id);
 	if (uT)
 	{
 		pT = uT.get();
 		Lock lock(m_loadedMutex);
-		m_loaded.emplace(id, std::move(uT));
+		m_loaded.emplace(std::move(id), std::move(uT));
 	}
 	return pT;
 }
 #endif
 
-template <typename T>
-UPtr<T> LERepository::CreateAsset(const String& id, Vec<u8> buffer)
+template <typename T, typename... U>
+UPtr<T> LERepository::CreateAsset(U... args)
 {
-	struct enable_smart : public T
-	{
-		enable_smart(String id, Vec<u8> buffer) : T(std::move(id), std::move(buffer)) {}
-	};
-
-	UPtr<enable_smart> uT;
-	uT = MakeUnique<enable_smart>(id, std::move(buffer));
+	UPtr<T> uT;
+	uT = MakeUnique<T>(std::forward<U>(args)...);
 	if (!uT || uT->IsError())
 	{
 		return nullptr;
 	}
 	auto size = Core::FriendlySize(uT->ByteCount());
-	LOG_I("== [%s] [%.2f%s] %s decompressed", id.c_str(), size.first, size.second, g_szAssetType[ToIdx(uT->Type())]);
+	LOG_I("== [%s] [%.2f%s] %s decompressed", uT->ID(), size.first, size.second, g_szAssetType[ToIdx(uT->Type())]);
 	return (uT);
 }
-
-#if ENABLED(FILESYSTEM_ASSETS)
-template <typename T>
-UPtr<T> LERepository::RetrieveAsset(const String& id)
-{
-	struct enable_smart : public T
-	{
-		enable_smart(String id) : T(std::move(id)) {}
-	};
-
-	UPtr<enable_smart> uT;
-	uT = MakeUnique<enable_smart>(id);
-	if (!uT || uT->IsError())
-	{
-		return nullptr;
-	}
-	auto size = Core::FriendlySize(uT->ByteCount());
-	LOG_I("== [%s] [%.2f%s] %s loaded from filesystem", id.c_str(), size.first, size.second, g_szAssetType[ToIdx(uT->Type())]);
-	return (uT);
-}
-#endif
 
 template <typename T>
 UPtr<T> LERepository::ConjureAsset(const String& id, bool bSilent, InitList<Search> searchOrder)
@@ -382,7 +344,7 @@ UPtr<T> LERepository::ConjureAsset(const String& id, bool bSilent, InitList<Sear
 		}
 		else
 		{
-			uT = RetrieveAsset<T>(id);
+			uT = CreateAsset<T>(id);
 			if (!bSilent && (!uT || uT->IsError()))
 			{
 				LOG_E("[Repository] Could not load %s from filesystem assets!", id.c_str());
@@ -391,14 +353,21 @@ UPtr<T> LERepository::ConjureAsset(const String& id, bool bSilent, InitList<Sear
 	};
 #endif
 
-	auto createAsset = [&]() {
-		if (m_uCooked->IsPresent(id.c_str()))
+	auto decompressAsset = [&]() {
+		if (!m_uCooked->IsPresent(id.c_str()))
+		{
+			if (!bSilent)
+			{
+				LOG_E("[Repository] Asset %s not present in cooked archive!", id.c_str());
+			}
+		}
+		else
 		{
 			uT = CreateAsset<T>(id, m_uCooked->Decompress(id.c_str()));
-		}
-		if (!bSilent && (!uT || uT->IsError()))
-		{
-			LOG_E("[Repository] Could not load %s from cooked assets!", id.c_str());
+			if (!bSilent && (!uT || uT->IsError()))
+			{
+				LOG_E("[Repository] Could not load %s from cooked assets!", id.c_str());
+			}
 		}
 	};
 
@@ -408,7 +377,7 @@ UPtr<T> LERepository::ConjureAsset(const String& id, bool bSilent, InitList<Sear
 		{
 		default:
 		case Search::Cooked:
-			createAsset();
+			decompressAsset();
 			break;
 		case Search::Filesystem:
 #if ENABLED(FILESYSTEM_ASSETS)

@@ -5,6 +5,7 @@
 #include "Fixed.h"
 #include "FileRW.h"
 #include "Matrix3.h"
+#include "NoCopy.h"
 #include "Rect2.h"
 #include "SimpleTime.h"
 #include "StdTypes.h"
@@ -19,6 +20,7 @@ using Deferred = Core::Deferred<T>;
 using Fixed = Core::Fixed;
 using FileRW = Core::FileRW;
 using Matrix3 = Core::Matrix3;
+using NoCopy = Core::NoCopy;
 using Rect2 = Core::Rect2;
 using Transform = Core::Transform;
 using Time = Core::Time;

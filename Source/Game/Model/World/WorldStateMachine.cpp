@@ -30,7 +30,7 @@ SFText* pLoadingSubtitle = nullptr;
 Quad* pSpinner = nullptr;
 World* pActiveWorld = nullptr;
 World* pNextWorld = nullptr;
-class ManifestLoader* pLoader = nullptr;
+SPtr<ManifestLoader> sLoader;
 } // namespace
 
 #ifdef DEBUGGING
@@ -112,7 +112,7 @@ void WorldStateMachine::Start(String coreManifestID, String gameStyleID, Task on
 
 	if (!manifestPath.empty() && !s_createdWorlds.empty())
 	{
-		pLoader = g_pRepository->LoadManifest(manifestPath, [&, gameStyleID]() {
+		sLoader = g_pRepository->LoadManifest(manifestPath, [&, gameStyleID]() {
 			if (!gameStyleID.empty())
 			{
 				auto pText = g_pRepository->Load<TextAsset>(gameStyleID);
@@ -122,7 +122,7 @@ void WorldStateMachine::Start(String coreManifestID, String gameStyleID, Task on
 				}
 			}
 			m_transition = Transition::Run;
-			pLoader = nullptr;
+			sLoader = nullptr;
 		});
 		loadTime = Time::Now();
 		String titleText = LOC("LOC_LOADING");
@@ -155,7 +155,7 @@ void WorldStateMachine::Tick(Time dt, bool& bYieldIntegration)
 		{
 			if (uLoadHUD)
 			{
-				Fixed progress = pLoader ? pLoader->Progress() : Fixed::One;
+				Fixed progress = sLoader ? sLoader->Progress() : Fixed::One;
 				uLoadHUD->Tick(dt, progress);
 			}
 			break;
@@ -278,7 +278,7 @@ void WorldStateMachine::ChangeState()
 	case Transition::LoadRun:
 	{
 		loadTime = Time::Now();
-		pLoader = g_pRepository->LoadManifest(manifestPath, [&]() { m_transition = Transition::Run; });
+		sLoader = g_pRepository->LoadManifest(manifestPath, [&]() { m_transition = Transition::Run; });
 		uLoadHUD->Tick(Time::Zero, Fixed::Zero);
 		m_state = State::Loading;
 		m_transition = Transition::None;
