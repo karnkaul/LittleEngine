@@ -11,7 +11,7 @@ class LoadingHUD final : public ILoadingHUD
 private:
 	class Quad* m_pBG = nullptr;
 	Quad* m_pRotator = nullptr;
-	class SFRect* m_pProgressBar = nullptr;
+	Quad* m_pProgressBar = nullptr;
 	class SFText* m_pTitle = nullptr;
 	SFText* m_pSubtitle = nullptr;
 	Time m_elapsed;

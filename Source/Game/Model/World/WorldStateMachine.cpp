@@ -293,7 +293,7 @@ void WorldStateMachine::ChangeState()
 #if ENABLED(DEBUG_LOGGING)
 			auto size = Core::FriendlySize(g_pRepository->LoadedBytes());
 			LOG_D("[WSM] %s load completed in %.2fs. Repository size: %.2f%s", manifestPath.c_str(), loadTime.AsSeconds(), size.first,
-				  size.second);
+				  size.second.data());
 #endif
 		}
 		uLoadHUD->SetEnabled(false);

@@ -7,15 +7,20 @@ namespace LittleEngine
 {
 class Quad : public APrimitive
 {
+public:
+	using Verts = Array<Vector2, 4>;
+
 protected:
+	
 	struct QuadState
 	{
+		Verts verts;
 		TRange<Rect2> tUV = Rect2::UV;
+		TRange<Rect2> tModel = Rect2::Zero;
 		class TextureAsset* pTexture = nullptr;
 	};
 
 protected:
-	Array<Vector2, 4> m_vertexModel;
 	sf::VertexArray m_sfVertArr;
 	QuadState m_quadGameState;
 	QuadState m_quadRenderState;
@@ -37,7 +42,7 @@ protected:
 	void OnDraw(Viewport& viewport, sf::RenderStates& sfStates) override;
 
 public:
-	Quad* SetModel(Rect2 xy);
+	Quad* SetModel(Rect2 xy, bool bImmediate);
 	Quad* SetTexture(TextureAsset& texture);
 	Quad* SetUV(Rect2 uv, bool bImmediate = false);
 	Quad* SetUV(Fixed u, Fixed v, Fixed du, Fixed dv, bool bImmediate = false);

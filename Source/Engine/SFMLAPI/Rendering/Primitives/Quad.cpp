@@ -9,6 +9,18 @@
 
 namespace LittleEngine
 {
+namespace
+{
+void Lerp(Quad::Verts& out, const Core::TRange<Rect2>& tModel, Fixed alpha)
+{
+	Rect2 model = Maths::Lerp(tModel.min, tModel.max, alpha);
+	out[0] = model.TopLeft();
+	out[1] = model.TopRight();
+	out[2] = model.BottomRight();
+	out[3] = model.BottomLeft();
+}
+} // namespace
+
 #if ENABLED(RENDER_STATS)
 extern RenderData g_renderData;
 #endif
@@ -19,22 +31,21 @@ Quad::~Quad() = default;
 
 Rect2 Quad::GameBounds() const
 {
-	Vector2 size(Maths::Abs(m_vertexModel[0].x - m_vertexModel[1].x), Maths::Abs(m_vertexModel[1].y - m_vertexModel[2].y));
 	Vector2 centre = SFMLToWorld(m_gameState.tPosition.max);
-	return Rect2::SizeCentre(size, centre);
+	return Rect2::SizeCentre(m_quadGameState.tModel.max.Size(), centre);
 }
 
 Rect2 Quad::RenderBounds() const
 {
-	Vector2 size(Maths::Abs(m_vertexModel[0].x - m_vertexModel[1].x), Maths::Abs(m_vertexModel[1].y - m_vertexModel[2].y));
 	Vector2 centre = SFMLToWorld(m_renderState.tPosition.max);
-	return Rect2::SizeCentre(size, centre);
+	return Rect2::SizeCentre(m_quadRenderState.tModel.max.Size(), centre);
 }
 
 void Quad::ReconcileGameState()
 {
 	APrimitive::ReconcileGameState();
 	m_quadGameState.tUV.min = m_quadGameState.tUV.max;
+	m_quadGameState.tModel.min = m_quadGameState.tModel.max;
 }
 
 void Quad::SwapState()
@@ -46,7 +57,7 @@ void Quad::SwapState()
 void Quad::OnUpdateRenderState(Fixed alpha)
 {
 	// Cheap
-	Assert(m_vertexModel.size() == 4, "Invalid vertex model for Quad!");
+	Assert(m_quadRenderState.verts.size() == 4, "Invalid vertex model for Quad!");
 	State state = GetState(alpha);
 	Colour c = state.colour;
 	Rect2 uvRect = Maths::Lerp(m_quadRenderState.tUV.min, m_quadRenderState.tUV.max, alpha);
@@ -56,11 +67,15 @@ void Quad::OnUpdateRenderState(Fixed alpha)
 
 	// Expensive
 	Matrix3 transform(state.position, state.orientation, state.scale);
-	for (auto& vertex : m_vertexModel)
+	Lerp(m_quadRenderState.verts, m_quadRenderState.tModel, alpha);
+	for (auto& vertex : m_quadRenderState.verts)
 	{
-		Vector2 position = vertex * transform;
+		Vector2 p = vertex * transform;
 		Vector2 uv = {size.x * uvs[idx].x, size.y * uvs[idx].y};
-		m_sfVertArr[idx++] = sf::Vertex(Cast(position), Cast(c), Cast(uv));
+		sf::Vertex& v = m_sfVertArr[idx++];
+		v.position = Cast(p);
+		v.color = Cast(c);
+		v.texCoords = Cast(uv);
 	}
 }
 
@@ -76,10 +91,16 @@ void Quad::OnDraw(Viewport& viewport, sf::RenderStates& sfStates)
 	viewport.draw(m_sfVertArr, sfStates);
 }
 
-Quad* Quad::SetModel(Rect2 xy)
+Quad* Quad::SetModel(Rect2 xy, bool bImmediate)
 {
-	m_vertexModel = {WorldToSFML(xy.TopLeft()), WorldToSFML(xy.TopRight()), WorldToSFML(xy.BottomRight()), WorldToSFML(xy.BottomLeft())};
-	m_gameState.tPosition = WorldToSFML(xy.Centre());
+	if (bImmediate)
+	{
+		m_quadGameState.tModel.Reset(xy);
+	}
+	else
+	{
+		m_quadGameState.tModel.Update(xy);
+	}
 	return this;
 }
 

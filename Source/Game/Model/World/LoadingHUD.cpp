@@ -1,7 +1,6 @@
 #include "Core/Logger.h"
 #include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
-#include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/Renderer/LERenderer.h"
@@ -13,7 +12,15 @@ namespace LittleEngine
 {
 namespace
 {
-Vector2 progressBarSize;
+const Fixed pbHalfHeight = 4;
+Fixed pbWidth;
+
+void SetProgress(Quad& quad, Fixed progress, bool bImmediate)
+{
+	Vector2 tl(0, pbHalfHeight);
+	Vector2 br(progress * pbWidth, -pbHalfHeight);
+	quad.SetModel(Rect2{tl, br}, bImmediate);
+}
 } // namespace
 
 LoadingHUD::LoadingHUD()
@@ -28,7 +35,7 @@ LoadingHUD::LoadingHUD()
 	m_pBG = g_pGameManager->Renderer()->New<Quad>(bg);
 	m_pTitle = g_pGameManager->Renderer()->New<SFText>(hud);
 	m_pSubtitle = g_pGameManager->Renderer()->New<SFText>(hud);
-	m_pProgressBar = g_pGameManager->Renderer()->New<SFRect>(hud);
+	m_pProgressBar = g_pGameManager->Renderer()->New<Quad>(hud);
 	m_pRotator = g_pGameManager->Renderer()->New<Quad>(hud);
 
 	m_pBG->SetPrimaryColour(Colour(20, 5, 30, 0))->SetEnabled(true);
@@ -37,9 +44,9 @@ LoadingHUD::LoadingHUD()
 	m_pTitle->SetPosition({0, 70})->SetEnabled(true);
 	m_pSubtitle->SetPosition({0, -30})->SetEnabled(true);
 
-	m_pProgressBar->SetSize({Fixed::Zero, progressBarSize.y})->SetPivot({-1, 0})->SetPrimaryColour(Colour::White)->SetEnabled(true);
+	m_pProgressBar->SetPrimaryColour(Colour::White)->SetEnabled(true);
 
-	m_pRotator->SetModel(Rect2::SizeCentre({75, 75}))->SetEnabled(true);
+	m_pRotator->SetModel(Rect2::SizeCentre({75, 75}), true)->SetEnabled(true);
 	if (pTexture)
 	{
 		m_pRotator->SetTexture(*pTexture);
@@ -49,10 +56,10 @@ LoadingHUD::LoadingHUD()
 	Vector2 viewSize = g_pGFX->UISpace();
 	Vector2 halfView = viewSize * Fixed::OneHalf;
 	Vector2 rotatorPos = halfView - Vector2(100, 100);
-	Fixed yPad = progressBarSize.y * Fixed::OneHalf;
-	progressBarSize = {viewSize.x, 8};
-	m_pBG->SetModel(Rect2::SizeCentre(viewSize));
-	m_pProgressBar->SetPosition({-halfView.x, -halfView.y + yPad}, true);
+	pbWidth = viewSize.x;
+	m_pBG->SetModel(Rect2::SizeCentre(viewSize), true);
+	SetProgress(*m_pProgressBar, Fixed::Zero, true);
+	m_pProgressBar->SetPosition({-halfView.x, -halfView.y + pbHalfHeight}, true);
 	m_pRotator->SetPosition(rotatorPos, true);
 
 	SetEnabled(false);
@@ -87,7 +94,7 @@ Quad* LoadingHUD::Spinner() const
 void LoadingHUD::Tick(Time dt, Fixed progress)
 {
 	m_alpha = Maths::Lerp(m_alpha, m_alphaTarget, Fixed(dt.AsSeconds() * 8));
-	m_pProgressBar->SetSize({progress * progressBarSize.x, progressBarSize.y}, false);
+	SetProgress(*m_pProgressBar, progress, false);
 
 	m_elapsed += dt;
 	m_angle -= Fixed(dt.AsSeconds() * 200.0f);
@@ -103,7 +110,7 @@ void LoadingHUD::Reset()
 	{
 		m_pRotator->SetTexture(*pTexture);
 	}
-	m_pProgressBar->SetSize({Fixed::Zero, progressBarSize.y});
+	SetProgress(*m_pProgressBar, Fixed::Zero, true);
 }
 
 void LoadingHUD::SetEnabled(bool bEnabled)

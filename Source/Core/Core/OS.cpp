@@ -134,13 +134,17 @@ void EnvData::SetVars(s32 argc, char** argv, InitList<VString> runtimeFiles)
 
 	for (auto file : runtimeFiles)
 	{
-		String filename = m_cwd + "/" + String(file);
+		String filename = m_cwd;
+		filename += "/";
+		filename += file;
 		if (std::ifstream(filename.c_str()).good())
 		{
 			m_runtimePath = m_cwd;
 			break;
 		}
-		filename = m_exePath + "/" + filename;
+		filename = m_exePath;
+		filename += "/";
+		filename += file;
 		if (std::ifstream(filename.c_str()).good())
 		{
 			m_runtimePath = m_exePath;

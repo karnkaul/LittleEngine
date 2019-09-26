@@ -183,7 +183,7 @@ Quad* RenderComponent::SetSprite(TextureAsset& texture, LayerID layer)
 	}
 	auto pQuad = g_pGameManager->Renderer()->New<Quad>(layer);
 	Assert(pQuad, "Could not provision Primitive!");
-	pQuad->SetModel(Rect2::SizeCentre(texture.TextureSize()))->SetTexture(texture)->SetEnabled(true);
+	pQuad->SetModel(Rect2::SizeCentre(texture.TextureSize()), true)->SetTexture(texture)->SetEnabled(true);
 	m_pPrimitive = pQuad;
 	return pQuad;
 }
@@ -212,7 +212,7 @@ RenderComponent* RenderComponent::SetSpriteSheet(SpriteSheet sheet, LayerID laye
 		auto pQuad = g_pGameManager->Renderer()->New<Quad>(layer);
 		Assert(pQuad, "Could not provision Primitive!");
 		Rect2 model = Rect2::SizeCentre(sheet.FrameSize());
-		pQuad->SetTexture(*sheet.m_pTexture)->SetModel(model)->SetEnabled(true);
+		pQuad->SetTexture(*sheet.m_pTexture)->SetModel(model, true)->SetEnabled(true);
 		m_framePeriod = Time::Seconds(sheet.m_period.AsSeconds() / sheet.m_data.indices.size());
 		m_oSpriteSheet.emplace(std::move(sheet));
 		m_bFlippingSprites = true;
