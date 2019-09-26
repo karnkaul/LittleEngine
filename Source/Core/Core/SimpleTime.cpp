@@ -15,25 +15,28 @@ const Time Time::Zero = Time(0);
 
 String Time::ToString(Time time)
 {
-	String hours;
+	String ret;
+	ret.reserve(12);
+	ret += "[";
 	s32 h = ToS32(time.AsSeconds() / 60 / 60);
 	if (h > 0)
 	{
-		hours = Strings::ToString(h) + ":";
+		ret += Strings::ToString(h);
+		ret += ":";
 	}
-	String mins;
 	s32 m = ToS32((time.AsSeconds() / 60) - (h * 60));
 	if (m > 0)
 	{
-		mins = Strings::ToString(m) + ":";
+		ret += Strings::ToString(m);
+		ret += ":";
 	}
-	String secs;
 	f32 s = (static_cast<f32>(time.AsMilliseconds()) / 1000.0f) - (h * 60 * 60) - (m * 60);
 	if (s > 0)
 	{
-		secs = Strings::ToString(s);
+		ret += Strings::ToString(s);
 	}
-	return "[" + hours + mins + secs + "]";
+	ret += "]";
+	return ret;
 }
 
 Time Time::Microseconds(s64 microSeconds)

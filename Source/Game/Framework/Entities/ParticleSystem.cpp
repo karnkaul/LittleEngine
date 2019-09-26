@@ -21,6 +21,7 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 {
 	Vec<EmitterData>& emitters = data.emitterDatas;
 	String particles;
+	particles.reserve(32);
 	for (EmitterData& eData : emitters)
 	{
 		if (eData.spawnData.numParticles > 100)
@@ -30,7 +31,8 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 			eData.spawnData.numParticles = numParticles.ToU32();
 		}
 		eData.SetOwner(*this);
-		particles += (Strings::ToString(eData.spawnData.numParticles) + ", ");
+		particles += Strings::ToString(eData.spawnData.numParticles);
+		particles += ", ";
 		UPtr<Emitter> emitter = MakeUnique<Emitter>(std::move(eData), false);
 		m_emitters.emplace_back(std::move(emitter));
 	}
@@ -43,9 +45,8 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 	{
 		particles = "0";
 	}
-	particles = "[" + particles + "] particles";
 
-	Core::Log(logSeverity, "%s initialised: [%d] emitters %s", m_logName.data(), emitters.size(), particles.c_str());
+	Core::Log(logSeverity, "%s initialised: [%d] emitters [%s] particles", m_logName.data(), emitters.size(), particles.c_str());
 #if defined(DEBUGGING)
 	m_pO_x->SetEnabled(false);
 	m_pO_y->SetEnabled(false);

@@ -5,7 +5,13 @@
 
 namespace Core
 {
-JobCatalog::JobCatalog(JobManager& manager, String name) : m_logName("[" + std::move(name) + "]"), m_pManager(&manager) {}
+JobCatalog::JobCatalog(JobManager& manager, String name) : m_pManager(&manager) 
+{
+	m_logName.reserve(name.size() + 2);
+	m_logName = "[";
+	m_logName += std::move(name);
+	m_logName += "]";
+}
 
 void JobCatalog::AddJob(Task job, String name)
 {

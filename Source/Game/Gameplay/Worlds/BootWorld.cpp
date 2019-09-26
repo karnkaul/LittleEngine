@@ -49,7 +49,7 @@ void BootWorld::OnActivated()
 
 	if (!g_pAudio->IsMusicPlaying())
 	{
-		// g_pAudio->PlayMusic("TestMusic.ogg", Fixed::OneHalf);
+		g_pAudio->PlayMusic("TestMusic.ogg", Fixed::OneHalf);
 	}
 }
 

@@ -101,7 +101,11 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 		UIElement* pNextParent = nullptr;
 		s32 layerDelta = data.GetS32("layerDelta", 0);
 		String id = data.GetString("id");
-		String name = m_name + "_" + id;
+		String name;
+		name.reserve(m_name.size() + id.size() + 1);
+		name += m_name;
+		name += "_";
+		name += id;
 #if !defined(SHIPPING)
 		if (!id.empty())
 		{

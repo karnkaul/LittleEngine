@@ -206,7 +206,8 @@ bool WorldStateMachine::LoadWorld(WorldID id)
 			return false;
 		}
 		pNextWorld = s_createdWorlds.at(static_cast<size_t>(id)).get();
-		manifestPath = pNextWorld->m_name + ".amf";
+		manifestPath = pNextWorld->m_name;
+		manifestPath += ".amf";
 		uLoadHUD->Reset();
 		pLoadingTitle->SetText(LOC("LOC_LOADING"));
 		if (pLoadingSubtitle)

@@ -79,7 +79,7 @@ void RenderStatsRenderer::Update()
 		SPRINTF(buf, sizeof(buf), "%u\n%u\n%u\n%u\n%u\n%u/%u\n%u\n%u", g_renderData.quadCount, g_renderData.drawCallCount,
 				g_renderData.dynamicCount, g_renderData.staticCount, ticksPerSec, g_renderData.framesPerSecond, g_renderData.fpsMax,
 				g_renderData.gameFrame, g_renderData.renderFrame);
-		m_pValues->SetText(buf);
+		m_pValues->SetText(String(buf));
 	}
 }
 

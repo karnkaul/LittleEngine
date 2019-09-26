@@ -27,17 +27,15 @@ constexpr size_t CACHE_SIZE = 512;
 
 bool bInit = false;
 std::mutex _mutex;
-Array<char, CACHE_SIZE> logCache;
-size_t bufferIdx = 0;
-using LogArr = Array<char, LOG_BUFFER_SIZE>;
-LogArr logBuffer;
+String cache;
+String buffer;
 Array<VString, 5> prefixes = {"[H] ", "[D] ", "[I] ", "[W] ", "[E] "};
 
 UMap<Core::LogSeverity, VString> severityMap = {{LogSeverity::Error, "Error"},
-											   {LogSeverity::Warning, "Warning"},
-											   {LogSeverity::Info, "Info"},
-											   {LogSeverity::Debug, "Debug"},
-											   {LogSeverity::HOT, "HOT"}};
+												{LogSeverity::Warning, "Warning"},
+												{LogSeverity::Info, "Info"},
+												{LogSeverity::Debug, "Debug"},
+												{LogSeverity::HOT, "HOT"}};
 
 class FileLogger final
 {
@@ -54,7 +52,7 @@ public:
 	FileLogger(String filename, u8 backupCount, String header = "");
 	~FileLogger();
 
-	bool OnLogStr(const LogArr& cache);
+	void OnLogStr(String&& capture);
 
 private:
 	void Async_StartLogging();
@@ -79,7 +77,9 @@ String Prologue(String header)
 	static char buffer[256];
 	std::strftime(buffer, 256, "%a %F %T", pTM);
 	String ret(buffer);
-	ret += (" " + std::move(header) + "\n");
+	ret += " ";
+	ret += std::move(header);
+	ret += "\n";
 	return ret;
 }
 
@@ -100,15 +100,11 @@ FileLogger::~FileLogger()
 	OS::Threads::Join(m_threadHandle);
 }
 
-bool FileLogger::OnLogStr(const LogArr& cache)
+void FileLogger::OnLogStr(String&& capture)
 {
-	if (!m_bStopLogging.load(std::memory_order_relaxed))
-	{
-		Lock lock(m_cacheMutex);
-		m_cache += std::string(cache.data());
-		return true;
-	}
-	return false;
+	Lock lock(m_cacheMutex);
+	m_cache += std::move(capture);
+	capture.clear();
 }
 
 void FileLogger::Async_StartLogging()
@@ -120,14 +116,16 @@ void FileLogger::Async_StartLogging()
 			Lock lock(m_cacheMutex);
 			toWrite = std::move(m_cache);
 		}
-		m_uWriter->Append(toWrite);
+		m_uWriter->Append(std::move(toWrite));
 		std::this_thread::yield();
 	}
 
-	// m_cache is now read-only from main thread, no lock required
-	if (!m_cache.empty())
 	{
-		m_uWriter->Append(std::move(m_cache));
+		Lock lock(m_cacheMutex);
+		if (!m_cache.empty())
+		{
+			m_uWriter->Append(std::move(m_cache));
+		}
 	}
 	m_uWriter = nullptr;
 }
@@ -178,35 +176,33 @@ UPtr<FileLogger> uFileLogger;
 
 void LogInternal(const char* pText, u32 severityIndex, va_list argList)
 {
+	static Array<char, CACHE_SIZE> cacheStr;
 	if (!bInit)
 	{
-		std::memset(logCache.data(), 0, logCache.size());
-		std::memset(logBuffer.data(), 0, logBuffer.size());
+		cache.reserve(CACHE_SIZE);
+		buffer.reserve(LOG_BUFFER_SIZE);
+		std::memset(cacheStr.data(), 0, cacheStr.size());
 		bInit = true;
 	}
 	Lock lock(_mutex);
-	auto prefixLength = static_cast<size_t>(SPRINTF(logCache.data(), logCache.size(), "%s", prefixes[severityIndex].data()));
-	auto totalLength =
-		static_cast<size_t>(vsnprintf(logCache.data() + prefixLength, logCache.size() - prefixLength, pText, argList)) + prefixLength;
-	using namespace std::chrono;
-	std::time_t now = system_clock::to_time_t(system_clock::now());
+	cache.clear();
+	cache += prefixes[severityIndex];
+	vsnprintf(cacheStr.data(), cacheStr.size(), pText, argList);
+	cache += String(cacheStr.data());
+	std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	auto pTM = TM(now);
-	totalLength += static_cast<size_t>(snprintf(logCache.data() + totalLength, logCache.size() - totalLength, " [%02d:%02d:%02d]",
-												pTM->tm_hour, pTM->tm_min, pTM->tm_sec));
-	STRCAT(logCache.data(), logCache.size(), "\n");
+	snprintf(cacheStr.data(), cacheStr.size(), " [%02d:%02d:%02d]", pTM->tm_hour, pTM->tm_min, pTM->tm_sec);
+	cache += String(cacheStr.data());
+	std::cout << cache << std::endl;
+
+	cache += "\n";
 #if _MSC_VER
-	OutputDebugStringA(logCache.data());
+	OutputDebugStringA(cache.c_str());
 #endif
-	std::cout << logCache.data();
-	SPRINTF(logBuffer.data() + bufferIdx, logBuffer.size() - bufferIdx, "%s", logCache.data());
-	bufferIdx = strlen(logBuffer.data());
+	buffer += cache;
 	if (uFileLogger)
 	{
-		if (uFileLogger->OnLogStr(logBuffer))
-		{
-			memset(logBuffer.data(), 0, logBuffer.size());
-			bufferIdx = 0;
-		}
+		uFileLogger->OnLogStr(std::move(buffer));
 	}
 }
 

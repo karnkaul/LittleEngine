@@ -72,17 +72,20 @@ bool LEAudio::PlayMusic(String id, Fixed volume, Time fadeTime, bool bLoop)
 	{
 		active.Stop();
 	}
-	active.SetTrack(GetPath(std::move(id)));
-	if (fadeTime.AsSeconds() > 0)
+	bool bSuccess = active.SetTrack(GetPath(std::move(id)));
+	if (bSuccess)
 	{
-		active.FadeIn(fadeTime, volume);
+		if (fadeTime.AsSeconds() > 0)
+		{
+			active.FadeIn(fadeTime, volume);
+		}
+		else
+		{
+			active.m_volume = volume;
+			active.Play();
+		}
 	}
-	else
-	{
-		active.m_volume = volume;
-		active.Play();
-	}
-	return true;
+	return bSuccess;
 }
 
 bool LEAudio::IsMusicPlaying() const
@@ -190,9 +193,14 @@ void LEAudio::Tick(Time dt)
 
 String LEAudio::GetPath(String id) const
 {
-	static Array<char, 256> buf;
-	SPRINTF(buf.data(), buf.size(), "%s/%s/%s", OS::Env()->RuntimePath().data(), m_rootMusicDir.c_str(), id.c_str());
-	return String(buf.data());
+	String ret;
+	ret.reserve(256);
+	ret += OS::Env()->RuntimePath();
+	ret += "/";
+	ret += m_rootMusicDir;
+	ret += "/";
+	ret += id;
+	return ret;
 }
 
 SoundPlayer& LEAudio::GetOrCreateSFXPlayer()

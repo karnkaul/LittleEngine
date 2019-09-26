@@ -12,9 +12,14 @@ ViewportSize::ViewportSize(u32 width, u32 height) : width(width), height(height)
 
 String ViewportSize::ToString() const
 {
-	Array<char, 40> buf;
-	SPRINTF(buf.data(), buf.size(), "[%ux%u]", width, height);
-	return String(buf.data());
+	String ret;
+	ret.reserve(12);
+	ret += "[";
+	ret += std::to_string(width);
+	ret += "x";
+	ret += std::to_string(height);
+	ret += "]";
+	return ret;
 }
 
 ViewportData::ViewportData() : viewportSize{WIDTH, HEIGHT}, title("Untitled") {}

@@ -8,8 +8,12 @@ namespace Core
 {
 JobWorker::JobWorker(JobManager& manager, u8 id, bool bEngineWorker) : id(id), m_pManager(&manager), m_bEngineWorker(bEngineWorker)
 {
+	static const String PREFIX = "[JobWorker";
 	m_bWork.store(true, std::memory_order_relaxed);
-	m_logName = "[JobWorker" + Strings::ToString(this->id) + "]";
+	m_logName.reserve(PREFIX.size() + 8);
+	m_logName += PREFIX;
+	m_logName += Strings::ToString(this->id);
+	m_logName += "]";
 	m_threadHandle = OS::Threads::Spawn([&]() { Run(); });
 }
 

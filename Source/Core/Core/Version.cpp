@@ -51,7 +51,17 @@ u32 Version::Patch() const
 
 String Version::ToString() const
 {
-	return Strings::ToString(major) + "." + Strings::ToString(minor) + "." + Strings::ToString(patch) + "." + Strings::ToString(pre);
+	static constexpr size_t MAX = 3 + 1 + 3 + 1 + 3 + 1 + 3;
+	String ret;
+	ret.reserve(MAX);
+	ret += Strings::ToString(major);
+	ret += ".";
+	ret += Strings::ToString(minor);
+	ret += ".";
+	ret += Strings::ToString(patch);
+	ret += ".";
+	ret += Strings::ToString(pre);
+	return ret;
 }
 
 bool Version::Upgrade(const Version& rhs)

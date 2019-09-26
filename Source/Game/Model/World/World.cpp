@@ -16,7 +16,9 @@ namespace LittleEngine
 World::World(String name) : GameObject(std::move(name), "World")
 {
 	m_uWorldClock = MakeUnique<WorldClock>();
-	m_manifestID = m_name + ".amf";
+	m_manifestID.reserve(m_name.size() + 4);
+	m_manifestID += m_name;
+	m_manifestID += ".amf";
 }
 
 World::~World() = default;
