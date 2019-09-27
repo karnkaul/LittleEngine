@@ -288,7 +288,8 @@ template <typename T>
 T* LERepository::LoadFromArchive(String id)
 {
 	T* pT = nullptr;
-	UPtr<T> uT = CreateAsset<T>(std::move(id), m_uCooked->Decompress(id.c_str()));
+	auto buffer = m_uCooked->Decompress(id.c_str());
+	UPtr<T> uT = CreateAsset<T>(std::move(id), std::move(buffer));
 	if (uT)
 	{
 		pT = uT.get();

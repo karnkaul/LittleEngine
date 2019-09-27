@@ -69,9 +69,9 @@ void Entity::OnCreate(String name)
 #if defined(DEBUGGING)
 	LayerID layer = LayerID::DebugWorld;
 	m_pO_x = g_pGameManager->Renderer()->New<SFRect>(layer);
-	m_pO_x->SetSize({100, 2})->SetPivot({-1, 0})->SetPrimaryColour(s_xyColours[0]);
+	m_pO_x->SetSize({100, 2})->SetPivot({-1, 0})->SetColour(s_xyColours[0]);
 	m_pO_y = g_pGameManager->Renderer()->New<SFRect>(layer);
-	m_pO_y->SetSize({2, 100})->SetPivot({0, -1})->SetPrimaryColour(s_xyColours[1]);
+	m_pO_y->SetSize({2, 100})->SetPivot({0, -1})->SetColour(s_xyColours[1]);
 #endif
 	OnCreated();
 	m_state = State::Spawned;

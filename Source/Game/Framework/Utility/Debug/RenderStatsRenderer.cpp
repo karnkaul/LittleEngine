@@ -28,14 +28,14 @@ RenderStatsRenderer::RenderStatsRenderer(LEContext& context)
 	auto pFont = g_pDefaultFont;
 
 	m_pBG = pRenderer->New<SFRect>(static_cast<LayerID>(ToS32(layer) - 1));
-	m_pBG->SetSize(size)->SetPivot({1, -1}, true)->SetPrimaryColour(bg, true)->SetStatic(true)->SetEnabled(s_bConsoleRenderStatsEnabled);
+	m_pBG->SetSize(size)->SetPivot({1, -1}, true)->SetColour(bg, true)->SetStatic(true)->SetEnabled(s_bConsoleRenderStatsEnabled);
 
 	m_pTitles = pRenderer->New<SFText>(layer);
 	m_pTitles->SetText("Quads\nDraw Calls\nDynamic\nStatic\nTicks/s\nFPS\nGame Frame\nRender Frame")
 		->SetSize(textSize)
 		->SetFont(*pFont)
 		->SetPivot({-1, 1}, true)
-		->SetPrimaryColour(g_logTextColour, true)
+		->SetColour(g_logTextColour, true)
 		->SetStatic(true)
 		->SetEnabled(s_bConsoleRenderStatsEnabled);
 
@@ -43,7 +43,7 @@ RenderStatsRenderer::RenderStatsRenderer(LEContext& context)
 	m_pValues->SetFont(*pFont)
 		->SetSize(textSize)
 		->SetPivot({-1, 1}, true)
-		->SetPrimaryColour(g_logTextColour, true)
+		->SetColour(g_logTextColour, true)
 		->SetEnabled(s_bConsoleRenderStatsEnabled);
 
 	// Position
@@ -96,7 +96,7 @@ VersionRenderer::VersionRenderer(LEContext& context)
 		->SetFont(pFont ? *pFont : *g_pDefaultFont)
 		->SetPivot({-1, 0})
 		->SetPosition(g_pGFX->UIProjection(projection))
-		->SetPrimaryColour(g_logTextColour)
+		->SetColour(g_logTextColour)
 		->SetEnabled(true);
 }
 

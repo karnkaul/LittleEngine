@@ -74,7 +74,7 @@ void CollisionComponent::AddCircle(Fixed diameter, Vector2 offset)
 	pCircle->SetDiameter(diameter)
 		->SetOutline(Collider::s_debugShapeWidth)
 		->SetSecondaryColour(Colour::Green)
-		->SetPrimaryColour(Colour::Transparent)
+		->SetColour(Colour::Transparent)
 		->SetEnabled(Collider::s_bShowDebugShape);
 	ColliderData data{offset, pCollider, pCircle};
 	m_pColliders.emplace_back(std::move(data));
@@ -95,7 +95,7 @@ void CollisionComponent::AddAABB(const AABBData& aabbData, Vector2 offset)
 	pRect->SetSize(2 * aabbData.upperBound)
 		->SetOutline(Collider::s_debugShapeWidth)
 		->SetSecondaryColour(Colour::Green)
-		->SetPrimaryColour(Colour::Transparent)
+		->SetColour(Colour::Transparent)
 		->SetEnabled(Collider::s_bShowDebugShape);
 	ColliderData data{offset, pCollider, pRect};
 	m_pColliders.emplace_back(std::move(data));

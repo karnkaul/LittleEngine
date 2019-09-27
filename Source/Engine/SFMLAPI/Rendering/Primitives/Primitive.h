@@ -85,8 +85,8 @@ public:
 	APrimitive* SetPosition(Vector2 position, bool bImmediate = false);
 	APrimitive* SetOrientation(Vector2 orientation, bool bImmediate = false);
 	APrimitive* SetScale(Vector2 scale, bool bImmediate = false);
-	APrimitive* SetPrimaryColour(Colour colour, bool bImmediate = false);
-	APrimitive* SetPrimaryAlpha(UByte alpha, bool bImmediate = false);
+	APrimitive* SetColour(Colour colour, bool bImmediate = false);
+	APrimitive* SetAlpha(UByte alpha, bool bImmediate = false);
 
 	// Regular states
 	APrimitive* SetEnabled(bool bEnabled);
@@ -100,7 +100,7 @@ public:
 	Vector2 Position() const;
 	Vector2 Orientation() const;
 	Vector2 Scale() const;
-	Colour PrimaryColour() const;
+	Colour GetColour() const;
 
 protected:
 	inline State GetState(Fixed alpha) const

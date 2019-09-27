@@ -72,7 +72,7 @@ void ControllerComponent::OnCreated()
 	m_pRect = g_pGameManager->Renderer()->New<SFRect>(LayerID::DebugWorld);
 	m_pRect->SetSize(s_orientationWidthHeight)
 		->SetPivot({-1, 0})
-		->SetPrimaryColour(s_orientationColour)
+		->SetColour(s_orientationColour)
 		->SetEnabled(s_bShowJoystickOrientation);
 #endif
 }

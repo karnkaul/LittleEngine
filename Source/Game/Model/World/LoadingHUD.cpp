@@ -6,21 +6,14 @@
 #include "Engine/Renderer/LERenderer.h"
 #include "Model/GameManager.h"
 #include "Model/UI/UIElement.h"
+#include "Framework/Utility/ProgressBar.h"
 #include "LoadingHUD.h"
 
 namespace LittleEngine
 {
 namespace
 {
-const Fixed pbHalfHeight = 4;
-Fixed pbWidth;
-
-void SetProgress(Quad& quad, Fixed progress, bool bImmediate)
-{
-	Vector2 tl(0, pbHalfHeight);
-	Vector2 br(progress * pbWidth, -pbHalfHeight);
-	quad.SetModel(Rect2{tl, br}, bImmediate);
-}
+constexpr Fixed pbHeight = 8;
 } // namespace
 
 LoadingHUD::LoadingHUD()
@@ -35,16 +28,14 @@ LoadingHUD::LoadingHUD()
 	m_pBG = g_pGameManager->Renderer()->New<Quad>(bg);
 	m_pTitle = g_pGameManager->Renderer()->New<SFText>(hud);
 	m_pSubtitle = g_pGameManager->Renderer()->New<SFText>(hud);
-	m_pProgressBar = g_pGameManager->Renderer()->New<Quad>(hud);
 	m_pRotator = g_pGameManager->Renderer()->New<Quad>(hud);
+	m_uProgress = MakeUnique<ProgressBar>(hud);
 
-	m_pBG->SetPrimaryColour(Colour(20, 5, 30, 0))->SetEnabled(true);
+	m_pBG->SetColour(Colour(20, 5, 30, 0))->SetEnabled(true);
 	m_pTitle->SetFont(pTitleFont ? *pTitleFont : *pMainFont);
 	m_pSubtitle->SetFont(pSubtitleFont ? *pSubtitleFont : pTitleFont ? *pTitleFont : *pMainFont);
 	m_pTitle->SetPosition({0, 70})->SetEnabled(true);
 	m_pSubtitle->SetPosition({0, -30})->SetEnabled(true);
-
-	m_pProgressBar->SetPrimaryColour(Colour::White)->SetEnabled(true);
 
 	m_pRotator->SetModel(Rect2::SizeCentre({75, 75}), true)->SetEnabled(true);
 	if (pTexture)
@@ -56,10 +47,10 @@ LoadingHUD::LoadingHUD()
 	Vector2 viewSize = g_pGFX->UISpace();
 	Vector2 halfView = viewSize * Fixed::OneHalf;
 	Vector2 rotatorPos = halfView - Vector2(100, 100);
-	pbWidth = viewSize.x;
 	m_pBG->SetModel(Rect2::SizeCentre(viewSize), true);
-	SetProgress(*m_pProgressBar, Fixed::Zero, true);
-	m_pProgressBar->SetPosition({-halfView.x, -halfView.y + pbHalfHeight}, true);
+	m_uProgress->m_size = {viewSize.x, pbHeight};
+	m_uProgress->GetQuad()->SetPosition({-halfView.x, -halfView.y + Fixed::OneHalf * pbHeight}, true);
+	m_uProgress->SetProgress(Fixed::Zero, true);
 	m_pRotator->SetPosition(rotatorPos, true);
 
 	SetEnabled(false);
@@ -68,7 +59,7 @@ LoadingHUD::LoadingHUD()
 
 LoadingHUD::~LoadingHUD()
 {
-	m_pProgressBar->Destroy();
+	m_uProgress = nullptr;
 	m_pBG->Destroy();
 	m_pTitle->Destroy();
 	m_pSubtitle->Destroy();
@@ -94,7 +85,7 @@ Quad* LoadingHUD::Spinner() const
 void LoadingHUD::Tick(Time dt, Fixed progress)
 {
 	m_alpha = Maths::Lerp(m_alpha, m_alphaTarget, Fixed(dt.AsSeconds() * 8));
-	SetProgress(*m_pProgressBar, progress, false);
+	m_uProgress->SetProgress(progress);
 
 	m_elapsed += dt;
 	m_angle -= Fixed(dt.AsSeconds() * 200.0f);
@@ -110,7 +101,7 @@ void LoadingHUD::Reset()
 	{
 		m_pRotator->SetTexture(*pTexture);
 	}
-	SetProgress(*m_pProgressBar, Fixed::Zero, true);
+	m_uProgress->SetProgress(Fixed::Zero, true);
 }
 
 void LoadingHUD::SetEnabled(bool bEnabled)
@@ -137,10 +128,10 @@ void LoadingHUD::Update(bool bImmediate)
 	{
 		alpha.rawValue = 255;
 	}
-	m_pBG->SetPrimaryAlpha(alpha, bImmediate);
-	m_pProgressBar->SetPrimaryAlpha(alpha, bImmediate);
-	m_pTitle->SetPrimaryAlpha(alpha, bImmediate);
-	m_pSubtitle->SetPrimaryAlpha(alpha, bImmediate);
-	m_pRotator->SetPrimaryAlpha(alpha, bImmediate);
+	m_pBG->SetAlpha(alpha, bImmediate);
+	m_uProgress->GetQuad()->SetAlpha(alpha, bImmediate);
+	m_pTitle->SetAlpha(alpha, bImmediate);
+	m_pSubtitle->SetAlpha(alpha, bImmediate);
+	m_pRotator->SetAlpha(alpha, bImmediate);
 }
 } // namespace LittleEngine

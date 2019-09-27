@@ -162,11 +162,11 @@ void LEInput::TakeSnapshot()
 	Vector2 pos = g_pGFX->WorldToOverlay(m_mouseInput.worldPosition);
 	if (m_pMouseH)
 	{
-		m_pMouseH->SetPosition({pos.x, 0})->SetEnabled(bShowCrosshair)->SetPrimaryColour(c);
+		m_pMouseH->SetPosition({pos.x, 0})->SetEnabled(bShowCrosshair)->SetColour(c);
 	}
 	if (m_pMouseV)
 	{
-		m_pMouseV->SetPosition({0, pos.y})->SetEnabled(bShowCrosshair)->SetPrimaryColour(c);
+		m_pMouseV->SetPosition({0, pos.y})->SetEnabled(bShowCrosshair)->SetColour(c);
 	}
 #endif
 }
@@ -236,11 +236,11 @@ void LEInput::CreateDebugPointer()
 	Vector2 space = g_pGFX->OverlaySpace();
 	m_pMouseH->SetModel(Rect2::SizeCentre({MOUSE_QUAD_WIDTH, space.y}), true)
 		->SetStatic(true)
-		->SetPrimaryColour(MOUSE_DEFAULT_COLOUR)
+		->SetColour(MOUSE_DEFAULT_COLOUR)
 		->SetEnabled(true);
 	m_pMouseV->SetModel(Rect2::SizeCentre({space.x, MOUSE_QUAD_WIDTH}), true)
 		->SetStatic(true)
-		->SetPrimaryColour(MOUSE_DEFAULT_COLOUR)
+		->SetColour(MOUSE_DEFAULT_COLOUR)
 		->SetEnabled(true);
 }
 #endif

@@ -41,13 +41,13 @@ void UITextInput::OnCreated()
 	m_pText->m_transform.SetParent(m_pRoot->m_transform);
 	m_pText->m_transform.anchor = {-1, 1};
 	m_pText->m_transform.nPosition = {-Fixed(0.95f), Fixed(0.4f)};
-	m_pText->Text()->SetPrimaryColour(m_data.text);
+	m_pText->Text()->SetColour(m_data.text);
 
 	m_pCursor = AddElement<UIElement>("TextInputCursor");
 	m_pCursor->m_transform.SetParent(m_pRoot->m_transform);
 	m_pCursor->m_transform.anchor = {-1, 1};
 	m_pCursor->m_transform.nPosition = {-Fixed(0.95f), Fixed(0.4f)};
-	m_pCursor->Text()->SetPrimaryColour(m_data.text);
+	m_pCursor->Text()->SetColour(m_data.text);
 	m_pCursor->SetText("|");
 }
 

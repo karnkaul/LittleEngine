@@ -129,7 +129,7 @@ void WorldStateMachine::Start(String coreManifestID, String gameStyleID, Task on
 #if ENABLED(DEBUG_LOGGING)
 		titleText = LOC("LOC_LOADING_ASSETS");
 #endif
-		pLoadingTitle->SetText(std::move(titleText))->SetPrimaryColour(Colour::White);
+		pLoadingTitle->SetText(std::move(titleText))->SetColour(Colour::White);
 		uLoadHUD->SetEnabled(true);
 	}
 	else

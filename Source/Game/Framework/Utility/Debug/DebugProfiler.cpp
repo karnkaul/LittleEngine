@@ -136,7 +136,7 @@ void Renderer::Tick(Time dt)
 				uiEntry.uProgressBar->SetProgress(entry.timeRatio);
 				Colour barColour = entry.colour;
 				barColour.a = barAlpha;
-				uiEntry.uProgressBar->Rect()->SetPrimaryColour(barColour);
+				uiEntry.uProgressBar->Rect()->SetColour(barColour);
 				uiEntry.uProgressBar->Tick(dt);
 			}
 		}

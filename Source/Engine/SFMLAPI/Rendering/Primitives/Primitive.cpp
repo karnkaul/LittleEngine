@@ -103,7 +103,7 @@ APrimitive* APrimitive::SetScale(Vector2 scale, bool bImmediate)
 	return this;
 }
 
-APrimitive* APrimitive::SetPrimaryColour(Colour colour, bool bImmediate)
+APrimitive* APrimitive::SetColour(Colour colour, bool bImmediate)
 {
 	if (bImmediate)
 	{
@@ -117,7 +117,7 @@ APrimitive* APrimitive::SetPrimaryColour(Colour colour, bool bImmediate)
 	return this;
 }
 
-APrimitive* APrimitive::SetPrimaryAlpha(UByte alpha, bool bImmediate)
+APrimitive* APrimitive::SetAlpha(UByte alpha, bool bImmediate)
 {
 	if (bImmediate)
 	{
@@ -189,7 +189,7 @@ Vector2 APrimitive::Scale() const
 	return m_gameState.tScale.max;
 }
 
-Colour APrimitive::PrimaryColour() const
+Colour APrimitive::GetColour() const
 {
 	return m_gameState.tColour.max;
 }

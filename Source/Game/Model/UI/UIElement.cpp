@@ -50,7 +50,7 @@ void UIElement::ApplyText()
 	{
 		m_pText->SetFont(m_pFont ? *m_pFont : *g_pDefaultFont);
 	}
-	m_pText->SetPrimaryColour(m_uiText.colour);
+	m_pText->SetColour(m_uiText.colour);
 	m_pText->SetSize(m_uiText.pixelSize);
 	m_pText->SetText(LOC(m_uiText.text));
 }
@@ -58,7 +58,7 @@ void UIElement::ApplyText()
 void UIElement::ApplyPanel()
 {
 	m_bPanel = true;
-	m_pRect->SetPrimaryColour(m_uiPanel.fill);
+	m_pRect->SetColour(m_uiPanel.fill);
 	m_pRect->SetOutline(m_uiPanel.border);
 	m_pRect->SetSecondaryColour(m_uiPanel.outline);
 	m_pRect->SetSize(m_transform.size, !m_bLerpSize);
@@ -93,7 +93,7 @@ void UIElement::SetText(UIText uiText)
 void UIElement::SetTextColour(Colour colour)
 {
 	m_uiText.colour = colour;
-	m_pText->SetPrimaryColour(colour);
+	m_pText->SetColour(colour);
 }
 
 void UIElement::SetFont(FontAsset& font)

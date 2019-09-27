@@ -80,7 +80,7 @@ void Particle::Tick(Time dt)
 		m_bWasInUse = true;
 		Matrix3 mat = m_pOwner->WorldMatrix();
 		Vector2 worldPos = mat.Position() + m_pos;
-		m_pQuad->SetPrimaryColour(c, bImmediate)
+		m_pQuad->SetColour(c, bImmediate)
 			->SetScale({s, s}, bImmediate)
 			->SetOrientation(Vector2::ToOrientation(m_rot), bImmediate)
 			->SetPosition(worldPos, bImmediate);
