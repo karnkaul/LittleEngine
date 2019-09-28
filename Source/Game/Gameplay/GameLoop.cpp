@@ -85,8 +85,8 @@ bool Init(s32 argc, char** argv)
 	}
 
 #if ENABLED(TWEAKABLES)
-	ticksPerSec.BindCallback([](const String& val) {
-		s32 newRate = Strings::ToS32(val);
+	ticksPerSec.BindCallback([](VString val) {
+		s32 newRate = Strings::ToS32(String(val));
 		if (newRate > 0 && newRate < 250)
 		{
 			Time newTickRate = Time::Seconds(1.0f / newRate);
@@ -95,11 +95,11 @@ bool Init(s32 argc, char** argv)
 		}
 		else
 		{
-			LOG_W("[GameLoop] Invalid value for ticks per second: %s", val.c_str());
+			LOG_W("[GameLoop] Invalid value for ticks per second: %s", val.data());
 		}
 	});
-	reloadApp.BindCallback([](const String& val) {
-		s32 option = Strings::ToS32(val, -1);
+	reloadApp.BindCallback([](VString val) {
+		s32 option = Strings::ToS32(String(val), -1);
 		if (option > 0)
 		{
 			bReloadRepository = option > 1;

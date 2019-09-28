@@ -195,9 +195,9 @@ void Init(Time maxTickTime)
 	Toggle(false);
 
 #if ENABLED(TWEAKABLES)
-	profiler.BindCallback([](const String& toggle) { Toggle(Strings::ToBool(toggle)); });
+	profiler.BindCallback([](VString toggle) { Toggle(Strings::ToBool(String(toggle))); });
 	pflr_maxDT.Set(Strings::ToString(maxTickDeltaTime.AsMilliseconds()));
-	pflr_maxDT.BindCallback([](const String& max) { maxTickDeltaTime = Time::Milliseconds(Strings::ToS32(max)); });
+	pflr_maxDT.BindCallback([](VString max) { maxTickDeltaTime = Time::Milliseconds(Strings::ToS32(String(max))); });
 #endif
 }
 

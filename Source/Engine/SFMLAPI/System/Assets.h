@@ -7,7 +7,7 @@
 namespace LittleEngine
 {
 // \brief An Asset represents live data in memory that's ready to be used
-class Asset
+class Asset : private NoCopy
 {
 public:
 	static String s_pathPrefix;
@@ -38,10 +38,6 @@ public:
 	AssetType Type() const;
 	u64 ByteCount() const;
 	bool WriteBytes(const String& path);
-
-public:
-	Asset(const Asset&) = delete;
-	Asset& operator=(const Asset&) = delete;
 };
 
 // \brief TextureAsset is an image texture copied to VRAM

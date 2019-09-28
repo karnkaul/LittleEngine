@@ -53,43 +53,46 @@ public:
 	void LoadDefaultFont(String id);
 
 	template <typename T>
-	T* Preload(const String& id);
-	template <typename T>
 	T* Load(String id, bool bReload = false);
+	template <typename T>
+	T* Preload(String id);
 	template <typename T>
 	Deferred<T*> LoadAsync(String id);
 
 	SPtr<ManifestLoader> LoadManifest(String manifestPath, Task onComplete = nullptr);
 	void UnloadManifest(String manifestPath, Task onComplete = nullptr);
 
-	bool IsLoaded(const String& id) const;
+	bool IsBusy() const;
+	bool IsLoaded(VString id) const;
 	u64 LoadedBytes() const;
-	bool IsPresent(const String& id) const;
+	bool IsPresent(VString id) const;
 
-	bool Unload(String id);
+	bool Unload(VString id);
 	void UnloadAll(bool bUnloadDefaultFont);
 
 	void ResetState();
 	void Tick(Time dt);
 
-	bool IsBusy() const;
-
+	
 private:
 	template <typename T>
-	T* GetLoaded(const String& id);
-
+	T* GetLoaded(VString id);
 	template <typename T>
 	T* LoadFromArchive(String id);
 #if ENABLED(FILESYSTEM_ASSETS)
 	template <typename T>
 	T* LoadFromFilesystem(String id);
 #endif
-
 	template <typename T, typename... U>
 	UPtr<T> CreateAsset(U... args);
-
 	template <typename T>
-	UPtr<T> ConjureAsset(VString id, bool bSilent, InitList<Search> searchOrder);
+	UPtr<T> ConjureAsset(VString id, InitList<Search> searchOrder);
+
+	void DoLoad(VString id, bool bSyncWarn, Task inCooked, 
+#if ENABLED(FILESYSTEM_ASSETS)
+		Task onFilesystem = nullptr, 
+#endif
+		Task onAssetMissing = nullptr);
 
 	friend class ManifestLoader;
 	friend class ILoadingHUD;
@@ -98,131 +101,29 @@ private:
 template <typename T>
 T* LERepository::Load(String id, bool bReload)
 {
-	static_assert(IsDerived<Asset, T>(), "T must derive from Asset: check Output window for erroneous call");
-
+	static_assert(IsDerived<Asset, T>(), "T must derive from Asset!");
 	if (bReload)
 	{
 		Unload(id);
 	}
-
 	T* pT = GetLoaded<T>(id);
-	if (pT)
+	if (!pT)
 	{
-		return pT;
-	}
-
-	if (!bReload)
-	{
-		LOG_W("[Repository] Synchronously loading Asset (add id to manifest or use LoadAsync() "
-			  "to "
-			  "suppress warning) [%s]",
-			  id.c_str());
-	}
-
-	bool bInCooked = m_uCooked->IsPresent(id);
+		DoLoad(
+			id, !bReload, [&]() { pT = LoadFromArchive<T>(std::move(id)); },
 #if ENABLED(FILESYSTEM_ASSETS)
-	bool bOnFilesystem = Asset::DoesFileExist(id) && s_bUseFileAssets;
-	// Asset doesn't exist
-	if (!bInCooked && !bOnFilesystem)
-	{
-		if (!bReload)
-		{
-			LOG_E("[Repository] Asset not present in cooked archive or on filesystem! [%s]", id.c_str());
-		}
-		return nullptr;
-	}
-	// Not in cooked archive (but on filesystem)
-	if (!bInCooked)
-	{
-		if (!bReload)
-		{
-			LOG_W("[Repository] Asset present on filesystem but not in cooked archive! [%s]", id.c_str());
-		}
-	}
-	// Not on filesystem (but in cooked archive)
-	if (!bOnFilesystem)
-	{
-		if (!bReload)
-		{
-			LOG_W("[Repository] Asset present in cooked archive but not on filesystem! [%s]", id.c_str());
-		}
-		pT = LoadFromArchive<T>(id);
-	}
-	// On filesystem: load that regardless of cooked asset
-	else
-	{
-		pT = LoadFromFilesystem<T>(id);
-	}
-#else
-	if (!bInCooked)
-	{
-		LOG_E("[Repository] Asset not present in cooked archive! [%s]", id.c_str());
-	}
-	else
-	{
-		pT = LoadFromArchive<T>(id);
-	}
+			[&]() { pT = LoadFromFilesystem<T>(std::move(id)); },
 #endif
+			nullptr
+		);
+	}
 	return pT;
 }
 
 template <typename T>
-Deferred<T*> LERepository::LoadAsync(String id)
+T* LERepository::Preload(String id)
 {
-	static_assert(IsDerived<Asset, T>(), "T must derive from Asset: check Output window for erroneous call");
-	// std::function needs to be copyable, so cannot use UPtr<promise> here
-	SPtr<std::promise<T*>> sPromise = MakeShared<std::promise<T*>>();
-	Deferred<T*> deferred = sPromise->get_future();
-
-	T* pT = GetLoaded<T>(id);
-	if (pT)
-	{
-		sPromise->set_value(pT);
-		return deferred;
-	}
-
-	bool bInCooked = m_uCooked->IsPresent(id);
-#if ENABLED(FILESYSTEM_ASSETS)
-	bool bOnFilesystem = Asset::DoesFileExist(id) && s_bUseFileAssets;
-	if (!bInCooked && !bOnFilesystem)
-	{
-		LOG_E("[Repository] Asset not present in cooked archive or on filesystem! [%s]", id.c_str());
-		sPromise->set_value(nullptr);
-		return deferred;
-	}
-	// Not in cooked archive (but on filesystem)
-	if (!bInCooked)
-	{
-		LOG_W("[Repository] Asset present on filesystem but not in cooked archive! [%s]", id.c_str());
-	}
-	// Not on filesystem (but in cooked archive)
-	if (!bOnFilesystem)
-	{
-		LOG_W("[Repository] Asset present in cooked archive but not on filesystem! [%s]", id.c_str());
-		Core::Jobs::Enqueue([&, sPromise, id]() { sPromise->set_value(LoadFromArchive<T>(std::move(id))); }, "", true);
-	}
-	// On filesystem: load that regardless of cooked asset
-	else
-	{
-		Core::Jobs::Enqueue([&, sPromise, id]() { sPromise->set_value(LoadFromFilesystem<T>(std::move(id))); }, "", true);
-	}
-#else
-	if (!bInCooked)
-	{
-		LOG_E("[Repository] Asset not present in cooked archive! [%s]", id.c_str());
-		sPromise->set_value(nullptr);
-	}
-	else
-	{
-		Core::Jobs::Enqueue([&, sPromise, id]() { sPromise->set_value(LoadFromArchive<T>(std::move(id))); }, "", true);
-	}
-#endif
-	return deferred;
-}
-
-template <typename T>
-T* LERepository::Preload(const String& id)
-{
+	static_assert(IsDerived<Asset, T>(), "T must derive from Asset!");
 	Assert(m_state != State::Active, "Preloading when active!");
 	if (m_state == State::Active)
 	{
@@ -230,50 +131,46 @@ T* LERepository::Preload(const String& id)
 		return nullptr;
 	}
 	T* pT = GetLoaded<T>(id);
-	if (pT)
+	if (!pT)
 	{
-		return pT;
-	}
-	bool bInCooked = m_uCooked->IsPresent(id);
+		DoLoad(
+			id, false, [&]() { pT = LoadFromArchive<T>(std::move(id)); },
 #if ENABLED(FILESYSTEM_ASSETS)
-	bool bOnFilesystem = Asset::DoesFileExist(id) && s_bUseFileAssets;
-	// Asset doesn't exist
-	if (!bInCooked && !bOnFilesystem)
-	{
-		LOG_E("[Repository] (Preload) Asset not present in cooked archive or on filesystem! [%s]", id.c_str());
-		return nullptr;
-	}
-	// Not in cooked archive (but on filesystem)
-	if (!bInCooked)
-	{
-		LOG_W("[Repository] (Preload) Asset present on filesystem but not in cooked archive! [%s]", id.c_str());
-	}
-	// Not on filesystem (but in cooked archive)
-	if (!bOnFilesystem)
-	{
-		LOG_W("[Repository] (Preload) Asset present in cooked archive but not on filesystem! [%s]", id.c_str());
-		pT = LoadFromArchive<T>(id);
-	}
-	// On filesystem: load that regardless of cooked asset
-	else
-	{
-		pT = LoadFromFilesystem<T>(id);
-	}
-#else
-	if (!bInCooked)
-	{
-		LOG_E("[Repository] (Preload) Asset not present in cooked archive! [%s]", id.c_str());
-	}
-	else
-	{
-		pT = LoadFromArchive<T>(id);
-	}
+			[&]() { pT = LoadFromFilesystem<T>(std::move(id)); },
 #endif
+			nullptr
+		);
+	}
 	return pT;
 }
 
 template <typename T>
-T* LERepository::GetLoaded(const String& id)
+Deferred<T*> LERepository::LoadAsync(String id)
+{
+	static_assert(IsDerived<Asset, T>(), "T must derive from Asset!");
+	// std::function needs to be copyable, so cannot use UPtr<promise> here
+	SPtr<std::promise<T*>> sPromise = MakeShared<std::promise<T*>>();
+	Deferred<T*> deferred = sPromise->get_future();
+	T* pT = GetLoaded<T>(id);
+	if (pT)
+	{
+		sPromise->set_value(pT);
+	}
+	else
+	{
+		DoLoad(
+			id, false,
+			[&]() { Core::Jobs::Enqueue([&, sPromise, id]() { sPromise->set_value(LoadFromArchive<T>(std::move(id))); }, "", true); },
+#if ENABLED(FILESYSTEM_ASSETS)
+			[&]() { Core::Jobs::Enqueue([&, sPromise, id]() { sPromise->set_value(LoadFromFilesystem<T>(std::move(id))); }, "", true); },
+#endif
+			[&]() { sPromise->set_value(nullptr); });
+	}
+	return deferred;
+}
+
+template <typename T>
+T* LERepository::GetLoaded(VString id)
 {
 	Lock lock(m_loadedMutex);
 	auto search = m_loaded.find(id);
@@ -330,48 +227,39 @@ UPtr<T> LERepository::CreateAsset(U... args)
 }
 
 template <typename T>
-UPtr<T> LERepository::ConjureAsset(VString id, bool bSilent, InitList<Search> searchOrder)
+UPtr<T> LERepository::ConjureAsset(VString id, InitList<Search> searchOrder)
 {
 	UPtr<T> uT;
-
 #if ENABLED(FILESYSTEM_ASSETS)
 	auto retrieveAsset = [&]() {
 		if (!Asset::DoesFileExist(id))
 		{
-			if (!bSilent)
-			{
-				LOG_E("[Repository] Asset %s not present on filesystem!", id.data());
-			}
+			LOG_E("[Repository] Asset %s not present on filesystem!", id.data());
 		}
 		else
 		{
 			uT = CreateAsset<T>(String(id));
-			if (!bSilent && (!uT || uT->IsError()))
+			if (!uT || uT->IsError())
 			{
 				LOG_E("[Repository] Could not load %s from filesystem assets!", id.data());
 			}
 		}
 	};
 #endif
-
 	auto decompressAsset = [&]() {
 		if (!m_uCooked->IsPresent(id))
 		{
-			if (!bSilent)
-			{
-				LOG_E("[Repository] Asset %s not present in cooked archive!", id.data());
-			}
+			LOG_E("[Repository] Asset %s not present in cooked archive!", id.data());
 		}
 		else
 		{
 			uT = CreateAsset<T>(String(id), m_uCooked->Decompress(id));
-			if (!bSilent && (!uT || uT->IsError()))
+			if (!uT || uT->IsError())
 			{
 				LOG_E("[Repository] Could not load %s from cooked assets!", id.data());
 			}
 		}
 	};
-
 	for (auto search : searchOrder)
 	{
 		switch (search)
@@ -382,17 +270,18 @@ UPtr<T> LERepository::ConjureAsset(VString id, bool bSilent, InitList<Search> se
 			break;
 		case Search::Filesystem:
 #if ENABLED(FILESYSTEM_ASSETS)
-			retrieveAsset();
+			if (s_bUseFileAssets)
+			{
+				retrieveAsset();
+			}
 #endif
 			break;
 		}
-
 		if (uT && !uT->IsError())
 		{
 			break;
 		}
 	}
-
 	return (uT && !uT->IsError()) ? std::move(uT) : nullptr;
 }
 } // namespace LittleEngine

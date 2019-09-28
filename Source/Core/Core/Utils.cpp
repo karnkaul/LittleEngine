@@ -113,10 +113,10 @@ String ToText(Vec<u8> rawBuffer)
 	return String(charBuffer.data());
 }
 
-Dual<String> Bisect(const String& input, char delimiter)
+Dual<String> Bisect(VString input, char delimiter)
 {
 	size_t idx = input.find(delimiter);
-	return idx < input.size() ? Dual<String>(input.substr(0, idx), input.substr(idx + 1, input.size())) : Dual<String>(input, {});
+	return idx < input.size() ? Dual<String>(input.substr(0, idx), input.substr(idx + 1, input.size())) : Dual<String>(String(input), {});
 }
 
 void RemoveChars(String& outInput, InitList<char> toRemove)
@@ -212,7 +212,7 @@ void SubstituteChars(String& outInput, InitList<Dual<char>> replacements)
 	}
 }
 
-bool IsCharEnclosedIn(const String& str, size_t idx, Dual<char> wrapper)
+bool IsCharEnclosedIn(VString str, size_t idx, Dual<char> wrapper)
 {
 	size_t idx_1 = idx - 1;
 	size_t idx1 = idx + 1;

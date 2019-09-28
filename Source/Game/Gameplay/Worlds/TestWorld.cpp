@@ -505,7 +505,7 @@ void TestTick(Time dt)
 			pLargeTex = largeTex.Get();
 			if (pLargeTex)
 			{
-				LOG_I("Loaded %s", pLargeTex->ID());
+				LOG_I("Loaded %s", pLargeTex->ID().data());
 			}
 		}
 		if (!bLoadedMiscText)

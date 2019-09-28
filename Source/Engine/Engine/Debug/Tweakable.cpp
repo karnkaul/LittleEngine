@@ -49,7 +49,7 @@ void Tweakable::Bind(void* pVar)
 	m_pTarget = pVar;
 }
 
-void Tweakable::BindCallback(std::function<void(const String&)> callback)
+void Tweakable::BindCallback(std::function<void(VString)> callback)
 {
 	m_callback = std::move(callback);
 }
@@ -103,7 +103,7 @@ TweakManager* TweakManager::Instance()
 	return &manager;
 }
 
-Tweakable* TweakManager::Find(const String& id) const
+Tweakable* TweakManager::Find(VString id) const
 {
 	auto iter = m_tweakables.find(id);
 	if (iter != m_tweakables.end())

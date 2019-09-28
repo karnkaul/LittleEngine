@@ -10,13 +10,14 @@ namespace
 UMap<String, String> locMap;
 }
 
-void Locale::Init(const String& locFileID, const String& enLocFileID)
+void Locale::Init(String locFileID, String enLocFileID)
 {
 	Assert(g_pRepository->IsPresent(enLocFileID), "EN Loc file missing!");
-	auto pText = g_pRepository->Preload<TextAsset>(locFileID);
-	if (!pText && locFileID != enLocFileID)
+	bool bIsEn = locFileID == enLocFileID;
+	auto pText = g_pRepository->Preload<TextAsset>(std::move(locFileID));
+	if (!pText && !bIsEn)
 	{
-		pText = g_pRepository->Preload<TextAsset>(enLocFileID);
+		pText = g_pRepository->Preload<TextAsset>(std::move(enLocFileID));
 	}
 	Assert(pText && !pText->Text().empty(), "Loc text is null!");
 	if (pText)
@@ -26,11 +27,11 @@ void Locale::Init(const String& locFileID, const String& enLocFileID)
 	}
 }
 
-bool Locale::Switch(const String& newLocFileID)
+bool Locale::Switch(VString newLocFileID)
 {
 	if (g_pRepository->IsPresent(newLocFileID))
 	{
-		auto pText = g_pRepository->Load<TextAsset>(newLocFileID);
+		auto pText = g_pRepository->Load<TextAsset>(String(newLocFileID));
 		if (pText)
 		{
 			Core::GData locMapData(pText->Text());
@@ -42,7 +43,7 @@ bool Locale::Switch(const String& newLocFileID)
 			}
 		}
 	}
-	LOG_E("[Locale] Error loading %s!", newLocFileID.c_str());
+	LOG_E("[Locale] Error loading %s!", newLocFileID.data());
 	return false;
 }
 

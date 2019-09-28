@@ -55,7 +55,7 @@ Vec<String> ToString(const Vec<T>& vec, String prefix = "", String suffix = "");
 String ToText(Vec<u8> rawBuffer);
 
 // Slices a string into a pair via the first occurence of a delimiter
-Dual<String> Bisect(const String& input, char delimiter);
+Dual<String> Bisect(VString input, char delimiter);
 // Removes all occurrences of toRemove from outInput
 void RemoveChars(String& outInput, InitList<char> toRemove);
 // Removes leading and trailing characters
@@ -67,7 +67,7 @@ Vec<String> Tokenise(VString s, char delimiter, InitList<Dual<char>> escape);
 // Substitutes an input set of chars with a given replacement
 void SubstituteChars(String& outInput, InitList<Dual<char>> replacements);
 // Returns true if str[idx - 1] = wrapper.first && str[idx + 1] == wrapper.second
-bool IsCharEnclosedIn(const String& str, size_t idx, Dual<char> wrapper);
+bool IsCharEnclosedIn(VString str, size_t idx, Dual<char> wrapper);
 } // namespace Strings
 
 namespace Core
