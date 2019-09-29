@@ -86,6 +86,7 @@ void ControllerComponent::Tick(Time dt)
 		{
 			Fixed orientation = Vector2::ToOrientation(t.Orientation()) + m_rotation * m_angularSpeed * dt.AsMilliseconds();
 			t.SetOrientation(orientation);
+			m_rotation = Fixed::Zero;
 		}
 		if (m_displacement.SqrMagnitude() > 0.0)
 		{
@@ -95,6 +96,7 @@ void ControllerComponent::Tick(Time dt)
 				ClampPosition(pos, m_pRenderComponent->m_pPrimitive->RenderBounds().Size() * Fixed::OneHalf);
 			}
 			t.SetPosition(pos);
+			m_displacement = Vector2::Zero;
 		}
 	}
 #if defined(DEBUGGING)

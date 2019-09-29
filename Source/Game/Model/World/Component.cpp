@@ -26,6 +26,8 @@ void AComponent::SetEnabled(bool bEnabled)
 	m_bEnabled = bEnabled;
 }
 
+void AComponent::OnRespawn() {}
+
 void AComponent::RegenerateLogNameStr()
 {
 	m_logName = "[";

@@ -1,5 +1,6 @@
 #pragma once
 #include <optional>
+#include "SFMLAPI/Rendering/LayerID.h"
 #include "Model/World/Component.h"
 #include "Engine/Renderer/LEShaders.h"
 
@@ -64,6 +65,7 @@ public:
 
 protected:
 	void OnCreated() override;
+	void OnRespawn() override;
 
 public:
 	void Tick(Time dt) override;

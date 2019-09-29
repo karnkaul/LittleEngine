@@ -52,6 +52,7 @@ public:
 	void Terminate();
 
 	void PollInput();
+	void FireInput();
 	// Returns true if terminating
 	bool Update();
 	void StartFrame();

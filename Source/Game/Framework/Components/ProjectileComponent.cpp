@@ -1,4 +1,5 @@
 #include "ProjectileComponent.h"
+#include "RenderComponent.h"
 #include "Model/World/Entity.h"
 
 namespace LittleEngine
@@ -50,6 +51,11 @@ ProjectileComponent* ProjectileComponent::SetDirection(Vector2 direction)
 {
 	m_direction = direction.Normalised();
 	m_pOwner->m_transform.SetOrientation(m_direction);
+	auto pRC = m_pOwner->GetComponent<RenderComponent>();
+	if (pRC)
+	{
+		pRC->ReconcilePrimitive();
+	}
 	return this;
 }
 

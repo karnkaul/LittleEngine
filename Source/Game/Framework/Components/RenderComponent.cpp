@@ -121,6 +121,11 @@ void RenderComponent::OnCreated()
 	SetName("Render");
 }
 
+void RenderComponent::OnRespawn()
+{
+	ReconcilePrimitive();
+}
+
 void RenderComponent::Tick(Time dt)
 {
 	UpdatePrimitive(dt);
@@ -238,6 +243,7 @@ RenderComponent* RenderComponent::SetSpriteFlip(bool bFlip)
 
 RenderComponent* RenderComponent::SetShader(Shader* pShader)
 {
+	Assert(m_pPrimitive, "No Primitive allocated!");
 #if ENABLED(DEBUG_LOGGING)
 	if (pShader)
 	{
@@ -249,13 +255,13 @@ RenderComponent* RenderComponent::SetShader(Shader* pShader)
 		LOG_D("%s Shader unset", m_logName.c_str());
 	}
 #endif
-
 	m_pPrimitive->SetShader(pShader);
 	return this;
 }
 
 void RenderComponent::ReconcilePrimitive()
 {
+	Assert(m_pPrimitive, "No Primitive allocated!");
 	UpdatePrimitive();
 	m_pPrimitive->ReconcileGameState();
 }

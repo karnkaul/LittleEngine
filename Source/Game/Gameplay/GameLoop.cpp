@@ -218,7 +218,6 @@ void Sleep(Time time)
 }
 void Unstage()
 {
-	uGM->Reset();
 #if ENABLED(CONSOLE)
 	Console::Cleanup();
 #endif
@@ -295,6 +294,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 			while (accumulator >= dt)
 			{
 				WorldClock::Tick(dt);
+				pContext->FireInput();
 				bool bYield = Tick(dt);
 #if ENABLED(CONSOLE)
 				Debug::Console::Tick(dt);
