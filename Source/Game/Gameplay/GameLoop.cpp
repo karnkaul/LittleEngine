@@ -158,6 +158,9 @@ void Stage()
 #if ENABLED(PROFILER)
 	Profiler::Init(Time::Milliseconds(10));
 #endif
+#if defined(DEBUGGING)
+	uAudio->InitDebug(*uGM->Renderer());
+#endif
 }
 
 bool Tick(Time dt)
@@ -221,6 +224,9 @@ void Unstage()
 #endif
 #if ENABLED(PROFILER)
 	Profiler::Cleanup();
+#endif
+#if defined(DEBUGGING)
+	uAudio->DestroyDebug();
 #endif
 	uGM = nullptr;
 	if (bReloadRepository)

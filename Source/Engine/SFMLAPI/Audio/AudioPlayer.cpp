@@ -23,8 +23,15 @@ AudioPlayer::Status Cast(sf::Sound::Status status)
 }
 } // namespace
 
+Array<Fixed, 3> AudioPlayer::s_mixVols = {1, 1, 1};
+
 AudioPlayer::AudioPlayer() = default;
 AudioPlayer::~AudioPlayer() = default;
+
+Fixed AudioPlayer::MixVolume(Mix mix, Fixed nVol)
+{
+	return Maths::Clamp01(nVol) * Maths::Clamp01(s_mixVols[ToIdx(mix)]) * Maths::Clamp01(s_mixVols[ToIdx(Mix::Master)]);
+}
 
 SoundPlayer::SoundPlayer(SoundAsset* pSoundAsset)
 {
@@ -115,7 +122,7 @@ bool SoundPlayer::ApplyParams()
 {
 	if (m_pSoundAsset)
 	{
-		m_uSFSound->setVolume(Maths::Clamp01(m_volume * m_pSoundAsset->m_volumeScale).ToF32() * 100);
+		m_uSFSound->setVolume(MixVolume(Mix::SFX, m_volume * m_pSoundAsset->m_volumeScale).ToF32() * 100);
 		m_uSFSound->setLoop(m_bLooping);
 		return true;
 	}
@@ -173,7 +180,15 @@ void MusicPlayer::EndFade()
 	m_volume = m_targetVolume;
 	if (m_bFadingOut)
 	{
-		Stop();
+		if (m_bPauseOnFadeOut)
+		{
+			m_bPauseOnFadeOut = false;
+			Pause();
+		}
+		else
+		{
+			Stop();
+		}
 	}
 	m_bFadingIn = m_bFadingOut = false;
 }
@@ -262,7 +277,7 @@ void MusicPlayer::BeginFade()
 
 bool MusicPlayer::ApplyParams()
 {
-	m_uSFMusic->setVolume(Maths::Clamp01(m_volume).ToF32() * 100);
+	m_uSFMusic->setVolume(MixVolume(Mix::Music, m_volume).ToF32() * 100);
 	m_uSFMusic->setLoop(m_bLooping);
 	return true;
 }
