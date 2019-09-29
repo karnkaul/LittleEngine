@@ -13,7 +13,7 @@ namespace LittleEngine::Debug
 {
 ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_SIZE)
 {
-	m_pFont = g_pRepository->DefaultFont();
+	m_pFont = g_pDefaultFont;
 	LayerID textLayer = static_cast<LayerID>(ToS32(LayerID::Max) - 2);
 
 	// BG
@@ -42,7 +42,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 
 	// Carat
 	m_uCarat = MakeUnique<UIElement>(textLayer, true);
-	m_uCarat->OnCreate(context, "ConsoleCarat", &m_uBG->m_transform, g_pRepository->DefaultFont());
+	m_uCarat->OnCreate(context, "ConsoleCarat", &m_uBG->m_transform, g_pDefaultFont);
 	m_uCarat->m_transform.anchor = {-1, 1};
 	m_uCarat->m_transform.nPosition = {-1, -1};
 	u16 textPad = static_cast<u16>(m_textSize * 1.3f);
@@ -52,7 +52,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 
 	// Live Line
 	m_uLiveText = MakeUnique<UIElement>(textLayer, true);
-	m_uLiveText->OnCreate(context, "ConsoleLiveText", &m_uBG->m_transform, g_pRepository->DefaultFont());
+	m_uLiveText->OnCreate(context, "ConsoleLiveText", &m_uBG->m_transform, g_pDefaultFont);
 	m_uLiveText->m_transform.SetParent(m_uBG->m_transform);
 	m_uLiveText->m_transform.anchor = {-1, 1};
 	m_uLiveText->m_transform.nPosition = {-Fixed(0.99f), -1};
@@ -61,7 +61,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 
 	// Cursor
 	m_uCursor = MakeUnique<UIElement>(textLayer, true);
-	m_uCursor->OnCreate(context, "ConsoleCursor", &m_uBG->m_transform, g_pRepository->DefaultFont());
+	m_uCursor->OnCreate(context, "ConsoleCursor", &m_uBG->m_transform, g_pDefaultFont);
 	m_uCursor->SetText(UIText("|", m_textSize, m_liveTextColour));
 	m_uCursor->Tick();
 
@@ -71,7 +71,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	for (size_t i = 0; i < ToIdx(m_logLinesCount); ++i)
 	{
 		UPtr<UIElement> uLogLineI = MakeUnique<UIElement>(textLayer, true);
-		uLogLineI->OnCreate(context, "LogLine" + Strings::ToString(i), &m_uBG->m_transform, g_pRepository->DefaultFont());
+		uLogLineI->OnCreate(context, "LogLine" + Strings::ToString(i), &m_uBG->m_transform, g_pDefaultFont);
 		uLogLineI->m_transform.anchor = {-1, 1};
 		uLogLineI->m_transform.nPosition = {-1, -1};
 		iPad += textPad;

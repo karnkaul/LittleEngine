@@ -65,7 +65,7 @@ void CollisionComponent::SetEnabled(bool bEnabled)
 
 void CollisionComponent::AddCircle(Fixed diameter, Vector2 offset)
 {
-	CircleCollider* pCollider = g_pGameManager->Physics()->CreateCircleCollider(m_pOwner->NameStr());
+	CircleCollider* pCollider = g_pGameManager->Physics()->CreateCircleCollider(String(m_pOwner->Name()));
 	pCollider->m_ignoreSig = m_signature;
 	pCollider->m_name += ("_" + Strings::ToString(m_pColliders.size()));
 	pCollider->SetCircle(diameter);
@@ -74,7 +74,7 @@ void CollisionComponent::AddCircle(Fixed diameter, Vector2 offset)
 	pCircle->SetDiameter(diameter)
 		->SetOutline(Collider::s_debugShapeWidth)
 		->SetSecondaryColour(Colour::Green)
-		->SetPrimaryColour(Colour::Transparent)
+		->SetColour(Colour::Transparent)
 		->SetEnabled(Collider::s_bShowDebugShape);
 	ColliderData data{offset, pCollider, pCircle};
 	m_pColliders.emplace_back(std::move(data));
@@ -86,7 +86,7 @@ void CollisionComponent::AddCircle(Fixed diameter, Vector2 offset)
 
 void CollisionComponent::AddAABB(const AABBData& aabbData, Vector2 offset)
 {
-	AABBCollider* pCollider = g_pGameManager->Physics()->CreateAABBCollider(m_pOwner->NameStr());
+	AABBCollider* pCollider = g_pGameManager->Physics()->CreateAABBCollider(String(m_pOwner->Name()));
 	pCollider->m_ignoreSig = m_signature;
 	pCollider->m_name += ("_" + Strings::ToString(m_pColliders.size()));
 	pCollider->SetAABB(aabbData);
@@ -95,7 +95,7 @@ void CollisionComponent::AddAABB(const AABBData& aabbData, Vector2 offset)
 	pRect->SetSize(2 * aabbData.upperBound)
 		->SetOutline(Collider::s_debugShapeWidth)
 		->SetSecondaryColour(Colour::Green)
-		->SetPrimaryColour(Colour::Transparent)
+		->SetColour(Colour::Transparent)
 		->SetEnabled(Collider::s_bShowDebugShape);
 	ColliderData data{offset, pCollider, pRect};
 	m_pColliders.emplace_back(std::move(data));

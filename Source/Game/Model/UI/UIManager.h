@@ -74,7 +74,7 @@ T* UIManager::PushContext(String id)
 	uT->SetActive(true);
 	T* pT = dynamic_cast<T*>(uT.get());
 	m_contexts.emplace_back(std::move(uT));
-	LOG_D("%s pushed on to UIStack", pT->LogNameStr());
+	LOG_D("%s pushed on to UIStack", pT->LogName().data());
 	return pT;
 }
 

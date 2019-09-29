@@ -63,7 +63,7 @@ void ControllerComponent::OnCreated()
 	m_pRenderComponent = m_pOwner->GetComponent<RenderComponent>();
 	if (!m_pRenderComponent)
 	{
-		LOG_E("%s : %s has ControllerComponent but no RenderComponent!", LogNameStr(), m_pOwner->LogNameStr());
+		LOG_E("%s : %s has ControllerComponent but no RenderComponent!", m_logName.data(), m_pOwner->LogName().data());
 	}
 	BindInput([&](const LEInput::Frame& x) -> bool { return OnInput(x); }, true);
 	Reset();
@@ -72,7 +72,7 @@ void ControllerComponent::OnCreated()
 	m_pRect = g_pGameManager->Renderer()->New<SFRect>(LayerID::DebugWorld);
 	m_pRect->SetSize(s_orientationWidthHeight)
 		->SetPivot({-1, 0})
-		->SetPrimaryColour(s_orientationColour)
+		->SetColour(s_orientationColour)
 		->SetEnabled(s_bShowJoystickOrientation);
 #endif
 }

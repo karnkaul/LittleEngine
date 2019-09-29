@@ -31,7 +31,7 @@ template <typename T>
 typename Vec<T>::const_iterator Search(const Vec<T>& vec, const T& value);
 
 // Returns size in B / KiB / MiB / GiB
-Pair<f32, const char*> FriendlySize(u64 byteCount);
+Pair<f32, VString> FriendlySize(u64 byteCount);
 } // namespace Core
 
 namespace Strings
@@ -55,7 +55,7 @@ Vec<String> ToString(const Vec<T>& vec, String prefix = "", String suffix = "");
 String ToText(Vec<u8> rawBuffer);
 
 // Slices a string into a pair via the first occurence of a delimiter
-Dual<String> Bisect(const String& input, char delimiter);
+Dual<String> Bisect(VString input, char delimiter);
 // Removes all occurrences of toRemove from outInput
 void RemoveChars(String& outInput, InitList<char> toRemove);
 // Removes leading and trailing characters
@@ -63,11 +63,11 @@ void Trim(String& outInput, InitList<char> toRemove);
 // Removes all tabs and spaces
 void RemoveWhitespace(String& outInput);
 // Tokenises a string via a delimiter, skipping over any delimiters within escape characters
-Vec<String> Tokenise(const String& s, char delimiter, InitList<Dual<char>> escape);
+Vec<String> Tokenise(VString s, char delimiter, InitList<Dual<char>> escape);
 // Substitutes an input set of chars with a given replacement
 void SubstituteChars(String& outInput, InitList<Dual<char>> replacements);
 // Returns true if str[idx - 1] = wrapper.first && str[idx + 1] == wrapper.second
-bool IsCharEnclosedIn(const String& str, size_t idx, Dual<char> wrapper);
+bool IsCharEnclosedIn(VString str, size_t idx, Dual<char> wrapper);
 } // namespace Strings
 
 namespace Core

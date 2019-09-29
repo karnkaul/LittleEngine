@@ -9,13 +9,13 @@ namespace LittleEngine
 {
 namespace
 {
-const char* VIEWPORT_HEIGHT_KEY = "RESOLUTION";
-const char* BORDERLESS_KEY = "BORDERLESS";
-const char* LOG_LEVEL_KEY = "LOG_LEVEL";
-const char* LOCALE_KEY = "LOCALE";
+const String VIEWPORT_HEIGHT_KEY = "RESOLUTION";
+const String BORDERLESS_KEY = "BORDERLESS";
+const String LOG_LEVEL_KEY = "LOG_LEVEL";
+const String LOCALE_KEY = "LOCALE";
 } // namespace
 
-const char* GameSettings::szFILE_PATH = "Settings.txt";
+const String GameSettings::FILE_PATH = "Settings.txt";
 
 GameSettings* GameSettings::Instance()
 {
@@ -25,8 +25,8 @@ GameSettings* GameSettings::Instance()
 
 GameSettings::GameSettings()
 {
-	static const String FULL_PATH = (OS::Env()->RuntimePath() + "/" + szFILE_PATH);
-	szFILE_PATH = FULL_PATH.c_str();
+	static const String FULL_PATH = String(OS::Env()->RuntimePath()) + "/" + FILE_PATH;
+	SAVE_PATH = FULL_PATH;
 	SetDefaults();
 	LoadAndOverride();
 	SaveAll();
@@ -138,16 +138,16 @@ void GameSettings::SetDefaults()
 	ViewportSize native = Viewport::MaxSize();
 	m_viewportHeight = Property(VIEWPORT_HEIGHT_KEY, Strings::ToString(native.height) + "p");
 	m_borderless = Property(BORDERLESS_KEY, Strings::ToString(true));
-	m_logLevel = Property(LOG_LEVEL_KEY, Core::ParseLogSeverity(LogSeverity::Info));
+	m_logLevel = Property(LOG_LEVEL_KEY, String(Core::ParseLogSeverity(LogSeverity::Info)));
 	m_locale = Property(LOCALE_KEY, "en");
 }
 
 void GameSettings::LoadAndOverride()
 {
-	if (m_persistor.Load(szFILE_PATH))
+	if (m_persistor.Load(SAVE_PATH))
 	{
-		auto load = [&](Property& target, const char* szKey) {
-			if (auto pSaved = m_persistor.GetProp(szKey))
+		auto load = [&](Property& target, const String& key) {
+			if (auto pSaved = m_persistor.GetProp(key))
 			{
 				target = *pSaved;
 			}
@@ -166,6 +166,6 @@ void GameSettings::SaveAll()
 	m_persistor.SetProp(m_borderless);
 	m_persistor.SetProp(m_logLevel);
 	m_persistor.SetProp(m_locale);
-	m_persistor.Save(szFILE_PATH);
+	m_persistor.Save(SAVE_PATH);
 }
 } // namespace LittleEngine

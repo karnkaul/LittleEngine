@@ -19,8 +19,8 @@ TweakBool(asyncRendering, nullptr);
 LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 {
 #if ENABLED(TWEAKABLES)
-	asyncRendering.BindCallback([&](const String& val) {
-		bool bEnable = Strings::ToBool(val);
+	asyncRendering.BindCallback([&](VString val) {
+		bool bEnable = Strings::ToBool(String(val));
 		if (bEnable)
 		{
 			if (!m_uRenderer->IsRunningRenderThread())

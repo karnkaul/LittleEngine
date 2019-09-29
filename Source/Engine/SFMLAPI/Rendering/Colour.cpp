@@ -49,7 +49,19 @@ Colour& Colour::operator-=(Colour rhs)
 
 String Colour::ToString() const
 {
-	return "[" + r.ToString() + ", " + g.ToString() + ", " + b.ToString() + ", " + a.ToString() + "]";
+	static constexpr size_t MAX = 1 + 3 + 1 + 3 + 1 + 3 + 1 + 3 + 1;
+	String ret;
+	ret.reserve(MAX);
+	ret += "[";
+	ret += r.ToString();
+	ret += ", ";
+	ret += g.ToString();
+	ret += ", ";
+	ret += b.ToString();
+	ret += ", ";
+	ret += a.ToString();
+	ret += "]";
+	return ret;
 }
 
 Colour operator+(Colour lhs, Colour rhs)

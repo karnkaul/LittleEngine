@@ -8,18 +8,23 @@
 namespace LittleEngine
 {
 LERepository* g_pRepository = nullptr;
+FontAsset* g_pDefaultFont = nullptr;
 #if ENABLED(FILESYSTEM_ASSETS)
 bool LERepository::s_bUseFileAssets = true;
 #endif
 
 LERepository::LERepository(String defaultFontID, String archivePath, String rootDir) : m_rootDir(std::move(rootDir))
 {
-	m_assetPathPrefix = m_rootDir.empty() ? String() : m_rootDir + "/";
+	if (!m_rootDir.empty())
+	{
+		m_rootDir += "/";
+	}
+	Asset::s_pathPrefix = m_rootDir;
 	m_uCooked = MakeUnique<Core::ArchiveReader>();
 
 	LOG_D("[Repository] Assets Root Dir: %s", m_rootDir.c_str());
 
-	String filePath = OS::Env()->FullPath(archivePath.c_str());
+	String filePath = OS::Env()->FullPath(archivePath);
 	std::ifstream file(filePath.c_str());
 	Assert(file.good(), "Cooked archive does not exist!");
 #if defined(DEBUGGING)
@@ -52,49 +57,51 @@ LERepository::LERepository(String defaultFontID, String archivePath, String root
 LERepository::~LERepository()
 {
 	g_pRepository = nullptr;
-	m_pDefaultFont = nullptr;
+	g_pDefaultFont = nullptr;
 	m_loaded.clear();
 	LOG_D("[Repository] destroyed");
 }
 
-void LERepository::LoadDefaultFont(String id) 
+void LERepository::LoadDefaultFont(String id)
 {
 	if (m_loaded.find(id) == m_loaded.end())
 	{
-		m_pDefaultFont = nullptr;
-		auto uFont = ConjureAsset<FontAsset>(id, false, {Search::Filesystem, Search::Cooked});
+		g_pDefaultFont = nullptr;
+		auto uFont = ConjureAsset<FontAsset>(id, {Search::Filesystem, Search::Cooked});
 		if (uFont)
 		{
-			m_pDefaultFont = uFont.get();
+			g_pDefaultFont = uFont.get();
 			m_loaded.emplace(std::move(id), std::move(uFont));
 		}
 	}
-	Assert(m_pDefaultFont, "Invariant violated: Default Font is null!");
+	Assert(g_pDefaultFont, "Invariant violated: Default Font is null!");
 }
 
-FontAsset* LERepository::DefaultFont() const
+SPtr<ManifestLoader> LERepository::LoadManifest(String manifestPath, Task onComplete)
 {
-	Assert(m_pDefaultFont, "Default Font has not been set!");
-	return m_pDefaultFont;
+	SPtr<ManifestLoader> sLoader = MakeShared<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), false);
+	m_loaders.push_back(sLoader);
+	return sLoader;
 }
 
-ManifestLoader* LERepository::LoadManifest(String manifestPath, Task onComplete)
+void LERepository::UnloadManifest(String manifestPath, Task onComplete /* = nullptr */)
 {
-	UPtr<ManifestLoader> uLoader = MakeUnique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), false);
-	ManifestLoader* pLoader = uLoader.get();
-	m_loaders.emplace_back(std::move(uLoader));
-	return pLoader;
+	m_loaders.emplace_back(MakeUnique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), true));
 }
 
-ManifestLoader* LERepository::UnloadManifest(String manifestPath, Task onComplete /* = nullptr */)
+bool LERepository::IsBusy() const
 {
-	UPtr<ManifestLoader> uLoader = MakeUnique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), true);
-	ManifestLoader* pLoader = uLoader.get();
-	m_loaders.emplace_back(std::move(uLoader));
-	return pLoader;
+	for (auto& sLoader : m_loaders)
+	{
+		if (!sLoader->m_bUnloading)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
-bool LERepository::IsLoaded(const String& id) const
+bool LERepository::IsLoaded(VString id) const
 {
 	Lock lock(m_loadedMutex);
 	return m_loaded.find(id) != m_loaded.end();
@@ -111,16 +118,16 @@ u64 LERepository::LoadedBytes() const
 	return total;
 }
 
-bool LERepository::IsPresent(const String& id) const
+bool LERepository::IsPresent(VString id) const
 {
-	bool bRet = m_uCooked->IsPresent(id.c_str());
+	bool bRet = m_uCooked->IsPresent(id);
 #if ENABLED(FILESYSTEM_ASSETS)
-	bRet |= std::ifstream(FileAssetPath(id)).good();
+	bRet |= Asset::DoesFileExist(id);
 #endif
 	return bRet;
 }
 
-bool LERepository::Unload(String id)
+bool LERepository::Unload(VString id)
 {
 	bool bPresent = m_loaded.find(id) != m_loaded.end();
 	if (bPresent)
@@ -133,29 +140,19 @@ bool LERepository::Unload(String id)
 
 void LERepository::UnloadAll(bool bUnloadDefaultFont)
 {
-	if (bUnloadDefaultFont || !m_pDefaultFont)
+	if (bUnloadDefaultFont || !g_pDefaultFont)
 	{
 		m_loaded.clear();
+		g_pDefaultFont = nullptr;
 	}
 	else
 	{
-		String fontID = m_pDefaultFont->ID();
-		Core::RemoveIf<String, UPtr<Asset>>(m_loaded, [fontID](UPtr<Asset>& uAsset) { return uAsset->ID() != fontID; });
+		Core::RemoveIf<VString, UPtr<Asset>>(m_loaded, [](UPtr<Asset>& uAsset) { return String(uAsset->ID()) != g_pDefaultFont->ID(); });
 	}
 	LOG_D("[Repository] cleared");
 }
 
-bool LERepository::IsBusy() const
-{
-	bool bLoading = false;
-	for (auto& uLoader : m_loaders)
-	{
-		bLoading |= !uLoader->m_bUnloading;
-	}
-	return bLoading;
-}
-
-void LERepository::ResetState() 
+void LERepository::ResetState()
 {
 	m_state = State::Idle;
 }
@@ -163,28 +160,60 @@ void LERepository::ResetState()
 void LERepository::Tick(Time dt)
 {
 	m_state = State::Active;
-	auto iter = m_loaders.begin();
-	while (iter != m_loaders.end())
-	{
-		(*iter)->Tick(dt);
-		if ((*iter)->m_bIdle)
-		{
-			iter = m_loaders.erase(iter);
-			continue;
-		}
-		++iter;
-	}
+	std::for_each(m_loaders.begin(), m_loaders.end(), [dt](auto& sLoader) { sLoader->Tick(dt); });
+	Core::RemoveIf<SPtr<ManifestLoader>>(m_loaders, [](auto& sLoader) { return sLoader->m_bIdle; });
 }
 
+void LERepository::DoLoad(VString id, bool bSyncWarn, Task inCooked, 
 #if ENABLED(FILESYSTEM_ASSETS)
-bool LERepository::DoesFileAssetExist(const String& id)
-{
-	std::ifstream file(FileAssetPath(id).c_str());
-	return file.good();
-}
-String LERepository::FileAssetPath(const String& id) const
-{
-	return OS::Env()->FullPath((m_assetPathPrefix + id).c_str());
-}
+	Task onFilesystem,
 #endif
+	Task onAssetMissing /* = nullptr */)
+{
+	LOGIF_W(bSyncWarn, "[Repository] Synchronously loading Asset (add id to manifest or use LoadAsync()) [%s]", id.data());
+	bool bInCooked = m_uCooked->IsPresent(id);
+#if ENABLED(FILESYSTEM_ASSETS)
+	bool bOnFilesystem = Asset::DoesFileExist(id) && s_bUseFileAssets;
+	if (!bInCooked && !bOnFilesystem)
+	{
+		// Asset doesn't exist
+		LOG_E("[Repository] Asset not present in cooked archive or on filesystem! [%s]", id.data());
+		if (onAssetMissing)
+		{
+			onAssetMissing();
+		}
+	}
+	else
+	{
+		if (!bInCooked)
+		{
+			// Not in cooked archive (but on filesystem)
+			LOG_W("[Repository] Asset present on filesystem but not in cooked archive! [%s]", id.data());
+		}
+		if (!bOnFilesystem)
+		{
+			// Not on filesystem (but in cooked archive)
+			LOGIF_W(s_bUseFileAssets, "[Repository] Asset present in cooked archive but not on filesystem! [%s]", id.data());
+			inCooked();
+		}
+		else
+		{
+			onFilesystem();
+		}
+	}
+#else
+	if (!bInCooked)
+	{
+		LOG_E("[Repository] Asset not present in cooked archive! [%s]", id.data());
+		if (onAssetMissing)
+		{
+			onAssetMissing();
+		}
+	}
+	else
+	{
+		inCooked();
+	}
+#endif
+}
 } // namespace LittleEngine

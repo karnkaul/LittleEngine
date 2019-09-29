@@ -11,11 +11,9 @@ public:
 public:
 	ArchiveReader();
 
-	bool Load(const char* szArchivePath);
-	void Load(InitList<const char*> archivePaths);
-	void Load(const Vec<String>& archivePaths);
+	bool Load(VString archivePath);
 
-	bool IsPresent(const char* szPathInArchive) const;
-	Vec<u8> Decompress(const char* szPathInArchive) const;
+	bool IsPresent(VString pathInArchive) const;
+	Vec<u8> Decompress(VString pathInArchive) const;
 };
 } // namespace Core

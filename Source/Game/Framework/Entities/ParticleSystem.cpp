@@ -21,6 +21,7 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 {
 	Vec<EmitterData>& emitters = data.emitterDatas;
 	String particles;
+	particles.reserve(32);
 	for (EmitterData& eData : emitters)
 	{
 		if (eData.spawnData.numParticles > 100)
@@ -30,7 +31,8 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 			eData.spawnData.numParticles = numParticles.ToU32();
 		}
 		eData.SetOwner(*this);
-		particles += (Strings::ToString(eData.spawnData.numParticles) + ", ");
+		particles += Strings::ToString(eData.spawnData.numParticles);
+		particles += ", ";
 		UPtr<Emitter> emitter = MakeUnique<Emitter>(std::move(eData), false);
 		m_emitters.emplace_back(std::move(emitter));
 	}
@@ -43,9 +45,8 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 	{
 		particles = "0";
 	}
-	particles = "[" + particles + "] particles";
 
-	Core::Log(logSeverity, "%s initialised: [%d] emitters %s", LogNameStr(), emitters.size(), particles.c_str());
+	Core::Log(logSeverity, "%s initialised: [%d] emitters [%s] particles", m_logName.data(), emitters.size(), particles.c_str());
 #if defined(DEBUGGING)
 	m_pO_x->SetEnabled(false);
 	m_pO_y->SetEnabled(false);
@@ -66,7 +67,7 @@ void ParticleSystem::Start()
 		uEmitter->Reset(true);
 	}
 	m_bIsPlaying = true;
-	LOG_D("%s (re)started", LogNameStr());
+	LOG_D("%s (re)started", m_logName.data());
 }
 
 void ParticleSystem::Stop()
@@ -76,7 +77,7 @@ void ParticleSystem::Stop()
 		uEmitter->Reset(false);
 	}
 	m_bIsPlaying = false;
-	LOG_D("%s stopped", LogNameStr());
+	LOG_D("%s stopped", m_logName.data());
 }
 
 void ParticleSystem::Tick(Time dt)

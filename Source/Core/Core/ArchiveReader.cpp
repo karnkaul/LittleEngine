@@ -45,42 +45,24 @@ ArchiveReader::ArchiveReader()
 	Chk();
 }
 
-bool ArchiveReader::Load(const char* szArchivePath)
+bool ArchiveReader::Load(VString archivePath)
 {
 	Chk();
-	return PHYSFS_mount(szArchivePath, nullptr, 1) != 0;
+	return PHYSFS_mount(archivePath.data(), nullptr, 1) != 0;
 }
 
-void ArchiveReader::Load(const Vec<String>& archivePaths)
+bool ArchiveReader::IsPresent(VString pathInArchive) const
 {
 	Chk();
-	for (const auto& archivePath : archivePaths)
+	return PHYSFS_exists(pathInArchive.data()) != 0;
+}
+
+Vec<u8> ArchiveReader::Decompress(VString pathInArchive) const
+{
+	Chk();
+	if (IsPresent(pathInArchive))
 	{
-		Load(archivePath.c_str());
-	}
-}
-
-void ArchiveReader::Load(InitList<const char*> archivePaths)
-{
-	Chk();
-	for (const char* szArchivePath : archivePaths)
-	{
-		Load(szArchivePath);
-	}
-}
-
-bool ArchiveReader::IsPresent(const char* szPathInArchive) const
-{
-	Chk();
-	return PHYSFS_exists(szPathInArchive) != 0;
-}
-
-Vec<u8> ArchiveReader::Decompress(const char* szPathInArchive) const
-{
-	Chk();
-	if (IsPresent(szPathInArchive))
-	{
-		PHYSFS_File* pFile = PHYSFS_openRead(szPathInArchive);
+		PHYSFS_File* pFile = PHYSFS_openRead(pathInArchive.data());
 		PHYSFS_sint64 size = PHYSFS_fileLength(pFile);
 		if (size > 0)
 		{

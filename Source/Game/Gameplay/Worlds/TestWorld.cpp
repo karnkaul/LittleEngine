@@ -88,7 +88,7 @@ void OnA()
 		if (pEntity2)
 		{
 			auto rc0 = pEntity2->AddComponent<RenderComponent>();
-			rc0->SetCircle(LayerID::Default)->SetDiameter(200)->SetPrimaryColour(Colour::Yellow);
+			rc0->SetCircle(LayerID::Default)->SetDiameter(200)->SetColour(Colour::Yellow);
 			auto t0 = pEntity2->AddComponent<CollisionComponent>();
 			t0->AddCircle(200);
 		}
@@ -97,7 +97,7 @@ void OnA()
 		if (pEntity3)
 		{
 			auto rc1 = pEntity3->AddComponent<RenderComponent>();
-			rc1->SetRectangle(LayerID::Default)->SetSize({600, 100})->SetPrimaryColour(Colour::Blue);
+			rc1->SetRectangle(LayerID::Default)->SetSize({600, 100})->SetColour(Colour::Blue);
 			auto t1 = pEntity3->AddComponent<CollisionComponent>();
 			t1->AddAABB(AABBData({600, 100}));
 		}
@@ -149,7 +149,7 @@ void OnB(const LEInput::Frame& frame)
 			if (pEntity)
 			{
 				auto rc = pEntity->AddComponent<RenderComponent>();
-				rc->SetRectangle(LayerID::Default)->SetSize({200, 10})->SetPrimaryColour(Colour::Magenta);
+				rc->SetRectangle(LayerID::Default)->SetSize({200, 10})->SetColour(Colour::Magenta);
 				pEntity->AddComponent<ProjectileComponent>();
 			}
 			return pEntity;
@@ -323,16 +323,16 @@ void StartTests()
 {
 	pEntity0 = g_pGameManager->NewEntity<Entity>("Entity0", {300, 200});
 	auto rc0 = pEntity0->AddComponent<RenderComponent>();
-	rc0->SetRectangle(LayerID::Default)->SetSize({300, 100})->SetPrimaryColour(Colour::Cyan)->SetEnabled(true);
+	rc0->SetRectangle(LayerID::Default)->SetSize({300, 100})->SetColour(Colour::Cyan)->SetEnabled(true);
 
 	pEntity1 = g_pGameManager->NewEntity<Entity>("Entity1", g_pGFX->WorldProjection({0, Fixed(0.9f)}));
 	auto rc1 = pEntity1->AddComponent<RenderComponent>();
 	FontAsset* pFont = g_pRepository->Load<FontAsset>("Fonts/Sunscreen.otf");
 	rc1->SetText(LayerID::Default)
 		->SetText(LOC("LOC_HELLO_WORLD!"))
-		->SetFont(pFont ? *pFont : *g_pRepository->DefaultFont())
+		->SetFont(pFont ? *pFont : *g_pDefaultFont)
 		->SetSize(50)
-		->SetPrimaryColour(Colour(200, 150, 50))
+		->SetColour(Colour(200, 150, 50))
 		->SetEnabled(true);
 
 	pPlayer = g_pGameManager->NewEntity<Player>("Player0", {0, -300});
@@ -505,7 +505,7 @@ void TestTick(Time dt)
 			pLargeTex = largeTex.Get();
 			if (pLargeTex)
 			{
-				LOG_I("Loaded %s", pLargeTex->ID());
+				LOG_I("Loaded %s", pLargeTex->ID().data());
 			}
 		}
 		if (!bLoadedMiscText)

@@ -65,8 +65,14 @@ void Collider::OnHit(const Collider&) {}
 
 CircleCollider::CircleCollider(String ownerName)
 {
-	String prefix = ownerName.empty() ? "" : ownerName + "-";
-	m_name = prefix + "CircleCollider";
+	static const String NAME = "CircleCollider";
+	m_name.reserve(ownerName.size() + NAME.size() + 1);
+	if (!ownerName.empty())
+	{
+		m_name += std::move(ownerName);
+		m_name += "-";
+	}
+	m_name += NAME;
 }
 
 void CircleCollider::SetCircle(Fixed diameter)
@@ -100,8 +106,14 @@ bool CircleCollider::IsIntersectCircle(const CircleCollider& other) const
 
 AABBCollider::AABBCollider(String ownerName)
 {
-	String prefix = ownerName.empty() ? "" : ownerName + "-";
-	m_name = prefix + "AABBCollider";
+	static const String NAME = "AABBCollider";
+	m_name.reserve(ownerName.size() + NAME.size() + 1);
+	if (!ownerName.empty())
+	{
+		m_name += std::move(ownerName);
+		m_name += "-";
+	}
+	m_name += NAME;
 }
 
 void AABBCollider::SetAABB(const AABBData& aabb)

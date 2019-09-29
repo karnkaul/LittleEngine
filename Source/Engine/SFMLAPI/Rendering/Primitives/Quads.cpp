@@ -129,7 +129,7 @@ Quad* Quads::AddQuad()
 	if (m_pTexture && m_quads.size() < m_reserved)
 	{
 		Quad quad(m_layer);
-		quad.SetModel(Rect2::SizeCentre(m_pTexture->TextureSize()))->SetTexture(*m_pTexture);
+		quad.SetModel(Rect2::SizeCentre(m_pTexture->TextureSize()), true)->SetTexture(*m_pTexture);
 		m_quads.emplace_back(std::move(quad));
 		return &m_quads.back();
 	}

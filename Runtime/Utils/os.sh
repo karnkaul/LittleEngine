@@ -37,6 +37,7 @@ else
 fi
 CMAKE=cmake$EXT
 NINJA=ninja$EXT
+CLANG_FORMAT=clang-format$EXT
 
 if [ "$1" == "-s" ] || [ "$1" == "--status" ]; then
 	echo -e "IS_MACOSX\t: $IS_MACOSX"

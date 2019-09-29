@@ -80,7 +80,7 @@ void Particle::Tick(Time dt)
 		m_bWasInUse = true;
 		Matrix3 mat = m_pOwner->WorldMatrix();
 		Vector2 worldPos = mat.Position() + m_pos;
-		m_pQuad->SetPrimaryColour(c, bImmediate)
+		m_pQuad->SetColour(c, bImmediate)
 			->SetScale({s, s}, bImmediate)
 			->SetOrientation(Vector2::ToOrientation(m_rot), bImmediate)
 			->SetPosition(worldPos, bImmediate);
@@ -99,7 +99,8 @@ Emitter::Emitter(EmitterData data, bool bSetEnabled) : m_data(std::move(data)), 
 {
 	Assert(m_pOwner, "Invariant violated");
 	m_particles.reserve(m_data.spawnData.numParticles);
-	LayerID layer = m_data.spawnData.bIsOverlay ? LayerID::OverlayFX : m_data.spawnData.bIsUnderlay ? LayerID::UnderlayFX : LayerID::WorldFX;
+	LayerID layer =
+		m_data.spawnData.bIsOverlay ? LayerID::OverlayFX : m_data.spawnData.bIsUnderlay ? LayerID::UnderlayFX : LayerID::WorldFX;
 	layer = static_cast<LayerID>(ToS32(layer) + m_data.layerDelta);
 	m_pQuads = g_pGameManager->Renderer()->New<Quads>(layer);
 	m_pQuads->SetTexture(m_data.Texture(), m_data.spawnData.numParticles)->SetEnabled(m_bEnabled);

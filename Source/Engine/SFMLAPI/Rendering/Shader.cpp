@@ -5,10 +5,11 @@
 
 namespace LittleEngine
 {
-UMap<Shader::Type, const char*> g_szShaderTypes = {{Shader::Type(), "Invalid"},
-												   {Shader::Type().set(ToIdx(Shader::Flag::Vertex)), "Vertex"},
-												   {Shader::Type().set(ToIdx(Shader::Flag::Fragment)), "Fragment"},
-												   {Shader::Type().set(ToIdx(Shader::Flag::Vertex)).set(ToIdx(Shader::Flag::Fragment)), "VertFrag"}};
+UMap<Shader::Type, VString> g_szShaderTypes = {
+	{Shader::Type(), "Invalid"},
+	{Shader::Type().set(ToIdx(Shader::Flag::Vertex)), "Vertex"},
+	{Shader::Type().set(ToIdx(Shader::Flag::Fragment)), "Fragment"},
+	{Shader::Type().set(ToIdx(Shader::Flag::Vertex)).set(ToIdx(Shader::Flag::Fragment)), "VertFrag"}};
 
 Shader::Shader(String id) : m_id(std::move(id)) {}
 
@@ -31,7 +32,7 @@ void Shader::Compile(const String& code, Type type)
 	if (m_bError)
 	{
 		m_type = 0;
-		LOG_E("[%s] Error loading %s Shader!", m_id.c_str(), g_szShaderTypes[m_type]);
+		LOG_E("[%s] Error loading %s Shader!", m_id.c_str(), g_szShaderTypes[m_type].data());
 	}
 }
 
@@ -60,7 +61,7 @@ void Shader::Compile(const String& vertCode, const String& fragCode)
 	}
 	if (m_bError)
 	{
-		LOG_E("[%s] Error loading %s Shader!", m_id.c_str(), g_szShaderTypes[m_type]);
+		LOG_E("[%s] Error loading %s Shader!", m_id.c_str(), g_szShaderTypes[m_type].data());
 		m_type = 0;
 	}
 }
@@ -69,7 +70,7 @@ Shader::~Shader()
 {
 	if (!m_bError)
 	{
-		LOG_I("-- [%s] %s Shader destroyed", m_id.c_str(), g_szShaderTypes[m_type]);
+		LOG_I("-- [%s] %s Shader destroyed", m_id.c_str(), g_szShaderTypes[m_type].data());
 	}
 }
 

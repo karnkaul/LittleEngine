@@ -180,18 +180,18 @@ const UMap<String, String>& GData::AllFields() const
 	return m_fieldMap;
 }
 
-bool GData::AddField(const String& key, GData& gData)
+bool GData::AddField(String key, GData& gData)
 {
 	String value = gData.Unmarshall();
 	Strings::RemoveChars(value, {'\"'});
-	return SetString(key, value);
+	return SetString(std::move(key), std::move(value));
 }
 
-bool GData::SetString(const String& key, String value)
+bool GData::SetString(String key, String value)
 {
 	if (!key.empty() && !value.empty())
 	{
-		m_fieldMap[key] = std::move(value);
+		m_fieldMap[std::move(key)] = std::move(value);
 		return true;
 	}
 	return false;

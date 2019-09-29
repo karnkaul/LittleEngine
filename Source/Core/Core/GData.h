@@ -39,8 +39,8 @@ public:
 	Vec<String> GetVector(const String& key) const;
 
 	const UMap<String, String>& AllFields() const;
-	bool AddField(const String& key, GData& gData);
-	bool SetString(const String& key, String value);
+	bool AddField(String key, GData& gData);
+	bool SetString(String key, String value);
 
 	u32 NumFields() const;
 	bool Contains(const String& id) const;

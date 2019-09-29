@@ -6,8 +6,9 @@ namespace LittleEngine::Debug
 Tweakable::Tweakable(String id, TweakType type, String value /* = "" */, void* pTarget /* = nullptr */)
 	: m_pTarget(pTarget), m_value(std::move(value)), m_type(type)
 {
-	static Array<const char*, 4> suffix = {"", "_f32", "_s32", "_b"};
-	m_id = std::move(id) + suffix[static_cast<size_t>(m_type)];
+	static Array<VString, 4> suffix = {"", "_f32", "_s32", "_b"};
+	m_id = std::move(id);
+	m_id += suffix[ToIdx(m_type)];
 	TweakManager::Instance()->m_tweakables.emplace(m_id, this);
 }
 
@@ -48,7 +49,7 @@ void Tweakable::Bind(void* pVar)
 	m_pTarget = pVar;
 }
 
-void Tweakable::BindCallback(std::function<void(const String&)> callback)
+void Tweakable::BindCallback(std::function<void(VString)> callback)
 {
 	m_callback = std::move(callback);
 }
@@ -102,7 +103,7 @@ TweakManager* TweakManager::Instance()
 	return &manager;
 }
 
-Tweakable* TweakManager::Find(const String& id) const
+Tweakable* TweakManager::Find(VString id) const
 {
 	auto iter = m_tweakables.find(id);
 	if (iter != m_tweakables.end())

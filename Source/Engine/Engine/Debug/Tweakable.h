@@ -25,11 +25,11 @@ enum class TweakType : u8
 	Bool,
 };
 
-class Tweakable final
+class Tweakable final : private NoCopy
 {
 private:
 	void* m_pTarget = nullptr;
-	std::function<void(const String&)> m_callback;
+	std::function<void(VString)> m_callback;
 
 public:
 	String m_id;
@@ -39,12 +39,10 @@ public:
 public:
 	Tweakable(String id, TweakType type, String value = "", void* pTarget = nullptr);
 	~Tweakable();
-	Tweakable(const Tweakable&) = delete;
-	Tweakable& operator=(const Tweakable&) = delete;
 
 	void Set(String stringValue);
 	void Bind(void* pVar);
-	void BindCallback(std::function<void(const String&)> callback);
+	void BindCallback(std::function<void(VString)> callback);
 
 private:
 	void SyncString(String rawValue);
@@ -56,11 +54,11 @@ private:
 class TweakManager
 {
 public:
-	Map<String, Tweakable*> m_tweakables;
+	Map<VString, Tweakable*> m_tweakables;
 
 	static TweakManager* Instance();
 
-	Tweakable* Find(const String& id) const;
+	Tweakable* Find(VString id) const;
 };
 } // namespace Debug
 } // namespace LittleEngine

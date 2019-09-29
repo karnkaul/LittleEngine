@@ -108,7 +108,7 @@ T* UIContext::AddWidget(String name, UIWidgetStyle* pStyleToCopy, bool bNewColum
 	pStyleToCopy->baseLayer = static_cast<LayerID>(ToS32(m_pRoot->m_layer) + 1);
 	uT->OnCreate(std::move(name), *this, pStyleToCopy);
 	m_uUIWidgets->EmplaceWidget(std::move(uT), bNewColumn);
-	LOG_D("%s constructed", pT->LogNameStr());
+	LOG_D("%s constructed", pT->LogName().data());
 	return pT;
 }
 
@@ -131,7 +131,7 @@ T* UIContext::AddElement(String name, UITransform* pParent, s32 layerDelta)
 	uT->OnCreate(*g_pGameManager->Context(), std::move(name), pParent);
 
 	T* pT = uT.get();
-	LOG_D("%s constructed", pT->LogNameStr());
+	LOG_D("%s constructed", pT->LogName().data());
 	m_uiElements.push_back(std::move(uT));
 	return pT;
 }

@@ -51,7 +51,7 @@ Entity* EntityPool::New(Vector2 position /* = Vector2::Zero */, Vector2 orientat
 	}
 	if (!pRet)
 	{
-		LOG_W("%s Pool is empty!", LogNameStr());
+		LOG_W("%s Pool is empty!", m_logName.data());
 		Assert(m_spawnNew != nullptr, "Entity Generator Procedure is null!");
 		pRet = m_spawnNew(static_cast<u16>(m_pool.size()));
 		if (pRet)

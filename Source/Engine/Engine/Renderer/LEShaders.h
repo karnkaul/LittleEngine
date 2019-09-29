@@ -110,7 +110,7 @@ T* LEShaders::LoadShader(const String& id, Shader::Type asType)
 
 	if (uT->GetType().any())
 	{
-		LOG_I("== [%s] %s Shader created", uT->ID().c_str(), g_szShaderTypes[uT->GetType()]);
+		LOG_I("== [%s] %s Shader created", uT->ID().c_str(), g_szShaderTypes[uT->GetType()].data());
 		T* pT = uT.get();
 		s_shaderMap.emplace(id, std::move(uT));
 		return pT;

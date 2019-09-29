@@ -49,7 +49,7 @@ void BootWorld::OnActivated()
 
 	if (!g_pAudio->IsMusicPlaying())
 	{
-		// g_pAudio->PlayMusic("TestMusic.ogg", Fixed::OneHalf);
+		//g_pAudio->PlayMusic("TestMusic.ogg", Fixed::OneHalf);
 	}
 }
 
@@ -61,9 +61,9 @@ void BootWorld::Tick(Time /*dt*/)
 		Fixed seconds = Fixed(WorldTime().AsSeconds());
 		Fixed speed = 2;
 		Fixed alpha = (seconds * speed).Sin().Abs() * 255;
-		Colour colour = m_pLogoHeader->Text()->PrimaryColour();
+		Colour colour = m_pLogoHeader->Text()->GetColour();
 		colour.a = UByte(static_cast<u8>(alpha.ToU32()));
-		m_pLogoHeader->Text()->SetPrimaryColour(colour);
+		m_pLogoHeader->Text()->SetColour(colour);
 	}
 #if defined(DEBUGGING)
 	if (bLoadWorld1Now)

@@ -5,7 +5,13 @@
 
 namespace Core
 {
-JobCatalog::JobCatalog(JobManager& manager, String name) : m_logName("[" + std::move(name) + "]"), m_pManager(&manager) {}
+JobCatalog::JobCatalog(JobManager& manager, String name) : m_pManager(&manager) 
+{
+	m_logName.reserve(name.size() + 2);
+	m_logName = "[";
+	m_logName += std::move(name);
+	m_logName += "]";
+}
 
 void JobCatalog::AddJob(Task job, String name)
 {
@@ -18,7 +24,7 @@ void JobCatalog::AddJob(Task job, String name)
 
 void JobCatalog::StartJobs(Task onComplete)
 {
-	LOG_D("%s started. Running and monitoring %d jobs", LogNameStr(), m_subJobs.size());
+	LOG_D("%s started. Running and monitoring %d jobs", m_logName.c_str(), m_subJobs.size());
 	m_onComplete = onComplete;
 	m_bCompleted = false;
 	m_startTime = Time::Now();
@@ -46,7 +52,7 @@ void JobCatalog::Update()
 			auto id = subJob->ID();
 #endif
 			iter = m_pendingJobs.erase(iter);
-			LOG_D("%s Job %d completed. %d jobs remaining", LogNameStr(), id, m_pendingJobs.size());
+			LOG_D("%s Job %d completed. %d jobs remaining", m_logName.c_str(), id, m_pendingJobs.size());
 		}
 		else
 		{
@@ -64,13 +70,8 @@ void JobCatalog::Update()
 		m_bCompleted = true;
 #if ENABLED(DEBUG_LOGGING)
 		f32 secs = (Time::Now() - m_startTime).AsSeconds();
-		LOG_D("%s completed %d jobs in %.2fs", LogNameStr(), m_subJobs.size(), secs);
+		LOG_D("%s completed %d jobs in %.2fs", m_logName.c_str(), m_subJobs.size(), secs);
 #endif
 	}
-}
-
-const char* JobCatalog::LogNameStr() const
-{
-	return m_logName.c_str();
 }
 } // namespace Core

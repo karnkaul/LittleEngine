@@ -183,7 +183,7 @@ Quad* RenderComponent::SetSprite(TextureAsset& texture, LayerID layer)
 	}
 	auto pQuad = g_pGameManager->Renderer()->New<Quad>(layer);
 	Assert(pQuad, "Could not provision Primitive!");
-	pQuad->SetModel(Rect2::SizeCentre(texture.TextureSize()))->SetTexture(texture)->SetEnabled(true);
+	pQuad->SetModel(Rect2::SizeCentre(texture.TextureSize()), true)->SetTexture(texture)->SetEnabled(true);
 	m_pPrimitive = pQuad;
 	return pQuad;
 }
@@ -212,11 +212,11 @@ RenderComponent* RenderComponent::SetSpriteSheet(SpriteSheet sheet, LayerID laye
 		auto pQuad = g_pGameManager->Renderer()->New<Quad>(layer);
 		Assert(pQuad, "Could not provision Primitive!");
 		Rect2 model = Rect2::SizeCentre(sheet.FrameSize());
-		pQuad->SetTexture(*sheet.m_pTexture)->SetModel(model)->SetEnabled(true);
+		pQuad->SetTexture(*sheet.m_pTexture)->SetModel(model, true)->SetEnabled(true);
 		m_framePeriod = Time::Seconds(sheet.m_period.AsSeconds() / sheet.m_data.indices.size());
 		m_oSpriteSheet.emplace(std::move(sheet));
 		m_bFlippingSprites = true;
-		LOG_D("Set up SpriteSheet on %s", LogNameStr());
+		LOG_D("Set up SpriteSheet on %s", m_logName.c_str());
 		m_pPrimitive = pQuad;
 	}
 	return this;
@@ -226,7 +226,7 @@ RenderComponent* RenderComponent::UnsetSpriteSheet()
 {
 	m_oSpriteSheet.reset();
 	m_bFlippingSprites = false;
-	LOG_D("Unset SpriteSheet on %s", LogNameStr());
+	LOG_D("Unset SpriteSheet on %s", m_logName.c_str());
 	return this;
 }
 
@@ -241,8 +241,8 @@ RenderComponent* RenderComponent::SetShader(Shader* pShader)
 #if ENABLED(DEBUG_LOGGING)
 	if (pShader)
 	{
-		const char* szType = g_szShaderTypes[pShader->GetType()];
-		LOG_D("%s %s %s Shader set", m_logName.c_str(), pShader->ID().c_str(), szType);
+		VString type = g_szShaderTypes[pShader->GetType()];
+		LOG_D("%s %s %s Shader set", m_logName.c_str(), pShader->ID().c_str(), type.data());
 	}
 	else
 	{

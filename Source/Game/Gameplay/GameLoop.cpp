@@ -55,7 +55,7 @@ TweakS32(ticksPerSec, nullptr);
 
 bool Init(s32 argc, char** argv)
 {
-	OS::Env()->SetVars(argc, argv, {IDs::COOKED_ASSETS.c_str(),  MAIN_MANIFEST_FILE.c_str()});
+	OS::Env()->SetVars(argc, argv, {IDs::COOKED_ASSETS.c_str(), MAIN_MANIFEST_FILE.c_str()});
 
 	config.Init();
 #if !defined(SHIPPING)
@@ -85,8 +85,8 @@ bool Init(s32 argc, char** argv)
 	}
 
 #if ENABLED(TWEAKABLES)
-	ticksPerSec.BindCallback([](const String& val) {
-		s32 newRate = Strings::ToS32(val);
+	ticksPerSec.BindCallback([](VString val) {
+		s32 newRate = Strings::ToS32(String(val));
 		if (newRate > 0 && newRate < 250)
 		{
 			Time newTickRate = Time::Seconds(1.0f / newRate);
@@ -95,11 +95,11 @@ bool Init(s32 argc, char** argv)
 		}
 		else
 		{
-			LOG_W("[GameLoop] Invalid value for ticks per second: %s", val.c_str());
+			LOG_W("[GameLoop] Invalid value for ticks per second: %s", val.data());
 		}
 	});
-	reloadApp.BindCallback([](const String& val) {
-		s32 option = Strings::ToS32(val, -1);
+	reloadApp.BindCallback([](VString val) {
+		s32 option = Strings::ToS32(String(val), -1);
 		if (option > 0)
 		{
 			bReloadRepository = option > 1;
@@ -148,7 +148,7 @@ bool Init(s32 argc, char** argv)
 	return true;
 }
 
-void Stage() 
+void Stage()
 {
 	uGM = MakeUnique<GameManager>();
 	uGM->CreateContext(config);
@@ -213,7 +213,7 @@ void Sleep(Time time)
 		std::this_thread::sleep_for(std::chrono::milliseconds(time.AsMilliseconds()));
 	}
 }
-void Unstage() 
+void Unstage()
 {
 	uGM->Reset();
 #if ENABLED(CONSOLE)
@@ -247,7 +247,6 @@ void Cleanup()
 }
 } // namespace
 
-
 s32 GameLoop::Run(s32 argc, char** argv)
 {
 	if (!bInit)
@@ -263,7 +262,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 	Stage();
 	WorldClock::Reset();
 	uGM->Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE, &GameInit::LoadShaders);
-		
+
 	const Time tickRate = config.TickRate();
 	Time accumulator;
 	Time currentTime = Time::Now();

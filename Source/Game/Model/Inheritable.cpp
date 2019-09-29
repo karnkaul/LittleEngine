@@ -8,14 +8,14 @@ Inheritable::Inheritable(bool bSilent) : m_bSilent(bSilent) {}
 Inheritable::Inheritable(String name, String className, bool bSilent)
 	: m_name(std::move(name)), m_typeName(std::move(className)), m_bSilent(bSilent)
 {
-	RegenerateLogNameStr();
+	GenerateLogNameStr();
 }
 
 Inheritable::~Inheritable()
 {
 	if (!m_bSilent)
 	{
-		LOG_D("%s destroyed", LogNameStr());
+		LOG_D("%s destroyed", m_logName.data());
 	}
 }
 
@@ -31,26 +31,39 @@ void Inheritable::SetType(String typeName)
 	RegenerateLogNameStr();
 }
 
-void Inheritable::SetNameAndType(String name, String className)
+void Inheritable::SetNameAndType(String name, String typeName)
 {
 	m_name = std::move(name);
-	m_typeName = std::move(className);
+	m_typeName = std::move(typeName);
 	RegenerateLogNameStr();
 }
 
-const char* Inheritable::NameStr() const
+VString Inheritable::Name() const
 {
-	return m_name.c_str();
+	return m_name;
 }
 
-const char* Inheritable::LogNameStr() const
+VString Inheritable::LogName() const
 {
-	return m_logName.c_str();
+	return m_logName;
 }
 
 void Inheritable::RegenerateLogNameStr()
 {
-	String suffix = m_typeName.empty() ? "" : "/" + m_typeName;
-	m_logName = "[" + m_name + suffix + "]";
+	GenerateLogNameStr();
+}
+
+void Inheritable::GenerateLogNameStr()
+{
+	m_logName.clear();
+	m_logName.reserve(m_name.size() + m_typeName.size() + 3);
+	m_logName += "[";
+	m_logName += m_name;
+	if (!m_typeName.empty())
+	{
+		m_logName += "/";
+		m_logName += m_typeName;
+	}
+	m_logName += "]";
 }
 } // namespace LittleEngine

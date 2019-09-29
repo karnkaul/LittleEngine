@@ -41,7 +41,7 @@ void TileMap::CreateTiles(TileData data)
 	Assert(data.pTexture, "Creating Tiles without texture!");
 	m_pQuads->SetTexture(*data.pTexture);
 	Vector2 size = data.pTexture->TextureSize();
-	
+
 	Fixed x, y;
 	size_t idx = 0;
 

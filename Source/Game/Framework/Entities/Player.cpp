@@ -33,6 +33,6 @@ void Player::InitPlayer(PlayerData data)
 	AddComponent<ControllerComponent>();
 	m_transform.SetOrientation(Vector2::Up);
 
-	LOG_D("%s %s", LogNameStr(), " Initialised");
+	LOG_D("%s Initialised", m_logName.c_str());
 }
 } // namespace LittleEngine

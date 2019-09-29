@@ -16,7 +16,9 @@ namespace LittleEngine
 World::World(String name) : GameObject(std::move(name), "World")
 {
 	m_uWorldClock = MakeUnique<WorldClock>();
-	m_manifestID = m_name + ".amf";
+	m_manifestID.reserve(m_name.size() + 4);
+	m_manifestID += m_name;
+	m_manifestID += ".amf";
 }
 
 World::~World() = default;
@@ -55,7 +57,7 @@ void World::Activate()
 	m_state = State::Active;
 	m_uWorldClock->Restart();
 	OnActivated();
-	LOG_D("%s Activated", LogNameStr());
+	LOG_D("%s Activated", m_logName.c_str());
 }
 
 void World::Deactivate()
@@ -63,6 +65,6 @@ void World::Deactivate()
 	m_tokenHandler.Clear();
 	OnDeactivating();
 	m_state = State::Inactive;
-	LOG_D("%s Deactivated", LogNameStr());
+	LOG_D("%s Deactivated", m_logName.c_str());
 }
 } // namespace LittleEngine

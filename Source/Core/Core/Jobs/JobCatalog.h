@@ -26,7 +26,6 @@ public:
 
 private:
 	void Update();
-	const char* LogNameStr() const;
 
 	friend class JobManager;
 };

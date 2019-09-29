@@ -13,12 +13,12 @@ private:
 
 public:
 	static const Version BUILD_VERSION;
-	static const char* szBUILD_VERSION_WITH_COMMIT;
+	static const VString szBUILD_VERSION_WITH_COMMIT;
 
 public:
 	Version();
 	Version(u32 major, u32 minor, u32 patch, u32 pre);
-	Version(const char* szSerialised);
+	Version(VString serialised);
 
 public:
 	u32 Major() const;

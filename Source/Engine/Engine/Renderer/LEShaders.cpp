@@ -19,7 +19,7 @@ LEShaders::~LEShaders()
 	UnloadAll();
 }
 
-void LEShaders::UnloadAll() 
+void LEShaders::UnloadAll()
 {
 	s_shaderMap.clear();
 }

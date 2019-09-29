@@ -36,7 +36,7 @@ ParticleSpawnData::ParticleSpawnData(u32 numParticles) : numParticles(numParticl
 void ParticleSpawnData::Deserialise(const GData& gData)
 {
 	spawnPosition = TRangeV2(gData.GetGData("spawnPosition"));
-	
+
 	spawnColour = UIGameStyle::ParseColour(gData.GetString("spawnColour"));
 	DESERIALISE_TFIXED(gData, spreadAngle);
 	DESERIALISE_TFIXED(gData, emitterAngle);

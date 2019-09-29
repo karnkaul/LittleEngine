@@ -20,13 +20,13 @@ void UIDialogue::OnCreated()
 	m_pRoot->SetPanel(Colour::White);
 	m_pRoot->SetStatic(true);
 
-	m_pHeader = AddElement<UIElement>(String(NameStr()) + " Header");
+	m_pHeader = AddElement<UIElement>(m_name + " Header");
 	m_pHeader->SetRectSize({m_data.size.x, headerHeight}, true);
 	m_pHeader->m_transform.nPosition = {0, 1};
 	m_pHeader->SetPanel(m_data.headerBG);
 	m_pHeader->SetStatic(true);
 
-	m_pContent = AddElement<UIElement>(String(NameStr()) + " Content");
+	m_pContent = AddElement<UIElement>(m_name + " Content");
 	m_pContent->SetRectSize({m_data.size.x, contentHeight});
 	m_pContent->m_transform.nPosition = {0, 1};
 	m_pContent->m_transform.posDelta = {0, -(headerHeight + contentHeight * Fixed::OneHalf)};
@@ -74,15 +74,15 @@ UIButton::OnClick::Token UIDialogue::AddMainButton(UIText text, UIButton::OnClic
 {
 	if (m_pMainButton)
 	{
-		LOG_W("%s Main button already exists on this UIDialogue! Ignoring call to AddMainButton", LogNameStr());
+		LOG_W("%s Main button already exists on this UIDialogue! Ignoring call to AddMainButton", m_logName.data());
 		return nullptr;
 	}
 
-	m_pFooter = AddElement<UIElement>(String(NameStr()) + " Footer");
+	m_pFooter = AddElement<UIElement>(m_name + " Footer");
 	m_pFooter->SetRectSize({m_data.size.x, footerHeight}, true);
 	m_pFooter->m_transform.nPosition = {0, -1};
 
-	m_pMainButton = AddWidget<UIButton>(String(NameStr()) + " Button 0");
+	m_pMainButton = AddWidget<UIButton>(m_name + " Button 0");
 	m_pMainButton->SetText(std::move(text));
 	UIElement* pButtonEl = m_pMainButton->Root();
 	pButtonEl->m_transform.SetParent(m_pFooter->m_transform);
@@ -94,7 +94,7 @@ UIButton::OnClick::Token UIDialogue::AddOtherButton(UIText otherButtonUIText, UI
 {
 	if (m_pOtherButton)
 	{
-		LOG_W("%s Other button already exists on this UIDialogue! Ignoring call to AddOtherButton", LogNameStr());
+		LOG_W("%s Other button already exists on this UIDialogue! Ignoring call to AddOtherButton", m_logName.data());
 		return nullptr;
 	}
 	m_pOtherButton = AddWidget<UIButton>("Dialog Button 0", nullptr, true);

@@ -19,15 +19,14 @@ u32 Parse(const Vec<String>& vec, size_t idx)
 } // namespace
 
 const Version Version::BUILD_VERSION = Version(BUILD_VERSION_MAJOR, BUILD_VERSION_MINOR, BUILD_VERSION_PATCH, BUILD_VERSION_PRE);
-const char* Version::szBUILD_VERSION_WITH_COMMIT = BUILD_VERSION_FULL;
+const VString Version::szBUILD_VERSION_WITH_COMMIT = BUILD_VERSION_FULL;
 
 Version::Version() = default;
 
 Version::Version(u32 major, u32 minor, u32 patch, u32 pre) : major(major), minor(minor), patch(patch), pre(pre) {}
 
-Version::Version(const char* szSerialised)
+Version::Version(VString serialised)
 {
-	String serialised(szSerialised);
 	Vec<String> tokens = Strings::Tokenise(serialised, '.', {});
 	major = Parse(tokens, 0);
 	minor = Parse(tokens, 1);
@@ -52,7 +51,17 @@ u32 Version::Patch() const
 
 String Version::ToString() const
 {
-	return Strings::ToString(major) + "." + Strings::ToString(minor) + "." + Strings::ToString(patch) + "." + Strings::ToString(pre);
+	static constexpr size_t MAX = 3 + 1 + 3 + 1 + 3 + 1 + 3;
+	String ret;
+	ret.reserve(MAX);
+	ret += Strings::ToString(major);
+	ret += ".";
+	ret += Strings::ToString(minor);
+	ret += ".";
+	ret += Strings::ToString(patch);
+	ret += ".";
+	ret += Strings::ToString(pre);
+	return ret;
 }
 
 bool Version::Upgrade(const Version& rhs)
