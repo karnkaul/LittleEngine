@@ -8,9 +8,29 @@ namespace LittleEngine
 namespace
 {
 bool bLoadWorld1Now = false;
+bool bMusicPlaying = false;
 #if ENABLED(CONSOLE)
 UPtr<Debug::Commands::Command> uUIContainerTester;
 #endif
+
+LEInput::Token token;
+bool MusicTest(const LEInput::Frame& frame)
+{
+	static const Array<String, 2> ids = {"TestMusic.ogg", "TestMusic_0.ogg"};
+	static size_t idx = 0;
+	if (frame.IsReleased(KeyCode::X))
+	{
+		if (!bMusicPlaying)
+		{
+			g_pAudio->PlayMusic(ids[idx]);
+			bMusicPlaying = true;
+			return true;
+		}
+		idx = (idx == ids.size() - 1) ? 0 : idx + 1;
+		g_pAudio->SwitchTrack(ids[idx]);
+	}
+	return false;
+}
 } // namespace
 #endif
 
@@ -49,8 +69,11 @@ void BootWorld::OnActivated()
 
 	if (!g_pAudio->IsMusicPlaying())
 	{
-		//g_pAudio->PlayMusic("TestMusic.ogg", Fixed::OneHalf);
+		// g_pAudio->PlayMusic("TestMusic.ogg", Fixed::OneHalf);
 	}
+#if defined(DEBUGGING)
+	token = Input()->Register(&MusicTest);
+#endif
 }
 
 void BootWorld::Tick(Time /*dt*/)
@@ -83,5 +106,8 @@ void BootWorld::OnDeactivating()
 {
 	m_pLogoDrawer = nullptr;
 	m_pLogoHeader = nullptr;
+#if defined(DEBUGGING)
+	token = nullptr;
+#endif
 }
 } // namespace LittleEngine

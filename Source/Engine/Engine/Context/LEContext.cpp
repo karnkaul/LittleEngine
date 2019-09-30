@@ -149,6 +149,10 @@ void LEContext::PollInput()
 	default:
 		break;
 	}
+}
+
+void LEContext::FireInput()
+{
 	if (!m_bTerminating)
 	{
 		m_uInput->FireCallbacks();

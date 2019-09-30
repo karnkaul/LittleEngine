@@ -22,8 +22,6 @@ TweakBool(paused, nullptr);
 
 GameManager::GameManager() : m_logName("[GameManager]")
 {
-	// TODO: Set global GFX struct
-
 	g_pGameManager = this;
 #if ENABLED(TWEAKABLES)
 	paused.Bind(&m_bPaused);

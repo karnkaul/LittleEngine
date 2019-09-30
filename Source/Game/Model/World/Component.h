@@ -32,6 +32,9 @@ public:
 	virtual void SetEnabled(bool bEnabled);
 
 protected:
+	virtual void OnRespawn();
+
+protected:
 	void RegenerateLogNameStr() override;
 
 private:

@@ -158,6 +158,9 @@ void Stage()
 #if ENABLED(PROFILER)
 	Profiler::Init(Time::Milliseconds(10));
 #endif
+#if defined(DEBUGGING)
+	uAudio->InitDebug(*uGM->Renderer());
+#endif
 }
 
 bool Tick(Time dt)
@@ -215,12 +218,14 @@ void Sleep(Time time)
 }
 void Unstage()
 {
-	uGM->Reset();
 #if ENABLED(CONSOLE)
 	Console::Cleanup();
 #endif
 #if ENABLED(PROFILER)
 	Profiler::Cleanup();
+#endif
+#if defined(DEBUGGING)
+	uAudio->DestroyDebug();
 #endif
 	uGM = nullptr;
 	if (bReloadRepository)
@@ -289,6 +294,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 			while (accumulator >= dt)
 			{
 				WorldClock::Tick(dt);
+				pContext->FireInput();
 				bool bYield = Tick(dt);
 #if ENABLED(CONSOLE)
 				Debug::Console::Tick(dt);

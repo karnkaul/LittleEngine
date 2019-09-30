@@ -94,9 +94,13 @@ void Entity::Destruct()
 
 void Entity::Respawn()
 {
-	SetEnabled(true);
 	OnRespawn();
+	for (auto pComponent : m_components)
+	{
+		pComponent->OnRespawn();
+	}
 	m_state = State::Spawned;
+	SetEnabled(true);
 }
 
 void Entity::Despawn()

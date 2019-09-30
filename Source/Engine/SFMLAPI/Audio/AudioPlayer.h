@@ -21,7 +21,15 @@ public:
 		Paused
 	};
 
+	enum class Mix
+	{
+		Master,
+		Music,
+		SFX
+	};
+
 public:
+	static Array<Fixed, 3> s_mixVols;
 	Fixed m_volume = Fixed(80, 100);
 	Status m_status = Status::NoMedia;
 	bool m_bLooping = false;
@@ -35,6 +43,8 @@ public:
 	virtual void Reset(Time time = Time::Zero) = 0;
 	virtual bool IsPlaying() const = 0;
 	virtual void Tick(Time dt) = 0;
+
+	static Fixed MixVolume(Mix mix, Fixed nVol);
 
 protected:
 	AudioPlayer();
@@ -78,6 +88,7 @@ private:
 	UPtr<sf::Music> m_uSFMusic;
 	bool m_bFadingIn = false;
 	bool m_bFadingOut = false;
+	bool m_bPauseOnFadeOut = false;
 
 public:
 	MusicPlayer();

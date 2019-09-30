@@ -187,11 +187,6 @@ void OnB(const LEInput::Frame& frame)
 			Fixed y = Maths::Random::Range(-Fixed::One, Fixed::One);
 			Vector2 dir(x, y);
 			pc->SetDirection(dir);
-			auto rc = pEntity->GetComponent<RenderComponent>();
-			if (rc)
-			{
-				rc->UpdatePrimitive(Time::Zero);
-			}
 		}
 		pooled.push_back(pEntity);
 	}
