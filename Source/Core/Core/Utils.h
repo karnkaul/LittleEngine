@@ -16,6 +16,9 @@ bool Remove(Vec<T>& vec, const T& val);
 template <typename T>
 void RemoveIf(Vec<T>& vec, std::function<bool(T& t)> predicate);
 
+template <typename T>
+void RemoveIf(List<T>& list, std::function<bool(T& t)> predicate);
+
 template <typename K, typename V>
 void RemoveIf(UMap<K, V>& map, std::function<bool(V& v)> predicate);
 
@@ -86,6 +89,13 @@ void RemoveIf(Vec<T>& vec, std::function<bool(T& t)> predicate)
 {
 	auto iter = std::remove_if(vec.begin(), vec.end(), predicate);
 	vec.erase(iter, vec.end());
+}
+
+template <typename T>
+void RemoveIf(List<T>& list, std::function<bool(T& t)> predicate)
+{
+	auto iter = std::remove_if(list.begin(), list.end(), predicate);
+	list.erase(iter, list.end());
 }
 
 template <typename K, typename V>

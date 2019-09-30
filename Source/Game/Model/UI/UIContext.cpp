@@ -70,10 +70,12 @@ LayerID UIContext::MaxLayer() const
 void UIContext::SetActive(bool bActive, bool bResetSelection)
 {
 	m_inputTokens.clear();
+	m_ptrToken = nullptr;
 	if (bActive)
 	{
-		SetEnabled(true);
 		Assert(g_pGameManager, "GameManager is null!");
+		m_ptrToken = g_pGameManager->Context()->PushPointer(LEContext::Pointer::Type::Arrow);
+		SetEnabled(true);
 		if (bResetSelection)
 		{
 			ResetSelection();

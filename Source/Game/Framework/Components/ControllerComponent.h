@@ -24,6 +24,10 @@ private:
 public:
 	static Fixed s_orientationEpsilon;
 
+protected:
+	static constexpr f64 s_XY_DEADZONE = 0.01;
+	static constexpr f64 s_ORN_DEADZONE = 0.5;
+
 public:
 	Fixed m_angularSpeed = Fixed::OneThird;
 	Fixed m_linearSpeed = Fixed::One;
@@ -33,9 +37,8 @@ protected:
 	Vector2 m_targetOrn = Vector2::Up;
 	Vector2 m_prevMousePos;
 	Scheme m_active = Scheme::Joystick;
+	SPtr<s32> m_ptrToken;
 	class RenderComponent* m_pRenderComponent = nullptr;
-	static constexpr f64 s_XY_DEADZONE = 0.01;
-	static constexpr f64 s_ORN_DEADZONE = 0.5;
 
 public:
 	ControllerComponent();

@@ -4,6 +4,7 @@
 #include "SFMLAPI/Input/InputStateMachine.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "Engine/GFX.h"
+#include "Engine/Context/LEContext.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Renderer/LERenderer.h"
 #include "Model/World/Entity.h"
@@ -61,6 +62,7 @@ void ControllerComponent::OnCreated()
 	m_pRect = g_pGameManager->Renderer()->New<SFRect>(LayerID::DebugWorld);
 	m_pRect->SetSize(s_orientationWidthHeight)->SetPivot({-1, 0})->SetEnabled(s_bShowJoystickOrientation);
 #endif
+	m_ptrToken = g_pGameManager->Context()->PushPointer(LEContext::Pointer::Type::Cross);
 }
 
 void ControllerComponent::Tick(Time dt)

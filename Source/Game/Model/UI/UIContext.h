@@ -35,6 +35,7 @@ public:
 	bool m_bAutoDestroyOnCancel = false;
 
 protected:
+	SPtr<s32> m_ptrToken;
 	UIElement* m_pRoot = nullptr;
 
 private:

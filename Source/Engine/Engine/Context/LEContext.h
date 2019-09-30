@@ -1,4 +1,5 @@
 #pragma once
+#include "SFML/Window/Cursor.hpp"
 #include "Core/CoreTypes.h"
 #include "Core/Delegate.h"
 #include "SFMLAPI/Input/InputMappings.h"
@@ -21,9 +22,20 @@ class LEContext final
 {
 public:
 	using OnSubmit = Core::Delegate<>;
+	using Token = SPtr<s32>;
+	using Pointer = sf::Cursor;
+
+private:
+	struct PtrEntry
+	{
+		WPtr<s32> wToken;
+		UPtr<Pointer> uPointer;
+	};
 
 private:
 	LEContextData m_data;
+	List<PtrEntry> m_pointerStack;
+	Token m_ptrToken;
 	OnSubmit m_onSubmitted;
 	UPtr<class LEInput> m_uInput;
 	UPtr<class Viewport> m_uViewport;
@@ -49,6 +61,7 @@ public:
 
 	bool TrySetViewportSize(u32 height);
 	void SetWindowStyle(ViewportStyle newStyle);
+	Token PushPointer(Pointer::Type type);
 	void Terminate();
 
 	void PollInput();

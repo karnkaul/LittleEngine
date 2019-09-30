@@ -4,6 +4,7 @@
 #include "SFMLAPI/Viewport/ViewportData.h"
 #include "LEContext.h"
 #include "Engine/Audio/LEAudio.h"
+#include "Engine/Context/LEContext.h"
 #include "Engine/Debug/Profiler.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Input/LEInput.h"
@@ -66,6 +67,7 @@ LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 #endif
 	RendererData rData{m_data.tickRate, Time::Milliseconds(20), maxFPS, m_data.bRenderThread};
 	m_uRenderer = MakeUnique<LERenderer>(*m_uViewport, rData);
+	m_ptrToken = PushPointer(Pointer::Type::Arrow);
 }
 
 LEContext::~LEContext()
@@ -120,6 +122,21 @@ bool LEContext::TrySetViewportSize(u32 height)
 void LEContext::SetWindowStyle(ViewportStyle newStyle)
 {
 	m_oNewViewportStyle.emplace(std::move(newStyle));
+}
+
+LEContext::Token LEContext::PushPointer(Pointer::Type type)
+{
+	PtrEntry entry;
+	entry.uPointer = MakeUnique<Pointer>();
+	if (entry.uPointer->loadFromSystem(type))
+	{
+		SPtr<s32> ret = MakeShared<s32>(m_pointerStack.size());
+		entry.wToken = ret;
+		m_pointerStack.emplace_back(std::move(entry));
+		LOG_D("[Context] Pushed new pointer to stack [%d]", type);
+		return ret;
+	}
+	return {};
 }
 
 void LEContext::Terminate()
@@ -180,6 +197,10 @@ bool LEContext::Update()
 void LEContext::StartFrame()
 {
 	m_uRenderer->Reconcile();
+	Core::RemoveIf<PtrEntry>(m_pointerStack, [](const PtrEntry& entry) { return entry.wToken.expired(); });
+	Assert(!m_pointerStack.empty(), "Pointer Stack is empty!");
+	auto& entry = m_pointerStack.back();
+	m_uViewport->setMouseCursor(*entry.uPointer);
 }
 
 void LEContext::SubmitFrame()
