@@ -20,7 +20,7 @@ public:
 	KeyboardInput m_keyboard;
 	String m_query;
 	Core::RingBuffer<String> m_queryCache;
-	LEInput::Token m_token;
+	Token m_token;
 	bool bCyclingQueries = false;
 
 private:

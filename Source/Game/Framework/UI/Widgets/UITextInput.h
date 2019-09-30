@@ -21,7 +21,7 @@ private:
 	UITextInputData m_data;
 	UPtr<class KeyboardInput> m_uKeyboard;
 	String m_prevText;
-	LEInput::Token m_token;
+	Token m_token;
 	OnEditComplete m_onEditComplete;
 	Time m_cursorFreq = Time::Milliseconds(200);
 	Time m_elapsed;
@@ -36,7 +36,7 @@ public:
 
 	UITextInput* SetTextColour(Colour text);
 	UITextInput* SetTextStyle(UIText uiText);
-	OnEditComplete::Token SetOnEditComplete(OnEditComplete::Callback callback);
+	Token SetOnEditComplete(OnEditComplete::Callback callback);
 
 public:
 	void Tick(Time dt) override;

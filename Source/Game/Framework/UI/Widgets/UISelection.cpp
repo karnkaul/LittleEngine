@@ -6,7 +6,7 @@
 
 namespace LittleEngine
 {
-UISelection::OnChanged::Token UISelection::RegisterOnChanged(OnChanged::Callback callback)
+Token UISelection::RegisterOnChanged(OnChanged::Callback callback)
 {
 	return m_onChanged.Register(std::move(callback));
 }

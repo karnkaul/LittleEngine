@@ -47,7 +47,7 @@ UIToggle* UIToggle::SetOn(bool bOn)
 	return this;
 }
 
-UIToggle::OnChanged::Token UIToggle::AddCallback(UIToggle::OnChanged::Callback callback)
+Token UIToggle::AddCallback(UIToggle::OnChanged::Callback callback)
 {
 	return m_delegate.Register(std::move(callback));
 }

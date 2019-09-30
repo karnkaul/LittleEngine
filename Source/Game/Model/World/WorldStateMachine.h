@@ -25,8 +25,8 @@ private:
 	};
 
 private:
-	Core::Delegate<>::Token m_onSubmitToken;
-	LEInput::Token m_inputToken;
+	Token m_onSubmitToken;
+	Token m_inputToken;
 	class LEContext* m_pContext;
 	static Vec<UPtr<class World>> s_createdWorlds;
 	State m_state;

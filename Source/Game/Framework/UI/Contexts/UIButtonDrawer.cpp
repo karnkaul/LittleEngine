@@ -25,7 +25,7 @@ bool UIButtonDrawer::SetHorizontal(bool bHorizontal)
 	return false;
 }
 
-UIButton::OnClick::Token UIButtonDrawer::AddButton(UIText buttonText, UIButton::OnClick::Callback onInteracted, UIButton** ppButton)
+Token UIButtonDrawer::AddButton(UIText buttonText, UIButton::OnClick::Callback onInteracted, UIButton** ppButton)
 {
 	String buttonName = "Button" + Strings::ToString(m_uiButtons.size());
 	auto pButton = AddWidget<UIButton>(buttonName, nullptr, m_data.bHorizontal);

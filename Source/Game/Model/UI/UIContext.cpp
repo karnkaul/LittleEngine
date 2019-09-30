@@ -26,7 +26,6 @@ void UIContext::OnCreate(String id, LayerID rootLayer)
 	m_pRoot = AddElement<UIElement>(m_name + "_Root", nullptr, layerDelta);
 	m_pRoot->SetStatic(true);
 	OnCreated();
-	SetActive(true);
 }
 
 void UIContext::SetEnabled(bool bSetEnabled)
@@ -69,18 +68,17 @@ LayerID UIContext::MaxLayer() const
 
 void UIContext::SetActive(bool bActive, bool bResetSelection)
 {
-	m_inputTokens.clear();
-	m_ptrToken = nullptr;
+	m_tokens.clear();
 	if (bActive)
 	{
 		Assert(g_pGameManager, "GameManager is null!");
-		m_ptrToken = g_pGameManager->Context()->PushPointer(LEContext::Pointer::Type::Arrow);
+		m_tokens.push_back(g_pGameManager->Context()->PushPointer(LEContext::Pointer::Type::Arrow));
 		SetEnabled(true);
 		if (bResetSelection)
 		{
 			ResetSelection();
 		}
-		m_inputTokens.push_back(
+		m_tokens.push_back(
 			g_pGameManager->Input()->Register([&](const LEInput::Frame& frame) -> bool { return OnInput(frame); }, true));
 		OnActivated();
 		Tick();
@@ -109,7 +107,7 @@ UIElement* UIContext::Root() const
 	return m_pRoot;
 }
 
-UIContext::OnCancelled::Token UIContext::SetOnCancelled(OnCancelled::Callback callback, bool bAutoDestroy)
+Token UIContext::SetOnCancelled(OnCancelled::Callback callback, bool bAutoDestroy)
 {
 	m_bAutoDestroyOnCancel = bAutoDestroy;
 	return m_onCancelledDelegate.Register(std::move(callback));
@@ -131,7 +129,7 @@ void UIContext::Tick(Time dt)
 	{
 		uElement->Tick(dt);
 	}
-	if (!m_inputTokens.empty())
+	if (!m_tokens.empty())
 	{
 		bool bPointerSelection = false;
 		const MouseInput& pointerState = g_pGameManager->Input()->MouseState();

@@ -33,7 +33,7 @@ protected:
 public:
 	// Returns false if any button already added - will be vertical
 	bool SetHorizontal(bool bHorizontal = true);
-	UIButton::OnClick::Token AddButton(UIText buttonText, UIButton::OnClick::Callback onInteracted, UIButton** ppButton = nullptr);
+	Token AddButton(UIText buttonText, UIButton::OnClick::Callback onInteracted, UIButton** ppButton = nullptr);
 	void SetBaseStyle(UIStyle style, Vector2 nPosition = Vector2::Zero);
 
 private:

@@ -70,7 +70,7 @@ UIDialogue* UIDialogue::SetHeader(UIText text, const Colour* pBackground)
 	return this;
 }
 
-UIButton::OnClick::Token UIDialogue::AddMainButton(UIText text, UIButton::OnClick::Callback onMainButton, bool bDismissOnBack)
+Token UIDialogue::AddMainButton(UIText text, UIButton::OnClick::Callback onMainButton, bool bDismissOnBack)
 {
 	if (m_pMainButton)
 	{
@@ -90,7 +90,7 @@ UIButton::OnClick::Token UIDialogue::AddMainButton(UIText text, UIButton::OnClic
 	return m_pMainButton->AddCallback(std::move(onMainButton));
 }
 
-UIButton::OnClick::Token UIDialogue::AddOtherButton(UIText otherButtonUIText, UIButton::OnClick::Callback onOtherButton, bool bSelect)
+Token UIDialogue::AddOtherButton(UIText otherButtonUIText, UIButton::OnClick::Callback onOtherButton, bool bSelect)
 {
 	if (m_pOtherButton)
 	{

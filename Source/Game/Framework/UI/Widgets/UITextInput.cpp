@@ -24,7 +24,7 @@ UITextInput* UITextInput::SetTextStyle(UIText uiText)
 	return this;
 }
 
-UITextInput::OnEditComplete::Token UITextInput::SetOnEditComplete(OnEditComplete::Callback callback)
+Token UITextInput::SetOnEditComplete(OnEditComplete::Callback callback)
 {
 	return m_onEditComplete.Register(std::move(callback));
 }

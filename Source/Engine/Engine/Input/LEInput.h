@@ -63,11 +63,8 @@ public:
 	};
 
 	using Delegate = std::function<bool(const Frame& frameData)>;
-	using Token = SPtr<s32>;
 
 private:
-	using WToken = WPtr<s32>;
-
 	struct InputContext
 	{
 		Delegate callback;

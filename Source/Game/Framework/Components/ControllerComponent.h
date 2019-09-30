@@ -37,7 +37,7 @@ protected:
 	Vector2 m_targetOrn = Vector2::Up;
 	Vector2 m_prevMousePos;
 	Scheme m_active = Scheme::Joystick;
-	SPtr<s32> m_ptrToken;
+	Token m_ptrToken;
 	class RenderComponent* m_pRenderComponent = nullptr;
 
 public:

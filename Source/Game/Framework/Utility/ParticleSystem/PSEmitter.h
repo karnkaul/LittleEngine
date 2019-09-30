@@ -63,7 +63,7 @@ public:
 	Emitter(EmitterData data, bool bSetEnabled = true);
 	~Emitter();
 
-	OnTick::Token RegisterOnTick(OnTick::Callback callback);
+	Token RegisterOnTick(OnTick::Callback callback);
 
 	void Reset(bool bSetEnabled);
 	void PreWarm();

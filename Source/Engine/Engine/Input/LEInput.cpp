@@ -81,7 +81,7 @@ LEInput::LEInput(LEContext& context, InputMap inputMap) : m_pContext(&context)
 
 LEInput::~LEInput() = default;
 
-LEInput::Token LEInput::Register(Delegate callback, bool bForce)
+Token LEInput::Register(Delegate callback, bool bForce)
 {
 	Token token = CreateToken();
 	InputContext newTop{std::move(callback), token, bForce};
@@ -94,7 +94,7 @@ MouseInput LEInput::MouseState() const
 	return m_mouseInput;
 }
 
-LEInput::Token LEInput::RegisterSudo(Delegate callback)
+Token LEInput::RegisterSudo(Delegate callback)
 {
 	Token token = CreateToken();
 	InputContext sudo{std::move(callback), token, true};
@@ -205,7 +205,7 @@ void LEInput::FireCallbacks()
 	size_t curr = m_contexts.size();
 	if (curr != prev)
 	{
-		LOG_D("[Input] Deleted %d stale contexts", prev - curr);
+		LOG_D("[Input] Deleted [%d] stale registrants", prev - curr);
 	}
 
 	if (m_oSudoContext)
@@ -245,8 +245,8 @@ void LEInput::CreateDebugPointer()
 }
 #endif
 
-LEInput::Token LEInput::CreateToken() const
+Token LEInput::CreateToken() const
 {
-	return MakeShared<s32>(ToS32(m_contexts.size() + 1));
+	return MakeToken(m_contexts.size() + 1);
 }
 } // namespace LittleEngine

@@ -2,14 +2,14 @@
 #include "Core/CoreTypes.h"
 #include "Engine/Input/LEInput.h"
 #include "Model/Inheritable.h"
-#include "Model/World/InputTokenHandler.h"
+#include "Model/World/TokenHandler.h"
 
 namespace LittleEngine
 {
 class GameObject : public Inheritable
 {
 protected:
-	InputTokenHandler<LEInput::Token> m_tokenHandler;
+	TokenHandler<Token> m_tokenHandler;
 
 public:
 	GameObject(bool bSilent = false);

@@ -123,6 +123,15 @@ constexpr s32 ToS32(T t)
 	return static_cast<s32>(t);
 }
 
+using Token = SPtr<s32>;
+using WToken = WPtr<s32>;
+
+template <typename T>
+Token MakeToken(T value)
+{
+	return MakeShared<s32>(ToS32(value));
+}
+
 class DependencyException : public std::exception
 {
 };

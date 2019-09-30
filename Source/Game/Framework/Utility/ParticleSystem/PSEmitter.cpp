@@ -120,7 +120,7 @@ Emitter::~Emitter()
 	m_pQuads->Destroy();
 }
 
-Emitter::OnTick::Token Emitter::RegisterOnTick(OnTick::Callback callback)
+Token Emitter::RegisterOnTick(OnTick::Callback callback)
 {
 	return m_onTick.Register(callback);
 }

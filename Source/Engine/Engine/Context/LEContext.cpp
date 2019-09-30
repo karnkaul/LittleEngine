@@ -17,6 +17,8 @@ namespace LittleEngine
 {
 TweakBool(asyncRendering, nullptr);
 
+LEContext::PtrEntry::PtrEntry(WToken wToken, Pointer* pPointer, Pointer::Type type) : wToken(wToken), pPointer(pPointer), type(type) {}
+
 LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 {
 #if ENABLED(TWEAKABLES)
@@ -68,6 +70,7 @@ LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 	RendererData rData{m_data.tickRate, Time::Milliseconds(20), maxFPS, m_data.bRenderThread};
 	m_uRenderer = MakeUnique<LERenderer>(*m_uViewport, rData);
 	m_ptrToken = PushPointer(Pointer::Type::Arrow);
+	Assert(*m_ptrToken != -1, "Could not create default mouse pointer!");
 }
 
 LEContext::~LEContext()
@@ -81,6 +84,7 @@ LEContext::~LEContext()
 	m_uInput = nullptr;
 	m_uRenderer = nullptr;
 	m_uViewport = nullptr;
+	m_pointerMap.clear();
 }
 
 bool LEContext::IsTerminating() const
@@ -122,21 +126,6 @@ bool LEContext::TrySetViewportSize(u32 height)
 void LEContext::SetWindowStyle(ViewportStyle newStyle)
 {
 	m_oNewViewportStyle.emplace(std::move(newStyle));
-}
-
-LEContext::Token LEContext::PushPointer(Pointer::Type type)
-{
-	PtrEntry entry;
-	entry.uPointer = MakeUnique<Pointer>();
-	if (entry.uPointer->loadFromSystem(type))
-	{
-		SPtr<s32> ret = MakeShared<s32>(m_pointerStack.size());
-		entry.wToken = ret;
-		m_pointerStack.emplace_back(std::move(entry));
-		LOG_D("[Context] Pushed new pointer to stack [%d]", type);
-		return ret;
-	}
-	return {};
 }
 
 void LEContext::Terminate()
@@ -200,7 +189,12 @@ void LEContext::StartFrame()
 	Core::RemoveIf<PtrEntry>(m_pointerStack, [](const PtrEntry& entry) { return entry.wToken.expired(); });
 	Assert(!m_pointerStack.empty(), "Pointer Stack is empty!");
 	auto& entry = m_pointerStack.back();
-	m_uViewport->setMouseCursor(*entry.uPointer);
+	Assert(entry.pPointer, "pPointer is null!");
+	m_uViewport->setMouseCursor(*entry.pPointer);
+#if ENABLED(DEBUG_LOGGING)
+	LOGIF_D(m_prevPtrType != entry.type, "[Context] Pointer type changed to [%d]", entry.type);
+	m_prevPtrType = entry.type;
+#endif
 }
 
 void LEContext::SubmitFrame()
@@ -245,7 +239,20 @@ void LEContext::SubmitFrame()
 	m_onSubmitted.Clear();
 }
 
-LEContext::OnSubmit::Token LEContext::RegisterOnSubmitted(OnSubmit::Callback onFrameSubmitted)
+Token LEContext::PushPointer(Pointer::Type type)
+{
+	Pointer* pPointer = GetPointer(type);
+	if (pPointer)
+	{
+		Token ret = MakeToken(m_pointerStack.size());
+		m_pointerStack.emplace_back(ret, pPointer, type);
+		LOG_D("[Context] Pushed new pointer to stack [%d]", type);
+		return ret;
+	}
+	return MakeToken(-1);
+}
+
+Token LEContext::RegisterOnSubmitted(OnSubmit::Callback onFrameSubmitted)
 {
 	return m_onSubmitted.Register(onFrameSubmitted);
 }
@@ -257,4 +264,21 @@ void LEContext::ModifyTickRate(Time newTickRate)
 	m_uRenderer->ModifyTickRate(newTickRate);
 }
 #endif
+
+LEContext::Pointer* LEContext::GetPointer(Pointer::Type type)
+{
+	auto search = m_pointerMap.find(type);
+	if (search != m_pointerMap.end())
+	{
+		return search->second.get();
+	}
+	UPtr<Pointer> uPtr = MakeUnique<Pointer>();
+	if (uPtr->loadFromSystem(type))
+	{
+		m_pointerMap[type] = std::move(uPtr);
+		LOG_D("[Context] New Pointer constructed: [%d]", type);
+		return m_pointerMap[type].get();
+	}
+	return nullptr;
+}
 } // namespace LittleEngine

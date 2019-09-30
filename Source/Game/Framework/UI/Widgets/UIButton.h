@@ -18,7 +18,7 @@ private:
 
 public:
 	void SetText(UIText uiText);
-	OnClick::Token AddCallback(OnClick::Callback callback);
+	Token AddCallback(OnClick::Callback callback);
 
 public:
 	void Tick(Time dt = Time::Zero) override;
