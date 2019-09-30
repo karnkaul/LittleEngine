@@ -1,3 +1,4 @@
+#include <bitset>
 #include "Core/Logger.h"
 #include "SFMLAPI/Input/InputMappings.h"
 #include "SFMLAPI/Input/InputStateMachine.h"
@@ -14,32 +15,20 @@ namespace LittleEngine
 {
 namespace
 {
-void ClampPosition(Vector2& outPosition, Vector2 padding)
+void ClampPosition(Vector2& outPosition, Vector2 size)
 {
-	Vector2 halfSize = g_pGFX->WorldSpace() * Fixed::OneHalf;
-	if (outPosition.x + padding.x > halfSize.x)
-	{
-		outPosition.x = (halfSize.x - padding.x);
-	}
-	else if (outPosition.x - padding.x < -halfSize.x)
-	{
-		outPosition.x = -(halfSize.x - padding.x);
-	}
-	if (outPosition.y + padding.y > halfSize.y)
-	{
-		outPosition.y = (halfSize.y - padding.y);
-	}
-	else if (outPosition.y - padding.y < -halfSize.y)
-	{
-		outPosition.y = -(halfSize.y - padding.y);
-	}
+	Vector2 world = g_pGFX->WorldSpace();
+	Fixed maxX = Fixed::OneHalf * (world.x - size.x);
+	Fixed maxY = Fixed::OneHalf * (world.y - size.y);
+	outPosition.x = Maths::Clamp(outPosition.x, -maxX, maxX);
+	outPosition.y = Maths::Clamp(outPosition.y, -maxY, maxY);
 }
 } // namespace
 
 #if defined(DEBUGGING)
 bool ControllerComponent::s_bShowJoystickOrientation = false;
+Array<Colour, 2> ControllerComponent::s_ornColours = {Colour(255, 0, 255), Colour(150, 150, 150)};
 Vector2 ControllerComponent::s_orientationWidthHeight = {120, 3};
-Colour ControllerComponent::s_orientationColour = Colour(255, 0, 255);
 TweakBool(joystickOrientation, &ControllerComponent::s_bShowJoystickOrientation);
 #endif
 
@@ -70,10 +59,7 @@ void ControllerComponent::OnCreated()
 
 #if defined(DEBUGGING)
 	m_pRect = g_pGameManager->Renderer()->New<SFRect>(LayerID::DebugWorld);
-	m_pRect->SetSize(s_orientationWidthHeight)
-		->SetPivot({-1, 0})
-		->SetColour(s_orientationColour)
-		->SetEnabled(s_bShowJoystickOrientation);
+	m_pRect->SetSize(s_orientationWidthHeight)->SetPivot({-1, 0})->SetEnabled(s_bShowJoystickOrientation);
 #endif
 }
 
@@ -82,18 +68,18 @@ void ControllerComponent::Tick(Time dt)
 	if (g_pGameManager->IsPlayerControllable())
 	{
 		Transform& t = m_pOwner->m_transform;
-		if (Maths::Abs(m_rotation) > Fixed::Zero)
+		Vector2 orn = t.Orientation();
+		if (orn != m_targetOrn)
 		{
-			Fixed orientation = Vector2::ToOrientation(t.Orientation()) + m_rotation * m_angularSpeed * dt.AsMilliseconds();
-			t.SetOrientation(orientation);
-			m_rotation = Fixed::Zero;
+			Vector2 newOrn = Maths::Lerp(orn, m_targetOrn, m_angularSpeed * dt.AsMilliseconds() / 40);
+			t.SetOrientation(newOrn);
 		}
 		if (m_displacement.SqrMagnitude() > 0.0)
 		{
 			Vector2 pos = t.Position() + (m_displacement * m_linearSpeed * dt.AsMilliseconds());
 			if (m_pRenderComponent)
 			{
-				ClampPosition(pos, m_pRenderComponent->m_pPrimitive->RenderBounds().Size() * Fixed::OneHalf);
+				ClampPosition(pos, m_pRenderComponent->m_pPrimitive->RenderBounds().Size());
 			}
 			t.SetPosition(pos);
 			m_displacement = Vector2::Zero;
@@ -103,7 +89,8 @@ void ControllerComponent::Tick(Time dt)
 	m_pRect->SetEnabled(s_bShowJoystickOrientation);
 	if (s_bShowJoystickOrientation)
 	{
-		m_pRect->SetPosition(m_pOwner->WorldMatrix().Position());
+		Colour c = s_ornColours[ToIdx(m_active)];
+		m_pRect->SetPosition(m_pOwner->WorldMatrix().Position())->SetColour(c);
 	}
 #endif
 }
@@ -128,111 +115,67 @@ void ControllerComponent::SetEnabled(bool bEnabled)
 void ControllerComponent::Reset()
 {
 	m_displacement = Vector2::Zero;
-	m_rotation = Fixed::Zero;
+	m_targetOrn = Vector2::Up;
 }
 
 bool ControllerComponent::OnInput(const LEInput::Frame& frame)
 {
-	m_bKeyInput = false;
-	if (!m_bEnabled)
+	if (m_bEnabled)
 	{
-		return false;
-	}
-
-	bool bModifier = frame.IsHeld(KeyCode::LControl) || frame.IsHeld(KeyCode::RControl) || frame.IsHeld(KeyType::JOY_BTN_4);
-	m_rotation = Fixed::Zero;
-	m_displacement = Vector2::Zero;
-
-	// Horizontal
-	{
-		if (frame.IsHeld(KeyCode::Left))
+		std::bitset<2> current;
+		bool bKeyPressed =
+			frame.IsHeld({KeyCode::Down, KeyCode::Up, KeyCode::Left, KeyCode::Right, KeyCode::W, KeyCode::A, KeyCode::S, KeyCode::D});
+		bool bMouseChanged = frame.mouseInput.worldPosition != m_prevMousePos;
+		current[ToIdx(Scheme::KBM)] = bKeyPressed || bMouseChanged;
+		const JoyState* pJoyState = nullptr;
+		for (const auto& state : frame.joyInput.m_states)
 		{
-			m_bKeyInput = true;
-			if (bModifier)
+			if (Maths::Abs(state.xy.SqrMagnitude()) > s_XY_DEADZONE || Maths::Abs(state.uv.SqrMagnitude()) > s_ORN_DEADZONE)
 			{
-				m_rotation = 1;
-			}
-			else
-			{
-				m_displacement.x = -1;
+				pJoyState = &state;
+				current[ToIdx(Scheme::Joystick)] = true;
+				break;
 			}
 		}
-
-		else if (frame.IsHeld(KeyCode::Right))
+		if (current.any())
 		{
-			m_bKeyInput = true;
-			if (bModifier)
+			if (current[ToIdx(Scheme::Joystick)] && pJoyState)
 			{
-				m_rotation = -1;
-			}
-			else
-			{
-				m_displacement.x = 1;
-			}
-		}
-	}
-
-	// Vertical
-	{
-		if (frame.IsHeld(KeyCode::Up))
-		{
-			m_bKeyInput = true;
-			m_displacement.y += 1;
-		}
-
-		else if (frame.IsHeld(KeyCode::Down))
-		{
-			m_bKeyInput = true;
-			m_displacement.y -= 1;
-		}
-	}
-
-	if (m_displacement.SqrMagnitude() > 0.0)
-	{
-		m_displacement.Normalise();
-	}
-
-	for (const auto& state : frame.joyInput.m_states)
-	{
-		if (!m_bKeyInput)
-		{
-			m_displacement = Vector2::Zero;
-			m_rotation = Fixed::Zero;
-		}
-		m_displacement.x += state.xy.x;
-		m_displacement.y += state.xy.y;
-		if (Maths::Abs(state.uv.SqrMagnitude()) > 0.5f)
-		{
-			Vector2 t = state.uv.Normalised();
-			Vector2 s = m_pOwner->m_transform.WorldOrientation();
-			Vector2 s90 = {s.x.Cos() * s.y.Sin(), -s.x.Sin() * s.y.Cos()};
-			Fixed proj = s.Dot(t);
-			Fixed dir = s90.Dot(t);
-			Fixed one = Fixed::One - s_orientationEpsilon;
-			if (Maths::Abs(proj) < one || proj < -one)
-			{
-				if ((proj > Fixed::Zero && dir > Fixed::Zero) || (proj <= Fixed::Zero && dir >= Fixed::Zero))
-				{
-					m_rotation = -Fixed::One;
-				}
-				else if ((proj > Fixed::Zero && dir < Fixed::Zero) || (proj <= Fixed::Zero && dir <= Fixed::Zero))
-				{
-					m_rotation = Fixed::One;
-				}
-			}
-			else
-			{
-				LOG_D("projection: %.2f", proj.ToF32());
-				m_rotation = Fixed::Zero;
-				m_pOwner->m_transform.SetOrientation(t);
-			}
+				m_active = Scheme::Joystick;
+				m_displacement.x += pJoyState->xy.x;
+				m_displacement.y += pJoyState->xy.y;
+				m_targetOrn = pJoyState->uv.Normalised();
 #if defined(DEBUGGING)
-			if (m_pRect && s_bShowJoystickOrientation)
-			{
-				m_pRect->SetOrientation(t);
-			}
+				if (m_pRect && s_bShowJoystickOrientation)
+				{
+					m_pRect->SetOrientation(m_targetOrn);
+				}
 #endif
+			}
+			else
+			{
+				m_active = Scheme::KBM;
+				Vector2 orn = frame.mouseInput.worldPosition - m_pOwner->m_transform.WorldPosition();
+				m_targetOrn = orn.Normalised();
+				if (frame.IsHeld({KeyCode::Left, KeyCode::A}))
+				{
+					m_displacement.x += -1;
+				}
+				if (frame.IsHeld({KeyCode::Right, KeyCode::D}))
+				{
+					m_displacement.x += 1;
+				}
+				if (frame.IsHeld({KeyCode::Up, KeyCode::W}))
+				{
+					m_displacement.y += 1;
+				}
+				if (frame.IsHeld({KeyCode::Down, KeyCode::S}))
+				{
+					m_displacement.y += -1;
+				}
+			}
 		}
+		m_prevMousePos = frame.mouseInput.worldPosition;
 	}
 	return false;
 }

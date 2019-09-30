@@ -105,7 +105,7 @@ LEInput::Token LEInput::RegisterSudo(Delegate callback)
 void LEInput::TakeSnapshot()
 {
 	auto uniqueInsert = [&](s32 toInsert) {
-		if (toInsert > 0)
+		if (toInsert >= 0)
 		{
 			KeyType key = static_cast<KeyType>(toInsert);
 			if (Core::Search(m_currentSnapshot, key) == m_currentSnapshot.end())

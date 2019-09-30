@@ -5,10 +5,17 @@ namespace LittleEngine
 {
 class ControllerComponent : public AComponent
 {
+public:
+	enum class Scheme
+	{
+		Joystick = 0,
+		KBM,
+	};
+
 #if defined(DEBUGGING)
 public:
 	static bool s_bShowJoystickOrientation;
-	static Colour s_orientationColour;
+	static Array<Colour, 2> s_ornColours;
 	static Vector2 s_orientationWidthHeight;
 
 private:
@@ -23,9 +30,12 @@ public:
 
 protected:
 	Vector2 m_displacement;
-	Fixed m_rotation;
+	Vector2 m_targetOrn = Vector2::Up;
+	Vector2 m_prevMousePos;
+	Scheme m_active = Scheme::Joystick;
 	class RenderComponent* m_pRenderComponent = nullptr;
-	bool m_bKeyInput = false;
+	static constexpr f64 s_XY_DEADZONE = 0.01;
+	static constexpr f64 s_ORN_DEADZONE = 0.5;
 
 public:
 	ControllerComponent();
