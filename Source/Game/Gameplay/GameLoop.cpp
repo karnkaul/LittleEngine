@@ -56,14 +56,30 @@ TweakS32(ticksPerSec, nullptr);
 bool Init(s32 argc, char** argv)
 {
 	OS::Env()->SetVars(argc, argv, {IDs::COOKED_ASSETS.c_str(), MAIN_MANIFEST_FILE.c_str()});
-
 	config.Init();
 #if !defined(SHIPPING)
-	LOG_D("[GameLoop] Initialising event loop, loading config...");
+	LOG_D("[GameLoop] Loading config...");
 	config.Load(OS::Env()->FullPath(GAME_CONFIG_FILE.c_str()));
 #endif
+	if (OS::Threads::VacantThreadCount() > 0)
+	{
+		String header = "Build: ";
+		header += Core::Version::BUILD_VERSION.ToString();
+		u8 backupCount = config.BackupLogFileCount();
+		Core::StartFileLogging(OS::Env()->FullPath("Debug"), backupCount, std::move(header));
+	}
+	try
+	{
+		uRepository = MakeUnique<LERepository>(IDs::DEFAULT_FONT, IDs::COOKED_ASSETS, IDs::ASSETS_ROOT);
+		uAudio = MakeUnique<LEAudio>();
+		uShaders = MakeUnique<LEShaders>();
+	}
+	catch (const FatalEngineException& e)
+	{
+		LOG_E("[GameLoop] ERROR! Initialisation failed!\n%s", e.what());
+		return false;
+	}
 	auto pSettings = GameSettings::Instance();
-
 	f32 maxParticlesScale = 1.0f;
 	auto pStr = pSettings->GetValue("LOW_QUALITY");
 	if (pStr && Strings::ToBool(*pStr))
@@ -76,14 +92,23 @@ bool Init(s32 argc, char** argv)
 		maxParticlesScale = Strings::ToF32(*pStr, maxParticlesScale);
 	}
 	g_maxParticlesScale = Fixed(maxParticlesScale);
-
-	if (OS::Threads::VacantThreadCount() > 0)
+	Core::g_MinLogSeverity = pSettings->LogLevel();
+	bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
+	ControllerComponent::s_orientationEpsilon = config.ControllerOrientationEpsilon();
+	maxFrameTime = config.MaxFrameTime();
+	if (config.ShouldCreateRenderThread())
 	{
-		String header = "Build: " + Core::Version::BUILD_VERSION.ToString();
-		u8 backupCount = config.BackupLogFileCount();
-		Core::StartFileLogging(OS::Env()->FullPath("Debug"), backupCount, std::move(header));
+		if (OS::Threads::VacantThreadCount() == 0)
+		{
+			LOG_W("[GameLoop] Insufficient threads to create render thread!\n!ERROR! Async Renderer not available!");
+			config.m_bRenderThread = false;
+		}
 	}
-
+#if defined(DEBUGGING)
+	ControllerComponent::s_orientationWidthHeight = config.ControllerOrientationSize();
+	Entity::s_orientationWidthHeight = config.EntityOrientationSize();
+	Collider::s_debugShapeWidth = config.ColliderBorderWidth();
+#endif
 #if ENABLED(TWEAKABLES)
 	ticksPerSec.BindCallback([](VString val) {
 		s32 newRate = Strings::ToS32(String(val));
@@ -108,43 +133,10 @@ bool Init(s32 argc, char** argv)
 		reloadApp.m_value = Strings::ToString(0);
 	});
 #endif
-	try
-	{
-		uRepository = MakeUnique<LERepository>(IDs::DEFAULT_FONT, IDs::COOKED_ASSETS, IDs::ASSETS_ROOT);
-		uAudio = MakeUnique<LEAudio>();
-		uShaders = MakeUnique<LEShaders>();
-	}
-	catch (const FatalEngineException& /*e*/)
-	{
-		LOG_E("[GameLoop] ERROR! Could not initialise Engine Service!");
-		return false;
-	}
-
-	Core::g_MinLogSeverity = pSettings->LogLevel();
-	bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
-	ControllerComponent::s_orientationEpsilon = config.ControllerOrientationEpsilon();
-	maxFrameTime = config.MaxFrameTime();
-#if defined(DEBUGGING)
-	ControllerComponent::s_orientationWidthHeight = config.ControllerOrientationSize();
-	Entity::s_orientationWidthHeight = config.EntityOrientationSize();
-	Collider::s_debugShapeWidth = config.ColliderBorderWidth();
-#endif
-
-	if (config.ShouldCreateRenderThread())
-	{
-		if (OS::Threads::VacantThreadCount() == 0)
-		{
-			LOG_W("[GameLoop] Insufficient threads to create render thread!\n!ERROR! Async Renderer "
-				  "not "
-				  "available!");
-			config.m_bRenderThread = false;
-		}
-	}
-
 	Core::Jobs::Init(config.JobWorkerCount());
 	Locale::Init(pSettings->LocdataID(), pSettings->ENLocdataID());
+	GameInit::CreateWorlds();
 	Time::Reset();
-
 	return true;
 }
 
@@ -329,12 +321,11 @@ s32 GameLoop::Run(s32 argc, char** argv)
 		}
 		Sleep(tickRate - frameElapsed);
 	}
-
 	Cleanup();
 	return 0;
 }
 
-bool ReloadContext(bool bUnloadAssets)
+bool GameLoop::ReloadContext(bool bUnloadAssets)
 {
 	if (!bInit)
 	{

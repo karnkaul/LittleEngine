@@ -57,28 +57,19 @@ void InputStateMachine::SetInputMapping(InputMap inputMap)
 	m_inputMap = std::move(inputMap);
 }
 
-#define LOG_A_OUTPUT 0
 InputDataFrame InputStateMachine::Dataframe() const
 {
 	InputDataFrame frame;
 	frame.textInput = m_textInput;
 	for (const auto& kvp : m_keyStateMap)
-	bool bApressed = false;
-#endif
 	for (const auto& kvp : m_keyStateMap)
 	{
 		const auto& keyState = kvp.second;
 		if (keyState.bPressed)
 		{
 			frame.pressed.push_back(keyState);
-#if LOG_A_OUTPUT
-			bApressed |= ToS32(keyState.GetKeyType()) == ToS32(KeyCode::A);
-#endif
 		}
 	}
-#if LOG_A_OUTPUT
-	LOG_D("A pressed: %d", bApressed);
-#endif
 	frame.mouseInput = m_pointerInput;
 	frame.joyInput = m_joyInput;
 	return frame;

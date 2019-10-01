@@ -25,13 +25,25 @@ private:
 	};
 
 private:
+	static Vec<UPtr<class World>> s_createdWorlds;
+
+private:
+	String m_manifestPath;
+	Task m_onLoaded;
+	Time m_loadTime;
 	Token m_onSubmitToken;
 	Token m_inputToken;
-	class LEContext* m_pContext;
-	static Vec<UPtr<class World>> s_createdWorlds;
 	State m_state;
 	Transition m_transition;
-
+	UPtr<class ILoadingHUD> m_uLoadHUD;
+	SPtr<class ManifestLoader> m_sLoader;
+	class SFText* m_pLoadingTitle = nullptr;
+	SFText* m_pLoadingSubtitle = nullptr;
+	class Quad* m_pSpinner = nullptr;
+	World* m_pActiveWorld = nullptr;
+	World* m_pNextWorld = nullptr;
+	class LEContext* m_pContext;
+	
 public:
 #ifdef DEBUGGING
 	static bool s_bRunning;

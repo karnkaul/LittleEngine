@@ -19,8 +19,8 @@ private:
 private:
 	String m_logName;
 	Vec<Task> m_initCallbacks;
-	Vec<UPtr<class Entity>> m_uEntities;
-	Array<Vec<UPtr<class AComponent>>, COMPONENT_LINES> m_uComponents;
+	Vec<UPtr<class Entity>> m_entities;
+	Array<Vec<UPtr<class AComponent>>, COMPONENT_LINES> m_components;
 	UPtr<class LEContext> m_uContext;
 	UPtr<class WorldStateMachine> m_uWSM;
 	UPtr<class UIManager> m_uUIManager;
@@ -75,7 +75,7 @@ T* GameManager::NewEntity(String name, Vector2 position, Vector2 orientation)
 	static_assert(IsDerived<Entity, T>(), "T must derive from Entity");
 	UPtr<T> uT = MakeUnique<T>();
 	T* pT = uT.get();
-	m_uEntities.emplace_back(std::move(uT));
+	m_entities.emplace_back(std::move(uT));
 	pT->OnCreate(std::move(name));
 	pT->m_transform.SetPosition(position);
 	pT->m_transform.SetOrientation(orientation);
@@ -89,8 +89,8 @@ T* GameManager::NewComponent(Entity& owner)
 	static_assert(IsDerived<AComponent, T>(), "T must derive from AComponent");
 	UPtr<T> uT = MakeUnique<T>();
 	size_t idx = ToIdx(uT->Timing());
-	Assert(m_uComponents.size() > idx, "Invalid Component Timing index!");
-	auto& componentVec = m_uComponents.at(idx);
+	Assert(m_components.size() > idx, "Invalid Component Timing index!");
+	auto& componentVec = m_components.at(idx);
 	uT->OnCreate(owner);
 	T* pT = uT.get();
 	componentVec.emplace_back(std::move(uT));

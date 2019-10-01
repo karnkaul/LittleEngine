@@ -32,6 +32,11 @@ GameManager::GameManager() : m_logName("[GameManager]")
 GameManager::~GameManager()
 {
 	m_uWSM = nullptr;
+	m_entities.clear();
+	for (auto& vec : m_components)
+	{
+		vec.clear();
+	}
 	m_uPhysics = nullptr;
 	m_uUIManager = nullptr;
 	m_uWorldCamera = nullptr;
@@ -169,11 +174,11 @@ void GameManager::ModifyTickRate(Time newTickRate)
 
 void GameManager::Reset()
 {
-	for (auto& componentVec : m_uComponents)
+	for (auto& componentVec : m_components)
 	{
 		componentVec.clear();
 	}
-	m_uEntities.clear();
+	m_entities.clear();
 	m_uUIManager->Reset();
 	m_uWorldCamera->Reset();
 	m_uPhysics->Reset();
@@ -193,7 +198,7 @@ void GameManager::Tick(Time dt)
 
 		if (!m_bPaused)
 		{
-			for (auto& componentVec : m_uComponents)
+			for (auto& componentVec : m_components)
 			{
 				Core::RemoveIf<UPtr<AComponent>>(componentVec, [](UPtr<AComponent>& uC) { return uC->m_bDestroyed; });
 				for (auto& uComponent : componentVec)
@@ -201,8 +206,8 @@ void GameManager::Tick(Time dt)
 					uComponent->Tick(dt);
 				}
 			}
-			Core::RemoveIf<UPtr<Entity>>(m_uEntities, [](UPtr<Entity>& uE) { return uE->IsDestroyed(); });
-			for (auto& uEntity : m_uEntities)
+			Core::RemoveIf<UPtr<Entity>>(m_entities, [](UPtr<Entity>& uE) { return uE->IsDestroyed(); });
+			for (auto& uEntity : m_entities)
 			{
 				uEntity->Tick(dt);
 			}
@@ -218,14 +223,14 @@ void GameManager::Step(Time fdt)
 	if (!m_bPaused)
 	{
 		m_uPhysics->Step(fdt);
-		for (auto& componentVec : m_uComponents)
+		for (auto& componentVec : m_components)
 		{
 			for (auto& uComponent : componentVec)
 			{
 				uComponent->Step(fdt);
 			}
 		}
-		for (auto& uEntity : m_uEntities)
+		for (auto& uEntity : m_entities)
 		{
 			uEntity->Step(fdt);
 		}
