@@ -163,12 +163,16 @@ void Stage()
 #endif
 }
 
-bool Tick(Time dt)
+void Step(Time fdt)
 {
-	PROFILE_START("TICK", Colour(127, 0, 255));
+	uGM->Step(fdt);
+}
+
+void Tick(Time dt)
+{
+	PROFILE_CUSTOM("TICK", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 0, 255));
 	uRepository->Tick(dt);
-	bool bYield = false;
-	uGM->Tick(dt, bYield);
+	uGM->Tick(dt);
 	uAudio->Tick(dt);
 #if ENABLED(CONSOLE)
 	Console::Tick(dt);
@@ -177,34 +181,22 @@ bool Tick(Time dt)
 #if ENABLED(PROFILER)
 	Profiler::Tick(dt);
 #endif
-	return bYield;
 }
 
 #if defined(DEBUGGING)
 inline void ProfileFrameTime(Time frameElapsed, Time maxFrameTime)
 {
-	static const Time DILATED_TIME = Time::Milliseconds(250);
-	static const u8 MAX_CONSECUTIVE = 2;
-	static Time logTime = Time::Now() - Time::Milliseconds(300);
-	static u8 consecutive = 0;
+	static const Time DILATED_TIME = Time::Seconds(3);
+	static Time logTime = Time::Now() - Time::Seconds(3);
 	if (frameElapsed > maxFrameTime)
 	{
-		++consecutive;
-		if ((Time::Now() - logTime) > DILATED_TIME && consecutive > MAX_CONSECUTIVE)
+		if ((Time::Now() - logTime) > DILATED_TIME)
 		{
 			f32 max = maxFrameTime.AsSeconds() * 1000.0f;
 			f32 taken = frameElapsed.AsSeconds() * 1000.0f;
-			LOG_E("Game Loop is taking too long! Game time is inaccurate (slowed down) "
-				  "[max: "
-				  "%.2fms taken: %.2fms]",
-				  max, taken);
+			LOG_E("Game Loop is taking too long [%.2fms (max: %.2fms)]! Game time is inaccurate (slowed down)", taken, max);
 			logTime = Time::Now();
-			consecutive = 0;
 		}
-	}
-	else
-	{
-		consecutive = 0;
 	}
 }
 #endif
@@ -269,6 +261,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 	uGM->Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE, &GameInit::LoadShaders);
 
 	const Time tickRate = config.TickRate();
+	const Time fdt = config.StepRate();
 	Time accumulator;
 	Time currentTime = Time::Now();
 	while (!uGM->Context()->IsTerminating())
@@ -281,41 +274,36 @@ s32 GameLoop::Run(s32 argc, char** argv)
 		{
 			break;
 		}
-
 		if (!pContext->IsPaused())
 		{
 			pContext->StartFrame();
-			const Time dt = tickRate;
 			const Time newTime = Time::Now();
-			const Time frameTime = Time::Clamp(newTime - currentTime, Time::Zero, maxFrameTime);
+			const Time dt = Time::Clamp(newTime - currentTime, Time::Zero, maxFrameTime.Scaled(2));
 			currentTime = newTime;
+			WorldClock::Tick(dt);
 
-			accumulator += frameTime;
-			while (accumulator >= dt)
+			// Step
+			accumulator += dt;
+			PROFILE_CUSTOM("STEP", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 130, 255));
+			while (accumulator >= fdt)
 			{
-				WorldClock::Tick(dt);
-				pContext->FireInput();
-				bool bYield = Tick(dt);
-#if ENABLED(CONSOLE)
-				Debug::Console::Tick(dt);
-#endif
-				if (bYield)
-				{
-					accumulator = Time::Zero;
-					LOG_D("[EventLoop] Yielded integration");
-					break;
-				}
-				accumulator -= dt;
+				Step(fdt);
+				accumulator -= fdt;
 			}
+			PROFILE_STOP("STEP");
 
+			// Tick
+			pContext->FireInput();
+			Tick(dt);
+
+			// Submit
 			pContext->SubmitFrame();
-
 			if (pContext->IsTerminating())
 			{
 				break;
 			}
 #if defined(DEBUGGING)
-			ProfileFrameTime(Time::Now() - currentTime, tickRate);
+			ProfileFrameTime(Time::Now() - currentTime, maxFrameTime);
 #endif
 			if (bReloadContext)
 			{

@@ -15,6 +15,10 @@ AComponent::~AComponent()
 	LOG_D("%s destroyed", m_logName.c_str());
 }
 
+void AComponent::Tick(Time /*dt*/) {}
+
+void AComponent::Step(Time /*fdt*/) {}
+
 TimingType AComponent::Timing() const
 {
 	return TimingType::Default;

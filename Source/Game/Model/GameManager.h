@@ -24,7 +24,7 @@ private:
 	UPtr<class LEContext> m_uContext;
 	UPtr<class WorldStateMachine> m_uWSM;
 	UPtr<class UIManager> m_uUIManager;
-	UPtr<class LEPhysics> m_uCollisionManager;
+	UPtr<class LEPhysics> m_uPhysics;
 	UPtr<class Camera> m_uWorldCamera;
 	GFX m_gfx;
 	bool m_bQuitting = false;
@@ -65,7 +65,8 @@ public:
 	void ModifyTickRate(Time newTickRate);
 #endif
 	void Reset();
-	void Tick(Time dt, bool& bYieldIntegration);
+	void Tick(Time dt);
+	void Step(Time fdt);
 };
 
 template <typename T>

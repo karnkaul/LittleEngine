@@ -47,6 +47,7 @@ public:
 public:
 	virtual void SetEnabled(bool bEnabled);
 	virtual void Tick(Time dt);
+	virtual void Step(Time fdt);
 
 public:
 	void OnCreate(String name);

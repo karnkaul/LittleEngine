@@ -11,6 +11,7 @@ namespace
 const String RENDER_THREAD_KEY = "bRenderThread";
 const String PAUSE_ON_FOCUS_LOSS_KEY = "bPauseOnFocusLoss";
 const String JOB_WORKER_COUNT_KEY = "jobWorkerCount";
+const String STEPS_PER_SECOND_KEY = "stepsPerSecond";
 const String TICKS_PER_SECOND_KEY = "ticksPerSecond";
 const String RENDER_THREAD_START_DELAY_MS_KEY = "renderThreadStartDelayMS";
 const String MAX_FRAME_TIME_MS = "maxFrameTimeMS";
@@ -80,6 +81,12 @@ u32 GameConfig::JobWorkerCount() const
 	return static_cast<u32>(m_uData->GetS32(JOB_WORKER_COUNT_KEY));
 }
 
+Time GameConfig::StepRate() const 
+{
+	u32 ticks = static_cast<u32>(m_uData->GetS32(STEPS_PER_SECOND_KEY));
+	return Time::Seconds(1.0f / ticks);
+}
+
 Time GameConfig::TickRate() const
 {
 	u32 ticks = static_cast<u32>(m_uData->GetS32(TICKS_PER_SECOND_KEY));
@@ -146,6 +153,7 @@ void GameConfig::Verify()
 	m_bDirty = false;
 	m_bDirty |= SetStringIfEmpty(*m_uData, TITLEBAR_TEXT_KEY, "LOC_VIEWPORT_TITLE");
 	m_bDirty |= SetStringIfEmpty(*m_uData, COLLIDER_SHAPE_WIDTH_KEY, "2");
+	m_bDirty |= SetStringIfEmpty(*m_uData, STEPS_PER_SECOND_KEY, Strings::ToString(100));
 	m_bDirty |= SetStringIfEmpty(*m_uData, TICKS_PER_SECOND_KEY, Strings::ToString(35));
 	m_bDirty |= SetStringIfEmpty(*m_uData, RENDER_THREAD_START_DELAY_MS_KEY, Strings::ToString(3));
 	m_bDirty |= SetStringIfEmpty(*m_uData, MAX_FRAME_TIME_MS, Strings::ToString(50));

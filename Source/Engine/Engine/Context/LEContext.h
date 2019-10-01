@@ -71,8 +71,7 @@ public:
 
 	void PollInput();
 	void FireInput();
-	// Returns true if terminating
-	bool Update();
+	void Update();
 	void StartFrame();
 	void SubmitFrame();
 

@@ -28,7 +28,7 @@ void LEPhysics::Reset()
 	m_colliders.clear();
 }
 
-void LEPhysics::Tick(Time /*dt*/)
+void LEPhysics::Step(Time /*dt*/)
 {
 	Scrub();
 

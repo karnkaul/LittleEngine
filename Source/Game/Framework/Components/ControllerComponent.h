@@ -29,7 +29,7 @@ protected:
 	static constexpr f64 s_ORN_DEADZONE = 0.5;
 
 public:
-	Fixed m_angularSpeed = Fixed::OneThird;
+	Fixed m_angularSpeed = Fixed::One;
 	Fixed m_linearSpeed = Fixed::One;
 
 protected:

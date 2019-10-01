@@ -77,6 +77,8 @@ void Entity::OnCreate(String name)
 	m_state = State::Spawned;
 }
 
+void Entity::Step(Time /*fdt*/) {}
+
 void Entity::Destruct()
 {
 	if (m_pPool)

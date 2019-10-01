@@ -18,7 +18,7 @@ public:
 
 private:
 	void Reset();
-	void Tick(Time dt);
+	void Step(Time fdt);
 
 	void Scrub();
 

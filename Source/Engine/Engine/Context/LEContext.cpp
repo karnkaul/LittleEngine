@@ -165,14 +165,10 @@ void LEContext::FireInput()
 	}
 }
 
-bool LEContext::Update()
+void LEContext::Update()
 {
 	Core::Jobs::Update();
-	if (!m_bWaitingToTerminate)
-	{
-		return m_bTerminating;
-	}
-	else
+	if (m_bWaitingToTerminate)
 	{
 		m_uRenderer->StopRenderThread();
 		m_bTerminating = Core::Jobs::AreWorkersIdle();
@@ -180,7 +176,6 @@ bool LEContext::Update()
 		{
 			LOG_W("[LEContext] Engine termination blocked by JobManager... Undefined Behaviour!");
 		}
-		return true;
 	}
 }
 void LEContext::StartFrame()

@@ -47,7 +47,7 @@ private:
 #endif
 
 	Time m_elapsed;
-	Time m_cursorFreq = Time::Milliseconds(350);
+	Time m_cursorFreq = Time::Milliseconds(225);
 	bool m_bShowCursor = true;
 
 public:

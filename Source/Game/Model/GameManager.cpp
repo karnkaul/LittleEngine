@@ -32,7 +32,7 @@ GameManager::GameManager() : m_logName("[GameManager]")
 GameManager::~GameManager()
 {
 	m_uWSM = nullptr;
-	m_uCollisionManager = nullptr;
+	m_uPhysics = nullptr;
 	m_uUIManager = nullptr;
 	m_uWorldCamera = nullptr;
 	m_uContext = nullptr;
@@ -65,7 +65,7 @@ LEContext* GameManager::Context() const
 
 LEPhysics* GameManager::Physics() const
 {
-	return m_uCollisionManager.get();
+	return m_uPhysics.get();
 }
 
 bool GameManager::LoadWorld(WorldID id)
@@ -157,7 +157,7 @@ void GameManager::CreateContext(const GameConfig& config)
 	m_uUIManager = MakeUnique<UIManager>();
 	m_uWorldCamera = MakeUnique<Camera>();
 	m_uWorldCamera->SetName("WorldCamera");
-	m_uCollisionManager = MakeUnique<LEPhysics>();
+	m_uPhysics = MakeUnique<LEPhysics>();
 }
 
 #ifdef DEBUGGING
@@ -176,12 +176,12 @@ void GameManager::Reset()
 	m_uEntities.clear();
 	m_uUIManager->Reset();
 	m_uWorldCamera->Reset();
-	m_uCollisionManager->Reset();
+	m_uPhysics->Reset();
 }
 
-void GameManager::Tick(Time dt, bool& bYieldIntegration)
+void GameManager::Tick(Time dt)
 {
-	m_uWSM->Tick(dt, bYieldIntegration);
+	m_uWSM->Tick(dt);
 	if (m_uWSM->m_state == WorldStateMachine::State::Running)
 	{
 		if (m_bQuitting)
@@ -193,7 +193,6 @@ void GameManager::Tick(Time dt, bool& bYieldIntegration)
 
 		if (!m_bPaused)
 		{
-			m_uCollisionManager->Tick(dt);
 			for (auto& componentVec : m_uComponents)
 			{
 				Core::RemoveIf<UPtr<AComponent>>(componentVec, [](UPtr<AComponent>& uC) { return uC->m_bDestroyed; });
@@ -211,6 +210,25 @@ void GameManager::Tick(Time dt, bool& bYieldIntegration)
 		}
 		m_uUIManager->Tick(dt);
 	}
-	bYieldIntegration |= m_uContext->Update();
+	m_uContext->Update();
+}
+
+void GameManager::Step(Time fdt) 
+{
+	if (!m_bPaused)
+	{
+		m_uPhysics->Step(fdt);
+		for (auto& componentVec : m_uComponents)
+		{
+			for (auto& uComponent : componentVec)
+			{
+				uComponent->Step(fdt);
+			}
+		}
+		for (auto& uEntity : m_uEntities)
+		{
+			uEntity->Step(fdt);
+		}
+	}
 }
 } // namespace LittleEngine

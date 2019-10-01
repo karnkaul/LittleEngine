@@ -138,12 +138,11 @@ void WorldStateMachine::Start(String coreManifestID, String gameStyleID, Task on
 	}
 }
 
-void WorldStateMachine::Tick(Time dt, bool& bYieldIntegration)
+void WorldStateMachine::Tick(Time dt)
 {
 #ifdef DEBUGGING
 	s_bRunning = m_state == State::Running;
 #endif
-	bYieldIntegration = false;
 	switch (m_transition)
 	{
 	case Transition::None:
@@ -180,7 +179,6 @@ void WorldStateMachine::Tick(Time dt, bool& bYieldIntegration)
 			pNextWorld = pActiveWorld = nullptr;
 			m_transition = Transition::None;
 			m_state = State::Idle;
-			bYieldIntegration = true;
 			break;
 		}
 
@@ -192,7 +190,6 @@ void WorldStateMachine::Tick(Time dt, bool& bYieldIntegration)
 
 	default:
 		ChangeState();
-		bYieldIntegration = true;
 	}
 }
 
