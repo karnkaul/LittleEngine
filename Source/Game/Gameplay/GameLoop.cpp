@@ -38,29 +38,28 @@ const String DEFAULT_FONT = "Fonts/Default.ttf";
 const String GAME_STYLE = "Texts/Game.style";
 } // namespace IDs
 
-#if !defined(SHIPPNG)
 const String MAIN_MANIFEST_FILE = "GameAssets/Manifest.amf";
+#if !defined(SHIPPING)
 const String GAME_CONFIG_FILE = ".game.conf";
 #endif
 
 bool bInit = false;
 bool bTerminate = false;
 PostRun postRun = PostRun::Cleanup;
+Time maxFrameTime;
+GameConfig config;
+GFX gfx;
+
+// App scope
 UPtr<LERepository> uRepository;
 UPtr<LEShaders> uShaders;
 UPtr<LEAudio> uAudio;
 
-// LEContext
-GameConfig config;
-UPtr<GFX> uGFX;
+// Game scope
 UPtr<LEContext> uContext;
 UPtr<GameManager> uGM;
 
-// Game Loop
-Time maxFrameTime;
-bool bPauseOnFocusLoss = false;
-
-TweakS32(reloadApp, nullptr);
+TweakS32(reload, nullptr);
 TweakS32(ticksPerSec, nullptr);
 
 bool Init(s32 argc, char** argv)
@@ -103,7 +102,6 @@ bool Init(s32 argc, char** argv)
 	}
 	g_maxParticlesScale = Fixed(maxParticlesScale);
 	Core::g_MinLogSeverity = pSettings->LogLevel();
-	bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
 	ControllerComponent::s_orientationEpsilon = config.ControllerOrientationEpsilon();
 	maxFrameTime = config.MaxFrameTime();
 	if (config.ShouldCreateRenderThread())
@@ -125,7 +123,7 @@ bool Init(s32 argc, char** argv)
 		if (newRate > 0 && newRate < 250)
 		{
 			Time newTickRate = Time::Seconds(1.0f / newRate);
-			uGM->ModifyTickRate(newTickRate);
+			uContext->ModifyTickRate(newTickRate);
 			LOG_I("[GameLoop] Tick Rate changed to %.2f ms", newTickRate.AsSeconds() * 1000.0f);
 		}
 		else
@@ -133,26 +131,25 @@ bool Init(s32 argc, char** argv)
 			LOG_W("[GameLoop] Invalid value for ticks per second: %s", val.data());
 		}
 	});
-	reloadApp.BindCallback([](VString val) {
+	reload.m_value = "-1";
+	reload.BindCallback([](VString val) {
 		s32 option = Strings::ToS32(String(val), -1);
-		if (option >= 0 && option < ToS32(PostRun::_COUNT))
+		if (option >= 0 && option < ToS32(GameLoop::ReloadType::_COUNT))
 		{
-			postRun = static_cast<PostRun>(option);
+			GameLoop::Reload(static_cast<GameLoop::ReloadType>(option));
 		}
-		reloadApp.m_value = Strings::ToString(0);
-		bTerminate = true;
+		reload.m_value = "-1";
 	});
 #endif
 	Core::Jobs::Init(config.JobWorkerCount());
 	Locale::Init(pSettings->LocdataID(), pSettings->ENLocdataID());
-	uGFX = MakeUnique<GFX>();
-	uGFX->m_uiSpace = config.UISpace();
-	uGFX->m_viewportHeight = ToS32(pSettings->ViewportHeight());
-	uGFX->SetWorldHeight(config.WorldHeight(), true);
+	gfx.m_uiSpace = config.UISpace();
+	gfx.m_viewportHeight = ToS32(pSettings->ViewportHeight());
+	gfx.SetWorldHeight(config.WorldHeight(), true);
 #ifdef DEBUGGING
-	uGFX->m_overrideNativeAR = config.ForceViewportAR();
+	gfx.m_overrideNativeAR = config.ForceViewportAR();
 #endif
-	uGFX->Init();
+	gfx.Init();
 	Time::Reset();
 	return true;
 }
@@ -168,7 +165,6 @@ void Stage()
 	data.tickRate = config.TickRate();
 	data.bRenderThread = config.m_bRenderThread;
 	data.renderThreadStartDelay = config.RenderThreadStartDelay();
-	data.bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
 	Core::Property::Persistor inputMapPersistor;
 	auto pInputMapFile = settings.GetValue("CUSTOM_INPUT_MAP");
 	if (pInputMapFile)
@@ -205,15 +201,23 @@ inline void ProfileFrameTime(Time frameStart, Time maxFrameTime)
 	Time frameElapsed = Time::Now() - frameStart;
 	static const Time DILATED_TIME = Time::Seconds(3);
 	static Time logTime = Time::Now() - Time::Seconds(3);
+	static u8 consecutive = 0;
+	static constexpr u8 MIN_CONSECUTIVE = 3;
 	if (frameElapsed > maxFrameTime)
 	{
-		if ((Time::Now() - logTime) > DILATED_TIME)
+		if ((Time::Now() - logTime) > DILATED_TIME && consecutive >= MIN_CONSECUTIVE)
 		{
 			f32 max = maxFrameTime.AsSeconds() * 1000.0f;
 			f32 taken = frameElapsed.AsSeconds() * 1000.0f;
 			LOG_E("Game Loop is taking too long [%.2fms (max: %.2fms)]! Game time is inaccurate (slowed down)", taken, max);
 			logTime = Time::Now();
+			consecutive = 0;
 		}
+		++consecutive;
+	}
+	else
+	{
+		consecutive = 0;
 	}
 }
 #endif
@@ -271,53 +275,46 @@ void RunLoop(const Time tickRate, const Time fdt)
 		{
 			break;
 		}
-		if (!pContext->IsPaused())
+		pContext->StartFrame();
+		const Time now = Time::Now();
+		const Time dt = Time::Clamp(now - frameStart, Time::Zero, maxFrameTime.Scaled(2));
+		frameStart = now;
+		WorldClock::Tick(dt);
+
+		// Step
+		accumulator += dt;
+		PROFILE_CUSTOM("STEP", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 130, 255));
+		while (accumulator >= fdt)
 		{
-			pContext->StartFrame();
-			const Time now = Time::Now();
-			const Time dt = Time::Clamp(now - frameStart, Time::Zero, maxFrameTime.Scaled(2));
-			frameStart = now;
-			WorldClock::Tick(dt);
+			uGM->Step(fdt);
+			accumulator -= fdt;
+		}
+		PROFILE_STOP("STEP");
 
-			// Step
-			accumulator += dt;
-			PROFILE_CUSTOM("STEP", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 130, 255));
-			while (accumulator >= fdt)
-			{
-				uGM->Step(fdt);
-				accumulator -= fdt;
-			}
-			PROFILE_STOP("STEP");
-
-			// Tick
-			pContext->FireInput();
-			uContext->Update();
-			uRepository->Tick(dt);
-			PROFILE_CUSTOM("TICK", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 0, 255));
-			uGM->Tick(dt);
-			uAudio->Tick(dt);
-			PROFILE_STOP("TICK");
+		// Tick
+		pContext->FireInput();
+		uContext->Update();
+		uRepository->Tick(dt);
+		PROFILE_CUSTOM("TICK", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 0, 255));
+		uGM->Tick(dt);
+		uAudio->Tick(dt);
+		PROFILE_STOP("TICK");
 #if ENABLED(CONSOLE)
-			Console::Tick(dt);
+		Console::Tick(dt);
 #endif
 #if ENABLED(PROFILER)
-			Profiler::Tick(dt);
+		Profiler::Tick(dt);
 #endif
-			// Submit
-			pContext->SubmitFrame();
-			if (pContext->IsTerminating())
-			{
-				break;
-			}
-#if defined(DEBUGGING)
-			ProfileFrameTime(frameStart, maxFrameTime);
-#endif
-			frameElapsed = Time::Now() - frameStart;
-		}
-		else
+		// Submit
+		pContext->SubmitFrame();
+		if (pContext->IsTerminating())
 		{
-			frameElapsed = tickRate.Scaled(Fixed(1, 4));
+			break;
 		}
+#if defined(DEBUGGING)
+		ProfileFrameTime(frameStart, maxFrameTime);
+#endif
+		frameElapsed = Time::Now() - frameStart;
 		Sleep(tickRate - frameElapsed);
 	}
 }
@@ -354,7 +351,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 	return 0;
 }
 
-bool GameLoop::ReloadGame(bool bHardReset)
+bool GameLoop::Reload(ReloadType type)
 {
 	if (!bInit)
 	{
@@ -371,8 +368,21 @@ bool GameLoop::ReloadGame(bool bHardReset)
 		LOG_E("[GameLoop] Cannot reload empty context!");
 		return false;
 	}
-	postRun = bHardReset ? PostRun::ReloadApp : PostRun::ReloadGame;
-	bTerminate = true;
+	switch (type)
+	{
+	default:
+	case ReloadType::World:
+		uGM->ReloadWorld();
+		break;
+	case ReloadType::Game:
+		postRun = PostRun::ReloadGame;
+		bTerminate = true;
+		break;
+	case ReloadType::App:
+		postRun = PostRun::ReloadApp;
+		bTerminate = true;
+		break;
+	}
 	return true;
 }
 } // namespace LittleEngine

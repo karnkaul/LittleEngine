@@ -62,7 +62,7 @@ public:
 	~WorldStateMachine();
 
 	void Start(String coreManifestID = "", String gameStyleID = "", Task onManifestLoaded = nullptr);
-	void Tick(Time dt);
+	State Tick(Time dt);
 	bool LoadWorld(WorldID id);
 	void SetLoadingHUD(UPtr<class ILoadingHUD> uLoadingHUD);
 

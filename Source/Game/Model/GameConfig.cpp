@@ -9,7 +9,6 @@ namespace LittleEngine
 namespace
 {
 const String RENDER_THREAD_KEY = "bRenderThread";
-const String PAUSE_ON_FOCUS_LOSS_KEY = "bPauseOnFocusLoss";
 const String JOB_WORKER_COUNT_KEY = "jobWorkerCount";
 const String STEPS_PER_SECOND_KEY = "stepsPerSecond";
 const String TICKS_PER_SECOND_KEY = "ticksPerSecond";
@@ -69,11 +68,6 @@ bool GameConfig::Save(String path)
 bool GameConfig::ShouldCreateRenderThread() const
 {
 	return m_uData->GetBool(RENDER_THREAD_KEY);
-}
-
-bool GameConfig::ShouldPauseOnFocusLoss() const
-{
-	return m_uData->GetBool(PAUSE_ON_FOCUS_LOSS_KEY);
 }
 
 u32 GameConfig::JobWorkerCount() const
@@ -159,7 +153,6 @@ void GameConfig::Verify()
 	m_bDirty |= SetStringIfEmpty(*m_uData, MAX_FRAME_TIME_MS, Strings::ToString(50));
 	m_bDirty |= SetStringIfEmpty(*m_uData, RENDER_THREAD_KEY, Strings::ToString(true));
 	m_bDirty |= SetStringIfEmpty(*m_uData, JOB_WORKER_COUNT_KEY, Strings::ToString(4));
-	m_bDirty |= SetStringIfEmpty(*m_uData, PAUSE_ON_FOCUS_LOSS_KEY, Strings::ToString(s_bPauseOnFocusLoss));
 	m_bDirty |= SetStringIfEmpty(*m_uData, BACKUP_LOG_FILE_COUNT_KEY, Strings::ToString(5));
 	m_bDirty |= SetStringIfEmpty(*m_uData, UI_SPACE_KEY, "{x:1920,y:1080}");
 	m_bDirty |= SetStringIfEmpty(*m_uData, WORLD_HEIGHT_KEY, "1080");

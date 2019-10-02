@@ -14,7 +14,6 @@ struct LEContextData
 	Time tickRate = Time::Seconds(1.0f / 60.0f);
 	Time maxFrameTime = Time::Milliseconds(50);
 	Time renderThreadStartDelay = Time::Milliseconds(10);
-	bool bPauseOnFocusLoss = false;
 	bool bRenderThread = true;
 };
 
@@ -48,7 +47,6 @@ private:
 #endif
 	bool m_bTerminating = false;
 	bool m_bWaitingToTerminate = false;
-	bool m_bPauseTicking = false;
 
 	std::optional<ViewportStyle> m_oNewViewportStyle;
 	std::optional<const ViewportSize*> m_oNewViewportSize;
@@ -58,7 +56,6 @@ public:
 	~LEContext();
 
 	bool IsTerminating() const;
-	bool IsPaused() const;
 
 	LEInput* Input() const;
 	LERenderer* Renderer() const;

@@ -22,6 +22,11 @@ private:
 		SwitchTrackRequest(String newTrackPath, Time fadeTime, Fixed targetVolume, bool bLoop);
 	};
 
+#if defined(DEBUGGING)
+public:
+	static bool s_bDebugHUD;
+#endif
+
 private:
 	MusicPlayer m_musicPlayerA;
 	MusicPlayer m_musicPlayerB;

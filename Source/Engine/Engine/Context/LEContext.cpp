@@ -92,11 +92,6 @@ bool LEContext::IsTerminating() const
 	return m_bTerminating;
 }
 
-bool LEContext::IsPaused() const
-{
-	return m_bPauseTicking;
-}
-
 LEInput* LEContext::Input() const
 {
 	return m_uInput.get();

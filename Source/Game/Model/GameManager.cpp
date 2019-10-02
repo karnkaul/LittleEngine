@@ -77,6 +77,11 @@ LEPhysics* GameManager::Physics() const
 	return m_uPhysics.get();
 }
 
+void GameManager::ReloadWorld()
+{
+	m_uWSM->LoadWorld(m_uWSM->ActiveWorldID());
+}
+
 bool GameManager::LoadWorld(WorldID id)
 {
 	return m_uWSM->LoadWorld(id);
@@ -107,7 +112,7 @@ void GameManager::Quit()
 	m_bQuitting = true;
 }
 
-void GameManager::Clear()
+void GameManager::OnWorldUnloaded()
 {
 	for (auto& componentVec : m_components)
 	{
@@ -139,17 +144,9 @@ bool GameManager::IsPlayerControllable() const
 	return !m_bPaused && !(UI()->Active());
 }
 
-#ifdef DEBUGGING
-void GameManager::ModifyTickRate(Time newTickRate)
-{
-	m_pContext->ModifyTickRate(newTickRate);
-}
-#endif
-
 void GameManager::Tick(Time dt)
 {
-	m_uWSM->Tick(dt);
-	if (m_uWSM->m_state == WorldStateMachine::State::Running)
+	if (m_uWSM->Tick(dt) == WorldStateMachine::State::Running)
 	{
 		if (m_bQuitting)
 		{
@@ -177,7 +174,7 @@ void GameManager::Tick(Time dt)
 	}
 }
 
-void GameManager::Step(Time fdt) 
+void GameManager::Step(Time fdt)
 {
 	if (!m_bPaused)
 	{

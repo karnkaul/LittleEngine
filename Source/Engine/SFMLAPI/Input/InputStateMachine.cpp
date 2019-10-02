@@ -62,7 +62,6 @@ InputDataFrame InputStateMachine::Dataframe() const
 	InputDataFrame frame;
 	frame.textInput = m_textInput;
 	for (const auto& kvp : m_keyStateMap)
-	for (const auto& kvp : m_keyStateMap)
 	{
 		const auto& keyState = kvp.second;
 		if (keyState.bPressed)

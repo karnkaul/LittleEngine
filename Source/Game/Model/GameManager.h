@@ -40,6 +40,7 @@ public:
 	Camera* WorldCamera() const;
 	LEPhysics* Physics() const;
 
+	void ReloadWorld();
 	bool LoadWorld(WorldID id);
 	WorldID ActiveWorldID() const;
 	Vec<WorldID> AllWorldIDs() const;
@@ -47,7 +48,6 @@ public:
 	void Start(String coreManifestID = "", String gameStyleID = "", Task onManifestLoaded = nullptr);
 	void SetPaused(bool bPaused);
 	void Quit();
-	void Clear();
 	void SetWorldCamera(UPtr<Camera> uCamera);
 
 	bool IsPaused() const;
@@ -60,11 +60,13 @@ public:
 	T* NewComponent(Entity& owner);
 
 public:
-#ifdef DEBUGGING
-	void ModifyTickRate(Time newTickRate);
-#endif
 	void Tick(Time dt);
 	void Step(Time fdt);
+
+private:
+	void OnWorldUnloaded();
+
+	friend class WorldStateMachine;
 };
 
 template <typename T>

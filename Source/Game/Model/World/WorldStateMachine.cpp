@@ -123,7 +123,7 @@ void WorldStateMachine::Start(String coreManifestID, String gameStyleID, Task on
 	}
 }
 
-void WorldStateMachine::Tick(Time dt)
+WorldStateMachine::State WorldStateMachine::Tick(Time dt)
 {
 #ifdef DEBUGGING
 	s_bRunning = m_state == State::Running;
@@ -176,6 +176,7 @@ void WorldStateMachine::Tick(Time dt)
 	default:
 		ChangeState();
 	}
+	return m_state;
 }
 
 bool WorldStateMachine::LoadWorld(WorldID id)
@@ -217,6 +218,7 @@ bool WorldStateMachine::LoadWorld(WorldID id)
 
 void WorldStateMachine::SetLoadingHUD(UPtr<ILoadingHUD> uLoadingHUD)
 {
+	m_uLoadHUD->SetEnabled(false);
 	m_uLoadHUD = std::move(uLoadingHUD);
 }
 
@@ -312,7 +314,7 @@ void WorldStateMachine::UnloadActiveWorld()
 			m_onSubmitToken = m_pContext->RegisterOnSubmitted([manifestID]() { g_pRepository->UnloadManifest(manifestID); });
 		}
 	}
-	g_pGameManager->Clear();
+	g_pGameManager->OnWorldUnloaded();
 }
 
 void WorldStateMachine::Quit()
