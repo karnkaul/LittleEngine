@@ -20,6 +20,14 @@ namespace
 using namespace Core;
 using namespace LittleEngine;
 
+enum class PostRun
+{
+	Cleanup = 0,
+	ReloadGame,
+	ReloadApp,
+	_COUNT
+};
+
 // Globals
 namespace IDs
 {
@@ -36,7 +44,8 @@ const String GAME_CONFIG_FILE = ".game.conf";
 #endif
 
 bool bInit = false;
-bool bReloadContext = false;
+bool bTerminate = false;
+PostRun postRun = PostRun::Cleanup;
 UPtr<LERepository> uRepository;
 UPtr<LEShaders> uShaders;
 UPtr<LEAudio> uAudio;
@@ -126,16 +135,16 @@ bool Init(s32 argc, char** argv)
 	});
 	reloadApp.BindCallback([](VString val) {
 		s32 option = Strings::ToS32(String(val), -1);
-		if (option > 0)
+		if (option >= 0 && option < ToS32(PostRun::_COUNT))
 		{
-			bReloadContext = true;
+			postRun = static_cast<PostRun>(option);
 		}
 		reloadApp.m_value = Strings::ToString(0);
+		bTerminate = true;
 	});
 #endif
 	Core::Jobs::Init(config.JobWorkerCount());
 	Locale::Init(pSettings->LocdataID(), pSettings->ENLocdataID());
-	GameInit::CreateWorlds();
 	uGFX = MakeUnique<GFX>();
 	uGFX->m_uiSpace = config.UISpace();
 	uGFX->m_viewportHeight = ToS32(pSettings->ViewportHeight());
@@ -148,8 +157,9 @@ bool Init(s32 argc, char** argv)
 	return true;
 }
 
-LEContextData ContextData() 
+void Stage()
 {
+	GameInit::CreateWorlds();
 	GameSettings& settings = *GameSettings::Instance();
 	LEContextData data;
 	data.viewportData.viewportSize = settings.SafeGetViewportSize();
@@ -173,12 +183,7 @@ LEContextData ContextData()
 			}
 		}
 	}
-	return data;
-}
-
-void Stage()
-{
-	uContext = MakeUnique<LEContext>(ContextData());
+	uContext = MakeUnique<LEContext>(std::move(data));
 	uGM = MakeUnique<GameManager>(*uContext);
 #if ENABLED(CONSOLE)
 	Console::Init();
@@ -189,32 +194,15 @@ void Stage()
 #if defined(DEBUGGING)
 	uAudio->InitDebug(*uGM->Renderer());
 #endif
-}
-
-void Step(Time fdt)
-{
-	uGM->Step(fdt);
-}
-
-void Tick(Time dt)
-{
-	uContext->Update();
-	PROFILE_CUSTOM("TICK", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 0, 255));
-	uRepository->Tick(dt);
-	uGM->Tick(dt);
-	uAudio->Tick(dt);
-#if ENABLED(CONSOLE)
-	Console::Tick(dt);
-#endif
-	PROFILE_STOP("TICK");
-#if ENABLED(PROFILER)
-	Profiler::Tick(dt);
-#endif
+	postRun = PostRun::Cleanup;
+	bTerminate = false;
+	WorldClock::Reset();
 }
 
 #if defined(DEBUGGING)
-inline void ProfileFrameTime(Time frameElapsed, Time maxFrameTime)
+inline void ProfileFrameTime(Time frameStart, Time maxFrameTime)
 {
+	Time frameElapsed = Time::Now() - frameStart;
 	static const Time DILATED_TIME = Time::Seconds(3);
 	static Time logTime = Time::Now() - Time::Seconds(3);
 	if (frameElapsed > maxFrameTime)
@@ -251,12 +239,12 @@ void Unstage()
 #endif
 	uGM = nullptr;
 	uContext = nullptr;
+	uShaders->UnloadAll();
 	uRepository->ResetState();
 }
 
 void Cleanup()
 {
-	Unstage();
 	uAudio = nullptr;
 	uShaders = nullptr;
 	uRepository = nullptr;
@@ -266,6 +254,72 @@ void Cleanup()
 	Core::Jobs::Cleanup();
 	LOG_I("[GameLoop] Terminated");
 	Core::StopFileLogging();
+}
+
+void RunLoop(const Time tickRate, const Time fdt)
+{
+	Time accumulator;
+	Time frameStart = Time::Now();
+	uGM->Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE, &GameInit::LoadShaders);
+	while (!uGM->Context()->IsTerminating() && !bTerminate)
+	{
+		LEContext* pContext = uGM->Context();
+		Time frameElapsed;
+		pContext->PollInput();
+		// Break and exit if Window closed
+		if (pContext->IsTerminating())
+		{
+			break;
+		}
+		if (!pContext->IsPaused())
+		{
+			pContext->StartFrame();
+			const Time now = Time::Now();
+			const Time dt = Time::Clamp(now - frameStart, Time::Zero, maxFrameTime.Scaled(2));
+			frameStart = now;
+			WorldClock::Tick(dt);
+
+			// Step
+			accumulator += dt;
+			PROFILE_CUSTOM("STEP", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 130, 255));
+			while (accumulator >= fdt)
+			{
+				uGM->Step(fdt);
+				accumulator -= fdt;
+			}
+			PROFILE_STOP("STEP");
+
+			// Tick
+			pContext->FireInput();
+			uContext->Update();
+			uRepository->Tick(dt);
+			PROFILE_CUSTOM("TICK", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 0, 255));
+			uGM->Tick(dt);
+			uAudio->Tick(dt);
+			PROFILE_STOP("TICK");
+#if ENABLED(CONSOLE)
+			Console::Tick(dt);
+#endif
+#if ENABLED(PROFILER)
+			Profiler::Tick(dt);
+#endif
+			// Submit
+			pContext->SubmitFrame();
+			if (pContext->IsTerminating())
+			{
+				break;
+			}
+#if defined(DEBUGGING)
+			ProfileFrameTime(frameStart, maxFrameTime);
+#endif
+			frameElapsed = Time::Now() - frameStart;
+		}
+		else
+		{
+			frameElapsed = tickRate.Scaled(Fixed(1, 4));
+		}
+		Sleep(tickRate - frameElapsed);
+	}
 }
 } // namespace
 
@@ -281,78 +335,26 @@ s32 GameLoop::Run(s32 argc, char** argv)
 		}
 	}
 
-	Stage();
-	WorldClock::Reset();
-	uGM->Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE, &GameInit::LoadShaders);
-
-	const Time tickRate = config.TickRate();
-	const Time fdt = config.StepRate();
-	Time accumulator;
-	Time currentTime = Time::Now();
-	while (!uGM->Context()->IsTerminating())
+	while (true)
 	{
-		LEContext* pContext = uGM->Context();
-		Time frameElapsed;
-		pContext->PollInput();
-		// Break and exit if Window closed
-		if (pContext->IsTerminating())
+		Stage();
+		RunLoop(config.TickRate(), config.StepRate());
+		Unstage();
+		if (postRun == PostRun::ReloadApp)
+		{
+			uRepository->UnloadAll(true);
+			uRepository->LoadDefaultFont(IDs::DEFAULT_FONT);
+		}
+		else if (postRun == PostRun::Cleanup)
 		{
 			break;
 		}
-		if (!pContext->IsPaused())
-		{
-			pContext->StartFrame();
-			const Time newTime = Time::Now();
-			const Time dt = Time::Clamp(newTime - currentTime, Time::Zero, maxFrameTime.Scaled(2));
-			currentTime = newTime;
-			WorldClock::Tick(dt);
-
-			// Step
-			accumulator += dt;
-			PROFILE_CUSTOM("STEP", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 130, 255));
-			while (accumulator >= fdt)
-			{
-				Step(fdt);
-				accumulator -= fdt;
-			}
-			PROFILE_STOP("STEP");
-
-			// Tick
-			pContext->FireInput();
-			Tick(dt);
-
-			// Submit
-			pContext->SubmitFrame();
-			if (pContext->IsTerminating())
-			{
-				break;
-			}
-#if defined(DEBUGGING)
-			ProfileFrameTime(Time::Now() - currentTime, maxFrameTime);
-#endif
-			if (bReloadContext)
-			{
-				bool bCache = WorldStateMachine::s_bClearWorldsOnDestruct;
-				WorldStateMachine::s_bClearWorldsOnDestruct = false;
-				Unstage();
-				Stage();
-				uGM->Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE);
-				bReloadContext = false;
-				WorldStateMachine::s_bClearWorldsOnDestruct = bCache;
-			}
-			frameElapsed = Time::Now() - currentTime;
-		}
-		else
-		{
-			frameElapsed = tickRate.Scaled(Fixed(0.25f));
-		}
-		Sleep(tickRate - frameElapsed);
 	}
 	Cleanup();
 	return 0;
 }
 
-bool GameLoop::ReloadGame()
+bool GameLoop::ReloadGame(bool bHardReset)
 {
 	if (!bInit)
 	{
@@ -364,7 +366,13 @@ bool GameLoop::ReloadGame()
 		LOG_E("[GameLoop] Cannot reload empty game manager!");
 		return false;
 	}
-	bReloadContext = true;
+	if (!uContext)
+	{
+		LOG_E("[GameLoop] Cannot reload empty context!");
+		return false;
+	}
+	postRun = bHardReset ? PostRun::ReloadApp : PostRun::ReloadGame;
+	bTerminate = true;
 	return true;
 }
 } // namespace LittleEngine

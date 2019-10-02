@@ -156,7 +156,6 @@ void GameManager::Tick(Time dt)
 			m_uWSM->Quit();
 			return;
 		}
-
 		if (!m_bPaused)
 		{
 			for (auto& componentVec : m_components)

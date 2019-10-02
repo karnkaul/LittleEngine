@@ -48,7 +48,6 @@ public:
 #ifdef DEBUGGING
 	static bool s_bRunning;
 #endif
-	static bool s_bClearWorldsOnDestruct;
 
 public:
 	template <typename T>

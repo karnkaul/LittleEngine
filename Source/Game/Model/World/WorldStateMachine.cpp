@@ -26,7 +26,6 @@ u32 subtitleSize = 60;
 bool WorldStateMachine::s_bRunning = false;
 #endif
 
-bool WorldStateMachine::s_bClearWorldsOnDestruct = true;
 Vec<UPtr<World>> WorldStateMachine::s_createdWorlds;
 
 WorldStateMachine::WorldStateMachine(LEContext& context) : m_pContext(&context)
@@ -56,10 +55,7 @@ WorldStateMachine::WorldStateMachine(LEContext& context) : m_pContext(&context)
 WorldStateMachine::~WorldStateMachine()
 {
 	UnloadActiveWorld();
-	if (s_bClearWorldsOnDestruct)
-	{
-		s_createdWorlds.clear();
-	}
+	s_createdWorlds.clear();
 	m_uLoadHUD = nullptr;
 	bCreated = false;
 	LOG_D("[WSM] destroyed");
