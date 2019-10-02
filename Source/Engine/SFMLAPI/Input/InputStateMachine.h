@@ -13,23 +13,19 @@ private:
 	MouseInput m_pointerInput;
 	JoyInput m_joyInput;
 	InputMap m_inputMap;
-	Vec<KeyState> m_keyStates;
+	UMap<s32, KeyState> m_keyStateMap;
 
 public:
 	InputStateMachine();
 	~InputStateMachine();
-
-	// Call this to check if a Key was pressed in this frame
-	bool IsKeyPressed(KeyType key) const;
-	// Get KeyState for this KeyCode on the current frame
-	const KeyState* GetKeyState(KeyType key) const;
 
 	void SetInputMapping(InputMap inputMap);
 	InputDataFrame Dataframe() const;
 
 private:
 	KeyState& GetOrCreateKeyState(KeyType key);
-
+	void ModifyKeyState(KeyType key, bool bPressed);
+	
 	void OnKeyDown(const sf::Event::KeyEvent& key);
 	void OnKeyUp(const sf::Event::KeyEvent& key);
 	void OnMouseDown(const sf::Event::MouseButtonEvent& button);

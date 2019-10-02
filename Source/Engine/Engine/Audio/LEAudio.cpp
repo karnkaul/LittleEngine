@@ -106,7 +106,7 @@ LEAudio::DbgImpl::DbgImpl(LERenderer& r)
 
 LEAudio::DbgImpl::~DbgImpl()
 {
-	static Vec<APrimitive*> prims = {pVolA, pVolB, pIDA, pIDB, pStatusA, pStatusB, pBGA, pBGB};
+	Vec<APrimitive*> prims = {pVolA, pVolB, pIDA, pIDB, pStatusA, pStatusB, pBGA, pBGB};
 	for (auto pPrim : prims)
 	{
 		if (pPrim)
@@ -118,7 +118,7 @@ LEAudio::DbgImpl::~DbgImpl()
 
 void LEAudio::DbgImpl::Tick(Time /*dt*/)
 {
-	static Vec<APrimitive*> prims = {pVolA, pVolB, pIDA, pIDB, pStatusA, pStatusB, pBGA, pBGB};
+	Vec<APrimitive*> prims = {pVolA, pVolB, pIDA, pIDB, pStatusA, pStatusB, pBGA, pBGB};
 	for (auto pPrim : prims)
 	{
 		if (pPrim)
@@ -195,16 +195,19 @@ void LEAudio::Tick(Time dt)
 		sfxPlayer->Tick(dt);
 	}
 #if defined(DEBUGGING)
-	m_uDbg->colA = m_uDbg->colB = Colour::White;
-	if (IsMusicPlaying())
+	if (m_uDbg)
 	{
-		m_bSideA ? m_uDbg->colA = Colour::Green : m_uDbg->colB = Colour::Green;
+		m_uDbg->colA = m_uDbg->colB = Colour::White;
+		if (IsMusicPlaying())
+		{
+			m_bSideA ? m_uDbg->colA = Colour::Green : m_uDbg->colB = Colour::Green;
+		}
+		m_uDbg->statusA = GetStatus(m_musicPlayerA.m_status) + (m_musicPlayerA.m_bLooping ? "o" : "");
+		m_uDbg->statusB = GetStatus(m_musicPlayerB.m_status) + (m_musicPlayerB.m_bLooping ? "o" : "");
+		m_uDbg->volA = m_musicPlayerA.m_volume;
+		m_uDbg->volB = m_musicPlayerB.m_volume;
+		m_uDbg->Tick(dt);
 	}
-	m_uDbg->statusA = GetStatus(m_musicPlayerA.m_status) + (m_musicPlayerA.m_bLooping ? "o" : "");
-	m_uDbg->statusB = GetStatus(m_musicPlayerB.m_status) + (m_musicPlayerB.m_bLooping ? "o" : "");
-	m_uDbg->volA = m_musicPlayerA.m_volume;
-	m_uDbg->volB = m_musicPlayerB.m_volume;
-	m_uDbg->Tick(dt);
 #endif
 }
 
@@ -268,7 +271,7 @@ bool LEAudio::PlayMusic(String id, Fixed nVol, Time fadeTime, bool bLoop)
 		active.Stop();
 	}
 #if defined(DEBUGGING)
-	(m_bSideA) ? m_uDbg->idA = id : m_uDbg->idB = id;
+	(m_uDbg && m_bSideA) ? m_uDbg->idA = id : m_uDbg->idB = id;
 #endif
 	bool bSuccess = active.SetTrack(GetPath(std::move(id)));
 	if (bSuccess)
@@ -338,7 +341,7 @@ bool LEAudio::ResumeMusic(Time fadeTime, Fixed nVol)
 void LEAudio::SwitchTrack(String id, Fixed nVol, Time fadeTime, bool bLoop)
 {
 #if defined(DEBUGGING)
-	(!m_bSideA) ? m_uDbg->idA = id : m_uDbg->idB = id;
+	(m_uDbg && !m_bSideA) ? m_uDbg->idA = id : m_uDbg->idB = id;
 #endif
 	m_oSwitchTrackRequest.emplace(GetPath(std::move(id)), fadeTime, nVol, bLoop);
 }

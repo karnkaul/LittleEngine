@@ -84,7 +84,7 @@ inline KeyType Cast(sf::Mouse::Button button)
 	switch (button)
 	{
 	default:
-		return static_cast<KeyType>(-1);
+		return KeyType::KEYTYPE_INVALID;
 	case sf::Mouse::Button::Left:
 		return KeyType::MOUSE_BTN_0;
 

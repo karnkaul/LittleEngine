@@ -14,7 +14,7 @@ KeyType InputMap::GetKeyType(u32 button) const
 	{
 		return search->second;
 	}
-	return static_cast<KeyType>(0);
+	return KeyType::KEYTYPE_INVALID;
 }
 
 Fixed InputMap::DeadZone(JoyAxis axis) const

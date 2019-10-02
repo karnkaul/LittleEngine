@@ -10,8 +10,9 @@ extern const u32 g_MAX_JOYSTICK_BUTTONS;
 
 using KeyCode = sf::Keyboard::Key;
 
-enum KeyType : u16
+enum KeyType : s32
 {
+	KEYTYPE_INVALID = -1,
 	// 0-499 : SFML
 
 	MOUSE_BTN_0 = 500, // Left

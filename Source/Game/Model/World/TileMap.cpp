@@ -57,7 +57,7 @@ void TileMap::CreateTiles(TileData data)
 			m_quads.push_back(pQuad);
 		}
 		++idx;
-		pQuad->SetPosition(centre)->SetEnabled(true);
+		pQuad->SetPosition(centre, true)->SetEnabled(true);
 	};
 	auto createRow = [&]() {
 		x = Fixed::Zero;
