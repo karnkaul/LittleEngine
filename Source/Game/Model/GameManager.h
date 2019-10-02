@@ -21,17 +21,16 @@ private:
 	Vec<Task> m_initCallbacks;
 	Vec<UPtr<class Entity>> m_entities;
 	Array<Vec<UPtr<class AComponent>>, COMPONENT_LINES> m_components;
-	UPtr<class LEContext> m_uContext;
 	UPtr<class WorldStateMachine> m_uWSM;
 	UPtr<class UIManager> m_uUIManager;
 	UPtr<class LEPhysics> m_uPhysics;
 	UPtr<class Camera> m_uWorldCamera;
-	GFX m_gfx;
+	class LEContext* m_pContext;
 	bool m_bQuitting = false;
 	bool m_bPaused = false;
 
 public:
-	GameManager();
+	GameManager(LEContext& context);
 	~GameManager();
 
 	UIManager* UI() const;
@@ -48,6 +47,7 @@ public:
 	void Start(String coreManifestID = "", String gameStyleID = "", Task onManifestLoaded = nullptr);
 	void SetPaused(bool bPaused);
 	void Quit();
+	void Clear();
 	void SetWorldCamera(UPtr<Camera> uCamera);
 
 	bool IsPaused() const;
@@ -60,11 +60,9 @@ public:
 	T* NewComponent(Entity& owner);
 
 public:
-	void CreateContext(const class GameConfig& config);
 #ifdef DEBUGGING
 	void ModifyTickRate(Time newTickRate);
 #endif
-	void Reset();
 	void Tick(Time dt);
 	void Step(Time fdt);
 };

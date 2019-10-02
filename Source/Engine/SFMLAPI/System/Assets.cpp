@@ -127,7 +127,7 @@ bool Asset::WriteBytes(const String& path)
 	if (bSuccess)
 	{
 		auto size = Core::FriendlySize(m_byteCount);
-		LOG_D("[%s] %s wrote [%.2f%s] to [%s]", m_id.c_str(), g_szAssetType[ToIdx(m_type)].data(), size.first, size.second,
+		LOG_D("[%s] %s wrote [%.2f%s] to [%s]", m_id.c_str(), g_szAssetType[ToIdx(m_type)].data(), size.first, size.second.data(),
 			  m_pathSize.first.c_str());
 	}
 #endif

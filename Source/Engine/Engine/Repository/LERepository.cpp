@@ -101,7 +101,7 @@ bool LERepository::IsBusy() const
 	return false;
 }
 
-bool LERepository::IsLoaded(VString id) const
+bool LERepository::IsLoaded(const String& id) const
 {
 	Lock lock(m_loadedMutex);
 	return m_loaded.find(id) != m_loaded.end();
@@ -118,7 +118,7 @@ u64 LERepository::LoadedBytes() const
 	return total;
 }
 
-bool LERepository::IsPresent(VString id) const
+bool LERepository::IsPresent(const String& id) const
 {
 	bool bRet = m_uCooked->IsPresent(id);
 #if ENABLED(FILESYSTEM_ASSETS)
@@ -127,12 +127,12 @@ bool LERepository::IsPresent(VString id) const
 	return bRet;
 }
 
-bool LERepository::Unload(VString id)
+bool LERepository::Unload(const String& id)
 {
+	Lock lock(m_loadedMutex);
 	bool bPresent = m_loaded.find(id) != m_loaded.end();
 	if (bPresent)
 	{
-		Lock lock(m_loadedMutex);
 		m_loaded.erase(id);
 	}
 	return bPresent;
@@ -140,6 +140,7 @@ bool LERepository::Unload(VString id)
 
 void LERepository::UnloadAll(bool bUnloadDefaultFont)
 {
+	Lock lock(m_loadedMutex);
 	if (bUnloadDefaultFont || !g_pDefaultFont)
 	{
 		m_loaded.clear();
@@ -147,7 +148,7 @@ void LERepository::UnloadAll(bool bUnloadDefaultFont)
 	}
 	else
 	{
-		Core::RemoveIf<VString, UPtr<Asset>>(m_loaded, [](UPtr<Asset>& uAsset) { return String(uAsset->ID()) != g_pDefaultFont->ID(); });
+		Core::RemoveIf<String, UPtr<Asset>>(m_loaded, [](UPtr<Asset>& uAsset) { return String(uAsset->ID()) != g_pDefaultFont->ID(); });
 	}
 	LOG_D("[Repository] cleared");
 }
@@ -164,7 +165,7 @@ void LERepository::Tick(Time dt)
 	Core::RemoveIf<SPtr<ManifestLoader>>(m_loaders, [](auto& sLoader) { return sLoader->m_bIdle; });
 }
 
-void LERepository::DoLoad(VString id, bool bSyncWarn, Task inCooked, 
+void LERepository::DoLoad(const String& id, bool bSyncWarn, Task inCooked, 
 #if ENABLED(FILESYSTEM_ASSETS)
 	Task onFilesystem,
 #endif

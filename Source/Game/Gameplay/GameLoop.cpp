@@ -37,13 +37,14 @@ const String GAME_CONFIG_FILE = ".game.conf";
 
 bool bInit = false;
 bool bReloadContext = false;
-bool bReloadRepository = false;
 UPtr<LERepository> uRepository;
 UPtr<LEShaders> uShaders;
 UPtr<LEAudio> uAudio;
 
 // LEContext
 GameConfig config;
+UPtr<GFX> uGFX;
+UPtr<LEContext> uContext;
 UPtr<GameManager> uGM;
 
 // Game Loop
@@ -127,7 +128,6 @@ bool Init(s32 argc, char** argv)
 		s32 option = Strings::ToS32(String(val), -1);
 		if (option > 0)
 		{
-			bReloadRepository = option > 1;
 			bReloadContext = true;
 		}
 		reloadApp.m_value = Strings::ToString(0);
@@ -136,14 +136,50 @@ bool Init(s32 argc, char** argv)
 	Core::Jobs::Init(config.JobWorkerCount());
 	Locale::Init(pSettings->LocdataID(), pSettings->ENLocdataID());
 	GameInit::CreateWorlds();
+	uGFX = MakeUnique<GFX>();
+	uGFX->m_uiSpace = config.UISpace();
+	uGFX->m_viewportHeight = ToS32(pSettings->ViewportHeight());
+	uGFX->SetWorldHeight(config.WorldHeight(), true);
+#ifdef DEBUGGING
+	uGFX->m_overrideNativeAR = config.ForceViewportAR();
+#endif
+	uGFX->Init();
 	Time::Reset();
 	return true;
 }
 
+LEContextData ContextData() 
+{
+	GameSettings& settings = *GameSettings::Instance();
+	LEContextData data;
+	data.viewportData.viewportSize = settings.SafeGetViewportSize();
+	data.viewportData.title = LOC(config.TitleBarText());
+	data.viewportData.style = settings.GetViewportStyle();
+	data.tickRate = config.TickRate();
+	data.bRenderThread = config.m_bRenderThread;
+	data.renderThreadStartDelay = config.RenderThreadStartDelay();
+	data.bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
+	Core::Property::Persistor inputMapPersistor;
+	auto pInputMapFile = settings.GetValue("CUSTOM_INPUT_MAP");
+	if (pInputMapFile)
+	{
+		String inputMapFile = OS::Env()->FullPath(pInputMapFile->c_str());
+		if (inputMapPersistor.Load(inputMapFile))
+		{
+			u16 count = data.inputMap.Import(inputMapPersistor);
+			if (count > 0)
+			{
+				LOG_I("[GameLoop] Loaded %u custom Input Mappings successfully", count);
+			}
+		}
+	}
+	return data;
+}
+
 void Stage()
 {
-	uGM = MakeUnique<GameManager>();
-	uGM->CreateContext(config);
+	uContext = MakeUnique<LEContext>(ContextData());
+	uGM = MakeUnique<GameManager>(*uContext);
 #if ENABLED(CONSOLE)
 	Console::Init();
 #endif
@@ -162,6 +198,7 @@ void Step(Time fdt)
 
 void Tick(Time dt)
 {
+	uContext->Update();
 	PROFILE_CUSTOM("TICK", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 0, 255));
 	uRepository->Tick(dt);
 	uGM->Tick(dt);
@@ -200,6 +237,7 @@ void Sleep(Time time)
 		std::this_thread::sleep_for(std::chrono::milliseconds(time.AsMilliseconds()));
 	}
 }
+
 void Unstage()
 {
 #if ENABLED(CONSOLE)
@@ -212,12 +250,7 @@ void Unstage()
 	uAudio->DestroyDebug();
 #endif
 	uGM = nullptr;
-	if (bReloadRepository)
-	{
-		uShaders->UnloadAll();
-		uRepository->UnloadAll(true);
-		uRepository->LoadDefaultFont(IDs::DEFAULT_FONT);
-	}
+	uContext = nullptr;
 	uRepository->ResetState();
 }
 
@@ -303,13 +336,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 				WorldStateMachine::s_bClearWorldsOnDestruct = false;
 				Unstage();
 				Stage();
-				uGM->Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE, []() {
-					if (bReloadRepository)
-					{
-						GameInit::LoadShaders();
-						bReloadRepository = false;
-					}
-				});
+				uGM->Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE);
 				bReloadContext = false;
 				WorldStateMachine::s_bClearWorldsOnDestruct = bCache;
 			}
@@ -325,7 +352,7 @@ s32 GameLoop::Run(s32 argc, char** argv)
 	return 0;
 }
 
-bool GameLoop::ReloadContext(bool bUnloadAssets)
+bool GameLoop::ReloadGame()
 {
 	if (!bInit)
 	{
@@ -334,10 +361,9 @@ bool GameLoop::ReloadContext(bool bUnloadAssets)
 	}
 	if (!uGM)
 	{
-		LOG_E("[GameLoop] Cannot reload empty context!");
+		LOG_E("[GameLoop] Cannot reload empty game manager!");
 		return false;
 	}
-	bReloadRepository = bUnloadAssets;
 	bReloadContext = true;
 	return true;
 }

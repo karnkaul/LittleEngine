@@ -316,7 +316,7 @@ void WorldStateMachine::UnloadActiveWorld()
 			m_onSubmitToken = m_pContext->RegisterOnSubmitted([manifestID]() { g_pRepository->UnloadManifest(manifestID); });
 		}
 	}
-	g_pGameManager->Reset();
+	g_pGameManager->Clear();
 }
 
 void WorldStateMachine::Quit()

@@ -26,7 +26,7 @@ private:
 	template <typename T>
 	UPtr<T> CreateContext(String id);
 
-	void Reset();
+	void Clear();
 	void Tick(Time dt);
 
 	void InitContext(UIContext& context, String id, LayerID baseLayer);

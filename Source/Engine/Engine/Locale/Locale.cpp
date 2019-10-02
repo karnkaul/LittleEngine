@@ -27,11 +27,11 @@ void Locale::Init(String locFileID, String enLocFileID)
 	}
 }
 
-bool Locale::Switch(VString newLocFileID)
+bool Locale::Switch(const String& newLocFileID)
 {
 	if (g_pRepository->IsPresent(newLocFileID))
 	{
-		auto pText = g_pRepository->Load<TextAsset>(String(newLocFileID));
+		auto pText = g_pRepository->Load<TextAsset>(newLocFileID);
 		if (pText)
 		{
 			Core::GData locMapData(pText->Text());

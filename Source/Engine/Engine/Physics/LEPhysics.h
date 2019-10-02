@@ -17,7 +17,7 @@ public:
 	class AABBCollider* CreateAABBCollider(String ownerName);
 
 private:
-	void Reset();
+	void Clear();
 	void Step(Time fdt);
 
 	void Scrub();

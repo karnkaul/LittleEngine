@@ -20,9 +20,14 @@ namespace LittleEngine
 GameManager* g_pGameManager = nullptr;
 TweakBool(paused, nullptr);
 
-GameManager::GameManager() : m_logName("[GameManager]")
+GameManager::GameManager(LEContext& context) : m_logName("[GameManager]"), m_pContext(&context)
 {
 	g_pGameManager = this;
+	m_uWSM = MakeUnique<WorldStateMachine>(*m_pContext);
+	m_uUIManager = MakeUnique<UIManager>();
+	m_uWorldCamera = MakeUnique<Camera>();
+	m_uWorldCamera->SetName("WorldCamera");
+	m_uPhysics = MakeUnique<LEPhysics>();
 #if ENABLED(TWEAKABLES)
 	paused.Bind(&m_bPaused);
 #endif
@@ -40,7 +45,6 @@ GameManager::~GameManager()
 	m_uPhysics = nullptr;
 	m_uUIManager = nullptr;
 	m_uWorldCamera = nullptr;
-	m_uContext = nullptr;
 	g_pGameManager = nullptr;
 #if ENABLED(TWEAKABLES)
 	paused.Bind(nullptr);
@@ -55,17 +59,17 @@ UIManager* GameManager::UI() const
 
 LEInput* GameManager::Input() const
 {
-	return m_uContext->Input();
+	return m_pContext->Input();
 }
 
 LERenderer* GameManager::Renderer() const
 {
-	return m_uContext->Renderer();
+	return m_pContext->Renderer();
 }
 
 LEContext* GameManager::Context() const
 {
-	return m_uContext.get();
+	return m_pContext;
 }
 
 LEPhysics* GameManager::Physics() const
@@ -103,6 +107,18 @@ void GameManager::Quit()
 	m_bQuitting = true;
 }
 
+void GameManager::Clear()
+{
+	for (auto& componentVec : m_components)
+	{
+		componentVec.clear();
+	}
+	m_entities.clear();
+	m_uUIManager->Clear();
+	m_uPhysics->Clear();
+	m_uWorldCamera->Reset();
+}
+
 Camera* GameManager::WorldCamera() const
 {
 	return m_uWorldCamera.get();
@@ -123,66 +139,12 @@ bool GameManager::IsPlayerControllable() const
 	return !m_bPaused && !(UI()->Active());
 }
 
-void GameManager::CreateContext(const GameConfig& config)
-{
-	GameSettings& settings = *GameSettings::Instance();
-	m_gfx.m_uiSpace = config.UISpace();
-	m_gfx.m_viewportHeight = ToS32(settings.ViewportHeight());
-	m_gfx.SetWorldHeight(config.WorldHeight(), true);
-#ifdef DEBUGGING
-	m_gfx.m_overrideNativeAR = config.ForceViewportAR();
-#endif
-	m_gfx.Init();
-
-	LEContextData data;
-	data.viewportData.viewportSize = settings.SafeGetViewportSize();
-	data.viewportData.title = LOC(config.TitleBarText());
-	data.viewportData.style = settings.GetViewportStyle();
-	data.tickRate = config.TickRate();
-	data.bRenderThread = config.m_bRenderThread;
-	data.renderThreadStartDelay = config.RenderThreadStartDelay();
-	data.bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
-	Core::Property::Persistor inputMapPersistor;
-	auto pInputMapFile = settings.GetValue("CUSTOM_INPUT_MAP");
-	if (pInputMapFile)
-	{
-		String inputMapFile = OS::Env()->FullPath(pInputMapFile->c_str());
-		if (inputMapPersistor.Load(inputMapFile))
-		{
-			u16 count = data.inputMap.Import(inputMapPersistor);
-			if (count > 0)
-			{
-				LOG_I("[GameLoop] Loaded %u custom Input Mappings successfully", count);
-			}
-		}
-	}
-
-	m_uContext = MakeUnique<LEContext>(std::move(data));
-	m_uWSM = MakeUnique<WorldStateMachine>(*m_uContext);
-	m_uUIManager = MakeUnique<UIManager>();
-	m_uWorldCamera = MakeUnique<Camera>();
-	m_uWorldCamera->SetName("WorldCamera");
-	m_uPhysics = MakeUnique<LEPhysics>();
-}
-
 #ifdef DEBUGGING
 void GameManager::ModifyTickRate(Time newTickRate)
 {
-	m_uContext->ModifyTickRate(newTickRate);
+	m_pContext->ModifyTickRate(newTickRate);
 }
 #endif
-
-void GameManager::Reset()
-{
-	for (auto& componentVec : m_components)
-	{
-		componentVec.clear();
-	}
-	m_entities.clear();
-	m_uUIManager->Reset();
-	m_uWorldCamera->Reset();
-	m_uPhysics->Reset();
-}
 
 void GameManager::Tick(Time dt)
 {
@@ -192,7 +154,6 @@ void GameManager::Tick(Time dt)
 		if (m_bQuitting)
 		{
 			m_uWSM->Quit();
-			Reset();
 			return;
 		}
 
@@ -215,7 +176,6 @@ void GameManager::Tick(Time dt)
 		}
 		m_uUIManager->Tick(dt);
 	}
-	m_uContext->Update();
 }
 
 void GameManager::Step(Time fdt) 
