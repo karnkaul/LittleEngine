@@ -1,7 +1,6 @@
 #include "DebugConsole.h"
 #if ENABLED(CONSOLE)
 #include "Core/Logger.h"
-#include "SFMLAPI/Rendering/Renderer.h"
 #include "ConsoleInput.h"
 #include "ConsoleRenderer.h"
 #include "DebugCommands.h"

@@ -5,7 +5,7 @@
 #include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/System/SFTypes.h"
 #if ENABLED(RENDER_STATS)
-#include "SFMLAPI/Rendering/Renderer.h"
+#include "SFMLAPI/Rendering/PrimitiveFactory.h"
 #endif
 
 namespace LittleEngine

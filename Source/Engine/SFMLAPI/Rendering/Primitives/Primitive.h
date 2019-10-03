@@ -38,7 +38,7 @@ protected:
 public:
 	bool m_bDEBUG = false;
 #endif
-protected:
+public:
 	TState m_gameState;
 	TState m_renderState;
 
@@ -76,8 +76,6 @@ public:
 
 public:
 	void Destroy();
-
-private:
 	void Draw(Viewport& viewport, Fixed alpha);
 
 public:

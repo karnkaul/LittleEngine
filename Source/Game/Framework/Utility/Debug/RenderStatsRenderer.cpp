@@ -1,7 +1,7 @@
 #include "Core/Version.h"
 #include "RenderStatsRenderer.h"
 #if ENABLED(RENDER_STATS)
-#include "SFMLAPI/Rendering/Renderer.h"
+#include "SFMLAPI/Rendering/PrimitiveFactory.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "Engine/GFX.h"
 #include "Engine/Debug/Tweakable.h"

@@ -4,6 +4,10 @@
 
 namespace LittleEngine
 {
+#if ENABLED(RENDER_STATS)
+RenderData g_renderData;
+#endif
+
 PrimitiveFactory::PrimitiveFactory()
 {
 	for (auto& vec : m_active)
