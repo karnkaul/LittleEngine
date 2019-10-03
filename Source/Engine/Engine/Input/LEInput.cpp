@@ -74,7 +74,7 @@ Fixed LEInput::Frame::MouseWhellScroll() const
 TweakBool(mouseXY, &bShowCrosshair);
 #endif
 
-LEInput::LEInput(LEContext& context, InputMap inputMap) : m_pContext(&context)
+LEInput::LEInput(InputMap inputMap)
 {
 	m_inputSM.SetInputMapping(std::move(inputMap));
 }
@@ -145,10 +145,6 @@ void LEInput::TakeSnapshot()
 		}
 	}
 #if defined(DEBUGGING)
-	if (bShowCrosshair && !m_pMouseH)
-	{
-		CreateDebugPointer();
-	}
 	Colour c = MOUSE_DEFAULT_COLOUR;
 	if (Core::Search(m_currentSnapshot, KeyType::MOUSE_BTN_0) != m_currentSnapshot.end())
 	{
@@ -229,10 +225,10 @@ void LEInput::FireCallbacks()
 }
 
 #if defined(DEBUGGING)
-void LEInput::CreateDebugPointer()
+void LEInput::CreateDebugPointer(LERenderer& renderer)
 {
-	m_pMouseH = m_pContext->Renderer()->New<Quad>(LayerID::TopOverlay);
-	m_pMouseV = m_pContext->Renderer()->New<Quad>(LayerID::TopOverlay);
+	m_pMouseH = renderer.New<Quad>(LayerID::TopOverlay);
+	m_pMouseV = renderer.New<Quad>(LayerID::TopOverlay);
 	Vector2 space = g_pGFX->OverlaySpace();
 	m_pMouseH->SetModel(Rect2::SizeCentre({MOUSE_QUAD_WIDTH, space.y}), true)
 		->SetStatic(true)

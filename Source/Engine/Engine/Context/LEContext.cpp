@@ -63,14 +63,18 @@ LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 	m_uViewport->SetData(std::move(m_data.viewportData));
 	m_uViewport->Create(maxFPS);
 
-	m_uInput = MakeUnique<LEInput>(*this, std::move(m_data.inputMap));
-
 #if ENABLED(RENDER_STATS)
 	g_renderData.tickRate = m_data.tickRate;
 #endif
 	RendererData rData{m_data.tickRate, Time::Milliseconds(20), maxFPS, m_data.bRenderThread};
 	m_uRenderer = MakeUnique<LERenderer>(*m_uViewport, rData);
 	m_ptrToken = PushPointer(Pointer::Type::Arrow);
+
+	m_uInput = MakeUnique<LEInput>(std::move(m_data.inputMap));
+#if defined(DEBUGGING)
+	m_uInput->CreateDebugPointer(*m_uRenderer);
+#endif
+
 	Assert(*m_ptrToken != -1, "Could not create default mouse pointer!");
 }
 

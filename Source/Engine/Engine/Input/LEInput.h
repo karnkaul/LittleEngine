@@ -80,14 +80,13 @@ private:
 	JoyInput m_joyInput;
 	Vec<InputContext> m_contexts;
 	std::optional<InputContext> m_oSudoContext;
-	class LEContext* m_pContext;
 #if defined(DEBUGGING)
 	class Quad* m_pMouseH = nullptr;
 	Quad* m_pMouseV = nullptr;
 #endif
 
 public:
-	LEInput(LEContext& context, InputMap inputMap);
+	LEInput(InputMap inputMap);
 	~LEInput();
 
 public:
@@ -99,7 +98,7 @@ private:
 	void TakeSnapshot();
 	void FireCallbacks();
 #if defined(DEBUGGING)
-	void CreateDebugPointer();
+	void CreateDebugPointer(class LERenderer& renderer);
 #endif
 
 	Token CreateToken() const;
