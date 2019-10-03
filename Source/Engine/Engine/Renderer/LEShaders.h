@@ -13,28 +13,22 @@ struct ShadersData
 	String fragExt = ".fsh";
 };
 
-extern class LEShaders* g_pShaders;
-
-class LEShaders final
+namespace LEShaders
 {
-private:
-	static ShadersData s_data;
-	static UMap<String, UPtr<Shader>> s_shaderMap;
+extern ShadersData s_data;
+extern UMap<String, UPtr<Shader>> s_shaderMap;
 
-public:
-	LEShaders(ShadersData data = {});
-	~LEShaders();
+void Init(ShadersData data = {});
+void Clear();
 
-	template <typename T>
-	T* GetShader(const String& id);
-	template <typename T>
-	T* CreateShader(const String& id, const String& vertCode, const String& fragCode);
+template <typename T>
+T* GetShader(const String& id);
+template <typename T>
+T* CreateShader(const String& id, const String& vertCode, const String& fragCode);
 
-	template <typename T>
-	static T* LoadShader(const String& id, Shader::Type asType);
-
-	void UnloadAll();
-};
+template <typename T>
+static T* LoadShader(const String& id, Shader::Type asType);
+}; // namespace LEShaders
 
 template <typename T>
 T* LEShaders::GetShader(const String& id)
@@ -84,7 +78,6 @@ T* LEShaders::LoadShader(const String& id, Shader::Type asType)
 	String assetID = s_data.assetIDPrefix + id;
 	String vertCode;
 	String fragCode;
-
 	if (asType[ToIdx(Shader::Flag::Vertex)])
 	{
 		String vsAssetID = assetID + s_data.vertExt;
@@ -94,7 +87,6 @@ T* LEShaders::LoadShader(const String& id, Shader::Type asType)
 			vertCode = pText->Text();
 		}
 	}
-
 	if (asType[ToIdx(Shader::Flag::Fragment)])
 	{
 		String fsAssetID = assetID + s_data.fragExt;
@@ -104,10 +96,8 @@ T* LEShaders::LoadShader(const String& id, Shader::Type asType)
 			fragCode = pText->Text();
 		}
 	}
-
 	UPtr<T> uT = MakeUnique<T>(id);
 	uT->Compile(std::move(vertCode), std::move(fragCode));
-
 	if (uT->GetType().any())
 	{
 		LOG_I("== [%s] %s Shader created", uT->ID().c_str(), g_szShaderTypes[uT->GetType()].data());
@@ -119,7 +109,6 @@ T* LEShaders::LoadShader(const String& id, Shader::Type asType)
 	{
 		LOG_E("Error loading/compiling shader code [%s] from [%s]!", id.c_str(), assetID.c_str());
 	}
-
 	return nullptr;
 }
 } // namespace LittleEngine

@@ -6,7 +6,7 @@
 
 namespace LittleEngine
 {
-class GameObject : public Inheritable
+class GameObject : public Inheritable, private NoCopy
 {
 protected:
 	TokenHandler<Token> m_tokenHandler;

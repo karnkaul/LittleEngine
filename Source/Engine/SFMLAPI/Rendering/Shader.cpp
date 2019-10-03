@@ -13,6 +13,14 @@ UMap<Shader::Type, VString> g_szShaderTypes = {
 
 Shader::Shader(String id) : m_id(std::move(id)) {}
 
+Shader::~Shader()
+{
+	if (!m_bError)
+	{
+		LOG_I("-- [%s] %s Shader destroyed", m_id.c_str(), g_szShaderTypes[m_type].data());
+	}
+}
+
 void Shader::Compile(const String& code, Type type)
 {
 	Assert(type.count() == 1, "Can only compile single ShaderType via this overload");
@@ -63,14 +71,6 @@ void Shader::Compile(const String& vertCode, const String& fragCode)
 	{
 		LOG_E("[%s] Error loading %s Shader!", m_id.c_str(), g_szShaderTypes[m_type].data());
 		m_type = 0;
-	}
-}
-
-Shader::~Shader()
-{
-	if (!m_bError)
-	{
-		LOG_I("-- [%s] %s Shader destroyed", m_id.c_str(), g_szShaderTypes[m_type].data());
 	}
 }
 

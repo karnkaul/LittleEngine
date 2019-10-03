@@ -52,7 +52,6 @@ GFX gfx;
 
 // App scope
 UPtr<LERepository> uRepository;
-UPtr<LEShaders> uShaders;
 UPtr<LEAudio> uAudio;
 
 // Game scope
@@ -81,7 +80,7 @@ bool Init(s32 argc, char** argv)
 	{
 		uRepository = MakeUnique<LERepository>(IDs::DEFAULT_FONT, IDs::COOKED_ASSETS, IDs::ASSETS_ROOT);
 		uAudio = MakeUnique<LEAudio>();
-		uShaders = MakeUnique<LEShaders>();
+		LEShaders::Init();
 	}
 	catch (const FatalEngineException& e)
 	{
@@ -243,14 +242,13 @@ void Unstage()
 #endif
 	uGM = nullptr;
 	uContext = nullptr;
-	uShaders->UnloadAll();
+	LEShaders::Clear();
 	uRepository->ResetState();
 }
 
 void Cleanup()
 {
 	uAudio = nullptr;
-	uShaders = nullptr;
 	uRepository = nullptr;
 #if !defined(SHIPPING)
 	config.Save(OS::Env()->FullPath(GAME_CONFIG_FILE.c_str()));

@@ -2,24 +2,19 @@
 
 namespace LittleEngine
 {
-LEShaders* g_pShaders = nullptr;
-
-ShadersData LEShaders::s_data;
-UMap<String, UPtr<Shader>> LEShaders::s_shaderMap;
-
-LEShaders::LEShaders(ShadersData data)
+namespace LEShaders
 {
-	g_pShaders = this;
+ShadersData s_data;
+UMap<String, UPtr<Shader>> s_shaderMap;
+} // namespace LEShaders
+
+void LEShaders::Init(ShadersData data)
+{
 	s_data = std::move(data);
+	s_shaderMap.reserve(128);
 }
 
-LEShaders::~LEShaders()
-{
-	g_pShaders = nullptr;
-	UnloadAll();
-}
-
-void LEShaders::UnloadAll()
+void LEShaders::Clear()
 {
 	s_shaderMap.clear();
 }
