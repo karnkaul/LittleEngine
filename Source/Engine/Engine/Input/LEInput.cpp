@@ -6,7 +6,7 @@
 #if defined(DEBUGGING)
 #include "Engine/GFX.h"
 #include "Engine/Debug/Tweakable.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #endif
 
 namespace LittleEngine

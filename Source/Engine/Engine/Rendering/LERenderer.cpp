@@ -2,7 +2,7 @@
 #include "Core/Logger.h"
 #include "Core/OS.h"
 #include "Core/Utils.h"
-#include "SFMLAPI/Rendering/IRenderBuffer.h"
+#include "SFMLAPI/Rendering/RenderStats.h"
 #include "SFMLAPI/Rendering/Primitives/Quads.h"
 #include "SFMLAPI/System/SFTypes.h"
 #include "SFMLAPI/Viewport/ViewportData.h"
@@ -17,8 +17,7 @@ namespace LittleEngine
 LERenderer::LERenderer(Viewport& viewport, RendererData data) : m_data(data), m_pViewport(&viewport)
 {
 #if ENABLED(RENDER_STATS)
-	extern RenderData g_renderData;
-	g_renderData.fpsMax = m_data.maxFPS;
+	g_renderStats.fpsMax = m_data.maxFPS;
 #endif
 	Start();
 }
@@ -64,7 +63,7 @@ void LERenderer::Render(Fixed alpha)
 	WaitForVsync();
 }
 
-void LERenderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
+void LERenderer::RenderFrame(PrimitiveFactory& buffer, Fixed alpha)
 {
 	m_pViewport->clear();
 #if ENABLED(RENDER_STATS)
@@ -72,7 +71,7 @@ void LERenderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 	static u32 frameCount = 0;
 	u32 statics = 0;
 	u32 drawCalls = 0;
-	g_renderData._quadCount_Internal = 0;
+	g_renderStats._quadCount_Internal = 0;
 #endif
 	sf::Vector2 zero = Cast(Vector2::Zero);
 	sf::View worldView(Cast(g_pGFX->LerpedWorldPosition(alpha)), Cast(g_pGFX->LerpedWorldSpace(alpha)));
@@ -141,19 +140,19 @@ void LERenderer::RenderFrame(IRenderBuffer& buffer, Fixed alpha)
 		}
 	}
 #if ENABLED(RENDER_STATS)
-	g_renderData.quadCount = g_renderData._quadCount_Internal;
-	g_renderData.staticCount = statics;
-	g_renderData.drawCallCount = drawCalls;
-	g_renderData.dynamicCount = drawCalls - statics;
-	++g_renderData.renderFrame;
+	g_renderStats.quadCount = g_renderStats._quadCount_Internal;
+	g_renderStats.staticCount = statics;
+	g_renderStats.drawCallCount = drawCalls;
+	g_renderStats.dynamicCount = drawCalls - statics;
+	++g_renderStats.renderFrame;
 	// Update FPS
 	{
 		++frameCount;
-		g_renderData.lastRenderTime = Time::Now();
-		if (Maths::Abs((fpsTime - g_renderData.lastRenderTime).AsSeconds()) >= 1.0f)
+		g_renderStats.lastRenderTime = Time::Now();
+		if (Maths::Abs((fpsTime - g_renderStats.lastRenderTime).AsSeconds()) >= 1.0f)
 		{
-			fpsTime = g_renderData.lastRenderTime;
-			g_renderData.framesPerSecond = frameCount;
+			fpsTime = g_renderStats.lastRenderTime;
+			g_renderStats.framesPerSecond = frameCount;
 			frameCount = 0;
 		}
 	}

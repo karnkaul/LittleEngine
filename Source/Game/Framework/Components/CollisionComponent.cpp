@@ -3,7 +3,7 @@
 #include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "Engine/Physics/Collider.h"
 #include "Engine/Physics/LEPhysics.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "Model/World/Entity.h"
 #include "Model/GameManager.h"
 #include "CollisionComponent.h"

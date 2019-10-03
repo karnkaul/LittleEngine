@@ -4,7 +4,7 @@
 #include "SFMLAPI/System/Assets.h"
 #include "LERepository.h"
 #include "ManifestLoader.h"
-#include "Engine/Renderer/LEShaders.h"
+#include "Engine/Rendering/LEShaders.h"
 
 namespace LittleEngine
 {

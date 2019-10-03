@@ -3,7 +3,7 @@
 #include "Core/Jobs.h"
 #include "Core/OS.h"
 #include "SFMLAPI/Rendering/LayerID.h"
-#include "SFMLAPI/Rendering/PrimitiveFactory.h"
+#include "PrimitiveFactory.h"
 
 namespace LittleEngine
 {
@@ -36,7 +36,7 @@ public:
 	void Lock_Swap();
 
 	void Render(Fixed alpha);
-	void RenderFrame(class IRenderBuffer& buffer, Fixed alpha);
+	void RenderFrame(class PrimitiveFactory& buffer, Fixed alpha);
 	void StopRenderThread();
 
 	bool IsRunningRenderThread() const;

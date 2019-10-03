@@ -7,7 +7,7 @@
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/Physics/LEPhysics.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "Engine/Repository/LERepository.h"
 #include "DebugConsole.h"
 #include "LogLine.h"

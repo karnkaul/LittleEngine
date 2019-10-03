@@ -1,5 +1,5 @@
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "ProgressBar.h"
 #include "Model/GameManager.h"
 

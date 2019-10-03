@@ -1,5 +1,6 @@
 #include "Core/Logger.h"
 #include "Core/Version.h"
+#include "SFMLAPI/Rendering/RenderStats.h"
 #include "Engine/FatalEngineException.h"
 #include "Engine/Debug/Profiler.h"
 #include "Model/GameConfig.h"
@@ -278,6 +279,13 @@ void RunLoop(const Time tickRate, const Time fdt)
 		const Time dt = Time::Clamp(now - frameStart, Time::Zero, maxFrameTime.Scaled(2));
 		frameStart = now;
 		WorldClock::Tick(dt);
+#if ENABLED(RENDER_STATS)
+		g_renderStats.dtList.push_front(dt);
+		if (g_renderStats.dtList.size() > 16)
+		{
+			g_renderStats.dtList.pop_back();
+		}
+#endif
 
 		// Step
 		accumulator += dt;

@@ -2,7 +2,7 @@
 #include "Core/Utils.h"
 #include "SFMLAPI/Viewport/Viewport.h"
 #include "Engine/GFX.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "GameSettings.h"
 
 namespace LittleEngine

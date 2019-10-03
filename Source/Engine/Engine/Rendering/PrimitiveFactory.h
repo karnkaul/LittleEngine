@@ -1,30 +1,15 @@
 #pragma once
 #include "Core/SimpleTime.h"
-#include "Primitives/Primitive.h"
-#include "IRenderBuffer.h"
+#include "SFMLAPI/Rendering/Primitives/Primitive.h"
 
 namespace LittleEngine
 {
-#if ENABLED(RENDER_STATS)
-struct RenderData
+class PrimitiveFactory : private NoCopy
 {
-	Time tickRate;
-	Time lastRenderTime;
-	u32 drawCallCount = 0;
-	u32 quadCount = 0;
-	u32 _quadCount_Internal = 0; // Unstable to render
-	u32 staticCount = 0;
-	u32 dynamicCount = 0;
-	u32 fpsMax = 0;
-	u32 framesPerSecond = 0;
-	u32 renderFrame = 0;
-	u32 gameFrame = 0;
-};
-extern RenderData g_renderData;
-#endif
+public:
+	using PrimVec = Vec<UPtr<APrimitive>>;
+	using PrimMat = Array<PrimVec, ToIdx(LayerID::_COUNT)>;
 
-class PrimitiveFactory : public IRenderBuffer
-{
 private:
 	static const u32 LAYER_RESERVE = 128;
 	static const u32 LOCK_SLEEP_MS = 5;
@@ -34,17 +19,17 @@ private:
 
 public:
 	PrimitiveFactory();
-	~PrimitiveFactory() override;
+	virtual ~PrimitiveFactory();
 
 	template <typename T>
 	T* New(LayerID layer);
 
-	Time LastSwapTime() const override;
+	Time LastSwapTime() const;
 
 	void Reconcile();
-	void Swap() override;
+	void Swap();
 
-	PrimMat& ActiveRenderMatrix() override;
+	PrimMat& ActiveRenderMatrix();
 };
 
 template <typename T>

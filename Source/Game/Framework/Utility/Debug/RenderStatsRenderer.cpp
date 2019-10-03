@@ -1,12 +1,12 @@
 #include "Core/Version.h"
 #include "RenderStatsRenderer.h"
 #if ENABLED(RENDER_STATS)
-#include "SFMLAPI/Rendering/PrimitiveFactory.h"
+#include "SFMLAPI/Rendering/RenderStats.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "Engine/GFX.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Context/LEContext.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "Engine/Repository/LERepository.h"
 
 namespace LittleEngine::Debug
@@ -31,7 +31,7 @@ RenderStatsRenderer::RenderStatsRenderer(LEContext& context)
 	m_pBG->SetSize(size)->SetPivot({1, -1}, true)->SetColour(bg, true)->SetStatic(true)->SetEnabled(s_bConsoleRenderStatsEnabled);
 
 	m_pTitles = pRenderer->New<SFText>(layer);
-	m_pTitles->SetText("Quads\nDraw Calls\nDynamic\nStatic\nTicks/s\nFPS\nGame Frame\nRender Frame")
+	m_pTitles->SetText("FPS\nQuads\nDraw Calls\nDynamic\nStatic\nAvg dt\nGame Frame\nRender Frame")
 		->SetSize(textSize)
 		->SetFont(*pFont)
 		->SetPivot({-1, 1}, true)
@@ -74,11 +74,16 @@ void RenderStatsRenderer::Update()
 	m_pValues->SetEnabled(s_bConsoleRenderStatsEnabled);
 	if (s_bConsoleRenderStatsEnabled)
 	{
-		u32 ticksPerSec = static_cast<u32>(1.0f / g_renderData.tickRate.AsSeconds());
+		f32 avgDT = 0.0f;
+		for (auto dt : g_renderStats.dtList)
+		{
+			avgDT += (dt.AsSeconds() * 1000);
+		}
+		avgDT /= (g_renderStats.dtList.empty() ? 1 : g_renderStats.dtList.size());
 		static char buf[256];
-		SPRINTF(buf, sizeof(buf), "%u\n%u\n%u\n%u\n%u\n%u/%u\n%u\n%u", g_renderData.quadCount, g_renderData.drawCallCount,
-				g_renderData.dynamicCount, g_renderData.staticCount, ticksPerSec, g_renderData.framesPerSecond, g_renderData.fpsMax,
-				g_renderData.gameFrame, g_renderData.renderFrame);
+		SPRINTF(buf, sizeof(buf), "%u/%u\n%u\n%u\n%u\n%u\n%.1fms\n%u\n%u", g_renderStats.framesPerSecond, g_renderStats.fpsMax,
+				g_renderStats.quadCount, g_renderStats.drawCallCount, g_renderStats.dynamicCount, g_renderStats.staticCount, avgDT,
+				g_renderStats.fpsMax, g_renderStats.gameFrame, g_renderStats.renderFrame);
 		m_pValues->SetText(String(buf));
 	}
 }

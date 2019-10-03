@@ -1,7 +1,7 @@
 #include "Core/Utils.h"
 #include "SFMLAPI/Rendering/Primitives/Quads.h"
 #include "SFMLAPI/System/Assets.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "../GameManager.h"
 #include "Camera.h"
 #include "TileMap.h"

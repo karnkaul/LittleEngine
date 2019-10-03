@@ -7,7 +7,7 @@
 #include "Engine/Audio/LEAudio.h"
 #include "Model/GameManager.h"
 #include "Model/World/Entity.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "Engine/Debug/Tweakable.h"
 #include "PSEmitter.h"
 

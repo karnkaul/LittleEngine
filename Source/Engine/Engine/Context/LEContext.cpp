@@ -9,10 +9,11 @@
 #include "Engine/Debug/Profiler.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Input/LEInput.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "Engine/Repository/LERepository.h"
 #include "Engine/GFX.h"
 #include "SFMLAPI/Rendering/Primitives/Primitive.h"
+#include "SFMLAPI/Rendering/RenderStats.h"
 
 namespace LittleEngine
 {
@@ -63,9 +64,6 @@ LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 	m_uViewport->SetData(std::move(m_data.viewportData));
 	m_uViewport->Create(maxFPS);
 
-#if ENABLED(RENDER_STATS)
-	g_renderData.tickRate = m_data.tickRate;
-#endif
 	RendererData rData{m_data.tickRate, Time::Milliseconds(20), maxFPS, m_data.bRenderThread};
 	m_uRenderer = MakeUnique<LERenderer>(*m_uViewport, rData);
 	m_ptrToken = PushPointer(Pointer::Type::Arrow);
@@ -238,7 +236,7 @@ void LEContext::SubmitFrame()
 		PROFILE_STOP("RENDER");
 	}
 #if ENABLED(RENDER_STATS)
-	++g_renderData.gameFrame;
+	++g_renderStats.gameFrame;
 #endif
 
 	m_onSubmitted();
@@ -266,7 +264,6 @@ Token LEContext::RegisterOnSubmitted(OnSubmit::Callback onFrameSubmitted)
 #if defined(DEBUGGING)
 void LEContext::ModifyTickRate(Time newTickRate)
 {
-	g_renderData.tickRate = newTickRate;
 	m_uRenderer->ModifyTickRate(newTickRate);
 }
 #endif

@@ -5,7 +5,7 @@
 #include "Engine/GFX.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/Physics/Collider.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "Engine/Repository/LERepository.h"
 #include "Model/GameManager.h"
 #include "Model/GameSettings.h"

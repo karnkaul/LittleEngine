@@ -1,7 +1,7 @@
 #include "Core/Asserts.h"
 #include "Core/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/SFRect.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Component.h"
 #include "Entity.h"

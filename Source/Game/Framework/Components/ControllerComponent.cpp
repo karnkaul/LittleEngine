@@ -6,7 +6,7 @@
 #include "Engine/GFX.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/Debug/Tweakable.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "Model/World/Entity.h"
 #include "Model/GameManager.h"
 #include "ControllerComponent.h"

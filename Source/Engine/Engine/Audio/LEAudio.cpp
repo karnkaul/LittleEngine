@@ -10,7 +10,7 @@
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"
 #include "Engine/GFX.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #endif
 
 namespace LittleEngine

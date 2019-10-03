@@ -2,7 +2,7 @@
 #include <optional>
 #include "SFMLAPI/Rendering/LayerID.h"
 #include "Model/World/Component.h"
-#include "Engine/Renderer/LEShaders.h"
+#include "Engine/Rendering/LEShaders.h"
 
 namespace LittleEngine
 {
