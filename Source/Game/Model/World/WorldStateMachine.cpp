@@ -10,6 +10,7 @@
 #include "Engine/Locale/Locale.h"
 #include "Engine/Repository/LERepository.h"
 #include "Engine/Repository/ManifestLoader.h"
+#include "Model/GameKernel.h"
 #include "Model/GameManager.h"
 #include "Model/UI/UIGameStyle.h"
 
@@ -30,6 +31,7 @@ Vec<UPtr<World>> WorldStateMachine::s_createdWorlds;
 
 WorldStateMachine::WorldStateMachine(LEContext& context) : m_pContext(&context)
 {
+	Assert(&context, "Context is null!");
 	if (bCreated)
 	{
 		throw FatalEngineException();
@@ -40,15 +42,6 @@ WorldStateMachine::WorldStateMachine(LEContext& context) : m_pContext(&context)
 		uWorld->Init(*this);
 	}
 	LOG_I("[WSM] Processed %u created Worlds", s_createdWorlds.size());
-	m_uLoadHUD = MakeUnique<LoadingHUD>();
-	m_pLoadingTitle = &m_uLoadHUD->Title();
-	m_pLoadingTitle->SetSize(titleSize);
-	m_pLoadingSubtitle = m_uLoadHUD->Subtitle();
-	if (m_pLoadingSubtitle)
-	{
-		m_pLoadingSubtitle->SetSize(subtitleSize);
-	}
-	m_pSpinner = m_uLoadHUD->Spinner();
 	bCreated = true;
 }
 
@@ -63,6 +56,19 @@ WorldStateMachine::~WorldStateMachine()
 
 void WorldStateMachine::Start(String coreManifestID, String gameStyleID, Task onManifestLoaded)
 {
+	Assert(g_pGameManager, "GameManager is null!");
+	if (!m_uLoadHUD)
+	{
+		m_uLoadHUD = MakeUnique<LoadingHUD>();
+		m_pLoadingTitle = &m_uLoadHUD->Title();
+		m_pLoadingTitle->SetSize(titleSize);
+		m_pLoadingSubtitle = m_uLoadHUD->Subtitle();
+		if (m_pLoadingSubtitle)
+		{
+			m_pLoadingSubtitle->SetSize(subtitleSize);
+		}
+		m_pSpinner = m_uLoadHUD->Spinner();
+	}
 	m_manifestPath = std::move(coreManifestID);
 	m_state = State::Loading;
 	m_onLoaded = [&, onManifestLoaded]() {
@@ -311,6 +317,7 @@ void WorldStateMachine::UnloadActiveWorld()
 		String manifestID = m_pActiveWorld->m_manifestID;
 		if (g_pRepository->IsPresent(manifestID))
 		{
+			Assert(m_pContext, "Context is null!");
 			m_onSubmitToken = m_pContext->RegisterOnSubmitted([manifestID]() { g_pRepository->UnloadManifest(manifestID); });
 		}
 	}

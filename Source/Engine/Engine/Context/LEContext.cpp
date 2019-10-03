@@ -21,7 +21,7 @@ TweakBool(asyncRendering, nullptr);
 
 LEContext::PtrEntry::PtrEntry(WToken wToken, Pointer* pPointer, Pointer::Type type) : wToken(wToken), pPointer(pPointer), type(type) {}
 
-LEContext::LEContext(LEContextData data) : m_data(std::move(data))
+LEContext::LEContext(Data data) : m_data(std::move(data))
 {
 #if ENABLED(TWEAKABLES)
 	asyncRendering.BindCallback([&](VString val) {
@@ -64,7 +64,7 @@ LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 	m_uViewport->SetData(std::move(m_data.viewportData));
 	m_uViewport->Create(maxFPS);
 
-	RendererData rData{m_data.tickRate, Time::Milliseconds(20), maxFPS, m_data.bRenderThread};
+	LERenderer::Data rData(m_data.tickRate, Time::Milliseconds(20), maxFPS, m_data.bRenderThread);
 	m_uRenderer = MakeUnique<LERenderer>(*m_uViewport, rData);
 	m_ptrToken = PushPointer(Pointer::Type::Arrow);
 

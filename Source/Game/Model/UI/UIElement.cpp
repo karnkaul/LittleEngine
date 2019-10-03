@@ -1,6 +1,7 @@
 #include "Core/Logger.h"
 #include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/Rendering/Primitives.h"
+#include "Engine/GFX.h"
 #include "Engine/Rendering/LERenderer.h"
 #include "Engine/Repository/LERepository.h"
 #include "Engine/Locale/Locale.h"

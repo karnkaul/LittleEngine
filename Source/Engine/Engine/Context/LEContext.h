@@ -7,21 +7,22 @@
 
 namespace LittleEngine
 {
-struct LEContextData
-{
-	ViewportData viewportData;
-	InputMap inputMap;
-	Time tickRate = Time::Seconds(1.0f / 60.0f);
-	Time maxFrameTime = Time::Milliseconds(50);
-	Time renderThreadStartDelay = Time::Milliseconds(10);
-	bool bRenderThread = true;
-};
-
 class LEContext final
 {
 public:
 	using OnSubmit = Core::Delegate<>;
 	using Pointer = sf::Cursor;
+
+public:
+	struct Data
+	{
+		ViewportData viewportData;
+		InputMap inputMap;
+		Time tickRate = Time::Seconds(1.0f / 60.0f);
+		Time maxFrameTime = Time::Milliseconds(50);
+		Time renderThreadStartDelay = Time::Milliseconds(10);
+		bool bRenderThread = true;
+	};
 
 private:
 	struct PtrEntry
@@ -34,14 +35,14 @@ private:
 	};
 
 private:
-	LEContextData m_data;
+	Data m_data;
 	UMap<Pointer::Type, UPtr<Pointer>> m_pointerMap;
 	Vec<PtrEntry> m_pointerStack;
 	Token m_ptrToken;
 	OnSubmit m_onSubmitted;
-	UPtr<class LEInput> m_uInput;
 	UPtr<class Viewport> m_uViewport;
 	UPtr<class LERenderer> m_uRenderer;
+	UPtr<class LEInput> m_uInput;
 #if ENABLED(DEBUG_LOGGING)
 	Pointer::Type m_prevPtrType;
 #endif
@@ -52,7 +53,7 @@ private:
 	std::optional<const ViewportSize*> m_oNewViewportSize;
 
 public:
-	LEContext(LEContextData data);
+	LEContext(Data data);
 	~LEContext();
 
 	bool IsTerminating() const;

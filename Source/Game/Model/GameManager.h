@@ -1,7 +1,6 @@
 #pragma once
 #include "Core/CoreTypes.h"
 #include "Core/Logger.h"
-#include "Engine/GFX.h"
 #include "Model/World/ComponentTimingType.h"
 
 namespace LittleEngine
@@ -11,26 +10,26 @@ using WorldID = s32;
 // Note: pointer will reset with every World activation
 extern class GameManager* g_pGameManager;
 
-class GameManager final
+class GameManager final : private NoCopy
 {
 private:
 	static constexpr size_t COMPONENT_LINES = ToIdx(TimingType::Last) + 1;
 
 private:
+	Array<Vec<UPtr<class AComponent>>, COMPONENT_LINES> m_components;
 	String m_logName;
 	Vec<Task> m_initCallbacks;
 	Vec<UPtr<class Entity>> m_entities;
-	Array<Vec<UPtr<class AComponent>>, COMPONENT_LINES> m_components;
-	UPtr<class WorldStateMachine> m_uWSM;
 	UPtr<class UIManager> m_uUIManager;
 	UPtr<class LEPhysics> m_uPhysics;
 	UPtr<class Camera> m_uWorldCamera;
 	class LEContext* m_pContext;
+	class WorldStateMachine* m_pWSM;
 	bool m_bQuitting = false;
 	bool m_bPaused = false;
 
 public:
-	GameManager(LEContext& context);
+	GameManager(LEContext& context, WorldStateMachine& wsm);
 	~GameManager();
 
 	UIManager* UI() const;
@@ -45,7 +44,6 @@ public:
 	WorldID ActiveWorldID() const;
 	Vec<WorldID> AllWorldIDs() const;
 
-	void Start(String coreManifestID = "", String gameStyleID = "", Task onManifestLoaded = nullptr);
 	void SetPaused(bool bPaused);
 	void Quit();
 	void SetWorldCamera(UPtr<Camera> uCamera);
@@ -59,14 +57,13 @@ public:
 	template <typename T>
 	T* NewComponent(Entity& owner);
 
-public:
+private:
 	void Tick(Time dt);
 	void Step(Time fdt);
-
-private:
 	void OnWorldUnloaded();
 
 	friend class WorldStateMachine;
+	friend class GameKernel;
 };
 
 template <typename T>

@@ -3,6 +3,7 @@
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"
 #include "Engine/Context/LEContext.h"
+#include "Engine/GFX.h"
 #include "Engine/Rendering/LERenderer.h"
 #include "Model/GameManager.h"
 #include "Model/UI/UIElement.h"

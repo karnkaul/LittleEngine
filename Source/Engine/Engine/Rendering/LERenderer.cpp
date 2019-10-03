@@ -14,7 +14,13 @@
 
 namespace LittleEngine
 {
-LERenderer::LERenderer(Viewport& viewport, RendererData data) : m_data(data), m_pViewport(&viewport)
+LERenderer::Data::Data() = default;
+LERenderer::Data::Data(Time tickRate, Time threadStartDelay, u32 maxFPS, bool bStartThread)
+	: tickRate(tickRate), threadStartDelay(threadStartDelay), maxFPS(maxFPS), bStartThread(bStartThread)
+{
+}
+
+LERenderer::LERenderer(Viewport& viewport, Data data) : m_data(data), m_pViewport(&viewport)
 {
 #if ENABLED(RENDER_STATS)
 	g_renderStats.fpsMax = m_data.maxFPS;
@@ -28,6 +34,11 @@ LERenderer::~LERenderer()
 	{
 		Stop();
 	}
+}
+
+bool LERenderer::IsRunningRenderThread() const
+{
+	return m_threadHandle > 0 && m_bRendering.load(std::memory_order_relaxed);
 }
 
 void LERenderer::RecreateViewport(ViewportRecreateData data)
@@ -165,11 +176,6 @@ void LERenderer::StopRenderThread()
 	{
 		Stop();
 	}
-}
-
-bool LERenderer::IsRunningRenderThread() const
-{
-	return m_threadHandle > 0 && m_bRendering.load(std::memory_order_relaxed);
 }
 
 void LERenderer::Start()

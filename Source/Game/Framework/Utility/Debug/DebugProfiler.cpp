@@ -5,6 +5,7 @@
 #include "Engine/Debug/Profiler.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Context/LEContext.h"
+#include "Engine/GFX.h"
 #include "Model/World/WorldClock.h"
 #include "Model/GameManager.h"
 #include "Framework/UI/Elements/UIProgressBar.h"

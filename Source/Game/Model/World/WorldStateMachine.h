@@ -37,12 +37,12 @@ private:
 	Transition m_transition;
 	UPtr<class ILoadingHUD> m_uLoadHUD;
 	SPtr<class ManifestLoader> m_sLoader;
+	class LEContext* m_pContext;
 	class SFText* m_pLoadingTitle = nullptr;
 	SFText* m_pLoadingSubtitle = nullptr;
 	class Quad* m_pSpinner = nullptr;
 	World* m_pActiveWorld = nullptr;
 	World* m_pNextWorld = nullptr;
-	class LEContext* m_pContext;
 	
 public:
 #ifdef DEBUGGING

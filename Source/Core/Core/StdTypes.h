@@ -131,7 +131,3 @@ Token MakeToken(T value)
 {
 	return MakeShared<s32>(ToS32(value));
 }
-
-class DependencyException : public std::exception
-{
-};

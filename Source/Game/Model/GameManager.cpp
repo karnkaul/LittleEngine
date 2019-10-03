@@ -11,6 +11,7 @@
 #include "World/Entity.h"
 #include "World/Camera.h"
 #include "Model/GameConfig.h"
+#include "Model/GameKernel.h"
 #include "Model/GameSettings.h"
 #include "Model/UI/UIManager.h"
 #include "Model/World/WorldStateMachine.h"
@@ -20,10 +21,11 @@ namespace LittleEngine
 GameManager* g_pGameManager = nullptr;
 TweakBool(paused, nullptr);
 
-GameManager::GameManager(LEContext& context) : m_logName("[GameManager]"), m_pContext(&context)
+GameManager::GameManager(LEContext& context, WorldStateMachine& wsm) : m_logName("[GameManager]"), m_pContext(&context), m_pWSM(&wsm)
 {
+	Assert(&wsm, "WSM is null!");
+	Assert(&context, "WSM is null!");
 	g_pGameManager = this;
-	m_uWSM = MakeUnique<WorldStateMachine>(*m_pContext);
 	m_uUIManager = MakeUnique<UIManager>();
 	m_uWorldCamera = MakeUnique<Camera>();
 	m_uWorldCamera->SetName("WorldCamera");
@@ -36,7 +38,6 @@ GameManager::GameManager(LEContext& context) : m_logName("[GameManager]"), m_pCo
 
 GameManager::~GameManager()
 {
-	m_uWSM = nullptr;
 	m_entities.clear();
 	for (auto& vec : m_components)
 	{
@@ -59,16 +60,19 @@ UIManager* GameManager::UI() const
 
 LEInput* GameManager::Input() const
 {
+	Assert(m_pContext, "WSM is null!");
 	return m_pContext->Input();
 }
 
 LERenderer* GameManager::Renderer() const
 {
+	Assert(m_pContext, "WSM is null!");
 	return m_pContext->Renderer();
 }
 
 LEContext* GameManager::Context() const
 {
+	Assert(m_pContext, "WSM is null!");
 	return m_pContext;
 }
 
@@ -79,28 +83,22 @@ LEPhysics* GameManager::Physics() const
 
 void GameManager::ReloadWorld()
 {
-	m_uWSM->LoadWorld(m_uWSM->ActiveWorldID());
+	m_pWSM->LoadWorld(m_pWSM->ActiveWorldID());
 }
 
 bool GameManager::LoadWorld(WorldID id)
 {
-	return m_uWSM->LoadWorld(id);
+	return m_pWSM->LoadWorld(id);
 }
 
 WorldID GameManager::ActiveWorldID() const
 {
-	return m_uWSM->ActiveWorldID();
+	return m_pWSM->ActiveWorldID();
 }
 
 Vec<WorldID> GameManager::AllWorldIDs() const
 {
-	return m_uWSM->AllWorldIDs();
-}
-
-void GameManager::Start(String coreManifestID /* = "" */, String gameStyleID /* = "" */, Task onManifestLoaded /* = nullptr */)
-{
-	m_uWSM->Start(std::move(coreManifestID), std::move(gameStyleID), std::move(onManifestLoaded));
-	m_pContext->SetPointerPosition(Vector2::Zero, false);
+	return m_pWSM->AllWorldIDs();
 }
 
 void GameManager::SetPaused(bool bPaused)
@@ -147,11 +145,11 @@ bool GameManager::IsPlayerControllable() const
 
 void GameManager::Tick(Time dt)
 {
-	if (m_uWSM->Tick(dt) == WorldStateMachine::State::Running)
+	if (m_pWSM->Tick(dt) == WorldStateMachine::State::Running)
 	{
 		if (m_bQuitting)
 		{
-			m_uWSM->Quit();
+			m_pWSM->Quit();
 			return;
 		}
 		if (!m_bPaused)

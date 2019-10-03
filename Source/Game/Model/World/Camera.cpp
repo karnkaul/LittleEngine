@@ -5,6 +5,7 @@
 #include "../GameManager.h"
 #include "Camera.h"
 #include "TileMap.h"
+#include "Engine/GFX.h"
 
 namespace LittleEngine
 {

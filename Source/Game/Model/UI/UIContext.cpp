@@ -1,6 +1,7 @@
 #include "Core/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "Engine/Context/LEContext.h"
+#include "Engine/GFX.h"
 #include "UIContext.h"
 #include "UIWidget.h"
 #include "Model/GameManager.h"

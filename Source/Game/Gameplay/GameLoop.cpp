@@ -4,6 +4,7 @@
 #include "Engine/FatalEngineException.h"
 #include "Engine/Debug/Profiler.h"
 #include "Model/GameConfig.h"
+#include "Model/GameKernel.h"
 #include "Model/World/WorldClock.h"
 #include "Framework/Framework.h"
 #include "Framework/Utility/Debug/Console/DebugConsole.h"
@@ -49,15 +50,13 @@ bool bTerminate = false;
 PostRun postRun = PostRun::Cleanup;
 Time maxFrameTime;
 GameConfig config;
-GFX gfx;
 
 // App scope
 UPtr<LERepository> uRepository;
 UPtr<LEAudio> uAudio;
 
 // Game scope
-UPtr<LEContext> uContext;
-UPtr<GameManager> uGM;
+GameKernel kernel;
 
 TweakS32(reload, nullptr);
 TweakS32(ticksPerSec, nullptr);
@@ -123,7 +122,7 @@ bool Init(s32 argc, char** argv)
 		if (newRate > 0 && newRate < 250)
 		{
 			Time newTickRate = Time::Seconds(1.0f / newRate);
-			uContext->ModifyTickRate(newTickRate);
+			kernel.Context()->ModifyTickRate(newTickRate);
 			LOG_I("[GameLoop] Tick Rate changed to %.2f ms", newTickRate.AsSeconds() * 1000.0f);
 		}
 		else
@@ -143,44 +142,17 @@ bool Init(s32 argc, char** argv)
 #endif
 	Core::Jobs::Init(config.JobWorkerCount());
 	Locale::Init(pSettings->LocdataID(), pSettings->ENLocdataID());
-	gfx.m_uiSpace = config.UISpace();
-	gfx.m_viewportHeight = ToS32(pSettings->ViewportHeight());
-	gfx.SetWorldHeight(config.WorldHeight(), true);
-#ifdef DEBUGGING
-	gfx.m_overrideNativeAR = config.ForceViewportAR();
-#endif
-	gfx.Init();
 	Time::Reset();
 	return true;
 }
 
-void Stage()
+bool Stage()
 {
 	GameInit::CreateWorlds();
-	GameSettings& settings = *GameSettings::Instance();
-	LEContextData data;
-	data.viewportData.viewportSize = settings.SafeGetViewportSize();
-	data.viewportData.title = LOC(config.TitleBarText());
-	data.viewportData.style = settings.GetViewportStyle();
-	data.tickRate = config.TickRate();
-	data.bRenderThread = config.m_bRenderThread;
-	data.renderThreadStartDelay = config.RenderThreadStartDelay();
-	Core::Property::Persistor inputMapPersistor;
-	auto pInputMapFile = settings.GetValue("CUSTOM_INPUT_MAP");
-	if (pInputMapFile)
+	if (!kernel.Boot(config)) 
 	{
-		String inputMapFile = OS::Env()->FullPath(pInputMapFile->c_str());
-		if (inputMapPersistor.Load(inputMapFile))
-		{
-			u16 count = data.inputMap.Import(inputMapPersistor);
-			if (count > 0)
-			{
-				LOG_I("[GameLoop] Loaded %u custom Input Mappings successfully", count);
-			}
-		}
-	}
-	uContext = MakeUnique<LEContext>(std::move(data));
-	uGM = MakeUnique<GameManager>(*uContext);
+		return false;
+	};
 #if ENABLED(CONSOLE)
 	Console::Init();
 #endif
@@ -188,11 +160,12 @@ void Stage()
 	Profiler::Init(Time::Milliseconds(10));
 #endif
 #if defined(DEBUGGING)
-	uAudio->InitDebug(*uGM->Renderer());
+	uAudio->InitDebug(*kernel.Context()->Renderer());
 #endif
 	postRun = PostRun::Cleanup;
 	bTerminate = false;
 	WorldClock::Reset();
+	return true;
 }
 
 #if defined(DEBUGGING)
@@ -241,8 +214,7 @@ void Unstage()
 #if defined(DEBUGGING)
 	uAudio->DestroyDebug();
 #endif
-	uGM = nullptr;
-	uContext = nullptr;
+	kernel.Shutdown();
 	LEShaders::Clear();
 	uRepository->ResetState();
 }
@@ -263,10 +235,10 @@ void RunLoop(const Time tickRate, const Time fdt)
 {
 	Time accumulator;
 	Time frameStart = Time::Now();
-	uGM->Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE, &GameInit::LoadShaders);
-	while (!uGM->Context()->IsTerminating() && !bTerminate)
+	kernel.Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE, &GameInit::LoadShaders);
+	while (!kernel.Context()->IsTerminating() && !bTerminate)
 	{
-		LEContext* pContext = uGM->Context();
+		LEContext* pContext = kernel.Context();
 		Time frameElapsed;
 		pContext->PollInput();
 		// Break and exit if Window closed
@@ -292,17 +264,17 @@ void RunLoop(const Time tickRate, const Time fdt)
 		PROFILE_CUSTOM("STEP", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 130, 255));
 		while (accumulator >= fdt)
 		{
-			uGM->Step(fdt);
+			kernel.Step(fdt);
 			accumulator -= fdt;
 		}
 		PROFILE_STOP("STEP");
 
 		// Tick
 		pContext->FireInput();
-		uContext->Update();
+		pContext->Update();
 		uRepository->Tick(dt);
 		PROFILE_CUSTOM("TICK", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 0, 255));
-		uGM->Tick(dt);
+		kernel.Tick(dt);
 		uAudio->Tick(dt);
 		PROFILE_STOP("TICK");
 #if ENABLED(CONSOLE)
@@ -340,7 +312,10 @@ s32 GameLoop::Run(s32 argc, char** argv)
 
 	while (true)
 	{
-		Stage();
+		if (!Stage())
+		{
+			return 1;
+		}
 		RunLoop(config.TickRate(), config.StepRate());
 		Unstage();
 		if (postRun == PostRun::ReloadApp)
@@ -364,12 +339,7 @@ bool GameLoop::Reload(ReloadType type)
 		LOG_E("[GameLoop] Cannot reload context without initialisation!");
 		return false;
 	}
-	if (!uGM)
-	{
-		LOG_E("[GameLoop] Cannot reload empty game manager!");
-		return false;
-	}
-	if (!uContext)
+	if (!kernel.Context())
 	{
 		LOG_E("[GameLoop] Cannot reload empty context!");
 		return false;
@@ -378,7 +348,8 @@ bool GameLoop::Reload(ReloadType type)
 	{
 	default:
 	case ReloadType::World:
-		uGM->ReloadWorld();
+		Assert(g_pGameManager, "GameManager is null!");
+		g_pGameManager->ReloadWorld();
 		break;
 	case ReloadType::Game:
 		postRun = PostRun::ReloadGame;
