@@ -64,6 +64,7 @@ public:
 
 	bool TrySetViewportSize(u32 height);
 	void SetWindowStyle(ViewportStyle newStyle);
+	void SetPointerPosition(Vector2 worldPos, bool bIsNormalised);
 	void Terminate();
 
 	void PollInput();

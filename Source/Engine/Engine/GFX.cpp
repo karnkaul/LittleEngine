@@ -2,6 +2,7 @@
 #include "Core/Utils.h"
 #include "GFX.h"
 #include "SFMLAPI/Viewport/Viewport.h"
+#include "SFMLAPI/System/SFTypes.h"
 
 namespace LittleEngine
 {
@@ -186,7 +187,18 @@ Vector2 GFX::ViewportToWorld(s32 vpX, s32 vpY) const
 	Vector2 vpSize(ToS32(m_viewportSize.width), ToS32(m_viewportSize.height));
 	Vector2 aspectRatio(m_worldSpace.x / vpSize.x, m_worldSpace.y / vpSize.y);
 	vpPoint -= (Fixed::OneHalf * vpSize);
-	return Vector2(vpPoint.x * aspectRatio.x, -vpPoint.y * aspectRatio.y);
+	Vector2 viewPos(vpPoint.x * aspectRatio.x, vpPoint.y * aspectRatio.y);
+	return SFMLToWorld(viewPos);
+}
+
+Vector2 GFX::WorldToViewport(Vector2 world) const
+{
+	Vector2 vpSize(ToS32(m_viewportSize.width), ToS32(m_viewportSize.height));
+	Vector2 aspectRatio(vpSize.x / m_worldSpace.x, vpSize.y / m_worldSpace.y);
+	world = WorldToSFML(world);
+	Vector2 tPos(aspectRatio.x * world.x, aspectRatio.y * world.y);
+	Vector2 viewPos = tPos + vpSize * Fixed::OneHalf;
+	return viewPos;
 }
 
 void GFX::SetWorldHeight(Fixed height, bool bImmediate)

@@ -523,9 +523,7 @@ void TestTick(Time dt)
 		static f32 u;
 		u += dt.AsSeconds() * 0.1f;
 		pQuad0->SetUV(Fixed(u), Fixed::Zero, Fixed(u) + Fixed::OneHalf, Fixed::One);
-		Fixed o = Vector2::ToOrientation(pQuad0->Orientation());
-		Vector2 _o = Vector2::ToOrientation(o + 2);
-		pQuad0->SetOrientation(_o);
+		pQuad0->SetOrientation(Vector2::Rotate(pQuad0->Orientation(), 2));
 	}
 
 	/*PROFILE_CUSTOM("TEST", Time::Milliseconds(3), Colour::White);

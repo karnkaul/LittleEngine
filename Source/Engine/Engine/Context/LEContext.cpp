@@ -1,5 +1,6 @@
 #include "Core/Jobs.h"
 #include "SFMLAPI/System/Assets.h"
+#include "SFMLAPI/System/SFTypes.h"
 #include "SFMLAPI/Viewport/Viewport.h"
 #include "SFMLAPI/Viewport/ViewportData.h"
 #include "LEContext.h"
@@ -121,6 +122,17 @@ bool LEContext::TrySetViewportSize(u32 height)
 void LEContext::SetWindowStyle(ViewportStyle newStyle)
 {
 	m_oNewViewportStyle.emplace(std::move(newStyle));
+}
+
+void LEContext::SetPointerPosition(Vector2 worldPos, bool bIsNormalised)
+{
+	if (bIsNormalised)
+	{
+		worldPos = g_pGFX->WorldProjection(worldPos);
+	}
+	Vector2 sfPos = g_pGFX->WorldToViewport(worldPos);
+	sf::Vector2i iPos(sfPos.x.ToS32(), sfPos.y.ToS32());
+	sf::Mouse::setPosition(iPos, *m_uViewport);
 }
 
 void LEContext::Terminate()

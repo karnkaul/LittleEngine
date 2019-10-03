@@ -100,6 +100,7 @@ Vec<WorldID> GameManager::AllWorldIDs() const
 void GameManager::Start(String coreManifestID /* = "" */, String gameStyleID /* = "" */, Task onManifestLoaded /* = nullptr */)
 {
 	m_uWSM->Start(std::move(coreManifestID), std::move(gameStyleID), std::move(onManifestLoaded));
+	m_pContext->SetPointerPosition(Vector2::Zero, false);
 }
 
 void GameManager::SetPaused(bool bPaused)
