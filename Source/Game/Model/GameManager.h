@@ -1,7 +1,6 @@
 #pragma once
 #include "Core/CoreTypes.h"
 #include "Core/Logger.h"
-#include "Engine/GFX.h"
 #include "Model/World/ComponentTimingType.h"
 
 namespace LittleEngine
@@ -11,27 +10,26 @@ using WorldID = s32;
 // Note: pointer will reset with every World activation
 extern class GameManager* g_pGameManager;
 
-class GameManager final
+class GameManager final : private NoCopy
 {
 private:
 	static constexpr size_t COMPONENT_LINES = ToIdx(TimingType::Last) + 1;
 
 private:
+	Array<Vec<UPtr<class AComponent>>, COMPONENT_LINES> m_components;
 	String m_logName;
 	Vec<Task> m_initCallbacks;
-	Vec<UPtr<class Entity>> m_uEntities;
-	Array<Vec<UPtr<class AComponent>>, COMPONENT_LINES> m_uComponents;
-	UPtr<class LEContext> m_uContext;
-	UPtr<class WorldStateMachine> m_uWSM;
+	Vec<UPtr<class Entity>> m_entities;
 	UPtr<class UIManager> m_uUIManager;
-	UPtr<class LEPhysics> m_uCollisionManager;
+	UPtr<class LEPhysics> m_uPhysics;
 	UPtr<class Camera> m_uWorldCamera;
-	GFX m_gfx;
+	class LEContext* m_pContext;
+	class WorldStateMachine* m_pWSM;
 	bool m_bQuitting = false;
 	bool m_bPaused = false;
 
 public:
-	GameManager();
+	GameManager(LEContext& context, WorldStateMachine& wsm);
 	~GameManager();
 
 	UIManager* UI() const;
@@ -41,11 +39,11 @@ public:
 	Camera* WorldCamera() const;
 	LEPhysics* Physics() const;
 
+	void ReloadWorld();
 	bool LoadWorld(WorldID id);
 	WorldID ActiveWorldID() const;
 	Vec<WorldID> AllWorldIDs() const;
 
-	void Start(String coreManifestID = "", String gameStyleID = "", Task onManifestLoaded = nullptr);
 	void SetPaused(bool bPaused);
 	void Quit();
 	void SetWorldCamera(UPtr<Camera> uCamera);
@@ -59,13 +57,13 @@ public:
 	template <typename T>
 	T* NewComponent(Entity& owner);
 
-public:
-	void CreateContext(const class GameConfig& config);
-#ifdef DEBUGGING
-	void ModifyTickRate(Time newTickRate);
-#endif
-	void Reset();
-	void Tick(Time dt, bool& bYieldIntegration);
+private:
+	void Tick(Time dt);
+	void Step(Time fdt);
+	void OnWorldUnloaded();
+
+	friend class WorldStateMachine;
+	friend class GameKernel;
 };
 
 template <typename T>
@@ -74,7 +72,7 @@ T* GameManager::NewEntity(String name, Vector2 position, Vector2 orientation)
 	static_assert(IsDerived<Entity, T>(), "T must derive from Entity");
 	UPtr<T> uT = MakeUnique<T>();
 	T* pT = uT.get();
-	m_uEntities.emplace_back(std::move(uT));
+	m_entities.emplace_back(std::move(uT));
 	pT->OnCreate(std::move(name));
 	pT->m_transform.SetPosition(position);
 	pT->m_transform.SetOrientation(orientation);
@@ -88,8 +86,8 @@ T* GameManager::NewComponent(Entity& owner)
 	static_assert(IsDerived<AComponent, T>(), "T must derive from AComponent");
 	UPtr<T> uT = MakeUnique<T>();
 	size_t idx = ToIdx(uT->Timing());
-	Assert(m_uComponents.size() > idx, "Invalid Component Timing index!");
-	auto& componentVec = m_uComponents.at(idx);
+	Assert(m_components.size() > idx, "Invalid Component Timing index!");
+	auto& componentVec = m_components.at(idx);
 	uT->OnCreate(owner);
 	T* pT = uT.get();
 	componentVec.emplace_back(std::move(uT));

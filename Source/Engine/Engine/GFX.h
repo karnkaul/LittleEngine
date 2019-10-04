@@ -70,6 +70,7 @@ public:
 	Vector2 WorldToUI(Vector2 world) const;
 	Vector2 WorldToOverlay(Vector2 world) const;
 	Vector2 ViewportToWorld(s32 vpX, s32 vpY) const;
+	Vector2 WorldToViewport(Vector2 world) const;
 
 	void SetWorldHeight(Fixed height, bool bImmediate);
 	void SetWorldPosition(Vector2 position, bool bImmediate);

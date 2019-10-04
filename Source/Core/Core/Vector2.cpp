@@ -52,6 +52,15 @@ Fixed Vector2::ToOrientation(Vector2 orientation)
 	return degrees;
 }
 
+Vector2 Vector2::Rotate(Vector2 orientation, Fixed degrees) 
+{
+	Fixed c = (degrees * Maths::DEG_TO_RAD).Cos();
+	Fixed s = (degrees * Maths::DEG_TO_RAD).Sin();
+	Fixed x = orientation.x * c - orientation.y * s;
+	Fixed y = orientation.x * s + orientation.y * c;
+	return {x, y};
+}
+
 Vector2 Vector2::Normalised() const
 {
 	f64 sq = SqrMagnitude();

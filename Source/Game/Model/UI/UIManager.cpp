@@ -11,7 +11,7 @@ UIManager::UIManager()
 
 UIManager::~UIManager()
 {
-	Reset();
+	Clear();
 	m_inactive.clear();
 	LOG_D("[UIManager] destroyed");
 }
@@ -21,15 +21,14 @@ UIContext* UIManager::Active() const
 	return m_contexts.empty() ? nullptr : m_contexts.back().get();
 }
 
-void UIManager::Reset()
+void UIManager::Clear()
 {
-	UIContext* pActive = Active();
-	if (pActive)
+	for (auto& uContext : m_contexts)
 	{
-		if (pActive->IsPersistent())
+		if (uContext->IsPersistent())
 		{
-			DisableContext(*pActive);
-			m_inactive[pActive->m_name] = std::move(m_contexts.back());
+			DisableContext(*uContext);
+			m_inactive[uContext->m_name] = std::move(uContext);
 		}
 	}
 	m_contexts.clear();

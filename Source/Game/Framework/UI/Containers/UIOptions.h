@@ -7,8 +7,8 @@ namespace LittleEngine
 class UIOptions final : public UIContainer
 {
 private:
-	UIButton::OnClick::Token m_worldSelectToken;
-	Vec<UIButton::OnClick::Token> m_tokens;
+	Token m_worldSelectToken;
+	Vec<Token> m_tokens;
 
 public:
 	UIOptions();

@@ -10,7 +10,7 @@
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"
 #include "Engine/GFX.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #endif
 
 namespace LittleEngine
@@ -18,9 +18,6 @@ namespace LittleEngine
 namespace
 {
 #if defined(DEBUGGING)
-bool bAudioDebug = false;
-TweakBool(audioDebug, &bAudioDebug);
-
 String GetStatus(AudioPlayer::Status status)
 {
 	switch (status)
@@ -123,7 +120,7 @@ void LEAudio::DbgImpl::Tick(Time /*dt*/)
 	{
 		if (pPrim)
 		{
-			pPrim->SetEnabled(bAudioDebug);
+			pPrim->SetEnabled(LEAudio::s_bDebugHUD);
 		}
 	}
 	pIDA->SetText(idA)->SetColour(colA, false);
@@ -149,6 +146,11 @@ LEAudio* g_pAudio = nullptr;
 TweakF32(masterVol, nullptr);
 TweakF32(musicVol, nullptr);
 TweakF32(sfxVol, nullptr);
+#endif
+
+#if defined(DEBUGGING)
+bool LEAudio::s_bDebugHUD = false;
+TweakBool(audioDebug, &LEAudio::s_bDebugHUD);
 #endif
 
 LEAudio::LEAudio()

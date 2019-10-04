@@ -5,7 +5,7 @@
 
 namespace LittleEngine
 {
-class Shader
+class Shader : private NoCopy
 {
 public:
 	enum class Flag : u8

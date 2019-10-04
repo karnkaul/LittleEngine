@@ -16,7 +16,7 @@ void UIButton::SetText(UIText uiText)
 	}
 }
 
-UIButton::OnClick::Token UIButton::AddCallback(UIButton::OnClick::Callback callback)
+Token UIButton::AddCallback(UIButton::OnClick::Callback callback)
 {
 	return m_OnInteracted.Register(std::move(callback));
 }

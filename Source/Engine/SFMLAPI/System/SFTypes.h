@@ -73,7 +73,6 @@ inline sf::Uint8 Cast(ViewportStyle style)
 	{
 	default:
 		return sf::Style::Close;
-
 	case ViewportStyle::Bordlerless:
 		return sf::Style::None;
 	}
@@ -87,16 +86,12 @@ inline KeyType Cast(sf::Mouse::Button button)
 		return KeyType::KEYTYPE_INVALID;
 	case sf::Mouse::Button::Left:
 		return KeyType::MOUSE_BTN_0;
-
 	case sf::Mouse::Button::Right:
 		return KeyType::MOUSE_BTN_1;
-
 	case sf::Mouse::Button::Middle:
 		return KeyType::MOUSE_BTN_2;
-
 	case sf::Mouse::Button::XButton1:
 		return KeyType::MOUSE_BTN_3;
-
 	case sf::Mouse::Button::XButton2:
 		return KeyType::MOUSE_BTN_4;
 	}

@@ -5,15 +5,11 @@
 #include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/System/SFTypes.h"
 #if ENABLED(RENDER_STATS)
-#include "SFMLAPI/Rendering/Renderer.h"
+#include "SFMLAPI/Rendering/RenderStats.h"
 #endif
 
 namespace LittleEngine
 {
-#if ENABLED(RENDER_STATS)
-extern RenderData g_renderData;
-#endif
-
 #ifdef DEBUGGING
 bool Quads::s_bUSE_JOBS = true;
 #endif
@@ -104,7 +100,7 @@ void Quads::OnDraw(Viewport& viewport, sf::RenderStates& sfStates)
 		}
 	}
 #if ENABLED(RENDER_STATS)
-	g_renderData._quadCount_Internal += static_cast<u32>(enabledCount);
+	g_renderStats._quadCount_Internal += static_cast<u32>(enabledCount);
 #endif
 	sfStates.texture = &m_pTexture->m_sfTexture;
 	viewport.draw(va, sfStates);

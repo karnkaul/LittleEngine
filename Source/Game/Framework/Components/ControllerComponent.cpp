@@ -4,8 +4,9 @@
 #include "SFMLAPI/Input/InputStateMachine.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "Engine/GFX.h"
+#include "Engine/Context/LEContext.h"
 #include "Engine/Debug/Tweakable.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "Model/World/Entity.h"
 #include "Model/GameManager.h"
 #include "ControllerComponent.h"
@@ -61,28 +62,29 @@ void ControllerComponent::OnCreated()
 	m_pRect = g_pGameManager->Renderer()->New<SFRect>(LayerID::DebugWorld);
 	m_pRect->SetSize(s_orientationWidthHeight)->SetPivot({-1, 0})->SetEnabled(s_bShowJoystickOrientation);
 #endif
+	m_ptrToken = g_pGameManager->Context()->PushPointer(LEContext::Pointer::Type::Cross);
 }
 
 void ControllerComponent::Tick(Time dt)
 {
 	if (g_pGameManager->IsPlayerControllable())
 	{
+		Fixed dtms = dt.AsMilliseconds();
 		Transform& t = m_pOwner->m_transform;
 		Vector2 orn = t.Orientation();
 		if (orn != m_targetOrn)
 		{
-			Vector2 newOrn = Maths::Lerp(orn, m_targetOrn, m_angularSpeed * dt.AsMilliseconds() / 40);
+			Vector2 newOrn = Maths::Lerp(orn, m_targetOrn, m_angularSpeed * dtms * Fixed(1, 60));
 			t.SetOrientation(newOrn);
 		}
 		if (m_displacement.SqrMagnitude() > 0.0)
 		{
-			Vector2 pos = t.Position() + (m_displacement * m_linearSpeed * dt.AsMilliseconds());
+			Vector2 pos = t.Position() + (m_displacement * m_linearSpeed * dtms * Fixed(15, 10));
 			if (m_pRenderComponent)
 			{
 				ClampPosition(pos, m_pRenderComponent->m_pPrimitive->RenderBounds().Size());
 			}
 			t.SetPosition(pos);
-			m_displacement = Vector2::Zero;
 		}
 	}
 #if defined(DEBUGGING)
@@ -122,6 +124,7 @@ bool ControllerComponent::OnInput(const LEInput::Frame& frame)
 {
 	if (m_bEnabled)
 	{
+		m_displacement = Vector2::Zero;
 		std::bitset<2> current;
 		bool bKeyPressed =
 			frame.IsHeld({KeyCode::Down, KeyCode::Up, KeyCode::Left, KeyCode::Right, KeyCode::W, KeyCode::A, KeyCode::S, KeyCode::D});
@@ -172,6 +175,10 @@ bool ControllerComponent::OnInput(const LEInput::Frame& frame)
 				if (frame.IsHeld({KeyCode::Down, KeyCode::S}))
 				{
 					m_displacement.y += -1;
+				}
+				if (m_displacement.SqrMagnitude() > 0.0)
+				{
+					m_displacement.Normalise();
 				}
 			}
 		}

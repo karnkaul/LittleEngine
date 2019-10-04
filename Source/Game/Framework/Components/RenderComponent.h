@@ -2,7 +2,7 @@
 #include <optional>
 #include "SFMLAPI/Rendering/LayerID.h"
 #include "Model/World/Component.h"
-#include "Engine/Renderer/LEShaders.h"
+#include "Engine/Rendering/LEShaders.h"
 
 namespace LittleEngine
 {
@@ -93,7 +93,7 @@ public:
 template <typename T>
 RenderComponent* RenderComponent::SetShader(const String& id)
 {
-	auto pShader = g_pShaders->GetShader<T>(id);
+	auto pShader = LEShaders::GetShader<T>(id);
 	if (!pShader)
 	{
 		LOG_W("%s Shader %s not in ShaderRepository!", m_logName.c_str(), id.c_str());

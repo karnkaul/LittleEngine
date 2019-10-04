@@ -5,6 +5,5 @@
 #include "Delegate.h"
 #include "GData.h"
 #include "Jobs.h"
-#include "TokenHandler.h"
 #include "TRange.h"
 #include "Utils.h"

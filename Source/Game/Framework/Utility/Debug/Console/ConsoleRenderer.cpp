@@ -85,28 +85,15 @@ ConsoleRenderer::~ConsoleRenderer() = default;
 
 void ConsoleRenderer::Tick(Time dt)
 {
-	Fixed dy(dt.AsMilliseconds());
+	Fixed dy(dt.AsMilliseconds() * 2);
+	Vector2& p = m_uBG->m_transform.posDelta;
 	if (Console::g_bEnabled)
 	{
-		if (m_uBG->m_transform.posDelta.y > minPadding.y)
-		{
-			m_uBG->m_transform.posDelta.y -= dy;
-		}
-		if (m_uBG->m_transform.posDelta.y < minPadding.y)
-		{
-			m_uBG->m_transform.posDelta.y = minPadding.y;
-		}
+		p.y = (p.y - dy > minPadding.y) ? p.y - dy : (p.y < minPadding.y) ? minPadding.y : p.y;
 	}
 	if (!Console::g_bEnabled)
 	{
-		if (m_uBG->m_transform.posDelta.y < maxPadding.y)
-		{
-			m_uBG->m_transform.posDelta.y += dy;
-		}
-		if (m_uBG->m_transform.posDelta.y > maxPadding.y)
-		{
-			m_uBG->m_transform.posDelta.y = maxPadding.y;
-		}
+		p.y = (p.y < maxPadding.y) ? p.y + dy : (p.y > maxPadding.y) ? p.y = maxPadding.y : p.y;
 	}
 	m_uBG->Tick(dt);
 	m_uSeparator->Tick(dt);

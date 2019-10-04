@@ -25,18 +25,29 @@ private:
 	};
 
 private:
-	Core::Delegate<>::Token m_onSubmitToken;
-	LEInput::Token m_inputToken;
-	class LEContext* m_pContext;
 	static Vec<UPtr<class World>> s_createdWorlds;
+
+private:
+	String m_manifestPath;
+	Task m_onLoaded;
+	Time m_loadTime;
+	Token m_onSubmitToken;
+	Token m_inputToken;
 	State m_state;
 	Transition m_transition;
-
+	UPtr<class ILoadingHUD> m_uLoadHUD;
+	SPtr<class ManifestLoader> m_sLoader;
+	class LEContext* m_pContext;
+	class SFText* m_pLoadingTitle = nullptr;
+	SFText* m_pLoadingSubtitle = nullptr;
+	class Quad* m_pSpinner = nullptr;
+	World* m_pActiveWorld = nullptr;
+	World* m_pNextWorld = nullptr;
+	
 public:
 #ifdef DEBUGGING
 	static bool s_bRunning;
 #endif
-	static bool s_bClearWorldsOnDestruct;
 
 public:
 	template <typename T>
@@ -51,7 +62,7 @@ public:
 	~WorldStateMachine();
 
 	void Start(String coreManifestID = "", String gameStyleID = "", Task onManifestLoaded = nullptr);
-	void Tick(Time dt, bool& bYieldIntegration);
+	State Tick(Time dt);
 	bool LoadWorld(WorldID id);
 	void SetLoadingHUD(UPtr<class ILoadingHUD> uLoadingHUD);
 

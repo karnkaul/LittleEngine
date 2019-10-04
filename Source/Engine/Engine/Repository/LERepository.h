@@ -42,7 +42,7 @@ private:
 	UPtr<Core::ArchiveReader> m_uCooked;
 	Vec<SPtr<class ManifestLoader>> m_loaders;
 	mutable std::mutex m_loadedMutex;
-	UMap<VString, UPtr<Asset>> m_loaded;
+	UMap<String, UPtr<Asset>> m_loaded;
 	String m_rootDir;
 	State m_state;
 
@@ -63,11 +63,11 @@ public:
 	void UnloadManifest(String manifestPath, Task onComplete = nullptr);
 
 	bool IsBusy() const;
-	bool IsLoaded(VString id) const;
+	bool IsLoaded(const String& id) const;
 	u64 LoadedBytes() const;
-	bool IsPresent(VString id) const;
+	bool IsPresent(const String& id) const;
 
-	bool Unload(VString id);
+	bool Unload(const String& id);
 	void UnloadAll(bool bUnloadDefaultFont);
 
 	void ResetState();
@@ -76,7 +76,7 @@ public:
 	
 private:
 	template <typename T>
-	T* GetLoaded(VString id);
+	T* GetLoaded(const String& id);
 	template <typename T>
 	T* LoadFromArchive(String id);
 #if ENABLED(FILESYSTEM_ASSETS)
@@ -86,9 +86,9 @@ private:
 	template <typename T, typename... U>
 	UPtr<T> CreateAsset(U... args);
 	template <typename T>
-	UPtr<T> ConjureAsset(VString id, InitList<Search> searchOrder);
+	UPtr<T> ConjureAsset(const String& id, InitList<Search> searchOrder);
 
-	void DoLoad(VString id, bool bSyncWarn, Task inCooked, 
+	void DoLoad(const String& id, bool bSyncWarn, Task inCooked, 
 #if ENABLED(FILESYSTEM_ASSETS)
 		Task onFilesystem = nullptr, 
 #endif
@@ -170,7 +170,7 @@ Deferred<T*> LERepository::LoadAsync(String id)
 }
 
 template <typename T>
-T* LERepository::GetLoaded(VString id)
+T* LERepository::GetLoaded(const String& id)
 {
 	Lock lock(m_loadedMutex);
 	auto search = m_loaded.find(id);
@@ -191,7 +191,7 @@ T* LERepository::LoadFromArchive(String id)
 	{
 		pT = uT.get();
 		Lock lock(m_loadedMutex);
-		m_loaded[uT->ID()] = std::move(uT);
+		m_loaded[String(uT->ID())] = std::move(uT);
 	}
 	return pT;
 }
@@ -206,7 +206,7 @@ T* LERepository::LoadFromFilesystem(String id)
 	{
 		pT = uT.get();
 		Lock lock(m_loadedMutex);
-		m_loaded[uT->ID()] = std::move(uT);
+		m_loaded[String(uT->ID())] = std::move(uT);
 	}
 	return pT;
 }
@@ -227,7 +227,7 @@ UPtr<T> LERepository::CreateAsset(U... args)
 }
 
 template <typename T>
-UPtr<T> LERepository::ConjureAsset(VString id, InitList<Search> searchOrder)
+UPtr<T> LERepository::ConjureAsset(const String& id, InitList<Search> searchOrder)
 {
 	UPtr<T> uT;
 #if ENABLED(FILESYSTEM_ASSETS)
@@ -238,7 +238,7 @@ UPtr<T> LERepository::ConjureAsset(VString id, InitList<Search> searchOrder)
 		}
 		else
 		{
-			uT = CreateAsset<T>(String(id));
+			uT = CreateAsset<T>(id);
 			if (!uT || uT->IsError())
 			{
 				LOG_E("[Repository] Could not load %s from filesystem assets!", id.data());
@@ -253,7 +253,7 @@ UPtr<T> LERepository::ConjureAsset(VString id, InitList<Search> searchOrder)
 		}
 		else
 		{
-			uT = CreateAsset<T>(String(id), m_uCooked->Decompress(id));
+			uT = CreateAsset<T>(id, m_uCooked->Decompress(id));
 			if (!uT || uT->IsError())
 			{
 				LOG_E("[Repository] Could not load %s from cooked assets!", id.data());

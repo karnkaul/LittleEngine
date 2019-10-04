@@ -8,6 +8,7 @@
 #include "World.h"
 #include "WorldClock.h"
 #include "WorldStateMachine.h"
+#include "Model/GameKernel.h"
 #include "Model/GameManager.h"
 #include "Model/UI/UIManager.h"
 
@@ -41,7 +42,7 @@ Time World::WorldTime() const
 
 LEInput* World::Input() const
 {
-	Assert(m_pWSM, "WSM is null!");
+	Assert(m_pWSM->m_pContext, "WSM is null!");
 	return m_pWSM->m_pContext->Input();
 }
 

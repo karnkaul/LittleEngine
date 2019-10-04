@@ -38,8 +38,8 @@ public:
 	bool Save(String path);
 
 	bool ShouldCreateRenderThread() const;
-	bool ShouldPauseOnFocusLoss() const;
 	u32 JobWorkerCount() const;
+	Time StepRate() const;
 	Time TickRate() const;
 	Time RenderThreadStartDelay() const;
 	Time MaxFrameTime() const;

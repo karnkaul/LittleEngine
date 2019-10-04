@@ -1,22 +1,27 @@
 #include "Core/Jobs.h"
 #include "SFMLAPI/System/Assets.h"
+#include "SFMLAPI/System/SFTypes.h"
 #include "SFMLAPI/Viewport/Viewport.h"
 #include "SFMLAPI/Viewport/ViewportData.h"
 #include "LEContext.h"
 #include "Engine/Audio/LEAudio.h"
+#include "Engine/Context/LEContext.h"
 #include "Engine/Debug/Profiler.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Input/LEInput.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "Engine/Repository/LERepository.h"
 #include "Engine/GFX.h"
 #include "SFMLAPI/Rendering/Primitives/Primitive.h"
+#include "SFMLAPI/Rendering/RenderStats.h"
 
 namespace LittleEngine
 {
 TweakBool(asyncRendering, nullptr);
 
-LEContext::LEContext(LEContextData data) : m_data(std::move(data))
+LEContext::PtrEntry::PtrEntry(WToken wToken, Pointer* pPointer, Pointer::Type type) : wToken(wToken), pPointer(pPointer), type(type) {}
+
+LEContext::LEContext(Data data) : m_data(std::move(data))
 {
 #if ENABLED(TWEAKABLES)
 	asyncRendering.BindCallback([&](VString val) {
@@ -59,13 +64,16 @@ LEContext::LEContext(LEContextData data) : m_data(std::move(data))
 	m_uViewport->SetData(std::move(m_data.viewportData));
 	m_uViewport->Create(maxFPS);
 
-	m_uInput = MakeUnique<LEInput>(*this, std::move(m_data.inputMap));
-
-#if ENABLED(RENDER_STATS)
-	g_renderData.tickRate = m_data.tickRate;
-#endif
-	RendererData rData{m_data.tickRate, Time::Milliseconds(20), maxFPS, m_data.bRenderThread};
+	LERenderer::Data rData(m_data.tickRate, Time::Milliseconds(20), maxFPS, m_data.bRenderThread);
 	m_uRenderer = MakeUnique<LERenderer>(*m_uViewport, rData);
+	m_ptrToken = PushPointer(Pointer::Type::Arrow);
+
+	m_uInput = MakeUnique<LEInput>(std::move(m_data.inputMap));
+#if defined(DEBUGGING)
+	m_uInput->CreateDebugPointer(*m_uRenderer);
+#endif
+
+	Assert(*m_ptrToken != -1, "Could not create default mouse pointer!");
 }
 
 LEContext::~LEContext()
@@ -79,16 +87,12 @@ LEContext::~LEContext()
 	m_uInput = nullptr;
 	m_uRenderer = nullptr;
 	m_uViewport = nullptr;
+	m_pointerMap.clear();
 }
 
 bool LEContext::IsTerminating() const
 {
 	return m_bTerminating;
-}
-
-bool LEContext::IsPaused() const
-{
-	return m_bPauseTicking;
 }
 
 LEInput* LEContext::Input() const
@@ -120,6 +124,17 @@ bool LEContext::TrySetViewportSize(u32 height)
 void LEContext::SetWindowStyle(ViewportStyle newStyle)
 {
 	m_oNewViewportStyle.emplace(std::move(newStyle));
+}
+
+void LEContext::SetPointerPosition(Vector2 worldPos, bool bIsNormalised)
+{
+	if (bIsNormalised)
+	{
+		worldPos = g_pGFX->WorldProjection(worldPos);
+	}
+	Vector2 sfPos = g_pGFX->WorldToViewport(worldPos);
+	sf::Vector2i iPos(sfPos.x.ToS32(), sfPos.y.ToS32());
+	sf::Mouse::setPosition(iPos, *m_uViewport);
 }
 
 void LEContext::Terminate()
@@ -159,14 +174,10 @@ void LEContext::FireInput()
 	}
 }
 
-bool LEContext::Update()
+void LEContext::Update()
 {
 	Core::Jobs::Update();
-	if (!m_bWaitingToTerminate)
-	{
-		return m_bTerminating;
-	}
-	else
+	if (m_bWaitingToTerminate)
 	{
 		m_uRenderer->StopRenderThread();
 		m_bTerminating = Core::Jobs::AreWorkersIdle();
@@ -174,12 +185,20 @@ bool LEContext::Update()
 		{
 			LOG_W("[LEContext] Engine termination blocked by JobManager... Undefined Behaviour!");
 		}
-		return true;
 	}
 }
 void LEContext::StartFrame()
 {
-	m_uRenderer->Reconcile();
+	m_uRenderer->Lock_Reconcile();
+	Core::RemoveIf<PtrEntry>(m_pointerStack, [](const PtrEntry& entry) { return entry.wToken.expired(); });
+	Assert(!m_pointerStack.empty(), "Pointer Stack is empty!");
+	auto& entry = m_pointerStack.back();
+	Assert(entry.pPointer, "pPointer is null!");
+	m_uViewport->setMouseCursor(*entry.pPointer);
+#if ENABLED(DEBUG_LOGGING)
+	LOGIF_D(m_prevPtrType != entry.type, "[Context] Pointer type changed to [%d]", entry.type);
+	m_prevPtrType = entry.type;
+#endif
 }
 
 void LEContext::SubmitFrame()
@@ -217,14 +236,27 @@ void LEContext::SubmitFrame()
 		PROFILE_STOP("RENDER");
 	}
 #if ENABLED(RENDER_STATS)
-	++g_renderData.gameFrame;
+	++g_renderStats.gameFrame;
 #endif
 
 	m_onSubmitted();
 	m_onSubmitted.Clear();
 }
 
-LEContext::OnSubmit::Token LEContext::RegisterOnSubmitted(OnSubmit::Callback onFrameSubmitted)
+Token LEContext::PushPointer(Pointer::Type type)
+{
+	Pointer* pPointer = GetPointer(type);
+	if (pPointer)
+	{
+		Token ret = MakeToken(m_pointerStack.size());
+		m_pointerStack.emplace_back(ret, pPointer, type);
+		LOG_D("[Context] Pushed new pointer to stack [%d]", type);
+		return ret;
+	}
+	return MakeToken(-1);
+}
+
+Token LEContext::RegisterOnSubmitted(OnSubmit::Callback onFrameSubmitted)
 {
 	return m_onSubmitted.Register(onFrameSubmitted);
 }
@@ -232,8 +264,24 @@ LEContext::OnSubmit::Token LEContext::RegisterOnSubmitted(OnSubmit::Callback onF
 #if defined(DEBUGGING)
 void LEContext::ModifyTickRate(Time newTickRate)
 {
-	g_renderData.tickRate = newTickRate;
 	m_uRenderer->ModifyTickRate(newTickRate);
 }
 #endif
+
+LEContext::Pointer* LEContext::GetPointer(Pointer::Type type)
+{
+	auto search = m_pointerMap.find(type);
+	if (search != m_pointerMap.end())
+	{
+		return search->second.get();
+	}
+	UPtr<Pointer> uPtr = MakeUnique<Pointer>();
+	if (uPtr->loadFromSystem(type))
+	{
+		m_pointerMap[type] = std::move(uPtr);
+		LOG_D("[Context] New Pointer constructed: [%d]", type);
+		return m_pointerMap[type].get();
+	}
+	return nullptr;
+}
 } // namespace LittleEngine

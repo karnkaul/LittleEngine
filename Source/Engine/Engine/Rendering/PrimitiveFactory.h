@@ -1,12 +1,15 @@
 #pragma once
 #include "Core/SimpleTime.h"
-#include "Primitives/Primitive.h"
-#include "IRenderBuffer.h"
+#include "SFMLAPI/Rendering/Primitives/Primitive.h"
 
 namespace LittleEngine
 {
-class PrimitiveFactory : public IRenderBuffer
+class PrimitiveFactory : private NoCopy
 {
+public:
+	using PrimVec = Vec<UPtr<APrimitive>>;
+	using PrimMat = Array<PrimVec, ToIdx(LayerID::_COUNT)>;
+
 private:
 	static const u32 LAYER_RESERVE = 128;
 	static const u32 LOCK_SLEEP_MS = 5;
@@ -16,17 +19,17 @@ private:
 
 public:
 	PrimitiveFactory();
-	~PrimitiveFactory() override;
+	virtual ~PrimitiveFactory();
 
 	template <typename T>
 	T* New(LayerID layer);
 
-	Time LastSwapTime() const override;
+	Time LastSwapTime() const;
 
 	void Reconcile();
-	void Swap() override;
+	void Swap();
 
-	PrimMat& ActiveRenderMatrix() override;
+	PrimMat& ActiveRenderMatrix();
 };
 
 template <typename T>

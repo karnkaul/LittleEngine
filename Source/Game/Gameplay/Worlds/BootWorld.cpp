@@ -13,7 +13,7 @@ bool bMusicPlaying = false;
 UPtr<Debug::Commands::Command> uUIContainerTester;
 #endif
 
-LEInput::Token token;
+Token token;
 bool MusicTest(const LEInput::Frame& frame)
 {
 	static const Array<String, 2> ids = {"TestMusic.ogg", "TestMusic_0.ogg"};

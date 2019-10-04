@@ -16,7 +16,7 @@ extern bool g_bTerminateOnReady;
 namespace
 {
 bool bSpawnColliderMinefield = false;
-LEInput::Token t0;
+Token t0;
 TestWorld* pTestWorld = nullptr;
 
 Entity *pEntity0 = nullptr, *pEntity1 = nullptr;
@@ -28,7 +28,7 @@ Quad* pQuad0 = nullptr;
 // bool bLoopingPS = false;
 ParticleSystem* pParticleSystem0 = nullptr;
 ParticleSystem* pParticleSystem1 = nullptr;
-Emitter::OnTick::Token psToken;
+Token psToken;
 
 Deferred<TextureAsset*> largeTex;
 Deferred<TextAsset*> miscText;
@@ -379,7 +379,7 @@ void StartTests()
 UIButtonDrawer* pButtonDrawer = nullptr;
 bool bModal = true;
 bool bSpawnedDrawer = false;
-Vec<LEInput::Token> debugTokens;
+Vec<Token> debugTokens;
 
 UIDialogue* pDialogue = nullptr;
 
@@ -523,9 +523,7 @@ void TestTick(Time dt)
 		static f32 u;
 		u += dt.AsSeconds() * 0.1f;
 		pQuad0->SetUV(Fixed(u), Fixed::Zero, Fixed(u) + Fixed::OneHalf, Fixed::One);
-		Fixed o = Vector2::ToOrientation(pQuad0->Orientation());
-		Vector2 _o = Vector2::ToOrientation(o + 2);
-		pQuad0->SetOrientation(_o);
+		pQuad0->SetOrientation(Vector2::Rotate(pQuad0->Orientation(), 2));
 	}
 
 	/*PROFILE_CUSTOM("TEST", Time::Milliseconds(3), Colour::White);

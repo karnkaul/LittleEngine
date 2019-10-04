@@ -40,7 +40,7 @@ protected:
 private:
 	UPtr<class UIWidgetMatrix> m_uUIWidgets;
 	Vec<UUIElement> m_uiElements;
-	Vec<LEInput::Token> m_inputTokens;
+	Vec<Token> m_tokens;
 	OnCancelled m_onCancelledDelegate;
 	MBState m_mbState;
 	UIWidget* m_pPointerOver = nullptr;
@@ -59,7 +59,7 @@ public:
 	void ResetSelection();
 	UIWidget* Selected();
 	UIElement* Root() const;
-	OnCancelled::Token SetOnCancelled(OnCancelled::Callback callback, bool bAutoDestroy);
+	Token SetOnCancelled(OnCancelled::Callback callback, bool bAutoDestroy);
 	void Destruct();
 
 	void Tick(Time dt = Time::Zero) override;

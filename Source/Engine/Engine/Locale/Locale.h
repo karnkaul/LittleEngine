@@ -7,7 +7,7 @@ namespace LittleEngine
 namespace Locale
 {
 void Init(String locFileID, String enLocFileID);
-bool Switch(VString newLocFileID);
+bool Switch(const String& newLocFileID);
 const String& Localise(const String& id);
 } // namespace Locale
 } // namespace LittleEngine

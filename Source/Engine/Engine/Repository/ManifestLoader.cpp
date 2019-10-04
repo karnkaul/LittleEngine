@@ -4,7 +4,7 @@
 #include "SFMLAPI/System/Assets.h"
 #include "LERepository.h"
 #include "ManifestLoader.h"
-#include "Engine/Renderer/LEShaders.h"
+#include "Engine/Rendering/LEShaders.h"
 
 namespace LittleEngine
 {
@@ -206,28 +206,28 @@ void ManifestLoader::Tick(Time /*dt*/)
 			{
 				if (newAsset.asset)
 				{
-					m_pRepository->m_loaded[newAsset.asset->ID()] = std::move(newAsset.asset);
+					m_pRepository->m_loaded[String(newAsset.asset->ID())] = std::move(newAsset.asset);
 				}
 			}
 			for (auto& newAsset : m_newFonts)
 			{
 				if (newAsset.asset)
 				{
-					m_pRepository->m_loaded[newAsset.asset->ID()] = std::move(newAsset.asset);
+					m_pRepository->m_loaded[String(newAsset.asset->ID())] = std::move(newAsset.asset);
 				}
 			}
 			for (auto& newAsset : m_newSounds)
 			{
 				if (newAsset.asset)
 				{
-					m_pRepository->m_loaded[newAsset.asset->ID()] = std::move(newAsset.asset);
+					m_pRepository->m_loaded[String(newAsset.asset->ID())] = std::move(newAsset.asset);
 				}
 			}
 			for (auto& newAsset : m_newTexts)
 			{
 				if (newAsset.asset)
 				{
-					m_pRepository->m_loaded[newAsset.asset->ID()] = std::move(newAsset.asset);
+					m_pRepository->m_loaded[String(newAsset.asset->ID())] = std::move(newAsset.asset);
 				}
 			}
 		}

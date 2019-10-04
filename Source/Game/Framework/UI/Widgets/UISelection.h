@@ -18,13 +18,13 @@ private:
 	UISelectionData m_data;
 	OnChanged m_onChanged;
 	class UIButtonDrawer* m_pDrawer = nullptr;
-	OnClick::Token m_buttonToken;
-	Vec<OnClick::Token> m_drawerTokens;
+	Token m_buttonToken;
+	Vec<Token> m_drawerTokens;
 	Vec<String> m_options;
 	String m_value;
 
 public:
-	OnChanged::Token RegisterOnChanged(OnChanged::Callback callback);
+	Token RegisterOnChanged(OnChanged::Callback callback);
 	UISelection* SetValue(String text);
 	UISelection* AddOption(String option);
 	UISelection* SetOptions(Vec<String> options);

@@ -7,7 +7,8 @@
 #include "Engine/Audio/LEAudio.h"
 #include "Model/GameManager.h"
 #include "Model/World/Entity.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/GFX.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "Engine/Debug/Tweakable.h"
 #include "PSEmitter.h"
 
@@ -120,7 +121,7 @@ Emitter::~Emitter()
 	m_pQuads->Destroy();
 }
 
-Emitter::OnTick::Token Emitter::RegisterOnTick(OnTick::Callback callback)
+Token Emitter::RegisterOnTick(OnTick::Callback callback)
 {
 	return m_onTick.Register(callback);
 }

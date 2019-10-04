@@ -19,16 +19,16 @@ LEPhysics::LEPhysics()
 
 LEPhysics::~LEPhysics()
 {
-	Reset();
+	Clear();
 	LOG_D("[CollisionManager] destroyed", m_logName.c_str());
 }
 
-void LEPhysics::Reset()
+void LEPhysics::Clear()
 {
 	m_colliders.clear();
 }
 
-void LEPhysics::Tick(Time /*dt*/)
+void LEPhysics::Step(Time /*dt*/)
 {
 	Scrub();
 

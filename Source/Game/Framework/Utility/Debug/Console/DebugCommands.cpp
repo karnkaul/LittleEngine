@@ -7,7 +7,7 @@
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/Physics/LEPhysics.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "Engine/Repository/LERepository.h"
 #include "DebugConsole.h"
 #include "LogLine.h"
@@ -135,13 +135,19 @@ public:
 	{
 		if (params.empty())
 		{
-			m_executeResult.emplace_back("Syntax: " + m_name + " <id>", g_logTextColour);
+			m_executeResult.emplace_back("Syntax: " + m_name + " <id/reload>", g_logTextColour);
 			return;
 		}
-
+		Strings::ToLower(params);
+		s32 currentWorldID = g_pGameManager->ActiveWorldID();
+		if (params == "reload")
+		{
+			m_executeResult.emplace_back("Reloading World " + Strings::ToString(currentWorldID), g_logTextColour);
+			g_pGameManager->ReloadWorld();
+			return;
+		}
 		s32 worldID = Strings::ToS32(params);
 		Assert(g_pGameManager, "Game Manager is null!");
-		s32 currentWorldID = g_pGameManager->ActiveWorldID();
 		bool success = false;
 		if (worldID >= 0)
 		{

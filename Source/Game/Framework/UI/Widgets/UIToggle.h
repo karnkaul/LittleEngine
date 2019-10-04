@@ -31,7 +31,7 @@ public:
 	UIToggle* SetOffColour(Colour offColour);
 	UIToggle* SetBackground(Colour colour);
 	UIToggle* SetBoxSize(Vector2 size);
-	OnChanged::Token AddCallback(OnChanged::Callback callback);
+	Token AddCallback(OnChanged::Callback callback);
 
 protected:
 	void OnCreated() override;

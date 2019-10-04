@@ -6,7 +6,7 @@
 #include "Model/GameManager.h"
 #include "Model/World/Camera.h"
 #include "Engine/Repository/LERepository.h"
-#include "Engine/Renderer/LERenderer.h"
+#include "Engine/Rendering/LERenderer.h"
 #include "RenderComponent.h"
 
 namespace LittleEngine

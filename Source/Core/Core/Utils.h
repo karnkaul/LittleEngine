@@ -14,13 +14,16 @@ bool Remove(Vec<T>& vec, const T& val);
 // Erase all elements of a vector that qualify provided Predicate
 // Vector and T are passed by reference
 template <typename T>
-void RemoveIf(Vec<T>& vec, std::function<bool(T& t)> predicate);
+size_t RemoveIf(Vec<T>& vec, std::function<bool(T& t)> predicate);
+
+template <typename T>
+size_t RemoveIf(List<T>& list, std::function<bool(T& t)> predicate);
 
 template <typename K, typename V>
-void RemoveIf(UMap<K, V>& map, std::function<bool(V& v)> predicate);
+size_t RemoveIf(UMap<K, V>& map, std::function<bool(V& v)> predicate);
 
 template <typename K, typename V>
-void RemoveIf(Map<K, V>& map, std::function<bool(V& v)> predicate);
+size_t RemoveIf(Map<K, V>& map, std::function<bool(V& v)> predicate);
 
 // Given a Vec<weak_ptr<T>>, erase all elements where t.lock() == nullptr
 template <typename T>
@@ -82,28 +85,43 @@ bool Remove(Vec<T>& vec, const T& val)
 }
 
 template <typename T>
-void RemoveIf(Vec<T>& vec, std::function<bool(T& t)> predicate)
+size_t RemoveIf(Vec<T>& vec, std::function<bool(T& t)> predicate)
 {
+	size_t before = vec.size();
 	auto iter = std::remove_if(vec.begin(), vec.end(), predicate);
 	vec.erase(iter, vec.end());
+	return before - vec.size();
+}
+
+template <typename T>
+size_t RemoveIf(List<T>& list, std::function<bool(T& t)> predicate)
+{
+	size_t before = list.size();
+	auto iter = std::remove_if(list.begin(), list.end(), predicate);
+	list.erase(iter, list.end());
+	return before - list.size();
 }
 
 template <typename K, typename V>
-void RemoveIf(UMap<K, V>& map, std::function<bool(V& v)> predicate)
+size_t RemoveIf(UMap<K, V>& map, std::function<bool(V& v)> predicate)
 {
+	size_t before = map.size();
 	for (auto iter = map.begin(); iter != map.end();)
 	{
 		iter = (predicate(iter->second)) ? map.erase(iter) : ++iter;
 	}
+	return before - map.size();
 }
 
 template <typename K, typename V>
-void RemoveIf(Map<K, V>& map, std::function<bool(V& v)> predicate)
+size_t RemoveIf(Map<K, V>& map, std::function<bool(V& v)> predicate)
 {
+	size_t before = map.size();
 	for (auto iter = map.begin(); iter != map.end();)
 	{
 		iter = (predicate(iter->second)) ? map.erase(iter) : ++iter;
 	}
+	return before - map.size();
 }
 
 template <typename T>

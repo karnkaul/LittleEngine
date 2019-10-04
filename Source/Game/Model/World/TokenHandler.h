@@ -4,7 +4,7 @@
 namespace LittleEngine
 {
 template <typename T>
-struct InputTokenHandler
+struct TokenHandler
 {
 private:
 	Vec<T> tokens;

@@ -14,6 +14,7 @@ public:
 
 	static Vector2 ToOrientation(Fixed degrees);
 	static Fixed ToOrientation(Vector2 orientation);
+	static Vector2 Rotate(Vector2 orientation, Fixed degrees);
 
 public:
 	Fixed x;

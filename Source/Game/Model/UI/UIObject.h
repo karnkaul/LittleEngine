@@ -4,7 +4,7 @@
 
 namespace LittleEngine
 {
-class UIObject : public Inheritable
+class UIObject : public Inheritable, private NoCopy
 {
 protected:
 	class LEContext* m_pContext = nullptr;

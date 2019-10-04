@@ -91,9 +91,11 @@ function(ensure_dependencies_present)
 	set(LIB_FILENAMES
 		${PLATFORM_STATIC_LIBS_COMMON}
 		${PLATFORM_STATIC_LIBS_RELEASE}
-		${PLATFORM_STATIC_LIBS_DEBUG}
 		${PLATFORM_DLLS}
 	)
+	if(NOT CI_BUILD)
+		list(APPEND LIB_FILENAMES ${PLATFORM_STATIC_LIBS_DEBUG})
+	endif()
 	ensure_files_present("${BUILD_THIRD_PARTY_PATH}/Lib" "${LIB_FILENAMES}")
 	copy_file_list("${PLATFORM_DLLS}" "${BUILD_THIRD_PARTY_PATH}/Lib" "${RUNTIME_PATH}")
 endfunction()

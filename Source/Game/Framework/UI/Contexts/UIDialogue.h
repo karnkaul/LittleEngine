@@ -28,8 +28,8 @@ public:
 	UIDialogue* SetContent(UIText text, const Colour* pBackground = nullptr, const Vector2* pSize = nullptr);
 	UIDialogue* SetHeader(UIText text, const Colour* pBackground = nullptr);
 
-	UIButton::OnClick::Token AddMainButton(UIText text, UIButton::OnClick::Callback onMainButton, bool bDismissOnBack);
-	UIButton::OnClick::Token AddOtherButton(UIText text, UIButton::OnClick::Callback onOtherButton, bool bSelect = true);
+	Token AddMainButton(UIText text, UIButton::OnClick::Callback onMainButton, bool bDismissOnBack);
+	Token AddOtherButton(UIText text, UIButton::OnClick::Callback onOtherButton, bool bSelect = true);
 
 protected:
 	void OnCreated() override;

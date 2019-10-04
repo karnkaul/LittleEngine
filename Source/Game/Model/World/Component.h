@@ -25,7 +25,8 @@ protected:
 	virtual void OnCreated() = 0;
 
 public:
-	virtual void Tick(Time dt) = 0;
+	virtual void Tick(Time dt);
+	virtual void Step(Time fdt);
 
 public:
 	virtual TimingType Timing() const;

@@ -1,8 +1,10 @@
 #include "Core/Logger.h"
 #include "Core/Version.h"
+#include "SFMLAPI/Rendering/RenderStats.h"
 #include "Engine/FatalEngineException.h"
 #include "Engine/Debug/Profiler.h"
 #include "Model/GameConfig.h"
+#include "Model/GameKernel.h"
 #include "Model/World/WorldClock.h"
 #include "Framework/Framework.h"
 #include "Framework/Utility/Debug/Console/DebugConsole.h"
@@ -20,6 +22,14 @@ namespace
 using namespace Core;
 using namespace LittleEngine;
 
+enum class PostRun
+{
+	Cleanup = 0,
+	ReloadGame,
+	ReloadApp,
+	_COUNT
+};
+
 // Globals
 namespace IDs
 {
@@ -30,40 +40,54 @@ const String DEFAULT_FONT = "Fonts/Default.ttf";
 const String GAME_STYLE = "Texts/Game.style";
 } // namespace IDs
 
-#if !defined(SHIPPNG)
 const String MAIN_MANIFEST_FILE = "GameAssets/Manifest.amf";
+#if !defined(SHIPPING)
 const String GAME_CONFIG_FILE = ".game.conf";
 #endif
 
 bool bInit = false;
-bool bReloadContext = false;
-bool bReloadRepository = false;
+bool bTerminate = false;
+PostRun postRun = PostRun::Cleanup;
+Time maxFrameTime;
+GameConfig config;
+
+// App scope
 UPtr<LERepository> uRepository;
-UPtr<LEShaders> uShaders;
 UPtr<LEAudio> uAudio;
 
-// LEContext
-GameConfig config;
-UPtr<GameManager> uGM;
+// Game scope
+GameKernel kernel;
 
-// Game Loop
-Time maxFrameTime;
-bool bPauseOnFocusLoss = false;
-
-TweakS32(reloadApp, nullptr);
+TweakS32(reload, nullptr);
 TweakS32(ticksPerSec, nullptr);
 
 bool Init(s32 argc, char** argv)
 {
 	OS::Env()->SetVars(argc, argv, {IDs::COOKED_ASSETS.c_str(), MAIN_MANIFEST_FILE.c_str()});
-
 	config.Init();
 #if !defined(SHIPPING)
-	LOG_D("[GameLoop] Initialising event loop, loading config...");
+	LOG_D("[GameLoop] Loading config...");
 	config.Load(OS::Env()->FullPath(GAME_CONFIG_FILE.c_str()));
 #endif
+	if (OS::Threads::VacantThreadCount() > 0)
+	{
+		String header = "Build: ";
+		header += Core::Version::BUILD_VERSION.ToString();
+		u8 backupCount = config.BackupLogFileCount();
+		Core::StartFileLogging(OS::Env()->FullPath("Debug"), backupCount, std::move(header));
+	}
+	try
+	{
+		uRepository = MakeUnique<LERepository>(IDs::DEFAULT_FONT, IDs::COOKED_ASSETS, IDs::ASSETS_ROOT);
+		uAudio = MakeUnique<LEAudio>();
+		LEShaders::Init();
+	}
+	catch (const FatalEngineException& e)
+	{
+		LOG_E("[GameLoop] ERROR! Initialisation failed!\n%s", e.what());
+		return false;
+	}
 	auto pSettings = GameSettings::Instance();
-
 	f32 maxParticlesScale = 1.0f;
 	auto pStr = pSettings->GetValue("LOW_QUALITY");
 	if (pStr && Strings::ToBool(*pStr))
@@ -76,21 +100,29 @@ bool Init(s32 argc, char** argv)
 		maxParticlesScale = Strings::ToF32(*pStr, maxParticlesScale);
 	}
 	g_maxParticlesScale = Fixed(maxParticlesScale);
-
-	if (OS::Threads::VacantThreadCount() > 0)
+	Core::g_MinLogSeverity = pSettings->LogLevel();
+	ControllerComponent::s_orientationEpsilon = config.ControllerOrientationEpsilon();
+	maxFrameTime = config.MaxFrameTime();
+	if (config.ShouldCreateRenderThread())
 	{
-		String header = "Build: " + Core::Version::BUILD_VERSION.ToString();
-		u8 backupCount = config.BackupLogFileCount();
-		Core::StartFileLogging(OS::Env()->FullPath("Debug"), backupCount, std::move(header));
+		if (OS::Threads::VacantThreadCount() == 0)
+		{
+			LOG_W("[GameLoop] Insufficient threads to create render thread!\n!ERROR! Async Renderer not available!");
+			config.m_bRenderThread = false;
+		}
 	}
-
+#if defined(DEBUGGING)
+	ControllerComponent::s_orientationWidthHeight = config.ControllerOrientationSize();
+	Entity::s_orientationWidthHeight = config.EntityOrientationSize();
+	Collider::s_debugShapeWidth = config.ColliderBorderWidth();
+#endif
 #if ENABLED(TWEAKABLES)
 	ticksPerSec.BindCallback([](VString val) {
 		s32 newRate = Strings::ToS32(String(val));
 		if (newRate > 0 && newRate < 250)
 		{
 			Time newTickRate = Time::Seconds(1.0f / newRate);
-			uGM->ModifyTickRate(newTickRate);
+			kernel.Context()->ModifyTickRate(newTickRate);
 			LOG_I("[GameLoop] Tick Rate changed to %.2f ms", newTickRate.AsSeconds() * 1000.0f);
 		}
 		else
@@ -98,60 +130,29 @@ bool Init(s32 argc, char** argv)
 			LOG_W("[GameLoop] Invalid value for ticks per second: %s", val.data());
 		}
 	});
-	reloadApp.BindCallback([](VString val) {
+	reload.m_value = "-1";
+	reload.BindCallback([](VString val) {
 		s32 option = Strings::ToS32(String(val), -1);
-		if (option > 0)
+		if (option >= 0 && option < ToS32(GameLoop::ReloadType::_COUNT))
 		{
-			bReloadRepository = option > 1;
-			bReloadContext = true;
+			GameLoop::Reload(static_cast<GameLoop::ReloadType>(option));
 		}
-		reloadApp.m_value = Strings::ToString(0);
+		reload.m_value = "-1";
 	});
 #endif
-	try
-	{
-		uRepository = MakeUnique<LERepository>(IDs::DEFAULT_FONT, IDs::COOKED_ASSETS, IDs::ASSETS_ROOT);
-		uAudio = MakeUnique<LEAudio>();
-		uShaders = MakeUnique<LEShaders>();
-	}
-	catch (const FatalEngineException& /*e*/)
-	{
-		LOG_E("[GameLoop] ERROR! Could not initialise Engine Service!");
-		return false;
-	}
-
-	Core::g_MinLogSeverity = pSettings->LogLevel();
-	bPauseOnFocusLoss = config.ShouldPauseOnFocusLoss();
-	ControllerComponent::s_orientationEpsilon = config.ControllerOrientationEpsilon();
-	maxFrameTime = config.MaxFrameTime();
-#if defined(DEBUGGING)
-	ControllerComponent::s_orientationWidthHeight = config.ControllerOrientationSize();
-	Entity::s_orientationWidthHeight = config.EntityOrientationSize();
-	Collider::s_debugShapeWidth = config.ColliderBorderWidth();
-#endif
-
-	if (config.ShouldCreateRenderThread())
-	{
-		if (OS::Threads::VacantThreadCount() == 0)
-		{
-			LOG_W("[GameLoop] Insufficient threads to create render thread!\n!ERROR! Async Renderer "
-				  "not "
-				  "available!");
-			config.m_bRenderThread = false;
-		}
-	}
-
 	Core::Jobs::Init(config.JobWorkerCount());
 	Locale::Init(pSettings->LocdataID(), pSettings->ENLocdataID());
 	Time::Reset();
-
 	return true;
 }
 
-void Stage()
+bool Stage()
 {
-	uGM = MakeUnique<GameManager>();
-	uGM->CreateContext(config);
+	GameInit::CreateWorlds();
+	if (!kernel.Boot(config)) 
+	{
+		return false;
+	};
 #if ENABLED(CONSOLE)
 	Console::Init();
 #endif
@@ -159,48 +160,33 @@ void Stage()
 	Profiler::Init(Time::Milliseconds(10));
 #endif
 #if defined(DEBUGGING)
-	uAudio->InitDebug(*uGM->Renderer());
+	uAudio->InitDebug(*kernel.Context()->Renderer());
 #endif
-}
-
-bool Tick(Time dt)
-{
-	PROFILE_START("TICK", Colour(127, 0, 255));
-	uRepository->Tick(dt);
-	bool bYield = false;
-	uGM->Tick(dt, bYield);
-	uAudio->Tick(dt);
-#if ENABLED(CONSOLE)
-	Console::Tick(dt);
-#endif
-	PROFILE_STOP("TICK");
-#if ENABLED(PROFILER)
-	Profiler::Tick(dt);
-#endif
-	return bYield;
+	postRun = PostRun::Cleanup;
+	bTerminate = false;
+	WorldClock::Reset();
+	return true;
 }
 
 #if defined(DEBUGGING)
-inline void ProfileFrameTime(Time frameElapsed, Time maxFrameTime)
+inline void ProfileFrameTime(Time frameStart, Time maxFrameTime)
 {
-	static const Time DILATED_TIME = Time::Milliseconds(250);
-	static const u8 MAX_CONSECUTIVE = 2;
-	static Time logTime = Time::Now() - Time::Milliseconds(300);
+	Time frameElapsed = Time::Now() - frameStart;
+	static const Time DILATED_TIME = Time::Seconds(3);
+	static Time logTime = Time::Now() - Time::Seconds(3);
 	static u8 consecutive = 0;
+	static constexpr u8 MIN_CONSECUTIVE = 3;
 	if (frameElapsed > maxFrameTime)
 	{
-		++consecutive;
-		if ((Time::Now() - logTime) > DILATED_TIME && consecutive > MAX_CONSECUTIVE)
+		if ((Time::Now() - logTime) > DILATED_TIME && consecutive >= MIN_CONSECUTIVE)
 		{
 			f32 max = maxFrameTime.AsSeconds() * 1000.0f;
 			f32 taken = frameElapsed.AsSeconds() * 1000.0f;
-			LOG_E("Game Loop is taking too long! Game time is inaccurate (slowed down) "
-				  "[max: "
-				  "%.2fms taken: %.2fms]",
-				  max, taken);
+			LOG_E("Game Loop is taking too long [%.2fms (max: %.2fms)]! Game time is inaccurate (slowed down)", taken, max);
 			logTime = Time::Now();
 			consecutive = 0;
 		}
+		++consecutive;
 	}
 	else
 	{
@@ -216,6 +202,7 @@ void Sleep(Time time)
 		std::this_thread::sleep_for(std::chrono::milliseconds(time.AsMilliseconds()));
 	}
 }
+
 void Unstage()
 {
 #if ENABLED(CONSOLE)
@@ -227,21 +214,14 @@ void Unstage()
 #if defined(DEBUGGING)
 	uAudio->DestroyDebug();
 #endif
-	uGM = nullptr;
-	if (bReloadRepository)
-	{
-		uShaders->UnloadAll();
-		uRepository->UnloadAll(true);
-		uRepository->LoadDefaultFont(IDs::DEFAULT_FONT);
-	}
+	kernel.Shutdown();
+	LEShaders::Clear();
 	uRepository->ResetState();
 }
 
 void Cleanup()
 {
-	Unstage();
 	uAudio = nullptr;
-	uShaders = nullptr;
 	uRepository = nullptr;
 #if !defined(SHIPPING)
 	config.Save(OS::Env()->FullPath(GAME_CONFIG_FILE.c_str()));
@@ -249,6 +229,72 @@ void Cleanup()
 	Core::Jobs::Cleanup();
 	LOG_I("[GameLoop] Terminated");
 	Core::StopFileLogging();
+}
+
+void RunLoop(const Time tickRate, const Time fdt)
+{
+	Time accumulator;
+	Time frameStart = Time::Now();
+	kernel.Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE, &GameInit::LoadShaders);
+	while (!kernel.Context()->IsTerminating() && !bTerminate)
+	{
+		LEContext* pContext = kernel.Context();
+		Time frameElapsed;
+		pContext->PollInput();
+		// Break and exit if Window closed
+		if (pContext->IsTerminating())
+		{
+			break;
+		}
+		pContext->StartFrame();
+		const Time now = Time::Now();
+		const Time dt = Time::Clamp(now - frameStart, Time::Zero, maxFrameTime.Scaled(2));
+		frameStart = now;
+		WorldClock::Tick(dt);
+#if ENABLED(RENDER_STATS)
+		g_renderStats.dtList.push_front(dt);
+		if (g_renderStats.dtList.size() > 16)
+		{
+			g_renderStats.dtList.pop_back();
+		}
+#endif
+
+		// Step
+		accumulator += dt;
+		PROFILE_CUSTOM("STEP", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 130, 255));
+		while (accumulator >= fdt)
+		{
+			kernel.Step(fdt);
+			accumulator -= fdt;
+		}
+		PROFILE_STOP("STEP");
+
+		// Tick
+		pContext->FireInput();
+		pContext->Update();
+		uRepository->Tick(dt);
+		PROFILE_CUSTOM("TICK", maxFrameTime.Scaled(Fixed::OneHalf), Colour(127, 0, 255));
+		kernel.Tick(dt);
+		uAudio->Tick(dt);
+		PROFILE_STOP("TICK");
+#if ENABLED(CONSOLE)
+		Console::Tick(dt);
+#endif
+#if ENABLED(PROFILER)
+		Profiler::Tick(dt);
+#endif
+		// Submit
+		pContext->SubmitFrame();
+		if (pContext->IsTerminating())
+		{
+			break;
+		}
+#if defined(DEBUGGING)
+		ProfileFrameTime(frameStart, maxFrameTime);
+#endif
+		frameElapsed = Time::Now() - frameStart;
+		Sleep(tickRate - frameElapsed);
+	}
 }
 } // namespace
 
@@ -264,102 +310,56 @@ s32 GameLoop::Run(s32 argc, char** argv)
 		}
 	}
 
-	Stage();
-	WorldClock::Reset();
-	uGM->Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE, &GameInit::LoadShaders);
-
-	const Time tickRate = config.TickRate();
-	Time accumulator;
-	Time currentTime = Time::Now();
-	while (!uGM->Context()->IsTerminating())
+	while (true)
 	{
-		LEContext* pContext = uGM->Context();
-		Time frameElapsed;
-		pContext->PollInput();
-		// Break and exit if Window closed
-		if (pContext->IsTerminating())
+		if (!Stage())
+		{
+			return 1;
+		}
+		RunLoop(config.TickRate(), config.StepRate());
+		Unstage();
+		if (postRun == PostRun::ReloadApp)
+		{
+			uRepository->UnloadAll(true);
+			uRepository->LoadDefaultFont(IDs::DEFAULT_FONT);
+		}
+		else if (postRun == PostRun::Cleanup)
 		{
 			break;
 		}
-
-		if (!pContext->IsPaused())
-		{
-			pContext->StartFrame();
-			const Time dt = tickRate;
-			const Time newTime = Time::Now();
-			const Time frameTime = Time::Clamp(newTime - currentTime, Time::Zero, maxFrameTime);
-			currentTime = newTime;
-
-			accumulator += frameTime;
-			while (accumulator >= dt)
-			{
-				WorldClock::Tick(dt);
-				pContext->FireInput();
-				bool bYield = Tick(dt);
-#if ENABLED(CONSOLE)
-				Debug::Console::Tick(dt);
-#endif
-				if (bYield)
-				{
-					accumulator = Time::Zero;
-					LOG_D("[EventLoop] Yielded integration");
-					break;
-				}
-				accumulator -= dt;
-			}
-
-			pContext->SubmitFrame();
-
-			if (pContext->IsTerminating())
-			{
-				break;
-			}
-#if defined(DEBUGGING)
-			ProfileFrameTime(Time::Now() - currentTime, tickRate);
-#endif
-			if (bReloadContext)
-			{
-				bool bCache = WorldStateMachine::s_bClearWorldsOnDestruct;
-				WorldStateMachine::s_bClearWorldsOnDestruct = false;
-				Unstage();
-				Stage();
-				uGM->Start(IDs::MAIN_MANIFEST, IDs::GAME_STYLE, []() {
-					if (bReloadRepository)
-					{
-						GameInit::LoadShaders();
-						bReloadRepository = false;
-					}
-				});
-				bReloadContext = false;
-				WorldStateMachine::s_bClearWorldsOnDestruct = bCache;
-			}
-			frameElapsed = Time::Now() - currentTime;
-		}
-		else
-		{
-			frameElapsed = tickRate.Scaled(Fixed(0.25f));
-		}
-		Sleep(tickRate - frameElapsed);
 	}
-
 	Cleanup();
 	return 0;
 }
 
-bool ReloadContext(bool bUnloadAssets)
+bool GameLoop::Reload(ReloadType type)
 {
 	if (!bInit)
 	{
 		LOG_E("[GameLoop] Cannot reload context without initialisation!");
 		return false;
 	}
-	if (!uGM)
+	if (!kernel.Context())
 	{
 		LOG_E("[GameLoop] Cannot reload empty context!");
 		return false;
 	}
-	bReloadRepository = bUnloadAssets;
-	bReloadContext = true;
+	switch (type)
+	{
+	default:
+	case ReloadType::World:
+		Assert(g_pGameManager, "GameManager is null!");
+		g_pGameManager->ReloadWorld();
+		break;
+	case ReloadType::Game:
+		postRun = PostRun::ReloadGame;
+		bTerminate = true;
+		break;
+	case ReloadType::App:
+		postRun = PostRun::ReloadApp;
+		bTerminate = true;
+		break;
+	}
 	return true;
 }
 } // namespace LittleEngine

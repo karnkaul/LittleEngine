@@ -4,7 +4,7 @@
 #include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/System/SFTypes.h"
 #if ENABLED(RENDER_STATS)
-#include "SFMLAPI/Rendering/Renderer.h"
+#include "SFMLAPI/Rendering/RenderStats.h"
 #endif
 
 namespace LittleEngine
@@ -20,10 +20,6 @@ void Lerp(Quad::Verts& out, const Core::TRange<Rect2>& tModel, Fixed alpha)
 	out[3] = model.BottomLeft();
 }
 } // namespace
-
-#if ENABLED(RENDER_STATS)
-extern RenderData g_renderData;
-#endif
 
 Quad::Quad(LayerID layer) : APrimitive(layer), m_sfVertArr(sf::VertexArray(sf::Quads, 4)) {}
 
@@ -82,7 +78,7 @@ void Quad::OnUpdateRenderState(Fixed alpha)
 void Quad::OnDraw(Viewport& viewport, sf::RenderStates& sfStates)
 {
 #if ENABLED(RENDER_STATS)
-	++g_renderData._quadCount_Internal;
+	++g_renderStats._quadCount_Internal;
 #endif
 	if (m_quadRenderState.pTexture)
 	{
