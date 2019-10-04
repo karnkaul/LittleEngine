@@ -56,13 +56,18 @@ void LERenderer::RecreateViewport(ViewportRecreateData data)
 
 void LERenderer::Lock_Swap()
 {
-	PROFILE_CUSTOM("LOCK", m_data.tickRate, Colour(255, 72, 0));
-	Lock lock(m_swapMutex);
-	PROFILE_STOP("LOCK");
-
 	PROFILE_CUSTOM("SWAP", m_data.tickRate, Colour(255, 72, 0));
+	Lock lock(m_swapMutex);
 	Swap();
 	PROFILE_STOP("SWAP");
+}
+
+void LERenderer::Lock_Reconcile() 
+{
+	PROFILE_CUSTOM("RECONCILE", m_data.tickRate, Colour(255, 72, 0));
+	Lock lock(m_swapMutex);
+	Reconcile();
+	PROFILE_STOP("RECONCILE");
 }
 
 void LERenderer::Render(Fixed alpha)

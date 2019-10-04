@@ -40,6 +40,7 @@ public:
 private:
 	void RecreateViewport(struct ViewportRecreateData data);
 	void Lock_Swap();
+	void Lock_Reconcile();
 	void Render(Fixed alpha);
 	void RenderFrame(class PrimitiveFactory& buffer, Fixed alpha);
 	void StopRenderThread();

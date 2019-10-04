@@ -189,7 +189,7 @@ void LEContext::Update()
 }
 void LEContext::StartFrame()
 {
-	m_uRenderer->Reconcile();
+	m_uRenderer->Lock_Reconcile();
 	Core::RemoveIf<PtrEntry>(m_pointerStack, [](const PtrEntry& entry) { return entry.wToken.expired(); });
 	Assert(!m_pointerStack.empty(), "Pointer Stack is empty!");
 	auto& entry = m_pointerStack.back();
