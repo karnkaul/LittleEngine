@@ -15,6 +15,26 @@
 #include "Vector2.h"
 #include "Transform.h"
 
+#define ENABLED(x) x
+
+#if defined(DEBUGGING)
+#define PROFILER 1
+#define CONSOLE 1
+#define RENDER_STATS 1
+#define TWEAKABLES 1
+#else
+#define PROFILER 0
+#define CONSOLE 0
+#define RENDER_STATS 0
+#define TWEAKABLES 0
+#endif
+
+#if defined(SHIPPING)
+#define FILESYSTEM_ASSETS 0
+#else
+#define FILESYSTEM_ASSETS 1
+#endif
+
 namespace LittleEngine
 {
 using Lock = std::lock_guard<std::mutex>;

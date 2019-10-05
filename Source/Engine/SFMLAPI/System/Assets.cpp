@@ -1,4 +1,5 @@
 #include <fstream>
+#include "Core/CoreTypes.h"
 #include "Core/OS.h"
 #if ENABLED(STD_FILESYSTEM)
 #include <filesystem>

@@ -1,7 +1,7 @@
 #pragma once
 #include "StdTypes.h"
 
-#if ENABLED(ASSERTS)
+#if defined(ASSERTS) && ASSERTS
 #define Assert(predicate, errorMessage) Core::AssertWithMsg(!!(predicate), #errorMessage, __FILE__, __LINE__)
 #define AssertVar(predicate, szStr) Core::AssertWithMsg(!!(predicate), szStr, __FILE__, __LINE__)
 #else

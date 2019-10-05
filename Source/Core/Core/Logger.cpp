@@ -201,7 +201,7 @@ void LogInternal(const char* pText, u32 severityIndex, va_list argList)
 
 	cache += "\n";
 #if _MSC_VER
-	OutputDebugStringA(cache.c_str());
+	OutputDebugStringA(cache.data());
 #endif
 	buffer += cache;
 	if (uFileLogger)

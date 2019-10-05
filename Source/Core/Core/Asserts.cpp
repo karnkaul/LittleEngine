@@ -2,9 +2,16 @@
 #include <iostream>
 #include <string>
 #include <unordered_set>
+#if _WIN64
+#include <Windows.h>
+#elif __linux__
+#include <cstring>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
 #include "Asserts.h"
 #include "SysDialog.h"
-#include "Logger.h"
 
 namespace Core
 {
@@ -22,9 +29,9 @@ std::unordered_set<std::string> disabledIDs;
 bool IsDebuggerAttached()
 {
 	bool ret = false;
-#if defined(TARGET_WIN64)
+#if _WIN64
 	ret = IsDebuggerPresent();
-#elif defined(TARGET_LINUX)
+#elif __linux__
 	char buf[4096];
 
 	const auto status_fd = ::open("/proc/self/status", O_RDONLY);
@@ -99,9 +106,12 @@ void AssertWithMsg(bool expr, const char* message, const char* fileName, long li
 	{
 	case ResponseType::Assert:
 	{
-		LOG_E("Assertion failed: %s", message);
+		std::cerr << "Assertion failed: " << message;
 		if (IsDebuggerAttached())
 		{
+#if _MSC_VER
+			OutputDebugStringA(message);
+#endif
 			DebugBreak();
 		}
 		else

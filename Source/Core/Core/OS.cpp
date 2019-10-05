@@ -3,7 +3,7 @@
 #include "OS.h"
 
 #if defined(TARGET_WIN64)
-#if ENABLED(STD_FILESYSTEM)
+#if defined(STD_FILESYSTEM) && STD_FILESYSTEM
 #include <filesystem>
 #endif
 #include <Windows.h>
