@@ -104,7 +104,7 @@ Emitter::Emitter(EmitterData data, bool bSetEnabled) : m_data(std::move(data)), 
 		m_data.spawnData.bIsOverlay ? LayerID::OverlayFX : m_data.spawnData.bIsUnderlay ? LayerID::UnderlayFX : LayerID::WorldFX;
 	layer = static_cast<LayerID>(ToS32(layer) + m_data.layerDelta);
 	m_pQuads = g_pGameManager->Renderer()->New<Quads>(layer);
-	m_pQuads->SetTexture(m_data.Texture(), m_data.spawnData.numParticles)->SetEnabled(m_bEnabled);
+	m_pQuads->SetTexture(m_data.Texture())->SetEnabled(m_bEnabled);
 	for (size_t i = 0; i < m_data.spawnData.numParticles; ++i)
 	{
 		m_particles.emplace_back(*m_pQuads, *m_pOwner, m_bDraw);
