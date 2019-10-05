@@ -203,7 +203,7 @@ void LEInput::FireCallbacks()
 	{
 		LOG_D("[Input] Deleted [%d] stale registrants", prev - curr);
 	}
-
+	bool bSpacePressed = dataFrame.IsReleased(KeyCode::Space);
 	if (m_oSudoContext)
 	{
 		if (m_oSudoContext->callback(dataFrame))

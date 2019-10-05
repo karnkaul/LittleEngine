@@ -32,6 +32,7 @@ void UIContext::OnCreate(String id, LayerID rootLayer)
 
 void UIContext::SetEnabled(bool bSetEnabled)
 {
+	m_bEnabled = bSetEnabled;
 	m_ioToken = nullptr;
 	if (bSetEnabled)
 	{
@@ -77,7 +78,10 @@ void UIContext::SetActive(bool bActive, bool bResetSelection)
 	{
 		Assert(g_pGameManager, "GameManager is null!");
 		m_ptrToken = g_pGameManager->Context()->PushPointer(LEContext::Pointer::Type::Arrow);
-		SetEnabled(true);
+		if (!m_bEnabled)
+		{
+			SetEnabled(true);
+		}
 		if (bResetSelection)
 		{
 			ResetSelection();

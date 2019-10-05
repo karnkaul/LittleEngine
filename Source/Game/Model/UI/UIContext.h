@@ -47,6 +47,7 @@ private:
 	UIWidget* m_pPointerOver = nullptr;
 	bool m_bInteracting = false;
 	bool m_bActive = false;
+	bool m_bEnabled = false;
 
 public:
 	UIContext();

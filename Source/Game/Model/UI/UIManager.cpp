@@ -50,7 +50,6 @@ void UIManager::Tick(Time dt)
 			if (!m_contexts.empty())
 			{
 				auto& uContext = m_contexts.back();
-				uContext->SetEnabled(true);
 				uContext->SetActive(true);
 			}
 		}
