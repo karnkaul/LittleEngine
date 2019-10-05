@@ -80,6 +80,7 @@ private:
 	JoyInput m_joyInput;
 	Vec<InputContext> m_contexts;
 	std::optional<InputContext> m_oSudoContext;
+	mutable s32 m_nextToken = 0;
 #if defined(DEBUGGING)
 	class Quad* m_pMouseH = nullptr;
 	Quad* m_pMouseV = nullptr;

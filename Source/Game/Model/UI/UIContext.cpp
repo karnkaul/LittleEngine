@@ -26,14 +26,17 @@ void UIContext::OnCreate(String id, LayerID rootLayer)
 	s32 layerDelta = ToS32(rootLayer) - ToS32(LayerID::UI);
 	m_pRoot = AddElement<UIElement>(m_name + "_Root", nullptr, layerDelta);
 	m_pRoot->SetStatic(true);
+	Assert(g_pGameManager, "GameManager is null!");
 	OnCreated();
 }
 
 void UIContext::SetEnabled(bool bSetEnabled)
 {
+	m_ioToken = nullptr;
 	if (bSetEnabled)
 	{
 		m_bDestroyed = false;
+		m_ioToken = g_pGameManager->Input()->Register([&](const auto& frame) -> bool { return OnInput(frame); }, true);
 	}
 	for (auto& uElement : m_uiElements)
 	{
@@ -69,18 +72,16 @@ LayerID UIContext::MaxLayer() const
 
 void UIContext::SetActive(bool bActive, bool bResetSelection)
 {
-	m_tokens.clear();
-	if (bActive)
+	m_bActive = bActive;
+	if (m_bActive)
 	{
 		Assert(g_pGameManager, "GameManager is null!");
-		m_tokens.push_back(g_pGameManager->Context()->PushPointer(LEContext::Pointer::Type::Arrow));
+		m_ptrToken = g_pGameManager->Context()->PushPointer(LEContext::Pointer::Type::Arrow);
 		SetEnabled(true);
 		if (bResetSelection)
 		{
 			ResetSelection();
 		}
-		m_tokens.push_back(
-			g_pGameManager->Input()->Register([&](const LEInput::Frame& frame) -> bool { return OnInput(frame); }, true));
 		OnActivated();
 		Tick();
 	}
@@ -130,7 +131,7 @@ void UIContext::Tick(Time dt)
 	{
 		uElement->Tick(dt);
 	}
-	if (!m_tokens.empty())
+	if (m_bActive)
 	{
 		bool bPointerSelection = false;
 		const MouseInput& pointerState = g_pGameManager->Input()->MouseState();
@@ -162,7 +163,6 @@ void UIContext::Tick(Time dt)
 				}
 			});
 		}
-
 		if (bPointerSelection)
 		{
 			// Pointer is inside a widget's bounds
@@ -214,6 +214,7 @@ void UIContext::Regenerate(LayerID newLayer)
 			uElement->Regenerate(newLayer);
 		}
 	});
+	Tick();
 }
 
 void UIContext::OnCreated() {}
@@ -226,14 +227,12 @@ void UIContext::OnEnabling(bool /*bEnabled*/) {}
 
 bool UIContext::OnInput(const LEInput::Frame& frame)
 {
-	if (m_bDestroyed)
+	if (m_bDestroyed || !m_bActive)
 	{
 		return false;
 	}
-
 	m_mbState.bEnterPressed = frame.IsPressed(KeyType::MOUSE_BTN_0);
 	m_mbState.bEnterReleased = frame.IsReleased(KeyType::MOUSE_BTN_0);
-
 	if (frame.IsPressed({KeyCode::Enter, KeyType::JOY_BTN_0}))
 	{
 		OnEnterPressed();

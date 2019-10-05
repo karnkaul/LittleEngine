@@ -243,6 +243,6 @@ void LEInput::CreateDebugPointer(LERenderer& renderer)
 
 Token LEInput::CreateToken() const
 {
-	return MakeToken(m_contexts.size() + 1);
+	return MakeToken(++m_nextToken);
 }
 } // namespace LittleEngine

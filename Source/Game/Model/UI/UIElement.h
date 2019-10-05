@@ -36,6 +36,7 @@ private:
 	bool m_bPanel = false;
 	bool m_bDoTick = true;
 	bool m_bStopTicking = false;
+	bool m_bTicked = false;
 
 public:
 	UIElement(LayerID layer = LayerID::UI, bool bSilent = false);

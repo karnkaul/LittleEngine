@@ -170,10 +170,10 @@ void UIElement::Tick(Time /*dt*/)
 	m_pRect->SetOrientation(Vector2::Right, true);
 	m_pText->SetOrientation(Vector2::Right, true);
 	Vector2 uiPos = m_transform.WorldPosition(g_pGFX->UISpace());
-	m_pRect->SetPosition(uiPos);
-	m_pText->SetPosition(uiPos);
-
+	m_pRect->SetPosition(uiPos, !m_bTicked);
+	m_pText->SetPosition(uiPos, !m_bTicked);
 	m_bDoTick = !m_bStopTicking;
+	m_bTicked = true;
 }
 
 LayerID UIElement::GetLayer() const
@@ -206,7 +206,8 @@ void UIElement::Regenerate(LayerID newLayer)
 	{
 		ApplyPanel();
 	}
-	m_bDoTick = true;
+	m_bTicked = false;
+	Tick();
 }
 
 void UIElement::SetStatic(bool bStatic)

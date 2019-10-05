@@ -40,11 +40,13 @@ protected:
 private:
 	UPtr<class UIWidgetMatrix> m_uUIWidgets;
 	Vec<UUIElement> m_uiElements;
-	Vec<Token> m_tokens;
+	Token m_ioToken;
+	Token m_ptrToken;
 	OnCancelled m_onCancelledDelegate;
 	MBState m_mbState;
 	UIWidget* m_pPointerOver = nullptr;
 	bool m_bInteracting = false;
+	bool m_bActive = false;
 
 public:
 	UIContext();
