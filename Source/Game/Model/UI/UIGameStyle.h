@@ -6,9 +6,9 @@ namespace LittleEngine
 {
 namespace UIGameStyle
 {
-Colour ParseColour(String serialised);
-void Load(String serialised);
-const UIWidgetStyle& GetStyle(const String& id);
-void Overwrite(UIWidgetStyle& outStyle, const String& id);
+Colour ParseColour(std::string serialised);
+void Load(std::string serialised);
+const UIWidgetStyle& GetStyle(const std::string& id);
+void Overwrite(UIWidgetStyle& outStyle, const std::string& id);
 } // namespace UIGameStyle
 } // namespace LittleEngine

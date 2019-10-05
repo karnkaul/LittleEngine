@@ -26,7 +26,7 @@ CMD_UIContainer::CMD_UIContainer() : Command("ui_container")
 	m_bTakesCustomParam = true;
 }
 
-void CMD_UIContainer::FillExecuteResult(String params)
+void CMD_UIContainer::FillExecuteResult(std::string params)
 {
 	if (params.empty())
 	{
@@ -72,7 +72,7 @@ void CMD_UIContainer::FillExecuteResult(String params)
 UIContainer::UIContainer() = default;
 UIContainer::~UIContainer() = default;
 
-void UIContainer::Deserialise(String serialised)
+void UIContainer::Deserialise(std::string serialised)
 {
 	GData root(std::move(serialised));
 	m_bAutoDestroyOnCancel = root.GetBool("isDestroyOnCancel", true);
@@ -93,15 +93,15 @@ void UIContainer::Deserialise(String serialised)
 	SetPersistent(root.GetBool("persistent", false));
 }
 
-void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
+void UIContainer::SetupChildren(UIElement* pParent, std::vector<GData> uiObjects)
 {
 	for (auto& data : uiObjects)
 	{
 		UIObject* pObj = nullptr;
 		UIElement* pNextParent = nullptr;
 		s32 layerDelta = data.GetS32("layerDelta", 0);
-		String id = data.GetString("id");
-		String name;
+		std::string id = data.GetString("id");
+		std::string name;
 		name.reserve(m_name.size() + id.size() + 1);
 		name += m_name;
 		name += "_";
@@ -117,11 +117,11 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 			}
 		}
 #endif
-		String widgetType = data.GetString("widgetType");
+		std::string widgetType = data.GetString("widgetType");
 		Vector2 position = data.GetVector2("position", Vector2::Zero);
 		Vector2 size = data.GetVector2("size", {-1, -1});
 		GData uiTextData = data.GetString("uiText");
-		String text = uiTextData.GetString("text");
+		std::string text = uiTextData.GetString("text");
 		u16 textSize = static_cast<u16>(uiTextData.GetS32("size", UIText::s_DEFAULT_PIXEL_SIZE));
 		Colour textColour = UIGameStyle::ParseColour(uiTextData.GetString("colour"));
 		bool bAutoPad = data.GetBool("isAutoPad", false);
@@ -190,7 +190,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 				{
 					pToggle->SetText(UIText(text, textSize, textColour));
 				}
-				String dump = data.GetString("onColour");
+				std::string dump = data.GetString("onColour");
 				if (!dump.empty())
 				{
 					pToggle->SetOnColour(UIGameStyle::ParseColour(dump));
@@ -255,7 +255,7 @@ void UIContainer::SetupChildren(UIElement* pParent, Vec<GData> uiObjects)
 	}
 }
 
-UIObject* UIContainer::GetObj(const String& id)
+UIObject* UIContainer::GetObj(const std::string& id)
 {
 	auto search = std::find_if(m_objs.begin(), m_objs.end(), [&id](const Obj& obj) { return obj.id == id; });
 	if (search != m_objs.end())

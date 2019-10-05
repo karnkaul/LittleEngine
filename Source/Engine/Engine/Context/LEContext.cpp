@@ -24,8 +24,8 @@ LEContext::PtrEntry::PtrEntry(WToken wToken, Pointer* pPointer, Pointer::Type ty
 LEContext::LEContext(Data data) : m_data(std::move(data))
 {
 #if ENABLED(TWEAKABLES)
-	asyncRendering.BindCallback([&](VString val) {
-		bool bEnable = Strings::ToBool(String(val));
+	asyncRendering.BindCallback([&](std::string_view val) {
+		bool bEnable = Strings::ToBool(std::string(val));
 		if (bEnable)
 		{
 			if (!m_uRenderer->IsRunningRenderThread())

@@ -8,20 +8,20 @@ namespace Core
 class FileRW
 {
 private:
-	String m_path;
-	Vec<String> m_lines;
+	std::string m_path;
+	std::vector<std::string> m_lines;
 
 public:
-	FileRW(String path);
+	FileRW(std::string path);
 
 	bool Exists() const;
-	String Load(bool bDiscardNewLines = true);
-	bool Write(String contents, bool bAppend = false);
-	bool Append(String contents);
+	std::string Load(bool bDiscardNewLines = true);
+	bool Write(std::string contents, bool bAppend = false);
+	bool Append(std::string contents);
 
-	const Vec<String>& Lines() const;
+	const std::vector<std::string>& Lines() const;
 
 private:
-	void Read(std::function<void(String line)> procedure);
+	void Read(std::function<void(std::string line)> procedure);
 };
 } // namespace Core

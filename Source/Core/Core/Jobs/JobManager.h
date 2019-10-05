@@ -17,8 +17,8 @@ private:
 		std::promise<void> m_promise;
 
 	public:
-		String m_logName;
-		String m_exception;
+		std::string m_logName;
+		std::string m_exception;
 		JobHandle m_sHandle;
 		Task m_task;
 		s64 m_id;
@@ -26,7 +26,7 @@ private:
 		
 	public:
 		Job();
-		Job(s64 id, Task task, String name, bool bSilent);
+		Job(s64 id, Task task, std::string name, bool bSilent);
 		Job(Job&& rhs) = default;
 		Job& operator=(Job&& rhs) = default;
 
@@ -35,7 +35,7 @@ private:
 	};
 
 private:
-	Vec<UPtr<class JobWorker>> m_jobWorkers;
+	std::vector<UPtr<class JobWorker>> m_jobWorkers;
 	List<UPtr<class JobCatalog>> m_catalogs;
 	List<Job> m_jobQueue;
 	mutable std::mutex m_queueMutex;
@@ -46,8 +46,8 @@ public:
 	~JobManager();
 
 public:
-	JobHandle Enqueue(Task task, String name = "", bool bSilent = false);
-	JobCatalog* CreateCatalog(String name);
+	JobHandle Enqueue(Task task, std::string name = "", bool bSilent = false);
+	JobCatalog* CreateCatalog(std::string name);
 	void ForEach(std::function<void(size_t)> indexedTask, size_t iterationCount, size_t iterationsPerJob, size_t startIdx = 0);
 
 	void Update();

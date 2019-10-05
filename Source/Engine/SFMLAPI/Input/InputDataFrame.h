@@ -9,21 +9,21 @@ struct KeyState
 {
 private:
 	s32 keyType;
-	VString name;
+	std::string_view name;
 
 public:
 	bool bPressed;
 
 public:
-	KeyState(s32 keyType, VString name = "Unknown");
+	KeyState(s32 keyType, std::string_view name = "Unknown");
 
 	KeyType GetKeyType() const;
-	VString Name() const;
+	std::string_view Name() const;
 };
 
 struct TextInput
 {
-	String text;
+	std::string text;
 	USet<KeyType> metaText;
 
 	bool ContainsChar(char c) const;
@@ -45,21 +45,21 @@ struct JoyState
 	Vector2 zr;
 	Vector2 uv;
 	Vector2 pov;
-	Vec<KeyType> pressed;
+	std::vector<KeyType> pressed;
 };
 
 struct JoyInput
 {
-	Vec<JoyState> m_states;
+	std::vector<JoyState> m_states;
 };
 
 struct InputDataFrame
 {
-	Vec<KeyState> pressed;
+	std::vector<KeyState> pressed;
 	TextInput textInput;
 	MouseInput mouseInput;
 	JoyInput joyInput;
 
-	static String Clipboard();
+	static std::string Clipboard();
 };
 } // namespace LittleEngine

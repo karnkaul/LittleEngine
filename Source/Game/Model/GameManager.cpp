@@ -96,7 +96,7 @@ WorldID GameManager::ActiveWorldID() const
 	return m_pWSM->ActiveWorldID();
 }
 
-Vec<WorldID> GameManager::AllWorldIDs() const
+std::vector<WorldID> GameManager::AllWorldIDs() const
 {
 	return m_pWSM->AllWorldIDs();
 }

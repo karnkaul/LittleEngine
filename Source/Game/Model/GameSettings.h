@@ -14,10 +14,10 @@ using LogSeverity = Core::LogSeverity;
 class GameSettings final
 {
 public:
-	static const String FILE_PATH;
+	static const std::string FILE_PATH;
 
 private:
-	String SAVE_PATH;
+	std::string SAVE_PATH;
 	Property::Persistor m_persistor;
 	Property m_viewportHeight;
 	Property m_borderless;
@@ -42,10 +42,10 @@ public:
 	ViewportStyle GetViewportStyle() const;
 	ViewportSize SafeGetViewportSize();
 	LogSeverity LogLevel() const;
-	String LocdataID() const;
-	const String& ENLocdataID() const;
+	std::string LocdataID() const;
+	const std::string& ENLocdataID() const;
 
-	const String* GetValue(const String& key) const;
+	const std::string* GetValue(const std::string& key) const;
 
 private:
 	void SetDefaults();

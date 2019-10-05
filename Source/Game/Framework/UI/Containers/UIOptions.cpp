@@ -48,11 +48,11 @@ void UIOptions::OnCreated()
 	if (pResolutionSelection)
 	{
 		const auto& resolutions = g_pGFX->ValidViewportSizes();
-		Vec<u32> resolutionHeights;
+		std::vector<u32> resolutionHeights;
 		std::for_each(resolutions.begin(), resolutions.end(),
 					  [&resolutionHeights](const auto& kvp) { resolutionHeights.push_back(kvp.second.height); });
 		pResolutionSelection->SetOptions(Strings::ToString(resolutionHeights, "", "p"));
-		m_tokens.push_back(pResolutionSelection->RegisterOnChanged([&, resolutionHeights](Pair<size_t, String> kvp) {
+		m_tokens.push_back(pResolutionSelection->RegisterOnChanged([&, resolutionHeights](Pair<size_t, std::string> kvp) {
 			if (g_pGameManager->Context()->TrySetViewportSize(resolutionHeights[kvp.first]))
 			{
 				GameSettings::Instance()->SetViewportHeight(resolutionHeights[kvp.first]);
@@ -80,7 +80,7 @@ void UIOptions::OnCreated()
 	if (pReloadSelection)
 	{
 		pReloadSelection->SetText("LOC_RELOAD");
-		m_tokens.push_back(pReloadSelection->RegisterOnChanged([](Pair<size_t, String> selected) {
+		m_tokens.push_back(pReloadSelection->RegisterOnChanged([](Pair<size_t, std::string> selected) {
 			auto type = GameLoop::ReloadType::World;
 			if (selected.first < ToIdx(GameLoop::ReloadType::_COUNT))
 			{
@@ -143,7 +143,7 @@ void UIOptions::OnActivated()
 		pWorldSelection->SetOptions(Strings::ToString(stateIDs, "World "));
 		pWorldSelection->SetText("LOC_LOAD_WORLD");
 		m_worldSelectToken = pWorldSelection->RegisterOnChanged(
-			[&, stateIDs](Pair<size_t, String> selected) { g_pGameManager->LoadWorld(stateIDs[selected.first]); });
+			[&, stateIDs](Pair<size_t, std::string> selected) { g_pGameManager->LoadWorld(stateIDs[selected.first]); });
 	}
 
 	auto pReloadSelection = Find<UISelection>("reload_selection");

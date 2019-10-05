@@ -16,7 +16,7 @@ UPtr<Debug::Commands::Command> uUIContainerTester;
 Token token;
 bool MusicTest(const LEInput::Frame& frame)
 {
-	static const Array<String, 2> ids = {"TestMusic.ogg", "TestMusic_0.ogg"};
+	static const std::array<std::string, 2> ids = {"TestMusic.ogg", "TestMusic_0.ogg"};
 	static size_t idx = 0;
 	if (frame.IsReleased(KeyCode::X))
 	{
@@ -28,6 +28,11 @@ bool MusicTest(const LEInput::Frame& frame)
 		}
 		idx = (idx == ids.size() - 1) ? 0 : idx + 1;
 		g_pAudio->SwitchTrack(ids[idx]);
+	}
+
+	if (frame.IsReleased(KeyCode::Space))
+	{
+		Assert(false, "Test assert for Arfender");
 	}
 	return false;
 }

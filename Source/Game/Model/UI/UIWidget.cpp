@@ -101,7 +101,7 @@ void UIWidget::InteractEnd(bool bInteract)
 	}
 }
 
-void UIWidget::OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCopy)
+void UIWidget::OnCreate(std::string name, UIContext& owner, UIWidgetStyle* pStyleToCopy)
 {
 	SetNameAndType(std::move(name), "UIWidget");
 	m_pOwner = &owner;
@@ -112,7 +112,7 @@ void UIWidget::OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCo
 	SetInteractable(true);
 }
 
-void UIWidget::InitElement(String name, UIElement* pNewElement, UITransform* pParent)
+void UIWidget::InitElement(std::string name, UIElement* pNewElement, UITransform* pParent)
 {
 	if (!pParent)
 	{

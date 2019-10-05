@@ -10,7 +10,7 @@ private:
 	Vector2 m_position;
 	Vector2 m_orientation = Vector2::Right;
 	Vector2 m_scale = Vector2::One;
-	Vec<Transform*> m_children;
+	std::vector<Transform*> m_children;
 	Transform* m_pParent = nullptr;
 	mutable bool m_bDirty = false;
 

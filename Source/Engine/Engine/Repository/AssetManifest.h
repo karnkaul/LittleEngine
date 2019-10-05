@@ -8,21 +8,21 @@ namespace LittleEngine
 // \brief Auto-constructs a set of generateable asset paths based on input parameters
 struct AssetIDContainer
 {
-	Vec<String> assetIDs;
+	std::vector<std::string> assetIDs;
 
 	AssetIDContainer(AssetIDContainer&&) = default;
 	AssetIDContainer& operator=(AssetIDContainer&&) = default;
 	// Single asset's path
-	AssetIDContainer(String assetPath);
+	AssetIDContainer(std::string assetPath);
 	// Multiple assets' paths
-	AssetIDContainer(InitList<String> assetPaths);
+	AssetIDContainer(std::initializer_list<std::string> assetPaths);
 	// Multiple assets' paths with a prefix for each
-	AssetIDContainer(const String& pathPrefix, InitList<String> assetPaths);
+	AssetIDContainer(const std::string& pathPrefix, std::initializer_list<std::string> assetPaths);
 	// Multiple assets's paths with a prefix for each path, prefix and suffix for each asset
-	AssetIDContainer(const String& pathPrefix, u32 count, const String& assetPrefix, const String& assetSuffix);
+	AssetIDContainer(const std::string& pathPrefix, u32 count, const std::string& assetPrefix, const std::string& assetSuffix);
 
 	// Get a random path from vector of paths
-	String Random() const;
+	std::string Random() const;
 };
 
 // \brief Complete data specifying particular set of identical-type Assets
@@ -41,11 +41,11 @@ struct AssetDefinition
 struct AssetManifest
 {
 public:
-	Vec<AssetDefinition> assetDefs;
+	std::vector<AssetDefinition> assetDefs;
 
 public:
 	AssetManifest() = default;
-	AssetManifest(Vec<AssetDefinition> assetDefinitions);
+	AssetManifest(std::vector<AssetDefinition> assetDefinitions);
 
 	// Add definition to the manifest
 	void AddDefinition(AssetDefinition definition);
@@ -66,7 +66,7 @@ public:
 	// \brief Note: this is not a const function! Manifests are designed to move their data
 	AssetManifest& Manifest();
 	// \brief Pass the path to the asset manifest file (.amf)
-	void Load(String amfPath);
-	void Deserialise(String serialised);
+	void Load(std::string amfPath);
+	void Deserialise(std::string serialised);
 };
 } // namespace LittleEngine

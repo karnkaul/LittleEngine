@@ -18,7 +18,7 @@ namespace LittleEngine
 namespace
 {
 #if defined(DEBUGGING)
-String GetStatus(AudioPlayer::Status status)
+std::string GetStatus(AudioPlayer::Status status)
 {
 	switch (status)
 	{
@@ -44,10 +44,10 @@ struct LEAudio::DbgImpl final
 	static constexpr Fixed VOL_PADR = Fixed(50, 1);
 	static constexpr Fixed TEXT_Y = Fixed(15, 1);
 	const Vector2 size = Vector2(350, 50);
-	String idA;
-	String statusA;
-	String idB;
-	String statusB;
+	std::string idA;
+	std::string statusA;
+	std::string idB;
+	std::string statusB;
 	Fixed volA;
 	Fixed volB;
 	Colour colA;
@@ -103,7 +103,7 @@ LEAudio::DbgImpl::DbgImpl(LERenderer& r)
 
 LEAudio::DbgImpl::~DbgImpl()
 {
-	Vec<APrimitive*> prims = {pVolA, pVolB, pIDA, pIDB, pStatusA, pStatusB, pBGA, pBGB};
+	std::vector<APrimitive*> prims = {pVolA, pVolB, pIDA, pIDB, pStatusA, pStatusB, pBGA, pBGB};
 	for (auto pPrim : prims)
 	{
 		if (pPrim)
@@ -115,7 +115,7 @@ LEAudio::DbgImpl::~DbgImpl()
 
 void LEAudio::DbgImpl::Tick(Time /*dt*/)
 {
-	Vec<APrimitive*> prims = {pVolA, pVolB, pIDA, pIDB, pStatusA, pStatusB, pBGA, pBGB};
+	std::vector<APrimitive*> prims = {pVolA, pVolB, pIDA, pIDB, pStatusA, pStatusB, pBGA, pBGB};
 	for (auto pPrim : prims)
 	{
 		if (pPrim)
@@ -135,7 +135,7 @@ void LEAudio::DbgImpl::Tick(Time /*dt*/)
 }
 #endif
 
-LEAudio::SwitchTrackRequest::SwitchTrackRequest(String newTrackPath, Time fadeTime, Fixed targetVolume, bool bLoop)
+LEAudio::SwitchTrackRequest::SwitchTrackRequest(std::string newTrackPath, Time fadeTime, Fixed targetVolume, bool bLoop)
 	: newTrackPath(std::move(newTrackPath)), fadeTime(fadeTime), targetVolume(targetVolume), bLoop(bLoop)
 {
 }
@@ -159,9 +159,9 @@ LEAudio::LEAudio()
 	g_pAudio = this;
 #if ENABLED(TWEAKABLES)
 	masterVol.BindCallback(
-		[](VString val) { AudioPlayer::s_mixVols[ToIdx(AudioPlayer::Mix::Master)] = Fixed(Strings::ToF32(String(val))); });
-	musicVol.BindCallback([](VString val) { AudioPlayer::s_mixVols[ToIdx(AudioPlayer::Mix::Music)] = Fixed(Strings::ToF32(String(val))); });
-	sfxVol.BindCallback([](VString val) { AudioPlayer::s_mixVols[ToIdx(AudioPlayer::Mix::SFX)] = Fixed(Strings::ToF32(String(val))); });
+		[](std::string_view val) { AudioPlayer::s_mixVols[ToIdx(AudioPlayer::Mix::Master)] = Fixed(Strings::ToF32(std::string(val))); });
+	musicVol.BindCallback([](std::string_view val) { AudioPlayer::s_mixVols[ToIdx(AudioPlayer::Mix::Music)] = Fixed(Strings::ToF32(std::string(val))); });
+	sfxVol.BindCallback([](std::string_view val) { AudioPlayer::s_mixVols[ToIdx(AudioPlayer::Mix::SFX)] = Fixed(Strings::ToF32(std::string(val))); });
 #endif
 }
 
@@ -223,7 +223,7 @@ void LEAudio::SetMixVolume(AudioPlayer::Mix mix, Fixed nVol)
 	}
 }
 
-SoundPlayer* LEAudio::PlaySFX(String id, Fixed nVol, Fixed direction, bool bLoop)
+SoundPlayer* LEAudio::PlaySFX(std::string id, Fixed nVol, Fixed direction, bool bLoop)
 {
 	Assert(g_pRepository, "Repository is null!");
 	SoundPlayer& sfxPlayer = GetOrCreateSFXPlayer();
@@ -263,7 +263,7 @@ bool LEAudio::IsSFXPlaying() const
 	return false;
 }
 
-bool LEAudio::PlayMusic(String id, Fixed nVol, Time fadeTime, bool bLoop)
+bool LEAudio::PlayMusic(std::string id, Fixed nVol, Time fadeTime, bool bLoop)
 {
 	m_oSwitchTrackRequest.reset();
 	MusicPlayer& active = ActivePlayer();
@@ -340,7 +340,7 @@ bool LEAudio::ResumeMusic(Time fadeTime, Fixed nVol)
 	return false;
 }
 
-void LEAudio::SwitchTrack(String id, Fixed nVol, Time fadeTime, bool bLoop)
+void LEAudio::SwitchTrack(std::string id, Fixed nVol, Time fadeTime, bool bLoop)
 {
 #if defined(DEBUGGING)
 	(m_uDbg && !m_bSideA) ? m_uDbg->idA = id : m_uDbg->idB = id;
@@ -463,9 +463,9 @@ void LEAudio::SwitchSide(MusicPlayer*& out_pActive, MusicPlayer*& out_pStandby)
 	out_pStandby = &StandbyPlayer();
 }
 
-String LEAudio::GetPath(String id) const
+std::string LEAudio::GetPath(std::string id) const
 {
-	String ret;
+	std::string ret;
 	ret.reserve(256);
 	ret += OS::Env()->RuntimePath();
 	ret += "/";

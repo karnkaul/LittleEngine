@@ -24,7 +24,7 @@ void UIElement::SetParent(UITransform& parent)
 	m_transform.SetParent(parent);
 }
 
-void UIElement::OnCreate(LEContext& context, String name, UITransform* pParent, FontAsset* pFont)
+void UIElement::OnCreate(LEContext& context, std::string name, UITransform* pParent, FontAsset* pFont)
 {
 	m_pFont = pFont;
 	SetContext(context);

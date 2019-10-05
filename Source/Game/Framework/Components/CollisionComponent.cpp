@@ -65,7 +65,7 @@ void CollisionComponent::SetEnabled(bool bEnabled)
 
 void CollisionComponent::AddCircle(Fixed diameter, Vector2 offset)
 {
-	CircleCollider* pCollider = g_pGameManager->Physics()->CreateCircleCollider(String(m_pOwner->Name()));
+	CircleCollider* pCollider = g_pGameManager->Physics()->CreateCircleCollider(std::string(m_pOwner->Name()));
 	pCollider->m_ignoreSig = m_signature;
 	pCollider->m_name += ("_" + Strings::ToString(m_pColliders.size()));
 	pCollider->SetCircle(diameter);
@@ -86,7 +86,7 @@ void CollisionComponent::AddCircle(Fixed diameter, Vector2 offset)
 
 void CollisionComponent::AddAABB(const AABBData& aabbData, Vector2 offset)
 {
-	AABBCollider* pCollider = g_pGameManager->Physics()->CreateAABBCollider(String(m_pOwner->Name()));
+	AABBCollider* pCollider = g_pGameManager->Physics()->CreateAABBCollider(std::string(m_pOwner->Name()));
 	pCollider->m_ignoreSig = m_signature;
 	pCollider->m_name += ("_" + Strings::ToString(m_pColliders.size()));
 	pCollider->SetAABB(aabbData);

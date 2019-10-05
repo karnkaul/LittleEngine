@@ -13,7 +13,7 @@ protected:
 
 public:
 	GameObject(bool bSilent = false);
-	GameObject(String name, String baseClass = "", bool bSilent = false);
+	GameObject(std::string name, std::string baseClass = "", bool bSilent = false);
 	~GameObject() override;
 
 protected:

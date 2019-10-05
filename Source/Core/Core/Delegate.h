@@ -23,7 +23,7 @@ private:
 		Wrapper(Callback callback, Token token);
 	};
 
-	Vec<Wrapper> m_callbacks;
+	std::vector<Wrapper> m_callbacks;
 
 public:
 	// Returns shared_ptr to be owned by caller

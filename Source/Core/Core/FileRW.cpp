@@ -4,18 +4,18 @@
 
 namespace Core
 {
-FileRW::FileRW(String path) : m_path(std::move(path)) {}
+FileRW::FileRW(std::string path) : m_path(std::move(path)) {}
 
 bool FileRW::Exists() const
 {
 	return std::ifstream(m_path.c_str()).good();
 }
 
-String FileRW::Load(bool bDiscardNewLines)
+std::string FileRW::Load(bool bDiscardNewLines)
 {
 	m_lines.clear();
-	String ret;
-	Read([&](String&& line) {
+	std::string ret;
+	Read([&](std::string&& line) {
 		ret += line;
 		if (!bDiscardNewLines)
 		{
@@ -26,7 +26,7 @@ String FileRW::Load(bool bDiscardNewLines)
 	return ret;
 }
 
-bool FileRW::Write(String contents, bool append)
+bool FileRW::Write(std::string contents, bool append)
 {
 	try
 	{
@@ -44,22 +44,22 @@ bool FileRW::Write(String contents, bool append)
 	}
 }
 
-bool FileRW::Append(String contents)
+bool FileRW::Append(std::string contents)
 {
 	return Write(std::move(contents), true);
 }
 
-const Vec<String>& FileRW::Lines() const
+const std::vector<std::string>& FileRW::Lines() const
 {
 	return m_lines;
 }
 
-void FileRW::Read(std::function<void(String line)> procedure)
+void FileRW::Read(std::function<void(std::string line)> procedure)
 {
 	std::ifstream file(m_path.c_str());
 	if (file.good())
 	{
-		String line;
+		std::string line;
 		while (std::getline(file, line))
 		{
 			procedure(std::move(line));

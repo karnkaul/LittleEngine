@@ -12,7 +12,7 @@ struct UByte
 	UByte(u8 value = 0);
 
 	u8 ToUInt() const;
-	String ToString() const;
+	std::string ToString() const;
 
 	UByte operator+=(UByte rhs);
 	UByte operator-=(UByte rhs);

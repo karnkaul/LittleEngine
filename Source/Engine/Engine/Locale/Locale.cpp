@@ -7,10 +7,10 @@ namespace LittleEngine
 {
 namespace
 {
-UMap<String, String> locMap;
+UMap<std::string, std::string> locMap;
 }
 
-void Locale::Init(String locFileID, String enLocFileID)
+void Locale::Init(std::string locFileID, std::string enLocFileID)
 {
 	Assert(g_pRepository->IsPresent(enLocFileID), "EN Loc file missing!");
 	bool bIsEn = locFileID == enLocFileID;
@@ -27,7 +27,7 @@ void Locale::Init(String locFileID, String enLocFileID)
 	}
 }
 
-bool Locale::Switch(const String& newLocFileID)
+bool Locale::Switch(const std::string& newLocFileID)
 {
 	if (g_pRepository->IsPresent(newLocFileID))
 	{
@@ -47,7 +47,7 @@ bool Locale::Switch(const String& newLocFileID)
 	return false;
 }
 
-const String& Locale::Localise(const String& id)
+const std::string& Locale::Localise(const std::string& id)
 {
 	auto iter = locMap.find(id);
 	if (iter != locMap.end())

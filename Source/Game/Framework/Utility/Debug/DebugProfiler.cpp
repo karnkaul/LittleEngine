@@ -34,7 +34,7 @@ class Renderer
 {
 	UPtr<UIElement> m_uLabelRoot = nullptr;
 	UPtr<UIElement> m_uBarRoot = nullptr;
-	Vec<UIEntry> m_uiEntries;
+	std::vector<UIEntry> m_uiEntries;
 	u16 m_frameEntryCount = 0;
 
 public:
@@ -196,9 +196,9 @@ void Init(Time maxTickTime)
 	Toggle(false);
 
 #if ENABLED(TWEAKABLES)
-	profiler.BindCallback([](VString toggle) { Toggle(Strings::ToBool(String(toggle))); });
+	profiler.BindCallback([](std::string_view toggle) { Toggle(Strings::ToBool(std::string(toggle))); });
 	pflr_maxDT.Set(Strings::ToString(maxTickDeltaTime.AsMilliseconds()));
-	pflr_maxDT.BindCallback([](VString max) { maxTickDeltaTime = Time::Milliseconds(Strings::ToS32(String(max))); });
+	pflr_maxDT.BindCallback([](std::string_view max) { maxTickDeltaTime = Time::Milliseconds(Strings::ToS32(std::string(max))); });
 #endif
 }
 

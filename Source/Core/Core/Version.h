@@ -13,18 +13,18 @@ private:
 
 public:
 	static const Version BUILD_VERSION;
-	static const VString szBUILD_VERSION_WITH_COMMIT;
+	static const std::string_view szBUILD_VERSION_WITH_COMMIT;
 
 public:
 	Version();
 	Version(u32 major, u32 minor, u32 patch, u32 pre);
-	Version(VString serialised);
+	Version(std::string_view serialised);
 
 public:
 	u32 Major() const;
 	u32 Minor() const;
 	u32 Patch() const;
-	String ToString() const;
+	std::string ToString() const;
 
 	bool Upgrade(const Version& rhs);
 

@@ -45,37 +45,35 @@ u32 VacantThreadCount();
 class EnvData final
 {
 private:
-	String m_exePath;
-	String m_runtimePath;
-	String m_cwd;
-	Map<String, String> m_vars;
+	std::string m_exePath;
+	std::string m_runtimePath;
+	std::string m_cwd;
+	Map<std::string, std::string> m_vars;
 	s32 m_argc = 0;
 	char** m_argv = nullptr;
 
 public:
-	void SetVars(s32 argc, char** argv, InitList<VString> runtimeFiles);
+	void SetVars(s32 argc, char** argv, std::initializer_list<std::string_view> runtimeFiles);
 
-	bool HasVar(const String& key) const;
-	std::optional<String> GetVar(const String& key) const;
+	bool HasVar(const std::string& key) const;
+	std::optional<std::string> GetVar(const std::string& key) const;
 	Pair<s32, char**> OrgVars() const;
 
-	VString ExePath() const;
-	VString RuntimePath() const;
-	VString CWD() const;
+	std::string_view ExePath() const;
+	std::string_view RuntimePath() const;
+	std::string_view CWD() const;
 
 	// Appends "PWD/"
-	String FullPath(VString relativePath) const;
+	std::string FullPath(std::string_view relativePath) const;
 };
 
 EnvData* Env();
 
 u32 ScreenRefreshRate(u32 assume = 240);
 bool IsMainThread();
-bool IsDebuggerAttached();
-void DebugBreak();
 
-u64 FileSize(VString path);
-bool DoesFileExist(VString path);
+u64 FileSize(std::string_view path);
+bool DoesFileExist(std::string_view path);
 
 bool IsDEBUGGING();
 bool IsSHIPPING();

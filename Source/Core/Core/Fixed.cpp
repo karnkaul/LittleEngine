@@ -1,3 +1,4 @@
+#include <array>
 #include "Fixed.h"
 #include "Asserts.h"
 #include "Maths.h"
@@ -110,10 +111,10 @@ Fixed Fixed::ArcTan() const
 	return Fixed(std::atan(val));
 }
 
-String Fixed::ToString() const
+std::string Fixed::ToString() const
 {
-	Array<char, 16> buf;
+	std::array<char, 16> buf;
 	SPRINTF(buf.data(), buf.size(), "%.2f", ToF32());
-	return String(buf.data());
+	return std::string(buf.data());
 }
 } // namespace Core

@@ -6,7 +6,7 @@ namespace LittleEngine::Debug
 {
 extern Colour g_logTextColour;
 
-LogLine::LogLine(String text, Colour colour) : text(std::move(text)), colour(colour) {}
+LogLine::LogLine(std::string text, Colour colour) : text(std::move(text)), colour(colour) {}
 
 UIText LogLine::ToUIText() const
 {
@@ -56,14 +56,14 @@ void LogBook::PageDown()
 	}
 }
 
-Vec<LogLine> LogBook::LogPage() const
+std::vector<LogLine> LogBook::LogPage() const
 {
-	Vec<LogLine> ret;
+	std::vector<LogLine> ret;
 	std::copy(m_bottom, m_top, std::back_inserter(ret));
 	return ret;
 }
 
-void LogBook::Append(Vec<LogLine>&& move)
+void LogBook::Append(std::vector<LogLine>&& move)
 {
 	std::move(move.begin(), move.end(), std::back_inserter(m_logLines));
 	Reset();

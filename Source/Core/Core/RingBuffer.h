@@ -7,14 +7,14 @@ template <typename T>
 struct RingBuffer
 {
 private:
-	Vec<T> vec;
-	typename Vec<T>::iterator iter;
+	std::vector<T> vec;
+	typename std::vector<T>::iterator iter;
 
 public:
 	RingBuffer();
-	RingBuffer(Vec<T> vec);
+	RingBuffer(std::vector<T> vec);
 
-	typename Vec<T>::const_iterator Iter() const;
+	typename std::vector<T>::const_iterator Iter() const;
 	bool IsEmpty() const;
 	void EmplaceBack(T&& val);
 	void PushBack(const T& val);
@@ -40,13 +40,13 @@ RingBuffer<T>::RingBuffer()
 }
 
 template <typename T>
-RingBuffer<T>::RingBuffer(Vec<T> vec) : vec(std::move(vec))
+RingBuffer<T>::RingBuffer(std::vector<T> vec) : vec(std::move(vec))
 {
 	Reset();
 }
 
 template <typename T>
-typename Vec<T>::const_iterator RingBuffer<T>::Iter() const
+typename std::vector<T>::const_iterator RingBuffer<T>::Iter() const
 {
 	return iter;
 }

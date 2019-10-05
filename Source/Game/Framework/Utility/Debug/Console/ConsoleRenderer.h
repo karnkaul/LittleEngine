@@ -26,7 +26,7 @@ public:
 	UPtr<UIElement> m_uCarat;
 	UPtr<UIElement> m_uLiveText;
 	UPtr<UIElement> m_uCursor;
-	Vec<UPtr<UIElement>> m_uLogTexts;
+	std::vector<UPtr<UIElement>> m_uLogTexts;
 
 	Colour m_liveTextColour = Colour(255, 255, 255, g_logTextAlpha);
 	Colour m_bgColour = Colour(50, 25, 50, 225);
@@ -40,8 +40,8 @@ public:
 	~ConsoleRenderer();
 
 	void Tick(Time dt);
-	void SetLiveString(String text, Fixed cursorNPos, bool bShowCursor);
-	void UpdateLog(Vec<LogLine> logLines);
+	void SetLiveString(std::string text, Fixed cursorNPos, bool bShowCursor);
+	void UpdateLog(std::vector<LogLine> logLines);
 };
 } // namespace Debug
 } // namespace LittleEngine

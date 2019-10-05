@@ -8,23 +8,23 @@ namespace LittleEngine
 {
 namespace
 {
-const String RENDER_THREAD_KEY = "bRenderThread";
-const String JOB_WORKER_COUNT_KEY = "jobWorkerCount";
-const String STEPS_PER_SECOND_KEY = "stepsPerSecond";
-const String TICKS_PER_SECOND_KEY = "ticksPerSecond";
-const String RENDER_THREAD_START_DELAY_MS_KEY = "renderThreadStartDelayMS";
-const String MAX_FRAME_TIME_MS = "maxFrameTimeMS";
-const String TITLEBAR_TEXT_KEY = "titleBarText";
-const String UI_SPACE_KEY = "uiSpace";
-const String WORLD_HEIGHT_KEY = "worldHeight";
-const String COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
-const String BACKUP_LOG_FILE_COUNT_KEY = "backupLogFileCount";
-const String ENTITY_ORIENTATION_SIZE_KEY = "entityOrientationSize";
-const String CONTROLLER_ORIENTATION_SIZE_KEY = "controllerOrientationSize";
-const String CONTROLLER_ORIENTATION_EPSILON_KEY = "controllerOrientationEpsilon";
-const String FORCE_VIEWPORT_ASPECT_KEY = "forceViewportAR";
+const std::string RENDER_THREAD_KEY = "bRenderThread";
+const std::string JOB_WORKER_COUNT_KEY = "jobWorkerCount";
+const std::string STEPS_PER_SECOND_KEY = "stepsPerSecond";
+const std::string TICKS_PER_SECOND_KEY = "ticksPerSecond";
+const std::string RENDER_THREAD_START_DELAY_MS_KEY = "renderThreadStartDelayMS";
+const std::string MAX_FRAME_TIME_MS = "maxFrameTimeMS";
+const std::string TITLEBAR_TEXT_KEY = "titleBarText";
+const std::string UI_SPACE_KEY = "uiSpace";
+const std::string WORLD_HEIGHT_KEY = "worldHeight";
+const std::string COLLIDER_SHAPE_WIDTH_KEY = "colliderShapeBorderWidth";
+const std::string BACKUP_LOG_FILE_COUNT_KEY = "backupLogFileCount";
+const std::string ENTITY_ORIENTATION_SIZE_KEY = "entityOrientationSize";
+const std::string CONTROLLER_ORIENTATION_SIZE_KEY = "controllerOrientationSize";
+const std::string CONTROLLER_ORIENTATION_EPSILON_KEY = "controllerOrientationEpsilon";
+const std::string FORCE_VIEWPORT_ASPECT_KEY = "forceViewportAR";
 
-bool SetStringIfEmpty(GData& data, const String& key, String value)
+bool SetStringIfEmpty(GData& data, const std::string& key, std::string value)
 {
 	if (data.GetString(key, "NULL") == "NULL")
 	{
@@ -46,7 +46,7 @@ void GameConfig::Init()
 	Verify();
 }
 
-bool GameConfig::Load(String path)
+bool GameConfig::Load(std::string path)
 {
 	m_bDirty = true;
 	FileRW file(std::move(path));
@@ -55,7 +55,7 @@ bool GameConfig::Load(String path)
 	return bSuccess;
 }
 
-bool GameConfig::Save(String path)
+bool GameConfig::Save(std::string path)
 {
 	FileRW file(std::move(path));
 	if (m_bDirty || !file.Exists())
@@ -97,7 +97,7 @@ Time GameConfig::MaxFrameTime() const
 	return Time::Milliseconds(ToS32(m_uData->GetS32(MAX_FRAME_TIME_MS)));
 }
 
-String GameConfig::TitleBarText() const
+std::string GameConfig::TitleBarText() const
 {
 	return m_uData->GetString(TITLEBAR_TEXT_KEY);
 }

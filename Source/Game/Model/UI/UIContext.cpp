@@ -19,7 +19,7 @@ UIContext::~UIContext()
 	m_uiElements.clear();
 }
 
-void UIContext::OnCreate(String id, LayerID rootLayer)
+void UIContext::OnCreate(std::string id, LayerID rootLayer)
 {
 	SetNameAndType(std::move(id), "UIContext");
 	m_uUIWidgets = MakeUnique<UIWidgetMatrix>();

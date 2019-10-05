@@ -35,9 +35,9 @@ extern LogSeverity g_MinLogSeverity;
 
 void Log(LogSeverity severity, const char* szText, ...);
 
-VString ParseLogSeverity(LogSeverity severity);
-LogSeverity ParseLogSeverity(VString serialised);
+std::string_view ParseLogSeverity(LogSeverity severity);
+LogSeverity ParseLogSeverity(std::string_view serialised);
 
-void StartFileLogging(String path, u8 backupCount, String header);
+void StartFileLogging(std::string path, u8 backupCount, std::string header);
 void StopFileLogging();
 } // namespace Core

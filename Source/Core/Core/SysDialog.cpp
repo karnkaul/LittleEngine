@@ -21,10 +21,10 @@ void LaunchMessageBox()
 #if _WIN64
 	UINT type = MB_CANCELTRYCONTINUE;
 
-	String footer = dialogueData.footer.empty() ? String() : "\n" + std::move(dialogueData.footer);
-	String suffix = "\n\nCancel\t: " + std::move(dialogueData.resp0.text) + "\nTry\t: " + std::move(dialogueData.resp1.text)
+	std::string footer = dialogueData.footer.empty() ? std::string() : "\n" + std::move(dialogueData.footer);
+	std::string suffix = "\n\nCancel\t: " + std::move(dialogueData.resp0.text) + "\nTry\t: " + std::move(dialogueData.resp1.text)
 					+ "\nCont\t: " + std::move(dialogueData.resp2.text);
-	String content = std::move(dialogueData.content) + std::move(footer) + std::move(suffix);
+	std::string content = std::move(dialogueData.content) + std::move(footer) + std::move(suffix);
 	s32 id = MessageBoxA(nullptr, content.c_str(), dialogueData.title.c_str(), type);
 	switch (id)
 	{
@@ -72,9 +72,9 @@ void LaunchMessageBox()
 			XNextEvent(pD, &e);
 			if (e.type == Expose)
 			{
-				String resp0 = "1: " + dialogueData.resp0.text;
-				String resp1 = "2: " + dialogueData.resp1.text;
-				String resp2 = "3: " + dialogueData.resp2.text;
+				std::string resp0 = "1: " + dialogueData.resp0.text;
+				std::string resp1 = "2: " + dialogueData.resp1.text;
+				std::string resp2 = "3: " + dialogueData.resp2.text;
 				XDrawString(pD, w, DefaultGC(pD, s), 10, 50, dialogueData.content.c_str(), dialogueData.content.length());
 				XDrawString(pD, w, DefaultGC(pD, s), 15, 70, dialogueData.footer.c_str(), dialogueData.footer.length());
 				XDrawString(pD, w, DefaultGC(pD, s), 10, 150, resp0.c_str(), resp0.length());

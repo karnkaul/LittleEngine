@@ -13,7 +13,7 @@ FontAsset* g_pDefaultFont = nullptr;
 bool LERepository::s_bUseFileAssets = true;
 #endif
 
-LERepository::LERepository(String defaultFontID, String archivePath, String rootDir) : m_rootDir(std::move(rootDir))
+LERepository::LERepository(std::string defaultFontID, std::string archivePath, std::string rootDir) : m_rootDir(std::move(rootDir))
 {
 	if (!m_rootDir.empty())
 	{
@@ -24,18 +24,9 @@ LERepository::LERepository(String defaultFontID, String archivePath, String root
 
 	LOG_D("[Repository] Assets Root Dir: %s", m_rootDir.c_str());
 
-	String filePath = OS::Env()->FullPath(archivePath);
+	std::string filePath = OS::Env()->FullPath(archivePath);
 	std::ifstream file(filePath.c_str());
 	Assert(file.good(), "Cooked archive does not exist!");
-#if defined(DEBUGGING)
-	if (OS::IsDebuggerAttached())
-	{
-		// If you are debugging and have broken here,
-		// no need to restart the session, just fix the
-		// missing archive before continuing!
-		file = std::ifstream(filePath.c_str());
-	}
-#endif
 	if (!file.good())
 	{
 		LOG_E("[Repository] Cooked archive [%s] does not exist!", archivePath.c_str());
@@ -62,7 +53,7 @@ LERepository::~LERepository()
 	LOG_D("[Repository] destroyed");
 }
 
-void LERepository::LoadDefaultFont(String id)
+void LERepository::LoadDefaultFont(std::string id)
 {
 	if (m_loaded.find(id) == m_loaded.end())
 	{
@@ -77,14 +68,14 @@ void LERepository::LoadDefaultFont(String id)
 	Assert(g_pDefaultFont, "Invariant violated: Default Font is null!");
 }
 
-SPtr<ManifestLoader> LERepository::LoadManifest(String manifestPath, Task onComplete)
+SPtr<ManifestLoader> LERepository::LoadManifest(std::string manifestPath, Task onComplete)
 {
 	SPtr<ManifestLoader> sLoader = MakeShared<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), false);
 	m_loaders.push_back(sLoader);
 	return sLoader;
 }
 
-void LERepository::UnloadManifest(String manifestPath, Task onComplete /* = nullptr */)
+void LERepository::UnloadManifest(std::string manifestPath, Task onComplete /* = nullptr */)
 {
 	m_loaders.emplace_back(MakeUnique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), true));
 }
@@ -101,7 +92,7 @@ bool LERepository::IsBusy() const
 	return false;
 }
 
-bool LERepository::IsLoaded(const String& id) const
+bool LERepository::IsLoaded(const std::string& id) const
 {
 	Lock lock(m_loadedMutex);
 	return m_loaded.find(id) != m_loaded.end();
@@ -118,7 +109,7 @@ u64 LERepository::LoadedBytes() const
 	return total;
 }
 
-bool LERepository::IsPresent(const String& id) const
+bool LERepository::IsPresent(const std::string& id) const
 {
 	bool bRet = m_uCooked->IsPresent(id);
 #if ENABLED(FILESYSTEM_ASSETS)
@@ -127,7 +118,7 @@ bool LERepository::IsPresent(const String& id) const
 	return bRet;
 }
 
-bool LERepository::Unload(const String& id)
+bool LERepository::Unload(const std::string& id)
 {
 	Lock lock(m_loadedMutex);
 	bool bPresent = m_loaded.find(id) != m_loaded.end();
@@ -148,7 +139,7 @@ void LERepository::UnloadAll(bool bUnloadDefaultFont)
 	}
 	else
 	{
-		Core::RemoveIf<String, UPtr<Asset>>(m_loaded, [](UPtr<Asset>& uAsset) { return String(uAsset->ID()) != g_pDefaultFont->ID(); });
+		Core::RemoveIf<std::string, UPtr<Asset>>(m_loaded, [](UPtr<Asset>& uAsset) { return std::string(uAsset->ID()) != g_pDefaultFont->ID(); });
 	}
 	LOG_D("[Repository] cleared");
 }
@@ -165,7 +156,7 @@ void LERepository::Tick(Time dt)
 	Core::RemoveIf<SPtr<ManifestLoader>>(m_loaders, [](auto& sLoader) { return sLoader->m_bIdle; });
 }
 
-void LERepository::DoLoad(const String& id, bool bSyncWarn, Task inCooked, 
+void LERepository::DoLoad(const std::string& id, bool bSyncWarn, Task inCooked, 
 #if ENABLED(FILESYSTEM_ASSETS)
 	Task onFilesystem,
 #endif

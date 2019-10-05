@@ -5,7 +5,7 @@ namespace LittleEngine
 namespace LEShaders
 {
 ShadersData s_data;
-UMap<String, UPtr<Shader>> s_shaderMap;
+UMap<std::string, UPtr<Shader>> s_shaderMap;
 } // namespace LEShaders
 
 void LEShaders::Init(ShadersData data)

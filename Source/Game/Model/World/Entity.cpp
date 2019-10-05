@@ -13,7 +13,7 @@ namespace LittleEngine
 #if defined(DEBUGGING)
 bool Entity::s_bShowOrientation = false;
 Vector2 Entity::s_orientationWidthHeight = {100, 2};
-Array<Colour, 2> Entity::s_xyColours = {Colour(200, 0, 0), Colour(0, 200, 0)};
+std::array<Colour, 2> Entity::s_xyColours = {Colour(200, 0, 0), Colour(0, 200, 0)};
 TweakBool(orientationVectors, &Entity::s_bShowOrientation);
 #endif
 
@@ -63,7 +63,7 @@ void Entity::Tick(Time /*dt*/)
 	Core::RemoveIf<AComponent*>(m_components, [](AComponent* pComponent) { return pComponent->m_bDestroyed; });
 }
 
-void Entity::OnCreate(String name)
+void Entity::OnCreate(std::string name)
 {
 	SetNameAndType(std::move(name), "Entity");
 #if defined(DEBUGGING)

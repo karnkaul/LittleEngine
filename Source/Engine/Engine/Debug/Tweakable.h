@@ -29,36 +29,36 @@ class Tweakable final : private NoCopy
 {
 private:
 	void* m_pTarget = nullptr;
-	std::function<void(VString)> m_callback;
+	std::function<void(std::string_view)> m_callback;
 
 public:
-	String m_id;
-	String m_value;
+	std::string m_id;
+	std::string m_value;
 	TweakType m_type = TweakType::String;
 
 public:
-	Tweakable(String id, TweakType type, String value = "", void* pTarget = nullptr);
+	Tweakable(std::string id, TweakType type, std::string value = "", void* pTarget = nullptr);
 	~Tweakable();
 
-	void Set(String stringValue);
+	void Set(std::string stringValue);
 	void Bind(void* pVar);
-	void BindCallback(std::function<void(VString)> callback);
+	void BindCallback(std::function<void(std::string_view)> callback);
 
 private:
-	void SyncString(String rawValue);
-	void SyncF32(String rawValue);
-	void SyncS32(String rawValue);
-	void SyncBool(String rawValue);
+	void SyncString(std::string rawValue);
+	void SyncF32(std::string rawValue);
+	void SyncS32(std::string rawValue);
+	void SyncBool(std::string rawValue);
 };
 
 class TweakManager
 {
 public:
-	Map<VString, Tweakable*> m_tweakables;
+	Map<std::string_view, Tweakable*> m_tweakables;
 
 	static TweakManager* Instance();
 
-	Tweakable* Find(VString id) const;
+	Tweakable* Find(std::string_view id) const;
 };
 } // namespace Debug
 } // namespace LittleEngine

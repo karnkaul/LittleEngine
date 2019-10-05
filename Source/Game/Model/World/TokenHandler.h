@@ -7,7 +7,7 @@ template <typename T>
 struct TokenHandler
 {
 private:
-	Vec<T> tokens;
+	std::vector<T> tokens;
 
 public:
 	void AddToken(T token)

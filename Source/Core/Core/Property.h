@@ -11,27 +11,27 @@ struct Property
 	class Persistor
 	{
 	public:
-		void Deserialise(String serialised);
-		bool Load(const String& filePath);
-		bool Save(const String& filePath) const;
-		const Property* GetProp(const String& key) const;
+		void Deserialise(std::string serialised);
+		bool Load(const std::string& filePath);
+		bool Save(const std::string& filePath) const;
+		const Property* GetProp(const std::string& key) const;
 		void SetProp(Property property);
 
 	private:
 		// Vector instead of sets/maps to preserve order of insertion
-		Vec<Property> properties;
+		std::vector<Property> properties;
 	};
 
-	String key;
-	String stringValue;
+	std::string key;
+	std::string stringValue;
 
 	Property();
-	Property(String key, String value);
+	Property(std::string key, std::string value);
 
 	s32 ToS32(s32 defaultValue = -1) const;
 	f32 ToF32(f32 defaultValue = -1) const;
 	bool ToBool(bool defaultValue = false) const;
 
-	operator String() const;
+	operator std::string() const;
 };
 } // namespace Core

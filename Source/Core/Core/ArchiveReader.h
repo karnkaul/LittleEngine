@@ -11,9 +11,9 @@ public:
 public:
 	ArchiveReader();
 
-	bool Load(VString archivePath);
+	bool Load(std::string_view archivePath);
 
-	bool IsPresent(VString pathInArchive) const;
-	Vec<u8> Decompress(VString pathInArchive) const;
+	bool IsPresent(std::string_view pathInArchive) const;
+	std::vector<u8> Decompress(std::string_view pathInArchive) const;
 };
 } // namespace Core

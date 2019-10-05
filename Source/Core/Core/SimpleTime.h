@@ -14,7 +14,7 @@ private:
 
 public:
 	static const Time Zero;
-	static String ToString(Time time);
+	static std::string ToString(Time time);
 	static Time Microseconds(s64 microSeconds);
 	static Time Milliseconds(s32 milliSeconds);
 	static Time Seconds(f32 seconds);

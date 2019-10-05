@@ -19,11 +19,11 @@ public:
 
 	// Call in constructor to preload required Assets
 	template <typename T>
-	T* PreloadAsset(const String& id) const;
+	T* PreloadAsset(const std::string& id) const;
 };
 
 template <typename T>
-T* ILoadingHUD::PreloadAsset(const String& id) const
+T* ILoadingHUD::PreloadAsset(const std::string& id) const
 {
 	return g_pRepository->template Preload<T>(id);
 }

@@ -214,9 +214,9 @@ Particle* Emitter::Provision()
 	return nullptr;
 }
 
-Vec<Particle*> Emitter::ProvisionLot(u32 count)
+std::vector<Particle*> Emitter::ProvisionLot(u32 count)
 {
-	Vec<Particle*> ret;
+	std::vector<Particle*> ret;
 	auto iter = m_particles.begin();
 	u32 total = 0;
 	while (iter != m_particles.end() && total < count)
@@ -262,7 +262,7 @@ void Emitter::InitParticle(Particle& p)
 
 void Emitter::InitParticles()
 {
-	Vec<Particle*> provisioned = ProvisionLot(m_data.spawnData.numParticles);
+	std::vector<Particle*> provisioned = ProvisionLot(m_data.spawnData.numParticles);
 	for (auto p : provisioned)
 	{
 		InitParticle(*p);

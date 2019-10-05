@@ -23,7 +23,7 @@ AudioPlayer::Status Cast(sf::Sound::Status status)
 }
 } // namespace
 
-Array<Fixed, 3> AudioPlayer::s_mixVols = {1, 1, 1};
+std::array<Fixed, 3> AudioPlayer::s_mixVols = {1, 1, 1};
 
 AudioPlayer::AudioPlayer() = default;
 AudioPlayer::~AudioPlayer() = default;
@@ -142,7 +142,7 @@ MusicPlayer::~MusicPlayer()
 	}
 }
 
-bool MusicPlayer::SetTrack(String path)
+bool MusicPlayer::SetTrack(std::string path)
 {
 	return m_uSFMusic->openFromFile(path);
 }

@@ -4,18 +4,14 @@
 #define __STDC_FORMAT_MACROS
 #endif
 #include <inttypes.h>
-#include <array>
 #include <functional>
-#include <list>
 #include <map>
 #include <memory>
 #include <mutex>
 #include <set>
 #include <sstream>
-#include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <vector>
 
 #define ENABLED(x) x
 
@@ -60,18 +56,10 @@ using s64 = int64_t;
 using f32 = float;
 using f64 = double;
 
-using String = std::string;
-using VString = std::string_view;
 using StringStream = std::stringstream;
 using Task = std::function<void()>;
 using Lock = std::lock_guard<std::mutex>;
 
-template <typename T>
-using InitList = std::initializer_list<T>;
-template <typename T, size_t U>
-using Array = std::array<T, U>;
-template <typename T>
-using Vec = std::vector<T>;
 template <typename T>
 using List = std::list<T>;
 template <typename T>

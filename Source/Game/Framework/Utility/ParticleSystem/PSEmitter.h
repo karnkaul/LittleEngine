@@ -44,7 +44,7 @@ public:
 	using OnTick = Core::Delegate<Particle&>;
 
 private:
-	Vec<Particle> m_particles;
+	std::vector<Particle> m_particles;
 	const EmitterData m_data;
 	OnTick m_onTick;
 	Time m_elapsed;
@@ -72,7 +72,7 @@ public:
 private:
 	void Init();
 	Particle* Provision();
-	Vec<Particle*> ProvisionLot(u32 count);
+	std::vector<Particle*> ProvisionLot(u32 count);
 	void InitParticle(Particle& p);
 	void InitParticles();
 	void TickInternal(Time dt, bool bPreWarming = false);

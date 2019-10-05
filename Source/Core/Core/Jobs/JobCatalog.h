@@ -6,10 +6,10 @@ namespace Core
 class JobCatalog
 {
 private:
-	using SubJob = Pair<String, Task>;
+	using SubJob = Pair<std::string, Task>;
 
-	String m_logName;
-	Vec<SubJob> m_subJobs;
+	std::string m_logName;
+	std::vector<SubJob> m_subJobs;
 	List<JobHandle> m_pendingJobs;
 	List<JobHandle> m_completedJobs;
 	Task m_onComplete = nullptr;
@@ -18,9 +18,9 @@ private:
 	bool m_bCompleted = false;
 
 public:
-	JobCatalog(JobManager& manager, String name);
+	JobCatalog(JobManager& manager, std::string name);
 
-	void AddJob(Task job, String name = "");
+	void AddJob(Task job, std::string name = "");
 	void StartJobs(Task onComplete);
 	Fixed Progress() const;
 

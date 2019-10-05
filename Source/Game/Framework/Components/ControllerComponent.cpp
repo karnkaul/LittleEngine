@@ -28,7 +28,7 @@ void ClampPosition(Vector2& outPosition, Vector2 size)
 
 #if defined(DEBUGGING)
 bool ControllerComponent::s_bShowJoystickOrientation = false;
-Array<Colour, 2> ControllerComponent::s_ornColours = {Colour(255, 0, 255), Colour(150, 150, 150)};
+std::array<Colour, 2> ControllerComponent::s_ornColours = {Colour(255, 0, 255), Colour(150, 150, 150)};
 Vector2 ControllerComponent::s_orientationWidthHeight = {120, 3};
 TweakBool(joystickOrientation, &ControllerComponent::s_bShowJoystickOrientation);
 #endif

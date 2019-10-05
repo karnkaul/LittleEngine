@@ -112,14 +112,14 @@ void ConsoleRenderer::Tick(Time dt)
 	}
 }
 
-void ConsoleRenderer::SetLiveString(String text, Fixed cursorNPos, bool bShowCursor)
+void ConsoleRenderer::SetLiveString(std::string text, Fixed cursorNPos, bool bShowCursor)
 {
 	m_cursorNPos = cursorNPos;
 	m_uLiveText->SetText(UIText(std::move(text), m_textSize, m_liveTextColour));
 	m_uCursor->Text()->SetEnabled(bShowCursor);
 }
 
-void ConsoleRenderer::UpdateLog(Vec<LogLine> logLines)
+void ConsoleRenderer::UpdateLog(std::vector<LogLine> logLines)
 {
 	auto iter = logLines.begin();
 	for (auto& uLogText : m_uLogTexts)

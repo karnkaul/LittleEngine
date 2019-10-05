@@ -18,8 +18,8 @@ public:
 
 public:
 	KeyboardInput m_keyboard;
-	String m_query;
-	Core::RingBuffer<String> m_queryCache;
+	std::string m_query;
+	Core::RingBuffer<std::string> m_queryCache;
 	Token m_token;
 	bool bCyclingQueries = false;
 

@@ -27,7 +27,7 @@ bool UIButtonDrawer::SetHorizontal(bool bHorizontal)
 
 Token UIButtonDrawer::AddButton(UIText buttonText, UIButton::OnClick::Callback onInteracted, UIButton** ppButton)
 {
-	String buttonName = "Button" + Strings::ToString(m_uiButtons.size());
+	std::string buttonName = "Button" + Strings::ToString(m_uiButtons.size());
 	auto pButton = AddWidget<UIButton>(buttonName, nullptr, m_data.bHorizontal);
 	pButton->SetText(std::move(buttonText));
 	m_uiButtons.push_back(pButton);

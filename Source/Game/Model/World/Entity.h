@@ -20,7 +20,7 @@ protected:
 	using Super = Entity;
 
 private:
-	Vec<class AComponent*> m_components;
+	std::vector<class AComponent*> m_components;
 	State m_state;
 	class EntityPool* m_pPool = nullptr;
 
@@ -28,7 +28,7 @@ private:
 public:
 	static bool s_bShowOrientation;
 	static Vector2 s_orientationWidthHeight;
-	static Array<Colour, 2> s_xyColours;
+	static std::array<Colour, 2> s_xyColours;
 
 protected:
 	class SFRect* m_pO_x = nullptr;
@@ -50,7 +50,7 @@ public:
 	virtual void Step(Time fdt);
 
 public:
-	void OnCreate(String name);
+	void OnCreate(std::string name);
 	void Destruct();
 	void Respawn();
 	void Despawn();

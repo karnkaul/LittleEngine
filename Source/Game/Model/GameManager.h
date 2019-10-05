@@ -1,4 +1,6 @@
 #pragma once
+#include <array>
+#include <vector>
 #include "Core/CoreTypes.h"
 #include "Core/Logger.h"
 #include "Model/World/ComponentTimingType.h"
@@ -16,10 +18,10 @@ private:
 	static constexpr size_t COMPONENT_LINES = ToIdx(TimingType::Last) + 1;
 
 private:
-	Array<Vec<UPtr<class AComponent>>, COMPONENT_LINES> m_components;
-	String m_logName;
-	Vec<Task> m_initCallbacks;
-	Vec<UPtr<class Entity>> m_entities;
+	std::array<std::vector<UPtr<class AComponent>>, COMPONENT_LINES> m_components;
+	std::string m_logName;
+	std::vector<Task> m_initCallbacks;
+	std::vector<UPtr<class Entity>> m_entities;
 	UPtr<class UIManager> m_uUIManager;
 	UPtr<class LEPhysics> m_uPhysics;
 	UPtr<class Camera> m_uWorldCamera;
@@ -42,7 +44,7 @@ public:
 	void ReloadWorld();
 	bool LoadWorld(WorldID id);
 	WorldID ActiveWorldID() const;
-	Vec<WorldID> AllWorldIDs() const;
+	std::vector<WorldID> AllWorldIDs() const;
 
 	void SetPaused(bool bPaused);
 	void Quit();
@@ -53,7 +55,7 @@ public:
 
 public:
 	template <typename T>
-	T* NewEntity(String name = "Untitled", Vector2 position = Vector2::Zero, Vector2 orientation = Vector2::Right);
+	T* NewEntity(std::string name = "Untitled", Vector2 position = Vector2::Zero, Vector2 orientation = Vector2::Right);
 	template <typename T>
 	T* NewComponent(Entity& owner);
 
@@ -67,7 +69,7 @@ private:
 };
 
 template <typename T>
-T* GameManager::NewEntity(String name, Vector2 position, Vector2 orientation)
+T* GameManager::NewEntity(std::string name, Vector2 position, Vector2 orientation)
 {
 	static_assert(IsDerived<Entity, T>(), "T must derive from Entity");
 	UPtr<T> uT = MakeUnique<T>();

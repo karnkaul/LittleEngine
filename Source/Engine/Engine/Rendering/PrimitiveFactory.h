@@ -1,4 +1,6 @@
 #pragma once
+#include <array>
+#include <vector>
 #include "Core/SimpleTime.h"
 #include "SFMLAPI/Rendering/Primitives/Primitive.h"
 
@@ -7,8 +9,8 @@ namespace LittleEngine
 class PrimitiveFactory : private NoCopy
 {
 public:
-	using PrimVec = Vec<UPtr<APrimitive>>;
-	using PrimMat = Array<PrimVec, ToIdx(LayerID::_COUNT)>;
+	using PrimVec = std::vector<UPtr<APrimitive>>;
+	using PrimMat = std::array<PrimVec, ToIdx(LayerID::_COUNT)>;
 
 private:
 	static const u32 LAYER_RESERVE = 128;

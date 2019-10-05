@@ -1,8 +1,8 @@
-#include "Vector2.h"
-#include "Utils.h"
+#include <array>
 #include <cmath>
 #include <string>
-#include <iomanip>
+#include "Vector2.h"
+#include "Utils.h"
 
 namespace Core
 {
@@ -87,10 +87,10 @@ f64 Vector2::SqrMagnitude() const
 	return (x.ToF64() * x.ToF64()) + (y.ToF64() * y.ToF64());
 }
 
-String Vector2::ToString() const
+std::string Vector2::ToString() const
 {
-	Array<char, 40> buf;
+	std::array<char, 40> buf;
 	SPRINTF(buf.data(), buf.size(), "(%.2f, %.2f)", x.ToF32(), y.ToF32());
-	return String(buf.data());
+	return std::string(buf.data());
 }
 } // namespace Core

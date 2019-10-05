@@ -10,7 +10,7 @@ u8 UByte::ToUInt() const
 	return rawValue;
 }
 
-String UByte::ToString() const
+std::string UByte::ToString() const
 {
 	return std::to_string(ToUInt());
 }

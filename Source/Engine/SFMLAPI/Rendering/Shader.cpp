@@ -5,13 +5,13 @@
 
 namespace LittleEngine
 {
-UMap<Shader::Type, VString> g_szShaderTypes = {
+UMap<Shader::Type, std::string_view> g_szShaderTypes = {
 	{Shader::Type(), "Invalid"},
 	{Shader::Type().set(ToIdx(Shader::Flag::Vertex)), "Vertex"},
 	{Shader::Type().set(ToIdx(Shader::Flag::Fragment)), "Fragment"},
 	{Shader::Type().set(ToIdx(Shader::Flag::Vertex)).set(ToIdx(Shader::Flag::Fragment)), "VertFrag"}};
 
-Shader::Shader(String id) : m_id(std::move(id)) {}
+Shader::Shader(std::string id) : m_id(std::move(id)) {}
 
 Shader::~Shader()
 {
@@ -21,7 +21,7 @@ Shader::~Shader()
 	}
 }
 
-void Shader::Compile(const String& code, Type type)
+void Shader::Compile(const std::string& code, Type type)
 {
 	Assert(type.count() == 1, "Can only compile single ShaderType via this overload");
 	m_bError = true;
@@ -44,7 +44,7 @@ void Shader::Compile(const String& code, Type type)
 	}
 }
 
-void Shader::Compile(const String& vertCode, const String& fragCode)
+void Shader::Compile(const std::string& vertCode, const std::string& fragCode)
 {
 	m_bError = true;
 	if (sf::Shader::isAvailable())
@@ -74,7 +74,7 @@ void Shader::Compile(const String& vertCode, const String& fragCode)
 	}
 }
 
-const String& Shader::ID() const
+const std::string& Shader::ID() const
 {
 	return m_id;
 }

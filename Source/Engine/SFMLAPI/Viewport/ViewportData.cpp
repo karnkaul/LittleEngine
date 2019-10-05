@@ -10,9 +10,9 @@ constexpr u32 HEIGHT = 720;
 
 ViewportSize::ViewportSize(u32 width, u32 height) : width(width), height(height) {}
 
-String ViewportSize::ToString() const
+std::string ViewportSize::ToString() const
 {
-	String ret;
+	std::string ret;
 	ret.reserve(12);
 	ret += "[";
 	ret += std::to_string(width);
@@ -23,7 +23,7 @@ String ViewportSize::ToString() const
 }
 
 ViewportData::ViewportData() : viewportSize{WIDTH, HEIGHT}, title("Untitled") {}
-ViewportData::ViewportData(ViewportSize viewportSize, String title, ViewportStyle style)
+ViewportData::ViewportData(ViewportSize viewportSize, std::string title, ViewportStyle style)
 	: viewportSize(std::move(viewportSize)), title(std::move(title)), style(style)
 {
 }

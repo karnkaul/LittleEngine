@@ -306,7 +306,7 @@ void SpawnColliderMinefield()
 	{
 		for (Fixed y = -350; y < 500; y += 200)
 		{
-			String name = "ColliderMine_" + Strings::ToString(id++);
+			std::string name = "ColliderMine_" + Strings::ToString(id++);
 			auto* pE = g_pGameManager->NewEntity<Entity>(name, Vector2(x, y));
 			auto* pCC = pE->AddComponent<CollisionComponent>();
 			pCC->AddAABB(AABBData({100, 100}));
@@ -335,8 +335,8 @@ void StartTests()
 	PlayerData data(*pTexture, {PlayerCollider(AABBData({120, 60}), {0, -15}), PlayerCollider(AABBData({60, 80}))});
 	pPlayer->InitPlayer(std::move(data));
 
-	String psName = "Stars0";
-	String path = "VFX/Stars0/Stars0.psdata";
+	std::string psName = "Stars0";
+	std::string path = "VFX/Stars0/Stars0.psdata";
 	auto* pText = g_pRepository->Load<TextAsset>(path);
 	GData psGData(pText->Text());
 	pParticleSystem0 = g_pGameManager->NewEntity<ParticleSystem>(std::move(psName));
@@ -379,7 +379,7 @@ void StartTests()
 UIButtonDrawer* pButtonDrawer = nullptr;
 bool bModal = true;
 bool bSpawnedDrawer = false;
-Vec<Token> debugTokens;
+std::vector<Token> debugTokens;
 
 UIDialogue* pDialogue = nullptr;
 

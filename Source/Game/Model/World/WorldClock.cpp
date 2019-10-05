@@ -27,23 +27,23 @@ Time WorldClock::GameTime()
 	return gameTime;
 }
 
-String WorldClock::ToString(Time time)
+std::string WorldClock::ToString(Time time)
 {
 	s32 milliseconds = time.AsMilliseconds();
 	s32 secs = ToS32(time.AsSeconds());
 	s32 mins = (secs < 60) ? 0 : ToS32(time.AsSeconds() / 60);
 	secs %= 60;
-	String m = Strings::ToString(mins);
+	std::string m = Strings::ToString(mins);
 	if (mins < 10)
 	{
 		m = "0" + m;
 	}
-	String s = Strings::ToString(secs);
+	std::string s = Strings::ToString(secs);
 	if (secs < 10)
 	{
 		s = "0" + s;
 	}
-	String _m = Strings::ToString(milliseconds);
+	std::string _m = Strings::ToString(milliseconds);
 	if (milliseconds < 10)
 	{
 		_m = "00" + _m;

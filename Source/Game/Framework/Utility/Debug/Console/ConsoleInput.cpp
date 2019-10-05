@@ -34,7 +34,7 @@ void ConsoleInput::Update()
 	if (!m_query.empty())
 	{
 		m_queryCache.PushBack(m_query);
-		Vec<LogLine> logAppend = Commands::Execute(m_query);
+		std::vector<LogLine> logAppend = Commands::Execute(m_query);
 		Console::g_uLogBook->Append(std::move(logAppend));
 		m_query.clear();
 	}
@@ -72,11 +72,11 @@ void ConsoleInput::UpdateLiveLine(const LEInput::Frame& frame)
 				m_keyboard.m_liveLine.Set(search.queries[0] + (bSpace ? " " : ""));
 			}
 
-			const Vec<String>& vec = search.params.empty() ? search.queries : search.params;
+			const std::vector<std::string>& vec = search.params.empty() ? search.queries : search.params;
 			static const u8 columns = 3;
 			static const u8 columnWidth = 20;
-			String line;
-			Vec<LogLine> logLines;
+			std::string line;
+			std::vector<LogLine> logLines;
 			u8 column = 0;
 			for (const auto& autoCompleted : vec)
 			{
@@ -85,7 +85,7 @@ void ConsoleInput::UpdateLiveLine(const LEInput::Frame& frame)
 				u8 overflow = span > 0 ? static_cast<u8>(autoCompleted.size() % columnWidth) : static_cast<u8>(autoCompleted.size());
 				pad = columnWidth - overflow;
 				column += span;
-				line += (autoCompleted + String(pad, ' '));
+				line += (autoCompleted + std::string(pad, ' '));
 				++column;
 				if (column >= columns)
 				{

@@ -33,16 +33,16 @@ enum class PostRun
 // Globals
 namespace IDs
 {
-const String ASSETS_ROOT = "GameAssets";
-const String COOKED_ASSETS = "GameAssets.cooked";
-const String MAIN_MANIFEST = "Manifest.amf";
-const String DEFAULT_FONT = "Fonts/Default.ttf";
-const String GAME_STYLE = "Texts/Game.style";
+const std::string ASSETS_ROOT = "GameAssets";
+const std::string COOKED_ASSETS = "GameAssets.cooked";
+const std::string MAIN_MANIFEST = "Manifest.amf";
+const std::string DEFAULT_FONT = "Fonts/Default.ttf";
+const std::string GAME_STYLE = "Texts/Game.style";
 } // namespace IDs
 
-const String MAIN_MANIFEST_FILE = "GameAssets/Manifest.amf";
+const std::string MAIN_MANIFEST_FILE = "GameAssets/Manifest.amf";
 #if !defined(SHIPPING)
-const String GAME_CONFIG_FILE = ".game.conf";
+const std::string GAME_CONFIG_FILE = ".game.conf";
 #endif
 
 bool bInit = false;
@@ -71,7 +71,7 @@ bool Init(s32 argc, char** argv)
 #endif
 	if (OS::Threads::VacantThreadCount() > 0)
 	{
-		String header = "Build: ";
+		std::string header = "Build: ";
 		header += Core::Version::BUILD_VERSION.ToString();
 		u8 backupCount = config.BackupLogFileCount();
 		Core::StartFileLogging(OS::Env()->FullPath("Debug"), backupCount, std::move(header));
@@ -117,8 +117,8 @@ bool Init(s32 argc, char** argv)
 	Collider::s_debugShapeWidth = config.ColliderBorderWidth();
 #endif
 #if ENABLED(TWEAKABLES)
-	ticksPerSec.BindCallback([](VString val) {
-		s32 newRate = Strings::ToS32(String(val));
+	ticksPerSec.BindCallback([](std::string_view val) {
+		s32 newRate = Strings::ToS32(std::string(val));
 		if (newRate > 0 && newRate < 250)
 		{
 			Time newTickRate = Time::Seconds(1.0f / newRate);
@@ -131,8 +131,8 @@ bool Init(s32 argc, char** argv)
 		}
 	});
 	reload.m_value = "-1";
-	reload.BindCallback([](VString val) {
-		s32 option = Strings::ToS32(String(val), -1);
+	reload.BindCallback([](std::string_view val) {
+		s32 option = Strings::ToS32(std::string(val), -1);
 		if (option >= 0 && option < ToS32(GameLoop::ReloadType::_COUNT))
 		{
 			GameLoop::Reload(static_cast<GameLoop::ReloadType>(option));

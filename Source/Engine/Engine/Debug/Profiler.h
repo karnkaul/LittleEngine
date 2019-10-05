@@ -20,7 +20,7 @@ namespace Profiler
 {
 struct Entry
 {
-	String id;
+	std::string id;
 	Fixed timeRatio;
 	Colour colour;
 	Time startTime = Time::Zero;
@@ -28,17 +28,17 @@ struct Entry
 	Time maxTime = Time::Milliseconds(1);
 	bool bCustom;
 
-	Entry(String id, Colour colour, Time startTime, Time maxTime, bool bCustom);
+	Entry(std::string id, Colour colour, Time startTime, Time maxTime, bool bCustom);
 	Time Elapsed() const;
 	Fixed Ratio() const;
 };
 
 extern std::mutex entriesMutex;
-extern UMap<String, Entry> entries;
+extern UMap<std::string, Entry> entries;
 extern Time maxTickDeltaTime;
-void StartTicked(String id, Colour colour);
-void StartCustom(String id, Time maxTime, Colour colour);
-void Stop(String id);
+void StartTicked(std::string id, Colour colour);
+void StartCustom(std::string id, Time maxTime, Colour colour);
+void Stop(std::string id);
 } // namespace Profiler
 } // namespace Debug
 } // namespace LittleEngine

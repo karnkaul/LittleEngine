@@ -3,14 +3,14 @@
 
 namespace LittleEngine
 {
-KeyState::KeyState(s32 keyType, VString name) : keyType(keyType), name(name), bPressed(false) {}
+KeyState::KeyState(s32 keyType, std::string_view name) : keyType(keyType), name(name), bPressed(false) {}
 
 KeyType KeyState::GetKeyType() const
 {
 	return static_cast<KeyType>(keyType);
 }
 
-VString KeyState::Name() const
+std::string_view KeyState::Name() const
 {
 	return name;
 }
@@ -18,7 +18,7 @@ VString KeyState::Name() const
 bool TextInput::ContainsChar(char c) const
 {
 	size_t idx = text.find(c);
-	return idx != String::npos;
+	return idx != std::string::npos;
 }
 
 bool TextInput::ContainsKey(s32 keyCode) const
@@ -32,7 +32,7 @@ void TextInput::Reset()
 	metaText.clear();
 }
 
-String InputDataFrame::Clipboard()
+std::string InputDataFrame::Clipboard()
 {
 	return sf::Clipboard::getString();
 }

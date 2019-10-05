@@ -32,7 +32,7 @@ bool GameKernel::Boot(const GameConfig& config)
 	auto pInputMapFile = pSettings->GetValue("CUSTOM_INPUT_MAP");
 	if (pInputMapFile)
 	{
-		String inputMapFile = OS::Env()->FullPath(pInputMapFile->c_str());
+		std::string inputMapFile = OS::Env()->FullPath(pInputMapFile->c_str());
 		if (inputMapPersistor.Load(inputMapFile))
 		{
 			u16 count = data.inputMap.Import(inputMapPersistor);
@@ -63,7 +63,7 @@ void GameKernel::Shutdown()
 	m_uContext = nullptr;
 }
 
-void GameKernel::Start(String coreManifestID /* = "" */, String gameStyleID /* = "" */, Task onManifestLoaded /* = nullptr */)
+void GameKernel::Start(std::string coreManifestID /* = "" */, std::string gameStyleID /* = "" */, Task onManifestLoaded /* = nullptr */)
 {
 	Assert(m_uContext, "Context is null!");
 	m_uWSM->Start(std::move(coreManifestID), std::move(gameStyleID), std::move(onManifestLoaded));

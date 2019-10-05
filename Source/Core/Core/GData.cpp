@@ -5,10 +5,10 @@ namespace Core
 {
 namespace
 {
-InitList<Dual<char>> gDataEscapes = {{'{', '}'}, {'[', ']'}, {'"', '"'}};
+std::initializer_list<Dual<char>> gDataEscapes = {{'{', '}'}, {'[', ']'}, {'"', '"'}};
 
 template <typename T>
-T Get(const UMap<String, String>& table, const String& key, T (*Adaptor)(String, T), const T& defaultValue)
+T Get(const UMap<std::string, std::string>& table, const std::string& key, T (*Adaptor)(std::string, T), const T& defaultValue)
 {
 	auto search = table.find(key);
 	if (search != table.end())
@@ -19,7 +19,7 @@ T Get(const UMap<String, String>& table, const String& key, T (*Adaptor)(String,
 }
 } // namespace
 
-GData::GData(String serialised)
+GData::GData(std::string serialised)
 {
 	if (!serialised.empty())
 	{
@@ -30,21 +30,21 @@ GData::GData(String serialised)
 GData::GData() = default;
 GData::~GData() = default;
 
-bool GData::Marshall(String serialised)
+bool GData::Marshall(std::string serialised)
 {
 	Strings::RemoveChars(serialised, {'\t', '\r', '\n'});
 	Strings::Trim(serialised, {' '});
 	if (serialised[0] == '{' && serialised[serialised.size() - 1] == '}')
 	{
 		Clear();
-		String rawText = serialised.substr(1, serialised.size() - 2);
-		Vec<String> tokens = Strings::Tokenise(rawText, ',', gDataEscapes);
+		std::string rawText = serialised.substr(1, serialised.size() - 2);
+		std::vector<std::string> tokens = Strings::Tokenise(rawText, ',', gDataEscapes);
 		for (const auto& token : tokens)
 		{
-			Dual<String> kvp = Strings::Bisect(token, ':');
+			Dual<std::string> kvp = Strings::Bisect(token, ':');
 			if (!kvp.second.empty() && !kvp.first.empty())
 			{
-				InitList<char> trim = {' ', '"'};
+				std::initializer_list<char> trim = {' ', '"'};
 				Strings::Trim(kvp.first, trim);
 				Strings::Trim(kvp.second, trim);
 				m_fieldMap.emplace(std::move(kvp.first), std::move(kvp.second));
@@ -56,13 +56,13 @@ bool GData::Marshall(String serialised)
 	return false;
 }
 
-String GData::Unmarshall() const
+std::string GData::Unmarshall() const
 {
-	String ret = "{";
+	std::string ret = "{";
 	size_t slice = 0;
 	for (const auto& kvp : m_fieldMap)
 	{
-		String value = kvp.second;
+		std::string value = kvp.second;
 		Strings::Trim(value, {' '});
 		auto space = value.find(' ');
 		if (Strings::IsCharEnclosedIn(value, space, {'"', '"'}))
@@ -80,7 +80,7 @@ void GData::Clear()
 	m_fieldMap.clear();
 }
 
-String GData::GetString(const String& key, String defaultValue) const
+std::string GData::GetString(const std::string& key, std::string defaultValue) const
 {
 	auto search = m_fieldMap.find(key);
 	if (search != m_fieldMap.end())
@@ -90,9 +90,9 @@ String GData::GetString(const String& key, String defaultValue) const
 	return defaultValue;
 }
 
-String GData::GetString(const String& key, char spaceDelimiter, String defaultValue) const
+std::string GData::GetString(const std::string& key, char spaceDelimiter, std::string defaultValue) const
 {
-	String ret = std::move(defaultValue);
+	std::string ret = std::move(defaultValue);
 	auto search = m_fieldMap.find(key);
 	if (search != m_fieldMap.end())
 	{
@@ -102,22 +102,22 @@ String GData::GetString(const String& key, char spaceDelimiter, String defaultVa
 	return ret;
 }
 
-bool GData::GetBool(const String& key, bool defaultValue) const
+bool GData::GetBool(const std::string& key, bool defaultValue) const
 {
 	return Get<bool>(m_fieldMap, key, &Strings::ToBool, defaultValue);
 }
 
-s32 GData::GetS32(const String& key, s32 defaultValue) const
+s32 GData::GetS32(const std::string& key, s32 defaultValue) const
 {
 	return Get<s32>(m_fieldMap, key, &Strings::ToS32, defaultValue);
 }
 
-f64 GData::GetF64(const String& key, f64 defaultValue) const
+f64 GData::GetF64(const std::string& key, f64 defaultValue) const
 {
 	return Get<f64>(m_fieldMap, key, &Strings::ToF64, defaultValue);
 }
 
-Vector2 GData::GetVector2(const String& key, Vector2 defaultValue) const
+Vector2 GData::GetVector2(const std::string& key, Vector2 defaultValue) const
 {
 	auto search = m_fieldMap.find(key);
 	if (search != m_fieldMap.end())
@@ -128,7 +128,7 @@ Vector2 GData::GetVector2(const String& key, Vector2 defaultValue) const
 	return defaultValue;
 }
 
-GData GData::GetGData(const String& key) const
+GData GData::GetGData(const std::string& key) const
 {
 	auto search = m_fieldMap.find(key);
 	if (search != m_fieldMap.end())
@@ -138,10 +138,10 @@ GData GData::GetGData(const String& key) const
 	return {};
 }
 
-Vec<GData> GData::GetVectorGData(const String& key) const
+std::vector<GData> GData::GetVectorGData(const std::string& key) const
 {
-	Vec<GData> ret;
-	Vec<String> rawStrings = GetVector(key);
+	std::vector<GData> ret;
+	std::vector<std::string> rawStrings = GetVector(key);
 	for (auto& rawString : rawStrings)
 	{
 		Strings::Trim(rawString, {'"', ' '});
@@ -150,12 +150,12 @@ Vec<GData> GData::GetVectorGData(const String& key) const
 	return ret;
 }
 
-Vec<String> GData::GetVector(const String& key) const
+std::vector<std::string> GData::GetVector(const std::string& key) const
 {
 	auto search = m_fieldMap.find(key);
 	if (search != m_fieldMap.end())
 	{
-		String value = search->second;
+		std::string value = search->second;
 		if (value.size() > 2)
 		{
 			Strings::Trim(value, {' '});
@@ -163,7 +163,7 @@ Vec<String> GData::GetVector(const String& key) const
 			{
 				value = value.substr(1, value.size() - 2);
 				Strings::Trim(value, {' '});
-				Vec<String> ret = Strings::Tokenise(value, ',', gDataEscapes);
+				std::vector<std::string> ret = Strings::Tokenise(value, ',', gDataEscapes);
 				for (auto& str : ret)
 				{
 					Strings::Trim(str, {'"', ' '});
@@ -172,22 +172,22 @@ Vec<String> GData::GetVector(const String& key) const
 			}
 		}
 	}
-	return Vec<String>();
+	return std::vector<std::string>();
 }
 
-const UMap<String, String>& GData::AllFields() const
+const UMap<std::string, std::string>& GData::AllFields() const
 {
 	return m_fieldMap;
 }
 
-bool GData::AddField(String key, GData& gData)
+bool GData::AddField(std::string key, GData& gData)
 {
-	String value = gData.Unmarshall();
+	std::string value = gData.Unmarshall();
 	Strings::RemoveChars(value, {'\"'});
 	return SetString(std::move(key), std::move(value));
 }
 
-bool GData::SetString(String key, String value)
+bool GData::SetString(std::string key, std::string value)
 {
 	if (!key.empty() && !value.empty())
 	{
@@ -202,7 +202,7 @@ u32 GData::NumFields() const
 	return static_cast<u32>(m_fieldMap.size());
 }
 
-bool GData::Contains(const String& id) const
+bool GData::Contains(const std::string& id) const
 {
 	return m_fieldMap.find(id) != m_fieldMap.end();
 }

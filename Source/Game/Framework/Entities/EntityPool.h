@@ -6,11 +6,11 @@ namespace LittleEngine
 class EntityPool : public Inheritable
 {
 protected:
-	Vec<class Entity*> m_pool;
+	std::vector<class Entity*> m_pool;
 	std::function<Entity*(u16 id)> m_spawnNew;
 
 public:
-	EntityPool(String name);
+	EntityPool(std::string name);
 	~EntityPool() override;
 
 	void Init(std::function<Entity*(u16 id)> spawnNew, u16 count = 1);

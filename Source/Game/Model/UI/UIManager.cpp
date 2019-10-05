@@ -76,7 +76,7 @@ void UIManager::Tick(Time dt)
 	}
 }
 
-void UIManager::InitContext(UIContext& context, String id, LayerID baseLayer)
+void UIManager::InitContext(UIContext& context, std::string id, LayerID baseLayer)
 {
 	context.OnCreate(std::move(id), baseLayer);
 }

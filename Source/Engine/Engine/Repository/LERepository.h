@@ -40,34 +40,34 @@ public:
 
 private:
 	UPtr<Core::ArchiveReader> m_uCooked;
-	Vec<SPtr<class ManifestLoader>> m_loaders;
+	std::vector<SPtr<class ManifestLoader>> m_loaders;
 	mutable std::mutex m_loadedMutex;
-	UMap<String, UPtr<Asset>> m_loaded;
-	String m_rootDir;
+	UMap<std::string, UPtr<Asset>> m_loaded;
+	std::string m_rootDir;
 	State m_state;
 
 public:
-	LERepository(String defaultFontID, String archivePath, String rootDir = "");
+	LERepository(std::string defaultFontID, std::string archivePath, std::string rootDir = "");
 	~LERepository();
 
-	void LoadDefaultFont(String id);
+	void LoadDefaultFont(std::string id);
 
 	template <typename T>
-	T* Load(String id, bool bReload = false);
+	T* Load(std::string id, bool bReload = false);
 	template <typename T>
-	T* Preload(String id);
+	T* Preload(std::string id);
 	template <typename T>
-	Deferred<T*> LoadAsync(String id);
+	Deferred<T*> LoadAsync(std::string id);
 
-	SPtr<ManifestLoader> LoadManifest(String manifestPath, Task onComplete = nullptr);
-	void UnloadManifest(String manifestPath, Task onComplete = nullptr);
+	SPtr<ManifestLoader> LoadManifest(std::string manifestPath, Task onComplete = nullptr);
+	void UnloadManifest(std::string manifestPath, Task onComplete = nullptr);
 
 	bool IsBusy() const;
-	bool IsLoaded(const String& id) const;
+	bool IsLoaded(const std::string& id) const;
 	u64 LoadedBytes() const;
-	bool IsPresent(const String& id) const;
+	bool IsPresent(const std::string& id) const;
 
-	bool Unload(const String& id);
+	bool Unload(const std::string& id);
 	void UnloadAll(bool bUnloadDefaultFont);
 
 	void ResetState();
@@ -76,19 +76,19 @@ public:
 	
 private:
 	template <typename T>
-	T* GetLoaded(const String& id);
+	T* GetLoaded(const std::string& id);
 	template <typename T>
-	T* LoadFromArchive(String id);
+	T* LoadFromArchive(std::string id);
 #if ENABLED(FILESYSTEM_ASSETS)
 	template <typename T>
-	T* LoadFromFilesystem(String id);
+	T* LoadFromFilesystem(std::string id);
 #endif
 	template <typename T, typename... U>
 	UPtr<T> CreateAsset(U... args);
 	template <typename T>
-	UPtr<T> ConjureAsset(const String& id, InitList<Search> searchOrder);
+	UPtr<T> ConjureAsset(const std::string& id, std::initializer_list<Search> searchOrder);
 
-	void DoLoad(const String& id, bool bSyncWarn, Task inCooked, 
+	void DoLoad(const std::string& id, bool bSyncWarn, Task inCooked, 
 #if ENABLED(FILESYSTEM_ASSETS)
 		Task onFilesystem = nullptr, 
 #endif
@@ -99,7 +99,7 @@ private:
 };
 
 template <typename T>
-T* LERepository::Load(String id, bool bReload)
+T* LERepository::Load(std::string id, bool bReload)
 {
 	static_assert(IsDerived<Asset, T>(), "T must derive from Asset!");
 	if (bReload)
@@ -121,7 +121,7 @@ T* LERepository::Load(String id, bool bReload)
 }
 
 template <typename T>
-T* LERepository::Preload(String id)
+T* LERepository::Preload(std::string id)
 {
 	static_assert(IsDerived<Asset, T>(), "T must derive from Asset!");
 	Assert(m_state != State::Active, "Preloading when active!");
@@ -145,7 +145,7 @@ T* LERepository::Preload(String id)
 }
 
 template <typename T>
-Deferred<T*> LERepository::LoadAsync(String id)
+Deferred<T*> LERepository::LoadAsync(std::string id)
 {
 	static_assert(IsDerived<Asset, T>(), "T must derive from Asset!");
 	// std::function needs to be copyable, so cannot use UPtr<promise> here
@@ -170,7 +170,7 @@ Deferred<T*> LERepository::LoadAsync(String id)
 }
 
 template <typename T>
-T* LERepository::GetLoaded(const String& id)
+T* LERepository::GetLoaded(const std::string& id)
 {
 	Lock lock(m_loadedMutex);
 	auto search = m_loaded.find(id);
@@ -182,7 +182,7 @@ T* LERepository::GetLoaded(const String& id)
 }
 
 template <typename T>
-T* LERepository::LoadFromArchive(String id)
+T* LERepository::LoadFromArchive(std::string id)
 {
 	T* pT = nullptr;
 	auto buffer = m_uCooked->Decompress(id.c_str());
@@ -191,14 +191,14 @@ T* LERepository::LoadFromArchive(String id)
 	{
 		pT = uT.get();
 		Lock lock(m_loadedMutex);
-		m_loaded[String(uT->ID())] = std::move(uT);
+		m_loaded[std::string(uT->ID())] = std::move(uT);
 	}
 	return pT;
 }
 
 #if ENABLED(FILESYSTEM_ASSETS)
 template <typename T>
-T* LERepository::LoadFromFilesystem(String id)
+T* LERepository::LoadFromFilesystem(std::string id)
 {
 	T* pT = nullptr;
 	UPtr<T> uT = CreateAsset<T>(std::move(id));
@@ -206,7 +206,7 @@ T* LERepository::LoadFromFilesystem(String id)
 	{
 		pT = uT.get();
 		Lock lock(m_loadedMutex);
-		m_loaded[String(uT->ID())] = std::move(uT);
+		m_loaded[std::string(uT->ID())] = std::move(uT);
 	}
 	return pT;
 }
@@ -227,7 +227,7 @@ UPtr<T> LERepository::CreateAsset(U... args)
 }
 
 template <typename T>
-UPtr<T> LERepository::ConjureAsset(const String& id, InitList<Search> searchOrder)
+UPtr<T> LERepository::ConjureAsset(const std::string& id, std::initializer_list<Search> searchOrder)
 {
 	UPtr<T> uT;
 #if ENABLED(FILESYSTEM_ASSETS)

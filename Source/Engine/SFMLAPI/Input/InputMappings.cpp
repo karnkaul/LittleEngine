@@ -30,8 +30,8 @@ Fixed InputMap::DeadZone(JoyAxis axis) const
 u16 InputMap::Import(const Core::Property::Persistor& persistor)
 {
 	// Joystick Axis Deadzone
-	auto getAxisDZ = [&](String axisPrefix, JoyAxis axis) {
-		String key = axisPrefix + "_DEAD_ZONE";
+	auto getAxisDZ = [&](std::string axisPrefix, JoyAxis axis) {
+		std::string key = axisPrefix + "_DEAD_ZONE";
 		auto pProp = persistor.GetProp(key);
 		if (pProp)
 		{
@@ -44,12 +44,12 @@ u16 InputMap::Import(const Core::Property::Persistor& persistor)
 	getAxisDZ("UV", JoyAxis::UV);
 
 	// Joystick Buttons
-	String prefix = "JOY_BTN_";
+	std::string prefix = "JOY_BTN_";
 	s32 btnID = KeyType::JOY_BTN_0;
 	u16 mapped = 0;
 	for (u32 sfBtnID = 0; sfBtnID < g_MAX_JOYSTICK_BUTTONS; ++sfBtnID)
 	{
-		String key = prefix + Strings::ToString(sfBtnID);
+		std::string key = prefix + Strings::ToString(sfBtnID);
 		const auto pProperty = persistor.GetProp(key);
 		if (pProperty)
 		{

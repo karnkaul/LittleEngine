@@ -14,7 +14,7 @@ private:
 
 public:
 	bool Boot(const class GameConfig& config);
-	void Start(String coreManifestID = "", String gameStyleID = "", Task onManifestLoaded = nullptr);
+	void Start(std::string coreManifestID = "", std::string gameStyleID = "", Task onManifestLoaded = nullptr);
 	void Step(Time fdt);
 	void Tick(Time dt);
 	void Shutdown();

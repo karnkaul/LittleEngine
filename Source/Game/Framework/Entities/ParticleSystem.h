@@ -14,7 +14,7 @@ namespace LittleEngine
 class ParticleSystem : public Entity
 {
 protected:
-	Vec<UPtr<Emitter>> m_emitters;
+	std::vector<UPtr<Emitter>> m_emitters;
 	bool m_bIsPlaying = false;
 #if ENABLED(PROFILER)
 	Colour m_profileColour;
@@ -26,7 +26,7 @@ public:
 
 	void OnCreated() override;
 	void InitParticleSystem(ParticleSystemData data);
-	Emitter* GetEmitter(const String& id);
+	Emitter* GetEmitter(const std::string& id);
 
 	void Start();
 	void Stop();

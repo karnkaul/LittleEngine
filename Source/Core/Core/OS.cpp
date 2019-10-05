@@ -94,7 +94,7 @@ u32 VacantThreadCount()
 }
 } // namespace Threads
 
-void EnvData::SetVars(s32 argc, char** argv, InitList<VString> runtimeFiles)
+void EnvData::SetVars(s32 argc, char** argv, std::initializer_list<std::string_view> runtimeFiles)
 {
 #ifdef TARGET_LINUX
 	s32 threadStatus = XInitThreads();
@@ -109,7 +109,7 @@ void EnvData::SetVars(s32 argc, char** argv, InitList<VString> runtimeFiles)
 
 	if (argc > 0)
 	{
-		m_exePath = String(argv[0]);
+		m_exePath = std::string(argv[0]);
 		m_exePath = m_exePath.substr(0, m_exePath.find_last_of(PATH_DELIM));
 #ifdef TARGET_MACOSX
 		auto bundleIdx = m_exePath.find(".app/Contents/MacOS");
@@ -134,7 +134,7 @@ void EnvData::SetVars(s32 argc, char** argv, InitList<VString> runtimeFiles)
 
 	for (auto file : runtimeFiles)
 	{
-		String filename = m_cwd;
+		std::string filename = m_cwd;
 		filename += "/";
 		filename += file;
 		if (std::ifstream(filename.c_str()).good())
@@ -155,14 +155,14 @@ void EnvData::SetVars(s32 argc, char** argv, InitList<VString> runtimeFiles)
 
 	for (s32 i = 1; i < argc; ++i)
 	{
-		String raw(argv[i]);
+		std::string raw(argv[i]);
 		if (!raw.empty())
 		{
 			if (raw[0] == '-')
 			{
 				raw = raw.substr(1);
 			}
-			String key, value;
+			std::string key, value;
 			auto tokens = Strings::Tokenise(raw, '=', {});
 			if (!tokens.empty())
 			{
@@ -178,7 +178,7 @@ void EnvData::SetVars(s32 argc, char** argv, InitList<VString> runtimeFiles)
 			}
 		}
 	}
-	String varsLog;
+	std::string varsLog;
 	for (const auto& kvp : m_vars)
 	{
 		const auto& key = kvp.first;
@@ -206,14 +206,14 @@ void EnvData::SetVars(s32 argc, char** argv, InitList<VString> runtimeFiles)
 	}
 }
 
-bool EnvData::HasVar(const String& key) const
+bool EnvData::HasVar(const std::string& key) const
 {
 	return m_vars.find(key) != m_vars.end();
 }
 
-std::optional<String> EnvData::GetVar(const String& key) const
+std::optional<std::string> EnvData::GetVar(const std::string& key) const
 {
-	std::optional<String> ret;
+	std::optional<std::string> ret;
 	auto search = m_vars.find(key);
 	if (search != m_vars.end())
 	{
@@ -227,24 +227,24 @@ Pair<s32, char**> EnvData::OrgVars() const
 	return std::make_pair(m_argc, m_argv);
 }
 
-VString EnvData::ExePath() const
+std::string_view EnvData::ExePath() const
 {
 	return m_exePath;
 }
 
-VString EnvData::RuntimePath() const
+std::string_view EnvData::RuntimePath() const
 {
 	return m_runtimePath;
 }
 
-VString EnvData::CWD() const
+std::string_view EnvData::CWD() const
 {
 	return m_cwd;
 }
 
-String EnvData::FullPath(VString relativePath) const
+std::string EnvData::FullPath(std::string_view relativePath) const
 {
-	String path = m_runtimePath;
+	std::string path = m_runtimePath;
 	path += "/";
 	path += relativePath;
 	return path;
@@ -275,57 +275,7 @@ bool IsMainThread()
 	return std::this_thread::get_id() == mainThreadID;
 }
 
-bool IsDebuggerAttached()
-{
-	bool ret = false;
-#if defined(TARGET_WIN64)
-	ret = IsDebuggerPresent();
-#elif defined(TARGET_LINUX)
-	char buf[4096];
-
-	const auto status_fd = ::open("/proc/self/status", O_RDONLY);
-	if (status_fd == -1)
-		return false;
-
-	const auto num_read = ::read(status_fd, buf, sizeof(buf) - 1);
-	if (num_read <= 0)
-		return false;
-
-	buf[num_read] = '\0';
-	constexpr char tracerPidString[] = "TracerPid:";
-	const auto tracer_pid_ptr = ::strstr(buf, tracerPidString);
-	if (!tracer_pid_ptr)
-		return false;
-
-	for (const char* characterPtr = tracer_pid_ptr + sizeof(tracerPidString) - 1; characterPtr <= buf + num_read; ++characterPtr)
-	{
-		if (::isspace(*characterPtr))
-		{
-			continue;
-		}
-		else
-		{
-			ret = ::isdigit(*characterPtr) != 0 && *characterPtr != '0';
-		}
-	}
-#endif
-	return ret;
-}
-
-void DebugBreak()
-{
-#if defined(CXX_MS_CRT)
-	__debugbreak();
-#elif defined(CXX_LIBC) || defined(CXX_LIBSTDC)
-#ifdef SIGTRAP
-	raise(SIGTRAP);
-#else
-	raise(SIGILL);
-#endif
-#endif
-}
-
-u64 FileSize(VString path)
+u64 FileSize(std::string_view path)
 {
 	u64 size = 0;
 	if (DoesFileExist(path))
@@ -343,7 +293,7 @@ u64 FileSize(VString path)
 	return size;
 }
 
-bool DoesFileExist(VString path)
+bool DoesFileExist(std::string_view path)
 {
 	return std::ifstream(path.data()).good();
 }

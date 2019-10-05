@@ -22,7 +22,7 @@ bool bShowCrosshair = false;
 } // namespace
 #endif
 
-String LEInput::Frame::Clipboard()
+std::string LEInput::Frame::Clipboard()
 {
 	return InputDataFrame::Clipboard();
 }
@@ -42,19 +42,19 @@ bool LEInput::Frame::IsReleased(s32 keyCode) const
 	return Core::Search(released, static_cast<KeyType>(keyCode)) != released.end();
 }
 
-bool LEInput::Frame::IsPressed(InitList<s32> keys, bool bAny /* = true */) const
+bool LEInput::Frame::IsPressed(std::initializer_list<s32> keys, bool bAny /* = true */) const
 {
 	return Result(
 		keys, [&](s32 key) { return IsPressed(key); }, bAny);
 }
 
-bool LEInput::Frame::IsHeld(InitList<s32> keys, bool bAny /* = true */) const
+bool LEInput::Frame::IsHeld(std::initializer_list<s32> keys, bool bAny /* = true */) const
 {
 	return Result(
 		keys, [&](s32 key) { return IsHeld(key); }, bAny);
 }
 
-bool LEInput::Frame::IsReleased(InitList<s32> keys, bool bAny /* = true */) const
+bool LEInput::Frame::IsReleased(std::initializer_list<s32> keys, bool bAny /* = true */) const
 {
 	return Result(
 		keys, [&](s32 key) { return IsReleased(key); }, bAny);
@@ -169,9 +169,9 @@ void LEInput::TakeSnapshot()
 
 void LEInput::FireCallbacks()
 {
-	Vec<KeyType> pressed;
-	Vec<KeyType> held;
-	Vec<KeyType> released;
+	std::vector<KeyType> pressed;
+	std::vector<KeyType> held;
+	std::vector<KeyType> released;
 
 	// Build "pressed" and "held" vectors
 	for (auto input : m_currentSnapshot)

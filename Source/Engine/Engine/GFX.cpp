@@ -52,7 +52,7 @@ void GFX::Init()
 	m_letterBoxInverse = Vector2(Fixed(1.0f / m_uiViewCrop.width), Fixed(1.0f / m_uiViewCrop.height));
 	m_viewportSizes.clear();
 	m_viewportSizes[m_maxViewportSize.height] = m_maxViewportSize;
-	Vec<Fixed> heights = {360, 540, 720, 900, 1080, 1440, 2160};
+	std::vector<Fixed> heights = {360, 540, 720, 900, 1080, 1440, 2160};
 	for (auto h : heights)
 	{
 		u32 height = h.ToU32();

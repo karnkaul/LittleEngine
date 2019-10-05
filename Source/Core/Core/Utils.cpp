@@ -1,12 +1,13 @@
-#include "Utils.h"
 #include <algorithm>
+#include <array>
 #include <stack>
+#include "Utils.h"
 
 namespace Core
 {
-Pair<f32, VString> FriendlySize(u64 byteCount)
+Pair<f32, std::string_view> FriendlySize(u64 byteCount)
 {
-	static Array<VString, 4> suffixes = {"B", "KiB", "MiB", "GiB"};
+	static std::array<std::string_view, 4> suffixes = {"B", "KiB", "MiB", "GiB"};
 	f32 bytes = static_cast<f32>(byteCount);
 	size_t idx = 0;
 	while (bytes > 1024.0f && idx < 4)
@@ -20,17 +21,17 @@ Pair<f32, VString> FriendlySize(u64 byteCount)
 
 namespace Strings
 {
-void ToLower(String& outString)
+void ToLower(std::string& outString)
 {
 	std::transform(outString.begin(), outString.end(), outString.begin(), ::tolower);
 }
 
-void ToUpper(String& outString)
+void ToUpper(std::string& outString)
 {
 	std::transform(outString.begin(), outString.end(), outString.begin(), ::toupper);
 }
 
-bool ToBool(String input, bool bDefaultValue)
+bool ToBool(std::string input, bool bDefaultValue)
 {
 	if (!input.empty())
 	{
@@ -47,7 +48,7 @@ bool ToBool(String input, bool bDefaultValue)
 	return bDefaultValue;
 }
 
-s32 ToS32(String input, s32 defaultValue)
+s32 ToS32(std::string input, s32 defaultValue)
 {
 	s32 ret = defaultValue;
 	if (!input.empty())
@@ -64,7 +65,7 @@ s32 ToS32(String input, s32 defaultValue)
 	return ret;
 }
 
-f32 ToF32(String input, f32 defaultValue)
+f32 ToF32(std::string input, f32 defaultValue)
 {
 	f32 ret = defaultValue;
 	if (!input.empty())
@@ -81,7 +82,7 @@ f32 ToF32(String input, f32 defaultValue)
 	return ret;
 }
 
-f64 ToF64(String input, f64 defaultValue)
+f64 ToF64(std::string input, f64 defaultValue)
 {
 	f64 ret = defaultValue;
 	if (!input.empty())
@@ -98,35 +99,35 @@ f64 ToF64(String input, f64 defaultValue)
 	return ret;
 }
 
-String ToString(bool bInput)
+std::string ToString(bool bInput)
 {
 	return bInput ? "true" : "false";
 }
 
-String ToText(Vec<u8> rawBuffer)
+std::string ToText(std::vector<u8> rawBuffer)
 {
-	Vec<char> charBuffer(rawBuffer.size() + 1, 0);
+	std::vector<char> charBuffer(rawBuffer.size() + 1, 0);
 	for (size_t i = 0; i < rawBuffer.size(); ++i)
 	{
 		charBuffer[i] = static_cast<char>(rawBuffer[i]);
 	}
-	return String(charBuffer.data());
+	return std::string(charBuffer.data());
 }
 
-Dual<String> Bisect(VString input, char delimiter)
+Dual<std::string> Bisect(std::string_view input, char delimiter)
 {
 	size_t idx = input.find(delimiter);
-	return idx < input.size() ? Dual<String>(input.substr(0, idx), input.substr(idx + 1, input.size())) : Dual<String>(String(input), {});
+	return idx < input.size() ? Dual<std::string>(input.substr(0, idx), input.substr(idx + 1, input.size())) : Dual<std::string>(std::string(input), {});
 }
 
-void RemoveChars(String& outInput, InitList<char> toRemove)
+void RemoveChars(std::string& outInput, std::initializer_list<char> toRemove)
 {
 	auto isToRemove = [&toRemove](char c) -> bool { return std::find(toRemove.begin(), toRemove.end(), c) != toRemove.end(); };
 	auto iter = std::remove_if(outInput.begin(), outInput.end(), isToRemove);
 	outInput.erase(iter, outInput.end());
 }
 
-void Trim(String& outInput, InitList<char> toRemove)
+void Trim(std::string& outInput, std::initializer_list<char> toRemove)
 {
 	auto isIgnored = [&outInput, &toRemove](size_t idx) {
 		return std::find(toRemove.begin(), toRemove.end(), outInput[idx]) != toRemove.end();
@@ -140,19 +141,19 @@ void Trim(String& outInput, InitList<char> toRemove)
 	outInput = outInput.substr(startIdx, endIdx - startIdx);
 }
 
-void RemoveWhitespace(String& outInput)
+void RemoveWhitespace(std::string& outInput)
 {
 	SubstituteChars(outInput, {Dual<char>('\t', ' '), Dual<char>('\n', ' '), Dual<char>('\r', ' ')});
 	RemoveChars(outInput, {' '});
 }
 
-Vec<String> Tokenise(VString s, char delimiter, InitList<Dual<char>> escape)
+std::vector<std::string> Tokenise(std::string_view s, char delimiter, std::initializer_list<Dual<char>> escape)
 {
 	auto end = s.cend();
 	auto start = end;
 
 	std::stack<Dual<char>> escapeStack;
-	Vec<String> v;
+	std::vector<std::string> v;
 	bool escaping = false;
 	for (auto it = s.cbegin(); it != end; ++it)
 	{
@@ -195,9 +196,9 @@ Vec<String> Tokenise(VString s, char delimiter, InitList<Dual<char>> escape)
 	return v;
 }
 
-void SubstituteChars(String& outInput, InitList<Dual<char>> replacements)
+void SubstituteChars(std::string& outInput, std::initializer_list<Dual<char>> replacements)
 {
-	String::iterator iter = outInput.begin();
+	std::string::iterator iter = outInput.begin();
 	while (iter != outInput.end())
 	{
 		for (const auto replacement : replacements)
@@ -212,7 +213,7 @@ void SubstituteChars(String& outInput, InitList<Dual<char>> replacements)
 	}
 }
 
-bool IsCharEnclosedIn(VString str, size_t idx, Dual<char> wrapper)
+bool IsCharEnclosedIn(std::string_view str, size_t idx, Dual<char> wrapper)
 {
 	size_t idx_1 = idx - 1;
 	size_t idx1 = idx + 1;

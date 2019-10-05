@@ -37,7 +37,7 @@ private:
 private:
 	Data m_data;
 	UMap<Pointer::Type, UPtr<Pointer>> m_pointerMap;
-	Vec<PtrEntry> m_pointerStack;
+	std::vector<PtrEntry> m_pointerStack;
 	Token m_ptrToken;
 	OnSubmit m_onSubmitted;
 	UPtr<class Viewport> m_uViewport;

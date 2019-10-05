@@ -9,7 +9,7 @@ namespace Core
 {
 JobManager::Job::Job() = default;
 
-JobManager::Job::Job(s64 id, Task task, String name, bool bSilent) : m_task(std::move(task)), m_id(id), m_bSilent(bSilent)
+JobManager::Job::Job(s64 id, Task task, std::string name, bool bSilent) : m_task(std::move(task)), m_id(id), m_bSilent(bSilent)
 {
 	m_logName = "[";
 	m_logName += std::to_string(id);
@@ -61,14 +61,14 @@ JobManager::~JobManager()
 	LOG_D("[JobManager] destroyed");
 }
 
-JobHandle JobManager::Enqueue(Task task, String name, bool bSilent)
+JobHandle JobManager::Enqueue(Task task, std::string name, bool bSilent)
 {
 	Lock lock(m_queueMutex);
 	m_jobQueue.emplace_front(++m_nextGameJobID, std::move(task), std::move(name), bSilent);
 	return m_jobQueue.front().m_sHandle;
 }
 
-JobCatalog* JobManager::CreateCatalog(String name)
+JobCatalog* JobManager::CreateCatalog(std::string name)
 {
 	m_catalogs.emplace_back(MakeUnique<JobCatalog>(*this, std::move(name)));
 	return m_catalogs.back().get();
@@ -77,7 +77,7 @@ JobCatalog* JobManager::CreateCatalog(String name)
 void JobManager::ForEach(std::function<void(size_t)> indexedTask, size_t iterationCount, size_t iterationsPerJob, size_t startIdx /* = 0 */)
 {
 	size_t idx = startIdx;
-	Vec<Core::JobHandle> handles;
+	std::vector<Core::JobHandle> handles;
 	u16 buckets = static_cast<u16>(iterationCount / iterationsPerJob);
 	for (u16 bucket = 0; bucket < buckets; ++bucket)
 	{

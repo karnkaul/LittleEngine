@@ -5,7 +5,7 @@ namespace LittleEngine
 {
 Inheritable::Inheritable(bool bSilent) : m_bSilent(bSilent) {}
 
-Inheritable::Inheritable(String name, String className, bool bSilent)
+Inheritable::Inheritable(std::string name, std::string className, bool bSilent)
 	: m_name(std::move(name)), m_typeName(std::move(className)), m_bSilent(bSilent)
 {
 	GenerateLogNameStr();
@@ -19,31 +19,31 @@ Inheritable::~Inheritable()
 	}
 }
 
-void Inheritable::SetName(String name)
+void Inheritable::SetName(std::string name)
 {
 	m_name = std::move(name);
 	RegenerateLogNameStr();
 }
 
-void Inheritable::SetType(String typeName)
+void Inheritable::SetType(std::string typeName)
 {
 	m_typeName = std::move(typeName);
 	RegenerateLogNameStr();
 }
 
-void Inheritable::SetNameAndType(String name, String typeName)
+void Inheritable::SetNameAndType(std::string name, std::string typeName)
 {
 	m_name = std::move(name);
 	m_typeName = std::move(typeName);
 	RegenerateLogNameStr();
 }
 
-VString Inheritable::Name() const
+std::string_view Inheritable::Name() const
 {
 	return m_name;
 }
 
-VString Inheritable::LogName() const
+std::string_view Inheritable::LogName() const
 {
 	return m_logName;
 }

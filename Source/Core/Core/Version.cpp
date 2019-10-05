@@ -12,22 +12,22 @@ namespace Core
 {
 namespace
 {
-u32 Parse(const Vec<String>& vec, size_t idx)
+u32 Parse(const std::vector<std::string>& vec, size_t idx)
 {
 	return (vec.size() > idx) ? static_cast<u32>(Strings::ToS32(vec[idx], 0)) : 0;
 }
 } // namespace
 
 const Version Version::BUILD_VERSION = Version(BUILD_VERSION_MAJOR, BUILD_VERSION_MINOR, BUILD_VERSION_PATCH, BUILD_VERSION_PRE);
-const VString Version::szBUILD_VERSION_WITH_COMMIT = BUILD_VERSION_FULL;
+const std::string_view Version::szBUILD_VERSION_WITH_COMMIT = BUILD_VERSION_FULL;
 
 Version::Version() = default;
 
 Version::Version(u32 major, u32 minor, u32 patch, u32 pre) : major(major), minor(minor), patch(patch), pre(pre) {}
 
-Version::Version(VString serialised)
+Version::Version(std::string_view serialised)
 {
-	Vec<String> tokens = Strings::Tokenise(serialised, '.', {});
+	std::vector<std::string> tokens = Strings::Tokenise(serialised, '.', {});
 	major = Parse(tokens, 0);
 	minor = Parse(tokens, 1);
 	patch = Parse(tokens, 2);
@@ -49,10 +49,10 @@ u32 Version::Patch() const
 	return patch;
 }
 
-String Version::ToString() const
+std::string Version::ToString() const
 {
 	static constexpr size_t MAX = 3 + 1 + 3 + 1 + 3 + 1 + 3;
-	String ret;
+	std::string ret;
 	ret.reserve(MAX);
 	ret += Strings::ToString(major);
 	ret += ".";

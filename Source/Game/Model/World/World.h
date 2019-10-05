@@ -21,7 +21,7 @@ protected:
 	};
 
 private:
-	String m_manifestID;
+	std::string m_manifestID;
 	UPtr<class WorldClock> m_uWorldClock;
 	State m_state;
 	class WorldStateMachine* m_pWSM = nullptr;
@@ -31,7 +31,7 @@ protected:
 	bool m_bTickWhenPaused = false;
 
 public:
-	World(String name);
+	World(std::string name);
 	~World() override;
 
 	bool LoadWorld(WorldID id);

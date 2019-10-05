@@ -1,3 +1,4 @@
+#include <array>
 #include <atomic>
 #include <ctime>
 #include <cstdarg>
@@ -27,11 +28,11 @@ constexpr size_t CACHE_SIZE = 512;
 
 bool bInit = false;
 std::mutex _mutex;
-String cache;
-String buffer;
-Array<VString, 5> prefixes = {"[H] ", "[D] ", "[I] ", "[W] ", "[E] "};
+std::string cache;
+std::string buffer;
+std::array<std::string_view, 5> prefixes = {"[H] ", "[D] ", "[I] ", "[W] ", "[E] "};
 
-UMap<Core::LogSeverity, VString> severityMap = {{LogSeverity::Error, "Error"},
+UMap<Core::LogSeverity, std::string_view> severityMap = {{LogSeverity::Error, "Error"},
 												{LogSeverity::Warning, "Warning"},
 												{LogSeverity::Info, "Info"},
 												{LogSeverity::Debug, "Debug"},
@@ -40,19 +41,19 @@ UMap<Core::LogSeverity, VString> severityMap = {{LogSeverity::Error, "Error"},
 class FileLogger final
 {
 private:
-	const String m_extension = ".log";
-	String m_filename;
-	String m_cache;
+	const std::string m_extension = ".log";
+	std::string m_filename;
+	std::string m_cache;
 	UPtr<class FileRW> m_uWriter;
 	std::atomic<bool> m_bStopLogging;
 	std::mutex m_cacheMutex;
 	OS::Threads::Handle m_threadHandle;
 
 public:
-	FileLogger(String filename, u8 backupCount, String header = "");
+	FileLogger(std::string filename, u8 backupCount, std::string header = "");
 	~FileLogger();
 
-	void OnLogStr(String&& capture);
+	void OnLogStr(std::string&& capture);
 
 private:
 	void Async_StartLogging();
@@ -70,20 +71,20 @@ std::tm* TM(const std::time_t& time)
 #endif
 }
 
-String Prologue(String header)
+std::string Prologue(std::string header)
 {
 	std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	auto pTM = TM(now);
 	static char buffer[256];
 	std::strftime(buffer, 256, "%a %F %T", pTM);
-	String ret(buffer);
+	std::string ret(buffer);
 	ret += " ";
 	ret += std::move(header);
 	ret += "\n";
 	return ret;
 }
 
-FileLogger::FileLogger(String filename, u8 backupCount, String header) : m_filename(std::move(filename))
+FileLogger::FileLogger(std::string filename, u8 backupCount, std::string header) : m_filename(std::move(filename))
 {
 	RenameOldFiles(backupCount);
 	m_uWriter = MakeUnique<FileRW>(m_filename + m_extension);
@@ -100,7 +101,7 @@ FileLogger::~FileLogger()
 	OS::Threads::Join(m_threadHandle);
 }
 
-void FileLogger::OnLogStr(String&& capture)
+void FileLogger::OnLogStr(std::string&& capture)
 {
 	Lock lock(m_cacheMutex);
 	m_cache += std::move(capture);
@@ -111,7 +112,7 @@ void FileLogger::Async_StartLogging()
 {
 	while (!m_bStopLogging.load(std::memory_order_relaxed))
 	{
-		String toWrite;
+		std::string toWrite;
 		{
 			Lock lock(m_cacheMutex);
 			toWrite = std::move(m_cache);
@@ -133,7 +134,7 @@ void FileLogger::Async_StartLogging()
 void FileLogger::RenameOldFiles(u16 countToKeep)
 {
 	// Make room for oldest backup
-	String oldest = m_filename + "_bak_" + Strings::ToString(countToKeep) + m_extension;
+	std::string oldest = m_filename + "_bak_" + Strings::ToString(countToKeep) + m_extension;
 	if (std::ifstream(oldest))
 	{
 		remove(oldest.c_str());
@@ -144,8 +145,8 @@ void FileLogger::RenameOldFiles(u16 countToKeep)
 	// Rename old backups
 	while (countToKeep > 0)
 	{
-		String from = m_filename + "_bak_" + Strings::ToString(countToKeep) + m_extension;
-		String to = m_filename + "_bak_" + Strings::ToString(countToKeep + 1) + m_extension;
+		std::string from = m_filename + "_bak_" + Strings::ToString(countToKeep) + m_extension;
+		std::string to = m_filename + "_bak_" + Strings::ToString(countToKeep + 1) + m_extension;
 		if (std::ifstream(from))
 		{
 			if (std::ifstream(to))
@@ -158,8 +159,8 @@ void FileLogger::RenameOldFiles(u16 countToKeep)
 	}
 
 	// Rename last log file
-	String from = m_filename + m_extension;
-	String to = m_filename + "_bak_" + Strings::ToString(1) + m_extension;
+	std::string from = m_filename + m_extension;
+	std::string to = m_filename + "_bak_" + Strings::ToString(1) + m_extension;
 	if (std::ifstream(from))
 	{
 		success += std::rename(from.c_str(), to.c_str());
@@ -176,7 +177,7 @@ UPtr<FileLogger> uFileLogger;
 
 void LogInternal(const char* pText, u32 severityIndex, va_list argList)
 {
-	static Array<char, CACHE_SIZE> cacheStr;
+	static std::array<char, CACHE_SIZE> cacheStr;
 	if (!bInit)
 	{
 		cache.reserve(CACHE_SIZE);
@@ -188,11 +189,11 @@ void LogInternal(const char* pText, u32 severityIndex, va_list argList)
 	cache.clear();
 	cache += prefixes[severityIndex];
 	vsnprintf(cacheStr.data(), cacheStr.size(), pText, argList);
-	cache += String(cacheStr.data());
+	cache += std::string(cacheStr.data());
 	std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	auto pTM = TM(now);
 	snprintf(cacheStr.data(), cacheStr.size(), " [%02d:%02d:%02d]", pTM->tm_hour, pTM->tm_min, pTM->tm_sec);
-	cache += String(cacheStr.data());
+	cache += std::string(cacheStr.data());
 	std::cout << cache << std::endl;
 
 	cache += "\n";
@@ -220,12 +221,12 @@ void Log(LogSeverity severity, const char* szText, ...)
 	va_end(argList);
 }
 
-VString ParseLogSeverity(LogSeverity severity)
+std::string_view ParseLogSeverity(LogSeverity severity)
 {
 	return severityMap[severity];
 }
 
-LogSeverity ParseLogSeverity(VString serialised)
+LogSeverity ParseLogSeverity(std::string_view serialised)
 {
 	for (const auto& severity : severityMap)
 	{
@@ -237,7 +238,7 @@ LogSeverity ParseLogSeverity(VString serialised)
 	return Core::LogSeverity::Info;
 }
 
-void StartFileLogging(String path, u8 backupCount, String header)
+void StartFileLogging(std::string path, u8 backupCount, std::string header)
 {
 	uFileLogger = MakeUnique<FileLogger>(std::move(path), backupCount, std::move(header));
 }

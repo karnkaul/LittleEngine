@@ -7,9 +7,9 @@ namespace Core
 {
 namespace
 {
-String PropertiesToString(const Vec<Property>& vec)
+std::string PropertiesToString(const std::vector<Property>& vec)
 {
-	String fileContents;
+	std::string fileContents;
 	for (const auto& prop : vec)
 	{
 		fileContents.append(prop.key).append("=").append(prop.stringValue).append("\n");
@@ -18,9 +18,9 @@ String PropertiesToString(const Vec<Property>& vec)
 }
 } // namespace
 
-void Property::Persistor::Deserialise(String serialised)
+void Property::Persistor::Deserialise(std::string serialised)
 {
-	Vec<String> lines = Strings::Tokenise(serialised, '\n', {});
+	std::vector<std::string> lines = Strings::Tokenise(serialised, '\n', {});
 	for (const auto& line : lines)
 	{
 		if (line.empty() || line.c_str()[0] == '#')
@@ -28,7 +28,7 @@ void Property::Persistor::Deserialise(String serialised)
 			continue;
 		}
 
-		Vec<String> tokens = Strings::Tokenise(line, '=', {});
+		std::vector<std::string> tokens = Strings::Tokenise(line, '=', {});
 		if (tokens.size() > 1)
 		{
 			SetProp(Property(tokens[0], tokens[1]));
@@ -36,7 +36,7 @@ void Property::Persistor::Deserialise(String serialised)
 	}
 }
 
-bool Property::Persistor::Load(const String& filePath)
+bool Property::Persistor::Load(const std::string& filePath)
 {
 	FileRW fileRW(std::move(filePath));
 	if (!fileRW.Exists())
@@ -48,13 +48,13 @@ bool Property::Persistor::Load(const String& filePath)
 	return true;
 }
 
-bool Property::Persistor::Save(const String& filePath) const
+bool Property::Persistor::Save(const std::string& filePath) const
 {
 	FileRW file(std::move(filePath));
 	return file.Write(PropertiesToString(properties));
 }
 
-const Property* Property::Persistor::GetProp(const String& key) const
+const Property* Property::Persistor::GetProp(const std::string& key) const
 {
 	auto iter = std::find_if(properties.begin(), properties.end(), [&](const Property& p) { return p.key == key; });
 	return iter != properties.end() ? &(*iter) : nullptr;
@@ -75,7 +75,7 @@ void Property::Persistor::SetProp(Property property)
 
 Property::Property() = default;
 
-Property::Property(String key, String value) : key(std::move(key)), stringValue(std::move(value)) {}
+Property::Property(std::string key, std::string value) : key(std::move(key)), stringValue(std::move(value)) {}
 
 s32 Property::ToS32(s32 defaultValue) const
 {
@@ -92,7 +92,7 @@ bool Property::ToBool(bool defaultValue /* = false */) const
 	return Strings::ToBool(stringValue, defaultValue);
 }
 
-Property::operator String() const
+Property::operator std::string() const
 {
 	return stringValue;
 }

@@ -5,7 +5,7 @@
 
 namespace Core
 {
-JobCatalog::JobCatalog(JobManager& manager, String name) : m_pManager(&manager) 
+JobCatalog::JobCatalog(JobManager& manager, std::string name) : m_pManager(&manager) 
 {
 	m_logName.reserve(name.size() + 2);
 	m_logName = "[";
@@ -13,7 +13,7 @@ JobCatalog::JobCatalog(JobManager& manager, String name) : m_pManager(&manager)
 	m_logName += "]";
 }
 
-void JobCatalog::AddJob(Task job, String name)
+void JobCatalog::AddJob(Task job, std::string name)
 {
 	if (name.empty())
 	{

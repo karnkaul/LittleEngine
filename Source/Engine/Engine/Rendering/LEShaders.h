@@ -8,30 +8,30 @@ namespace LittleEngine
 {
 struct ShadersData
 {
-	String assetIDPrefix = "Texts/Shaders/";
-	String vertExt = ".vsh";
-	String fragExt = ".fsh";
+	std::string assetIDPrefix = "Texts/Shaders/";
+	std::string vertExt = ".vsh";
+	std::string fragExt = ".fsh";
 };
 
 namespace LEShaders
 {
 extern ShadersData s_data;
-extern UMap<String, UPtr<Shader>> s_shaderMap;
+extern UMap<std::string, UPtr<Shader>> s_shaderMap;
 
 void Init(ShadersData data = {});
 void Clear();
 
 template <typename T>
-T* GetShader(const String& id);
+T* GetShader(const std::string& id);
 template <typename T>
-T* CreateShader(const String& id, const String& vertCode, const String& fragCode);
+T* CreateShader(const std::string& id, const std::string& vertCode, const std::string& fragCode);
 
 template <typename T>
-static T* LoadShader(const String& id, Shader::Type asType);
+static T* LoadShader(const std::string& id, Shader::Type asType);
 }; // namespace LEShaders
 
 template <typename T>
-T* LEShaders::GetShader(const String& id)
+T* LEShaders::GetShader(const std::string& id)
 {
 	static_assert(IsDerived<Shader, T>(), "T must derive from SFShader");
 	auto search = s_shaderMap.find(id);
@@ -43,7 +43,7 @@ T* LEShaders::GetShader(const String& id)
 }
 
 template <typename T>
-T* LEShaders::CreateShader(const String& id, const String& vertCode, const String& fragCode)
+T* LEShaders::CreateShader(const std::string& id, const std::string& vertCode, const std::string& fragCode)
 {
 	if (s_shaderMap.find(id) != s_shaderMap.end())
 	{
@@ -67,20 +67,20 @@ T* LEShaders::CreateShader(const String& id, const String& vertCode, const Strin
 }
 
 template <typename T>
-T* LEShaders::LoadShader(const String& id, Shader::Type asType)
+T* LEShaders::LoadShader(const std::string& id, Shader::Type asType)
 {
 #if ENABLED(ASSERTS)
-	String err = id + " Shader already loaded!";
+	std::string err = id + " Shader already loaded!";
 	AssertVar(s_shaderMap.find(id) == s_shaderMap.end(), err.c_str());
 	Assert(g_pRepository, "Repository is null!");
 	Assert(asType.any(), "Invalid Shader type");
 #endif
-	String assetID = s_data.assetIDPrefix + id;
-	String vertCode;
-	String fragCode;
+	std::string assetID = s_data.assetIDPrefix + id;
+	std::string vertCode;
+	std::string fragCode;
 	if (asType[ToIdx(Shader::Flag::Vertex)])
 	{
-		String vsAssetID = assetID + s_data.vertExt;
+		std::string vsAssetID = assetID + s_data.vertExt;
 		auto pText = g_pRepository->Load<TextAsset>(vsAssetID);
 		if (pText)
 		{
@@ -89,7 +89,7 @@ T* LEShaders::LoadShader(const String& id, Shader::Type asType)
 	}
 	if (asType[ToIdx(Shader::Flag::Fragment)])
 	{
-		String fsAssetID = assetID + s_data.fragExt;
+		std::string fsAssetID = assetID + s_data.fragExt;
 		auto pText = g_pRepository->Load<TextAsset>(fsAssetID);
 		if (pText)
 		{

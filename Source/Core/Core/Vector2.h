@@ -36,7 +36,7 @@ public:
 	Fixed Magnitude() const;
 	f64 SqrMagnitude() const;
 
-	String ToString() const;
+	std::string ToString() const;
 };
 
 std::ostream& operator<<(std::ostream& out, Vector2& vector2);

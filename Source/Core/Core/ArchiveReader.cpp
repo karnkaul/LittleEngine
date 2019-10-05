@@ -45,19 +45,19 @@ ArchiveReader::ArchiveReader()
 	Chk();
 }
 
-bool ArchiveReader::Load(VString archivePath)
+bool ArchiveReader::Load(std::string_view archivePath)
 {
 	Chk();
 	return PHYSFS_mount(archivePath.data(), nullptr, 1) != 0;
 }
 
-bool ArchiveReader::IsPresent(VString pathInArchive) const
+bool ArchiveReader::IsPresent(std::string_view pathInArchive) const
 {
 	Chk();
 	return PHYSFS_exists(pathInArchive.data()) != 0;
 }
 
-Vec<u8> ArchiveReader::Decompress(VString pathInArchive) const
+std::vector<u8> ArchiveReader::Decompress(std::string_view pathInArchive) const
 {
 	Chk();
 	if (IsPresent(pathInArchive))
@@ -66,7 +66,7 @@ Vec<u8> ArchiveReader::Decompress(VString pathInArchive) const
 		PHYSFS_sint64 size = PHYSFS_fileLength(pFile);
 		if (size > 0)
 		{
-			Vec<u8> buffer(static_cast<size_t>(size), 0);
+			std::vector<u8> buffer(static_cast<size_t>(size), 0);
 			PHYSFS_readBytes(pFile, buffer.data(), static_cast<PHYSFS_uint64>(buffer.size()));
 			return buffer;
 		}

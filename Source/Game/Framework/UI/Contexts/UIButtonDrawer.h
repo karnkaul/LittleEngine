@@ -21,7 +21,7 @@ private:
 
 private:
 	UIButtonDrawerData m_data;
-	Vec<UIButton*> m_uiButtons;
+	std::vector<UIButton*> m_uiButtons;
 
 public:
 	UIButtonDrawer();

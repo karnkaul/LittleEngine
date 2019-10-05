@@ -5,15 +5,15 @@ namespace Core
 {
 struct DialogueResp
 {
-	String text;
+	std::string text;
 	Task callback;
 };
 
 struct DialogueData
 {
-	String title;
-	String footer;
-	String content;
+	std::string title;
+	std::string footer;
+	std::string content;
 	DialogueResp resp0;
 	DialogueResp resp1;
 	DialogueResp resp2;

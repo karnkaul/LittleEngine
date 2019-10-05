@@ -55,7 +55,7 @@ void LEPhysics::Step(Time /*dt*/)
 	}
 }
 
-CircleCollider* LEPhysics::CreateCircleCollider(String ownerName)
+CircleCollider* LEPhysics::CreateCircleCollider(std::string ownerName)
 {
 	auto uCollider = MakeUnique<CircleCollider>(std::move(ownerName));
 	CircleCollider* pCollider = uCollider.get();
@@ -63,7 +63,7 @@ CircleCollider* LEPhysics::CreateCircleCollider(String ownerName)
 	return pCollider;
 }
 
-AABBCollider* LEPhysics::CreateAABBCollider(String ownerName)
+AABBCollider* LEPhysics::CreateAABBCollider(std::string ownerName)
 {
 	auto uCollider = MakeUnique<AABBCollider>(std::move(ownerName));
 	AABBCollider* pCollider = uCollider.get();

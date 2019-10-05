@@ -15,7 +15,7 @@ public:
 #if defined(DEBUGGING)
 public:
 	static bool s_bShowJoystickOrientation;
-	static Array<Colour, 2> s_ornColours;
+	static std::array<Colour, 2> s_ornColours;
 	static Vector2 s_orientationWidthHeight;
 
 private:

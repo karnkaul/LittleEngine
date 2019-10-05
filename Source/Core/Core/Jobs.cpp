@@ -24,13 +24,13 @@ void Cleanup()
 	g_pJobManager = nullptr;
 }
 
-JobHandle Enqueue(Task task, String name /* = "" */, bool bSilent /* = false */)
+JobHandle Enqueue(Task task, std::string name /* = "" */, bool bSilent /* = false */)
 {
 	Assert(uManager, "JobManager is null!");
 	return uManager->Enqueue(std::move(task), name, bSilent);
 }
 
-JobCatalog* CreateCatalog(String name)
+JobCatalog* CreateCatalog(std::string name)
 {
 	Assert(uManager, "JobManager is null!");
 	return uManager->CreateCatalog(std::move(name));

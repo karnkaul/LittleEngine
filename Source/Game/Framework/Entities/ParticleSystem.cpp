@@ -19,8 +19,8 @@ void ParticleSystem::OnCreated()
 
 void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 {
-	Vec<EmitterData>& emitters = data.emitterDatas;
-	String particles;
+	std::vector<EmitterData>& emitters = data.emitterDatas;
+	std::string particles;
 	particles.reserve(32);
 	for (EmitterData& eData : emitters)
 	{
@@ -53,7 +53,7 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 #endif
 }
 
-Emitter* ParticleSystem::GetEmitter(const String& id)
+Emitter* ParticleSystem::GetEmitter(const std::string& id)
 {
 	auto search =
 		std::find_if(m_emitters.begin(), m_emitters.end(), [id](const UPtr<Emitter>& uEmitter) { return uEmitter->m_data.id == id; });
@@ -83,7 +83,7 @@ void ParticleSystem::Stop()
 void ParticleSystem::Tick(Time dt)
 {
 #if ENABLED(PROFILER)
-	String id = m_name;
+	std::string id = m_name;
 	Strings::ToUpper(id);
 	if (m_profileColour == Colour())
 	{

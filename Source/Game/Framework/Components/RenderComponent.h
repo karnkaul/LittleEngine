@@ -8,18 +8,18 @@ namespace LittleEngine
 {
 struct SpriteSheetData
 {
-	Vec<Rect2> frames;
-	Vec<size_t> indices;
+	std::vector<Rect2> frames;
+	std::vector<size_t> indices;
 
 	SpriteSheetData() = default;
 	SpriteSheetData(u32 rows, u32 columns);
-	SpriteSheetData(String serialised);
+	SpriteSheetData(std::string serialised);
 	SpriteSheetData(SpriteSheetData&&) = default;
 	SpriteSheetData& operator=(SpriteSheetData&&) = default;
 
 private:
 	void Construct(u32 rows, u32 columns);
-	void Construct(String serialised);
+	void Construct(std::string serialised);
 };
 
 class SpriteSheet
@@ -27,7 +27,7 @@ class SpriteSheet
 private:
 	SpriteSheetData m_data;
 	Vector2 m_frameSize;
-	Vec<size_t>::const_iterator m_iterator;
+	std::vector<size_t>::const_iterator m_iterator;
 	Time m_period;
 	TextureAsset* m_pTexture = nullptr;
 	u8 m_skipFrames = 0;
@@ -36,8 +36,8 @@ private:
 public:
 	SpriteSheet(SpriteSheetData data, TextureAsset* pTexture = nullptr, Time period = Time::Seconds(1.0f), bool bUseFrames = false,
 				u8 skipFrames = 0);
-	SpriteSheet(String id, Time period = Time::Seconds(1.0f), bool bUseFrames = false, u8 skipFrames = 0, String textureSuffix = ".png",
-				String sheetSuffix = ".spritesheet");
+	SpriteSheet(std::string id, Time period = Time::Seconds(1.0f), bool bUseFrames = false, u8 skipFrames = 0, std::string textureSuffix = ".png",
+				std::string sheetSuffix = ".spritesheet");
 	SpriteSheet(SpriteSheet&&) = default;
 	SpriteSheet& operator=(SpriteSheet&&) = default;
 
@@ -84,14 +84,14 @@ public:
 	RenderComponent* SetSpriteFlip(bool bFlip);
 	RenderComponent* SetShader(Shader* pShader);
 	template <typename T>
-	RenderComponent* SetShader(const String& id);
+	RenderComponent* SetShader(const std::string& id);
 
 	void ReconcilePrimitive();
 	void UpdatePrimitive(Time dt = Time::Zero);
 };
 
 template <typename T>
-RenderComponent* RenderComponent::SetShader(const String& id)
+RenderComponent* RenderComponent::SetShader(const std::string& id)
 {
 	auto pShader = LEShaders::GetShader<T>(id);
 	if (!pShader)

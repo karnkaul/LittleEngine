@@ -13,9 +13,9 @@ auto epoch = high_resolution_clock::now();
 
 const Time Time::Zero = Time(0);
 
-String Time::ToString(Time time)
+std::string Time::ToString(Time time)
 {
-	String ret;
+	std::string ret;
 	ret.reserve(12);
 	ret += "[";
 	s32 h = ToS32(time.AsSeconds() / 60 / 60);

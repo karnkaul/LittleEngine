@@ -12,7 +12,7 @@ protected:
 
 public:
 	UIObject(bool bSilent = false);
-	UIObject(String name, bool bSilent = false);
+	UIObject(std::string name, bool bSilent = false);
 	~UIObject() override;
 
 	virtual void Tick(Time dt = Time::Zero) = 0;

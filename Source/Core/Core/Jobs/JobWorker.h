@@ -30,7 +30,7 @@ public:
 	State GetState() const;
 
 private:
-	String m_logName;
+	std::string m_logName;
 	void Run();
 };
 } // namespace Core

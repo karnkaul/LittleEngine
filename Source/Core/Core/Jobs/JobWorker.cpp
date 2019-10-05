@@ -8,7 +8,7 @@ namespace Core
 {
 JobWorker::JobWorker(JobManager& manager, u8 id, bool bEngineWorker) : id(id), m_pManager(&manager), m_bEngineWorker(bEngineWorker)
 {
-	static const String PREFIX = "[JobWorker";
+	static const std::string PREFIX = "[JobWorker";
 	m_bWork.store(true, std::memory_order_relaxed);
 	m_logName.reserve(PREFIX.size() + 8);
 	m_logName += PREFIX;
@@ -50,7 +50,7 @@ void JobWorker::Run()
 		{
 			m_state = State::Busy;
 
-			String suffix = m_bEngineWorker ? " Engine Job " : " Job ";
+			std::string suffix = m_bEngineWorker ? " Engine Job " : " Job ";
 			if (!oJob->m_bSilent)
 			{
 				LOG_D("%s Starting %s %s", m_logName.c_str(), m_bEngineWorker ? "Engine Job" : "Job", oJob->m_logName.c_str());

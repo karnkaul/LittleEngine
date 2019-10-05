@@ -11,7 +11,7 @@ protected:
 	// but instead uses a mutex lock when setting text / drawing.
 	// This is because it is otherwise impossible to obtain size (bounds) immediately.
 	sf::Text m_sfText;
-	String m_text;
+	std::string m_text;
 	u32 m_textSize = 20;
 	std::mutex m_textMutex;
 	class FontAsset* m_pFont = nullptr;
@@ -32,9 +32,9 @@ protected:
 public:
 	SFText* SetFont(FontAsset& font);
 	SFText* SetSize(u32 size);
-	SFText* SetText(String text);
+	SFText* SetText(std::string text);
 
-	String Text() const;
+	std::string Text() const;
 	u32 TextSize() const;
 	bool IsFontSet() const;
 
