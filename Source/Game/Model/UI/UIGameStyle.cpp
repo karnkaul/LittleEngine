@@ -1,3 +1,4 @@
+#include <sstream>
 #include "Core/Logger.h"
 #include "Core/GData.h"
 #include "Core/Utils.h"
@@ -9,7 +10,7 @@ namespace LittleEngine
 namespace
 {
 UIWidgetStyle defaultStyle;
-UMap<std::string, UIWidgetStyle> styleMap;
+std::unordered_map<std::string, UIWidgetStyle> styleMap;
 
 UByte H2B(const std::string& hex)
 {

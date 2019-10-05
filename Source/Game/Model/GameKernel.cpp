@@ -44,9 +44,9 @@ bool GameKernel::Boot(const GameConfig& config)
 	}
 	try
 	{
-		m_uContext = MakeUnique<LEContext>(std::move(data));
-		m_uWSM = MakeUnique<WorldStateMachine>(*m_uContext);
-		m_uGame = MakeUnique<GameManager>(*m_uContext, *m_uWSM);
+		m_uContext = std::make_unique<LEContext>(std::move(data));
+		m_uWSM = std::make_unique<WorldStateMachine>(*m_uContext);
+		m_uGame = std::make_unique<GameManager>(*m_uContext, *m_uWSM);
 	}
 	catch (const FatalEngineException& e)
 	{

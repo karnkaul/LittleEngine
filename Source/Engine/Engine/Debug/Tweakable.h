@@ -1,4 +1,5 @@
 #pragma once
+#include <map>
 #include "Core/CoreTypes.h"
 #if ENABLED(TWEAKABLES)
 #define TweakBool(id, address) LittleEngine::Debug::Tweakable id(#id, LittleEngine::Debug::TweakType::Bool, "false", address)
@@ -54,7 +55,7 @@ private:
 class TweakManager
 {
 public:
-	Map<std::string_view, Tweakable*> m_tweakables;
+	std::map<std::string_view, Tweakable*> m_tweakables;
 
 	static TweakManager* Instance();
 

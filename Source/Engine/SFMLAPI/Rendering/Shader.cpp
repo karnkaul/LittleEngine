@@ -5,7 +5,7 @@
 
 namespace LittleEngine
 {
-UMap<Shader::Type, std::string_view> g_szShaderTypes = {
+std::unordered_map<Shader::Type, std::string_view> g_szShaderTypes = {
 	{Shader::Type(), "Invalid"},
 	{Shader::Type().set(ToIdx(Shader::Flag::Vertex)), "Vertex"},
 	{Shader::Type().set(ToIdx(Shader::Flag::Fragment)), "Fragment"},

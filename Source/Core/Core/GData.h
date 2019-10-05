@@ -1,4 +1,6 @@
 #pragma once
+#include <unordered_map>
+#include <vector>
 #include "StdTypes.h"
 #include "Vector2.h"
 
@@ -8,7 +10,7 @@ namespace Core
 class GData
 {
 private:
-	UMap<std::string, std::string> m_fieldMap;
+	std::unordered_map<std::string, std::string> m_fieldMap;
 
 public:
 	GData();
@@ -38,7 +40,7 @@ public:
 	std::vector<GData> GetVectorGData(const std::string& key) const;
 	std::vector<std::string> GetVector(const std::string& key) const;
 
-	const UMap<std::string, std::string>& AllFields() const;
+	const std::unordered_map<std::string, std::string>& AllFields() const;
 	bool AddField(std::string key, GData& gData);
 	bool SetString(std::string key, std::string value);
 

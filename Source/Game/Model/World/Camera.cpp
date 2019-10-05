@@ -30,7 +30,7 @@ void Camera::FillViewWithTiles(TextureAsset& texture)
 	LERenderer* pRenderer = g_pGameManager->Renderer();
 	if (!m_uTileMap)
 	{
-		m_uTileMap = MakeUnique<TileMap>(*pRenderer->New<Quads>(LayerID::Background), true);
+		m_uTileMap = std::make_unique<TileMap>(*pRenderer->New<Quads>(LayerID::Background), true);
 	}
 	m_uTileMap->FillSpace(g_pGFX->WorldSpace(), *m_pTexture);
 }

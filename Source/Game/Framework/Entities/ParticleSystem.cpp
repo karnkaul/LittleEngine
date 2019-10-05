@@ -33,7 +33,7 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 		eData.SetOwner(*this);
 		particles += Strings::ToString(eData.spawnData.numParticles);
 		particles += ", ";
-		UPtr<Emitter> emitter = MakeUnique<Emitter>(std::move(eData), false);
+		UPtr<Emitter> emitter = std::make_unique<Emitter>(std::move(eData), false);
 		m_emitters.emplace_back(std::move(emitter));
 	}
 	Core::LogSeverity logSeverity = particles.empty() || emitters.empty() ? Core::LogSeverity::Warning : Core::LogSeverity::Debug;

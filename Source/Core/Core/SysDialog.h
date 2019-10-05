@@ -6,7 +6,7 @@ namespace Core
 struct DialogueResp
 {
 	std::string text;
-	Task callback;
+	std::function<void()> callback;
 };
 
 struct DialogueData

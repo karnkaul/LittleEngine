@@ -26,10 +26,10 @@ GameManager::GameManager(LEContext& context, WorldStateMachine& wsm) : m_logName
 	Assert(&wsm, "WSM is null!");
 	Assert(&context, "WSM is null!");
 	g_pGameManager = this;
-	m_uUIManager = MakeUnique<UIManager>();
-	m_uWorldCamera = MakeUnique<Camera>();
+	m_uUIManager = std::make_unique<UIManager>();
+	m_uWorldCamera = std::make_unique<Camera>();
 	m_uWorldCamera->SetName("WorldCamera");
-	m_uPhysics = MakeUnique<LEPhysics>();
+	m_uPhysics = std::make_unique<LEPhysics>();
 #if ENABLED(TWEAKABLES)
 	paused.Bind(&m_bPaused);
 #endif

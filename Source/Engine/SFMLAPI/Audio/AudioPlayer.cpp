@@ -35,7 +35,7 @@ Fixed AudioPlayer::MixVolume(Mix mix, Fixed nVol)
 
 SoundPlayer::SoundPlayer(SoundAsset* pSoundAsset)
 {
-	m_uSFSound = MakeUnique<sf::Sound>();
+	m_uSFSound = std::make_unique<sf::Sound>();
 	if (pSoundAsset)
 	{
 		SetSoundAsset(*pSoundAsset);
@@ -131,7 +131,7 @@ bool SoundPlayer::ApplyParams()
 
 MusicPlayer::MusicPlayer()
 {
-	m_uSFMusic = MakeUnique<sf::Music>();
+	m_uSFMusic = std::make_unique<sf::Music>();
 }
 
 MusicPlayer::~MusicPlayer()

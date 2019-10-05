@@ -1,4 +1,6 @@
 #pragma once
+#include <list>
+#include <vector>
 #include "JobHandle.h"
 
 namespace Core
@@ -6,12 +8,13 @@ namespace Core
 class JobCatalog
 {
 private:
-	using SubJob = Pair<std::string, Task>;
+	using Task = std::function<void()>;
+	using SubJob = std::pair<std::string, Task>;
 
 	std::string m_logName;
 	std::vector<SubJob> m_subJobs;
-	List<JobHandle> m_pendingJobs;
-	List<JobHandle> m_completedJobs;
+	std::list<JobHandle> m_pendingJobs;
+	std::list<JobHandle> m_completedJobs;
 	Task m_onComplete = nullptr;
 	class JobManager* m_pManager;
 	Time m_startTime;

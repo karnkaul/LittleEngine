@@ -42,7 +42,7 @@ private:
 	UPtr<Core::ArchiveReader> m_uCooked;
 	std::vector<SPtr<class ManifestLoader>> m_loaders;
 	mutable std::mutex m_loadedMutex;
-	UMap<std::string, UPtr<Asset>> m_loaded;
+	std::unordered_map<std::string, UPtr<Asset>> m_loaded;
 	std::string m_rootDir;
 	State m_state;
 
@@ -149,7 +149,7 @@ Deferred<T*> LERepository::LoadAsync(std::string id)
 {
 	static_assert(IsDerived<Asset, T>(), "T must derive from Asset!");
 	// std::function needs to be copyable, so cannot use UPtr<promise> here
-	SPtr<std::promise<T*>> sPromise = MakeShared<std::promise<T*>>();
+	SPtr<std::promise<T*>> sPromise = std::make_shared<std::promise<T*>>();
 	Deferred<T*> deferred = sPromise->get_future();
 	T* pT = GetLoaded<T>(id);
 	if (pT)
@@ -216,7 +216,7 @@ template <typename T, typename... U>
 UPtr<T> LERepository::CreateAsset(U... args)
 {
 	UPtr<T> uT;
-	uT = MakeUnique<T>(std::forward<U>(args)...);
+	uT = std::make_unique<T>(std::forward<U>(args)...);
 	if (!uT || uT->IsError())
 	{
 		return nullptr;

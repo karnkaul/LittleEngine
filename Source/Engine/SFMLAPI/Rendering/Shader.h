@@ -47,7 +47,7 @@ private:
 	friend class APrimitive;
 };
 
-extern UMap<Shader::Type, std::string_view> g_szShaderTypes;
+extern std::unordered_map<Shader::Type, std::string_view> g_szShaderTypes;
 
 template <typename T>
 void Shader::SetUniform(std::string id, T value)

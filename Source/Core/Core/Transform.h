@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "Matrix3.h"
 
 namespace Core

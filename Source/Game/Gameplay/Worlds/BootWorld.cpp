@@ -51,7 +51,7 @@ void BootWorld::OnActivated()
 
 	m_pLogoFont = g_pRepository->Load<FontAsset>("Fonts/Sunscreen.otf");
 #if ENABLED(CONSOLE)
-	uUIContainerTester = MakeUnique<Debug::Commands::CMD_UIContainer>();
+	uUIContainerTester = std::make_unique<Debug::Commands::CMD_UIContainer>();
 	Debug::Commands::AddCommand(std::move(uUIContainerTester));
 #endif
 	if ((m_pLogoDrawer = g_pGameManager->UI()->PushContext<UIButtonDrawer>("MainMenu")))

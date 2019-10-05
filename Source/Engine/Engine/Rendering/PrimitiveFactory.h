@@ -38,7 +38,7 @@ template <typename T>
 T* PrimitiveFactory::New(LayerID layer)
 {
 	static_assert(IsDerived<APrimitive, T>(), "T must derive from APrimitive");
-	UPtr<T> uT = MakeUnique<T>(layer);
+	UPtr<T> uT = std::make_unique<T>(layer);
 	T* pT = uT.get();
 	m_standby.emplace_back(std::move(uT));
 	return pT;

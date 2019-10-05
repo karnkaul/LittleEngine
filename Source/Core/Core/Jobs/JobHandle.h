@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include "Core/CoreTypes.h"
 
 namespace Core
@@ -23,5 +24,5 @@ private:
 	friend class JobManager;
 };
 
-using JobHandle = SPtr<JobHandleBlock>;
+using JobHandle = std::shared_ptr<JobHandleBlock>;
 } // namespace Core

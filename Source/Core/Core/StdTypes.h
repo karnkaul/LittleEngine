@@ -4,14 +4,7 @@
 #define __STDC_FORMAT_MACROS
 #endif
 #include <inttypes.h>
-#include <functional>
-#include <map>
-#include <memory>
-#include <mutex>
-#include <set>
-#include <sstream>
-#include <unordered_map>
-#include <unordered_set>
+#include <type_traits>
 
 #define ENABLED(x) x
 
@@ -55,48 +48,12 @@ using s32 = int32_t;
 using s64 = int64_t;
 using f32 = float;
 using f64 = double;
-
-using StringStream = std::stringstream;
-using Task = std::function<void()>;
-using Lock = std::lock_guard<std::mutex>;
-
-template <typename T>
-using List = std::list<T>;
-template <typename T>
-using Set = std::set<T>;
-template <typename T>
-using USet = std::unordered_set<T>;
-template <typename T, typename U>
-using Map = std::map<T, U>;
-template <typename T, typename U>
-using UMap = std::unordered_map<T, U>;
-template <typename T>
-using UPtr = std::unique_ptr<T>;
-template <typename T>
-using SPtr = std::shared_ptr<T>;
-template <typename T>
-using WPtr = std::weak_ptr<T>;
-template <typename T>
-using Dual = std::pair<T, T>;
-template <typename T, typename U>
-using Pair = std::pair<T, U>;
+using size_t = std::size_t;
 
 template <typename Base, typename Derived>
 constexpr bool IsDerived()
 {
 	return std::is_base_of<Base, Derived>::value;
-}
-
-template <typename T, typename... U>
-UPtr<T> MakeUnique(U&&... Args)
-{
-	return std::make_unique<T>(std::forward<U>(Args)...);
-}
-
-template <typename T, typename... U>
-SPtr<T> MakeShared(U&&... Args)
-{
-	return std::make_shared<T>(std::forward<U>(Args)...);
 }
 
 template <typename T>
@@ -109,13 +66,4 @@ template <typename T>
 constexpr s32 ToS32(T t)
 {
 	return static_cast<s32>(t);
-}
-
-using Token = SPtr<s32>;
-using WToken = WPtr<s32>;
-
-template <typename T>
-Token MakeToken(T value)
-{
-	return MakeShared<s32>(ToS32(value));
 }

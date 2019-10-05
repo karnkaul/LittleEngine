@@ -7,6 +7,8 @@
 
 namespace Core
 {
+using Lock = std::lock_guard<std::mutex>;
+
 JobManager::Job::Job() = default;
 
 JobManager::Job::Job(s64 id, Task task, std::string name, bool bSilent) : m_task(std::move(task)), m_id(id), m_bSilent(bSilent)
@@ -19,7 +21,7 @@ JobManager::Job::Job(s64 id, Task task, std::string name, bool bSilent) : m_task
 		m_logName += std::move(name);
 	}
 	m_logName += "]";
-	m_sHandle = MakeShared<JobHandleBlock>(id, m_promise.get_future());
+	m_sHandle = std::make_shared<JobHandleBlock>(id, m_promise.get_future());
 }
 
 void JobManager::Job::Run()
@@ -46,7 +48,7 @@ JobManager::JobManager(u32 workerCount)
 	workerCount = Maths::Min(workerCount, maxThreads);
 	for (u32 i = 0; i < workerCount; ++i)
 	{
-		m_jobWorkers.emplace_back(MakeUnique<JobWorker>(*this, i + 100, false));
+		m_jobWorkers.emplace_back(std::make_unique<JobWorker>(*this, i + 100, false));
 	}
 	LOG_D("[JobManager] Detected [%d] max threads; spawned [%d] JobWorkers", maxThreads, workerCount);
 }
@@ -70,7 +72,7 @@ JobHandle JobManager::Enqueue(Task task, std::string name, bool bSilent)
 
 JobCatalog* JobManager::CreateCatalog(std::string name)
 {
-	m_catalogs.emplace_back(MakeUnique<JobCatalog>(*this, std::move(name)));
+	m_catalogs.emplace_back(std::make_unique<JobCatalog>(*this, std::move(name)));
 	return m_catalogs.back().get();
 }
 

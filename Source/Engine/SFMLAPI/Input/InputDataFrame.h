@@ -1,4 +1,5 @@
 #pragma once
+#include <unordered_set>
 #include "Core/CoreTypes.h"
 #include "Core/Utils.h"
 #include "InputMappings.h"
@@ -24,7 +25,7 @@ public:
 struct TextInput
 {
 	std::string text;
-	USet<KeyType> metaText;
+	std::unordered_set<KeyType> metaText;
 
 	bool ContainsChar(char c) const;
 	bool ContainsKey(s32 keyCode) const;

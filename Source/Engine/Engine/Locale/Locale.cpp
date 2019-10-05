@@ -7,7 +7,7 @@ namespace LittleEngine
 {
 namespace
 {
-UMap<std::string, std::string> locMap;
+std::unordered_map<std::string, std::string> locMap;
 }
 
 void Locale::Init(std::string locFileID, std::string enLocFileID)

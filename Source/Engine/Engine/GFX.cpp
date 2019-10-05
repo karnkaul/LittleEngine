@@ -66,7 +66,7 @@ void GFX::Init()
 	m_worldSpace = Vector2(worldWidth, m_gameState.worldHeight.max);
 }
 
-const Map<u32, ViewportSize>& GFX::ValidViewportSizes() const
+const std::map<u32, ViewportSize>& GFX::ValidViewportSizes() const
 {
 	return m_viewportSizes;
 }

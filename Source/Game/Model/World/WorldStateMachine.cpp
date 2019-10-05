@@ -59,7 +59,7 @@ void WorldStateMachine::Start(std::string coreManifestID, std::string gameStyleI
 	Assert(g_pGameManager, "GameManager is null!");
 	if (!m_uLoadHUD)
 	{
-		m_uLoadHUD = MakeUnique<LoadingHUD>();
+		m_uLoadHUD = std::make_unique<LoadingHUD>();
 		m_pLoadingTitle = &m_uLoadHUD->Title();
 		m_pLoadingTitle->SetSize(titleSize);
 		m_pLoadingSubtitle = m_uLoadHUD->Subtitle();

@@ -60,15 +60,15 @@ LEContext::LEContext(Data data) : m_data(std::move(data))
 #endif
 	auto maxFPS = Maths::Clamp(OS::ScreenRefreshRate() * 2, 60U, 300U);
 	m_bTerminating = false;
-	m_uViewport = MakeUnique<Viewport>();
+	m_uViewport = std::make_unique<Viewport>();
 	m_uViewport->SetData(std::move(m_data.viewportData));
 	m_uViewport->Create(maxFPS);
 
 	LERenderer::Data rData(m_data.tickRate, Time::Milliseconds(20), maxFPS, m_data.bRenderThread);
-	m_uRenderer = MakeUnique<LERenderer>(*m_uViewport, rData);
+	m_uRenderer = std::make_unique<LERenderer>(*m_uViewport, rData);
 	m_ptrToken = PushPointer(Pointer::Type::Arrow);
 
-	m_uInput = MakeUnique<LEInput>(std::move(m_data.inputMap));
+	m_uInput = std::make_unique<LEInput>(std::move(m_data.inputMap));
 #if defined(DEBUGGING)
 	m_uInput->CreateDebugPointer(*m_uRenderer);
 #endif
@@ -275,7 +275,7 @@ LEContext::Pointer* LEContext::GetPointer(Pointer::Type type)
 	{
 		return search->second.get();
 	}
-	UPtr<Pointer> uPtr = MakeUnique<Pointer>();
+	UPtr<Pointer> uPtr = std::make_unique<Pointer>();
 	if (uPtr->loadFromSystem(type))
 	{
 		m_pointerMap[type] = std::move(uPtr);

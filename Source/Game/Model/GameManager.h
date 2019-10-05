@@ -72,7 +72,7 @@ template <typename T>
 T* GameManager::NewEntity(std::string name, Vector2 position, Vector2 orientation)
 {
 	static_assert(IsDerived<Entity, T>(), "T must derive from Entity");
-	UPtr<T> uT = MakeUnique<T>();
+	UPtr<T> uT = std::make_unique<T>();
 	T* pT = uT.get();
 	m_entities.emplace_back(std::move(uT));
 	pT->OnCreate(std::move(name));
@@ -86,7 +86,7 @@ template <typename T>
 T* GameManager::NewComponent(Entity& owner)
 {
 	static_assert(IsDerived<AComponent, T>(), "T must derive from AComponent");
-	UPtr<T> uT = MakeUnique<T>();
+	UPtr<T> uT = std::make_unique<T>();
 	size_t idx = ToIdx(uT->Timing());
 	Assert(m_components.size() > idx, "Invalid Component Timing index!");
 	auto& componentVec = m_components.at(idx);

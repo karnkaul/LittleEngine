@@ -75,7 +75,7 @@ template <typename T>
 UIElement* UIWidget::AddElement(std::string name, UITransform* pParent, s32 layerDelta)
 {
 	static_assert(std::is_base_of<UIElement, T>::value, "T must derive from UIElement!");
-	UPtr<T> uT = MakeUnique<T>(static_cast<LayerID>(ToS32(m_style.baseLayer) + layerDelta), false);
+	UPtr<T> uT = std::make_unique<T>(static_cast<LayerID>(ToS32(m_style.baseLayer) + layerDelta), false);
 	T* pT = uT.get();
 	m_uiElements.push_back(std::move(uT));
 	InitElement(std::move(name), pT, pParent);

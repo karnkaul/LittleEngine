@@ -1,4 +1,6 @@
 #pragma once
+#include <functional>
+#include <map>
 #include <optional>
 #include "StdTypes.h"
 #include "Vector2.h"
@@ -34,6 +36,7 @@ namespace OS
 namespace Threads
 {
 using Handle = u64;
+using Task = std::function<void()>;
 
 Handle Spawn(Task task);
 void Join(Handle& handle);
@@ -48,7 +51,7 @@ private:
 	std::string m_exePath;
 	std::string m_runtimePath;
 	std::string m_cwd;
-	Map<std::string, std::string> m_vars;
+	std::map<std::string, std::string> m_vars;
 	s32 m_argc = 0;
 	char** m_argv = nullptr;
 
@@ -57,7 +60,7 @@ public:
 
 	bool HasVar(const std::string& key) const;
 	std::optional<std::string> GetVar(const std::string& key) const;
-	Pair<s32, char**> OrgVars() const;
+	std::pair<s32, char**> OrgVars() const;
 
 	std::string_view ExePath() const;
 	std::string_view RuntimePath() const;

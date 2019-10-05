@@ -44,7 +44,7 @@ bool bParented = false;
 s32 poolSize = 10;
 TweakS32(g_poolSize, &poolSize);
 UPtr<EntityPool> uPool;
-List<Entity*> pooled;
+std::list<Entity*> pooled;
 
 void OnX()
 {
@@ -143,7 +143,7 @@ void OnB(const LEInput::Frame& frame)
 	// Pool
 	if (!uPool)
 	{
-		uPool = MakeUnique<EntityPool>("MagentaRect");
+		uPool = std::make_unique<EntityPool>("MagentaRect");
 		auto generator = [](u16 id) -> Entity* {
 			auto pEntity = g_pGameManager->NewEntity<Entity>("MagentaRect_" + Strings::ToString(id));
 			if (pEntity)

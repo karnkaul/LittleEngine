@@ -78,8 +78,8 @@ bool Init(s32 argc, char** argv)
 	}
 	try
 	{
-		uRepository = MakeUnique<LERepository>(IDs::DEFAULT_FONT, IDs::COOKED_ASSETS, IDs::ASSETS_ROOT);
-		uAudio = MakeUnique<LEAudio>();
+		uRepository = std::make_unique<LERepository>(IDs::DEFAULT_FONT, IDs::COOKED_ASSETS, IDs::ASSETS_ROOT);
+		uAudio = std::make_unique<LEAudio>();
 		LEShaders::Init();
 	}
 	catch (const FatalEngineException& e)

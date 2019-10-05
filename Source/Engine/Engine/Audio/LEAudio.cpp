@@ -414,7 +414,7 @@ void LEAudio::Clear(bool immediate)
 #if defined(DEBUGGING)
 void LEAudio::InitDebug(LERenderer& renderer)
 {
-	m_uDbg = MakeUnique<DbgImpl>(renderer);
+	m_uDbg = std::make_unique<DbgImpl>(renderer);
 }
 
 void LEAudio::DestroyDebug()
@@ -432,7 +432,7 @@ SoundPlayer& LEAudio::GetOrCreateSFXPlayer()
 			return *sfxPlayer;
 		}
 	}
-	m_sfxPlayers.push_back(MakeUnique<SoundPlayer>(nullptr));
+	m_sfxPlayers.push_back(std::make_unique<SoundPlayer>(nullptr));
 	return *m_sfxPlayers[m_sfxPlayers.size() - 1];
 }
 

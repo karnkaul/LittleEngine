@@ -5,10 +5,10 @@ namespace Core
 {
 namespace
 {
-std::initializer_list<Dual<char>> gDataEscapes = {{'{', '}'}, {'[', ']'}, {'"', '"'}};
+std::initializer_list<std::pair<char, char>> gDataEscapes = {{'{', '}'}, {'[', ']'}, {'"', '"'}};
 
 template <typename T>
-T Get(const UMap<std::string, std::string>& table, const std::string& key, T (*Adaptor)(std::string, T), const T& defaultValue)
+T Get(const std::unordered_map<std::string, std::string>& table, const std::string& key, T (*Adaptor)(std::string, T), const T& defaultValue)
 {
 	auto search = table.find(key);
 	if (search != table.end())
@@ -41,7 +41,7 @@ bool GData::Marshall(std::string serialised)
 		std::vector<std::string> tokens = Strings::Tokenise(rawText, ',', gDataEscapes);
 		for (const auto& token : tokens)
 		{
-			Dual<std::string> kvp = Strings::Bisect(token, ':');
+			std::pair<std::string, std::string> kvp = Strings::Bisect(token, ':');
 			if (!kvp.second.empty() && !kvp.first.empty())
 			{
 				std::initializer_list<char> trim = {' ', '"'};
@@ -97,7 +97,7 @@ std::string GData::GetString(const std::string& key, char spaceDelimiter, std::s
 	if (search != m_fieldMap.end())
 	{
 		ret = search->second;
-		Strings::SubstituteChars(ret, {Dual<char>(spaceDelimiter, ' ')});
+		Strings::SubstituteChars(ret, {std::pair<char, char>(spaceDelimiter, ' ')});
 	}
 	return ret;
 }
@@ -175,7 +175,7 @@ std::vector<std::string> GData::GetVector(const std::string& key) const
 	return std::vector<std::string>();
 }
 
-const UMap<std::string, std::string>& GData::AllFields() const
+const std::unordered_map<std::string, std::string>& GData::AllFields() const
 {
 	return m_fieldMap;
 }

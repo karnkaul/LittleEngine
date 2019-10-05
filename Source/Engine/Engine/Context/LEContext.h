@@ -36,7 +36,7 @@ private:
 
 private:
 	Data m_data;
-	UMap<Pointer::Type, UPtr<Pointer>> m_pointerMap;
+	std::unordered_map<Pointer::Type, UPtr<Pointer>> m_pointerMap;
 	std::vector<PtrEntry> m_pointerStack;
 	Token m_ptrToken;
 	OnSubmit m_onSubmitted;

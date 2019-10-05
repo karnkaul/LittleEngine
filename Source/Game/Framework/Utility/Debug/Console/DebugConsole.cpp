@@ -59,7 +59,7 @@ public:
 ConsoleImpl::ConsoleImpl() : m_input(*pContext), m_renderer(*pContext), m_renderStats(*pContext), m_version(*pContext)
 {
 	LOG_D("Debug Console initialised");
-	Console::g_uLogBook = MakeUnique<LogBook>(m_renderer.m_logLinesCount);
+	Console::g_uLogBook = std::make_unique<LogBook>(m_renderer.m_logLinesCount);
 }
 
 ConsoleImpl::~ConsoleImpl()
@@ -94,7 +94,7 @@ void Console::Init()
 	Assert(g_pGameManager, "GameManager is null!");
 	pContext = g_pGameManager->Context();
 	bQuit = false;
-	uConsole = MakeUnique<ConsoleImpl>();
+	uConsole = std::make_unique<ConsoleImpl>();
 	Commands::Init(*pContext);
 }
 

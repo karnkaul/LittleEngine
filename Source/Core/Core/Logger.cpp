@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstdio>
+#include <mutex>
 #include <string>
 #include <time.h>
 #include <thread>
@@ -19,6 +20,8 @@
 
 namespace Core
 {
+using Lock = std::lock_guard<std::mutex>;
+
 LogSeverity g_MinLogSeverity = LogSeverity::Info;
 
 namespace
@@ -32,7 +35,7 @@ std::string cache;
 std::string buffer;
 std::array<std::string_view, 5> prefixes = {"[H] ", "[D] ", "[I] ", "[W] ", "[E] "};
 
-UMap<Core::LogSeverity, std::string_view> severityMap = {{LogSeverity::Error, "Error"},
+std::unordered_map<Core::LogSeverity, std::string_view> severityMap = {{LogSeverity::Error, "Error"},
 												{LogSeverity::Warning, "Warning"},
 												{LogSeverity::Info, "Info"},
 												{LogSeverity::Debug, "Debug"},
@@ -44,7 +47,7 @@ private:
 	const std::string m_extension = ".log";
 	std::string m_filename;
 	std::string m_cache;
-	UPtr<class FileRW> m_uWriter;
+	std::unique_ptr<class FileRW> m_uWriter;
 	std::atomic<bool> m_bStopLogging;
 	std::mutex m_cacheMutex;
 	OS::Threads::Handle m_threadHandle;
@@ -87,7 +90,7 @@ std::string Prologue(std::string header)
 FileLogger::FileLogger(std::string filename, u8 backupCount, std::string header) : m_filename(std::move(filename))
 {
 	RenameOldFiles(backupCount);
-	m_uWriter = MakeUnique<FileRW>(m_filename + m_extension);
+	m_uWriter = std::make_unique<FileRW>(m_filename + m_extension);
 	m_uWriter->Write(Prologue(std::move(header)));
 	m_bStopLogging.store(false, std::memory_order_relaxed);
 	m_threadHandle = OS::Threads::Spawn([&]() { Async_StartLogging(); });
@@ -172,7 +175,7 @@ void FileLogger::RenameOldFiles(u16 countToKeep)
 	}
 }
 
-UPtr<FileLogger> uFileLogger;
+std::unique_ptr<FileLogger> uFileLogger;
 } // namespace
 
 void LogInternal(const char* pText, u32 severityIndex, va_list argList)
@@ -240,7 +243,7 @@ LogSeverity ParseLogSeverity(std::string_view serialised)
 
 void StartFileLogging(std::string path, u8 backupCount, std::string header)
 {
-	uFileLogger = MakeUnique<FileLogger>(std::move(path), backupCount, std::move(header));
+	uFileLogger = std::make_unique<FileLogger>(std::move(path), backupCount, std::move(header));
 }
 
 void StopFileLogging()

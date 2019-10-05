@@ -16,7 +16,7 @@ namespace LittleEngine
 {
 World::World(std::string name) : GameObject(std::move(name), "World")
 {
-	m_uWorldClock = MakeUnique<WorldClock>();
+	m_uWorldClock = std::make_unique<WorldClock>();
 	m_manifestID.reserve(m_name.size() + 4);
 	m_manifestID += m_name;
 	m_manifestID += ".amf";

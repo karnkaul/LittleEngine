@@ -51,11 +51,11 @@ namespace OS
 namespace Threads
 {
 Handle nextHandle = 1;
-UMap<Handle, UPtr<std::thread>> threads;
+std::unordered_map<Handle, std::unique_ptr<std::thread>> threads;
 
 Handle Spawn(Task task)
 {
-	UPtr<std::thread> uThread = MakeUnique<std::thread>(task);
+	std::unique_ptr<std::thread> uThread = std::make_unique<std::thread>(task);
 	Handle handle = nextHandle++;
 	threads.emplace(handle, std::move(uThread));
 	return handle;
@@ -222,7 +222,7 @@ std::optional<std::string> EnvData::GetVar(const std::string& key) const
 	return ret;
 }
 
-Pair<s32, char**> EnvData::OrgVars() const
+std::pair<s32, char**> EnvData::OrgVars() const
 {
 	return std::make_pair(m_argc, m_argv);
 }

@@ -6,6 +6,8 @@ namespace Core
 {
 namespace Jobs
 {
+using Task = std::function<void()>;
+
 void Init(u32 workerCount);
 void Cleanup();
 

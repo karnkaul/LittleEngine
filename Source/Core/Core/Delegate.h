@@ -13,7 +13,11 @@ template <typename... T>
 class Delegate
 {
 public:
+	using Token = std::shared_ptr<s32>;
 	using Callback = std::function<void(T... t)>;
+
+private:
+	using WToken = std::weak_ptr<s32>;
 
 private:
 	struct Wrapper
@@ -45,9 +49,9 @@ Delegate<T...>::Wrapper::Wrapper(Callback callback, Token token) : callback(std:
 }
 
 template <typename... T>
-Token Delegate<T...>::Register(Callback callback)
+typename Delegate<T...>::Token Delegate<T...>::Register(Callback callback)
 {
-	Token token = MakeToken(m_callbacks.size());
+	Token token = std::make_shared<s32>(ToS32(m_callbacks.size()));
 	m_callbacks.emplace_back(std::move(callback), token);
 	return token;
 }

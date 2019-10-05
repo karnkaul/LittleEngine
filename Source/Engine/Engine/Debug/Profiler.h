@@ -34,7 +34,7 @@ struct Entry
 };
 
 extern std::mutex entriesMutex;
-extern UMap<std::string, Entry> entries;
+extern std::unordered_map<std::string, Entry> entries;
 extern Time maxTickDeltaTime;
 void StartTicked(std::string id, Colour colour);
 void StartCustom(std::string id, Time maxTime, Colour colour);

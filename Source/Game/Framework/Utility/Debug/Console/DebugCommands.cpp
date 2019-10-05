@@ -88,7 +88,7 @@ public:
 	}
 
 protected:
-	Map<std::string, std::function<void(std::vector<LogLine>&)>> m_paramCallbackMap;
+	std::map<std::string, std::function<void(std::vector<LogLine>&)>> m_paramCallbackMap;
 
 	ParameterisedCommand(std::string_view name) : Command(name) {}
 
@@ -223,7 +223,7 @@ class Resolution : public ParameterisedCommand
 public:
 	Resolution() : ParameterisedCommand("resolution")
 	{
-		const Map<u32, ViewportSize>& windowSizes = g_pGFX->ValidViewportSizes();
+		const std::map<u32, ViewportSize>& windowSizes = g_pGFX->ValidViewportSizes();
 		for (const auto& kvp : windowSizes)
 		{
 			const auto& windowSize = kvp.second;
@@ -339,13 +339,13 @@ public:
 #pragma region Local Namespace Impl
 namespace
 {
-List<UPtr<Command>> commands;
+std::list<UPtr<Command>> commands;
 
 template <typename T>
 void Add()
 {
 	static_assert(IsDerived<Command, T>(), "T must derive from Command");
-	UPtr<T> uT = MakeUnique<T>();
+	UPtr<T> uT = std::make_unique<T>();
 	auto iter = std::find_if(commands.begin(), commands.end(), [&uT](const UPtr<Command>& uC) { return uT->m_name < uC->m_name; });
 	commands.insert(iter, std::move(uT));
 }

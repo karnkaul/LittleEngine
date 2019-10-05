@@ -5,7 +5,7 @@ namespace Core
 {
 namespace
 {
-UPtr<JobManager> uManager;
+std::unique_ptr<JobManager> uManager;
 }
 
 namespace Jobs
@@ -14,7 +14,7 @@ JobManager* g_pJobManager = nullptr;
 
 void Init(u32 workerCount)
 {
-	uManager = MakeUnique<JobManager>(workerCount);
+	uManager = std::make_unique<JobManager>(workerCount);
 	g_pJobManager = uManager.get();
 }
 

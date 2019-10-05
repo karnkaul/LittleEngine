@@ -42,7 +42,7 @@ GameConfig::~GameConfig() = default;
 
 void GameConfig::Init()
 {
-	m_uData = MakeUnique<GData>();
+	m_uData = std::make_unique<GData>();
 	Verify();
 }
 

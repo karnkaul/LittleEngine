@@ -1,4 +1,6 @@
 #pragma once
+#include <string_view>
+#include <vector>
 #include "StdTypes.h"
 
 namespace Core

@@ -8,7 +8,7 @@ namespace LittleEngine::Debug::Profiler
 {
 Time maxTickDeltaTime;
 std::mutex entriesMutex;
-UMap<std::string, Entry> entries;
+std::unordered_map<std::string, Entry> entries;
 
 Entry::Entry(std::string id, Colour colour, Time startTime, Time maxTime, bool bCustom)
 	: id(std::move(id)), colour(colour), startTime(startTime), maxTime(maxTime), bCustom(bCustom)

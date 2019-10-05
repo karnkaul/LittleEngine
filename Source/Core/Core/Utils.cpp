@@ -5,7 +5,7 @@
 
 namespace Core
 {
-Pair<f32, std::string_view> FriendlySize(u64 byteCount)
+std::pair<f32, std::string_view> FriendlySize(u64 byteCount)
 {
 	static std::array<std::string_view, 4> suffixes = {"B", "KiB", "MiB", "GiB"};
 	f32 bytes = static_cast<f32>(byteCount);
@@ -114,10 +114,10 @@ std::string ToText(std::vector<u8> rawBuffer)
 	return std::string(charBuffer.data());
 }
 
-Dual<std::string> Bisect(std::string_view input, char delimiter)
+std::pair<std::string, std::string> Bisect(std::string_view input, char delimiter)
 {
 	size_t idx = input.find(delimiter);
-	return idx < input.size() ? Dual<std::string>(input.substr(0, idx), input.substr(idx + 1, input.size())) : Dual<std::string>(std::string(input), {});
+	return idx < input.size() ? std::pair<std::string, std::string>(input.substr(0, idx), input.substr(idx + 1, input.size())) : std::pair<std::string, std::string>(std::string(input), {});
 }
 
 void RemoveChars(std::string& outInput, std::initializer_list<char> toRemove)
@@ -143,16 +143,16 @@ void Trim(std::string& outInput, std::initializer_list<char> toRemove)
 
 void RemoveWhitespace(std::string& outInput)
 {
-	SubstituteChars(outInput, {Dual<char>('\t', ' '), Dual<char>('\n', ' '), Dual<char>('\r', ' ')});
+	SubstituteChars(outInput, {std::pair<char, char>('\t', ' '), std::pair<char, char>('\n', ' '), std::pair<char, char>('\r', ' ')});
 	RemoveChars(outInput, {' '});
 }
 
-std::vector<std::string> Tokenise(std::string_view s, char delimiter, std::initializer_list<Dual<char>> escape)
+std::vector<std::string> Tokenise(std::string_view s, char delimiter, std::initializer_list<std::pair<char, char>> escape)
 {
 	auto end = s.cend();
 	auto start = end;
 
-	std::stack<Dual<char>> escapeStack;
+	std::stack<std::pair<char, char>> escapeStack;
 	std::vector<std::string> v;
 	bool escaping = false;
 	for (auto it = s.cbegin(); it != end; ++it)
@@ -196,7 +196,7 @@ std::vector<std::string> Tokenise(std::string_view s, char delimiter, std::initi
 	return v;
 }
 
-void SubstituteChars(std::string& outInput, std::initializer_list<Dual<char>> replacements)
+void SubstituteChars(std::string& outInput, std::initializer_list<std::pair<char, char>> replacements)
 {
 	std::string::iterator iter = outInput.begin();
 	while (iter != outInput.end())
@@ -213,7 +213,7 @@ void SubstituteChars(std::string& outInput, std::initializer_list<Dual<char>> re
 	}
 }
 
-bool IsCharEnclosedIn(std::string_view str, size_t idx, Dual<char> wrapper)
+bool IsCharEnclosedIn(std::string_view str, size_t idx, std::pair<char, char> wrapper)
 {
 	size_t idx_1 = idx - 1;
 	size_t idx1 = idx + 1;

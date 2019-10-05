@@ -1,16 +1,21 @@
 #pragma once
+#include <list>
+#include <memory>
 #include <optional>
 #include "Core/CoreTypes.h"
 #include "JobHandle.h"
 
 namespace Core
 {
+
 class JobManager final
 {
 public:
 	static constexpr s32 INVALID_ID = -1;
 
 private:
+	using Task = std::function<void()>;
+
 	class Job
 	{
 	private:
@@ -35,9 +40,9 @@ private:
 	};
 
 private:
-	std::vector<UPtr<class JobWorker>> m_jobWorkers;
-	List<UPtr<class JobCatalog>> m_catalogs;
-	List<Job> m_jobQueue;
+	std::vector<std::unique_ptr<class JobWorker>> m_jobWorkers;
+	std::list<std::unique_ptr<class JobCatalog>> m_catalogs;
+	std::list<Job> m_jobQueue;
 	mutable std::mutex m_queueMutex;
 	s64 m_nextGameJobID = 0;
 

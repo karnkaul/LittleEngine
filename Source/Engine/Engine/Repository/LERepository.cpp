@@ -20,7 +20,7 @@ LERepository::LERepository(std::string defaultFontID, std::string archivePath, s
 		m_rootDir += "/";
 	}
 	Asset::s_pathPrefix = m_rootDir;
-	m_uCooked = MakeUnique<Core::ArchiveReader>();
+	m_uCooked = std::make_unique<Core::ArchiveReader>();
 
 	LOG_D("[Repository] Assets Root Dir: %s", m_rootDir.c_str());
 
@@ -70,14 +70,14 @@ void LERepository::LoadDefaultFont(std::string id)
 
 SPtr<ManifestLoader> LERepository::LoadManifest(std::string manifestPath, Task onComplete)
 {
-	SPtr<ManifestLoader> sLoader = MakeShared<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), false);
+	SPtr<ManifestLoader> sLoader = std::make_shared<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), false);
 	m_loaders.push_back(sLoader);
 	return sLoader;
 }
 
 void LERepository::UnloadManifest(std::string manifestPath, Task onComplete /* = nullptr */)
 {
-	m_loaders.emplace_back(MakeUnique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), true));
+	m_loaders.emplace_back(std::make_unique<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), true));
 }
 
 bool LERepository::IsBusy() const

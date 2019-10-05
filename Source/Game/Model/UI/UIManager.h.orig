@@ -10,7 +10,7 @@ class UIManager final
 public:
 private:
 	List<UPtr<class UIContext>> m_contexts;
-	UMap<std::string, UPtr<UIContext>> m_inactive;
+	std::unordered_map<std::string, UPtr<UIContext>> m_inactive;
 
 public:
 	UIManager();
@@ -77,7 +77,7 @@ UPtr<T> UIManager::GetInactive(const std::string& id)
 template <typename T>
 UPtr<T> UIManager::CreateContext(std::string id)
 {
-	UPtr<T> uT = MakeUnique<T>();
+	UPtr<T> uT = std::make_unique<T>();
 	LayerID baseLayer = m_contexts.empty() ? LAYER_UI : static_cast<LayerID>(m_contexts.back()->GetMaxLayer() + 2);
 <<<<<<< HEAD
 	InitContext(uT.get(), std::move(id), baseLayer);

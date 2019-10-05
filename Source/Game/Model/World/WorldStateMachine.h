@@ -85,7 +85,7 @@ WorldID WorldStateMachine::CreateWorld()
 {
 	WorldID id = -1;
 	static_assert(IsDerived<World, T>(), "T must derive from World!");
-	UPtr<T> uWorld = MakeUnique<T>();
+	UPtr<T> uWorld = std::make_unique<T>();
 	if (uWorld)
 	{
 		id = ToS32(s_createdWorlds.size());

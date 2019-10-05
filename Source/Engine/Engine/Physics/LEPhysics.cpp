@@ -57,7 +57,7 @@ void LEPhysics::Step(Time /*dt*/)
 
 CircleCollider* LEPhysics::CreateCircleCollider(std::string ownerName)
 {
-	auto uCollider = MakeUnique<CircleCollider>(std::move(ownerName));
+	auto uCollider = std::make_unique<CircleCollider>(std::move(ownerName));
 	CircleCollider* pCollider = uCollider.get();
 	m_colliders.emplace_back(std::move(uCollider));
 	return pCollider;
@@ -65,7 +65,7 @@ CircleCollider* LEPhysics::CreateCircleCollider(std::string ownerName)
 
 AABBCollider* LEPhysics::CreateAABBCollider(std::string ownerName)
 {
-	auto uCollider = MakeUnique<AABBCollider>(std::move(ownerName));
+	auto uCollider = std::make_unique<AABBCollider>(std::move(ownerName));
 	AABBCollider* pCollider = uCollider.get();
 	m_colliders.emplace_back(std::move(uCollider));
 	return pCollider;
