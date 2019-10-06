@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
-#include "../LECoreUtils/StdTypes.h"
-#include "../LECoreUtils/Deferred.h"
+#include "../GameTypes/StdTypes.h"
+#include "../Deferred.h"
 
 namespace Core
 {

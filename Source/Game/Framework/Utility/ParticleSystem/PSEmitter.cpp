@@ -1,5 +1,4 @@
 #include "Core/Game/GData.h"
-#include "Core/Game/LECoreUtils/Utils.h"
 #include "SFMLAPI/Rendering/Colour.h"
 #include "SFMLAPI/Rendering/Primitives/Quads.h"
 #include "SFMLAPI/Rendering/Primitives/Quad.h"

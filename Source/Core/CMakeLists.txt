@@ -3,7 +3,7 @@ project(Core CXX)
 ################################################################################
 # Submodule dependencies
 ################################################################################
-set(DEEP_SUBMODULE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/Core/Game/LECoreUtils/LEAsserts/LESysDialog/SysDialog.cpp")
+set(DEEP_SUBMODULE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/Core/Game/Asserts/SysDialog/SysDialog.cpp")
 if(NOT EXISTS "${DEEP_SUBMODULE_FILE}")
 	message(FATAL_ERROR "Missing required files! Please ensure git submodules are up to date!\n[${DEEP_SUBMODULE_FILE}]")
 endif()

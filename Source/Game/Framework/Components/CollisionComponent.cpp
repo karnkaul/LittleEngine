@@ -1,4 +1,3 @@
-#include "Core/Game/LECoreUtils/Utils.h"
 #include "SFMLAPI/Rendering/Primitives/SFCircle.h"
 #include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "Engine/Physics/Collider.h"

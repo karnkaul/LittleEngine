@@ -2,7 +2,7 @@
 #include <functional>
 #include <string>
 #include <vector>
-#include "StdTypes.h"
+#include "GameTypes/StdTypes.h"
 
 namespace Core
 {

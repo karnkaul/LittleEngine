@@ -1,7 +1,7 @@
 #include <vector>
+#include "GameTypes/Utils.h"
 #include "Property.h"
-#include "LECoreUtils/FileRW.h"
-#include "LECoreUtils/Utils.h"
+#include "FileRW.h"
 
 namespace Core
 {

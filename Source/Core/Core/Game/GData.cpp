@@ -1,5 +1,5 @@
 #include "GData.h"
-#include "LECoreUtils/Utils.h"
+#include "GameTypes/Utils.h"
 
 namespace Core
 {

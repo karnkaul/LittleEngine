@@ -1,6 +1,5 @@
 #include <list>
 #include "Core/CoreTypes.h"
-#include "Core/Game/LECoreUtils/SimpleTime.h"
 
 #if ENABLED(RENDER_STATS)
 struct RenderStats

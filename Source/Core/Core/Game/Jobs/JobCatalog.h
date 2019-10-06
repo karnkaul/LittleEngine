@@ -1,8 +1,8 @@
 #pragma once
 #include <list>
 #include <vector>
-#include "../LECoreUtils/Fixed.h"
-#include "../LECoreUtils/SimpleTime.h"
+#include "../GameTypes/Fixed.h"
+#include "../GameTypes/SimpleTime.h"
 #include "JobHandle.h"
 
 namespace Core

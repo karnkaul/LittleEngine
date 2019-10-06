@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "LECoreUtils/StdTypes.h"
+#include "GameTypes/StdTypes.h"
 
 namespace Core
 {

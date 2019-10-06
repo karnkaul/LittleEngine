@@ -1,6 +1,5 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "Core/Game/LECoreUtils/SimpleTime.h"
 #include "Model/UI/UIText.h"
 #include "ILoadingHUD.h"
 

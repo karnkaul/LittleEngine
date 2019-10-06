@@ -1,5 +1,5 @@
 #pragma once
-#include "LECoreUtils/Utils.h"
+#include "GameTypes/Utils.h"
 
 namespace Core
 {

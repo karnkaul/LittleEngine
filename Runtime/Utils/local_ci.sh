@@ -13,7 +13,7 @@
 
 # Globals
 THREADS=8
-BRANCHES=(master dev release)
+BRANCHES=(master dev stable)
 
 # Read-only
 BUILD_ROOT=_Build/CI

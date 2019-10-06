@@ -1,6 +1,6 @@
 #include <vector>
 #include <functional>
-#include "LECoreUtils/StdTypes.h"
+#include "GameTypes/StdTypes.h"
 
 #pragma once
 namespace Core

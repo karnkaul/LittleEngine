@@ -1,6 +1,6 @@
 #include "JobWorker.h"
 #include "JobManager.h"
-#include "../LECoreUtils/Utils.h"
+#include "../GameTypes/Utils.h"
 #include "../LEMacros.h"
 #include "../OS.h"
 

@@ -1,6 +1,5 @@
 #include "DebugCommands.h"
 #if ENABLED(CONSOLE)
-#include "Core/Game/LECoreUtils/Utils.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Engine/GFX.h"
 #include "Engine/Debug/Tweakable.h"

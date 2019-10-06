@@ -3,7 +3,7 @@
 #include <map>
 #include <optional>
 #include <string>
-#include "LECoreUtils/StdTypes.h"
+#include "GameTypes/StdTypes.h"
 
 #if _MSC_VER
 #define CXX_MS_CRT

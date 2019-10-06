@@ -2,7 +2,6 @@
 #include "Core/CoreTypes.h"
 #if ENABLED(PROFILER)
 #include <thread>
-#include "Core/Game/LECoreUtils/SimpleTime.h"
 #include "SFMLAPI/Rendering/Colour.h"
 
 #define PROFILE_START(id, colour) Debug::Profiler::StartTicked(id, colour)

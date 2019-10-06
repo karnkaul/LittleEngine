@@ -1,7 +1,7 @@
 #pragma once
 #include <string_view>
 #include <vector>
-#include "LECoreUtils/StdTypes.h"
+#include "GameTypes/StdTypes.h"
 
 namespace Core
 {

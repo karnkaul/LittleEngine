@@ -1,6 +1,6 @@
 #pragma once
 #include <atomic>
-#include "../LECoreUtils/StdTypes.h"
+#include "../GameTypes/StdTypes.h"
 #include "../OS.h"
 
 namespace Core

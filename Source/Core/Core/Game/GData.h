@@ -1,8 +1,8 @@
 #pragma once
 #include <unordered_map>
 #include <vector>
-#include "LECoreUtils/StdTypes.h"
-#include "GFX/Vector2.h"
+#include "GameTypes/StdTypes.h"
+#include "GameTypes/Vector2.h"
 
 namespace Core
 {

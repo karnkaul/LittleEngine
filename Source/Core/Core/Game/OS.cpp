@@ -24,10 +24,10 @@
 #include <signal.h>
 #include <unistd.h>
 #endif
-#include "LECoreUtils/FileRW.h"
-#include "LECoreUtils/Utils.h"
-#include "LEMacros.h"
+#include "GameTypes/Utils.h"
 #include "ArchiveReader.h"
+#include "FileRW.h"
+#include "LEMacros.h"
 #include "Property.h"
 
 #ifdef DEBUGGING
