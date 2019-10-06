@@ -2,6 +2,7 @@
 #include <functional>
 #include <map>
 #include <optional>
+#include <string>
 #include "LECoreUtils/StdTypes.h"
 
 #if _MSC_VER

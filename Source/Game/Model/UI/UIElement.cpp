@@ -136,13 +136,20 @@ SFText* UIElement::Text() const
 
 void UIElement::SetEnabled(bool bEnabled)
 {
+	bool bTick = false;
 	if (m_pRect)
 	{
+		bTick |= !m_pRect->IsEnabled();
 		m_pRect->SetEnabled(bEnabled);
 	}
 	if (m_pText)
 	{
+		bTick |= !m_pRect->IsEnabled();
 		m_pText->SetEnabled(bEnabled);
+	}
+	if (bTick)
+	{
+		Tick();
 	}
 }
 

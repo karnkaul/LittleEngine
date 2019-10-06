@@ -1,5 +1,7 @@
 #pragma once
 #include <functional>
+#include <string>
+#include <vector>
 #include "StdTypes.h"
 
 namespace Core

@@ -20,7 +20,8 @@ private:
 	UITextInputData m_data;
 	UPtr<class KeyboardInput> m_uKeyboard;
 	std::string m_prevText;
-	Token m_token;
+	Token m_inputToken;
+	Token m_pointerToken;
 	OnEditComplete m_onEditComplete;
 	Time m_cursorFreq = Time::Milliseconds(200);
 	Time m_elapsed;

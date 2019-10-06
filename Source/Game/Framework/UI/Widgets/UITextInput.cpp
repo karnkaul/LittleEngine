@@ -57,7 +57,8 @@ void UITextInput::OnSelected()
 
 void UITextInput::OnDeselected()
 {
-	m_token = nullptr;
+	m_inputToken = nullptr;
+	m_pointerToken = nullptr;
 	m_pRoot->SetPanel(m_style.background);
 }
 
@@ -71,8 +72,9 @@ void UITextInput::OnInteractEnd(bool bInteract)
 	if (bInteract)
 	{
 		m_bWriting = !m_bWriting;
-		m_token = m_bWriting ? g_pGameManager->Input()->Register([&](const LEInput::Frame& frame) -> bool { return OnInput(frame); }, true)
+		m_inputToken = m_bWriting ? g_pGameManager->Input()->Register([&](const LEInput::Frame& frame) -> bool { return OnInput(frame); }, true)
 							 : nullptr;
+		m_pointerToken = m_bWriting ? g_pGameManager->Context()->PushPointer(LEContext::Pointer::Text) : nullptr;
 	}
 	Colour fill = m_bWriting ? m_style.interacting.fill : m_style.selected.fill;
 	m_pRoot->SetPanel(fill, m_style.selected.border, m_style.selected.outline);
