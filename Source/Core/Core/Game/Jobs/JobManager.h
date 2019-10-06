@@ -2,6 +2,7 @@
 #include <list>
 #include <memory>
 #include <optional>
+#include <vector>
 #include "JobHandle.h"
 
 namespace Core
