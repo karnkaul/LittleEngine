@@ -1,5 +1,4 @@
 #pragma once
-#include "Core/Delegate.h"
 #include "World.h"
 
 namespace LittleEngine
@@ -25,10 +24,10 @@ private:
 	};
 
 private:
-	static Vec<UPtr<class World>> s_createdWorlds;
+	static std::vector<UPtr<class World>> s_createdWorlds;
 
 private:
-	String m_manifestPath;
+	std::string m_manifestPath;
 	Task m_onLoaded;
 	Time m_loadTime;
 	Token m_onSubmitToken;
@@ -61,14 +60,14 @@ public:
 	WorldStateMachine(LEContext& context);
 	~WorldStateMachine();
 
-	void Start(String coreManifestID = "", String gameStyleID = "", Task onManifestLoaded = nullptr);
+	void Start(std::string coreManifestID = "", std::string gameStyleID = "", Task onManifestLoaded = nullptr);
 	State Tick(Time dt);
 	bool LoadWorld(WorldID id);
 	void SetLoadingHUD(UPtr<class ILoadingHUD> uLoadingHUD);
 
 	World* ActiveWorld() const;
 	WorldID ActiveWorldID() const;
-	Vec<WorldID> AllWorldIDs() const;
+	std::vector<WorldID> AllWorldIDs() const;
 
 private:
 	void ChangeState();
@@ -85,7 +84,7 @@ WorldID WorldStateMachine::CreateWorld()
 {
 	WorldID id = -1;
 	static_assert(IsDerived<World, T>(), "T must derive from World!");
-	UPtr<T> uWorld = MakeUnique<T>();
+	UPtr<T> uWorld = std::make_unique<T>();
 	if (uWorld)
 	{
 		id = ToS32(s_createdWorlds.size());

@@ -1,23 +1,22 @@
 #pragma once
 #include <optional>
+#include "Core/Game/Property.h"
 #include "Core/CoreTypes.h"
-#include "Core/Property.h"
-#include "Core/Logger.h"
 #include "SFMLAPI/Viewport/ViewportData.h"
 
 namespace LittleEngine
 {
 using Property = Core::Property;
-using LogSeverity = Core::LogSeverity;
+using LogSeverity = LE::LogSeverity;
 
 // \brief Wrapper to maintain properties saved to / loaded from Settings.txt
 class GameSettings final
 {
 public:
-	static const String FILE_PATH;
+	static const std::string FILE_PATH;
 
 private:
-	String SAVE_PATH;
+	std::string SAVE_PATH;
 	Property::Persistor m_persistor;
 	Property m_viewportHeight;
 	Property m_borderless;
@@ -42,10 +41,10 @@ public:
 	ViewportStyle GetViewportStyle() const;
 	ViewportSize SafeGetViewportSize();
 	LogSeverity LogLevel() const;
-	String LocdataID() const;
-	const String& ENLocdataID() const;
+	std::string LocdataID() const;
+	const std::string& ENLocdataID() const;
 
-	const String* GetValue(const String& key) const;
+	const std::string* GetValue(const std::string& key) const;
 
 private:
 	void SetDefaults();

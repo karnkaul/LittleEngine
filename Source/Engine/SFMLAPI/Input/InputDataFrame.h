@@ -1,6 +1,7 @@
 #pragma once
+#include <unordered_set>
 #include "Core/CoreTypes.h"
-#include "Core/Utils.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "InputMappings.h"
 
 namespace LittleEngine
@@ -9,22 +10,22 @@ struct KeyState
 {
 private:
 	s32 keyType;
-	VString name;
+	std::string_view name;
 
 public:
 	bool bPressed;
 
 public:
-	KeyState(s32 keyType, VString name = "Unknown");
+	KeyState(s32 keyType, std::string_view name = "Unknown");
 
 	KeyType GetKeyType() const;
-	VString Name() const;
+	std::string_view Name() const;
 };
 
 struct TextInput
 {
-	String text;
-	USet<KeyType> metaText;
+	std::string text;
+	std::unordered_set<KeyType> metaText;
 
 	bool ContainsChar(char c) const;
 	bool ContainsKey(s32 keyCode) const;
@@ -45,21 +46,21 @@ struct JoyState
 	Vector2 zr;
 	Vector2 uv;
 	Vector2 pov;
-	Vec<KeyType> pressed;
+	std::vector<KeyType> pressed;
 };
 
 struct JoyInput
 {
-	Vec<JoyState> m_states;
+	std::vector<JoyState> m_states;
 };
 
 struct InputDataFrame
 {
-	Vec<KeyState> pressed;
+	std::vector<KeyState> pressed;
 	TextInput textInput;
 	MouseInput mouseInput;
 	JoyInput joyInput;
 
-	static String Clipboard();
+	static std::string Clipboard();
 };
 } // namespace LittleEngine

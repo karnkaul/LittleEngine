@@ -1,12 +1,13 @@
+#include <list>
 #include "Core/CoreTypes.h"
-#include "Core/SimpleTime.h"
+#include "Core/Game/LECoreUtils/SimpleTime.h"
 
 #if ENABLED(RENDER_STATS)
 struct RenderStats
 {
 	using Time = Core::Time;
 
-	List<Time> dtList;
+	std::list<Time> dtList;
 	Time lastRenderTime;
 	u32 drawCallCount = 0;
 	u32 quadCount = 0;

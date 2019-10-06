@@ -1,5 +1,5 @@
-#include "Core/FileRW.h"
-#include "Core/Utils.h"
+#include "Core/Game/LECoreUtils/FileRW.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "SFMLAPI/Viewport/Viewport.h"
 #include "Engine/GFX.h"
 #include "Engine/Rendering/LERenderer.h"
@@ -9,13 +9,13 @@ namespace LittleEngine
 {
 namespace
 {
-const String VIEWPORT_HEIGHT_KEY = "RESOLUTION";
-const String BORDERLESS_KEY = "BORDERLESS";
-const String LOG_LEVEL_KEY = "LOG_LEVEL";
-const String LOCALE_KEY = "LOCALE";
+const std::string VIEWPORT_HEIGHT_KEY = "RESOLUTION";
+const std::string BORDERLESS_KEY = "BORDERLESS";
+const std::string LOG_LEVEL_KEY = "LOG_LEVEL";
+const std::string LOCALE_KEY = "LOCALE";
 } // namespace
 
-const String GameSettings::FILE_PATH = "Settings.txt";
+const std::string GameSettings::FILE_PATH = "Settings.txt";
 
 GameSettings* GameSettings::Instance()
 {
@@ -25,7 +25,7 @@ GameSettings* GameSettings::Instance()
 
 GameSettings::GameSettings()
 {
-	static const String FULL_PATH = String(OS::Env()->RuntimePath()) + "/" + FILE_PATH;
+	static const std::string FULL_PATH = std::string(OS::Env()->RuntimePath()) + "/" + FILE_PATH;
 	SAVE_PATH = FULL_PATH;
 	SetDefaults();
 	LoadAndOverride();
@@ -40,7 +40,7 @@ GameSettings::~GameSettings()
 
 u32 GameSettings::ViewportHeight() const
 {
-	String heightStr = m_viewportHeight.stringValue.substr(0, m_viewportHeight.stringValue.size() - 1);
+	std::string heightStr = m_viewportHeight.stringValue.substr(0, m_viewportHeight.stringValue.size() - 1);
 	s32 height = Strings::ToS32(heightStr);
 	return static_cast<u32>(height);
 }
@@ -70,7 +70,7 @@ void GameSettings::SetBorderless(bool bBorderless)
 
 void GameSettings::SetLogLevel(LogSeverity level)
 {
-	m_logLevel.stringValue = Core::ParseLogSeverity(level);
+	m_logLevel.stringValue = ParseSeverity(level);
 	if (m_bAutoSave)
 	{
 		SaveAll();
@@ -109,21 +109,21 @@ ViewportSize GameSettings::SafeGetViewportSize()
 
 LogSeverity GameSettings::LogLevel() const
 {
-	return Core::ParseLogSeverity(m_logLevel.stringValue);
+	return LE::ParseSeverity(m_logLevel.stringValue);
 }
 
-String GameSettings::LocdataID() const
+std::string GameSettings::LocdataID() const
 {
 	return "Texts/Locale/" + m_locale.stringValue + ".loc";
 }
 
-const String& GameSettings::ENLocdataID() const
+const std::string& GameSettings::ENLocdataID() const
 {
-	static String enLocdataID = "Texts/Locale/en.loc";
+	static std::string enLocdataID = "Texts/Locale/en.loc";
 	return enLocdataID;
 }
 
-const String* GameSettings::GetValue(const String& key) const
+const std::string* GameSettings::GetValue(const std::string& key) const
 {
 	auto pProp = m_persistor.GetProp(key);
 	if (pProp)
@@ -138,7 +138,7 @@ void GameSettings::SetDefaults()
 	ViewportSize native = Viewport::MaxSize();
 	m_viewportHeight = Property(VIEWPORT_HEIGHT_KEY, Strings::ToString(native.height) + "p");
 	m_borderless = Property(BORDERLESS_KEY, Strings::ToString(true));
-	m_logLevel = Property(LOG_LEVEL_KEY, String(Core::ParseLogSeverity(LogSeverity::Info)));
+	m_logLevel = Property(LOG_LEVEL_KEY, std::string(ParseSeverity(LogSeverity::Info)));
 	m_locale = Property(LOCALE_KEY, "en");
 }
 
@@ -146,7 +146,7 @@ void GameSettings::LoadAndOverride()
 {
 	if (m_persistor.Load(SAVE_PATH))
 	{
-		auto load = [&](Property& target, const String& key) {
+		auto load = [&](Property& target, const std::string& key) {
 			if (auto pSaved = m_persistor.GetProp(key))
 			{
 				target = *pSaved;

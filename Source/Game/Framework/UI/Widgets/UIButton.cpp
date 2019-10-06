@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"
 #include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "Model/UI/UIElement.h"

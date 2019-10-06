@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "UIProgressBar.h"
 

@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "Engine/Debug/Tweakable.h"
 #include "ParticleSystem.h"
@@ -19,8 +18,8 @@ void ParticleSystem::OnCreated()
 
 void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 {
-	Vec<EmitterData>& emitters = data.emitterDatas;
-	String particles;
+	std::vector<EmitterData>& emitters = data.emitterDatas;
+	std::string particles;
 	particles.reserve(32);
 	for (EmitterData& eData : emitters)
 	{
@@ -33,10 +32,10 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 		eData.SetOwner(*this);
 		particles += Strings::ToString(eData.spawnData.numParticles);
 		particles += ", ";
-		UPtr<Emitter> emitter = MakeUnique<Emitter>(std::move(eData), false);
+		UPtr<Emitter> emitter = std::make_unique<Emitter>(std::move(eData), false);
 		m_emitters.emplace_back(std::move(emitter));
 	}
-	Core::LogSeverity logSeverity = particles.empty() || emitters.empty() ? Core::LogSeverity::Warning : Core::LogSeverity::Debug;
+	auto logSeverity = particles.empty() || emitters.empty() ? LE::LogSeverity::Warning : LE::LogSeverity::Debug;
 	if (!particles.empty())
 	{
 		particles = particles.substr(0, particles.length() - 2);
@@ -46,14 +45,14 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 		particles = "0";
 	}
 
-	Core::Log(logSeverity, "%s initialised: [%d] emitters [%s] particles", m_logName.data(), emitters.size(), particles.c_str());
+	Log(logSeverity, "%s initialised: [%d] emitters [%s] particles", m_logName.data(), emitters.size(), particles.c_str());
 #if defined(DEBUGGING)
 	m_pO_x->SetEnabled(false);
 	m_pO_y->SetEnabled(false);
 #endif
 }
 
-Emitter* ParticleSystem::GetEmitter(const String& id)
+Emitter* ParticleSystem::GetEmitter(const std::string& id)
 {
 	auto search =
 		std::find_if(m_emitters.begin(), m_emitters.end(), [id](const UPtr<Emitter>& uEmitter) { return uEmitter->m_data.id == id; });
@@ -83,7 +82,7 @@ void ParticleSystem::Stop()
 void ParticleSystem::Tick(Time dt)
 {
 #if ENABLED(PROFILER)
-	String id = m_name;
+	std::string id = m_name;
 	Strings::ToUpper(id);
 	if (m_profileColour == Colour())
 	{

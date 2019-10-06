@@ -8,7 +8,7 @@ class UIOptions final : public UIContainer
 {
 private:
 	Token m_worldSelectToken;
-	Vec<Token> m_tokens;
+	std::vector<Token> m_tokens;
 
 public:
 	UIOptions();

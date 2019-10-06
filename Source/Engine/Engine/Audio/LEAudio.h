@@ -14,12 +14,12 @@ private:
 	// \brief Helper to store next track until current has faded out
 	struct SwitchTrackRequest
 	{
-		String newTrackPath;
+		std::string newTrackPath;
 		Time fadeTime;
 		Fixed targetVolume;
 		bool bLoop = true;
 
-		SwitchTrackRequest(String newTrackPath, Time fadeTime, Fixed targetVolume, bool bLoop);
+		SwitchTrackRequest(std::string newTrackPath, Time fadeTime, Fixed targetVolume, bool bLoop);
 	};
 
 #if defined(DEBUGGING)
@@ -30,10 +30,10 @@ public:
 private:
 	MusicPlayer m_musicPlayerA;
 	MusicPlayer m_musicPlayerB;
-	Vec<UPtr<SoundPlayer>> m_sfxPlayers;
+	std::vector<UPtr<SoundPlayer>> m_sfxPlayers;
 	std::optional<SwitchTrackRequest> m_oSwitchTrackRequest;
 	bool m_bSideA = true;
-	const String m_rootMusicDir = "GameMusic";
+	const std::string m_rootMusicDir = "GameMusic";
 
 public:
 	LEAudio();
@@ -43,18 +43,18 @@ public:
 	void SetMixVolume(AudioPlayer::Mix mix, Fixed nVol);
 
 	// Returns nullptr if asset could not be loaded
-	SoundPlayer* PlaySFX(String id, Fixed nVol = Fixed::One, Fixed direction = Fixed::Zero, bool bLoop = false);
+	SoundPlayer* PlaySFX(std::string id, Fixed nVol = Fixed::One, Fixed direction = Fixed::Zero, bool bLoop = false);
 	SoundPlayer* PlaySFX(class SoundAsset& sound, Fixed nVol = Fixed::One, Fixed direction = Fixed::Zero, bool bLoop = false);
 	bool IsSFXPlaying() const;
 
 	// Returns true if asset is loaded successfully
-	bool PlayMusic(String id, Fixed nVol = Fixed::One, Time fadeTime = Time::Seconds(1), bool bLoop = true);
+	bool PlayMusic(std::string id, Fixed nVol = Fixed::One, Time fadeTime = Time::Seconds(1), bool bLoop = true);
 	bool IsMusicPlaying() const;
 	void PauseMusic(Time fadeTime = Time::Seconds(0.5f));
 	bool IsMusicPaused() const;
 	bool ResumeMusic(Time fadeTime = Time::Seconds(0.5f), Fixed nVol = Fixed::One);
 	void StopMusic(Time fadeTime = Time::Zero);
-	void SwitchTrack(String id, Fixed nVol = Fixed::One, Time fadeTime = Time::Seconds(1), bool bLoop = true);
+	void SwitchTrack(std::string id, Fixed nVol = Fixed::One, Time fadeTime = Time::Seconds(1), bool bLoop = true);
 	void SetMusicVolume(Fixed nVol);
 
 	void PauseAll();
@@ -75,7 +75,7 @@ private:
 	const MusicPlayer& ActivePlayer() const;
 	const MusicPlayer& StandbyPlayer() const;
 	void SwitchSide(MusicPlayer*& out_pActive, MusicPlayer*& out_pStandby);
-	String GetPath(String id) const;
+	std::string GetPath(std::string id) const;
 
 #if defined(DEBUGGING)
 	struct DbgImpl;

@@ -13,7 +13,7 @@ public:
 
 public:
 	Vector2 m_position;
-	String m_name;
+	std::string m_name;
 	s32 m_ignoreSig = 0;
 	class Entity* m_pOwner = nullptr;
 	bool m_bEnabled = true;
@@ -40,7 +40,7 @@ private:
 	CircleData m_circle = CircleData::One;
 
 public:
-	CircleCollider(String ownerName = "");
+	CircleCollider(std::string ownerName = "");
 
 	void SetCircle(Fixed diameter);
 	CircleData WorldCircle() const;
@@ -61,7 +61,7 @@ private:
 	AABBData m_aabb;
 
 public:
-	AABBCollider(String ownerName = "");
+	AABBCollider(std::string ownerName = "");
 
 	void SetAABB(const AABBData& aabb);
 	AABBData WorldAABB() const;

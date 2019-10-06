@@ -1,5 +1,4 @@
-#include "Core/Logger.h"
-#include "Core/Utils.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Engine/Audio/LEAudio.h"
 #include "Engine/Context/LEContext.h"
@@ -14,9 +13,9 @@
 
 namespace LittleEngine
 {
-World::World(String name) : GameObject(std::move(name), "World")
+World::World(std::string name) : GameObject(std::move(name), "World")
 {
-	m_uWorldClock = MakeUnique<WorldClock>();
+	m_uWorldClock = std::make_unique<WorldClock>();
 	m_manifestID.reserve(m_name.size() + 4);
 	m_manifestID += m_name;
 	m_manifestID += ".amf";

@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "SFText.h"
 #include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/System/SFTypes.h"
@@ -62,7 +61,7 @@ SFText* SFText::SetSize(u32 size)
 	return this;
 }
 
-SFText* SFText::SetText(String text)
+SFText* SFText::SetText(std::string text)
 {
 	Lock lock(m_textMutex);
 	m_text = std::move(text);
@@ -70,7 +69,7 @@ SFText* SFText::SetText(String text)
 	return this;
 }
 
-String SFText::Text() const
+std::string SFText::Text() const
 {
 	return m_text;
 }

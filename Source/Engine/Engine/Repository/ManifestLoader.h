@@ -16,17 +16,17 @@ private:
 	struct NewAsset
 	{
 		UPtr<T> asset;
-		String assetID;
+		std::string assetID;
 
-		NewAsset(String id) : assetID(std::move(id)) {}
+		NewAsset(std::string id) : assetID(std::move(id)) {}
 	};
 
 	Task m_onDone;
-	String m_manifestPath;
-	Vec<NewAsset<class TextureAsset>> m_newTextures;
-	Vec<NewAsset<class FontAsset>> m_newFonts;
-	Vec<NewAsset<class SoundAsset>> m_newSounds;
-	Vec<NewAsset<class TextAsset>> m_newTexts;
+	std::string m_manifestPath;
+	std::vector<NewAsset<class TextureAsset>> m_newTextures;
+	std::vector<NewAsset<class FontAsset>> m_newFonts;
+	std::vector<NewAsset<class SoundAsset>> m_newSounds;
+	std::vector<NewAsset<class TextAsset>> m_newTexts;
 	class LERepository* m_pRepository;
 	Core::JobCatalog* m_pJobCatalog = nullptr;
 	bool m_bUnloading = false;
@@ -37,7 +37,7 @@ private:
 #endif
 
 public:
-	ManifestLoader(LERepository& repository, String manifestPath, Task onDone, bool bUnload);
+	ManifestLoader(LERepository& repository, std::string manifestPath, Task onDone, bool bUnload);
 
 	Fixed Progress() const;
 

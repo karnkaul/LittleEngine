@@ -1,5 +1,4 @@
-#include "Core/Logger.h"
-#include "Core/Version.h"
+#include "Core/GameVersion.h"
 #include "SFMLAPI/Rendering/RenderStats.h"
 #include "Engine/FatalEngineException.h"
 #include "Engine/Debug/Profiler.h"
@@ -33,16 +32,16 @@ enum class PostRun
 // Globals
 namespace IDs
 {
-const String ASSETS_ROOT = "GameAssets";
-const String COOKED_ASSETS = "GameAssets.cooked";
-const String MAIN_MANIFEST = "Manifest.amf";
-const String DEFAULT_FONT = "Fonts/Default.ttf";
-const String GAME_STYLE = "Texts/Game.style";
+const std::string ASSETS_ROOT = "GameAssets";
+const std::string COOKED_ASSETS = "GameAssets.cooked";
+const std::string MAIN_MANIFEST = "Manifest.amf";
+const std::string DEFAULT_FONT = "Fonts/Default.ttf";
+const std::string GAME_STYLE = "Texts/Game.style";
 } // namespace IDs
 
-const String MAIN_MANIFEST_FILE = "GameAssets/Manifest.amf";
+const std::string MAIN_MANIFEST_FILE = "GameAssets/Manifest.amf";
 #if !defined(SHIPPING)
-const String GAME_CONFIG_FILE = ".game.conf";
+const std::string GAME_CONFIG_FILE = ".game.conf";
 #endif
 
 bool bInit = false;
@@ -71,15 +70,15 @@ bool Init(s32 argc, char** argv)
 #endif
 	if (OS::Threads::VacantThreadCount() > 0)
 	{
-		String header = "Build: ";
-		header += Core::Version::BUILD_VERSION.ToString();
+		std::string header = "Build: ";
+		header += BUILD_VERSION.ToString();
 		u8 backupCount = config.BackupLogFileCount();
-		Core::StartFileLogging(OS::Env()->FullPath("Debug"), backupCount, std::move(header));
+		OS::StartFileLogging(OS::Env()->FullPath("Debug"), backupCount, std::move(header));
 	}
 	try
 	{
-		uRepository = MakeUnique<LERepository>(IDs::DEFAULT_FONT, IDs::COOKED_ASSETS, IDs::ASSETS_ROOT);
-		uAudio = MakeUnique<LEAudio>();
+		uRepository = std::make_unique<LERepository>(IDs::DEFAULT_FONT, IDs::COOKED_ASSETS, IDs::ASSETS_ROOT);
+		uAudio = std::make_unique<LEAudio>();
 		LEShaders::Init();
 	}
 	catch (const FatalEngineException& e)
@@ -100,7 +99,7 @@ bool Init(s32 argc, char** argv)
 		maxParticlesScale = Strings::ToF32(*pStr, maxParticlesScale);
 	}
 	g_maxParticlesScale = Fixed(maxParticlesScale);
-	Core::g_MinLogSeverity = pSettings->LogLevel();
+	LE::g_MinLogSeverity = pSettings->LogLevel();
 	ControllerComponent::s_orientationEpsilon = config.ControllerOrientationEpsilon();
 	maxFrameTime = config.MaxFrameTime();
 	if (config.ShouldCreateRenderThread())
@@ -117,8 +116,8 @@ bool Init(s32 argc, char** argv)
 	Collider::s_debugShapeWidth = config.ColliderBorderWidth();
 #endif
 #if ENABLED(TWEAKABLES)
-	ticksPerSec.BindCallback([](VString val) {
-		s32 newRate = Strings::ToS32(String(val));
+	ticksPerSec.BindCallback([](std::string_view val) {
+		s32 newRate = Strings::ToS32(std::string(val));
 		if (newRate > 0 && newRate < 250)
 		{
 			Time newTickRate = Time::Seconds(1.0f / newRate);
@@ -131,8 +130,8 @@ bool Init(s32 argc, char** argv)
 		}
 	});
 	reload.m_value = "-1";
-	reload.BindCallback([](VString val) {
-		s32 option = Strings::ToS32(String(val), -1);
+	reload.BindCallback([](std::string_view val) {
+		s32 option = Strings::ToS32(std::string(val), -1);
 		if (option >= 0 && option < ToS32(GameLoop::ReloadType::_COUNT))
 		{
 			GameLoop::Reload(static_cast<GameLoop::ReloadType>(option));
@@ -149,7 +148,7 @@ bool Init(s32 argc, char** argv)
 bool Stage()
 {
 	GameInit::CreateWorlds();
-	if (!kernel.Boot(config)) 
+	if (!kernel.Boot(config))
 	{
 		return false;
 	};
@@ -228,7 +227,7 @@ void Cleanup()
 #endif
 	Core::Jobs::Cleanup();
 	LOG_I("[GameLoop] Terminated");
-	Core::StopFileLogging();
+	OS::StopFileLogging();
 }
 
 void RunLoop(const Time tickRate, const Time fdt)

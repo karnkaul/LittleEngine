@@ -11,12 +11,12 @@ namespace Debug
 {
 struct LogLine
 {
-	String text;
+	std::string text;
 	Colour colour;
 	static constexpr u16 TEXT_SIZE = 19;
 
 	LogLine() = default;
-	LogLine(String text, Colour colour);
+	LogLine(std::string text, Colour colour);
 	UIText ToUIText() const;
 };
 
@@ -24,9 +24,9 @@ class LogBook
 {
 private:
 	const u32 m_lineCount;
-	Vec<LogLine> m_logLines;
-	Vec<LogLine>::reverse_iterator m_bottom;
-	Vec<LogLine>::reverse_iterator m_top;
+	std::vector<LogLine> m_logLines;
+	std::vector<LogLine>::reverse_iterator m_bottom;
+	std::vector<LogLine>::reverse_iterator m_top;
 
 public:
 	LogBook(u32 lineCount);
@@ -36,8 +36,8 @@ public:
 	void PageUp();
 	void PageDown();
 
-	Vec<LogLine> LogPage() const;
-	void Append(Vec<LogLine>&& move);
+	std::vector<LogLine> LogPage() const;
+	void Append(std::vector<LogLine>&& move);
 	void Append(LogLine logLine);
 };
 } // namespace Debug

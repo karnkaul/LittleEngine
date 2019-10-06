@@ -16,7 +16,7 @@ struct TileData
 class TileMap
 {
 private:
-	Vec<class Quad*> m_quads;
+	std::vector<class Quad*> m_quads;
 	class Quads* m_pQuads;
 	bool m_bDestroyPrimitive;
 

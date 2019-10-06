@@ -1,6 +1,5 @@
 #include "SFML/Audio.hpp"
-#include "Core/Utils.h"
-#include "Core/Logger.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "AudioPlayer.h"
 #include "SFMLAPI/System/Assets.h"
 
@@ -23,7 +22,7 @@ AudioPlayer::Status Cast(sf::Sound::Status status)
 }
 } // namespace
 
-Array<Fixed, 3> AudioPlayer::s_mixVols = {1, 1, 1};
+std::array<Fixed, 3> AudioPlayer::s_mixVols = {1, 1, 1};
 
 AudioPlayer::AudioPlayer() = default;
 AudioPlayer::~AudioPlayer() = default;
@@ -35,7 +34,7 @@ Fixed AudioPlayer::MixVolume(Mix mix, Fixed nVol)
 
 SoundPlayer::SoundPlayer(SoundAsset* pSoundAsset)
 {
-	m_uSFSound = MakeUnique<sf::Sound>();
+	m_uSFSound = std::make_unique<sf::Sound>();
 	if (pSoundAsset)
 	{
 		SetSoundAsset(*pSoundAsset);
@@ -131,7 +130,7 @@ bool SoundPlayer::ApplyParams()
 
 MusicPlayer::MusicPlayer()
 {
-	m_uSFMusic = MakeUnique<sf::Music>();
+	m_uSFMusic = std::make_unique<sf::Music>();
 }
 
 MusicPlayer::~MusicPlayer()
@@ -142,7 +141,7 @@ MusicPlayer::~MusicPlayer()
 	}
 }
 
-bool MusicPlayer::SetTrack(String path)
+bool MusicPlayer::SetTrack(std::string path)
 {
 	return m_uSFMusic->openFromFile(path);
 }
@@ -258,7 +257,6 @@ void MusicPlayer::Tick(Time dt)
 			{
 				m_volume = m_startVolume * (Fixed::One - ratio);
 			}
-			LOG_H("Fading! Volume: %.2f", m_volume.ToF32());
 		}
 	}
 	ApplyParams();

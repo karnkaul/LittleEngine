@@ -5,7 +5,7 @@ namespace LittleEngine
 {
 GameObject::GameObject(bool bSilent) : Inheritable(bSilent) {}
 
-GameObject::GameObject(String name, String baseClass, bool bSilent) : Inheritable(std::move(name), std::move(baseClass), bSilent) {}
+GameObject::GameObject(std::string name, std::string baseClass, bool bSilent) : Inheritable(std::move(name), std::move(baseClass), bSilent) {}
 
 GameObject::~GameObject() = default;
 

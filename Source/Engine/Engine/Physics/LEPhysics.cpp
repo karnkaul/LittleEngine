@@ -1,5 +1,4 @@
-#include "Core/Logger.h"
-#include "Core/Utils.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "Collider.h"
 #include "LEPhysics.h"
 
@@ -55,17 +54,17 @@ void LEPhysics::Step(Time /*dt*/)
 	}
 }
 
-CircleCollider* LEPhysics::CreateCircleCollider(String ownerName)
+CircleCollider* LEPhysics::CreateCircleCollider(std::string ownerName)
 {
-	auto uCollider = MakeUnique<CircleCollider>(std::move(ownerName));
+	auto uCollider = std::make_unique<CircleCollider>(std::move(ownerName));
 	CircleCollider* pCollider = uCollider.get();
 	m_colliders.emplace_back(std::move(uCollider));
 	return pCollider;
 }
 
-AABBCollider* LEPhysics::CreateAABBCollider(String ownerName)
+AABBCollider* LEPhysics::CreateAABBCollider(std::string ownerName)
 {
-	auto uCollider = MakeUnique<AABBCollider>(std::move(ownerName));
+	auto uCollider = std::make_unique<AABBCollider>(std::move(ownerName));
 	AABBCollider* pCollider = uCollider.get();
 	m_colliders.emplace_back(std::move(uCollider));
 	return pCollider;

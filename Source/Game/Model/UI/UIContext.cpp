@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/GFX.h"
@@ -19,10 +18,10 @@ UIContext::~UIContext()
 	m_uiElements.clear();
 }
 
-void UIContext::OnCreate(String id, LayerID rootLayer)
+void UIContext::OnCreate(std::string id, LayerID rootLayer)
 {
 	SetNameAndType(std::move(id), "UIContext");
-	m_uUIWidgets = MakeUnique<UIWidgetMatrix>();
+	m_uUIWidgets = std::make_unique<UIWidgetMatrix>();
 	s32 layerDelta = ToS32(rootLayer) - ToS32(LayerID::UI);
 	m_pRoot = AddElement<UIElement>(m_name + "_Root", nullptr, layerDelta);
 	m_pRoot->SetStatic(true);

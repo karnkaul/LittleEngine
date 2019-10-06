@@ -1,4 +1,6 @@
 #pragma once
+#include <array>
+#include <string_view>
 
 namespace LittleEngine
 {
@@ -12,5 +14,5 @@ enum class AssetType : u8
 	_COUNT
 };
 
-extern Array<VString, ToIdx(AssetType::_COUNT)> g_szAssetType;
+extern std::array<std::string_view, ToIdx(AssetType::_COUNT)> g_szAssetType;
 } // namespace LittleEngine

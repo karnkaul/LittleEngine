@@ -1,7 +1,6 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "Core/GData.h"
-#include "Core/TRange.h"
+#include "Core/Game/GData.h"
 #include "SFMLAPI/Rendering/Colour.h"
 
 namespace LittleEngine
@@ -42,7 +41,7 @@ struct EmitterData
 {
 	ParticleSpawnData spawnData;
 	ParticleLifetimeData lifetimeData;
-	String id;
+	std::string id;
 	Fixed sfxVolume = Fixed::One;
 	Fixed startDelaySecs = Fixed::Zero;
 	s32 layerDelta = 0;
@@ -69,7 +68,7 @@ private:
 
 struct ParticleSystemData
 {
-	Vec<EmitterData> emitterDatas;
+	std::vector<EmitterData> emitterDatas;
 	ParticleSystemData(const GData& psGData);
 	ParticleSystemData(ParticleSystemData&&) = default;
 	ParticleSystemData& operator=(ParticleSystemData&&) = default;

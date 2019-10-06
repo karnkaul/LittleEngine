@@ -9,27 +9,27 @@ class UIManager final
 {
 public:
 private:
-	List<UPtr<class UIContext>> m_contexts;
-	UMap<String, UPtr<UIContext>> m_inactive;
+	std::list<UPtr<class UIContext>> m_contexts;
+	std::unordered_map<std::string, UPtr<UIContext>> m_inactive;
 
 public:
 	UIManager();
 	~UIManager();
 
 	template <typename T>
-	T* PushContext(String id);
+	T* PushContext(std::string id);
 	UIContext* Active() const;
 
 private:
 	template <typename T>
-	UPtr<T> Inactive(const String& id);
+	UPtr<T> Inactive(const std::string& id);
 	template <typename T>
-	UPtr<T> CreateContext(String id);
+	UPtr<T> CreateContext(std::string id);
 
 	void Clear();
 	void Tick(Time dt);
 
-	void InitContext(UIContext& context, String id, LayerID baseLayer);
+	void InitContext(UIContext& context, std::string id, LayerID baseLayer);
 	void DisableContext(UIContext& context);
 
 private:
@@ -37,7 +37,7 @@ private:
 };
 
 template <typename T>
-T* UIManager::PushContext(String id)
+T* UIManager::PushContext(std::string id)
 {
 	static_assert(IsDerived<UIContext, T>(), "T must derive from UIContext!");
 
@@ -79,7 +79,7 @@ T* UIManager::PushContext(String id)
 }
 
 template <typename T>
-UPtr<T> UIManager::Inactive(const String& id)
+UPtr<T> UIManager::Inactive(const std::string& id)
 {
 	auto search = m_inactive.find(id);
 	if (search != m_inactive.end())
@@ -95,9 +95,9 @@ UPtr<T> UIManager::Inactive(const String& id)
 }
 
 template <typename T>
-UPtr<T> UIManager::CreateContext(String id)
+UPtr<T> UIManager::CreateContext(std::string id)
 {
-	UPtr<T> uT = MakeUnique<T>();
+	UPtr<T> uT = std::make_unique<T>();
 	LayerID baseLayer = m_contexts.empty() ? LayerID::UI : static_cast<LayerID>(ToS32(m_contexts.back()->MaxLayer()) + 2);
 	InitContext(*uT, std::move(id), baseLayer);
 	return (uT);

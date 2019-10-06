@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "Model/UI/UIContext.h"
 #include "Model/UI/UIElement.h"
 #include "UIToggle.h"

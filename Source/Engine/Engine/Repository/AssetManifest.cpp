@@ -1,5 +1,5 @@
-#include "Core/GData.h"
-#include "Core/Utils.h"
+#include "Core/Game/GData.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "AssetManifest.h"
 
 namespace LittleEngine
@@ -15,12 +15,12 @@ AssetIDContainer DeserialiseAssetPaths(GData& gData)
 }
 } // namespace
 
-AssetIDContainer::AssetIDContainer(String assetPath)
+AssetIDContainer::AssetIDContainer(std::string assetPath)
 {
 	assetIDs.emplace_back(std::move(assetPath));
 }
 
-AssetIDContainer::AssetIDContainer(InitList<String> assetPaths)
+AssetIDContainer::AssetIDContainer(std::initializer_list<std::string> assetPaths)
 {
 	for (const auto& path : assetPaths)
 	{
@@ -28,27 +28,27 @@ AssetIDContainer::AssetIDContainer(InitList<String> assetPaths)
 	}
 }
 
-AssetIDContainer::AssetIDContainer(const String& pathPrefix, InitList<String> assetPaths)
+AssetIDContainer::AssetIDContainer(const std::string& pathPrefix, std::initializer_list<std::string> assetPaths)
 {
-	String prefix = pathPrefix.empty() ? "" : pathPrefix + "/";
+	std::string prefix = pathPrefix.empty() ? "" : pathPrefix + "/";
 	for (const auto& path : assetPaths)
 	{
 		this->assetIDs.emplace_back(prefix + path);
 	}
 }
 
-AssetIDContainer::AssetIDContainer(const String& pathPrefix, u32 count, const String& assetPrefix, const String& assetSuffix)
+AssetIDContainer::AssetIDContainer(const std::string& pathPrefix, u32 count, const std::string& assetPrefix, const std::string& assetSuffix)
 {
-	String prefix = pathPrefix.empty() ? "" : pathPrefix + "/";
+	std::string prefix = pathPrefix.empty() ? "" : pathPrefix + "/";
 	for (u32 i = 0; i < count; ++i)
 	{
-		String suffix = (i < 10) ? "0" + Strings::ToString(i) : Strings::ToString(i);
+		std::string suffix = (i < 10) ? "0" + Strings::ToString(i) : Strings::ToString(i);
 		suffix += assetSuffix;
 		this->assetIDs.emplace_back(prefix + assetPrefix + suffix);
 	}
 }
 
-String AssetIDContainer::Random() const
+std::string AssetIDContainer::Random() const
 {
 	size_t index = Maths::Random::Range(ToIdx(0), assetIDs.size());
 	return assetIDs[index];
@@ -56,7 +56,7 @@ String AssetIDContainer::Random() const
 
 AssetDefinition::AssetDefinition(AssetType type, AssetIDContainer assetIDs) : assetIDs(std::move(assetIDs)), type(type) {}
 
-AssetManifest::AssetManifest(Vec<AssetDefinition> assetDefinitions) : assetDefs(std::move(assetDefinitions)) {}
+AssetManifest::AssetManifest(std::vector<AssetDefinition> assetDefinitions) : assetDefs(std::move(assetDefinitions)) {}
 
 void AssetManifest::AddDefinition(AssetDefinition definition)
 {
@@ -86,13 +86,13 @@ AssetManifest& AssetManifestData::Manifest()
 	return manifest;
 }
 
-void AssetManifestData::Load(String amfPath)
+void AssetManifestData::Load(std::string amfPath)
 {
 	FileRW reader(std::move(amfPath));
 	Deserialise(reader.Load(true));
 }
 
-void AssetManifestData::Deserialise(String serialised)
+void AssetManifestData::Deserialise(std::string serialised)
 {
 	GData data(std::move(serialised));
 	manifest.Clear();

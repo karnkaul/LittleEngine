@@ -57,7 +57,7 @@ public:
 	SFRect* Rect() const;
 	SFText* Text() const;
 
-	void OnCreate(LEContext& context, String name, UITransform* pParent = nullptr, FontAsset* pfont = nullptr);
+	void OnCreate(LEContext& context, std::string name, UITransform* pParent = nullptr, FontAsset* pfont = nullptr);
 	void SetEnabled(bool bEnabled);
 	void Tick(Time dt = Time::Zero) override;
 

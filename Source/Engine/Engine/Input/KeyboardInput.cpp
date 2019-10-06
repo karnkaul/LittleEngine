@@ -8,13 +8,13 @@ LiveLine::LiveLine()
 	cursorIdx = 0;
 }
 
-void LiveLine::Set(String newInput)
+void LiveLine::Set(std::string newInput)
 {
 	liveString = std::move(newInput);
 	cursorIdx = liveString.size();
 }
 
-void LiveLine::Append(String newInput)
+void LiveLine::Append(std::string newInput)
 {
 	size_t cursorOffset = newInput.size();
 	if (!newInput.empty())
@@ -157,7 +157,7 @@ void KeyboardInput::Clear()
 	m_liveLine.Clear();
 }
 
-String KeyboardInput::LiveString() const
+std::string KeyboardInput::LiveString() const
 {
 	return m_liveLine.liveString;
 }

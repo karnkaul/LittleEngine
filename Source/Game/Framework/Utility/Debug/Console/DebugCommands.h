@@ -16,8 +16,8 @@ namespace Commands
 {
 struct AutoCompleteResults
 {
-	Vec<String> queries;
-	Vec<String> params;
+	std::vector<std::string> queries;
+	std::vector<std::string> params;
 	bool bCustomParam = false;
 };
 
@@ -25,29 +25,29 @@ struct AutoCompleteResults
 class Command
 {
 public:
-	String m_name;
+	std::string m_name;
 	// Set to true to include space when autocompleting this Command
 	bool m_bTakesCustomParam = false;
 
 	virtual ~Command() = default;
 
-	Vec<LogLine> Execute(String params);
+	std::vector<LogLine> Execute(std::string params);
 
-	virtual Vec<String> AutoCompleteParams(VString /*query*/);
+	virtual std::vector<std::string> AutoCompleteParams(std::string_view /*query*/);
 
 protected:
-	Vec<LogLine> m_executeResult;
+	std::vector<LogLine> m_executeResult;
 
-	Command(VString szName);
+	Command(std::string_view szName);
 
-	virtual void FillExecuteResult(String params) = 0;
+	virtual void FillExecuteResult(std::string params) = 0;
 };
 
 void Init(LEContext& context);
 void Cleanup();
 void AddCommand(UPtr<Command> uCommand);
-Vec<LogLine> Execute(VString query);
-AutoCompleteResults AutoComplete(VString incompleteQuery);
+std::vector<LogLine> Execute(std::string_view query);
+AutoCompleteResults AutoComplete(std::string_view incompleteQuery);
 } // namespace Commands
 } // namespace Debug
 } // namespace LittleEngine

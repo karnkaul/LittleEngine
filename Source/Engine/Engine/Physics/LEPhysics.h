@@ -6,15 +6,15 @@ namespace LittleEngine
 class LEPhysics final
 {
 private:
-	Vec<UPtr<class Collider>> m_colliders;
-	String m_logName;
+	std::vector<UPtr<class Collider>> m_colliders;
+	std::string m_logName;
 
 public:
 	LEPhysics();
 	~LEPhysics();
 
-	class CircleCollider* CreateCircleCollider(String ownerName);
-	class AABBCollider* CreateAABBCollider(String ownerName);
+	class CircleCollider* CreateCircleCollider(std::string ownerName);
+	class AABBCollider* CreateAABBCollider(std::string ownerName);
 
 private:
 	void Clear();

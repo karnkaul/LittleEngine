@@ -1,5 +1,4 @@
-#include "Core/ArchiveReader.h"
-#include "Core/Logger.h"
+#include "Core/Game/ArchiveReader.h"
 #include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"
@@ -27,7 +26,7 @@ u32 subtitleSize = 60;
 bool WorldStateMachine::s_bRunning = false;
 #endif
 
-Vec<UPtr<World>> WorldStateMachine::s_createdWorlds;
+std::vector<UPtr<World>> WorldStateMachine::s_createdWorlds;
 
 WorldStateMachine::WorldStateMachine(LEContext& context) : m_pContext(&context)
 {
@@ -54,12 +53,12 @@ WorldStateMachine::~WorldStateMachine()
 	LOG_D("[WSM] destroyed");
 }
 
-void WorldStateMachine::Start(String coreManifestID, String gameStyleID, Task onManifestLoaded)
+void WorldStateMachine::Start(std::string coreManifestID, std::string gameStyleID, Task onManifestLoaded)
 {
 	Assert(g_pGameManager, "GameManager is null!");
 	if (!m_uLoadHUD)
 	{
-		m_uLoadHUD = MakeUnique<LoadingHUD>();
+		m_uLoadHUD = std::make_unique<LoadingHUD>();
 		m_pLoadingTitle = &m_uLoadHUD->Title();
 		m_pLoadingTitle->SetSize(titleSize);
 		m_pLoadingSubtitle = m_uLoadHUD->Subtitle();
@@ -116,7 +115,7 @@ void WorldStateMachine::Start(String coreManifestID, String gameStyleID, Task on
 			m_sLoader = nullptr;
 		});
 		m_loadTime = Time::Now();
-		String titleText = LOC("LOC_LOADING");
+		std::string titleText = LOC("LOC_LOADING");
 #if ENABLED(DEBUG_LOGGING)
 		titleText = LOC("LOC_LOADING_ASSETS");
 #endif
@@ -201,7 +200,7 @@ bool WorldStateMachine::LoadWorld(WorldID id)
 		m_pLoadingTitle->SetText(LOC("LOC_LOADING"));
 		if (m_pLoadingSubtitle)
 		{
-			String key = "LOC_WORLD_" + m_pNextWorld->m_name;
+			std::string key = "LOC_WORLD_" + m_pNextWorld->m_name;
 			m_pLoadingSubtitle->SetText(LOC(key));
 		}
 		m_uLoadHUD->SetEnabled(true);
@@ -238,9 +237,9 @@ WorldID WorldStateMachine::ActiveWorldID() const
 	return m_pActiveWorld ? m_pActiveWorld->m_id : -1;
 }
 
-Vec<WorldID> WorldStateMachine::AllWorldIDs() const
+std::vector<WorldID> WorldStateMachine::AllWorldIDs() const
 {
-	Vec<WorldID> ret;
+	std::vector<WorldID> ret;
 	for (const auto& uWorld : s_createdWorlds)
 	{
 		ret.push_back(uWorld->m_id);
@@ -314,7 +313,7 @@ void WorldStateMachine::UnloadActiveWorld()
 	if (m_pActiveWorld)
 	{
 		m_pActiveWorld->Deactivate();
-		String manifestID = m_pActiveWorld->m_manifestID;
+		std::string manifestID = m_pActiveWorld->m_manifestID;
 		if (g_pRepository->IsPresent(manifestID))
 		{
 			Assert(m_pContext, "Context is null!");

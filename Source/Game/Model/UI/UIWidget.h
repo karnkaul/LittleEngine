@@ -20,7 +20,7 @@ protected:
 
 protected:
 	UIWidgetStyle m_style;
-	Vec<UPtr<class UIElement>> m_uiElements;
+	std::vector<UPtr<class UIElement>> m_uiElements;
 	class UIContext* m_pOwner = nullptr;
 	class UIElement* m_pRoot = nullptr;
 	State m_state = State::NotSelected;
@@ -31,7 +31,7 @@ public:
 	~UIWidget() override;
 
 	template <typename T>
-	UIElement* AddElement(String name = "", struct UITransform* pParent = nullptr, s32 layerDelta = 0);
+	UIElement* AddElement(std::string name = "", struct UITransform* pParent = nullptr, s32 layerDelta = 0);
 
 	UIWidgetStyle& GetStyle();
 	UIElement* Root() const;
@@ -64,18 +64,18 @@ private:
 	void InteractEnd(bool bInteract);
 
 private:
-	void OnCreate(String name, UIContext& owner, UIWidgetStyle* pStyleToCopy);
-	void InitElement(String name, UIElement* pNewElement, UITransform* pParent);
+	void OnCreate(std::string name, UIContext& owner, UIWidgetStyle* pStyleToCopy);
+	void InitElement(std::string name, UIElement* pNewElement, UITransform* pParent);
 	LayerID MaxLayer() const;
 
 	friend class UIContext;
 };
 
 template <typename T>
-UIElement* UIWidget::AddElement(String name, UITransform* pParent, s32 layerDelta)
+UIElement* UIWidget::AddElement(std::string name, UITransform* pParent, s32 layerDelta)
 {
 	static_assert(std::is_base_of<UIElement, T>::value, "T must derive from UIElement!");
-	UPtr<T> uT = MakeUnique<T>(static_cast<LayerID>(ToS32(m_style.baseLayer) + layerDelta), false);
+	UPtr<T> uT = std::make_unique<T>(static_cast<LayerID>(ToS32(m_style.baseLayer) + layerDelta), false);
 	T* pT = uT.get();
 	m_uiElements.push_back(std::move(uT));
 	InitElement(std::move(name), pT, pParent);

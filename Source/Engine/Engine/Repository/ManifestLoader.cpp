@@ -1,6 +1,6 @@
 #include <fstream>
-#include "Core/Jobs.h"
-#include "Core/ArchiveReader.h"
+#include "Core/Game/Jobs.h"
+#include "Core/Game/ArchiveReader.h"
 #include "SFMLAPI/System/Assets.h"
 #include "LERepository.h"
 #include "ManifestLoader.h"
@@ -8,7 +8,7 @@
 
 namespace LittleEngine
 {
-ManifestLoader::ManifestLoader(LERepository& repository, String manifestPath, Task onDone, bool bUnload)
+ManifestLoader::ManifestLoader(LERepository& repository, std::string manifestPath, Task onDone, bool bUnload)
 	: m_onDone(std::move(onDone)), m_manifestPath(std::move(manifestPath)), m_pRepository(&repository), m_bUnloading(bUnload)
 {
 	AssetManifestData data;
@@ -206,28 +206,28 @@ void ManifestLoader::Tick(Time /*dt*/)
 			{
 				if (newAsset.asset)
 				{
-					m_pRepository->m_loaded[String(newAsset.asset->ID())] = std::move(newAsset.asset);
+					m_pRepository->m_loaded[std::string(newAsset.asset->ID())] = std::move(newAsset.asset);
 				}
 			}
 			for (auto& newAsset : m_newFonts)
 			{
 				if (newAsset.asset)
 				{
-					m_pRepository->m_loaded[String(newAsset.asset->ID())] = std::move(newAsset.asset);
+					m_pRepository->m_loaded[std::string(newAsset.asset->ID())] = std::move(newAsset.asset);
 				}
 			}
 			for (auto& newAsset : m_newSounds)
 			{
 				if (newAsset.asset)
 				{
-					m_pRepository->m_loaded[String(newAsset.asset->ID())] = std::move(newAsset.asset);
+					m_pRepository->m_loaded[std::string(newAsset.asset->ID())] = std::move(newAsset.asset);
 				}
 			}
 			for (auto& newAsset : m_newTexts)
 			{
 				if (newAsset.asset)
 				{
-					m_pRepository->m_loaded[String(newAsset.asset->ID())] = std::move(newAsset.asset);
+					m_pRepository->m_loaded[std::string(newAsset.asset->ID())] = std::move(newAsset.asset);
 				}
 			}
 		}

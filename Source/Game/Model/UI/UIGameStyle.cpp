@@ -1,6 +1,6 @@
-#include "Core/Logger.h"
-#include "Core/GData.h"
-#include "Core/Utils.h"
+#include <sstream>
+#include "Core/Game/GData.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "UIGameStyle.h"
 #include "Engine/Repository/LERepository.h"
 
@@ -9,9 +9,9 @@ namespace LittleEngine
 namespace
 {
 UIWidgetStyle defaultStyle;
-UMap<String, UIWidgetStyle> styleMap;
+std::unordered_map<std::string, UIWidgetStyle> styleMap;
 
-UByte H2B(const String& hex)
+UByte H2B(const std::string& hex)
 {
 	s32 integer = -1;
 	std::istringstream(hex) >> std::hex >> integer;
@@ -22,15 +22,15 @@ UByte H2B(const String& hex)
 	return UByte(255);
 }
 
-Colour HexStrToColour(String hex, Colour defaultColour = Colour::White)
+Colour HexStrToColour(std::string hex, Colour defaultColour = Colour::White)
 {
 	Strings::ToLower(hex);
 	if (hex.size() == 6 || hex.size() == 8)
 	{
-		String r = hex.substr(0, 2);
-		String g = hex.substr(2, 2);
-		String b = hex.substr(4, 2);
-		String a = "ff";
+		std::string r = hex.substr(0, 2);
+		std::string g = hex.substr(2, 2);
+		std::string b = hex.substr(4, 2);
+		std::string a = "ff";
 		if (hex.size() == 8)
 		{
 			a = hex.substr(6, 2);
@@ -59,7 +59,7 @@ void SetupDefaultStyle()
 }
 } // namespace
 
-void UIGameStyle::Load(String serialised)
+void UIGameStyle::Load(std::string serialised)
 {
 	SetupDefaultStyle();
 
@@ -68,7 +68,7 @@ void UIGameStyle::Load(String serialised)
 	for (auto& styleData : dataVec)
 	{
 		UIWidgetStyle newStyle;
-		String id = styleData.GetString("id");
+		std::string id = styleData.GetString("id");
 		newStyle.widgetSize = styleData.GetVector2("size", defaultStyle.widgetSize);
 		newStyle.background = ParseColour(styleData.GetString("background"));
 		newStyle.pFont = g_pRepository->Load<FontAsset>(styleData.GetString("fontID", "Fonts/UIFont.ttf"));
@@ -108,7 +108,7 @@ void UIGameStyle::Load(String serialised)
 	}
 }
 
-Colour UIGameStyle::ParseColour(String serialised)
+Colour UIGameStyle::ParseColour(std::string serialised)
 {
 	Strings::ToLower(serialised);
 	if (serialised == "white")
@@ -154,7 +154,7 @@ Colour UIGameStyle::ParseColour(String serialised)
 	return Colour::White;
 }
 
-const UIWidgetStyle& UIGameStyle::GetStyle(const String& id)
+const UIWidgetStyle& UIGameStyle::GetStyle(const std::string& id)
 {
 	if (!id.empty())
 	{
@@ -167,7 +167,7 @@ const UIWidgetStyle& UIGameStyle::GetStyle(const String& id)
 	return defaultStyle;
 }
 
-void UIGameStyle::Overwrite(UIWidgetStyle& outStyle, const String& id)
+void UIGameStyle::Overwrite(UIWidgetStyle& outStyle, const std::string& id)
 {
 	if (!id.empty())
 	{

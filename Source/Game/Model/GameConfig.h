@@ -1,7 +1,6 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "Core/Logger.h" // Logger::Severity
-#include "Core/SimpleTime.h"
+#include "Core/Game/LECoreUtils/SimpleTime.h"
 
 namespace Core
 {
@@ -10,8 +9,6 @@ class GData;
 
 namespace LittleEngine
 {
-using LogSeverity = Core::LogSeverity;
-
 // \brief Wrapper to maintain properties saved to / loaded from a file
 class GameConfig
 {
@@ -33,9 +30,9 @@ public:
 	void Init();
 
 	// Load config file from path and replace cache values if valid
-	bool Load(String path);
+	bool Load(std::string path);
 	// Save cache to config file at path; loadFirst will call Load() before saving
-	bool Save(String path);
+	bool Save(std::string path);
 
 	bool ShouldCreateRenderThread() const;
 	u32 JobWorkerCount() const;
@@ -43,7 +40,7 @@ public:
 	Time TickRate() const;
 	Time RenderThreadStartDelay() const;
 	Time MaxFrameTime() const;
-	String TitleBarText() const;
+	std::string TitleBarText() const;
 	u16 ColliderBorderWidth() const;
 	Vector2 UISpace() const;
 	Fixed WorldHeight() const;

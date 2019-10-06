@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 #include "SFML/Graphics/VertexArray.hpp"
 #include "Primitive.h"
 #include "SFMLAPI/Rendering/Colour.h"
@@ -8,7 +9,7 @@ namespace LittleEngine
 class Quad : public APrimitive
 {
 public:
-	using Verts = Array<Vector2, 4>;
+	using Verts = std::array<Vector2, 4>;
 
 protected:
 	

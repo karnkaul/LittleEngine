@@ -8,7 +8,7 @@ UIWidgetMatrix::UIWidgetMatrix()
 	NewVec();
 }
 
-void UIWidgetMatrix::EmplaceWidget(UPtr<UIWidget> uWidget, bool bNextColumn)
+void UIWidgetMatrix::EmplaceWidget(std::unique_ptr<UIWidget> uWidget, bool bNextColumn)
 {
 	CVec& current = CurrentVec();
 	if (current.IsEmpty() || !bNextColumn)
@@ -173,12 +173,12 @@ void UIWidgetMatrix::Clear()
 	m_matrix.Clear();
 }
 
-void UIWidgetMatrix::ForEach(std::function<void(UPtr<UIWidget>&)> callback)
+void UIWidgetMatrix::ForEach(std::function<void(std::unique_ptr<UIWidget>&)> callback)
 {
 	m_matrix.ForEach([&callback](CVec& vec) { vec.ForEach(callback); });
 }
 
-void UIWidgetMatrix::ForEach(std::function<void(const UPtr<UIWidget>&)> callback) const
+void UIWidgetMatrix::ForEach(std::function<void(const std::unique_ptr<UIWidget>&)> callback) const
 {
 	m_matrix.ForEach([&callback](const CVec& vec) { vec.ForEach(callback); });
 }

@@ -6,8 +6,8 @@ namespace LittleEngine
 {
 namespace Locale
 {
-void Init(String locFileID, String enLocFileID);
-bool Switch(const String& newLocFileID);
-const String& Localise(const String& id);
+void Init(std::string locFileID, std::string enLocFileID);
+bool Switch(const std::string& newLocFileID);
+const std::string& Localise(const std::string& id);
 } // namespace Locale
 } // namespace LittleEngine

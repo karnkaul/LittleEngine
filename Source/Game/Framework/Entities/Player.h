@@ -15,9 +15,9 @@ struct PlayerCollider
 struct PlayerData
 {
 	class TextureAsset* pMainTexture;
-	Vec<PlayerCollider> colliders;
+	std::vector<PlayerCollider> colliders;
 
-	PlayerData(TextureAsset& mainTexture, Vec<PlayerCollider> colliders);
+	PlayerData(TextureAsset& mainTexture, std::vector<PlayerCollider> colliders);
 	PlayerData(PlayerData&&) = default;
 	PlayerData& operator=(PlayerData&&) = default;
 };

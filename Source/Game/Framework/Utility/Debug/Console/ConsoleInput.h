@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/CoreTypes.h"
 #if ENABLED(CONSOLE)
-#include "Core/RingBuffer.h"
+#include "Core/Game/RingBuffer.h"
 #include "Engine/Input/LEInput.h"
 #include "Engine/Input/KeyboardInput.h"
 
@@ -18,8 +18,8 @@ public:
 
 public:
 	KeyboardInput m_keyboard;
-	String m_query;
-	Core::RingBuffer<String> m_queryCache;
+	std::string m_query;
+	Core::RingBuffer<std::string> m_queryCache;
 	Token m_token;
 	bool bCyclingQueries = false;
 
