@@ -1,0 +1,9 @@
+[submodule "Source/Core/Core/Game/LECoreUtils/LEAsserts"]
+	path = Source/Core/Core/Game/LECoreUtils/LEAsserts
+	url = https://github.com/karnkaul/LEAsserts.git
+[submodule "Source/Core/Core/Game/LECoreUtils/LEDelegate"]
+	path = Source/Core/Core/Game/LECoreUtils/LEDelegate
+	url = https://github.com/karnkaul/LEDelegate.git
+[submodule "Source/Core/Core/Game/LECoreUtils/LELogger"]
+	path = Source/Core/Core/Game/LECoreUtils/LELogger
+	url = https://github.com/karnkaul/LELogger.git
