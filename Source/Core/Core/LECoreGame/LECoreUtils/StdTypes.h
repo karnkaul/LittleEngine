@@ -5,11 +5,16 @@
 #endif
 #include <inttypes.h>
 #include <type_traits>
+#include "LEAsserts/Asserts.h"
 
 #if defined(DEBUGGING)
 #define ASSERTS 1
+#define Assert(predicate, errorMessage) LEAssertWithMessage(!!(predicate), #errorMessage, __FILE__, __LINE__)
+#define AssertVar(predicate, szStr) LEAssertWithMessage(!!(predicate), szStr, __FILE__, __LINE__)
 #else
 #define ASSERTS 0
+#define Assert(disabled, _disabled)
+#define AssertVar(disabled, _disabled)
 #endif
 
 #if defined(SHIPPING)

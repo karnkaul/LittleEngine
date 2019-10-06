@@ -2,6 +2,7 @@
 #include <fstream>
 #include <mutex>
 #include <string>
+#include <string_view>
 #include <thread>
 #include <unordered_map>
 #include "OS.h"
@@ -23,7 +24,6 @@
 #include <signal.h>
 #include <unistd.h>
 #endif
-#include "LECoreUtils/Asserts.h"
 #include "LECoreUtils/FileRW.h"
 #include "LECoreUtils/Logger.h"
 #include "LECoreUtils/Utils.h"
@@ -435,12 +435,12 @@ bool IsDebuggerAttached()
 		return false;
 
 	buf[num_read] = '\0';
-	constexpr char tracerPidstd::string[] = "TracerPid:";
-	const auto tracer_pid_ptr = ::strstr(buf, tracerPidstd::string);
+	constexpr char tracerPid[] = "TracerPid:";
+	const auto tracer_pid_ptr = ::strstr(buf, tracerPid);
 	if (!tracer_pid_ptr)
 		return false;
 
-	for (const char* characterPtr = tracer_pid_ptr + sizeof(tracerPidstd::string) - 1; characterPtr <= buf + num_read; ++characterPtr)
+	for (const char* characterPtr = tracer_pid_ptr + sizeof(tracerPid) - 1; characterPtr <= buf + num_read; ++characterPtr)
 	{
 		if (::isspace(*characterPtr))
 		{

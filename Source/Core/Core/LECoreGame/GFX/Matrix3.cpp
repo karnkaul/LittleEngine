@@ -1,4 +1,3 @@
-#include "../LECoreUtils/Asserts.h"
 #include "Matrix3.h"
 
 namespace Core

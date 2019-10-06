@@ -1,5 +1,4 @@
 #include "PhysicsFS/physfs.h"
-#include "LECoreUtils/Asserts.h"
 #include "ArchiveReader.h"
 
 namespace Core

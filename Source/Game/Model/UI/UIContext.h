@@ -1,5 +1,4 @@
 #pragma once
-#include "Core/LECoreGame/LECoreUtils/Asserts.h"
 #include "Core/CoreTypes.h"
 #include "SFMLAPI/Rendering/LayerID.h"
 #include "Engine/Input/LEInput.h"

@@ -1,4 +1,3 @@
-#include "Asserts.h"
 #include "Maths.h"
 
 namespace Maths

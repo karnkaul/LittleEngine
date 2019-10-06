@@ -3,7 +3,6 @@
 #include "JobManager.h"
 #include "JobWorker.h"
 #include "JobCatalog.h"
-#include "../LECoreUtils/Asserts.h"
 #include "../LECoreUtils/Logger.h"
 
 namespace Core

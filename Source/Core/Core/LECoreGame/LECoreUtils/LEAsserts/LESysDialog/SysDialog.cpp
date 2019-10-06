@@ -8,11 +8,9 @@
 #include <string.h>
 #endif
 
-namespace Core
-{
 namespace
 {
-DialogueData dialogueData;
+LEDialogueData dialogueData;
 
 void LaunchMessageBox()
 {
@@ -23,7 +21,7 @@ void LaunchMessageBox()
 	std::string suffix = "\n\nCancel\t: " + std::move(dialogueData.resp0.text) + "\nTry\t: " + std::move(dialogueData.resp1.text)
 					+ "\nCont\t: " + std::move(dialogueData.resp2.text);
 	std::string content = std::move(dialogueData.content) + std::move(footer) + std::move(suffix);
-	int id = MessageBoxA(nullptr, content.data(), dialogueData.title.data(), type);
+	auto id = MessageBoxA(nullptr, content.data(), dialogueData.title.data(), type);
 	switch (id)
 	{
 	case IDCANCEL:
@@ -50,12 +48,11 @@ void LaunchMessageBox()
 #elif __linux__
 	Window w;
 	XEvent e;
-	int s;
 
 	Display* pD = XOpenDisplay(nullptr);
 	if (pD)
 	{
-		s = DefaultScreen(pD);
+		auto s = DefaultScreen(pD);
 		w = XCreateSimpleWindow(pD, RootWindow(pD, s), 200, 200, 700, 250, 1, BlackPixel(pD, s), WhitePixel(pD, s));
 		XSelectInput(pD, w, ExposureMask | KeyPressMask);
 		Atom wmDeleteMessage = XInternAtom(pD, "WM_DELETE_WINDOW", True);
@@ -63,7 +60,7 @@ void LaunchMessageBox()
 		XMapWindow(pD, w);
 
 		const KeySym sym_1 = XStringToKeysym("1");
-		const int sym_1_int = static_cast<s32>(XKeysymToKeycode(pD, sym_1));
+		const auto sym_1_int = XKeysymToKeycode(pD, sym_1);
 
 		while (true)
 		{
@@ -81,8 +78,8 @@ void LaunchMessageBox()
 			}
 			if (e.type == KeyPress || e.type == DestroyNotify)
 			{
-				int key = static_cast<s32>(e.xkey.keycode) - sym_1_int;
-				switch (key)
+				auto key = e.xkey.keycode - sym_1_int;
+				switch (static_cast<uint32_t>(key))
 				{
 				case 0:
 					if (dialogueData.resp0.callback)
@@ -115,9 +112,8 @@ void LaunchMessageBox()
 }
 } // namespace
 
-void CreateSystemDialogue(DialogueData data)
+void LECreateSystemDialogue(LEDialogueData data)
 {
 	dialogueData = std::move(data);
 	LaunchMessageBox();
 }
-} // namespace Core

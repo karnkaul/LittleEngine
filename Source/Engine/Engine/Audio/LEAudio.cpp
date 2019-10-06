@@ -31,6 +31,7 @@ std::string GetStatus(AudioPlayer::Status status)
 	case AudioPlayer::Status::Stopped:
 		return ".";
 	}
+	return "?";
 }
 #endif
 } // namespace

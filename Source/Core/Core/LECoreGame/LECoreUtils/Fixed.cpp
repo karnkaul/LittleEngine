@@ -1,7 +1,6 @@
 #include <array>
 #include <iostream>
 #include <string>
-#include "../LECoreUtils/Asserts.h"
 #include "../LECoreUtils/Maths.h"
 #include "Fixed.h"
 

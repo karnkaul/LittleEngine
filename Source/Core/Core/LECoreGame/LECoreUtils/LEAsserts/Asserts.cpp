@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cstdint>
 #include <iostream>
 #include <string>
 #include <unordered_set>
@@ -13,11 +14,9 @@
 #include "Asserts.h"
 #include "LESysDialog/SysDialog.h"
 
-namespace Core
-{
 namespace
 {
-enum class ResponseType : u8
+enum class ResponseType : uint8_t
 {
 	Assert = 0,
 	Ignore,
@@ -63,7 +62,7 @@ bool IsDebuggerAttached()
 	return ret;
 }
 
-void DebugBreak()
+void LEDebugBreak()
 {
 #if defined(CXX_MS_CRT)
 	__debugbreak();
@@ -77,7 +76,7 @@ void DebugBreak()
 }
 } // namespace
 
-void AssertWithMsg(bool expr, const char* message, const char* fileName, long lineNumber)
+void LEAssertWithMessage(bool expr, const char* message, const char* fileName, long lineNumber)
 {
 	if (expr)
 	{
@@ -92,7 +91,7 @@ void AssertWithMsg(bool expr, const char* message, const char* fileName, long li
 
 	ResponseType response = ResponseType::Assert;
 
-	DialogueData data;
+	LEDialogueData data;
 	data.resp0 = {"Assert", [&]() { response = ResponseType::Assert; }};
 	data.resp1 = {"Ignore", [&]() { response = ResponseType::Ignore; }};
 	data.resp2 = {"Disable", [&]() { response = ResponseType::Disable; }};
@@ -101,7 +100,7 @@ void AssertWithMsg(bool expr, const char* message, const char* fileName, long li
 	data.content = message;
 	data.footer = "[" + std::string(fileName) + ": " + std::to_string(lineNumber) + "]";
 
-	CreateSystemDialogue(std::move(data));
+	LECreateSystemDialogue(std::move(data));
 	switch (response)
 	{
 	case ResponseType::Assert:
@@ -112,12 +111,12 @@ void AssertWithMsg(bool expr, const char* message, const char* fileName, long li
 #if _MSC_VER
 			OutputDebugStringA(message);
 #endif
-			DebugBreak();
+			LEDebugBreak();
 		}
 		else
 		{
 #if defined(DEBUGGING)
-			DebugBreak();
+			LEDebugBreak();
 #else
 			assert(false && message);
 #endif
@@ -135,4 +134,3 @@ void AssertWithMsg(bool expr, const char* message, const char* fileName, long li
 	}
 	}
 }
-} // namespace Core
