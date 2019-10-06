@@ -1,6 +1,5 @@
 #include "ConsoleRenderer.h"
 #if ENABLED(CONSOLE)
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "Core/LECoreGame/LECoreUtils/Utils.h"
 #include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/Rendering/Primitives.h"

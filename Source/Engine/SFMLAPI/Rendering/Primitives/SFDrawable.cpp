@@ -1,4 +1,3 @@
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFDrawable.h"
 #include "SFMLAPI/System/SFTypes.h"
 

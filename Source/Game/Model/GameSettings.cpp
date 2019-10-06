@@ -70,7 +70,7 @@ void GameSettings::SetBorderless(bool bBorderless)
 
 void GameSettings::SetLogLevel(LogSeverity level)
 {
-	m_logLevel.stringValue = Core::ParseLogSeverity(level);
+	m_logLevel.stringValue = LEParseLogSeverity(level);
 	if (m_bAutoSave)
 	{
 		SaveAll();
@@ -109,7 +109,7 @@ ViewportSize GameSettings::SafeGetViewportSize()
 
 LogSeverity GameSettings::LogLevel() const
 {
-	return Core::ParseLogSeverity(m_logLevel.stringValue);
+	return LEParseLogSeverity(m_logLevel.stringValue);
 }
 
 std::string GameSettings::LocdataID() const
@@ -138,7 +138,7 @@ void GameSettings::SetDefaults()
 	ViewportSize native = Viewport::MaxSize();
 	m_viewportHeight = Property(VIEWPORT_HEIGHT_KEY, Strings::ToString(native.height) + "p");
 	m_borderless = Property(BORDERLESS_KEY, Strings::ToString(true));
-	m_logLevel = Property(LOG_LEVEL_KEY, std::string(Core::ParseLogSeverity(LogSeverity::Info)));
+	m_logLevel = Property(LOG_LEVEL_KEY, std::string(LEParseLogSeverity(LogSeverity::Info)));
 	m_locale = Property(LOCALE_KEY, "en");
 }
 

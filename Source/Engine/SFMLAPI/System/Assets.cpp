@@ -8,7 +8,6 @@
 #include "SFTypes.h"
 #include "Core/CoreTypes.h"
 #include "Core/LECoreGame/GData.h"
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "Core/LECoreGame/OS.h"
 #include "Core/LECoreGame/LECoreUtils/Utils.h"
 

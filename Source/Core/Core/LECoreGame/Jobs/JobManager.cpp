@@ -1,9 +1,9 @@
 #include <algorithm>
 #include <string>
+#include "../LECoreUtils/StdTypes.h"
 #include "JobManager.h"
 #include "JobWorker.h"
 #include "JobCatalog.h"
-#include "../LECoreUtils/Logger.h"
 
 namespace Core
 {

@@ -1,4 +1,3 @@
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "Engine/Rendering/LERenderer.h"
 #include "Engine/Debug/Tweakable.h"

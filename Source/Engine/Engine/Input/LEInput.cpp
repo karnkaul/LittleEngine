@@ -1,4 +1,3 @@
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "Core/LECoreGame/LECoreUtils/Utils.h"
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "LEInput.h"

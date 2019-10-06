@@ -1,6 +1,6 @@
 #include "JobWorker.h"
 #include "JobManager.h"
-#include "../LECoreUtils/Logger.h"
+#include "../LECoreUtils/LELogger/Logger.h"
 #include "../LECoreUtils/Utils.h"
 #include "../OS.h"
 

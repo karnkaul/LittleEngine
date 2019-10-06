@@ -1,6 +1,5 @@
 #include "Profiler.h"
 #if ENABLED(PROFILER)
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Context/LEContext.h"
 

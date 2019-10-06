@@ -1,4 +1,3 @@
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "Core/GameVersion.h"
 #include "SFMLAPI/Rendering/RenderStats.h"
 #include "Engine/FatalEngineException.h"
@@ -100,7 +99,7 @@ bool Init(s32 argc, char** argv)
 		maxParticlesScale = Strings::ToF32(*pStr, maxParticlesScale);
 	}
 	g_maxParticlesScale = Fixed(maxParticlesScale);
-	Core::g_MinLogSeverity = pSettings->LogLevel();
+	LE_g_MinLogSeverity = pSettings->LogLevel();
 	ControllerComponent::s_orientationEpsilon = config.ControllerOrientationEpsilon();
 	maxFrameTime = config.MaxFrameTime();
 	if (config.ShouldCreateRenderThread())

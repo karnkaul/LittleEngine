@@ -1,6 +1,5 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "Core/LECoreGame/LECoreUtils/Logger.h" // Logger::Severity
 #include "Core/LECoreGame/LECoreUtils/SimpleTime.h"
 
 namespace Core
@@ -10,7 +9,7 @@ class GData;
 
 namespace LittleEngine
 {
-using LogSeverity = Core::LogSeverity;
+using LogSeverity = LELogSeverity;
 
 // \brief Wrapper to maintain properties saved to / loaded from a file
 class GameConfig

@@ -1,7 +1,7 @@
 #include <fstream>
+#include <iostream>
 #include <string>
 #include "FileRW.h"
-#include "Logger.h"
 
 namespace Core
 {
@@ -40,7 +40,7 @@ bool FileRW::Write(std::string contents, bool append)
 	}
 	catch (const std::exception& e)
 	{
-		LOG_E("Error writing to file at [%s]!\n%s", m_path.c_str(), e.what());
+		std::cerr << "Error writing to file at [" << m_path.c_str() << "]!\n" << e.what();
 		return false;
 	}
 }

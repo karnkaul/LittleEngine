@@ -1,6 +1,5 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFMLAPI/Rendering/Shader.h"
 #include "Engine/Repository/LERepository.h"
 

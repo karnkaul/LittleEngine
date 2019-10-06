@@ -1,5 +1,4 @@
 #include <bitset>
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFMLAPI/Input/InputMappings.h"
 #include "SFMLAPI/Input/InputStateMachine.h"
 #include "SFMLAPI/Rendering/Primitives.h"

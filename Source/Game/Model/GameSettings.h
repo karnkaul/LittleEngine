@@ -1,6 +1,5 @@
 #pragma once
 #include <optional>
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "Core/LECoreGame/Property.h"
 #include "Core/CoreTypes.h"
 #include "SFMLAPI/Viewport/ViewportData.h"
@@ -8,7 +7,7 @@
 namespace LittleEngine
 {
 using Property = Core::Property;
-using LogSeverity = Core::LogSeverity;
+using LogSeverity = LELogSeverity;
 
 // \brief Wrapper to maintain properties saved to / loaded from Settings.txt
 class GameSettings final

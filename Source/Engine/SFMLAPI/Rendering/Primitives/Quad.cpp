@@ -1,4 +1,3 @@
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFML/Graphics/Vertex.hpp"
 #include "Quad.h"
 #include "SFMLAPI/System/Assets.h"

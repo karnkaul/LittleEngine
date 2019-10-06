@@ -1,6 +1,5 @@
 #include "DebugProfiler.h"
 #if ENABLED(PROFILER)
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "Engine/Debug/Profiler.h"
 #include "Engine/Debug/Tweakable.h"

@@ -1,4 +1,3 @@
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFMLAPI/Rendering/LayerID.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Model/GameManager.h"

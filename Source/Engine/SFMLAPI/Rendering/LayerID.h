@@ -1,4 +1,6 @@
 #pragma once
+#include "Core/LECoreGame/LECoreUtils/StdTypes.h"
+
 namespace LittleEngine
 {
 enum class LayerID : s32

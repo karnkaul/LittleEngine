@@ -1,4 +1,3 @@
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "Inheritable.h"
 
 namespace LittleEngine

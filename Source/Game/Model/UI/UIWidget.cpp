@@ -1,4 +1,3 @@
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"
 #include "UIWidget.h"

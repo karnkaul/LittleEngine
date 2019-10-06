@@ -1,6 +1,5 @@
 #include "Core/LECoreGame/ArchiveReader.h"
 #include "Core/LECoreGame/GData.h"
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Engine/Repository/LERepository.h"
 #include "Model/GameManager.h"

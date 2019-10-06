@@ -1,5 +1,4 @@
 #include "Core/LECoreGame/Jobs.h"
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "Core/LECoreGame/OS.h"
 #include "Core/LECoreGame/LECoreUtils/Utils.h"
 #include "Engine/Context/LEContext.h"

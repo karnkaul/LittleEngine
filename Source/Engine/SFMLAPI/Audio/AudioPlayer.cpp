@@ -1,6 +1,5 @@
 #include "SFML/Audio.hpp"
 #include "Core/LECoreGame/LECoreUtils/Utils.h"
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "AudioPlayer.h"
 #include "SFMLAPI/System/Assets.h"
 
@@ -258,7 +257,6 @@ void MusicPlayer::Tick(Time dt)
 			{
 				m_volume = m_startVolume * (Fixed::One - ratio);
 			}
-			LOG_H("Fading! Volume: %.2f", m_volume.ToF32());
 		}
 	}
 	ApplyParams();

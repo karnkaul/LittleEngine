@@ -2,6 +2,7 @@
 #include <atomic>
 #include <ctime>
 #include <cstdarg>
+#include <cstdint>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -10,18 +11,15 @@
 #include <string>
 #include <time.h>
 #include <thread>
-#include "FileRW.h"
 #include "Logger.h"
 #if _MSC_VER
 #include "Windows.h"
 #endif
 
-namespace Core
-{
 using Lock = std::lock_guard<std::mutex>;
 
-LogSeverity g_MinLogSeverity = LogSeverity::Info;
-std::function<void(std::string logStr)> g_onLogStr;
+LELogSeverity LE_g_MinLogSeverity = LELogSeverity::Info;
+std::function<void(std::string logStr)> LE_g_onLogStr;
 
 namespace
 {
@@ -32,13 +30,10 @@ bool bInit = false;
 std::mutex _mutex;
 std::string cache;
 std::string buffer;
-std::array<std::string_view, 5> prefixes = {"[H] ", "[D] ", "[I] ", "[W] ", "[E] "};
+std::array<std::string_view, 5> prefixes = {"[D] ", "[I] ", "[W] ", "[E] "};
 
-std::unordered_map<Core::LogSeverity, std::string_view> severityMap = {{LogSeverity::Error, "Error"},
-																	   {LogSeverity::Warning, "Warning"},
-																	   {LogSeverity::Info, "Info"},
-																	   {LogSeverity::Debug, "Debug"},
-																	   {LogSeverity::HOT, "HOT"}};
+std::unordered_map<LELogSeverity, std::string_view> severityMap = {
+	{LELogSeverity::Error, "Error"}, {LELogSeverity::Warning, "Warning"}, {LELogSeverity::Info, "Info"}, {LELogSeverity::Debug, "Debug"}};
 
 std::tm* TM(const std::time_t& time)
 {
@@ -51,7 +46,7 @@ std::tm* TM(const std::time_t& time)
 #endif
 }
 
-void LogInternal(const char* pText, u32 severityIndex, va_list argList)
+void LogInternal(const char* pText, uint32_t severityIndex, va_list argList)
 {
 	static std::array<char, CACHE_SIZE> cacheStr;
 	if (!bInit)
@@ -77,33 +72,33 @@ void LogInternal(const char* pText, u32 severityIndex, va_list argList)
 	OutputDebugStringA(cache.data());
 #endif
 	buffer += cache;
-	if (g_onLogStr)
+	if (LE_g_onLogStr)
 	{
-		g_onLogStr(std::move(buffer));
+		LE_g_onLogStr(std::move(buffer));
 	}
 }
 } // namespace
 
-void Log(LogSeverity severity, const char* szText, ...)
+void LELog(LELogSeverity severity, const char* szText, ...)
 {
-	u32 severityIndex = static_cast<u32>(severity);
-	if (severityIndex < static_cast<u32>(g_MinLogSeverity))
+	auto severityIndex = static_cast<int>(severity);
+	if (severityIndex < static_cast<int>(LE_g_MinLogSeverity))
 	{
 		return;
 	}
 
 	va_list argList;
 	va_start(argList, szText);
-	LogInternal(szText, severityIndex, argList);
+	LogInternal(szText, static_cast<uint32_t>(severityIndex), argList);
 	va_end(argList);
 }
 
-std::string_view ParseLogSeverity(LogSeverity severity)
+std::string_view LEParseLogSeverity(LELogSeverity severity)
 {
 	return severityMap[severity];
 }
 
-LogSeverity ParseLogSeverity(std::string_view serialised)
+LELogSeverity LEParseLogSeverity(std::string_view serialised)
 {
 	for (const auto& severity : severityMap)
 	{
@@ -112,6 +107,5 @@ LogSeverity ParseLogSeverity(std::string_view serialised)
 			return severity.first;
 		}
 	}
-	return Core::LogSeverity::Info;
+	return LELogSeverity::Info;
 }
-} // namespace Core

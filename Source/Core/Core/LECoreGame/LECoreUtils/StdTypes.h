@@ -6,6 +6,7 @@
 #include <inttypes.h>
 #include <type_traits>
 #include "LEAsserts/Asserts.h"
+#include "LELogger/Logger.h"
 
 #if defined(DEBUGGING)
 #define ASSERTS 1
@@ -19,8 +20,16 @@
 
 #if defined(SHIPPING)
 #define DEBUG_LOGGING 0
+#define LOG_D(x, ...)
+#define LOGIF_D(bCond, x, ...)
 #else
 #define DEBUG_LOGGING 1
+#define LOG_D(x, ...) LOG_SEVERITY(x, Debug, ##__VA_ARGS__)
+#define LOGIF_D(bCond, x, ...)                 \
+	if (bCond)                                 \
+	{                                          \
+		LOG_SEVERITY(x, Debug, ##__VA_ARGS__); \
+	}
 #endif
 
 #if _MSC_VER

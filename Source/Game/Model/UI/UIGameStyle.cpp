@@ -1,5 +1,4 @@
 #include <sstream>
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "Core/LECoreGame/GData.h"
 #include "Core/LECoreGame/LECoreUtils/Utils.h"
 #include "UIGameStyle.h"

@@ -1,4 +1,3 @@
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "UIManager.h"
 #include "Model/GameManager.h"
 

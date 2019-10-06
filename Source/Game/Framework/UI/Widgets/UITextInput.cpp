@@ -1,4 +1,3 @@
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/Input/KeyboardInput.h"

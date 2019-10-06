@@ -1,5 +1,4 @@
 #include "Core/LECoreGame/ArchiveReader.h"
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "Core/LECoreGame/OS.h"
 #include "Core/LECoreGame/LECoreUtils/Utils.h"
 #include "SFMLAPI/System/Assets.h"

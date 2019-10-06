@@ -1,5 +1,4 @@
 #include "Core/LECoreGame/Jobs.h"
-#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "Quads.h"
 #include "Quad.h"
 #include "SFMLAPI/System/Assets.h"
