@@ -24,6 +24,7 @@ LittleEngine pre-releases containing a demo game with Win64, Linux-x64, and MacO
 
 #### Requirements
 1. x64 CPU with at least two threads
+1. Git submodules (CMake scripts will update them automatically, and will fail to configure otherwise)
 1. (Optional) Python 3.5+ (for `installer.py`)
 1. Operating System:
     1. Windows 7/8/10: [Microsoft VC++ Runtime (x64)](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
