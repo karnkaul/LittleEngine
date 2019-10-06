@@ -8,9 +8,11 @@
 #include <string.h>
 #endif
 
+namespace LE
+{
 namespace
 {
-LEDialogueData dialogueData;
+DialogueData dialogueData;
 
 void LaunchMessageBox()
 {
@@ -19,7 +21,7 @@ void LaunchMessageBox()
 
 	std::string footer = dialogueData.footer.empty() ? std::string() : "\n" + std::move(dialogueData.footer);
 	std::string suffix = "\n\nCancel\t: " + std::move(dialogueData.resp0.text) + "\nTry\t: " + std::move(dialogueData.resp1.text)
-					+ "\nCont\t: " + std::move(dialogueData.resp2.text);
+						 + "\nCont\t: " + std::move(dialogueData.resp2.text);
 	std::string content = std::move(dialogueData.content) + std::move(footer) + std::move(suffix);
 	auto id = MessageBoxA(nullptr, content.data(), dialogueData.title.data(), type);
 	switch (id)
@@ -112,8 +114,9 @@ void LaunchMessageBox()
 }
 } // namespace
 
-void LECreateSystemDialogue(LEDialogueData data)
+void CreateSystemDialogue(DialogueData data)
 {
 	dialogueData = std::move(data);
 	LaunchMessageBox();
 }
+} // namespace LE

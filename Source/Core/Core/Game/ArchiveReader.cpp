@@ -1,5 +1,6 @@
 #include "PhysicsFS/physfs.h"
 #include "ArchiveReader.h"
+#include "LEMacros.h"
 
 namespace Core
 {

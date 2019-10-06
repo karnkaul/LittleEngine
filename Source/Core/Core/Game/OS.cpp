@@ -24,9 +24,9 @@
 #include <signal.h>
 #include <unistd.h>
 #endif
-#include "LECoreUtils/LELogger/Logger.h"
 #include "LECoreUtils/FileRW.h"
 #include "LECoreUtils/Utils.h"
+#include "LEMacros.h"
 #include "ArchiveReader.h"
 #include "Property.h"
 
@@ -103,12 +103,12 @@ FileLogger::FileLogger(std::string filename, u8 backupCount, std::string header)
 	m_uWriter->Write(Prologue(std::move(header)));
 	m_bStopLogging.store(false, std::memory_order_relaxed);
 	m_threadHandle = OS::Threads::Spawn([&]() { Async_StartLogging(); });
-	LE_g_onLogStr = [this](auto logStr) { OnLogStr(std::move(logStr)); };
+	LE::g_onLogStr = [this](auto logStr) { OnLogStr(std::move(logStr)); };
 }
 
 FileLogger::~FileLogger()
 {
-	LE_g_onLogStr = nullptr;
+	LE::g_onLogStr = nullptr;
 	LOG_D("Logging terminated");
 	// Freeze m_cache and terminate thread
 	m_bStopLogging.store(true);

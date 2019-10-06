@@ -20,7 +20,7 @@ private:
 	};
 
 public:
-	using OnCancelled = Core::Delegate<>;
+	using OnCancelled = LE::Delegate<>;
 
 private:
 	using UUIWidget = UPtr<UIWidget>;

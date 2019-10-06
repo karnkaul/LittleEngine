@@ -6,7 +6,7 @@ namespace LittleEngine
 class UIToggle : public UIWidget
 {
 public:
-	using OnChanged = Core::Delegate<bool>;
+	using OnChanged = LE::Delegate<bool>;
 
 private:
 	struct UIToggleData

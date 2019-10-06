@@ -1,5 +1,5 @@
 #include "SFML/Audio.hpp"
-#include "Core/LECoreGame/LECoreUtils/Utils.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "AudioPlayer.h"
 #include "SFMLAPI/System/Assets.h"
 

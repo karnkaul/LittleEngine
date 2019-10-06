@@ -1,4 +1,4 @@
-#include "Core/LECoreGame/ArchiveReader.h"
+#include "Core/Game/ArchiveReader.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Engine/GFX.h"
 #include "Engine/Repository/LERepository.h"

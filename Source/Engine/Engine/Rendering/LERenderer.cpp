@@ -1,5 +1,5 @@
-#include "Core/LECoreGame/OS.h"
-#include "Core/LECoreGame/LECoreUtils/Utils.h"
+#include "Core/Game/OS.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "SFMLAPI/Rendering/RenderStats.h"
 #include "SFMLAPI/Rendering/Primitives/Quads.h"
 #include "SFMLAPI/System/SFTypes.h"

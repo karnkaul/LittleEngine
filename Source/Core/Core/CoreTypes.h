@@ -2,19 +2,19 @@
 #include <functional>
 #include <mutex>
 #include <utility>
-#include "LECoreGame/LECoreUtils/LEDelegate/Delegate.h"
-#include "LECoreGame/LECoreUtils/Deferred.h"
-#include "LECoreGame/LECoreUtils/FileRW.h"
-#include "LECoreGame/LECoreUtils/Fixed.h"
-#include "LECoreGame/LECoreUtils/SimpleTime.h"
-#include "LECoreGame/LECoreUtils/StdTypes.h"
-#include "LECoreGame/GFX/Matrix3.h"
-#include "LECoreGame/GFX/Rect2.h"
-#include "LECoreGame/GFX/UByte.h"
-#include "LECoreGame/GFX/Vector2.h"
-#include "LECoreGame/GFX/Transform.h"
-#include "LECoreGame/NoCopy.h"
-#include "LECoreGame/TRange.h"
+#include "Game//LECoreUtils/LEDelegate/Delegate.h"
+#include "Game//LECoreUtils/Deferred.h"
+#include "Game//LECoreUtils/FileRW.h"
+#include "Game//LECoreUtils/Fixed.h"
+#include "Game//LECoreUtils/SimpleTime.h"
+#include "Game//LEMacros.h"
+#include "Game//GFX/Matrix3.h"
+#include "Game//GFX/Rect2.h"
+#include "Game//GFX/UByte.h"
+#include "Game//GFX/Vector2.h"
+#include "Game//GFX/Transform.h"
+#include "Game//NoCopy.h"
+#include "Game//TRange.h"
 
 #define ENABLED(x) x
 

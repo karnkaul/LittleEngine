@@ -40,7 +40,7 @@ private:
 class Emitter final
 {
 public:
-	using OnTick = Core::Delegate<Particle&>;
+	using OnTick = LE::Delegate<Particle&>;
 
 private:
 	std::vector<Particle> m_particles;

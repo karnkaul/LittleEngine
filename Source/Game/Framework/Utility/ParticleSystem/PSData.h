@@ -1,6 +1,6 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "Core/LECoreGame/GData.h"
+#include "Core/Game/GData.h"
 #include "SFMLAPI/Rendering/Colour.h"
 
 namespace LittleEngine

@@ -7,7 +7,7 @@ namespace LittleEngine
 class UITextInput : public UIWidget
 {
 public:
-	using OnEditComplete = Core::Delegate<const std::string&>;
+	using OnEditComplete = LE::Delegate<const std::string&>;
 
 private:
 	struct UITextInputData

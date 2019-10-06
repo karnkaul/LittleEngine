@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "Core/LECoreGame/RingBuffer.h"
+#include "Core/Game/RingBuffer.h"
 
 namespace LittleEngine
 {

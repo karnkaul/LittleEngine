@@ -5,32 +5,6 @@
 #endif
 #include <inttypes.h>
 #include <type_traits>
-#include "LEAsserts/Asserts.h"
-#include "LELogger/Logger.h"
-
-#if defined(DEBUGGING)
-#define ASSERTS 1
-#define Assert(predicate, errorMessage) LEAssertWithMessage(!!(predicate), #errorMessage, __FILE__, __LINE__)
-#define AssertVar(predicate, szStr) LEAssertWithMessage(!!(predicate), szStr, __FILE__, __LINE__)
-#else
-#define ASSERTS 0
-#define Assert(disabled, _disabled)
-#define AssertVar(disabled, _disabled)
-#endif
-
-#if defined(SHIPPING)
-#define DEBUG_LOGGING 0
-#define LOG_D(x, ...)
-#define LOGIF_D(bCond, x, ...)
-#else
-#define DEBUG_LOGGING 1
-#define LOG_D(x, ...) LOG_SEVERITY(x, Debug, ##__VA_ARGS__)
-#define LOGIF_D(bCond, x, ...)                 \
-	if (bCond)                                 \
-	{                                          \
-		LOG_SEVERITY(x, Debug, ##__VA_ARGS__); \
-	}
-#endif
 
 #if _MSC_VER
 #define SPRINTF(szData, size, szFormat, ...) sprintf_s(szData, size, szFormat, ##__VA_ARGS__)

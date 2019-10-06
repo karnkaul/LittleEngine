@@ -1,7 +1,7 @@
 #pragma once
 #include <array>
 #include <vector>
-#include "Core/LECoreGame/LECoreUtils/SimpleTime.h"
+#include "Core/Game/LECoreUtils/SimpleTime.h"
 #include "SFMLAPI/Rendering/Primitives/Primitive.h"
 
 namespace LittleEngine

@@ -1,4 +1,4 @@
-#include "Core/LECoreGame/ArchiveReader.h"
+#include "Core/Game/ArchiveReader.h"
 #include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"

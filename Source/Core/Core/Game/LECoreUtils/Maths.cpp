@@ -37,7 +37,6 @@ size_t Random::Range(size_t min, size_t max)
 
 Fixed Random::Range(Fixed min, Fixed max, u32 precision)
 {
-	Assert(precision > 0, "Precision cannot be zero!");
 	s32 sMin = ToS32(min.ToF32() * precision);
 	s32 sMax = ToS32(max.ToF32() * precision);
 	s32 random = Range(sMin, sMax);

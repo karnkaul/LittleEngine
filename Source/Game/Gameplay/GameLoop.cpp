@@ -99,7 +99,7 @@ bool Init(s32 argc, char** argv)
 		maxParticlesScale = Strings::ToF32(*pStr, maxParticlesScale);
 	}
 	g_maxParticlesScale = Fixed(maxParticlesScale);
-	LE_g_MinLogSeverity = pSettings->LogLevel();
+	LE::g_MinLogSeverity = pSettings->LogLevel();
 	ControllerComponent::s_orientationEpsilon = config.ControllerOrientationEpsilon();
 	maxFrameTime = config.MaxFrameTime();
 	if (config.ShouldCreateRenderThread())

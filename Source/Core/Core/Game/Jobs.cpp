@@ -1,4 +1,5 @@
 #include "Jobs.h"
+#include "LEMacros.h"
 #include "Jobs/JobManager.h"
 #include "OS.h"
 

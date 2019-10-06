@@ -1,5 +1,5 @@
 #include <array>
-#include "Core/LECoreGame/LECoreUtils/Utils.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "Tweakable.h"
 #if ENABLED(TWEAKABLES)
 namespace LittleEngine::Debug

@@ -1,6 +1,6 @@
 #include "DebugCommands.h"
 #if ENABLED(CONSOLE)
-#include "Core/LECoreGame/LECoreUtils/Utils.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Engine/GFX.h"
 #include "Engine/Debug/Tweakable.h"
@@ -193,20 +193,20 @@ public:
 	LogLevel() : ParameterisedCommand("logLevel")
 	{
 		m_paramCallbackMap.emplace("Error", [](std::vector<LogLine>& executeResult) {
-			LE_g_MinLogSeverity = LELogSeverity::Error;
+			LE::g_MinLogSeverity = LE::LogSeverity::Error;
 			executeResult.emplace_back("Set LogLevel to [Error]", g_logTextColour);
 		});
 		m_paramCallbackMap.emplace("Warning", [](std::vector<LogLine>& executeResult) {
-			LE_g_MinLogSeverity = LELogSeverity::Warning;
+			LE::g_MinLogSeverity = LE::LogSeverity::Warning;
 			executeResult.emplace_back("Set LogLevel to [Warning]", g_logTextColour);
 		});
 		m_paramCallbackMap.emplace("Info", [](std::vector<LogLine>& executeResult) {
-			LE_g_MinLogSeverity = LELogSeverity::Info;
+			LE::g_MinLogSeverity = LE::LogSeverity::Info;
 			executeResult.emplace_back("Set LogLevel to [Info]", g_logTextColour);
 		});
 #if ENABLED(DEBUG_LOGGING)
 		m_paramCallbackMap.emplace("Debug", [](std::vector<LogLine>& executeResult) {
-			LE_g_MinLogSeverity = LELogSeverity::Debug;
+			LE::g_MinLogSeverity = LE::LogSeverity::Debug;
 			executeResult.emplace_back("Set LogLevel to [Debug]", g_logTextColour);
 		});
 #endif

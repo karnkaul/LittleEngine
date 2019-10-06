@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "Core/LECoreGame/Jobs.h"
-#include "Core/LECoreGame/OS.h"
+#include "Core/Game/Jobs.h"
+#include "Core/Game/OS.h"
 #include "SFMLAPI/Rendering/LayerID.h"
 #include "PrimitiveFactory.h"
 

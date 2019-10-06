@@ -1,6 +1,6 @@
 #include <fstream>
-#include "Core/LECoreGame/Jobs.h"
-#include "Core/LECoreGame/ArchiveReader.h"
+#include "Core/Game/Jobs.h"
+#include "Core/Game/ArchiveReader.h"
 #include "SFMLAPI/System/Assets.h"
 #include "LERepository.h"
 #include "ManifestLoader.h"

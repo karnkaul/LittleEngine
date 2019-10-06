@@ -1,15 +1,26 @@
+/*
+ * == LittleEngine Delegate ==
+ *   Copyright 2019 Karn Kaul
+ * Features:
+ *   - Header-only
+ *   - Variadic template class providing `std::function<void(T...)>` (any number of parameters)
+ *   - Supports multiple callback registrants (thus `void` return type for each callback)
+ *   - Token based, memory safe lifetime
+ * Usage:
+ *   - Create a `Delegate<>` for a simple `void()` callback, or `Delegate<T...>` for passing arguments
+ *   - Call `Register()` on the object and store the received `Token` to receive the callback
+ *   - Invoke the object (`foo()`) to fire all callbacks; returns number of active registrants
+ *   - Discard the `Token` object to unregister a callback (recommend storing as a member variable for transient lifetime objects)
+ */
+
 #pragma once
+#include <algorithm>
 #include <cstdint>
 #include <memory>
 #include <functional>
 
-namespace Core
+namespace LE
 {
-// \brief Tokenised callback with a parameter
-// Usage: Declare a Delegate using the types that will be passed in
-// as parameters (if any) when triggering the delegate (operator()).
-// Keep received Token alive to maintain registration,
-// discard Token to unregister associated callback
 template <typename... T>
 class Delegate
 {
@@ -32,7 +43,7 @@ private:
 
 public:
 	// Returns shared_ptr to be owned by caller
-	Token Register(Callback callback);
+	[[nodiscard]] Token Register(Callback callback);
 	// Execute alive callbacks; returns live count
 	uint32_t operator()(T... t);
 	// Returns true if any previously distributed Token is still alive
@@ -88,4 +99,4 @@ void Delegate<T...>::Cleanup()
 		std::remove_if(m_callbacks.begin(), m_callbacks.end(), [](Wrapper& wrapper) -> bool { return wrapper.wToken.expired(); }),
 		m_callbacks.end());
 }
-} // namespace Core
+} // namespace LE

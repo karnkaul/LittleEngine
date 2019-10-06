@@ -1,7 +1,7 @@
 #pragma once
 #include <unordered_set>
 #include "Core/CoreTypes.h"
-#include "Core/LECoreGame/LECoreUtils/Utils.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "InputMappings.h"
 
 namespace LittleEngine

@@ -1,15 +1,15 @@
 #include <fstream>
 #include "Core/CoreTypes.h"
-#include "Core/LECoreGame/OS.h"
+#include "Core/Game/OS.h"
 #if ENABLED(STD_FILESYSTEM)
 #include <filesystem>
 #endif
 #include "Assets.h"
 #include "SFTypes.h"
 #include "Core/CoreTypes.h"
-#include "Core/LECoreGame/GData.h"
-#include "Core/LECoreGame/OS.h"
-#include "Core/LECoreGame/LECoreUtils/Utils.h"
+#include "Core/Game/GData.h"
+#include "Core/Game/OS.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 
 namespace LittleEngine
 {

@@ -1,7 +1,7 @@
 #include "JobWorker.h"
 #include "JobManager.h"
-#include "../LECoreUtils/LELogger/Logger.h"
 #include "../LECoreUtils/Utils.h"
+#include "../LEMacros.h"
 #include "../OS.h"
 
 namespace Core

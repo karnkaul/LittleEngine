@@ -9,7 +9,7 @@ namespace LittleEngine
 class LEContext final
 {
 public:
-	using OnSubmit = Core::Delegate<>;
+	using OnSubmit = LE::Delegate<>;
 	using Pointer = sf::Cursor;
 
 public:

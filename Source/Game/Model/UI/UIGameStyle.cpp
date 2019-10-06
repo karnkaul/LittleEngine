@@ -1,6 +1,6 @@
 #include <sstream>
-#include "Core/LECoreGame/GData.h"
-#include "Core/LECoreGame/LECoreUtils/Utils.h"
+#include "Core/Game/GData.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "UIGameStyle.h"
 #include "Engine/Repository/LERepository.h"
 

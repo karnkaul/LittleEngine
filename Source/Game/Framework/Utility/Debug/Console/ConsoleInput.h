@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/CoreTypes.h"
 #if ENABLED(CONSOLE)
-#include "Core/LECoreGame/RingBuffer.h"
+#include "Core/Game/RingBuffer.h"
 #include "Engine/Input/LEInput.h"
 #include "Engine/Input/KeyboardInput.h"
 

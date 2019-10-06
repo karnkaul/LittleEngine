@@ -1,5 +1,5 @@
-#include "Core/LECoreGame/GData.h"
-#include "Core/LECoreGame/LECoreUtils/Utils.h"
+#include "Core/Game/GData.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "GameConfig.h"
 
 using GData = Core::GData;

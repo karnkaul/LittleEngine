@@ -35,7 +35,7 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 		UPtr<Emitter> emitter = std::make_unique<Emitter>(std::move(eData), false);
 		m_emitters.emplace_back(std::move(emitter));
 	}
-	LELogSeverity logSeverity = particles.empty() || emitters.empty() ? LELogSeverity::Warning : LELogSeverity::Debug;
+	auto logSeverity = particles.empty() || emitters.empty() ? LE::LogSeverity::Warning : LE::LogSeverity::Debug;
 	if (!particles.empty())
 	{
 		particles = particles.substr(0, particles.length() - 2);
@@ -45,7 +45,7 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 		particles = "0";
 	}
 
-	LELog(logSeverity, "%s initialised: [%d] emitters [%s] particles", m_logName.data(), emitters.size(), particles.c_str());
+	Log(logSeverity, "%s initialised: [%d] emitters [%s] particles", m_logName.data(), emitters.size(), particles.c_str());
 #if defined(DEBUGGING)
 	m_pO_x->SetEnabled(false);
 	m_pO_y->SetEnabled(false);

@@ -15,10 +15,12 @@ Fixed Vector3::SqrMagnitude() const
 void Vector3::Normalise()
 {
 	Fixed magnitude = Magnitude();
-	Assert(magnitude.ToF32() != 0.0f, "Vector3 magnitude is zero!");
-	x /= magnitude;
-	y /= magnitude;
-	z /= magnitude;
+	if (magnitude != Fixed::Zero)
+	{
+		x /= magnitude;
+		y /= magnitude;
+		z /= magnitude;
+	}
 }
 
 Vector3 Vector3::Normalised() const

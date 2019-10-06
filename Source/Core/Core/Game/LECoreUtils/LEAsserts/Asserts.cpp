@@ -14,6 +14,8 @@
 #include "Asserts.h"
 #include "LESysDialog/SysDialog.h"
 
+namespace LE
+{
 namespace
 {
 enum class ResponseType : uint8_t
@@ -76,7 +78,7 @@ void LEDebugBreak()
 }
 } // namespace
 
-void LEAssertWithMessage(bool expr, const char* message, const char* fileName, long lineNumber)
+void AssertWithMessage(bool expr, const char* message, const char* fileName, long lineNumber)
 {
 	if (expr)
 	{
@@ -91,7 +93,7 @@ void LEAssertWithMessage(bool expr, const char* message, const char* fileName, l
 
 	ResponseType response = ResponseType::Assert;
 
-	LEDialogueData data;
+	DialogueData data;
 	data.resp0 = {"Assert", [&]() { response = ResponseType::Assert; }};
 	data.resp1 = {"Ignore", [&]() { response = ResponseType::Ignore; }};
 	data.resp2 = {"Disable", [&]() { response = ResponseType::Disable; }};
@@ -100,7 +102,7 @@ void LEAssertWithMessage(bool expr, const char* message, const char* fileName, l
 	data.content = message;
 	data.footer = "[" + std::string(fileName) + ": " + std::to_string(lineNumber) + "]";
 
-	LECreateSystemDialogue(std::move(data));
+	CreateSystemDialogue(std::move(data));
 	switch (response)
 	{
 	case ResponseType::Assert:
@@ -134,3 +136,4 @@ void LEAssertWithMessage(bool expr, const char* message, const char* fileName, l
 	}
 	}
 }
+} // namespace LE

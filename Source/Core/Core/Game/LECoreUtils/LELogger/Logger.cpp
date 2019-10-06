@@ -16,10 +16,12 @@
 #include "Windows.h"
 #endif
 
+namespace LE
+{
 using Lock = std::lock_guard<std::mutex>;
 
-LELogSeverity LE_g_MinLogSeverity = LELogSeverity::Info;
-std::function<void(std::string logStr)> LE_g_onLogStr;
+LE::LogSeverity g_MinLogSeverity = LE::LogSeverity::Info;
+std::function<void(std::string logStr)> g_onLogStr;
 
 namespace
 {
@@ -32,8 +34,10 @@ std::string cache;
 std::string buffer;
 std::array<std::string_view, 5> prefixes = {"[D] ", "[I] ", "[W] ", "[E] "};
 
-std::unordered_map<LELogSeverity, std::string_view> severityMap = {
-	{LELogSeverity::Error, "Error"}, {LELogSeverity::Warning, "Warning"}, {LELogSeverity::Info, "Info"}, {LELogSeverity::Debug, "Debug"}};
+std::unordered_map<LE::LogSeverity, std::string_view> severityMap = {{LE::LogSeverity::Error, "Error"},
+																	 {LE::LogSeverity::Warning, "Warning"},
+																	 {LE::LogSeverity::Info, "Info"},
+																	 {LE::LogSeverity::Debug, "Debug"}};
 
 std::tm* TM(const std::time_t& time)
 {
@@ -72,17 +76,17 @@ void LogInternal(const char* pText, uint32_t severityIndex, va_list argList)
 	OutputDebugStringA(cache.data());
 #endif
 	buffer += cache;
-	if (LE_g_onLogStr)
+	if (g_onLogStr)
 	{
-		LE_g_onLogStr(std::move(buffer));
+		g_onLogStr(std::move(buffer));
 	}
 }
 } // namespace
 
-void LELog(LELogSeverity severity, const char* szText, ...)
+void Log(LE::LogSeverity severity, const char* szText, ...)
 {
 	auto severityIndex = static_cast<int>(severity);
-	if (severityIndex < static_cast<int>(LE_g_MinLogSeverity))
+	if (severityIndex < static_cast<int>(LE::g_MinLogSeverity))
 	{
 		return;
 	}
@@ -93,12 +97,12 @@ void LELog(LELogSeverity severity, const char* szText, ...)
 	va_end(argList);
 }
 
-std::string_view LEParseLogSeverity(LELogSeverity severity)
+std::string_view ParseSeverity(LogSeverity severity)
 {
 	return severityMap[severity];
 }
 
-LELogSeverity LEParseLogSeverity(std::string_view serialised)
+LogSeverity ParseSeverity(std::string_view serialised)
 {
 	for (const auto& severity : severityMap)
 	{
@@ -107,5 +111,6 @@ LELogSeverity LEParseLogSeverity(std::string_view serialised)
 			return severity.first;
 		}
 	}
-	return LELogSeverity::Info;
+	return LogSeverity::Info;
 }
+} // namespace LE

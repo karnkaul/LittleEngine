@@ -79,7 +79,6 @@ Fixed Fixed::Sin() const
 Fixed Fixed::ArcSin() const
 {
 	f64 val = ToF64();
-	Assert(val >= -1.0 && val <= 1.0, "Out of range");
 	return Fixed(std::asin(val));
 }
 
@@ -91,7 +90,6 @@ Fixed Fixed::Cos() const
 Fixed Fixed::ArcCos() const
 {
 	f64 val = ToF64();
-	Assert(val >= -1.0 && val <= 1.0, "Out of range");
 	return Fixed(std::acos(val));
 }
 
