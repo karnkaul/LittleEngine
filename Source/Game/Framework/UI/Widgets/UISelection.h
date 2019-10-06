@@ -6,7 +6,7 @@ namespace LittleEngine
 class UISelection : public UIButton
 {
 public:
-	using OnChanged = Core::Delegate<Pair<size_t, String>>;
+	using OnChanged = LE::Delegate<Pair<size_t, std::string>>;
 
 private:
 	struct UISelectionData
@@ -19,20 +19,20 @@ private:
 	OnChanged m_onChanged;
 	class UIButtonDrawer* m_pDrawer = nullptr;
 	Token m_buttonToken;
-	Vec<Token> m_drawerTokens;
-	Vec<String> m_options;
-	String m_value;
+	std::vector<Token> m_drawerTokens;
+	std::vector<std::string> m_options;
+	std::string m_value;
 
 public:
 	Token RegisterOnChanged(OnChanged::Callback callback);
-	UISelection* SetValue(String text);
-	UISelection* AddOption(String option);
-	UISelection* SetOptions(Vec<String> options);
+	UISelection* SetValue(std::string text);
+	UISelection* AddOption(std::string option);
+	UISelection* SetOptions(std::vector<std::string> options);
 	UISelection* SetPanelSize(Vector2 size);
 	UISelection* SetPanelColour(Colour colour);
 
-	const String& CurrentValue() const;
-	Vec<String>& Options();
+	const std::string& CurrentValue() const;
+	std::vector<std::string>& Options();
 
 protected:
 	void OnCreated() override;

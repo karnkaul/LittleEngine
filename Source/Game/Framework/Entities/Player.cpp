@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "SFMLAPI/Rendering/LayerID.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Model/GameManager.h"
@@ -9,7 +8,7 @@ namespace LittleEngine
 {
 PlayerCollider::PlayerCollider(AABBData bounds, Vector2 offset) : bounds(std::move(bounds)), offset(std::move(offset)) {}
 
-PlayerData::PlayerData(TextureAsset& mainTexture, Vec<PlayerCollider> colliders)
+PlayerData::PlayerData(TextureAsset& mainTexture, std::vector<PlayerCollider> colliders)
 	: pMainTexture(&mainTexture), colliders(std::move(colliders))
 {
 }

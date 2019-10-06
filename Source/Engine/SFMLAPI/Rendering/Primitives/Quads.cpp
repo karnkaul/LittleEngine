@@ -1,5 +1,4 @@
-#include "Core/Jobs.h"
-#include "Core/Logger.h"
+#include "Core/Game/Jobs.h"
 #include "Quads.h"
 #include "Quad.h"
 #include "SFMLAPI/System/Assets.h"
@@ -81,7 +80,7 @@ void Quads::OnDraw(Viewport& viewport, sf::RenderStates& sfStates)
 	size_t enabledCount = 0;
 	for (const auto& quad : m_quads)
 	{
-		if (quad.m_renderState.bEnabled)
+		if (quad.m_renderState.bEnabled && !quad.m_bDestroyed)
 		{
 			++enabledCount;
 		}
@@ -91,7 +90,7 @@ void Quads::OnDraw(Viewport& viewport, sf::RenderStates& sfStates)
 	size_t idx = 0;
 	for (const auto& quad : m_quads)
 	{
-		if (quad.m_renderState.bEnabled)
+		if (quad.m_renderState.bEnabled && !quad.m_bDestroyed)
 		{
 			for (size_t i = 0; i < quad.m_sfVertArr.getVertexCount(); ++i)
 			{
@@ -106,14 +105,9 @@ void Quads::OnDraw(Viewport& viewport, sf::RenderStates& sfStates)
 	viewport.draw(va, sfStates);
 }
 
-Quads* Quads::SetTexture(TextureAsset& texture, u32 maxQuadCount)
+Quads* Quads::SetTexture(TextureAsset& texture)
 {
 	Assert(&texture, "Texture is null!");
-	if (m_quads.capacity() == 0)
-	{
-		m_quads.reserve(maxQuadCount);
-		m_reserved = static_cast<u32>(m_quads.capacity());
-	}
 	m_pTexture = &texture;
 	return this;
 }
@@ -121,8 +115,7 @@ Quads* Quads::SetTexture(TextureAsset& texture, u32 maxQuadCount)
 Quad* Quads::AddQuad()
 {
 	Assert(m_pTexture, "Texture is null!");
-	Assert(m_quads.size() < m_reserved, "Max quads reached!");
-	if (m_pTexture && m_quads.size() < m_reserved)
+	if (m_pTexture)
 	{
 		Quad quad(m_layer);
 		quad.SetModel(Rect2::SizeCentre(m_pTexture->TextureSize()), true)->SetTexture(*m_pTexture);

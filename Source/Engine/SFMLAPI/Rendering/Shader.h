@@ -20,7 +20,7 @@ protected:
 	using Super = Shader;
 
 protected:
-	String m_id;
+	std::string m_id;
 	Type m_type;
 
 private:
@@ -28,16 +28,16 @@ private:
 	bool m_bError = false;
 
 public:
-	Shader(String id);
+	Shader(std::string id);
 	virtual ~Shader();
 
-	void Compile(const String& code, Type type);
-	void Compile(const String& vertCode, const String& fragCode);
+	void Compile(const std::string& code, Type type);
+	void Compile(const std::string& vertCode, const std::string& fragCode);
 
 	template <typename T>
-	void SetUniform(String id, T value);
+	void SetUniform(std::string id, T value);
 
-	const String& ID() const;
+	const std::string& ID() const;
 	Type GetType() const;
 
 private:
@@ -47,10 +47,10 @@ private:
 	friend class APrimitive;
 };
 
-extern UMap<Shader::Type, VString> g_szShaderTypes;
+extern std::unordered_map<Shader::Type, std::string_view> g_szShaderTypes;
 
 template <typename T>
-void Shader::SetUniform(String id, T value)
+void Shader::SetUniform(std::string id, T value)
 {
 	m_sfShader.setUniform(id, value);
 }

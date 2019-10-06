@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/StdTypes.h"
+#include "Core/Game/LECoreUtils/StdTypes.h"
 
 namespace LittleEngine
 {
@@ -7,7 +7,7 @@ template <typename T>
 struct TokenHandler
 {
 private:
-	Vec<T> tokens;
+	std::vector<T> tokens;
 
 public:
 	void AddToken(T token)

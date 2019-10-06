@@ -1,6 +1,5 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "Core/TRange.h"
 #include "SFMLAPI/Viewport/ViewportData.h"
 #include "SFML/Graphics/Rect.hpp"
 
@@ -24,7 +23,7 @@ private:
 	TState m_renderState;
 	TState m_gameState;
 	// Derived
-	Map<u32, ViewportSize> m_viewportSizes;
+	std::map<u32, ViewportSize> m_viewportSizes;
 	ViewportSize m_maxViewportSize;
 	ViewportSize m_viewportSize;
 	sf::FloatRect m_uiViewCrop;
@@ -49,7 +48,7 @@ public:
 public:
 	void Init();
 
-	const Map<u32, ViewportSize>& ValidViewportSizes() const;
+	const std::map<u32, ViewportSize>& ValidViewportSizes() const;
 	const ViewportSize* MaxViewportSize(bool bBorderless) const;
 	const ViewportSize* TryGetViewportSize(u32 height) const;
 

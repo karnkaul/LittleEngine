@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "Model/UI/UIElement.h"
 #include "Model/UI/UIWidgetMatrix.h"
 #include "UIDialogue.h"

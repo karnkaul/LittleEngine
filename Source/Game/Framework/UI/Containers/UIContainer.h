@@ -17,29 +17,29 @@ class UIContainer : public UIContext
 private:
 	struct Obj
 	{
-		String id;
+		std::string id;
 		UIObject* pObj;
 	};
 
 private:
-	Vec<Obj> m_objs;
+	std::vector<Obj> m_objs;
 
 public:
 	UIContainer();
 	~UIContainer() override;
 
-	void Deserialise(String serialised);
+	void Deserialise(std::string serialised);
 
-	UIObject* GetObj(const String& id);
+	UIObject* GetObj(const std::string& id);
 	template <typename T>
-	T* Find(const String& id);
+	T* Find(const std::string& id);
 
 private:
-	void SetupChildren(class UIElement* pParent, Vec<Core::GData> uiObjects);
+	void SetupChildren(class UIElement* pParent, std::vector<Core::GData> uiObjects);
 };
 
 template <typename T>
-T* UIContainer::Find(const String& id)
+T* UIContainer::Find(const std::string& id)
 {
 	static_assert(IsDerived<UIObject, T>(), "T must derive from UIObject!");
 	return dynamic_cast<T*>(GetObj(id));
@@ -56,7 +56,7 @@ private:
 public:
 	CMD_UIContainer();
 
-	void FillExecuteResult(String params) override;
+	void FillExecuteResult(std::string params) override;
 };
 } // namespace Debug::Commands
 #endif

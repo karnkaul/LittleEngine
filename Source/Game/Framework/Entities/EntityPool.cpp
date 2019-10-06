@@ -3,7 +3,7 @@
 
 namespace LittleEngine
 {
-EntityPool::EntityPool(String name) : Inheritable(std::move(name), "EntityPool") {}
+EntityPool::EntityPool(std::string name) : Inheritable(std::move(name), "EntityPool") {}
 
 EntityPool::~EntityPool()
 {

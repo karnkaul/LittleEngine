@@ -15,7 +15,7 @@ private:
 
 public:
 	static Time GameTime();
-	static String ToString(Time time);
+	static std::string ToString(Time time);
 
 	WorldClock();
 	~WorldClock();

@@ -10,34 +10,34 @@ namespace LittleEngine
 class Asset : private NoCopy
 {
 public:
-	static String s_pathPrefix;
+	static std::string s_pathPrefix;
 
 protected:
-	Vec<u8> m_buffer;
-	String m_id;
-	Pair<String, u64> m_pathSize;
+	std::vector<u8> m_buffer;
+	std::string m_id;
+	Pair<std::string, u64> m_pathSize;
 	AssetType m_type;
 	u64 m_byteCount = 0;
 	bool m_bError = true;
 
 public:
-	static bool DoesFileExist(VString id);
-	static Pair<String, u64> FilePathAndSize(VString id);
+	static bool DoesFileExist(std::string_view id);
+	static Pair<std::string, u64> FilePathAndSize(std::string_view id);
 
 public:
 	Asset() = delete;
 	virtual ~Asset();
 
 protected:
-	Asset(String id, AssetType type = AssetType::File);
-	Asset(String id, Vec<u8> buffer, AssetType type = AssetType::File);
+	Asset(std::string id, AssetType type = AssetType::File);
+	Asset(std::string id, std::vector<u8> buffer, AssetType type = AssetType::File);
 
 public:
-	VString ID() const;
+	std::string_view ID() const;
 	bool IsError() const;
 	AssetType Type() const;
 	u64 ByteCount() const;
-	bool WriteBytes(const String& path);
+	bool WriteBytes(const std::string& path);
 };
 
 // \brief TextureAsset is an image texture copied to VRAM
@@ -47,8 +47,8 @@ public:
 	sf::Texture m_sfTexture;
 
 public:
-	TextureAsset(String id);
-	TextureAsset(String id, Vec<u8> buffer);
+	TextureAsset(std::string id);
+	TextureAsset(std::string id, std::vector<u8> buffer);
 
 	TextureAsset* SetRepeated(bool bRepeat);
 
@@ -67,8 +67,8 @@ public:
 	sf::Font m_sfFont;
 
 public:
-	FontAsset(String id);
-	FontAsset(String id, Vec<u8> buffer);
+	FontAsset(std::string id);
+	FontAsset(std::string id, std::vector<u8> buffer);
 
 private:
 	friend class SFText;
@@ -83,8 +83,8 @@ public:
 	Fixed m_volumeScale = Fixed::One;
 
 public:
-	SoundAsset(String id, Fixed volumeScale = Fixed::One);
-	SoundAsset(String id, Vec<u8> buffer, Fixed volumeScale = Fixed::One);
+	SoundAsset(std::string id, Fixed volumeScale = Fixed::One);
+	SoundAsset(std::string id, std::vector<u8> buffer, Fixed volumeScale = Fixed::One);
 
 private:
 	friend class SoundPlayer;
@@ -93,12 +93,12 @@ private:
 class TextAsset : public Asset
 {
 private:
-	String m_text;
+	std::string m_text;
 
 public:
-	TextAsset(String id);
-	TextAsset(String id, Vec<u8> buffer);
+	TextAsset(std::string id);
+	TextAsset(std::string id, std::vector<u8> buffer);
 
-	const String& Text() const;
+	const std::string& Text() const;
 };
 } // namespace LittleEngine

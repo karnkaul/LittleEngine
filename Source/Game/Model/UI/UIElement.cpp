@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "Engine/GFX.h"
@@ -24,7 +23,7 @@ void UIElement::SetParent(UITransform& parent)
 	m_transform.SetParent(parent);
 }
 
-void UIElement::OnCreate(LEContext& context, String name, UITransform* pParent, FontAsset* pFont)
+void UIElement::OnCreate(LEContext& context, std::string name, UITransform* pParent, FontAsset* pFont)
 {
 	m_pFont = pFont;
 	SetContext(context);
@@ -170,10 +169,10 @@ void UIElement::Tick(Time /*dt*/)
 	m_pRect->SetOrientation(Vector2::Right, true);
 	m_pText->SetOrientation(Vector2::Right, true);
 	Vector2 uiPos = m_transform.WorldPosition(g_pGFX->UISpace());
-	m_pRect->SetPosition(uiPos);
-	m_pText->SetPosition(uiPos);
-
+	m_pRect->SetPosition(uiPos, !m_bTicked);
+	m_pText->SetPosition(uiPos, !m_bTicked);
 	m_bDoTick = !m_bStopTicking;
+	m_bTicked = true;
 }
 
 LayerID UIElement::GetLayer() const
@@ -206,7 +205,8 @@ void UIElement::Regenerate(LayerID newLayer)
 	{
 		ApplyPanel();
 	}
-	m_bDoTick = true;
+	m_bTicked = false;
+	Tick();
 }
 
 void UIElement::SetStatic(bool bStatic)

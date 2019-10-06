@@ -1,39 +1,39 @@
 #include <fstream>
-#include "Core/OS.h"
+#include "Core/CoreTypes.h"
+#include "Core/Game/OS.h"
 #if ENABLED(STD_FILESYSTEM)
 #include <filesystem>
 #endif
 #include "Assets.h"
 #include "SFTypes.h"
 #include "Core/CoreTypes.h"
-#include "Core/GData.h"
-#include "Core/Logger.h"
-#include "Core/OS.h"
-#include "Core/Utils.h"
+#include "Core/Game/GData.h"
+#include "Core/Game/OS.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 
 namespace LittleEngine
 {
-Array<VString, ToIdx(AssetType::_COUNT)> g_szAssetType = {"TextureAsset", "FontAsset", "SoundAsset", "TextAsset", "FileAsset"};
+std::array<std::string_view, ToIdx(AssetType::_COUNT)> g_szAssetType = {"TextureAsset", "FontAsset", "SoundAsset", "TextAsset", "FileAsset"};
 
-String Asset::s_pathPrefix;
+std::string Asset::s_pathPrefix;
 
-bool Asset::DoesFileExist(VString id)
+bool Asset::DoesFileExist(std::string_view id)
 {
-	String fullPath = s_pathPrefix;
+	std::string fullPath = s_pathPrefix;
 	fullPath += id;
 	return OS::DoesFileExist(OS::Env()->FullPath(fullPath));
 }
 
-Pair<String, u64> Asset::FilePathAndSize(VString id)
+Pair<std::string, u64> Asset::FilePathAndSize(std::string_view id)
 {
-	String fullPath = s_pathPrefix;
+	std::string fullPath = s_pathPrefix;
 	fullPath += id;
 	fullPath = OS::Env()->FullPath(fullPath.c_str());
 	u64 size = OS::FileSize(fullPath.c_str());
 	return std::make_pair(std::move(fullPath), size);
 }
 
-Asset::Asset(String id, AssetType type) : m_id(std::move(id)), m_type(type)
+Asset::Asset(std::string id, AssetType type) : m_id(std::move(id)), m_type(type)
 {
 	m_pathSize = FilePathAndSize(m_id);
 #if ENABLED(FILESYSTEM_ASSETS)
@@ -54,7 +54,7 @@ Asset::Asset(String id, AssetType type) : m_id(std::move(id)), m_type(type)
 #endif
 }
 
-Asset::Asset(String id, Vec<u8> buffer, AssetType type) : m_buffer(std::move(buffer)), m_id(std::move(id)), m_type(type)
+Asset::Asset(std::string id, std::vector<u8> buffer, AssetType type) : m_buffer(std::move(buffer)), m_id(std::move(id)), m_type(type)
 {
 	m_bError = !m_buffer.empty();
 	m_byteCount = m_buffer.size();
@@ -68,7 +68,7 @@ Asset::~Asset()
 	}
 }
 
-VString Asset::ID() const
+std::string_view Asset::ID() const
 {
 	return m_id;
 }
@@ -88,7 +88,7 @@ u64 Asset::ByteCount() const
 	return m_byteCount;
 }
 
-bool Asset::WriteBytes(const String& path)
+bool Asset::WriteBytes(const std::string& path)
 {
 	bool bSuccess = false;
 	if (!m_buffer.empty())
@@ -115,7 +115,7 @@ bool Asset::WriteBytes(const String& path)
 			source.seekg(0, std::ios::end);
 			auto size = source.tellg();
 			source.seekg(0);
-			Vec<char> buffer(size, '\0');
+			std::vector<char> buffer(size, '\0');
 			source.read(buffer.data(), size);
 			dest.write(buffer.data(), size);
 #endif
@@ -134,7 +134,7 @@ bool Asset::WriteBytes(const String& path)
 	return bSuccess;
 }
 
-TextureAsset::TextureAsset(String id) : Asset(std::move(id), AssetType::Texture)
+TextureAsset::TextureAsset(std::string id) : Asset(std::move(id), AssetType::Texture)
 {
 	m_byteCount = m_pathSize.second;
 	if (!m_sfTexture.loadFromFile(m_pathSize.first))
@@ -148,7 +148,7 @@ TextureAsset::TextureAsset(String id) : Asset(std::move(id), AssetType::Texture)
 	}
 }
 
-TextureAsset::TextureAsset(String id, Vec<u8> buffer) : Asset(std::move(id), std::move(buffer), AssetType::Texture)
+TextureAsset::TextureAsset(std::string id, std::vector<u8> buffer) : Asset(std::move(id), std::move(buffer), AssetType::Texture)
 {
 	m_byteCount = m_buffer.size();
 	if (m_buffer.empty() || !m_sfTexture.loadFromMemory(m_buffer.data(), m_buffer.size()))
@@ -173,7 +173,7 @@ Vector2 TextureAsset::TextureSize() const
 	return Cast(m_sfTexture.getSize());
 }
 
-FontAsset::FontAsset(String id) : Asset(std::move(id), AssetType::Font)
+FontAsset::FontAsset(std::string id) : Asset(std::move(id), AssetType::Font)
 {
 	if (!m_sfFont.loadFromFile(m_pathSize.first))
 	{
@@ -187,7 +187,7 @@ FontAsset::FontAsset(String id) : Asset(std::move(id), AssetType::Font)
 	m_byteCount = m_pathSize.second;
 }
 
-FontAsset::FontAsset(String id, Vec<u8> buffer) : Asset(std::move(id), std::move(buffer), AssetType::Font)
+FontAsset::FontAsset(std::string id, std::vector<u8> buffer) : Asset(std::move(id), std::move(buffer), AssetType::Font)
 {
 	m_byteCount = m_buffer.size();
 	if (m_buffer.empty() || !m_sfFont.loadFromMemory(m_buffer.data(), m_buffer.size()))
@@ -201,7 +201,7 @@ FontAsset::FontAsset(String id, Vec<u8> buffer) : Asset(std::move(id), std::move
 	}
 }
 
-SoundAsset::SoundAsset(String id, Fixed volumeScale) : Asset(std::move(id), AssetType::Sound), m_volumeScale(Maths::Clamp01(volumeScale))
+SoundAsset::SoundAsset(std::string id, Fixed volumeScale) : Asset(std::move(id), AssetType::Sound), m_volumeScale(Maths::Clamp01(volumeScale))
 {
 	if (!m_sfSoundBuffer.loadFromFile(m_pathSize.first))
 	{
@@ -214,7 +214,7 @@ SoundAsset::SoundAsset(String id, Fixed volumeScale) : Asset(std::move(id), Asse
 	}
 	m_byteCount = m_pathSize.second;
 }
-SoundAsset::SoundAsset(String id, Vec<u8> buffer, Fixed volumeScale)
+SoundAsset::SoundAsset(std::string id, std::vector<u8> buffer, Fixed volumeScale)
 	: Asset(std::move(id), std::move(buffer), AssetType::Sound), m_volumeScale(Maths::Clamp01(volumeScale))
 {
 	m_byteCount = m_buffer.size();
@@ -229,7 +229,7 @@ SoundAsset::SoundAsset(String id, Vec<u8> buffer, Fixed volumeScale)
 	}
 }
 
-TextAsset::TextAsset(String id) : Asset(std::move(id), AssetType::Text)
+TextAsset::TextAsset(std::string id) : Asset(std::move(id), AssetType::Text)
 {
 	FileRW file(m_pathSize.first);
 	if (!file.Exists())
@@ -245,7 +245,7 @@ TextAsset::TextAsset(String id) : Asset(std::move(id), AssetType::Text)
 	m_byteCount = m_pathSize.second;
 }
 
-TextAsset::TextAsset(String id, Vec<u8> buffer) : Asset(std::move(id), std::move(buffer), AssetType::Text)
+TextAsset::TextAsset(std::string id, std::vector<u8> buffer) : Asset(std::move(id), std::move(buffer), AssetType::Text)
 {
 	m_byteCount = m_buffer.size();
 	if (m_buffer.empty())
@@ -260,7 +260,7 @@ TextAsset::TextAsset(String id, Vec<u8> buffer) : Asset(std::move(id), std::move
 	}
 }
 
-const String& TextAsset::Text() const
+const std::string& TextAsset::Text() const
 {
 	return m_text;
 }

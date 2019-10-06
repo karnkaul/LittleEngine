@@ -11,20 +11,20 @@ Token UISelection::RegisterOnChanged(OnChanged::Callback callback)
 	return m_onChanged.Register(std::move(callback));
 }
 
-UISelection* UISelection::SetValue(String text)
+UISelection* UISelection::SetValue(std::string text)
 {
 	m_value = std::move(text);
 	SetText(m_value);
 	return this;
 }
 
-UISelection* UISelection::AddOption(String option)
+UISelection* UISelection::AddOption(std::string option)
 {
 	m_options.emplace_back(std::move(option));
 	return this;
 }
 
-UISelection* UISelection::SetOptions(Vec<String> options)
+UISelection* UISelection::SetOptions(std::vector<std::string> options)
 {
 	m_options = std::move(options);
 	return this;
@@ -42,12 +42,12 @@ UISelection* UISelection::SetPanelColour(Colour colour)
 	return this;
 }
 
-const String& UISelection::CurrentValue() const
+const std::string& UISelection::CurrentValue() const
 {
 	return m_value;
 }
 
-Vec<String>& UISelection::Options()
+std::vector<std::string>& UISelection::Options()
 {
 	return m_options;
 }
@@ -73,7 +73,7 @@ void UISelection::OnSpawnDrawer()
 	m_drawerTokens.clear();
 	for (size_t idx = 0; idx < m_options.size(); ++idx)
 	{
-		String option = m_options[idx];
+		std::string option = m_options[idx];
 		m_drawerTokens.push_back(m_pDrawer->AddButton(option, [&, idx, option]() {
 			m_pDrawer->Destruct();
 			m_value = option;

@@ -1,4 +1,4 @@
-#include "Core/Version.h"
+#include "Core/GameVersion.h"
 #include "RenderStatsRenderer.h"
 #if ENABLED(RENDER_STATS)
 #include "SFMLAPI/Rendering/RenderStats.h"
@@ -84,7 +84,7 @@ void RenderStatsRenderer::Update()
 		SPRINTF(buf, sizeof(buf), "%u/%u\n%u\n%u\n%u\n%u\n%.1fms\n%u\n%u", g_renderStats.framesPerSecond, g_renderStats.fpsMax,
 				g_renderStats.quadCount, g_renderStats.drawCallCount, g_renderStats.dynamicCount, g_renderStats.staticCount, avgDT,
 				g_renderStats.gameFrame, g_renderStats.renderFrame);
-		m_pValues->SetText(String(buf));
+		m_pValues->SetText(std::string(buf));
 	}
 }
 
@@ -96,7 +96,7 @@ VersionRenderer::VersionRenderer(LEContext& context)
 	LERenderer* pRenderer = context.Renderer();
 	auto pFont = g_pRepository->Load<FontAsset>("Fonts/UIFont.ttf");
 	m_pBuildVersion = pRenderer->New<SFText>(LayerID::Top);
-	m_pBuildVersion->SetText(String(Core::Version::szBUILD_VERSION_WITH_COMMIT))
+	m_pBuildVersion->SetText(std::string(BUILD_VERSION_WITH_COMMIT))
 		->SetSize(textSize + 5U)
 		->SetFont(pFont ? *pFont : *g_pDefaultFont)
 		->SetPivot({-1, 0})

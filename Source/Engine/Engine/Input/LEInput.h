@@ -20,31 +20,31 @@ class LEInput final : public InputHandler
 public:
 	struct Frame
 	{
-		using GameInputs = Vec<KeyType>;
+		using GameInputs = std::vector<KeyType>;
 
-		Vec<KeyType> pressed;
-		Vec<KeyType> held;
-		Vec<KeyType> released;
+		std::vector<KeyType> pressed;
+		std::vector<KeyType> held;
+		std::vector<KeyType> released;
 		TextInput textInput;
 		MouseInput mouseInput;
 		JoyInput joyInput;
 
-		static String Clipboard();
+		static std::string Clipboard();
 
 		bool IsPressed(s32 key) const;
 		bool IsHeld(s32 key) const;
 		bool IsReleased(s32 key) const;
 
-		bool IsPressed(InitList<s32> keys, bool bAny = true) const;
-		bool IsHeld(InitList<s32> keys, bool bAny = true) const;
-		bool IsReleased(InitList<s32> keys, bool bAny = true) const;
+		bool IsPressed(std::initializer_list<s32> keys, bool bAny = true) const;
+		bool IsHeld(std::initializer_list<s32> keys, bool bAny = true) const;
+		bool IsReleased(std::initializer_list<s32> keys, bool bAny = true) const;
 
 		bool HasData() const;
 
 		Fixed MouseWhellScroll() const;
 
 	private:
-		inline bool Result(InitList<s32> keys, std::function<bool(s32)> subroutine, bool bAny) const
+		inline bool Result(std::initializer_list<s32> keys, std::function<bool(s32)> subroutine, bool bAny) const
 		{
 			bool bResult = bAny ? false : true;
 			for (auto key : keys)
@@ -73,13 +73,14 @@ private:
 	};
 
 private:
-	Vec<KeyType> m_previousSnapshot;
-	Vec<KeyType> m_currentSnapshot;
+	std::vector<KeyType> m_previousSnapshot;
+	std::vector<KeyType> m_currentSnapshot;
 	TextInput m_textInput;
 	MouseInput m_mouseInput;
 	JoyInput m_joyInput;
-	Vec<InputContext> m_contexts;
+	std::vector<InputContext> m_contexts;
 	std::optional<InputContext> m_oSudoContext;
+	mutable s32 m_nextToken = 0;
 #if defined(DEBUGGING)
 	class Quad* m_pMouseH = nullptr;
 	Quad* m_pMouseV = nullptr;

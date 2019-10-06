@@ -1,7 +1,6 @@
 #pragma once
 #include "SFML/Window/Cursor.hpp"
 #include "Core/CoreTypes.h"
-#include "Core/Delegate.h"
 #include "SFMLAPI/Input/InputMappings.h"
 #include "SFMLAPI/Viewport/ViewportData.h"
 
@@ -10,7 +9,7 @@ namespace LittleEngine
 class LEContext final
 {
 public:
-	using OnSubmit = Core::Delegate<>;
+	using OnSubmit = LE::Delegate<>;
 	using Pointer = sf::Cursor;
 
 public:
@@ -36,8 +35,8 @@ private:
 
 private:
 	Data m_data;
-	UMap<Pointer::Type, UPtr<Pointer>> m_pointerMap;
-	Vec<PtrEntry> m_pointerStack;
+	std::unordered_map<Pointer::Type, UPtr<Pointer>> m_pointerMap;
+	std::vector<PtrEntry> m_pointerStack;
 	Token m_ptrToken;
 	OnSubmit m_onSubmitted;
 	UPtr<class Viewport> m_uViewport;

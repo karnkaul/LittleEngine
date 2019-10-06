@@ -1,7 +1,7 @@
 #pragma once
 #include "SFML/Window/Keyboard.hpp"
 #include "Core/CoreTypes.h"
-#include "Core/Property.h"
+#include "Core/Game/Property.h"
 
 namespace LittleEngine
 {
@@ -41,9 +41,9 @@ enum class JoyAxis : u8
 class InputMap
 {
 private:
-	UMap<u32, KeyType> m_keyMap = {{0, JOY_BTN_0}, {1, JOY_BTN_1}, {2, JOY_BTN_2}, {3, JOY_BTN_3},
+	std::unordered_map<u32, KeyType> m_keyMap = {{0, JOY_BTN_0}, {1, JOY_BTN_1}, {2, JOY_BTN_2}, {3, JOY_BTN_3},
 								   {4, JOY_BTN_4}, {5, JOY_BTN_5}, {6, JOY_BTN_6}, {7, JOY_BTN_7}};
-	UMap<JoyAxis, Fixed> m_deadZones = {{JoyAxis::XY, Fixed(15, 100)}, {JoyAxis::ZR, Fixed(10, 100)}};
+	std::unordered_map<JoyAxis, Fixed> m_deadZones = {{JoyAxis::XY, Fixed(15, 100)}, {JoyAxis::ZR, Fixed(10, 100)}};
 
 public:
 	KeyType GetKeyType(u32 button) const;

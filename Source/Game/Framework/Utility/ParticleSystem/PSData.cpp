@@ -1,4 +1,4 @@
-#include "Core/ArchiveReader.h"
+#include "Core/Game/ArchiveReader.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Engine/GFX.h"
 #include "Engine/Repository/LERepository.h"
@@ -81,12 +81,12 @@ void EmitterData::SetOwner(Entity& owner)
 
 ParticleSystemData::ParticleSystemData(const GData& psGData)
 {
-	Vec<GData> emitterGDatas = psGData.GetVectorGData("emitters");
+	std::vector<GData> emitterGDatas = psGData.GetVectorGData("emitters");
 	if (!emitterGDatas.empty())
 	{
 		for (auto& emitterGData : emitterGDatas)
 		{
-			String texturePath = emitterGData.GetString("texturePath");
+			std::string texturePath = emitterGData.GetString("texturePath");
 			auto pTexture = g_pRepository->Load<TextureAsset>(texturePath);
 			if (!pTexture)
 			{
@@ -96,7 +96,7 @@ ParticleSystemData::ParticleSystemData(const GData& psGData)
 				continue;
 			}
 			SoundAsset* sound = nullptr;
-			String soundPath = emitterGData.GetString("soundPath");
+			std::string soundPath = emitterGData.GetString("soundPath");
 			if (!soundPath.empty())
 			{
 				sound = g_pRepository->Load<SoundAsset>(soundPath);

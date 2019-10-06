@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "SFDrawable.h"
 #include "SFMLAPI/System/SFTypes.h"
 

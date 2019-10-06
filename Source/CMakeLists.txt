@@ -35,6 +35,26 @@ if(NOT SRC_IDX EQUAL -1)
 	message(FATAL_ERROR "Cannot build in './Source' (or a sub-directory)!\nNOTE: Remove 'CMakeCache.txt' and 'CMakeFiles/' from ${PROJECT_BINARY_DIR}")
 endif()
 
+# Init/Update Submodules
+find_package(Git QUIET)
+if(GIT_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/../.git")
+	option(GIT_SUBMODULE "Init/Update submodules during generation" ON)
+	if(GIT_SUBMODULE)
+		message(STATUS "Updating git submodules...")
+		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+			RESULT_VARIABLE GIT_SUBMODULE_RESULT
+		)
+		if(NOT GIT_SUBMODULE_RESULT EQUAL "0")
+			message(FATAL_ERROR "git submodule update failed!")
+		endif()
+	endif()
+endif()
+set(DEEP_SUBMODULE_FILE "Core/Core/Game/LECoreUtils/LEAsserts/LESysDialog/SysDialog.cpp")
+if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${DEEP_SUBMODULE_FILE}")
+	message(FATAL_ERROR "Missing required submodules/files!\n[${DEEP_SUBMODULE_FILE}]")
+endif()
+
 get_filename_component(ROOT_PATH "${CMAKE_SOURCE_DIR}/.." ABSOLUTE)
 if(CI_BUILD)
 	set(BUILD_PATH "${ROOT_PATH}/_Build/CI")
@@ -57,7 +77,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED 1)
 set(CMAKE_SUPPRESS_REGENERATION true)
 
 # Version
-execute_process(COMMAND git -C "${CMAKE_SOURCE_DIR}" rev-parse --short HEAD OUTPUT_VARIABLE BUILD_COMMIT_HASH)
+execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+	WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+	OUTPUT_VARIABLE BUILD_COMMIT_HASH
+	ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 if(NOT BUILD_COMMIT_HASH)
 	set(BUILD_COMMIT_HASH 0000000)
 endif()

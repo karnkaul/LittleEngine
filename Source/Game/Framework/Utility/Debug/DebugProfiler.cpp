@@ -1,6 +1,5 @@
 #include "DebugProfiler.h"
 #if ENABLED(PROFILER)
-#include "Core/Logger.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "Engine/Debug/Profiler.h"
 #include "Engine/Debug/Tweakable.h"
@@ -34,7 +33,7 @@ class Renderer
 {
 	UPtr<UIElement> m_uLabelRoot = nullptr;
 	UPtr<UIElement> m_uBarRoot = nullptr;
-	Vec<UIEntry> m_uiEntries;
+	std::vector<UIEntry> m_uiEntries;
 	u16 m_frameEntryCount = 0;
 
 public:
@@ -51,12 +50,12 @@ private:
 Renderer::Renderer()
 {
 	auto top_1 = static_cast<LayerID>(ToS32(LayerID::Top) - 1);
-	m_uLabelRoot = MakeUnique<UIElement>(top_1, true);
+	m_uLabelRoot = std::make_unique<UIElement>(top_1, true);
 	m_uLabelRoot->OnCreate(*pContext, "ProfilerLabels");
 	m_uLabelRoot->SetRectSize({textWidth, profilerHeight}, true);
 	m_uLabelRoot->m_transform.nPosition = {-1, Fixed(-0.75f)};
 	// m_uLabelRoot->SetPanel(Colour(100, 100, 100, 100));
-	m_uBarRoot = MakeUnique<UIElement>(top_1, true);
+	m_uBarRoot = std::make_unique<UIElement>(top_1, true);
 	m_uBarRoot->OnCreate(*pContext, "ProfilerBars");
 	m_uBarRoot->SetRectSize(Vector2(progressBarSize.x, profilerHeight), true);
 	m_uBarRoot->m_transform.nPosition = {Fixed(0.8f), Fixed(-0.75f)};
@@ -67,8 +66,8 @@ Renderer::Renderer()
 	for (u32 i = 0; i < maxEntries; ++i)
 	{
 		UIEntry newEntry;
-		newEntry.uProgressBar = MakeUnique<UIProgressBar>(LayerID::Top, true);
-		newEntry.uLabelElement = MakeUnique<UIElement>(LayerID::Top, true);
+		newEntry.uProgressBar = std::make_unique<UIProgressBar>(LayerID::Top, true);
+		newEntry.uLabelElement = std::make_unique<UIElement>(LayerID::Top, true);
 		newEntry.uProgressBar->OnCreate(*pContext, "", &m_uBarRoot->m_transform);
 		newEntry.uLabelElement->OnCreate(*pContext, "", &m_uLabelRoot->m_transform);
 		colour.a = barAlpha;
@@ -192,13 +191,13 @@ void Init(Time maxTickTime)
 	profilerHeight = uiSpace.y * Fixed(18, 30);
 	Fixed vpWidth = uiSpace.x;
 	progressBarSize = Vector2(vpWidth - textWidth - 50, 10);
-	uRenderer = MakeUnique<Renderer>();
+	uRenderer = std::make_unique<Renderer>();
 	Toggle(false);
 
 #if ENABLED(TWEAKABLES)
-	profiler.BindCallback([](VString toggle) { Toggle(Strings::ToBool(String(toggle))); });
+	profiler.BindCallback([](std::string_view toggle) { Toggle(Strings::ToBool(std::string(toggle))); });
 	pflr_maxDT.Set(Strings::ToString(maxTickDeltaTime.AsMilliseconds()));
-	pflr_maxDT.BindCallback([](VString max) { maxTickDeltaTime = Time::Milliseconds(Strings::ToS32(String(max))); });
+	pflr_maxDT.BindCallback([](std::string_view max) { maxTickDeltaTime = Time::Milliseconds(Strings::ToS32(std::string(max))); });
 #endif
 }
 

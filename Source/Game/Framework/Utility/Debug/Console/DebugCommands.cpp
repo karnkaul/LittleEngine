@@ -1,7 +1,6 @@
 #include "DebugCommands.h"
 #if ENABLED(CONSOLE)
-#include "Core/Logger.h"
-#include "Core/Utils.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Engine/GFX.h"
 #include "Engine/Debug/Tweakable.h"
@@ -30,30 +29,30 @@ namespace Commands
 namespace
 {
 LEContext* pContext = nullptr;
-Vec<LogLine> AllCommands();
+std::vector<LogLine> AllCommands();
 } // namespace
 
 #pragma region Commands
-Command::Command(VString name) : m_name(name) {}
+Command::Command(std::string_view name) : m_name(name) {}
 
-Vec<LogLine> Command::Execute(String params)
+std::vector<LogLine> Command::Execute(std::string params)
 {
-	String suffix = params.empty() ? "" : " " + params;
+	std::string suffix = params.empty() ? "" : " " + params;
 	m_executeResult.emplace_back(m_name + suffix, g_liveHistoryColour);
 	FillExecuteResult(std::move(params));
 	return (m_executeResult);
 }
 
-Vec<String> Command::AutoCompleteParams(VString /*incomplete*/)
+std::vector<std::string> Command::AutoCompleteParams(std::string_view /*incomplete*/)
 {
-	return Vec<String>();
+	return std::vector<std::string>();
 }
 
 // Commands that take a fixed number and constant values of parameters as options
 class ParameterisedCommand : public Command
 {
 public:
-	void FillExecuteResult(String params) final
+	void FillExecuteResult(std::string params) final
 	{
 		if (params.empty())
 		{
@@ -74,12 +73,12 @@ public:
 		}
 	}
 
-	Vec<String> AutoCompleteParams(VString incompleteParams) final
+	std::vector<std::string> AutoCompleteParams(std::string_view incompleteParams) final
 	{
-		Vec<String> params;
+		std::vector<std::string> params;
 		for (const auto& p : m_paramCallbackMap)
 		{
-			if (incompleteParams.empty() || (p.first.find(incompleteParams) != String::npos && incompleteParams[0] == p.first[0]))
+			if (incompleteParams.empty() || (p.first.find(incompleteParams) != std::string::npos && incompleteParams[0] == p.first[0]))
 			{
 				params.emplace_back(p.first);
 			}
@@ -88,9 +87,9 @@ public:
 	}
 
 protected:
-	Map<String, std::function<void(Vec<LogLine>&)>> m_paramCallbackMap;
+	std::map<std::string, std::function<void(std::vector<LogLine>&)>> m_paramCallbackMap;
 
-	ParameterisedCommand(VString name) : Command(name) {}
+	ParameterisedCommand(std::string_view name) : Command(name) {}
 
 	virtual LogLine OnEmptyParams()
 	{
@@ -101,15 +100,15 @@ protected:
 class BooleanCommand : public ParameterisedCommand
 {
 public:
-	BooleanCommand(VString name) : ParameterisedCommand(name)
+	BooleanCommand(std::string_view name) : ParameterisedCommand(name)
 	{
-		m_paramCallbackMap.emplace("true", [&](Vec<LogLine>& executeResult) { OnTrue(executeResult); });
-		m_paramCallbackMap.emplace("false", [&](Vec<LogLine>& executeResult) { OnFalse(executeResult); });
+		m_paramCallbackMap.emplace("true", [&](std::vector<LogLine>& executeResult) { OnTrue(executeResult); });
+		m_paramCallbackMap.emplace("false", [&](std::vector<LogLine>& executeResult) { OnFalse(executeResult); });
 	}
 
 protected:
-	virtual void OnTrue(Vec<LogLine>& executeResult) = 0;
-	virtual void OnFalse(Vec<LogLine>& executeResult) = 0;
+	virtual void OnTrue(std::vector<LogLine>& executeResult) = 0;
+	virtual void OnFalse(std::vector<LogLine>& executeResult) = 0;
 };
 
 class Help : public Command
@@ -117,7 +116,7 @@ class Help : public Command
 public:
 	Help() : Command("help") {}
 
-	void FillExecuteResult(String /*params*/) override
+	void FillExecuteResult(std::string /*params*/) override
 	{
 		m_executeResult = AllCommands();
 	}
@@ -131,7 +130,7 @@ public:
 		m_bTakesCustomParam = true;
 	}
 
-	void FillExecuteResult(String params) override
+	void FillExecuteResult(std::string params) override
 	{
 		if (params.empty())
 		{
@@ -174,7 +173,7 @@ class Quit : public Command
 public:
 	Quit() : Command("quit") {}
 
-	void FillExecuteResult(String /*params*/) override
+	void FillExecuteResult(std::string /*params*/) override
 	{
 		if (WorldStateMachine::s_bRunning)
 		{
@@ -193,25 +192,21 @@ class LogLevel : public ParameterisedCommand
 public:
 	LogLevel() : ParameterisedCommand("logLevel")
 	{
-		m_paramCallbackMap.emplace("HOT", [](Vec<LogLine>& executeResult) {
-			Core::g_MinLogSeverity = Core::LogSeverity::HOT;
-			executeResult.emplace_back("Set LogLevel to [HOT]", g_logTextColour);
-		});
-		m_paramCallbackMap.emplace("Error", [](Vec<LogLine>& executeResult) {
-			Core::g_MinLogSeverity = Core::LogSeverity::Error;
+		m_paramCallbackMap.emplace("Error", [](std::vector<LogLine>& executeResult) {
+			LE::g_MinLogSeverity = LE::LogSeverity::Error;
 			executeResult.emplace_back("Set LogLevel to [Error]", g_logTextColour);
 		});
-		m_paramCallbackMap.emplace("Warning", [](Vec<LogLine>& executeResult) {
-			Core::g_MinLogSeverity = Core::LogSeverity::Warning;
+		m_paramCallbackMap.emplace("Warning", [](std::vector<LogLine>& executeResult) {
+			LE::g_MinLogSeverity = LE::LogSeverity::Warning;
 			executeResult.emplace_back("Set LogLevel to [Warning]", g_logTextColour);
 		});
-		m_paramCallbackMap.emplace("Info", [](Vec<LogLine>& executeResult) {
-			Core::g_MinLogSeverity = Core::LogSeverity::Info;
+		m_paramCallbackMap.emplace("Info", [](std::vector<LogLine>& executeResult) {
+			LE::g_MinLogSeverity = LE::LogSeverity::Info;
 			executeResult.emplace_back("Set LogLevel to [Info]", g_logTextColour);
 		});
 #if ENABLED(DEBUG_LOGGING)
-		m_paramCallbackMap.emplace("Debug", [](Vec<LogLine>& executeResult) {
-			Core::g_MinLogSeverity = Core::LogSeverity::Debug;
+		m_paramCallbackMap.emplace("Debug", [](std::vector<LogLine>& executeResult) {
+			LE::g_MinLogSeverity = LE::LogSeverity::Debug;
 			executeResult.emplace_back("Set LogLevel to [Debug]", g_logTextColour);
 		});
 #endif
@@ -223,14 +218,14 @@ class Resolution : public ParameterisedCommand
 public:
 	Resolution() : ParameterisedCommand("resolution")
 	{
-		const Map<u32, ViewportSize>& windowSizes = g_pGFX->ValidViewportSizes();
+		const std::map<u32, ViewportSize>& windowSizes = g_pGFX->ValidViewportSizes();
 		for (const auto& kvp : windowSizes)
 		{
 			const auto& windowSize = kvp.second;
-			String windowSizeText = Strings::ToString(windowSize.height) + "p";
-			m_paramCallbackMap.emplace(windowSizeText, [w = windowSize.width, h = windowSize.height](Vec<LogLine>& executeResult) {
+			std::string windowSizeText = Strings::ToString(windowSize.height) + "p";
+			m_paramCallbackMap.emplace(windowSizeText, [w = windowSize.width, h = windowSize.height](std::vector<LogLine>& executeResult) {
 				pContext->TrySetViewportSize(h);
-				String sizeText = Strings::ToString(w) + "x" + Strings::ToString(h);
+				std::string sizeText = Strings::ToString(w) + "x" + Strings::ToString(h);
 				executeResult.emplace_back("Set Resolution to: " + sizeText, g_logTextColour);
 			});
 		}
@@ -246,16 +241,16 @@ public:
 		m_bTakesCustomParam = true;
 	}
 
-	void FillExecuteResult(String params) override
+	void FillExecuteResult(std::string params) override
 	{
-		Vec<String> tokens = Strings::Tokenise(params, ' ', {});
+		std::vector<std::string> tokens = Strings::Tokenise(params, ' ', {});
 		if (tokens.empty())
 		{
 			m_executeResult.emplace_back("Syntax: " + m_name + " <id> <value>", g_logTextColour);
 			return;
 		}
 
-		String id;
+		std::string id;
 		if (!tokens.empty())
 		{
 			id = std::move(tokens[0]);
@@ -284,13 +279,13 @@ public:
 		m_executeResult.emplace_back("\t" + pTweakable->m_id + " = " + pTweakable->m_value, g_logTextColour);
 	}
 
-	Vec<String> AutoCompleteParams(VString incompleteParams) override
+	std::vector<std::string> AutoCompleteParams(std::string_view incompleteParams) override
 	{
-		Vec<String> matches;
+		std::vector<std::string> matches;
 		auto& tweakables = TweakManager::Instance()->m_tweakables;
 		for (const auto& kvp : tweakables)
 		{
-			if (kvp.first.find(incompleteParams) != String::npos)
+			if (kvp.first.find(incompleteParams) != std::string::npos)
 			{
 				matches.emplace_back(kvp.first);
 			}
@@ -307,7 +302,7 @@ public:
 		m_bTakesCustomParam = true;
 	}
 
-	void FillExecuteResult(String params) override
+	void FillExecuteResult(std::string params) override
 	{
 		if (params.empty())
 		{
@@ -339,20 +334,20 @@ public:
 #pragma region Local Namespace Impl
 namespace
 {
-List<UPtr<Command>> commands;
+std::list<UPtr<Command>> commands;
 
 template <typename T>
 void Add()
 {
 	static_assert(IsDerived<Command, T>(), "T must derive from Command");
-	UPtr<T> uT = MakeUnique<T>();
+	UPtr<T> uT = std::make_unique<T>();
 	auto iter = std::find_if(commands.begin(), commands.end(), [&uT](const UPtr<Command>& uC) { return uT->m_name < uC->m_name; });
 	commands.insert(iter, std::move(uT));
 }
 
-Vec<LogLine> AllCommands()
+std::vector<LogLine> AllCommands()
 {
-	Vec<LogLine> result;
+	std::vector<LogLine> result;
 	result.emplace_back("Registered commands:", g_logTextColour);
 	for (auto& uCommand : commands)
 	{
@@ -361,7 +356,7 @@ Vec<LogLine> AllCommands()
 	return result;
 }
 
-String StripPaddedSpaces(VString input)
+std::string StripPaddedSpaces(std::string_view input)
 {
 	size_t firstNonSpaceIdx = 0;
 	while (input[firstNonSpaceIdx] == ' ' && firstNonSpaceIdx < input.length())
@@ -373,12 +368,12 @@ String StripPaddedSpaces(VString input)
 	{
 		--lastNonSpaceIdx;
 	}
-	return String(input.substr(firstNonSpaceIdx, lastNonSpaceIdx - firstNonSpaceIdx + 1));
+	return std::string(input.substr(firstNonSpaceIdx, lastNonSpaceIdx - firstNonSpaceIdx + 1));
 }
 
-String SplitQuery(VString query, String& outCommand, String& outParams)
+std::string SplitQuery(std::string_view query, std::string& outCommand, std::string& outParams)
 {
-	String ret = StripPaddedSpaces(query);
+	std::string ret = StripPaddedSpaces(query);
 	outParams = "";
 	if (ret.empty())
 	{
@@ -399,9 +394,9 @@ String SplitQuery(VString query, String& outCommand, String& outParams)
 	return ret;
 }
 
-Vec<LogLine> ExecuteQuery(const String& command, String params)
+std::vector<LogLine> ExecuteQuery(const std::string& command, std::string params)
 {
-	Vec<LogLine> ret;
+	std::vector<LogLine> ret;
 	auto search =
 		std::find_if(commands.begin(), commands.end(), [&command](const UPtr<Command>& uCommand) { return uCommand->m_name == command; });
 	if (search != commands.end())
@@ -411,13 +406,13 @@ Vec<LogLine> ExecuteQuery(const String& command, String params)
 	return ret;
 }
 
-Vec<Command*> FindCommands(const String& incompleteCommand, bool bFirstCharMustMatch)
+std::vector<Command*> FindCommands(const std::string& incompleteCommand, bool bFirstCharMustMatch)
 {
-	Vec<Command*> results;
+	std::vector<Command*> results;
 	for (auto& uCommand : commands)
 	{
-		String name = uCommand->m_name;
-		if (name.find(incompleteCommand) != String::npos)
+		std::string name = uCommand->m_name;
+		if (name.find(incompleteCommand) != std::string::npos)
 		{
 			if (!bFirstCharMustMatch || uCommand->m_name[0] == incompleteCommand[0])
 			{
@@ -457,12 +452,12 @@ void AddCommand(UPtr<Command> uCommand)
 	commands.insert(iter, std::move(uCommand));
 }
 
-Vec<LogLine> Execute(VString query)
+std::vector<LogLine> Execute(std::string_view query)
 {
-	String command;
-	String params;
-	String cleanedQuery = SplitQuery(query, command, params);
-	Vec<LogLine> ret;
+	std::string command;
+	std::string params;
+	std::string cleanedQuery = SplitQuery(query, command, params);
+	std::vector<LogLine> ret;
 	if (!cleanedQuery.empty())
 	{
 		ret = Commands::ExecuteQuery(command, std::move(params));
@@ -474,19 +469,19 @@ Vec<LogLine> Execute(VString query)
 	return ret;
 }
 
-AutoCompleteResults AutoComplete(VString incompleteQuery)
+AutoCompleteResults AutoComplete(std::string_view incompleteQuery)
 {
-	String incompleteCommand;
-	String incompleteParams;
-	String cleanedQuery = SplitQuery(incompleteQuery, incompleteCommand, incompleteParams);
-	Vec<Command*> matchedCommands = FindCommands(incompleteCommand, true);
+	std::string incompleteCommand;
+	std::string incompleteParams;
+	std::string cleanedQuery = SplitQuery(incompleteQuery, incompleteCommand, incompleteParams);
+	std::vector<Command*> matchedCommands = FindCommands(incompleteCommand, true);
 	AutoCompleteResults results;
 	if (!matchedCommands.empty())
 	{
 		// If exact match, build auto-compeleted params for the command
 		if (matchedCommands.size() == 1)
 		{
-			Vec<String> matchedParams = matchedCommands[0]->AutoCompleteParams(incompleteParams);
+			std::vector<std::string> matchedParams = matchedCommands[0]->AutoCompleteParams(incompleteParams);
 			for (auto& p : matchedParams)
 			{
 				results.params.emplace_back(std::move(p));
@@ -506,10 +501,10 @@ AutoCompleteResults AutoComplete(VString incompleteQuery)
 		{
 			for (auto command : matchedCommands)
 			{
-				Vec<String> matchedParams = command->AutoCompleteParams(incompleteParams);
+				std::vector<std::string> matchedParams = command->AutoCompleteParams(incompleteParams);
 				for (const auto& p : matchedParams)
 				{
-					String suffix = p.empty() ? "" : " " + p;
+					std::string suffix = p.empty() ? "" : " " + p;
 					results.queries.emplace_back(command->m_name + suffix);
 				}
 			}

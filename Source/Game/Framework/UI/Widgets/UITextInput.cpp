@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/Input/KeyboardInput.h"
@@ -31,7 +30,7 @@ Token UITextInput::SetOnEditComplete(OnEditComplete::Callback callback)
 
 void UITextInput::OnCreated()
 {
-	m_uKeyboard = MakeUnique<KeyboardInput>();
+	m_uKeyboard = std::make_unique<KeyboardInput>();
 	m_uKeyboard->m_bClearOnEscape = false;
 	UIGameStyle::Overwrite(m_style, "alternate0");
 

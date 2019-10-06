@@ -1,6 +1,5 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "Core/TRange.h"
 #include "Model/UI/UIContext.h"
 #include "Model/UI/UIStyle.h"
 #include "Framework/UI/Widgets/UIButton.h"
@@ -21,7 +20,7 @@ private:
 
 private:
 	UIButtonDrawerData m_data;
-	Vec<UIButton*> m_uiButtons;
+	std::vector<UIButton*> m_uiButtons;
 
 public:
 	UIButtonDrawer();

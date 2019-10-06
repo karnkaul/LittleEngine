@@ -29,7 +29,7 @@ public:
 	};
 
 public:
-	static Array<Fixed, 3> s_mixVols;
+	static std::array<Fixed, 3> s_mixVols;
 	Fixed m_volume = Fixed(80, 100);
 	Status m_status = Status::NoMedia;
 	bool m_bLooping = false;
@@ -94,7 +94,7 @@ public:
 	MusicPlayer();
 	~MusicPlayer() override;
 
-	bool SetTrack(String path);
+	bool SetTrack(std::string path);
 	Time Duration() const;
 	bool IsFading() const;
 	void FadeIn(Time time, Fixed targetVolume = Fixed::One);

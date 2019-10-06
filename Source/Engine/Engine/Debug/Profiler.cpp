@@ -1,6 +1,5 @@
 #include "Profiler.h"
 #if ENABLED(PROFILER)
-#include "Core/Logger.h"
 #include "Engine/Debug/Tweakable.h"
 #include "Engine/Context/LEContext.h"
 
@@ -8,9 +7,9 @@ namespace LittleEngine::Debug::Profiler
 {
 Time maxTickDeltaTime;
 std::mutex entriesMutex;
-UMap<String, Entry> entries;
+std::unordered_map<std::string, Entry> entries;
 
-Entry::Entry(String id, Colour colour, Time startTime, Time maxTime, bool bCustom)
+Entry::Entry(std::string id, Colour colour, Time startTime, Time maxTime, bool bCustom)
 	: id(std::move(id)), colour(colour), startTime(startTime), maxTime(maxTime), bCustom(bCustom)
 {
 }
@@ -24,7 +23,7 @@ Fixed Entry::Ratio() const
 	return Fixed((endTime - startTime).AsSeconds() / maxTime.AsSeconds());
 }
 
-void StartTicked(String id, Colour colour)
+void StartTicked(std::string id, Colour colour)
 {
 	Lock lock(entriesMutex);
 	auto search = entries.find(id);
@@ -40,7 +39,7 @@ void StartTicked(String id, Colour colour)
 	}
 }
 
-void StartCustom(String id, Time maxTime, Colour colour)
+void StartCustom(std::string id, Time maxTime, Colour colour)
 {
 	Lock lock(entriesMutex);
 	auto search = entries.find(id);
@@ -56,7 +55,7 @@ void StartCustom(String id, Time maxTime, Colour colour)
 	}
 }
 
-void Stop(String id)
+void Stop(std::string id)
 {
 	Lock lock(entriesMutex);
 	auto search = entries.find(id);

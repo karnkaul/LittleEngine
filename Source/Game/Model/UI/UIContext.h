@@ -1,7 +1,5 @@
 #pragma once
-#include "Core/Asserts.h"
 #include "Core/CoreTypes.h"
-#include "Core/Delegate.h"
 #include "SFMLAPI/Rendering/LayerID.h"
 #include "Engine/Input/LEInput.h"
 #include "UIWidget.h"
@@ -22,7 +20,7 @@ private:
 	};
 
 public:
-	using OnCancelled = Core::Delegate<>;
+	using OnCancelled = LE::Delegate<>;
 
 private:
 	using UUIWidget = UPtr<UIWidget>;
@@ -39,21 +37,24 @@ protected:
 
 private:
 	UPtr<class UIWidgetMatrix> m_uUIWidgets;
-	Vec<UUIElement> m_uiElements;
-	Vec<Token> m_tokens;
+	std::vector<UUIElement> m_uiElements;
+	Token m_ioToken;
+	Token m_ptrToken;
 	OnCancelled m_onCancelledDelegate;
 	MBState m_mbState;
 	UIWidget* m_pPointerOver = nullptr;
 	bool m_bInteracting = false;
+	bool m_bActive = false;
+	bool m_bEnabled = false;
 
 public:
 	UIContext();
 	~UIContext() override;
 
 	template <typename T>
-	T* AddWidget(String name, struct UIWidgetStyle* pStyleToCopy = nullptr, bool bNewColumn = false);
+	T* AddWidget(std::string name, struct UIWidgetStyle* pStyleToCopy = nullptr, bool bNewColumn = false);
 	template <typename T>
-	T* AddElement(String name, struct UITransform* pParent = nullptr, s32 layerDelta = 0);
+	T* AddElement(std::string name, struct UITransform* pParent = nullptr, s32 layerDelta = 0);
 
 	void SetActive(bool bActive, bool bResetSelection = true);
 	void ResetSelection();
@@ -85,7 +86,7 @@ protected:
 	void OnBackReleased();
 
 private:
-	void OnCreate(String id, LayerID rootLayer);
+	void OnCreate(std::string id, LayerID rootLayer);
 	void SetEnabled(bool bSetEnabled);
 	LayerID MaxLayer() const;
 
@@ -94,11 +95,11 @@ private:
 };
 
 template <typename T>
-T* UIContext::AddWidget(String name, UIWidgetStyle* pStyleToCopy, bool bNewColumn)
+T* UIContext::AddWidget(std::string name, UIWidgetStyle* pStyleToCopy, bool bNewColumn)
 {
 	Assert(g_pGameManager, "GameManager is null!");
 	static_assert(std::is_base_of<UIWidget, T>::value, "T must derive from UIWidget.");
-	UPtr<T> uT = MakeUnique<T>();
+	UPtr<T> uT = std::make_unique<T>();
 	T* pT = uT.get();
 	UIWidgetStyle defaultStyle = UIGameStyle::GetStyle("");
 	if (!pStyleToCopy)
@@ -113,7 +114,7 @@ T* UIContext::AddWidget(String name, UIWidgetStyle* pStyleToCopy, bool bNewColum
 }
 
 template <typename T>
-T* UIContext::AddElement(String name, UITransform* pParent, s32 layerDelta)
+T* UIContext::AddElement(std::string name, UITransform* pParent, s32 layerDelta)
 {
 	Assert(g_pGameManager, "GameManager is null!");
 	LayerID layer = LayerID::UI;
@@ -123,7 +124,7 @@ T* UIContext::AddElement(String name, UITransform* pParent, s32 layerDelta)
 		layer = static_cast<LayerID>(ToS32(m_pRoot->m_layer) + 1);
 	}
 	layer = static_cast<LayerID>(ToS32(layer) + layerDelta);
-	UPtr<T> uT = MakeUnique<T>(layer, false);
+	UPtr<T> uT = std::make_unique<T>(layer, false);
 	if (!pParent && m_pRoot)
 	{
 		pParent = &m_pRoot->m_transform;

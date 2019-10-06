@@ -1,7 +1,6 @@
 #include "ConsoleRenderer.h"
 #if ENABLED(CONSOLE)
-#include "Core/Logger.h"
-#include "Core/Utils.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "Engine/Context/LEContext.h"
@@ -17,7 +16,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	LayerID textLayer = static_cast<LayerID>(ToS32(LayerID::Max) - 2);
 
 	// BG
-	m_uBG = MakeUnique<UIElement>(static_cast<LayerID>(ToS32(textLayer) - 5), true);
+	m_uBG = std::make_unique<UIElement>(static_cast<LayerID>(ToS32(textLayer) - 5), true);
 	m_uBG->OnCreate(context, "ConsoleBG");
 	m_uBG->SetPanel(m_bgColour);
 	Vector2 bgSize = m_uBG->RectSize();
@@ -32,7 +31,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uBG->Tick();
 
 	// Separator
-	m_uSeparator = MakeUnique<UIElement>(static_cast<LayerID>(ToS32(textLayer) - 3), true);
+	m_uSeparator = std::make_unique<UIElement>(static_cast<LayerID>(ToS32(textLayer) - 3), true);
 	m_uSeparator->OnCreate(context, "ConsoleSeparator", &m_uBG->m_transform);
 	m_uSeparator->SetPanel(Colour(255, 255, 255, 150));
 	m_uSeparator->SetRectSize({bgSize.x, 2});
@@ -41,7 +40,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uSeparator->Tick();
 
 	// Carat
-	m_uCarat = MakeUnique<UIElement>(textLayer, true);
+	m_uCarat = std::make_unique<UIElement>(textLayer, true);
 	m_uCarat->OnCreate(context, "ConsoleCarat", &m_uBG->m_transform, g_pDefaultFont);
 	m_uCarat->m_transform.anchor = {-1, 1};
 	m_uCarat->m_transform.nPosition = {-1, -1};
@@ -51,7 +50,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uCarat->Tick();
 
 	// Live Line
-	m_uLiveText = MakeUnique<UIElement>(textLayer, true);
+	m_uLiveText = std::make_unique<UIElement>(textLayer, true);
 	m_uLiveText->OnCreate(context, "ConsoleLiveText", &m_uBG->m_transform, g_pDefaultFont);
 	m_uLiveText->m_transform.SetParent(m_uBG->m_transform);
 	m_uLiveText->m_transform.anchor = {-1, 1};
@@ -60,7 +59,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_uLiveText->Tick();
 
 	// Cursor
-	m_uCursor = MakeUnique<UIElement>(textLayer, true);
+	m_uCursor = std::make_unique<UIElement>(textLayer, true);
 	m_uCursor->OnCreate(context, "ConsoleCursor", &m_uBG->m_transform, g_pDefaultFont);
 	m_uCursor->SetText(UIText("|", m_textSize, m_liveTextColour));
 	m_uCursor->Tick();
@@ -70,7 +69,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_logLinesCount = (m_uBG->RectSize().y.ToU32() / textPad) - 1;
 	for (size_t i = 0; i < ToIdx(m_logLinesCount); ++i)
 	{
-		UPtr<UIElement> uLogLineI = MakeUnique<UIElement>(textLayer, true);
+		UPtr<UIElement> uLogLineI = std::make_unique<UIElement>(textLayer, true);
 		uLogLineI->OnCreate(context, "LogLine" + Strings::ToString(i), &m_uBG->m_transform, g_pDefaultFont);
 		uLogLineI->m_transform.anchor = {-1, 1};
 		uLogLineI->m_transform.nPosition = {-1, -1};
@@ -112,14 +111,14 @@ void ConsoleRenderer::Tick(Time dt)
 	}
 }
 
-void ConsoleRenderer::SetLiveString(String text, Fixed cursorNPos, bool bShowCursor)
+void ConsoleRenderer::SetLiveString(std::string text, Fixed cursorNPos, bool bShowCursor)
 {
 	m_cursorNPos = cursorNPos;
 	m_uLiveText->SetText(UIText(std::move(text), m_textSize, m_liveTextColour));
 	m_uCursor->Text()->SetEnabled(bShowCursor);
 }
 
-void ConsoleRenderer::UpdateLog(Vec<LogLine> logLines)
+void ConsoleRenderer::UpdateLog(std::vector<LogLine> logLines)
 {
 	auto iter = logLines.begin();
 	for (auto& uLogText : m_uLogTexts)

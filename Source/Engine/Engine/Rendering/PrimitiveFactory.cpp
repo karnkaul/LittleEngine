@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "PrimitiveFactory.h"
 #include "Engine/GFX.h"
 namespace LittleEngine

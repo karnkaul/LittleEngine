@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "Collider.h"
 #include "Engine/Debug/Tweakable.h"
 
@@ -63,9 +62,9 @@ void Collider::OnHit(const Collider& other)
 void Collider::OnHit(const Collider&) {}
 #endif
 
-CircleCollider::CircleCollider(String ownerName)
+CircleCollider::CircleCollider(std::string ownerName)
 {
-	static const String NAME = "CircleCollider";
+	static const std::string NAME = "CircleCollider";
 	m_name.reserve(ownerName.size() + NAME.size() + 1);
 	if (!ownerName.empty())
 	{
@@ -104,9 +103,9 @@ bool CircleCollider::IsIntersectCircle(const CircleCollider& other) const
 	return self.IsIntersecting(rhs);
 }
 
-AABBCollider::AABBCollider(String ownerName)
+AABBCollider::AABBCollider(std::string ownerName)
 {
-	static const String NAME = "AABBCollider";
+	static const std::string NAME = "AABBCollider";
 	m_name.reserve(ownerName.size() + NAME.size() + 1);
 	if (!ownerName.empty())
 	{

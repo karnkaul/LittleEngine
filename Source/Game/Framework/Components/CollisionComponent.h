@@ -18,7 +18,7 @@ protected:
 #endif
 	};
 
-	Vec<ColliderData> m_pColliders;
+	std::vector<ColliderData> m_pColliders;
 	s32 m_signature = 0;
 
 public:

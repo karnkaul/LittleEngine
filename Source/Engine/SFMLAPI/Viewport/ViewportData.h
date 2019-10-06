@@ -18,17 +18,17 @@ struct ViewportSize
 	ViewportSize() = default;
 	ViewportSize(u32 width, u32 height);
 
-	String ToString() const;
+	std::string ToString() const;
 };
 
 struct ViewportData
 {
 	ViewportSize viewportSize;
-	String title;
+	std::string title;
 	ViewportStyle style = ViewportStyle::Default;
 
 	ViewportData();
-	ViewportData(ViewportSize viewportSize, String title, ViewportStyle style);
+	ViewportData(ViewportSize viewportSize, std::string title, ViewportStyle style);
 	ViewportData(ViewportData&&) = default;
 	ViewportData& operator=(ViewportData&&) = default;
 };
@@ -37,6 +37,6 @@ struct ViewportRecreateData
 {
 	std::optional<ViewportSize> oViewportSize;
 	std::optional<ViewportStyle> oStyle;
-	std::optional<String> oTitle;
+	std::optional<std::string> oTitle;
 };
 } // namespace LittleEngine

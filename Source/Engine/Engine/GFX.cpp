@@ -1,5 +1,4 @@
-#include "Core/Logger.h"
-#include "Core/Utils.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 #include "GFX.h"
 #include "SFMLAPI/Viewport/Viewport.h"
 #include "SFMLAPI/System/SFTypes.h"
@@ -52,7 +51,7 @@ void GFX::Init()
 	m_letterBoxInverse = Vector2(Fixed(1.0f / m_uiViewCrop.width), Fixed(1.0f / m_uiViewCrop.height));
 	m_viewportSizes.clear();
 	m_viewportSizes[m_maxViewportSize.height] = m_maxViewportSize;
-	Vec<Fixed> heights = {360, 540, 720, 900, 1080, 1440, 2160};
+	std::vector<Fixed> heights = {360, 540, 720, 900, 1080, 1440, 2160};
 	for (auto h : heights)
 	{
 		u32 height = h.ToU32();
@@ -66,7 +65,7 @@ void GFX::Init()
 	m_worldSpace = Vector2(worldWidth, m_gameState.worldHeight.max);
 }
 
-const Map<u32, ViewportSize>& GFX::ValidViewportSizes() const
+const std::map<u32, ViewportSize>& GFX::ValidViewportSizes() const
 {
 	return m_viewportSizes;
 }

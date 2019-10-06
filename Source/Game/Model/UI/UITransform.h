@@ -13,7 +13,7 @@ public:
 
 private:
 	Vector2 size;
-	Vec<UITransform*> children;
+	std::vector<UITransform*> children;
 	UITransform* pParent = nullptr;
 	bool bAutoPad = false;
 

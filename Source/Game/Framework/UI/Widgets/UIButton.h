@@ -1,5 +1,4 @@
 #pragma once
-#include "Core/Delegate.h"
 #include "Model/UI/UIText.h"
 #include "Model/UI/UIWidget.h"
 
@@ -8,7 +7,7 @@ namespace LittleEngine
 class UIButton : public UIWidget
 {
 public:
-	using OnClick = Core::Delegate<>;
+	using OnClick = LE::Delegate<>;
 
 protected:
 	bool m_bAutoResize = true;

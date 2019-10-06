@@ -1,5 +1,5 @@
 #include "Colour.h"
-#include "Core/Utils.h"
+#include "Core/Game/LECoreUtils/Utils.h"
 
 namespace LittleEngine
 {
@@ -47,10 +47,10 @@ Colour& Colour::operator-=(Colour rhs)
 	return *this;
 }
 
-String Colour::ToString() const
+std::string Colour::ToString() const
 {
 	static constexpr size_t MAX = 1 + 3 + 1 + 3 + 1 + 3 + 1 + 3 + 1;
-	String ret;
+	std::string ret;
 	ret.reserve(MAX);
 	ret += "[";
 	ret += r.ToString();

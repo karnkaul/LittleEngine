@@ -1,5 +1,4 @@
 #pragma once
-#include "Core/Delegate.h"
 #include "Model/UI/UIWidget.h"
 #include "Engine/Input/LEInput.h"
 
@@ -8,7 +7,7 @@ namespace LittleEngine
 class UITextInput : public UIWidget
 {
 public:
-	using OnEditComplete = Core::Delegate<const String&>;
+	using OnEditComplete = LE::Delegate<const std::string&>;
 
 private:
 	struct UITextInputData
@@ -20,7 +19,7 @@ private:
 private:
 	UITextInputData m_data;
 	UPtr<class KeyboardInput> m_uKeyboard;
-	String m_prevText;
+	std::string m_prevText;
 	Token m_token;
 	OnEditComplete m_onEditComplete;
 	Time m_cursorFreq = Time::Milliseconds(200);

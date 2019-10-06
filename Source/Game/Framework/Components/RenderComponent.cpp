@@ -1,5 +1,5 @@
-#include "Core/ArchiveReader.h"
-#include "Core/GData.h"
+#include "Core/Game/ArchiveReader.h"
+#include "Core/Game/GData.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Model/World/Entity.h"
@@ -16,7 +16,7 @@ SpriteSheetData::SpriteSheetData(u32 rows, u32 columns)
 	Construct(rows, columns);
 }
 
-SpriteSheetData::SpriteSheetData(String serialised)
+SpriteSheetData::SpriteSheetData(std::string serialised)
 {
 	Construct(std::move(serialised));
 }
@@ -40,7 +40,7 @@ void SpriteSheetData::Construct(u32 rows, u32 columns)
 	}
 }
 
-void SpriteSheetData::Construct(String serialised)
+void SpriteSheetData::Construct(std::string serialised)
 {
 	Core::GData gData(std::move(serialised));
 	u32 rows = static_cast<u32>(gData.GetS32("rows", 0));
@@ -54,8 +54,8 @@ SpriteSheet::SpriteSheet(SpriteSheetData data, TextureAsset* pTexture, Time peri
 	m_iterator = m_data.indices.begin();
 }
 
-SpriteSheet::SpriteSheet(String id, Time period /*= Time::Seconds(1.0f)*/, bool bUseFrames /*= false*/, u8 skipFrames /*= 0*/,
-						 String textureSuffix /*= ".png"*/, String sheetSuffix /*= ".spritesheet"*/)
+SpriteSheet::SpriteSheet(std::string id, Time period /*= Time::Seconds(1.0f)*/, bool bUseFrames /*= false*/, u8 skipFrames /*= 0*/,
+						 std::string textureSuffix /*= ".png"*/, std::string sheetSuffix /*= ".spritesheet"*/)
 	: m_period(period), m_skipFrames(skipFrames), m_bUseFrames(bUseFrames)
 {
 	auto pText = g_pRepository->Load<TextAsset>(id + sheetSuffix);
@@ -247,7 +247,7 @@ RenderComponent* RenderComponent::SetShader(Shader* pShader)
 #if ENABLED(DEBUG_LOGGING)
 	if (pShader)
 	{
-		VString type = g_szShaderTypes[pShader->GetType()];
+		std::string_view type = g_szShaderTypes[pShader->GetType()];
 		LOG_D("%s %s %s Shader set", m_logName.c_str(), pShader->ID().c_str(), type.data());
 	}
 	else

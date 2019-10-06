@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"
@@ -30,7 +29,7 @@ LoadingHUD::LoadingHUD()
 	m_pTitle = g_pGameManager->Renderer()->New<SFText>(hud);
 	m_pSubtitle = g_pGameManager->Renderer()->New<SFText>(hud);
 	m_pRotator = g_pGameManager->Renderer()->New<Quad>(hud);
-	m_uProgress = MakeUnique<ProgressBar>(hud);
+	m_uProgress = std::make_unique<ProgressBar>(hud);
 
 	m_pBG->SetColour(Colour(20, 5, 30, 0))->SetEnabled(true);
 	m_pTitle->SetFont(pTitleFont ? *pTitleFont : *pMainFont);

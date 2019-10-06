@@ -1,4 +1,3 @@
-#include "Core/Logger.h"
 #include "UIManager.h"
 #include "Model/GameManager.h"
 
@@ -50,7 +49,6 @@ void UIManager::Tick(Time dt)
 			if (!m_contexts.empty())
 			{
 				auto& uContext = m_contexts.back();
-				uContext->SetEnabled(true);
 				uContext->SetActive(true);
 			}
 		}
@@ -77,7 +75,7 @@ void UIManager::Tick(Time dt)
 	}
 }
 
-void UIManager::InitContext(UIContext& context, String id, LayerID baseLayer)
+void UIManager::InitContext(UIContext& context, std::string id, LayerID baseLayer)
 {
 	context.OnCreate(std::move(id), baseLayer);
 }

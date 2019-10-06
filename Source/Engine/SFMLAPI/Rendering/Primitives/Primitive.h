@@ -1,7 +1,6 @@
 #pragma once
 #include "SFML/Graphics/RenderStates.hpp"
 #include "Core/CoreTypes.h"
-#include "Core/TRange.h"
 #include "SFMLAPI/Rendering/Colour.h"
 #include "SFMLAPI/Rendering/LayerID.h"
 #include "SFMLAPI/Viewport/Viewport.h"
@@ -11,9 +10,6 @@ namespace LittleEngine
 class APrimitive
 {
 protected:
-	template <typename T>
-	using TRange = Core::TRange<T>;
-
 	struct TState
 	{
 		TRange<Vector2> tPosition = Vector2::Zero;

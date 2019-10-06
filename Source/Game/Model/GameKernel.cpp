@@ -1,5 +1,4 @@
-#include "Core/Asserts.h"
-#include "Core/OS.h"
+#include "Core/Game/OS.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/FatalEngineException.h"
 #include "Engine/Locale/Locale.h"
@@ -32,7 +31,7 @@ bool GameKernel::Boot(const GameConfig& config)
 	auto pInputMapFile = pSettings->GetValue("CUSTOM_INPUT_MAP");
 	if (pInputMapFile)
 	{
-		String inputMapFile = OS::Env()->FullPath(pInputMapFile->c_str());
+		std::string inputMapFile = OS::Env()->FullPath(pInputMapFile->c_str());
 		if (inputMapPersistor.Load(inputMapFile))
 		{
 			u16 count = data.inputMap.Import(inputMapPersistor);
@@ -44,9 +43,9 @@ bool GameKernel::Boot(const GameConfig& config)
 	}
 	try
 	{
-		m_uContext = MakeUnique<LEContext>(std::move(data));
-		m_uWSM = MakeUnique<WorldStateMachine>(*m_uContext);
-		m_uGame = MakeUnique<GameManager>(*m_uContext, *m_uWSM);
+		m_uContext = std::make_unique<LEContext>(std::move(data));
+		m_uWSM = std::make_unique<WorldStateMachine>(*m_uContext);
+		m_uGame = std::make_unique<GameManager>(*m_uContext, *m_uWSM);
 	}
 	catch (const FatalEngineException& e)
 	{
@@ -63,7 +62,7 @@ void GameKernel::Shutdown()
 	m_uContext = nullptr;
 }
 
-void GameKernel::Start(String coreManifestID /* = "" */, String gameStyleID /* = "" */, Task onManifestLoaded /* = nullptr */)
+void GameKernel::Start(std::string coreManifestID /* = "" */, std::string gameStyleID /* = "" */, Task onManifestLoaded /* = nullptr */)
 {
 	Assert(m_uContext, "Context is null!");
 	m_uWSM->Start(std::move(coreManifestID), std::move(gameStyleID), std::move(onManifestLoaded));

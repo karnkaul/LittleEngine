@@ -1,5 +1,7 @@
 #pragma once
-#include "Core/SimpleTime.h"
+#include <array>
+#include <vector>
+#include "Core/Game/LECoreUtils/SimpleTime.h"
 #include "SFMLAPI/Rendering/Primitives/Primitive.h"
 
 namespace LittleEngine
@@ -7,8 +9,8 @@ namespace LittleEngine
 class PrimitiveFactory : private NoCopy
 {
 public:
-	using PrimVec = Vec<UPtr<APrimitive>>;
-	using PrimMat = Array<PrimVec, ToIdx(LayerID::_COUNT)>;
+	using PrimVec = std::vector<UPtr<APrimitive>>;
+	using PrimMat = std::array<PrimVec, ToIdx(LayerID::_COUNT)>;
 
 private:
 	static const u32 LAYER_RESERVE = 128;
@@ -36,7 +38,7 @@ template <typename T>
 T* PrimitiveFactory::New(LayerID layer)
 {
 	static_assert(IsDerived<APrimitive, T>(), "T must derive from APrimitive");
-	UPtr<T> uT = MakeUnique<T>(layer);
+	UPtr<T> uT = std::make_unique<T>(layer);
 	T* pT = uT.get();
 	m_standby.emplace_back(std::move(uT));
 	return pT;

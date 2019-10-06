@@ -13,7 +13,7 @@ private:
 	MouseInput m_pointerInput;
 	JoyInput m_joyInput;
 	InputMap m_inputMap;
-	UMap<s32, KeyState> m_keyStateMap;
+	std::unordered_map<s32, KeyState> m_keyStateMap;
 
 public:
 	InputStateMachine();
