@@ -1,5 +1,5 @@
-#include "Core/Logger.h"
-#include "Core/Utils.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
+#include "Core/LECoreGame/LECoreUtils/Utils.h"
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "LEInput.h"
 #include "Engine/Context/LEContext.h"
@@ -203,7 +203,6 @@ void LEInput::FireCallbacks()
 	{
 		LOG_D("[Input] Deleted [%d] stale registrants", prev - curr);
 	}
-	bool bSpacePressed = dataFrame.IsReleased(KeyCode::Space);
 	if (m_oSudoContext)
 	{
 		if (m_oSudoContext->callback(dataFrame))

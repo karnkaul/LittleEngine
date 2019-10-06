@@ -2,18 +2,20 @@
 #include <functional>
 #include <mutex>
 #include <utility>
-#include "Asserts.h"
-#include "Deferred.h"
-#include "Fixed.h"
-#include "FileRW.h"
-#include "Matrix3.h"
-#include "NoCopy.h"
-#include "Rect2.h"
-#include "SimpleTime.h"
-#include "StdTypes.h"
-#include "UByte.h"
-#include "Vector2.h"
-#include "Transform.h"
+#include "LECoreGame/LECoreUtils/LEDelegate/Delegate.h"
+#include "LECoreGame/LECoreUtils/Asserts.h"
+#include "LECoreGame/LECoreUtils/Deferred.h"
+#include "LECoreGame/LECoreUtils/FileRW.h"
+#include "LECoreGame/LECoreUtils/Fixed.h"
+#include "LECoreGame/LECoreUtils/SimpleTime.h"
+#include "LECoreGame/LECoreUtils/StdTypes.h"
+#include "LECoreGame/GFX/Matrix3.h"
+#include "LECoreGame/GFX/Rect2.h"
+#include "LECoreGame/GFX/UByte.h"
+#include "LECoreGame/GFX/Vector2.h"
+#include "LECoreGame/GFX/Transform.h"
+#include "LECoreGame/NoCopy.h"
+#include "LECoreGame/TRange.h"
 
 #define ENABLED(x) x
 
@@ -56,6 +58,8 @@ using WToken = WPtr<s32>;
 
 template <typename T>
 using Deferred = Core::Deferred<T>;
+template <typename T>
+using TRange = Core::TRange<T>;
 using Fixed = Core::Fixed;
 using FileRW = Core::FileRW;
 using Matrix3 = Core::Matrix3;

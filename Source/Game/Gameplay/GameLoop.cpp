@@ -1,5 +1,5 @@
-#include "Core/Logger.h"
-#include "Core/Version.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
+#include "Core/GameVersion.h"
 #include "SFMLAPI/Rendering/RenderStats.h"
 #include "Engine/FatalEngineException.h"
 #include "Engine/Debug/Profiler.h"
@@ -72,9 +72,9 @@ bool Init(s32 argc, char** argv)
 	if (OS::Threads::VacantThreadCount() > 0)
 	{
 		std::string header = "Build: ";
-		header += Core::Version::BUILD_VERSION.ToString();
+		header += BUILD_VERSION.ToString();
 		u8 backupCount = config.BackupLogFileCount();
-		Core::StartFileLogging(OS::Env()->FullPath("Debug"), backupCount, std::move(header));
+		OS::StartFileLogging(OS::Env()->FullPath("Debug"), backupCount, std::move(header));
 	}
 	try
 	{
@@ -149,7 +149,7 @@ bool Init(s32 argc, char** argv)
 bool Stage()
 {
 	GameInit::CreateWorlds();
-	if (!kernel.Boot(config)) 
+	if (!kernel.Boot(config))
 	{
 		return false;
 	};
@@ -228,7 +228,7 @@ void Cleanup()
 #endif
 	Core::Jobs::Cleanup();
 	LOG_I("[GameLoop] Terminated");
-	Core::StopFileLogging();
+	OS::StopFileLogging();
 }
 
 void RunLoop(const Time tickRate, const Time fdt)

@@ -1,4 +1,4 @@
-#include "Core/GData.h"
+#include "Core/LECoreGame/GData.h"
 #include "Locale.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Engine/Repository/LERepository.h"

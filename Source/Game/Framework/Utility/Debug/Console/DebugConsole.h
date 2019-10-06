@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/CoreTypes.h"
 #if ENABLED(CONSOLE)
-#include "Core/SimpleTime.h"
+#include "Core/LECoreGame/LECoreUtils/SimpleTime.h"
 #include "SFMLAPI/Rendering/Colour.h"
 
 namespace LittleEngine

@@ -1,7 +1,7 @@
 #include <sstream>
-#include "Core/Logger.h"
-#include "Core/GData.h"
-#include "Core/Utils.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
+#include "Core/LECoreGame/GData.h"
+#include "Core/LECoreGame/LECoreUtils/Utils.h"
 #include "UIGameStyle.h"
 #include "Engine/Repository/LERepository.h"
 

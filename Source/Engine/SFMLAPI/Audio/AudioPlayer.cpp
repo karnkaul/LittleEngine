@@ -1,6 +1,6 @@
 #include "SFML/Audio.hpp"
-#include "Core/Utils.h"
-#include "Core/Logger.h"
+#include "Core/LECoreGame/LECoreUtils/Utils.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "AudioPlayer.h"
 #include "SFMLAPI/System/Assets.h"
 

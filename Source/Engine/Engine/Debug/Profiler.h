@@ -2,7 +2,7 @@
 #include "Core/CoreTypes.h"
 #if ENABLED(PROFILER)
 #include <thread>
-#include "Core/SimpleTime.h"
+#include "Core/LECoreGame/LECoreUtils/SimpleTime.h"
 #include "SFMLAPI/Rendering/Colour.h"
 #include "SFMLAPI/Rendering/LayerID.h"
 

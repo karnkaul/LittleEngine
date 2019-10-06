@@ -1,5 +1,5 @@
-#include "Core/Asserts.h"
-#include "Core/OS.h"
+#include "Core/LECoreGame/LECoreUtils/Asserts.h"
+#include "Core/LECoreGame/OS.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/FatalEngineException.h"
 #include "Engine/Locale/Locale.h"

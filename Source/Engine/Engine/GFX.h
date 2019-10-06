@@ -1,6 +1,5 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "Core/TRange.h"
 #include "SFMLAPI/Viewport/ViewportData.h"
 #include "SFML/Graphics/Rect.hpp"
 

@@ -1,4 +1,4 @@
-#include "Core/Logger.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFML/Graphics/Vertex.hpp"
 #include "Quad.h"
 #include "SFMLAPI/System/Assets.h"
@@ -13,7 +13,7 @@ namespace
 {
 void Lerp(Quad::Verts& out, const Core::TRange<Rect2>& tModel, Fixed alpha)
 {
-	Rect2 model = Maths::Lerp(tModel.min, tModel.max, alpha);
+	Rect2 model = Rect2::Lerp(tModel.min, tModel.max, alpha);
 	out[0] = model.TopLeft();
 	out[1] = model.TopRight();
 	out[2] = model.BottomRight();
@@ -56,7 +56,7 @@ void Quad::OnUpdateRenderState(Fixed alpha)
 	Assert(m_quadRenderState.verts.size() == 4, "Invalid vertex model for Quad!");
 	State state = GetState(alpha);
 	Colour c = state.colour;
-	Rect2 uvRect = Maths::Lerp(m_quadRenderState.tUV.min, m_quadRenderState.tUV.max, alpha);
+	Rect2 uvRect = Rect2::Lerp(m_quadRenderState.tUV.min, m_quadRenderState.tUV.max, alpha);
 	Vector2 size = m_quadRenderState.pTexture ? m_quadRenderState.pTexture->TextureSize() : Vector2::Zero;
 	Vector2 uvs[] = {uvRect.TopLeft(), uvRect.TopRight(), uvRect.BottomRight(), uvRect.BottomLeft()};
 	size_t idx = 0;

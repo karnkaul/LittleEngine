@@ -1,5 +1,5 @@
-#include "Core/FileRW.h"
-#include "Core/Utils.h"
+#include "Core/LECoreGame/LECoreUtils/FileRW.h"
+#include "Core/LECoreGame/LECoreUtils/Utils.h"
 #include "SFMLAPI/Viewport/Viewport.h"
 #include "Engine/GFX.h"
 #include "Engine/Rendering/LERenderer.h"

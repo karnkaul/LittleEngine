@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/SimpleTime.h"
+#include "Core/LECoreGame/LECoreUtils/SimpleTime.h"
 #include "ComponentTimingType.h"
 #include "GameObject.h"
 

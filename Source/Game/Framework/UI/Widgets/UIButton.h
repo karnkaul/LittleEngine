@@ -1,5 +1,4 @@
 #pragma once
-#include "Core/Delegate.h"
 #include "Model/UI/UIText.h"
 #include "Model/UI/UIWidget.h"
 

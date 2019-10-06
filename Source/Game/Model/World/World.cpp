@@ -1,5 +1,5 @@
-#include "Core/Logger.h"
-#include "Core/Utils.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
+#include "Core/LECoreGame/LECoreUtils/Utils.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Engine/Audio/LEAudio.h"
 #include "Engine/Context/LEContext.h"

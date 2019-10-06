@@ -1,5 +1,5 @@
 #include "SFML/Window/Event.hpp"
-#include "Core/Logger.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "InputHandler.h"
 #include "SFMLAPI/Viewport/Viewport.h"
 #include "Engine/GFX.h"

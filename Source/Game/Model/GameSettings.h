@@ -1,8 +1,8 @@
 #pragma once
 #include <optional>
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
+#include "Core/LECoreGame/Property.h"
 #include "Core/CoreTypes.h"
-#include "Core/Property.h"
-#include "Core/Logger.h"
 #include "SFMLAPI/Viewport/ViewportData.h"
 
 namespace LittleEngine

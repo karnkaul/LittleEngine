@@ -1,7 +1,6 @@
 #pragma once
 #include "SFML/Window/Cursor.hpp"
 #include "Core/CoreTypes.h"
-#include "Core/Delegate.h"
 #include "SFMLAPI/Input/InputMappings.h"
 #include "SFMLAPI/Viewport/ViewportData.h"
 

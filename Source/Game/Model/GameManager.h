@@ -2,7 +2,7 @@
 #include <array>
 #include <vector>
 #include "Core/CoreTypes.h"
-#include "Core/Logger.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "Model/World/ComponentTimingType.h"
 
 namespace LittleEngine

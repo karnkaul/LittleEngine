@@ -1,7 +1,7 @@
 #pragma once
 #include "SFML/Window/Keyboard.hpp"
 #include "Core/CoreTypes.h"
-#include "Core/Property.h"
+#include "Core/LECoreGame/Property.h"
 
 namespace LittleEngine
 {

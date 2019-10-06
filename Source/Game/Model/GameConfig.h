@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/CoreTypes.h"
-#include "Core/Logger.h" // Logger::Severity
-#include "Core/SimpleTime.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h" // Logger::Severity
+#include "Core/LECoreGame/LECoreUtils/SimpleTime.h"
 
 namespace Core
 {

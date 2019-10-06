@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/StdTypes.h"
+#include "Core/LECoreGame/LECoreUtils/StdTypes.h"
 
 namespace LittleEngine
 {

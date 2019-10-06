@@ -1,5 +1,4 @@
 #pragma once
-#include "Core/Delegate.h"
 #include "Model/UI/UIWidget.h"
 #include "Engine/Input/LEInput.h"
 

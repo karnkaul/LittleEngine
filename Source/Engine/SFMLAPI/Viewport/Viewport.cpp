@@ -1,7 +1,7 @@
 #include "Viewport.h"
 #include "ViewportData.h"
-#include "Core/Utils.h"
-#include "Core/Logger.h"
+#include "Core/LECoreGame/LECoreUtils/Utils.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFMLAPI/System/SFTypes.h"
 #include "Engine/GFX.h"
 

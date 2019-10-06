@@ -1,5 +1,5 @@
-#include "Core/Utils.h"
-#include "Core/ArchiveReader.h"
+#include "Core/LECoreGame/LECoreUtils/Utils.h"
+#include "Core/LECoreGame/ArchiveReader.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Engine/Audio/LEAudio.h"
 #include "Engine/GFX.h"

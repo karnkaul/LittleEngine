@@ -1,5 +1,5 @@
-#include "Core/Asserts.h"
-#include "Core/Logger.h"
+#include "Core/LECoreGame/LECoreUtils/Asserts.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "Engine/Rendering/LERenderer.h"
 #include "Engine/Debug/Tweakable.h"

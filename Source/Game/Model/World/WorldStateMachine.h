@@ -1,5 +1,4 @@
 #pragma once
-#include "Core/Delegate.h"
 #include "World.h"
 
 namespace LittleEngine

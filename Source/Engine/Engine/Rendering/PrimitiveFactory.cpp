@@ -1,4 +1,4 @@
-#include "Core/Logger.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "PrimitiveFactory.h"
 #include "Engine/GFX.h"
 namespace LittleEngine

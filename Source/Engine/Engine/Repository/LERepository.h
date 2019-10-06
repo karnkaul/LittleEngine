@@ -1,9 +1,9 @@
 #pragma once
-#include "Core/ArchiveReader.h"
+#include "Core/LECoreGame/ArchiveReader.h"
 #include "Core/CoreTypes.h"
-#include "Core/Logger.h"
-#include "Core/Jobs.h"
-#include "Core/Utils.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
+#include "Core/LECoreGame/Jobs.h"
+#include "Core/LECoreGame/LECoreUtils/Utils.h"
 #include "SFMLAPI/System/Assets.h"
 
 namespace Core

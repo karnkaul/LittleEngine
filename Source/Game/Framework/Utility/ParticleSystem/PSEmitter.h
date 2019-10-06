@@ -1,5 +1,4 @@
 #pragma once
-#include "Core/Delegate.h"
 #include "PSData.h"
 
 namespace LittleEngine

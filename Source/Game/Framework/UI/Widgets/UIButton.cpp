@@ -1,4 +1,4 @@
-#include "Core/Logger.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/SFText.h"
 #include "SFMLAPI/Rendering/Primitives/SFRect.h"
 #include "Model/UI/UIElement.h"

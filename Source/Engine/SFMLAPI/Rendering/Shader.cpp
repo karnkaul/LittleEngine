@@ -1,4 +1,4 @@
-#include "Core/Logger.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "Shader.h"
 #include "Primitives/Primitive.h"
 #include "SFMLAPI/Viewport/Viewport.h"

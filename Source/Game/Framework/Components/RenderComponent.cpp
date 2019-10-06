@@ -1,5 +1,5 @@
-#include "Core/ArchiveReader.h"
-#include "Core/GData.h"
+#include "Core/LECoreGame/ArchiveReader.h"
+#include "Core/LECoreGame/GData.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "SFMLAPI/System/Assets.h"
 #include "Model/World/Entity.h"

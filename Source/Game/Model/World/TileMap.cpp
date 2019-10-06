@@ -1,5 +1,5 @@
-#include "Core/Asserts.h"
-#include "Core/Logger.h"
+#include "Core/LECoreGame/LECoreUtils/Asserts.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "SFMLAPI/Rendering/Primitives/Quad.h"
 #include "SFMLAPI/Rendering/Primitives/Quads.h"
 #include "SFMLAPI/System/Assets.h"

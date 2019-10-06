@@ -1,6 +1,6 @@
 #include "DebugConsole.h"
 #if ENABLED(CONSOLE)
-#include "Core/Logger.h"
+#include "Core/LECoreGame/LECoreUtils/Logger.h"
 #include "ConsoleInput.h"
 #include "ConsoleRenderer.h"
 #include "DebugCommands.h"
