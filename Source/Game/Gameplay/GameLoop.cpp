@@ -1,5 +1,5 @@
-#include "Core/GameVersion.h"
 #include "SFMLAPI/Rendering/RenderStats.h"
+#include "Core/BuildVersion.h"
 #include "Engine/FatalEngineException.h"
 #include "Engine/Debug/Profiler.h"
 #include "Model/GameConfig.h"
@@ -71,7 +71,7 @@ bool Init(s32 argc, char** argv)
 	if (OS::Threads::VacantThreadCount() > 0)
 	{
 		std::string header = "Build: ";
-		header += BUILD_VERSION.ToString();
+		header += BUILD_VERSION;
 		u8 backupCount = config.BackupLogFileCount();
 		OS::StartFileLogging(OS::Env()->FullPath("Debug"), backupCount, std::move(header));
 	}

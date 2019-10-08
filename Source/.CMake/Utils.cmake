@@ -41,23 +41,22 @@ function(ensure_files_present FILES_ROOT FILENAMES)
 	endif()
 endfunction()
 
-function(configure_files_src_to_bin FILES)
+function(configure_files FILES FROM_PREFIX FROM_SUFFIX TO_PREFIX TO_SUFFIX PARAM)
 	foreach(FILENAME ${FILES})
 		configure_file(
-			"${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.in"
-			"${CMAKE_CURRENT_BINARY_DIR}/${FILENAME}"
+			"${FROM_PREFIX}${FILENAME}${FROM_SUFFIX}"
+			"${TO_PREFIX}${FILENAME}${TO_SUFFIX}"
+			${PARAM}
 		)
 	endforeach()
 endfunction()
 
-function(configure_files_copyonly FILES)
-	foreach(FILENAME ${FILES})
-		configure_file(
-			"${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}"
-			"${CMAKE_CURRENT_BINARY_DIR}/${FILENAME}"
-			COPYONLY
-		)
-	endforeach()
+function(configure_files_src_to_bin FILES)
+	configure_files("${FILES}" "${CMAKE_CURRENT_SOURCE_DIR}/" ".in" "${CMAKE_CURRENT_BINARY_DIR}/" "" "")
+endfunction()
+
+function(copy_files_src_to_bin FILES)
+	configure_files("${FILES}" "${CMAKE_CURRENT_SOURCE_DIR}/" "" "${CMAKE_CURRENT_BINARY_DIR}/" "" COPYONLY)
 endfunction()
 
 function(install_file_list ALL_FILES SOURCE DEST)

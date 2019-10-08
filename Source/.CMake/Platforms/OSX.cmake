@@ -8,7 +8,7 @@ set(APL_CLANG 0)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
 	set(APL_CLANG 1)
 	foreach(CONFIG in ${CMAKE_CONFIGURATION_TYPES})
-		file(MAKE_DIRECTORY "${BUILD_THIRD_PARTY_PATH}/Lib/${CONFIG}")
+		file(MAKE_DIRECTORY "${THIRD_PARTY_BUILD_PATH}/Lib/${CONFIG}")
 	endforeach()
 else()
 	message("\tWARNING: Unsupported compiler [${CMAKE_CXX_COMPILER_ID}], expect build warnings/errors!")
@@ -57,22 +57,22 @@ function(set_target_platform_libraries)
 endfunction()
 
 function(ensure_dependencies_present)
-	file(MAKE_DIRECTORY "${BUILD_THIRD_PARTY_PATH}/Lib")
+	file(MAKE_DIRECTORY "${THIRD_PARTY_BUILD_PATH}/Lib")
 	set(LIB_FILENAMES
 		${PLATFORM_STATIC_LIBS_RELEASE}
 		${PLATFORM_STATIC_LIBS_DEBUG}
 		${PLATFORM_SHARED_LIBS_RELEASE}
 		${PLATFORM_SHARED_LIBS_DEBUG}
 	)
-	ensure_files_present("${BUILD_THIRD_PARTY_PATH}/Lib" "${LIB_FILENAMES}")
-	file(MAKE_DIRECTORY "${BUILD_THIRD_PARTY_PATH}/Frameworks")
-	ensure_files_present("${BUILD_THIRD_PARTY_PATH}/Frameworks" "${PLATFORM_FRAMEWORKS_COMMON}")
+	ensure_files_present("${THIRD_PARTY_BUILD_PATH}/Lib" "${LIB_FILENAMES}")
+	file(MAKE_DIRECTORY "${THIRD_PARTY_BUILD_PATH}/Frameworks")
+	ensure_files_present("${THIRD_PARTY_BUILD_PATH}/Frameworks" "${PLATFORM_FRAMEWORKS_COMMON}")
 endfunction()
 
 function(install_runtime EXE_NAME)
 	cmake_policy(SET CMP0087 NEW)  # Enable generator expressions during `install`
-	install_file_list("${PLATFORM_SHARED_LIBS_RELEASE}" "${BUILD_THIRD_PARTY_PATH}/Lib" "${RUNTIME_PATH}/Lib")
-	install_directory_list("${PLATFORM_FRAMEWORKS_COMMON}" "${BUILD_THIRD_PARTY_PATH}/Frameworks" "${RUNTIME_PATH}/Frameworks")
+	install_file_list("${PLATFORM_SHARED_LIBS_RELEASE}" "${THIRD_PARTY_BUILD_PATH}/Lib" "${RUNTIME_PATH}/Lib")
+	install_directory_list("${PLATFORM_FRAMEWORKS_COMMON}" "${THIRD_PARTY_BUILD_PATH}/Frameworks" "${RUNTIME_PATH}/Frameworks")
 	set(SCRIPT "${RUNTIME_PATH}/Utils/create_bundle.sh")
 	if(EXISTS "${SCRIPT}")
 		install(CODE "execute_process(COMMAND sh \"${SCRIPT}\" ${EXE_NAME})")

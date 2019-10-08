@@ -14,7 +14,7 @@ else()
 endif()
 
 set(CMAKE_INSTALL_RPATH_USE_ORIGIN ON)
-SET(CMAKE_INSTALL_RPATH "$ORIGIN/Lib")
+set(CMAKE_INSTALL_RPATH "$ORIGIN/Lib")
 
 set(PLATFORM_STATIC_LIBS_RELEASE "")
 set(PLATFORM_STATIC_LIBS_DEBUG "")
@@ -71,7 +71,7 @@ function(set_target_platform_libraries)
 endfunction()
 
 function(ensure_dependencies_present)
-	file(MAKE_DIRECTORY "${BUILD_THIRD_PARTY_PATH}/Lib")
+	file(MAKE_DIRECTORY "${THIRD_PARTY_BUILD_PATH}/Lib")
 	# SFML runtime libraries
 	find_package(X11)
 	find_library(X11_RANDR Xrandr)
@@ -92,11 +92,11 @@ function(ensure_dependencies_present)
 			${PLATFORM_SHARED_LIBS_DEBUG}
 		)
 	endif()
-	ensure_files_present("${BUILD_THIRD_PARTY_PATH}/Lib" "${LIB_FILENAMES}")
+	ensure_files_present("${THIRD_PARTY_BUILD_PATH}/Lib" "${LIB_FILENAMES}")
 endfunction()
 
 function(install_runtime EXE_NAME)
-	install_file_list("${PLATFORM_SHARED_LIBS_RELEASE}" "${BUILD_THIRD_PARTY_PATH}/Lib" "${RUNTIME_PATH}/Lib")
+	install_file_list("${PLATFORM_SHARED_LIBS_RELEASE}" "${THIRD_PARTY_BUILD_PATH}/Lib" "${RUNTIME_PATH}/Lib")
 endfunction()
 
 function(set_target_compile_options)
