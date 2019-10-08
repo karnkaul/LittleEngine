@@ -1,4 +1,4 @@
-#include "Core/GameVersion.h"
+#include "Core/BuildVersion.h"
 #include "RenderStatsRenderer.h"
 #if ENABLED(RENDER_STATS)
 #include "SFMLAPI/Rendering/RenderStats.h"
@@ -96,7 +96,7 @@ VersionRenderer::VersionRenderer(LEContext& context)
 	LERenderer* pRenderer = context.Renderer();
 	auto pFont = g_pRepository->Load<FontAsset>("Fonts/UIFont.ttf");
 	m_pBuildVersion = pRenderer->New<SFText>(LayerID::Top);
-	m_pBuildVersion->SetText(std::string(BUILD_VERSION_WITH_COMMIT))
+	m_pBuildVersion->SetText(std::string(BUILD_VERSION_FULL))
 		->SetSize(textSize + 5U)
 		->SetFont(pFont ? *pFont : *g_pDefaultFont)
 		->SetPivot({-1, 0})

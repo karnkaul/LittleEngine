@@ -34,6 +34,7 @@ BRANCH=$(git branch | grep "*")
 for ACTIVE in ${BRANCHES[@]}; do
 	[[ "$BRANCH" == *"$ACTIVE" ]] && BUILD=TRUE
 done
+[[ "$1" == "-f" || "$1" == "--force" ]] && BUILD=TRUE
 [ $BUILD == FALSE ] && exit 0
 
 fatal_error() {
