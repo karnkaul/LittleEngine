@@ -1,0 +1,25 @@
+name: CI_dev
+
+on:
+  push:
+    branches: 
+      - dev
+      - '*/dev'
+  pull_request:
+    branches:
+      - dev
+      - '*/dev'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: == Pre-Build ==
+      run: |
+        chmod -R a+x .github/CI
+        [ -f .github/CI/pre-build.sh ] && .github/CI/pre-build.sh
+    - name: == Build Release ==
+      run: .github/CI/build-config.sh Release
+    - name: == Build Develop ==
+      run: .github/CI/build-config.sh Develop

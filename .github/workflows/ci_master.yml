@@ -1,0 +1,22 @@
+name: CI
+
+on: 
+  push:
+    branches:
+      - master
+      - '*hotfix*'
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build_release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: == Pre-Build ==
+      run: |
+        chmod -R a+x .github/CI
+        [ -f .github/CI/pre-build.sh ] && .github/CI/pre-build.sh
+    - name: == Build Release ==
+      run: .github/CI/build-config.sh Release
