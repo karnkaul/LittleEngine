@@ -51,8 +51,8 @@ Time maxFrameTime;
 GameConfig config;
 
 // App scope
-UPtr<LERepository> uRepository;
-UPtr<LEAudio> uAudio;
+std::unique_ptr<LERepository> uRepository;
+std::unique_ptr<LEAudio> uAudio;
 
 // Game scope
 GameKernel kernel;

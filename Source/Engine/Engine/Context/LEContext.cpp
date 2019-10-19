@@ -275,7 +275,7 @@ LEContext::Pointer* LEContext::GetPointer(Pointer::Type type)
 	{
 		return search->second.get();
 	}
-	UPtr<Pointer> uPtr = std::make_unique<Pointer>();
+	std::unique_ptr<Pointer> uPtr = std::make_unique<Pointer>();
 	if (uPtr->loadFromSystem(type))
 	{
 		m_pointerMap[type] = std::move(uPtr);

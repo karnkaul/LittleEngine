@@ -15,14 +15,14 @@ public:
 protected:
 	std::vector<u8> m_buffer;
 	std::string m_id;
-	Pair<std::string, u64> m_pathSize;
+	std::pair<std::string, u64> m_pathSize;
 	AssetType m_type;
 	u64 m_byteCount = 0;
 	bool m_bError = true;
 
 public:
 	static bool DoesFileExist(std::string_view id);
-	static Pair<std::string, u64> FilePathAndSize(std::string_view id);
+	static std::pair<std::string, u64> FilePathAndSize(std::string_view id);
 
 public:
 	Asset() = delete;

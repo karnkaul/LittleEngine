@@ -10,7 +10,7 @@ namespace
 bool bLoadWorld1Now = false;
 bool bMusicPlaying = false;
 #if ENABLED(CONSOLE)
-UPtr<Debug::Commands::Command> uUIContainerTester;
+std::unique_ptr<Debug::Commands::Command> uUIContainerTester;
 #endif
 
 Token token;

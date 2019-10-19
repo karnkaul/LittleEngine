@@ -19,7 +19,7 @@ public:
 	bool m_bRenderThread = true;
 
 private:
-	UPtr<Core::GData> m_uData;
+	std::unique_ptr<Core::GData> m_uData;
 	bool m_bDirty = false;
 
 public:

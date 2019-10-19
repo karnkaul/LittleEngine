@@ -24,7 +24,7 @@ private:
 	};
 
 private:
-	static std::vector<UPtr<class World>> s_createdWorlds;
+	static std::vector<std::unique_ptr<class World>> s_createdWorlds;
 
 private:
 	std::string m_manifestPath;
@@ -34,8 +34,8 @@ private:
 	Token m_inputToken;
 	State m_state;
 	Transition m_transition;
-	UPtr<class ILoadingHUD> m_uLoadHUD;
-	SPtr<class ManifestLoader> m_sLoader;
+	std::unique_ptr<class ILoadingHUD> m_uLoadHUD;
+	std::shared_ptr<class ManifestLoader> m_sLoader;
 	class LEContext* m_pContext;
 	class SFText* m_pLoadingTitle = nullptr;
 	SFText* m_pLoadingSubtitle = nullptr;
@@ -63,7 +63,7 @@ public:
 	void Start(std::string coreManifestID = "", std::string gameStyleID = "", Task onManifestLoaded = nullptr);
 	State Tick(Time dt);
 	bool LoadWorld(WorldID id);
-	void SetLoadingHUD(UPtr<class ILoadingHUD> uLoadingHUD);
+	void SetLoadingHUD(std::unique_ptr<class ILoadingHUD> uLoadingHUD);
 
 	World* ActiveWorld() const;
 	WorldID ActiveWorldID() const;
@@ -84,7 +84,7 @@ WorldID WorldStateMachine::CreateWorld()
 {
 	WorldID id = -1;
 	static_assert(IsDerived<World, T>(), "T must derive from World!");
-	UPtr<T> uWorld = std::make_unique<T>();
+	std::unique_ptr<T> uWorld = std::make_unique<T>();
 	if (uWorld)
 	{
 		id = ToS32(s_createdWorlds.size());

@@ -19,7 +19,7 @@ extern Colour g_liveHistoryColour;
 namespace Console
 {
 extern bool g_bEnabled;
-extern UPtr<LogBook> g_uLogBook;
+extern std::unique_ptr<LogBook> g_uLogBook;
 
 void Init();
 void Tick(Time dt);

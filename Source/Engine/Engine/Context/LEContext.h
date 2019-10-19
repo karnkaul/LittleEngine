@@ -35,13 +35,13 @@ private:
 
 private:
 	Data m_data;
-	std::unordered_map<Pointer::Type, UPtr<Pointer>> m_pointerMap;
+	std::unordered_map<Pointer::Type, std::unique_ptr<Pointer>> m_pointerMap;
 	std::vector<PtrEntry> m_pointerStack;
 	Token m_ptrToken;
 	OnSubmit m_onSubmitted;
-	UPtr<class Viewport> m_uViewport;
-	UPtr<class LERenderer> m_uRenderer;
-	UPtr<class LEInput> m_uInput;
+	std::unique_ptr<class Viewport> m_uViewport;
+	std::unique_ptr<class LERenderer> m_uRenderer;
+	std::unique_ptr<class LEInput> m_uInput;
 #if ENABLED(DEBUG_LOGGING)
 	Pointer::Type m_prevPtrType;
 #endif

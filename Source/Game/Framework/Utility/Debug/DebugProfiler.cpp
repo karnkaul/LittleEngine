@@ -17,8 +17,8 @@ LEContext* pContext = nullptr;
 
 struct UIEntry
 {
-	UPtr<UIProgressBar> uProgressBar;
-	UPtr<UIElement> uLabelElement;
+	std::unique_ptr<UIProgressBar> uProgressBar;
+	std::unique_ptr<UIElement> uLabelElement;
 };
 
 Vector2 progressBarSize;
@@ -31,8 +31,8 @@ bool bProfilerEnabled = false;
 
 class Renderer
 {
-	UPtr<UIElement> m_uLabelRoot = nullptr;
-	UPtr<UIElement> m_uBarRoot = nullptr;
+	std::unique_ptr<UIElement> m_uLabelRoot = nullptr;
+	std::unique_ptr<UIElement> m_uBarRoot = nullptr;
 	std::vector<UIEntry> m_uiEntries;
 	u16 m_frameEntryCount = 0;
 
@@ -172,7 +172,7 @@ void Renderer::SetupPositions()
 	}
 }
 
-using URenderer = UPtr<Renderer>;
+using URenderer = std::unique_ptr<Renderer>;
 
 URenderer uRenderer = nullptr;
 } // namespace

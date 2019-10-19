@@ -5,7 +5,7 @@ namespace LittleEngine
 namespace LEShaders
 {
 ShadersData s_data;
-std::unordered_map<std::string, UPtr<Shader>> s_shaderMap;
+std::unordered_map<std::string, std::unique_ptr<Shader>> s_shaderMap;
 } // namespace LEShaders
 
 void LEShaders::Init(ShadersData data)

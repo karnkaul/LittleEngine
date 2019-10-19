@@ -30,7 +30,7 @@ public:
 private:
 	MusicPlayer m_musicPlayerA;
 	MusicPlayer m_musicPlayerB;
-	std::vector<UPtr<SoundPlayer>> m_sfxPlayers;
+	std::vector<std::unique_ptr<SoundPlayer>> m_sfxPlayers;
 	std::optional<SwitchTrackRequest> m_oSwitchTrackRequest;
 	bool m_bSideA = true;
 	const std::string m_rootMusicDir = "GameMusic";
@@ -79,7 +79,7 @@ private:
 
 #if defined(DEBUGGING)
 	struct DbgImpl;
-	UPtr<DbgImpl> m_uDbg;
+	std::unique_ptr<DbgImpl> m_uDbg;
 #endif
 };
 } // namespace LittleEngine

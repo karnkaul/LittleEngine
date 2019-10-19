@@ -6,7 +6,7 @@ namespace LittleEngine
 class Camera : public GameObject
 {
 private:
-	UPtr<class TileMap> m_uTileMap;
+	std::unique_ptr<class TileMap> m_uTileMap;
 	Vector2 m_position;
 	Time m_shakeDuration;
 	Time m_shakeElapsed;

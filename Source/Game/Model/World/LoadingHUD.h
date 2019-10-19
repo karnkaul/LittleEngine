@@ -8,7 +8,7 @@ namespace LittleEngine
 class LoadingHUD final : public ILoadingHUD
 {
 private:
-	UPtr<class ProgressBar> m_uProgress;
+	std::unique_ptr<class ProgressBar> m_uProgress;
 	class Quad* m_pBG = nullptr;
 	Quad* m_pRotator = nullptr;
 	class SFText* m_pTitle = nullptr;

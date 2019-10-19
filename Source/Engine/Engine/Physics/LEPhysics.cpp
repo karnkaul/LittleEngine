@@ -71,6 +71,6 @@ AABBCollider* LEPhysics::CreateAABBCollider(std::string ownerName)
 
 void LEPhysics::Scrub()
 {
-	Core::RemoveIf<UPtr<Collider>>(m_colliders, [](UPtr<Collider>& uCollider) { return uCollider->m_bDestroyed; });
+	Core::RemoveIf<std::unique_ptr<Collider>>(m_colliders, [](std::unique_ptr<Collider>& uCollider) { return uCollider->m_bDestroyed; });
 }
 } // namespace LittleEngine

@@ -7,9 +7,9 @@ namespace LittleEngine
 class GameKernel final : private NoCopy
 {
 private:
-	UPtr<class LEContext> m_uContext;
-	UPtr<class GameManager> m_uGame;
-	UPtr<class WorldStateMachine> m_uWSM;
+	std::unique_ptr<class LEContext> m_uContext;
+	std::unique_ptr<class GameManager> m_uGame;
+	std::unique_ptr<class WorldStateMachine> m_uWSM;
 	GFX m_gfx;
 
 public:

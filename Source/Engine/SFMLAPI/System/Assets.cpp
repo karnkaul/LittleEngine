@@ -23,7 +23,7 @@ bool Asset::DoesFileExist(std::string_view id)
 	return OS::DoesFileExist(OS::Env()->FullPath(fullPath));
 }
 
-Pair<std::string, u64> Asset::FilePathAndSize(std::string_view id)
+std::pair<std::string, u64> Asset::FilePathAndSize(std::string_view id)
 {
 	std::string fullPath = s_pathPrefix;
 	fullPath += id;

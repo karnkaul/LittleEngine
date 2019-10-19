@@ -6,7 +6,7 @@ namespace LittleEngine
 class LEPhysics final
 {
 private:
-	std::vector<UPtr<class Collider>> m_colliders;
+	std::vector<std::unique_ptr<class Collider>> m_colliders;
 	std::string m_logName;
 
 public:

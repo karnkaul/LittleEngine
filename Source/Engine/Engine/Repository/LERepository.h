@@ -37,10 +37,10 @@ public:
 	};
 
 private:
-	UPtr<Core::ArchiveReader> m_uCooked;
-	std::vector<SPtr<class ManifestLoader>> m_loaders;
+	std::unique_ptr<Core::ArchiveReader> m_uCooked;
+	std::vector<std::shared_ptr<class ManifestLoader>> m_loaders;
 	mutable std::mutex m_loadedMutex;
-	std::unordered_map<std::string, UPtr<Asset>> m_loaded;
+	std::unordered_map<std::string, std::unique_ptr<Asset>> m_loaded;
 	std::string m_rootDir;
 	State m_state;
 
@@ -57,7 +57,7 @@ public:
 	template <typename T>
 	Deferred<T*> LoadAsync(std::string id);
 
-	SPtr<ManifestLoader> LoadManifest(std::string manifestPath, Task onComplete = nullptr);
+	std::shared_ptr<ManifestLoader> LoadManifest(std::string manifestPath, Task onComplete = nullptr);
 	void UnloadManifest(std::string manifestPath, Task onComplete = nullptr);
 
 	bool IsBusy() const;
@@ -82,9 +82,9 @@ private:
 	T* LoadFromFilesystem(std::string id);
 #endif
 	template <typename T, typename... U>
-	UPtr<T> CreateAsset(U... args);
+	std::unique_ptr<T> CreateAsset(U... args);
 	template <typename T>
-	UPtr<T> ConjureAsset(const std::string& id, std::initializer_list<Search> searchOrder);
+	std::unique_ptr<T> ConjureAsset(const std::string& id, std::initializer_list<Search> searchOrder);
 
 	void DoLoad(const std::string& id, bool bSyncWarn, Task inCooked, 
 #if ENABLED(FILESYSTEM_ASSETS)
@@ -146,8 +146,8 @@ template <typename T>
 Deferred<T*> LERepository::LoadAsync(std::string id)
 {
 	static_assert(IsDerived<Asset, T>(), "T must derive from Asset!");
-	// std::function needs to be copyable, so cannot use UPtr<promise> here
-	SPtr<std::promise<T*>> sPromise = std::make_shared<std::promise<T*>>();
+	// std::function needs to be copyable, so cannot use std::unique_ptr<promise> here
+	std::shared_ptr<std::promise<T*>> sPromise = std::make_shared<std::promise<T*>>();
 	Deferred<T*> deferred = sPromise->get_future();
 	T* pT = GetLoaded<T>(id);
 	if (pT)
@@ -184,7 +184,7 @@ T* LERepository::LoadFromArchive(std::string id)
 {
 	T* pT = nullptr;
 	auto buffer = m_uCooked->Decompress(id.c_str());
-	UPtr<T> uT = CreateAsset<T>(std::move(id), std::move(buffer));
+	auto uT = CreateAsset<T>(std::move(id), std::move(buffer));
 	if (uT)
 	{
 		pT = uT.get();
@@ -199,7 +199,7 @@ template <typename T>
 T* LERepository::LoadFromFilesystem(std::string id)
 {
 	T* pT = nullptr;
-	UPtr<T> uT = CreateAsset<T>(std::move(id));
+	auto uT = CreateAsset<T>(std::move(id));
 	if (uT)
 	{
 		pT = uT.get();
@@ -211,9 +211,9 @@ T* LERepository::LoadFromFilesystem(std::string id)
 #endif
 
 template <typename T, typename... U>
-UPtr<T> LERepository::CreateAsset(U... args)
+std::unique_ptr<T> LERepository::CreateAsset(U... args)
 {
-	UPtr<T> uT;
+	std::unique_ptr<T> uT;
 	uT = std::make_unique<T>(std::forward<U>(args)...);
 	if (!uT || uT->IsError())
 	{
@@ -225,9 +225,9 @@ UPtr<T> LERepository::CreateAsset(U... args)
 }
 
 template <typename T>
-UPtr<T> LERepository::ConjureAsset(const std::string& id, std::initializer_list<Search> searchOrder)
+std::unique_ptr<T> LERepository::ConjureAsset(const std::string& id, std::initializer_list<Search> searchOrder)
 {
-	UPtr<T> uT;
+	std::unique_ptr<T> uT;
 #if ENABLED(FILESYSTEM_ASSETS)
 	auto retrieveAsset = [&]() {
 		if (!Asset::DoesFileExist(id))

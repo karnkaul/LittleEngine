@@ -9,7 +9,7 @@ namespace LittleEngine
 class PrimitiveFactory : private NoCopy
 {
 public:
-	using PrimVec = std::vector<UPtr<APrimitive>>;
+	using PrimVec = std::vector<std::unique_ptr<APrimitive>>;
 	using PrimMat = std::array<PrimVec, ToIdx(LayerID::_COUNT)>;
 
 private:
@@ -38,7 +38,7 @@ template <typename T>
 T* PrimitiveFactory::New(LayerID layer)
 {
 	static_assert(IsDerived<APrimitive, T>(), "T must derive from APrimitive");
-	UPtr<T> uT = std::make_unique<T>(layer);
+	auto uT = std::make_unique<T>(layer);
 	T* pT = uT.get();
 	m_standby.emplace_back(std::move(uT));
 	return pT;
