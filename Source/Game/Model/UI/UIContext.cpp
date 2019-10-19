@@ -42,7 +42,7 @@ void UIContext::SetEnabled(bool bSetEnabled)
 	{
 		uElement->SetEnabled(bSetEnabled);
 	}
-	m_uUIWidgets->ForEach([bSetEnabled](UPtr<UIWidget>& uWidget) {
+	m_uUIWidgets->ForEach([bSetEnabled](std::unique_ptr<UIWidget>& uWidget) {
 		for (auto& uElement : uWidget->m_uiElements)
 		{
 			uElement->SetEnabled(bSetEnabled);
@@ -61,7 +61,7 @@ LayerID UIContext::MaxLayer() const
 			maxLayer = uElement->m_layer;
 		}
 	}
-	m_uUIWidgets->ForEach([&maxLayer](const UPtr<UIWidget>& uWidget) {
+	m_uUIWidgets->ForEach([&maxLayer](const std::unique_ptr<UIWidget>& uWidget) {
 		if (uWidget->MaxLayer() > maxLayer)
 		{
 			maxLayer = uWidget->MaxLayer();
@@ -93,7 +93,7 @@ void UIContext::SetActive(bool bActive, bool bResetSelection)
 void UIContext::ResetSelection()
 {
 	m_uUIWidgets->Reset(true);
-	m_uUIWidgets->ForEach([](UPtr<UIWidget>& uWidget) { uWidget->Deselect(); });
+	m_uUIWidgets->ForEach([](std::unique_ptr<UIWidget>& uWidget) { uWidget->Deselect(); });
 	UIWidget* pSelected = Selected();
 	if (pSelected)
 	{
@@ -211,7 +211,7 @@ void UIContext::Regenerate(LayerID newLayer)
 	{
 		uElement->Regenerate(newLayer);
 	}
-	m_uUIWidgets->ForEach([newLayer](UPtr<UIWidget>& uWidget) {
+	m_uUIWidgets->ForEach([newLayer](std::unique_ptr<UIWidget>& uWidget) {
 		for (auto& uElement : uWidget->m_uiElements)
 		{
 			uElement->Regenerate(newLayer);

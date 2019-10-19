@@ -20,13 +20,13 @@ public:
 	Vector2 maxPadding;
 	Vector2 minPadding;
 
-	UPtr<UIElement> m_uBG;
-	UPtr<UIElement> m_uSeparator;
+	std::unique_ptr<UIElement> m_uBG;
+	std::unique_ptr<UIElement> m_uSeparator;
 
-	UPtr<UIElement> m_uCarat;
-	UPtr<UIElement> m_uLiveText;
-	UPtr<UIElement> m_uCursor;
-	std::vector<UPtr<UIElement>> m_uLogTexts;
+	std::unique_ptr<UIElement> m_uCarat;
+	std::unique_ptr<UIElement> m_uLiveText;
+	std::unique_ptr<UIElement> m_uCursor;
+	std::vector<std::unique_ptr<UIElement>> m_uLogTexts;
 
 	Colour m_liveTextColour = Colour(255, 255, 255, g_logTextAlpha);
 	Colour m_bgColour = Colour(50, 25, 50, 225);

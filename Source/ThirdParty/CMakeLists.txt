@@ -51,8 +51,8 @@ if(CI_BUILD)
 else()
 	set(BUILD_PATH "${ROOT_PATH}/_Build")
 endif()
-set(BUILD_THIRD_PARTY_PATH "${BUILD_PATH}/ThirdParty")
-set(OUTPUT_PATH "${BUILD_THIRD_PARTY_PATH}/Lib")
+set(THIRD_PARTY_BUILD_PATH "${BUILD_PATH}/ThirdParty")
+set(OUTPUT_PATH "${THIRD_PARTY_BUILD_PATH}/Lib")
 
 # Force set output paths
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_PATH} CACHE STRING "" FORCE)
@@ -67,9 +67,44 @@ endforeach()
 if(NOT CMAKE_VS_PLATFORM_NAME)
 	set(CMAKE_VS_PLATFORM_NAME "x64")
 endif()
-if(NOT ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64"))
+if(NOT CMAKE_VS_PLATFORM_NAME STREQUAL "x64")
 	message(FATAL_ERROR "${CMAKE_VS_PLATFORM_NAME} arch is not supported!")
 endif()
+
+################################################################################
+# Remote dependencies
+################################################################################
+function(download_extract_archive ARCHIVE_NAME SRC_URL ORG_NAME DEST_NAME)
+	if(EXISTS "${PROJECT_SOURCE_DIR}/${ORG_NAME}")
+		file(RENAME "${PROJECT_SOURCE_DIR}/${ORG_NAME}" "${PROJECT_SOURCE_DIR}/${DEST_NAME}")
+	endif()
+	if(NOT EXISTS "${PROJECT_SOURCE_DIR}/${DEST_NAME}")
+		set(DELETE_ZIP OFF)
+		if(NOT EXISTS "${PROJECT_SOURCE_DIR}/${ARCHIVE_NAME}")
+			message(STATUS "Downloading ${SRC_URL}...")
+			file(DOWNLOAD "${SRC_URL}" "${PROJECT_SOURCE_DIR}/${ARCHIVE_NAME}")
+			set(DELETE_ZIP ON)
+		endif()
+		message(STATUS "Extracting ${ARCHIVE_NAME} to ${DEST_NAME}...")
+		execute_process(COMMAND 
+			${CMAKE_COMMAND} -E tar -xf "${PROJECT_SOURCE_DIR}/${ARCHIVE_NAME}"
+			WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" OUTPUT_QUIET ERROR_QUIET
+		)
+		file(RENAME "${PROJECT_SOURCE_DIR}/${ORG_NAME}" "${PROJECT_SOURCE_DIR}/${DEST_NAME}")
+		if(DELETE_ZIP)
+			file(REMOVE "${PROJECT_SOURCE_DIR}/${ARCHIVE_NAME}")
+		endif()
+	endif()
+endfunction()
+
+# SFML
+set(SFML_VERSION 2.5.1)
+download_extract_archive(
+	"SFML-${SFML_VERSION}-sources.zip"
+	"https://www.sfml-dev.org/files/SFML-${SFML_VERSION}-sources.zip"
+	"SFML-${SFML_VERSION}"
+	"SFML"
+)
 
 ################################################################################
 # Library overrides
@@ -87,83 +122,39 @@ set(PHYSFS_ARCHIVE_VDF OFF CACHE BOOL "" FORCE)
 set(PHYSFS_ARCHIVE_WAD OFF CACHE BOOL "" FORCE)
 
 # SFML
+set(SFML_EXTLIBS_PATH "${PROJECT_SOURCE_DIR}/SFML/extlibs")
 set(SFML_BUILD_NETWORK OFF CACHE BOOL "" FORCE)
 if(PLATFORM STREQUAL "Win64")
 	# Force SFML static libraries
 	set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-	if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-		# extlibs path is not detected for clang-cl
-		set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "${PROJECT_SOURCE_DIR}/SFML/extlibs/libs-msvc-universal/x64" FORCE)
-		# CRT flags are not set for clang-cl
-		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
-		set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /MD")
-	endif()
-elseif(PLATFORM STREQUAL "OSX")
-	# Force SFML shared libraries
-	set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-elseif(PLATFORM STREQUAL "Linux")
-	# Set SFML static libraries as default
-	set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
-endif()
-
-################################################################################
-# Remote dependencies
-################################################################################
-function(download_extract_archive ARCHIVE_NAME SRC_URL ORG_NAME DEST_NAME)
-	if(EXISTS "${PROJECT_SOURCE_DIR}/${ORG_NAME}")
-		file(RENAME "${PROJECT_SOURCE_DIR}/${ORG_NAME}" "${PROJECT_SOURCE_DIR}/${DEST_NAME}")
-	endif()
-	if(NOT EXISTS "${PROJECT_SOURCE_DIR}/${DEST_NAME}")
-		set(DELETE_ZIP OFF)
-		if(NOT EXISTS "${PROJECT_SOURCE_DIR}/${ARCHIVE_NAME}")
-			message(STATUS "Downloading ${SRC_URL}...")
-			file(DOWNLOAD
-				"${SRC_URL}"
-				"${PROJECT_SOURCE_DIR}/${ARCHIVE_NAME}"
-			)
-			set(DELETE_ZIP ON)
-		endif()
-		message(STATUS "Extracting ${ARCHIVE_NAME} to ${DEST_NAME}...")
-		execute_process(COMMAND 
-			${CMAKE_COMMAND} -E tar -xf "${PROJECT_SOURCE_DIR}/${ARCHIVE_NAME}"
-			WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
-			OUTPUT_QUIET
-			ERROR_QUIET
-		)
-		file(RENAME "${PROJECT_SOURCE_DIR}/${ORG_NAME}" "${PROJECT_SOURCE_DIR}/${DEST_NAME}")
-		if(DELETE_ZIP)
-			file(REMOVE "${PROJECT_SOURCE_DIR}/${ARCHIVE_NAME}")
-		endif()
-	endif()
-endfunction()
-
-# SFML
-set(SFML_VERSION 2.5.1)
-download_extract_archive(
-	"SFML-${SFML_VERSION}-sources.zip" 
-	"https://www.sfml-dev.org/files/SFML-${SFML_VERSION}-sources.zip" 
-	"SFML-${SFML_VERSION}" 
-	"SFML"
-)
-
-################################################################################
-# Local dependencies
-################################################################################
-# SFML
-set(SFML_EXTLIBS_PATH "${PROJECT_SOURCE_DIR}/SFML/extlibs")
-if(PLATFORM STREQUAL "Win64")
-	if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-		file(GLOB MSVC_EXT_LIBS "${SFML_EXTLIBS_PATH}/libs-msvc-universal/x64/*.lib")
-	elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+	if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 		file(GLOB MSVC_EXT_LIBS "${SFML_EXTLIBS_PATH}/libs-mingw/x64/*.a")
 	else()
-		message(WARNING "Unknown compiler environment! SFML libraries not copied, LittleEngine build will fail!")
+		if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+			# extlibs path is not auto-detected for clang-cl
+			list(APPEND CMAKE_LIBRARY_PATH "${SFML_EXTLIBS_PATH}/libs-msvc-universal/x64")
+			# CRT flags are not set for clang-cl
+			set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd /Z7")
+			set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /MD /Z7")
+		endif()
+		file(GLOB MSVC_EXT_LIBS "${SFML_EXTLIBS_PATH}/libs-msvc-universal/x64/*.lib")
 	endif()
 	list(APPEND MSVC_EXT_LIBS "${SFML_EXTLIBS_PATH}/bin/x64/openal32.dll")
 	file(COPY ${MSVC_EXT_LIBS} DESTINATION "${OUTPUT_PATH}")
 elseif(PLATFORM STREQUAL "OSX")
+	# Force SFML shared libraries
+	set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
 	file(GLOB OSX_FRAMEWORKS LIST_DIRECTORIES true "${SFML_EXTLIBS_PATH}/libs-osx/Frameworks/*.*")
-	file(COPY ${OSX_FRAMEWORKS} DESTINATION "${BUILD_THIRD_PARTY_PATH}/Frameworks")
+	file(COPY ${OSX_FRAMEWORKS} DESTINATION "${THIRD_PARTY_BUILD_PATH}/Frameworks")
+	# Handle Mono presence breaking SFML build pipeline
+	find_library(MONO Mono)
+	if(NOT "${MONO}" STREQUAL "MONO-NOTFOUND")
+		message("Mono is present! Force-including ${MONO}/Headers/freetype2 for sfml-graphics!")
+		include_directories("${MONO}/Headers/freetype2")
+	endif()
+elseif(PLATFORM STREQUAL "Linux")
+	# Set SFML static libraries as default
+	set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
 endif()
 
 ################################################################################
@@ -173,12 +164,3 @@ add_subdirectory(physfs)
 add_subdirectory(SFML)
 
 set_target_properties(physfs-static PROPERTIES OUTPUT_NAME "physfs$<$<CONFIG:DEBUG>:-d>")
-
-if(PLATFORM STREQUAL "OSX")
-	# Handle Mono presence breaking SFML build pipeline
-	find_library(MONO Mono)
-	if(NOT "${MONO}" STREQUAL "MONO-NOTFOUND")
-		message("Mono is present! Force-including ${MONO}/Headers/freetype2 for sfml-graphics!")
-		target_include_directories(sfml-graphics PRIVATE "${MONO}/Headers/freetype2")
-	endif()
-endif()

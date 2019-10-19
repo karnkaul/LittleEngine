@@ -17,13 +17,13 @@ private:
 	static constexpr size_t COMPONENT_LINES = ToIdx(TimingType::Last) + 1;
 
 private:
-	std::array<std::vector<UPtr<class AComponent>>, COMPONENT_LINES> m_components;
+	std::array<std::vector<std::unique_ptr<class AComponent>>, COMPONENT_LINES> m_components;
 	std::string m_logName;
 	std::vector<Task> m_initCallbacks;
-	std::vector<UPtr<class Entity>> m_entities;
-	UPtr<class UIManager> m_uUIManager;
-	UPtr<class LEPhysics> m_uPhysics;
-	UPtr<class Camera> m_uWorldCamera;
+	std::vector<std::unique_ptr<class Entity>> m_entities;
+	std::unique_ptr<class UIManager> m_uUIManager;
+	std::unique_ptr<class LEPhysics> m_uPhysics;
+	std::unique_ptr<class Camera> m_uWorldCamera;
 	class LEContext* m_pContext;
 	class WorldStateMachine* m_pWSM;
 	bool m_bQuitting = false;
@@ -47,7 +47,7 @@ public:
 
 	void SetPaused(bool bPaused);
 	void Quit();
-	void SetWorldCamera(UPtr<Camera> uCamera);
+	void SetWorldCamera(std::unique_ptr<Camera> uCamera);
 
 	bool IsPaused() const;
 	bool IsPlayerControllable() const;
@@ -71,7 +71,7 @@ template <typename T>
 T* GameManager::NewEntity(std::string name, Vector2 position, Vector2 orientation)
 {
 	static_assert(IsDerived<Entity, T>(), "T must derive from Entity");
-	UPtr<T> uT = std::make_unique<T>();
+	auto uT = std::make_unique<T>();
 	T* pT = uT.get();
 	m_entities.emplace_back(std::move(uT));
 	pT->OnCreate(std::move(name));
@@ -85,7 +85,7 @@ template <typename T>
 T* GameManager::NewComponent(Entity& owner)
 {
 	static_assert(IsDerived<AComponent, T>(), "T must derive from AComponent");
-	UPtr<T> uT = std::make_unique<T>();
+	auto uT = std::make_unique<T>();
 	size_t idx = ToIdx(uT->Timing());
 	Assert(m_components.size() > idx, "Invalid Component Timing index!");
 	auto& componentVec = m_components.at(idx);

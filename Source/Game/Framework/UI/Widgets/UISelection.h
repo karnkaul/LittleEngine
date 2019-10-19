@@ -6,7 +6,7 @@ namespace LittleEngine
 class UISelection : public UIButton
 {
 public:
-	using OnChanged = LE::Delegate<Pair<size_t, std::string>>;
+	using OnChanged = LE::Delegate<std::pair<size_t, std::string>>;
 
 private:
 	struct UISelectionData

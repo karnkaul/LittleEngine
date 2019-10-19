@@ -55,7 +55,7 @@ protected:
 class SoundPlayer : public AudioPlayer
 {
 private:
-	UPtr<sf::Sound> m_uSFSound;
+	std::unique_ptr<sf::Sound> m_uSFSound;
 	class SoundAsset* m_pSoundAsset = nullptr;
 
 public:
@@ -85,7 +85,7 @@ private:
 	Time m_elapsedTime;
 	Fixed m_targetVolume = Fixed::One;
 	Fixed m_startVolume = Fixed::One;
-	UPtr<sf::Music> m_uSFMusic;
+	std::unique_ptr<sf::Music> m_uSFMusic;
 	bool m_bFadingIn = false;
 	bool m_bFadingOut = false;
 	bool m_bPauseOnFadeOut = false;

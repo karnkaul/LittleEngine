@@ -43,7 +43,7 @@ bool bParented = false;
 
 s32 poolSize = 10;
 TweakS32(g_poolSize, &poolSize);
-UPtr<EntityPool> uPool;
+std::unique_ptr<EntityPool> uPool;
 std::list<Entity*> pooled;
 
 void OnX()
@@ -384,8 +384,8 @@ std::vector<Token> debugTokens;
 UIDialogue* pDialogue = nullptr;
 
 // Fixed progress;
-UPtr<UIProgressBar> uProgressBar = nullptr;
-UPtr<UIElement> uProgressBG = nullptr;
+std::unique_ptr<UIProgressBar> uProgressBar = nullptr;
+std::unique_ptr<UIElement> uProgressBG = nullptr;
 Time elapsed = Time::Zero;
 
 void SpawnDialogue()

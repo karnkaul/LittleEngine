@@ -5,7 +5,7 @@ namespace LittleEngine
 {
 namespace
 {
-const Dual<u8> VALID_RANGE = {5, 127};
+const std::pair<u8, u8> VALID_RANGE = {5, 127};
 std::unordered_map<u32, KeyCode> ignoreMap = {
 	{8, KeyCode::Backspace}, {9, KeyCode::Tab}, {13, KeyCode::Enter}, {27, KeyCode::Escape}, {15, KeyCode::LShift}, {16, KeyCode::RShift},
 };

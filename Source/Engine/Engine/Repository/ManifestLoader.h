@@ -15,7 +15,7 @@ private:
 	template <typename T>
 	struct NewAsset
 	{
-		UPtr<T> asset;
+		std::unique_ptr<T> asset;
 		std::string assetID;
 
 		NewAsset(std::string id) : assetID(std::move(id)) {}

@@ -45,7 +45,7 @@ protected:
 
 void Init(LEContext& context);
 void Cleanup();
-void AddCommand(UPtr<Command> uCommand);
+void AddCommand(std::unique_ptr<Command> uCommand);
 std::vector<LogLine> Execute(std::string_view query);
 AutoCompleteResults AutoComplete(std::string_view incompleteQuery);
 } // namespace Commands

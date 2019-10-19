@@ -18,7 +18,7 @@ private:
 
 private:
 	UITextInputData m_data;
-	UPtr<class KeyboardInput> m_uKeyboard;
+	std::unique_ptr<class KeyboardInput> m_uKeyboard;
 	std::string m_prevText;
 	Token m_inputToken;
 	Token m_pointerToken;

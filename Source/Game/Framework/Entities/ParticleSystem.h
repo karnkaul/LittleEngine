@@ -13,7 +13,7 @@ namespace LittleEngine
 class ParticleSystem : public Entity
 {
 protected:
-	std::vector<UPtr<Emitter>> m_emitters;
+	std::vector<std::unique_ptr<Emitter>> m_emitters;
 	bool m_bIsPlaying = false;
 #if ENABLED(PROFILER)
 	Colour m_profileColour;

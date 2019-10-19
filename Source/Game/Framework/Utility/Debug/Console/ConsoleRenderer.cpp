@@ -68,7 +68,7 @@ ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_
 	m_logLinesCount = (m_uBG->RectSize().y.ToU32() / textPad) - 1;
 	for (size_t i = 0; i < ToIdx(m_logLinesCount); ++i)
 	{
-		UPtr<UIElement> uLogLineI = std::make_unique<UIElement>(textLayer, true);
+		std::unique_ptr<UIElement> uLogLineI = std::make_unique<UIElement>(textLayer, true);
 		uLogLineI->OnCreate(context, "LogLine" + Strings::ToString(i), &m_uBG->m_transform, g_pDefaultFont);
 		uLogLineI->m_transform.anchor = {-1, 1};
 		uLogLineI->m_transform.nPosition = {-1, -1};

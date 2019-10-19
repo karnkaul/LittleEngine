@@ -23,8 +23,8 @@ public:
 	using OnCancelled = LE::Delegate<>;
 
 private:
-	using UUIWidget = UPtr<UIWidget>;
-	using UUIElement = UPtr<UIElement>;
+	using UUIWidget = std::unique_ptr<UIWidget>;
+	using UUIElement = std::unique_ptr<UIElement>;
 
 private:
 	bool m_bPersistent = false;
@@ -36,7 +36,7 @@ protected:
 	UIElement* m_pRoot = nullptr;
 
 private:
-	UPtr<class UIWidgetMatrix> m_uUIWidgets;
+	std::unique_ptr<class UIWidgetMatrix> m_uUIWidgets;
 	std::vector<UUIElement> m_uiElements;
 	Token m_ioToken;
 	Token m_ptrToken;
@@ -99,7 +99,7 @@ T* UIContext::AddWidget(std::string name, UIWidgetStyle* pStyleToCopy, bool bNew
 {
 	Assert(g_pGameManager, "GameManager is null!");
 	static_assert(std::is_base_of<UIWidget, T>::value, "T must derive from UIWidget.");
-	UPtr<T> uT = std::make_unique<T>();
+	auto uT = std::make_unique<T>();
 	T* pT = uT.get();
 	UIWidgetStyle defaultStyle = UIGameStyle::GetStyle("");
 	if (!pStyleToCopy)
@@ -124,7 +124,7 @@ T* UIContext::AddElement(std::string name, UITransform* pParent, s32 layerDelta)
 		layer = static_cast<LayerID>(ToS32(m_pRoot->m_layer) + 1);
 	}
 	layer = static_cast<LayerID>(ToS32(layer) + layerDelta);
-	UPtr<T> uT = std::make_unique<T>(layer, false);
+	auto uT = std::make_unique<T>(layer, false);
 	if (!pParent && m_pRoot)
 	{
 		pParent = &m_pRoot->m_transform;

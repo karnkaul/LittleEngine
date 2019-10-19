@@ -38,14 +38,14 @@ endif()
 # Init/Update Submodules
 find_package(Git QUIET)
 if(GIT_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/../.git")
-	option(GIT_SUBMODULE "Init/Update submodules during generation" ON)
-	if(GIT_SUBMODULE)
+	option(UPDATE_SUBMODULES "Init/Update submodules during generation" ON)
+	if(UPDATE_SUBMODULES)
 		message(STATUS "Updating git submodules...")
 		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
 			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-			RESULT_VARIABLE GIT_SUBMODULE_RESULT
+			RESULT_VARIABLE UPDATE_SUBMODULES_RESULT
 		)
-		if(NOT GIT_SUBMODULE_RESULT EQUAL "0")
+		if(NOT UPDATE_SUBMODULES_RESULT EQUAL "0")
 			message(FATAL_ERROR "git submodule update failed!")
 		endif()
 	endif()
@@ -57,7 +57,8 @@ if(CI_BUILD)
 else()
 	set(BUILD_PATH "${ROOT_PATH}/_Build")
 endif()
-set(BUILD_THIRD_PARTY_PATH "${BUILD_PATH}/ThirdParty")
+set(THIRD_PARTY_SOURCE_PATH "${CMAKE_SOURCE_DIR}/ThirdParty")
+set(THIRD_PARTY_BUILD_PATH "${BUILD_PATH}/ThirdParty")
 set(RUNTIME_PATH "${ROOT_PATH}/Runtime")
 
 # Dynamic load path

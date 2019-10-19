@@ -26,7 +26,7 @@ u32 subtitleSize = 60;
 bool WorldStateMachine::s_bRunning = false;
 #endif
 
-std::vector<UPtr<World>> WorldStateMachine::s_createdWorlds;
+std::vector<std::unique_ptr<World>> WorldStateMachine::s_createdWorlds;
 
 WorldStateMachine::WorldStateMachine(LEContext& context) : m_pContext(&context)
 {
@@ -221,7 +221,7 @@ bool WorldStateMachine::LoadWorld(WorldID id)
 	return false;
 }
 
-void WorldStateMachine::SetLoadingHUD(UPtr<ILoadingHUD> uLoadingHUD)
+void WorldStateMachine::SetLoadingHUD(std::unique_ptr<ILoadingHUD> uLoadingHUD)
 {
 	m_uLoadHUD->SetEnabled(false);
 	m_uLoadHUD = std::move(uLoadingHUD);

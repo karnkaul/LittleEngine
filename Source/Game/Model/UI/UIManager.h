@@ -9,8 +9,8 @@ class UIManager final
 {
 public:
 private:
-	std::list<UPtr<class UIContext>> m_contexts;
-	std::unordered_map<std::string, UPtr<UIContext>> m_inactive;
+	std::list<std::unique_ptr<class UIContext>> m_contexts;
+	std::unordered_map<std::string, std::unique_ptr<UIContext>> m_inactive;
 
 public:
 	UIManager();
@@ -22,9 +22,9 @@ public:
 
 private:
 	template <typename T>
-	UPtr<T> Inactive(const std::string& id);
+	std::unique_ptr<T> Inactive(const std::string& id);
 	template <typename T>
-	UPtr<T> CreateContext(std::string id);
+	std::unique_ptr<T> CreateContext(std::string id);
 
 	void Clear();
 	void Tick(Time dt);
@@ -66,7 +66,7 @@ T* UIManager::PushContext(std::string id)
 		}
 	}
 
-	UPtr<T> uT = Inactive<T>(id);
+	std::unique_ptr<T> uT = Inactive<T>(id);
 	if (!uT)
 	{
 		uT = CreateContext<T>(std::move(id));
@@ -79,7 +79,7 @@ T* UIManager::PushContext(std::string id)
 }
 
 template <typename T>
-UPtr<T> UIManager::Inactive(const std::string& id)
+std::unique_ptr<T> UIManager::Inactive(const std::string& id)
 {
 	auto search = m_inactive.find(id);
 	if (search != m_inactive.end())
@@ -89,15 +89,15 @@ UPtr<T> UIManager::Inactive(const std::string& id)
 		m_inactive.erase(search);
 		LayerID baseLayer = m_contexts.empty() ? LayerID::UI : static_cast<LayerID>(ToS32(m_contexts.back()->MaxLayer()) + 2);
 		uContext->Regenerate(baseLayer);
-		return UPtr<T>(dynamic_cast<T*>(uContext.release()));
+		return std::unique_ptr<T>(dynamic_cast<T*>(uContext.release()));
 	}
 	return {};
 }
 
 template <typename T>
-UPtr<T> UIManager::CreateContext(std::string id)
+std::unique_ptr<T> UIManager::CreateContext(std::string id)
 {
-	UPtr<T> uT = std::make_unique<T>();
+	std::unique_ptr<T> uT = std::make_unique<T>();
 	LayerID baseLayer = m_contexts.empty() ? LayerID::UI : static_cast<LayerID>(ToS32(m_contexts.back()->MaxLayer()) + 2);
 	InitContext(*uT, std::move(id), baseLayer);
 	return (uT);

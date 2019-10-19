@@ -22,7 +22,7 @@ protected:
 
 private:
 	std::string m_manifestID;
-	UPtr<class WorldClock> m_uWorldClock;
+	std::unique_ptr<class WorldClock> m_uWorldClock;
 	State m_state;
 	class WorldStateMachine* m_pWSM = nullptr;
 

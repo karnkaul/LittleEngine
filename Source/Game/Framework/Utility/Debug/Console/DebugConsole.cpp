@@ -19,7 +19,7 @@ Colour g_liveHistoryColour = Colour(150, 150, 150, g_logTextAlpha);
 namespace Console
 {
 bool g_bEnabled = false;
-UPtr<LogBook> g_uLogBook;
+std::unique_ptr<LogBook> g_uLogBook;
 
 bool bQuit = false;
 
@@ -31,7 +31,7 @@ void Quit()
 
 namespace
 {
-UPtr<class ConsoleImpl> uConsole;
+std::unique_ptr<class ConsoleImpl> uConsole;
 LEContext* pContext = nullptr;
 
 class ConsoleImpl

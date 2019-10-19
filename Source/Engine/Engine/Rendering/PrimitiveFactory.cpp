@@ -30,7 +30,7 @@ void PrimitiveFactory::Swap()
 {
 	for (auto& vec : m_active)
 	{
-		Core::RemoveIf<UPtr<APrimitive>>(vec, [](const UPtr<APrimitive>& uP) { return uP->IsDestroyed(); });
+		Core::RemoveIf<std::unique_ptr<APrimitive>>(vec, [](const std::unique_ptr<APrimitive>& uP) { return uP->IsDestroyed(); });
 		for (auto& uP : vec)
 		{
 			uP->SwapState();

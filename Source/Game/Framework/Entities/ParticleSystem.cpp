@@ -32,7 +32,7 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 		eData.SetOwner(*this);
 		particles += Strings::ToString(eData.spawnData.numParticles);
 		particles += ", ";
-		UPtr<Emitter> emitter = std::make_unique<Emitter>(std::move(eData), false);
+		std::unique_ptr<Emitter> emitter = std::make_unique<Emitter>(std::move(eData), false);
 		m_emitters.emplace_back(std::move(emitter));
 	}
 	auto logSeverity = particles.empty() || emitters.empty() ? LE::LogSeverity::Warning : LE::LogSeverity::Debug;
@@ -55,7 +55,7 @@ void ParticleSystem::InitParticleSystem(ParticleSystemData data)
 Emitter* ParticleSystem::GetEmitter(const std::string& id)
 {
 	auto search =
-		std::find_if(m_emitters.begin(), m_emitters.end(), [id](const UPtr<Emitter>& uEmitter) { return uEmitter->m_data.id == id; });
+		std::find_if(m_emitters.begin(), m_emitters.end(), [id](const std::unique_ptr<Emitter>& uEmitter) { return uEmitter->m_data.id == id; });
 	return search != m_emitters.end() ? search->get() : nullptr;
 }
 

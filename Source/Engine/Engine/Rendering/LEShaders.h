@@ -15,7 +15,7 @@ struct ShadersData
 namespace LEShaders
 {
 extern ShadersData s_data;
-extern std::unordered_map<std::string, UPtr<Shader>> s_shaderMap;
+extern std::unordered_map<std::string, std::unique_ptr<Shader>> s_shaderMap;
 
 void Init(ShadersData data = {});
 void Clear();
@@ -50,7 +50,7 @@ T* LEShaders::CreateShader(const std::string& id, const std::string& vertCode, c
 		return nullptr;
 	}
 
-	UPtr<T> uT = std::make_unique<T>(id);
+	auto uT = std::make_unique<T>(id);
 	uT->Compile(vertCode, fragCode);
 	if (uT->GetType().any())
 	{
@@ -95,7 +95,7 @@ T* LEShaders::LoadShader(const std::string& id, Shader::Type asType)
 			fragCode = pText->Text();
 		}
 	}
-	UPtr<T> uT = std::make_unique<T>(id);
+	auto uT = std::make_unique<T>(id);
 	uT->Compile(std::move(vertCode), std::move(fragCode));
 	if (uT->GetType().any())
 	{

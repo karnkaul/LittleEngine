@@ -333,14 +333,14 @@ public:
 #pragma region Local Namespace Impl
 namespace
 {
-std::list<UPtr<Command>> commands;
+std::list<std::unique_ptr<Command>> commands;
 
 template <typename T>
 void Add()
 {
 	static_assert(IsDerived<Command, T>(), "T must derive from Command");
-	UPtr<T> uT = std::make_unique<T>();
-	auto iter = std::find_if(commands.begin(), commands.end(), [&uT](const UPtr<Command>& uC) { return uT->m_name < uC->m_name; });
+	auto uT = std::make_unique<T>();
+	auto iter = std::find_if(commands.begin(), commands.end(), [&uT](const std::unique_ptr<Command>& uC) { return uT->m_name < uC->m_name; });
 	commands.insert(iter, std::move(uT));
 }
 
@@ -397,7 +397,7 @@ std::vector<LogLine> ExecuteQuery(const std::string& command, std::string params
 {
 	std::vector<LogLine> ret;
 	auto search =
-		std::find_if(commands.begin(), commands.end(), [&command](const UPtr<Command>& uCommand) { return uCommand->m_name == command; });
+		std::find_if(commands.begin(), commands.end(), [&command](const std::unique_ptr<Command>& uCommand) { return uCommand->m_name == command; });
 	if (search != commands.end())
 	{
 		ret = (*search)->Execute(std::move(params));
@@ -444,10 +444,10 @@ void Cleanup()
 	commands.clear();
 }
 
-void AddCommand(UPtr<Command> uCommand)
+void AddCommand(std::unique_ptr<Command> uCommand)
 {
 	auto iter =
-		std::find_if(commands.begin(), commands.end(), [&uCommand](const UPtr<Command>& uC) { return uCommand->m_name < uC->m_name; });
+		std::find_if(commands.begin(), commands.end(), [&uCommand](const std::unique_ptr<Command>& uC) { return uCommand->m_name < uC->m_name; });
 	commands.insert(iter, std::move(uCommand));
 }
 

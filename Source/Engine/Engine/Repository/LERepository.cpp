@@ -68,9 +68,9 @@ void LERepository::LoadDefaultFont(std::string id)
 	Assert(g_pDefaultFont, "Invariant violated: Default Font is null!");
 }
 
-SPtr<ManifestLoader> LERepository::LoadManifest(std::string manifestPath, Task onComplete)
+std::shared_ptr<ManifestLoader> LERepository::LoadManifest(std::string manifestPath, Task onComplete)
 {
-	SPtr<ManifestLoader> sLoader = std::make_shared<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), false);
+	std::shared_ptr<ManifestLoader> sLoader = std::make_shared<ManifestLoader>(*this, std::move(manifestPath), std::move(onComplete), false);
 	m_loaders.push_back(sLoader);
 	return sLoader;
 }
@@ -139,7 +139,7 @@ void LERepository::UnloadAll(bool bUnloadDefaultFont)
 	}
 	else
 	{
-		Core::RemoveIf<std::string, UPtr<Asset>>(m_loaded, [](UPtr<Asset>& uAsset) { return std::string(uAsset->ID()) != g_pDefaultFont->ID(); });
+		Core::RemoveIf<std::string, std::unique_ptr<Asset>>(m_loaded, [](std::unique_ptr<Asset>& uAsset) { return std::string(uAsset->ID()) != g_pDefaultFont->ID(); });
 	}
 	LOG_D("[Repository] cleared");
 }
@@ -153,7 +153,7 @@ void LERepository::Tick(Time dt)
 {
 	m_state = State::Active;
 	std::for_each(m_loaders.begin(), m_loaders.end(), [dt](auto& sLoader) { sLoader->Tick(dt); });
-	Core::RemoveIf<SPtr<ManifestLoader>>(m_loaders, [](auto& sLoader) { return sLoader->m_bIdle; });
+	Core::RemoveIf<std::shared_ptr<ManifestLoader>>(m_loaders, [](auto& sLoader) { return sLoader->m_bIdle; });
 }
 
 void LERepository::DoLoad(const std::string& id, bool bSyncWarn, Task inCooked, 

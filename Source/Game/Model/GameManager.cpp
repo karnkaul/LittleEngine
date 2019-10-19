@@ -126,7 +126,7 @@ Camera* GameManager::WorldCamera() const
 	return m_uWorldCamera.get();
 }
 
-void GameManager::SetWorldCamera(UPtr<Camera> uCamera)
+void GameManager::SetWorldCamera(std::unique_ptr<Camera> uCamera)
 {
 	m_uWorldCamera = std::move(uCamera);
 }
@@ -154,13 +154,13 @@ void GameManager::Tick(Time dt)
 		{
 			for (auto& componentVec : m_components)
 			{
-				Core::RemoveIf<UPtr<AComponent>>(componentVec, [](UPtr<AComponent>& uC) { return uC->m_bDestroyed; });
+				Core::RemoveIf<std::unique_ptr<AComponent>>(componentVec, [](std::unique_ptr<AComponent>& uC) { return uC->m_bDestroyed; });
 				for (auto& uComponent : componentVec)
 				{
 					uComponent->Tick(dt);
 				}
 			}
-			Core::RemoveIf<UPtr<Entity>>(m_entities, [](UPtr<Entity>& uE) { return uE->IsDestroyed(); });
+			Core::RemoveIf<std::unique_ptr<Entity>>(m_entities, [](std::unique_ptr<Entity>& uE) { return uE->IsDestroyed(); });
 			for (auto& uEntity : m_entities)
 			{
 				uEntity->Tick(dt);

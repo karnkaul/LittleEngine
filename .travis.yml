@@ -1,8 +1,8 @@
 branches:
   only:
     - master
-    - release
     - dev
+    - stable
 cache:
   directories:
     - BuildCache
