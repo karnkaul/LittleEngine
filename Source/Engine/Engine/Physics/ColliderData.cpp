@@ -30,9 +30,9 @@ CircleData::CircleData(Fixed radius, Vector2 centre) : centre(std::move(centre))
 bool CircleData::IsIntersecting(const CircleData& other) const
 {
 	// Compare radii and distance
-	Fixed centreDist = (other.centre - centre).Magnitude();
-	Fixed radiiDist = other.radius + radius;
-	return radiiDist >= centreDist;
+	f64 centreDist = (other.centre - centre).SqrMagnitude();
+	f64 radiiDist = (other.radius + radius).ToF64();
+	return radiiDist * radiiDist >= centreDist * centreDist;
 }
 
 bool CircleData::IsPointInCircle(Vector2 point) const
