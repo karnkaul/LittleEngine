@@ -7,7 +7,6 @@
 namespace LittleEngine
 {
 class UIElement;
-class FontAsset;
 class LEContext;
 
 namespace Debug
@@ -30,7 +29,6 @@ public:
 
 	Colour m_liveTextColour = Colour(255, 255, 255, g_logTextAlpha);
 	Colour m_bgColour = Colour(50, 25, 50, 225);
-	FontAsset* m_pFont;
 	Fixed m_cursorNPos;
 	u16 m_textSize;
 	u32 m_logLinesCount;

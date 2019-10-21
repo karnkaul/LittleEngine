@@ -32,14 +32,16 @@ enum class PostRun
 // Globals
 namespace IDs
 {
-const std::string ASSETS_ROOT = "GameAssets";
 const std::string COOKED_ASSETS = "GameAssets.cooked";
 const std::string MAIN_MANIFEST = "Manifest.amf";
 const std::string DEFAULT_FONT = "Fonts/Default.ttf";
 const std::string GAME_STYLE = "Texts/Game.style";
 } // namespace IDs
 
-const std::string MAIN_MANIFEST_FILE = "GameAssets/Manifest.amf";
+const std::string ASSETS_ROOT = "Resources/GameAssets";
+const std::string MUSIC_ROOT = "Resources/GameMusic";
+const std::string MAIN_MANIFEST_FILE = ASSETS_ROOT + "/" + IDs::MAIN_MANIFEST;
+
 #if !defined(SHIPPING)
 const std::string GAME_CONFIG_FILE = ".game.conf";
 #endif
@@ -77,8 +79,8 @@ bool Init(s32 argc, char** argv)
 	}
 	try
 	{
-		uRepository = std::make_unique<LERepository>(IDs::DEFAULT_FONT, IDs::COOKED_ASSETS, IDs::ASSETS_ROOT);
-		uAudio = std::make_unique<LEAudio>();
+		uRepository = std::make_unique<LERepository>(IDs::DEFAULT_FONT, IDs::COOKED_ASSETS, ASSETS_ROOT);
+		uAudio = std::make_unique<LEAudio>(MUSIC_ROOT);
 		LEShaders::Init();
 	}
 	catch (const FatalEngineException& e)

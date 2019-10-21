@@ -152,7 +152,7 @@ bool LEAudio::s_bDebugHUD = false;
 TweakBool(audioDebug, &LEAudio::s_bDebugHUD);
 #endif
 
-LEAudio::LEAudio()
+LEAudio::LEAudio(std::string_view rootDir) : m_rootMusicDir(rootDir)
 {
 	LOG_D("[Audio] constructed");
 	g_pAudio = this;

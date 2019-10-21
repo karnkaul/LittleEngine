@@ -2,6 +2,7 @@
 #include "Engine/Context/LEContext.h"
 #include "Engine/FatalEngineException.h"
 #include "Engine/Locale/Locale.h"
+#include "Engine/Repository/LERepository.h"
 #include "Model/GameConfig.h"
 #include "Model/GameSettings.h"
 #include "Model/GameManager.h"
@@ -52,6 +53,9 @@ bool GameKernel::Boot(const GameConfig& config)
 		LOG_E("[GameKernel] Error creating GL context!\n%s", e.what());
 		return false;
 	}
+#if defined(DEBUGGING)
+	g_pRepository->Preload<FontAsset>("Fonts/UIFont.ttf");
+#endif
 	return true;
 }
 
