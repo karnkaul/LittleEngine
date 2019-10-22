@@ -2,7 +2,7 @@
 **/__pycache__/*
 **/SourceArt/*
 _Build/*
-Project*/*
+out/*
 Runtime/Frameworks/*
 Runtime/Lib/*
 Runtime/Redist/*
@@ -20,9 +20,7 @@ Source/ThirdParty/SFML/*
 # Runtime files
 !Runtime
 Runtime/*
-!Runtime/GameAssets
-Runtime/GameAssets/*
-!Runtime/GameAssets/*.amf
+!Runtime/Resources
 !Runtime/Utils
 !Runtime/.game.conf
 !Runtime/InputMap.txt

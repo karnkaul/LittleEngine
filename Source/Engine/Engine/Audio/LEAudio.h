@@ -1,5 +1,6 @@
 #pragma once
 #include <optional>
+#include <string>
 #include "Core/CoreTypes.h"
 #include "SFMLAPI/Audio/AudioPlayer.h"
 
@@ -33,10 +34,10 @@ private:
 	std::vector<std::unique_ptr<SoundPlayer>> m_sfxPlayers;
 	std::optional<SwitchTrackRequest> m_oSwitchTrackRequest;
 	bool m_bSideA = true;
-	const std::string m_rootMusicDir = "GameMusic";
+	const std::string_view m_rootMusicDir;
 
 public:
-	LEAudio();
+	LEAudio(std::string_view rootDir);
 	~LEAudio();
 
 	void Tick(Time dt);

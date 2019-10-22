@@ -10,7 +10,7 @@ os.chdir(sys.path[0])
 
 # Cook vars
 manifest_ext = '.amf'
-assets_root_dir = '../GameAssets'
+assets_root_dir = '../Resources/GameAssets'
 cooked_path = '../GameAssets.cooked'
 
 manifests = []

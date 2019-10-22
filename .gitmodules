@@ -10,3 +10,6 @@
 [submodule "Source/Core/Core/Game/Delegate"]
 	path = Source/Core/Core/Game/Delegate
 	url = https://github.com/karnkaul/LEDelegate.git
+[submodule "Runtime/Resources"]
+	path = Runtime/Resources
+	url = https://github.com/karnkaul/LEResources.git

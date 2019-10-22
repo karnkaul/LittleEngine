@@ -11,7 +11,7 @@
 THREADS=8
 
 if [[ $# < 1 ]]; then
-	echo "Syntax for Project<X>: install_builds.sh <X0> [X1] [X2...]"
+	echo "Syntax for <X>: install_builds.sh <X0> [X1] [X2...]"
 	exit 1
 fi
 
@@ -20,8 +20,8 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 declare -a DIRS
 IDX=0
-for SUFFIX in "${@}"; do
-	DIRS[IDX]=../../Project$SUFFIX
+for DIR in "${@}"; do
+	DIRS[IDX]=../../$DIR
 	let IDX=$IDX+1
 done
 

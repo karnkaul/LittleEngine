@@ -49,8 +49,6 @@ Visit the [Little Engine wiki](https://github.com/karnkaul/LittleEngine/wiki/Dev
 1. (MacOSX) Xcode
 1. (Optional) Bash (native/MinGW/WSL), [Python 3](https://www.python.org/downloads/) (all tools scripts are in Bash/Python)
 
->*Note: Due to GitHub's limitations with (free) LFS, Runtime Assets have been moved to DropBox since 0.4.4.0.*
-
 #### Setting up the project(s)
 Quick Start:
 1. Build `ThirdParty`
@@ -61,10 +59,17 @@ Quick Start:
     1. Build / install (copies executable and libraries to `Runtime`)
 1. Run `LittleEngine`
     1. Set working directory to `Runtime`
-    1. Extract and merge [Runtime Assets](https://www.dropbox.com/sh/ygwprt87nr4sigm/AABKD-84WKMNXtyM4LNcnH3ca?dl=0) into `Runtime`
     1. Debug/run the built/installed executable
 
-[Short video](https://youtu.be/Ox5c96EflZU) demonstrating full project setup from scratch on Linux (v0.4.7.0).
+[Short video](https://youtu.be/lZ0zqhNs4mI) demonstrating full project setup from scratch on Linux (v0.4.10.0).
+
+#### Troubleshooting
+**"openal32.dll not found"**
+**"Could not determine Runtime path" Assert**
+Ensure working directory is "Runtime" for the `App` target.
+
+**"Default font is null" Assert**
+Ensure `Resources` submodule is up-to-date, and `GameAssets/Fonts/Default.ttf` is present.
 
 ### Contact
 

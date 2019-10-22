@@ -42,7 +42,7 @@ private:
 	mutable std::mutex m_loadedMutex;
 	std::unordered_map<std::string, std::unique_ptr<Asset>> m_loaded;
 	std::string m_rootDir;
-	State m_state;
+	State m_state = State::Idle;
 
 public:
 	LERepository(std::string defaultFontID, std::string archivePath, std::string rootDir = "");

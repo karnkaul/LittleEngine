@@ -1,6 +1,5 @@
 #include "ConsoleRenderer.h"
 #if ENABLED(CONSOLE)
-#include "SFMLAPI/System/Assets.h"
 #include "SFMLAPI/Rendering/Primitives.h"
 #include "Engine/Context/LEContext.h"
 #include "Engine/Repository/LERepository.h"
@@ -11,7 +10,6 @@ namespace LittleEngine::Debug
 {
 ConsoleRenderer::ConsoleRenderer(LEContext& context) : m_textSize(LogLine::TEXT_SIZE)
 {
-	m_pFont = g_pDefaultFont;
 	LayerID textLayer = static_cast<LayerID>(ToS32(LayerID::Max) - 2);
 
 	// BG
