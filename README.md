@@ -61,8 +61,7 @@ Quick Start:
     1. Set working directory to `Runtime`
     1. Debug/run the built/installed executable
 
-// TODO: Out of date
-[Short video](https://youtu.be/Ox5c96EflZU) demonstrating full project setup from scratch on Linux (v0.4.7.0).
+[Short video](https://youtu.be/lZ0zqhNs4mI) demonstrating full project setup from scratch on Linux (v0.4.10.0).
 
 #### Troubleshooting
 **"openal32.dll not found"**

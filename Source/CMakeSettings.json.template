@@ -9,15 +9,15 @@
 		},
 		{
 			"namespace": "Debug",
-			"buildRoot": "${projectDir}/../Project_Debug"
+			"buildRoot": "${projectDir}/../out/Debug"
 		},
 		{
 			"namespace": "Develop",
-			"buildRoot": "${projectDir}/../Project_Develop"
+			"buildRoot": "${projectDir}/../out/Develop"
 		},
 		{
 			"namespace": "Release",
-			"buildRoot": "${projectDir}/../Project_Release"
+			"buildRoot": "${projectDir}/../out/Release"
 		}
 	],
 	
