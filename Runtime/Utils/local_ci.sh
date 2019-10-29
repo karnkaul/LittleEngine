@@ -46,7 +46,7 @@ build() {
 	if [ -d $BUILD_ROOT/$1 ]; then
 		echo -e "  == $1 Build [$THREADS threads]"
 		if [ -z $2 ]; then
-			$CMAKE $BUILD_ROOT/$1 -DCI_BUILD=1 > /dev/null || fatal_error
+			$CMAKE $BUILD_ROOT/$1 -DCI_BUILD=1 -DUPDATE_SUBMODULES=0 > /dev/null || fatal_error
 			$CMAKE --build $BUILD_ROOT/$1 -j$THREADS > /dev/null || fatal_error
 		else
 			cd $BATCH_LOCATION
