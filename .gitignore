@@ -1,12 +1,6 @@
 # Directories
 **/__pycache__/*
-**/SourceArt/*
-_Build/*
 out/*
-Runtime/Frameworks/*
-Runtime/Lib/*
-Runtime/Redist/*
-Runtime/Resources/*
 ThirdParty/SFML/*
 
 # IDE/OS files
@@ -17,21 +11,5 @@ ThirdParty/SFML/*
 **/CMakeSettings.json
 **/.DS_Store
 
-# Runtime files
-!Runtime
-Runtime/*
-!Runtime/Resources
-!Runtime/Utils
-!Runtime/.game.conf
-!Runtime/InputMap.txt
-!Runtime/Settings.txt
-*.exe
-*.lx*
-*.mx
-
 # Custom files
 *.pyc
-Runtime/*.exe
-Runtime/*.lx
-Runtime/*.lxa
-Runtime/*.app

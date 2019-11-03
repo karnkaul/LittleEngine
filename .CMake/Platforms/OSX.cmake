@@ -4,34 +4,28 @@
 # Force dynamic ThirdParty libraries
 set(SFML_STATIC_LIBS OFF CACHE INTERNAL "")
 
-set(APL_CLANG 0)
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
-	set(APL_CLANG 1)
-	foreach(CONFIG in ${CMAKE_CONFIGURATION_TYPES})
-		file(MAKE_DIRECTORY "${THIRD_PARTY_BUILD_PATH}/Lib/${CONFIG}")
-	endforeach()
-else()
-	message("\tWARNING: Unsupported compiler [${CMAKE_CXX_COMPILER_ID}], expect build warnings/errors!")
-endif()
-
-# TODO: Move to LEDemo
-set(CMAKE_INSTALL_RPATH "@executable_path/Lib")
-set(BUILD_WITH_INSTALL_RPATH ON)
-
-set(PLATFORM_FRAMEWORKS_COMMON
-	FLAC.framework
-	freetype.framework
-	ogg.framework
-	OpenAL.framework
-	vorbis.framework
-	vorbisenc.framework
-	vorbisfile.framework
-)
+macro(init)
+	set(APL_CLANG 0)
+	if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+		set(APL_CLANG 1)
+		foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+			if(NOT EXISTS "${LIBRARIES_PATH}/${CONFIG}")
+				file(MAKE_DIRECTORY "${LIBRARIES_PATH}/${CONFIG}")
+			endif()
+		endforeach()
+	else()
+		message("\tWARNING: Unsupported compiler [${CMAKE_CXX_COMPILER_ID}], expect build warnings/errors!")
+	endif()
+	set(CMAKE_INSTALL_RPATH "@executable_path/Lib" PARENT_SCOPE)
+	set(BUILD_WITH_INSTALL_RPATH ON PARENT_SCOPE)
+endmacro()
+init()
 
 ##################################
 # Interface
 ##################################
 function(set_target_platform_libraries)
+	init()
 	if ("${PROJECT_NAME}" STREQUAL "Engine")
 		target_link_libraries(${PROJECT_NAME} PUBLIC
 			"-framework IOKit"
@@ -42,6 +36,7 @@ function(set_target_platform_libraries)
 endfunction()
 
 function(set_target_compile_options)
+	init()
 	target_compile_options(${PROJECT_NAME} PRIVATE
 		$<$<OR:$<CONFIG:Debug>,$<CONFIG:Develop>>:
 			-O0

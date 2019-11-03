@@ -129,7 +129,7 @@ void Cleanup()
 	uAudio = nullptr;
 	uRepository = nullptr;
 #if !defined(SHIPPING)
-	GameConfig::Instance().Save(OS::Env()->FullPath(GameLoop::GAME_CONFIG_FILE.c_str()));
+	GameConfig::Instance().Save(OS::Env()->FullPath(GameLoop::Res::GAME_CONFIG_FILE.c_str()));
 #endif
 	Core::Jobs::Cleanup();
 	LOG_I("[GameLoop] Terminated");
@@ -211,19 +211,21 @@ Task g_loadShaders;
 
 namespace IDs
 {
-std::string COOKED_ASSETS = "GameAssets.cooked";
 std::string MAIN_MANIFEST = "Manifest.amf";
 std::string DEFAULT_FONT = "Fonts/Default.ttf";
 std::string GAME_STYLE = "Texts/Game.style";
 } // namespace IDs
 
+namespace Res
+{
+std::string COOKED_ASSETS = "Resources/GameAssets.cooked";
 std::string ASSETS_ROOT = "Resources/GameAssets";
 std::string MUSIC_ROOT = "Resources/GameMusic";
 std::string MAIN_MANIFEST_FILE = ASSETS_ROOT + "/" + IDs::MAIN_MANIFEST;
-
 #if !defined(SHIPPING)
 std::string GAME_CONFIG_FILE = ".game.conf";
 #endif
+} // namespace Resources
 } // namespace GameLoop
 
 bool GameLoop::Init()
@@ -238,8 +240,8 @@ bool GameLoop::Init()
 	}
 	try
 	{
-		uRepository = std::make_unique<LERepository>(IDs::DEFAULT_FONT, IDs::COOKED_ASSETS, ASSETS_ROOT);
-		uAudio = std::make_unique<LEAudio>(MUSIC_ROOT);
+		uRepository = std::make_unique<LERepository>(IDs::DEFAULT_FONT, Res::COOKED_ASSETS, Res::ASSETS_ROOT);
+		uAudio = std::make_unique<LEAudio>(Res::MUSIC_ROOT);
 		LEShaders::Init();
 	}
 	catch (const FatalEngineException& e)

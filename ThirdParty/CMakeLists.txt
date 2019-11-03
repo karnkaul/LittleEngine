@@ -26,7 +26,7 @@ endif()
 set(SFML_VERSION 2.5.1)
 download_extract_archive(
 	"SFML-${SFML_VERSION}-sources.zip"
-	"https://www.sfml-dev.org/files/SFML-${SFML_VERSION}-sources.zip"
+	"https://github.com/SFML/SFML/releases/download/${SFML_VERSION}/SFML-${SFML_VERSION}-sources.zip"
 	"SFML-${SFML_VERSION}"
 	"SFML"
 )
@@ -106,11 +106,13 @@ if(PLATFORM STREQUAL "Win64")
 	elseif(W_VCXX)
 		set(OPTIONS /wd4996)
 	endif()
-	foreach(TGT sfml-graphics sfml-system sfml-window)
-		target_compile_definitions(${TGT} PRIVATE ${DEFS})
-		target_compile_options(${TGT} PRIVATE ${OPTIONS})
-	endforeach()
+elseif(LX_CLANG)
+	set(OPTIONS -Wno-deprecated-declarations)
 endif()
+foreach(TGT sfml-audio sfml-graphics sfml-system sfml-window)
+	target_compile_definitions(${TGT} PRIVATE ${DEFS})
+	target_compile_options(${TGT} PRIVATE ${OPTIONS})
+endforeach()
 
 if(LIBRARIES_PATH)
 	foreach(LIB physfs-static sfml-audio sfml-graphics sfml-system sfml-window)

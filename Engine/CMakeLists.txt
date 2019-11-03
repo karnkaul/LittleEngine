@@ -253,6 +253,9 @@ add_dependencies(${PROJECT_NAME}
 # Libraries
 ################################################################################
 target_link_directories(${PROJECT_NAME} PUBLIC "${LIBRARIES_PATH}")
+if(NOT BUILD_SHARED_LIBS)
+	set(SFML_STATIC_LIBS 1)
+endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC
 	sfml-graphics$<$<BOOL:${SFML_STATIC_LIBS}>:-s>$<$<CONFIG:DEBUG>:-d>
 	sfml-window$<$<BOOL:${SFML_STATIC_LIBS}>:-s>$<$<CONFIG:DEBUG>:-d>

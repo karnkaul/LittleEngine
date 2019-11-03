@@ -11,12 +11,14 @@ extern Task g_loadShaders;
 
 namespace IDs
 {
-extern std::string COOKED_ASSETS;
 extern std::string MAIN_MANIFEST;
 extern std::string DEFAULT_FONT;
 extern std::string GAME_STYLE;
 } // namespace IDs
 
+namespace Res
+{
+extern std::string COOKED_ASSETS;
 extern std::string ASSETS_ROOT;
 extern std::string MUSIC_ROOT;
 extern std::string MAIN_MANIFEST_FILE;
@@ -24,6 +26,7 @@ extern std::string MAIN_MANIFEST_FILE;
 #if !defined(SHIPPING)
 extern std::string GAME_CONFIG_FILE;
 #endif
+} // namespace Resources
 
 enum class ReloadType
 {
