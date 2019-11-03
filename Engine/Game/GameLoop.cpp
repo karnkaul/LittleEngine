@@ -225,7 +225,7 @@ std::string MAIN_MANIFEST_FILE = ASSETS_ROOT + "/" + IDs::MAIN_MANIFEST;
 #if !defined(SHIPPING)
 std::string GAME_CONFIG_FILE = ".game.conf";
 #endif
-} // namespace Resources
+} // namespace Res
 } // namespace GameLoop
 
 bool GameLoop::Init()

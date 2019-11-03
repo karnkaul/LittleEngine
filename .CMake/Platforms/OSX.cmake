@@ -16,8 +16,9 @@ macro(init)
 	else()
 		message("\tWARNING: Unsupported compiler [${CMAKE_CXX_COMPILER_ID}], expect build warnings/errors!")
 	endif()
+	set(CMAKE_INSTALL_NAME_DIR @executable_path)
 	set(CMAKE_INSTALL_RPATH "@executable_path/Lib" PARENT_SCOPE)
-	set(BUILD_WITH_INSTALL_RPATH ON PARENT_SCOPE)
+	set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 endmacro()
 init()
 
@@ -55,5 +56,6 @@ function(set_target_compile_options)
 endfunction()
 
 function(set_target_link_options)
+	init()
 	# Nothing to do here
 endfunction()

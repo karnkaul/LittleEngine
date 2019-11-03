@@ -29,6 +29,7 @@ function(set_target_platform_libraries)
 	init()
 	if ("${PROJECT_NAME}" STREQUAL "Core")
 		target_link_libraries(${PROJECT_NAME} PUBLIC
+			m
 			pthread
 			X11
 			Xrandr
@@ -38,6 +39,7 @@ function(set_target_platform_libraries)
 			freetype
 			FLAC
 			GL
+			m
 			ogg
 			openal
 			udev

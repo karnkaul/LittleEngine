@@ -5,6 +5,17 @@ project(ThirdParty C CXX)
 ################################################################################
 # Default Configuration
 ################################################################################
+# Force all outputs to LIBRARIES_PATH
+if(LIBRARIES_PATH)
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${LIBRARIES_PATH}")
+	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${LIBRARIES_PATH}")
+	foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+		string(TOUPPER ${CONFIG} CONFIG)
+		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONFIG} "${LIBRARIES_PATH}")
+		set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONFIG} "${LIBRARIES_PATH}")
+	endforeach()
+endif()
+
 # Pack debug info within lib
 string(REPLACE "Zi" "Z7" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
 string(REPLACE "Zi" "Z7" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
@@ -114,12 +125,3 @@ foreach(TGT sfml-audio sfml-graphics sfml-system sfml-window)
 	target_compile_options(${TGT} PRIVATE ${OPTIONS})
 endforeach()
 
-if(LIBRARIES_PATH)
-	foreach(LIB physfs-static sfml-audio sfml-graphics sfml-system sfml-window)
-	if ("${CONFIG}" STREQUAL "DEBUG")
-		output_directory(${LIB}-d "${LIBRARIES_PATH}")
-	else()
-		output_directory(${LIB} "${LIBRARIES_PATH}")
-	endif()
-	endforeach()
-endif()

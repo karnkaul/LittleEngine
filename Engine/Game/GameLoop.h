@@ -26,7 +26,7 @@ extern std::string MAIN_MANIFEST_FILE;
 #if !defined(SHIPPING)
 extern std::string GAME_CONFIG_FILE;
 #endif
-} // namespace Resources
+} // namespace Res
 
 enum class ReloadType
 {
