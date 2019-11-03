@@ -1,0 +1,73 @@
+﻿{
+	"environments": [
+		{
+			"cmake": "C:/path/to/cmake.exe",
+			"cCompiler": "C:/path/to/clang-cl.exe",
+			"cxxCompiler": "C:/path/to/clang-cl.exe",
+			"linker": "C:/path/to/lld-link.exe",
+			"makeProgram": "C:/path/to/ninja.exe"
+		}
+	],
+	"configurations": [
+		{
+			"name": "x64-Debug",
+			"cmakeExecutable": "${env.cmake}",
+			"generator": "Ninja",
+			"configurationType": "Debug",
+			"inheritEnvironments": [ "clang_cl_x64" ],
+			"buildRoot": "${projectDir}/out/${configurationType}",
+			"variables": [
+				{
+					"name": "CMAKE_C_COMPILER",
+					"value": "${env.cCompiler}",
+					"type": "FILEPATH"
+				},
+				{
+					"name": "CMAKE_CXX_COMPILER",
+					"value": "${env.cxxCompiler}",
+					"type": "FILEPATH"
+				},
+				{
+					"name": "CMAKE_LINKER",
+					"value": "${env.linker}",
+					"type": "FILEPATH"
+				},
+				{
+					"name": "CMAKE_MAKE_PROGRAM",
+					"value": "${env.makeProgram}",
+					"type": "FILEPATH"
+				}
+			]
+		},
+		{
+			"name": "x64-RelWithDebInfo",
+			"cmakeExecutable": "${env.cmake}",
+			"generator": "Ninja",
+			"configurationType": "RelWithDebInfo",
+			"inheritEnvironments": [ "clang_cl_x64" ],
+			"buildRoot": "${projectDir}/out/${configurationType}",
+			"variables": [
+				{
+					"name": "CMAKE_C_COMPILER",
+					"value": "${env.cCompiler}",
+					"type": "FILEPATH"
+				},
+				{
+					"name": "CMAKE_CXX_COMPILER",
+					"value": "${env.cxxCompiler}",
+					"type": "FILEPATH"
+				},
+				{
+					"name": "CMAKE_LINKER",
+					"value": "${env.linker}",
+					"type": "FILEPATH"
+				},
+				{
+					"name": "CMAKE_MAKE_PROGRAM",
+					"value": "${env.makeProgram}",
+					"type": "FILEPATH"
+				}
+			]
+		}
+	]
+}

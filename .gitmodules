@@ -1,15 +1,12 @@
-[submodule "Source/Core/Core/Game/Logger"]
-	path = Source/Core/Core/Game/Logger
+[submodule "Core/Core/Game/Logger"]
+	path = Core/Core/Game/Logger
 	url = https://github.com/karnkaul/LELogger.git
-[submodule "Source/Core/Core/Game/Asserts"]
-	path = Source/Core/Core/Game/Asserts
+[submodule "Core/Core/Game/Asserts"]
+	path = Core/Core/Game/Asserts
 	url = https://github.com/karnkaul/LEAsserts.git
-[submodule "Source/Core/Core/Game/GameTypes"]
-	path = Source/Core/Core/Game/GameTypes
+[submodule "Core/Core/Game/GameTypes"]
+	path = Core/Core/Game/GameTypes
 	url = https://github.com/karnkaul/LEGameTypes.git
-[submodule "Source/Core/Core/Game/Delegate"]
-	path = Source/Core/Core/Game/Delegate
+[submodule "Core/Core/Game/Delegate"]
+	path = Core/Core/Game/Delegate
 	url = https://github.com/karnkaul/LEDelegate.git
-[submodule "Runtime/Resources"]
-	path = Runtime/Resources
-	url = https://github.com/karnkaul/LEResources.git

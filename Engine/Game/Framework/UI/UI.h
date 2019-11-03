@@ -1,0 +1,18 @@
+#pragma once
+
+#include "Game/Model/UI/UIElement.h"
+#include "Game/Model/UI/UIGameStyle.h"
+#include "Game/Model/UI/UIStyle.h"
+#include "Game/Model/UI/UIText.h"
+#include "Game/Model/UI/UIContext.h"
+#include "Game/Model/UI/UIManager.h"
+#include "Game/Model/UI/UIWidget.h"
+#include "Game/Model/UI/UIWidgetMatrix.h"
+#include "Game/Framework/UI/Elements/UIProgressBar.h"
+#include "Game/Framework/UI/Containers/UIContainer.h"
+#include "Game/Framework/UI/Contexts/UIButtonDrawer.h"
+#include "Game/Framework/UI/Contexts/UIDialogue.h"
+#include "Game/Framework/UI/Widgets/UIButton.h"
+#include "Game/Framework/UI/Widgets/UISelection.h"
+#include "Game/Framework/UI/Widgets/UITextInput.h"
+#include "Game/Framework/UI/Widgets/UIToggle.h"

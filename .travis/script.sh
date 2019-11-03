@@ -9,13 +9,12 @@ build() {
 	CONFIG=$1
 	echo "== Building LittleEngine | $CONFIG..."
 	[[ ! -d out/$CONFIG ]] && mkdir -p out/$CONFIG
-	cmake -G Ninja Source -Bout/$CONFIG -DCI_BUILD=1 -DCMAKE_BUILD_TYPE=$CONFIG -DSFML_STATIC_LIBS=0
-	ninja -v -C out/$CONFIG
-	ninja install -C out/$CONFIG
+	cmake -G Ninja $2 -B $3/$CONFIG -DCMAKE_BUILD_TYPE=$CONFIG -DUPDATE_SUBMODULES=0 -DCMAKE_CXX_COMPILER=clang -DCMAKE_C_COMPILER=clang
+	cmake --build out/$CONFIG
 }
 
 [[ -z "$CONFIGS" ]] && CONFIGS=Release
 
 for CONFIG in $CONFIGS; do
-	build $CONFIG
+	build $CONFIG $1 $2
 done

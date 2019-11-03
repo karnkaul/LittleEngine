@@ -1,6 +1,0 @@
-[Desktop Entry]
-Encoding=UTF-8
-Type=Application
-Terminal=false
-Name=LEDemo
-Version=@BUILD_VERSION_MAJOR@.@BUILD_VERSION_MINOR@.@BUILD_VERSION_PATCH@.@BUILD_VERSION_PRE@

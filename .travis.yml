@@ -3,9 +3,6 @@ branches:
     - master
     - dev
     - stable
-cache:
-  directories:
-    - BuildCache
 
 language: cpp
 
@@ -14,10 +11,9 @@ compiler:
 
 before_install:
   - chmod a+x .travis/*.sh
-  - test -f .travis/before-install.sh && .travis/before-install.sh
 
 install:
-  - test -f .travis/install.sh && .travis/install.sh
+  - .travis/install.sh
 
 script:
-  - .travis/script.sh
+  - .travis/script.sh . out

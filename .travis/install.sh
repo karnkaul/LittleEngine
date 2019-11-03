@@ -1,30 +1,31 @@
 #!/bin/bash
 test $DEBUG && set -x
 
-SFML_DEPENDENCIES="libudev-dev libfreetype6-dev libflac-dev"
+## This script removes existing CMake (usually 3.12 on Ubuntu) and installs the latest:
+##   - cmake
+##   - g++-8
+##   - ninja-build
+##   - clang-8, lld-8
+##   - SFML dependencies
 
-BUILD_TP=TRUE
-mkdir -p _Build
-if [ -d BuildCache/CI ]; then
-    if [ ! -z ${REBUILD_CACHE} ]; then
-        echo "== Rebuilding ThirdParty..."
-    else
-        echo "== Restoring ThirdParty via BuildCache..."
-        cp -r BuildCache/CI _Build
-        BUILD_TP=FALSE
-    fi
-else
-    echo "== Building ThirdParty..."
-fi
+ENV="cmake g++-8 ninja-build clang libx11-dev libxrandr-dev libgl1-mesa-dev libudev-dev libfreetype6-dev libflac-dev libopenal-dev libvorbis-dev"
 
-if [ "$BUILD_TP" == "TRUE" ]; then
-    sudo apt-get install -y $SFML_DEPENDENCIES
-    mkdir Project_ThirdParty
-    cd Project_ThirdParty
-    cmake -GNinja ../Source/ThirdParty -DBUILD_SHARED_LIBS=1 -DCI_BUILD=1
-    ninja -v
-    cd ..
+# Get latest keys for cmake, g++, etc
+# clang-8
+wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key 2>/dev/null | sudo apt-key add -
+# cmake 3.15
+wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main' -y
+# g++-8
+sudo -E apt-add-repository -y "ppa:ubuntu-toolchain-r/test"
 
-    # Cache
-    cp -r _Build/CI BuildCache/
-fi
+# Purge all existing cmake/clang installations
+sudo apt-get purge {cmake,clang,lld}
+sudo rm -rf /usr/{bin/cmake*,share/cmake*,local/bin/cmake*,local/cmake*}
+[[ "$CLANG" == "TRUE" ]] &&	sudo rm -rf /usr/{bin/clang*,share/clang*,local/bin/clang*}
+
+# Install dependencies
+sudo apt-get update
+sudo apt-get install -y $ENV
+
+exit

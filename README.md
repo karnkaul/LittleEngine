@@ -19,23 +19,7 @@ Written in **C++17**, utilising [**SFML**](https://www.sfml-dev.org/) and [**Phy
 - Stack and Context-based **UI Framework**
 - Various Python3 tools for **asset cooking**, **app packaging**, **bundle archiving**, etc
 
-### Installation
-LittleEngine pre-releases containing a demo game with Win64, Linux-x64, and MacOSX binaries can be found [here](https://github.com/karnkaul/LittleEngine/releases).
-
-#### Requirements
-1. x64 CPU with at least two threads
-1. Git submodules (CMake scripts will update them automatically, and will fail to configure otherwise)
-1. (Optional) Python 3.5+ (for `installer.py`)
-1. Operating System:
-    1. Windows 7/8/10: [Microsoft VC++ Runtime (x64)](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
-    1. Linux: OpenAL libraries (`libopenal-dev`)
-    1. MacOSX: Python 3 (app bundles are unsigned; `installer.py` eases the UX)
-
-#### Installing LittleEngine
-1. Obtain the game zip (present inside a [GitHub Release](https://github.com/karnkaul/LittleEngine/releases) zip)
-1. Unzip it to the installation directory and run `installer.py` via Python 3 (or unzip ".game" manually and copy the contents of "[Your OS]" into the installation directory)
-
-> *Note: OSX builds are in alpha and may not be stable.*
+>*Note: For a full game demo using LittleEngine, check out [LEDemo](https://github.com/karnkaul/LEDemo)!*
 
 ### Development
 Visit the [Little Engine wiki](https://github.com/karnkaul/LittleEngine/wiki/Development) for more detailed and per-platform instructions.
@@ -51,25 +35,16 @@ Visit the [Little Engine wiki](https://github.com/karnkaul/LittleEngine/wiki/Dev
 
 #### Setting up the project(s)
 Quick Start:
-1. Build `ThirdParty`
-    1. CMake: generate a project using `Source/ThirdParty/CMakeLists.txt`
-    1. Build `Debug` and `Release`/`RelWithDebInfo`
 1. Build `LittleEngine`
-    1. CMake: generate a project using `Source/CMakeLists.txt`
-    1. Build / install (copies executable and libraries to `Runtime`)
-1. Run `LittleEngine`
-    1. Set working directory to `Runtime`
+    1. CMake: generate a project using `CMakeLists.txt`; set `CMAKE_BUILD_TYPE` to desired build configuration
+    1. Build
+1. Build a game using `LittleEngine`:
+    1. Add `LittleEngine` as a git submodule to the main repository
+    1. In the top-level `CMakeLists.txt`, set up the following:
+        1. Add the subdirectory (`add_subdirectory(LittleEngine)`)
+        1. Add `Engine` as a build dependency and link library for the executable target
+        1. Use `add_le_executable(EXE_NAME SOURCES)` (defined in `Common.cmake`) to set up include paths, compile flags, etc
     1. Debug/run the built/installed executable
-
-[Short video](https://youtu.be/lZ0zqhNs4mI) demonstrating full project setup from scratch on Linux (v0.4.10.0).
-
-#### Troubleshooting
-**"openal32.dll not found"**
-**"Could not determine Runtime path" Assert**
-Ensure working directory is "Runtime" for the `App` target.
-
-**"Default font is null" Assert**
-Ensure `Resources` submodule is up-to-date, and `GameAssets/Fonts/Default.ttf` is present.
 
 ### Contact
 

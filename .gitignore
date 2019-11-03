@@ -7,7 +7,7 @@ Runtime/Frameworks/*
 Runtime/Lib/*
 Runtime/Redist/*
 Runtime/Resources/*
-Source/ThirdParty/SFML/*
+ThirdParty/SFML/*
 
 # IDE/OS files
 **/.vs/*
