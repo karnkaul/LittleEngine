@@ -1,10 +1,12 @@
 # Little Engine
 
-<img align="right" src="https://github.com/karnkaul/LittleEngine/blob/dev/Source/App/App/Resources/Icon.png" width="64" />
+<img align="right" src="https://github.com/karnkaul/LEDemo/blob/master/LEDemo/Resources/Icon.png" width="64" />
 
 Written in **C++17**, utilising [**SFML**](https://www.sfml-dev.org/) and [**PhysicsFS**](https://icculus.org/physfs/), Little Engine is a 2D game engine hobby project with little defined ambition or scope; in other words, let's see where we can take this!
 
 [![Build Status](https://travis-ci.org/karnkaul/LittleEngine.svg?branch=master)](https://travis-ci.org/karnkaul/LittleEngine) [![Licence](https://img.shields.io/github/license/karnkaul/LittleEngine)](LICENSE) [![Twitter](https://img.shields.io/twitter/url/https/karnkaul?label=Follow&style=social)](https://twitter.com/KarnKaul)
+
+>*Note: Since v0.5.0.0, custom Worlds, Objects, and application code has been moved out of `LittleEngine` into a separate project and repository, [LEDemo](https://github.com/karnkaul/LEDemo). `LittleEngine` is now one static library archive, with no Worlds or Game Initialisation code, thus enabling multiple game projects to use it as a submodule that updates independently.*
 
 ### Features
 - **CMake** project - develop/build (almost) anywhere
@@ -19,7 +21,7 @@ Written in **C++17**, utilising [**SFML**](https://www.sfml-dev.org/) and [**Phy
 - Stack and Context-based **UI Framework**
 - Various Python3 tools for **asset cooking**, **app packaging**, **bundle archiving**, etc
 
->*Note: For a full game demo using LittleEngine, check out [LEDemo](https://github.com/karnkaul/LEDemo)!*
+For a game demo project using `LittleEngine`, visit [LEDemo](https://github.com/karnkaul/LEDemo)! Here is a [short video](https://youtu.be/wwEubcOixGE) demonstrating full project setup from scratch on Linux (v0.5.0.0).
 
 ### Development
 Visit the [Little Engine wiki](https://github.com/karnkaul/LittleEngine/wiki/Development) for more detailed and per-platform instructions.
@@ -43,6 +45,7 @@ Quick Start:
     1. In the top-level `CMakeLists.txt`, set up the following:
         1. Add the subdirectory (`add_subdirectory(LittleEngine)`)
         1. Add `Engine` as a build dependency and link library for the executable target
+        1. Add custom `World`s, `Entity`s, `Component`s, etc., and set up game initialisation through the `GameLoop` API
         1. Use `add_le_executable(EXE_NAME SOURCES)` (defined in `Common.cmake`) to set up include paths, compile flags, etc
     1. Debug/run the built/installed executable
 
@@ -51,6 +54,6 @@ Quick Start:
 * [Twitter](https://twitter.com/KarnKaul)
 
 ### Licence
-LittleEngine uses the [GNU GPLv3 licence](LICENSE).
+`LittleEngine` uses the [GNU GPLv3 licence](LICENSE).
 
 >*Note: Code of Conduct can be found [here](CODE_OF_CONDUCT).*
