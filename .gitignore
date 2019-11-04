@@ -13,3 +13,8 @@ ThirdParty/SFML/*
 
 # Custom files
 *.pyc
+
+# Test Build
+Test/Runtime/*
+!Test/Runtime/Resources
+!Test/Runtime/Resources/*

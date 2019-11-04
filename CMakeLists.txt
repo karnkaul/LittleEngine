@@ -6,8 +6,8 @@ endif()
 
 project(LittleEngine C CXX)
 
-set(CMAKE_DISABLE_SOURCE_CHANGES TRUE PARENT_SCOPE)
-set(CMAKE_DISABLE_IN_SOURCE_BUILD TRUE PARENT_SCOPE)
+set(CMAKE_DISABLE_SOURCE_CHANGES TRUE)
+set(CMAKE_DISABLE_IN_SOURCE_BUILD TRUE)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 ################################################################################
@@ -36,12 +36,7 @@ if(GIT_FOUND AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
 	endif()
 endif()
 
-set(THIRD_PARTY_INCLUDE_PATHS "" PARENT_SCOPE)
-
-# Dynamic load path
-SET(CMAKE_SKIP_BUILD_RPATH FALSE PARENT_SCOPE)
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE PARENT_SCOPE)
-SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE PARENT_SCOPE)
+set(THIRD_PARTY_INCLUDE_PATHS "" CACHE INTERNAL "" FORCE)
 
 # Version
 execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
@@ -59,6 +54,13 @@ set(BUILD_VERSION_PATCH 0 CACHE STRING "Build Version Patch" FORCE)
 set(BUILD_VERSION_PRE 0 CACHE STRING "Build Version Pre" FORCE)
 set(BUILD_COMMIT_HASH ${BUILD_COMMIT_HASH} CACHE STRING "Build Version Commit" FORCE)
 
+# Test
+option(BUILD_LE_TEST "Build Test executable" ON)
+if(BUILD_LE_TEST)
+	set(EXECUTABLE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Test/Runtime")
+	set(LIBRARIES_PATH "${EXECUTABLE_PATH}/Lib")
+endif()
+
 ################################################################################
 # Includes
 ################################################################################
@@ -71,4 +73,6 @@ include(.CMake/Common.cmake)
 add_subdirectory(ThirdParty)
 add_subdirectory(Core)
 add_subdirectory(Engine)
-
+if(BUILD_LE_TEST)
+	add_subdirectory(Test)
+endif()

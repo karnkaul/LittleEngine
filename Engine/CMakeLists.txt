@@ -233,15 +233,15 @@ set(SOURCES
 ################################################################################
 # Target
 ################################################################################
+set(TARGET_NAME LittleEngine)
 list(TRANSFORM SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SOURCES})
-add_le_static_library("${SOURCES}")
-output_name(LittleEngine-$<CONFIG>)
+add_le_static_library(${TARGET_NAME} "${SOURCES}")
 
 ################################################################################
 # Dependencies
 ################################################################################
-add_dependencies(${PROJECT_NAME}
+add_dependencies(${TARGET_NAME}
 	sfml-graphics
 	sfml-window
 	sfml-audio
@@ -252,15 +252,15 @@ add_dependencies(${PROJECT_NAME}
 ################################################################################
 # Libraries
 ################################################################################
-target_link_directories(${PROJECT_NAME} PUBLIC "${LIBRARIES_PATH}")
+target_link_directories(${TARGET_NAME} PUBLIC "${LIBRARIES_PATH}")
 if(NOT BUILD_SHARED_LIBS)
 	set(SFML_STATIC_LIBS 1)
 endif()
-target_link_libraries(${PROJECT_NAME} PUBLIC
+target_link_libraries(${TARGET_NAME} PUBLIC
 	sfml-graphics$<$<BOOL:${SFML_STATIC_LIBS}>:-s>$<$<CONFIG:DEBUG>:-d>
 	sfml-window$<$<BOOL:${SFML_STATIC_LIBS}>:-s>$<$<CONFIG:DEBUG>:-d>
 	sfml-audio$<$<BOOL:${SFML_STATIC_LIBS}>:-s>$<$<CONFIG:DEBUG>:-d>
 	sfml-system$<$<BOOL:${SFML_STATIC_LIBS}>:-s>$<$<CONFIG:DEBUG>:-d>
 	Core
 )
-set_target_platform_libraries()
+set_target_platform_libraries(${TARGET_NAME})

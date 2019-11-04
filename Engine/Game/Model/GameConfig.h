@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/CoreTypes.h"
+#include "Core/Game/GData.h"
 
 namespace Core
 {
@@ -19,8 +20,9 @@ public:
 	bool m_bRenderThread = true;
 
 private:
-	std::unique_ptr<Core::GData> m_uData;
+	Core::GData m_data;
 	bool m_bDirty = false;
+	bool m_bInit = false;
 
 public:
 	static GameConfig& Instance();

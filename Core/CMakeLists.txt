@@ -55,11 +55,11 @@ set_source_files_properties(${GENERATED_SOURCES} PROPERTIES GENERATED TRUE)
 set(ALL_SOURCES ${SOURCES} ${GENERATED_SOURCES})
 source_group(Core "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GENERATED_SOURCES})
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SOURCES})
-add_le_static_library("${ALL_SOURCES}")
+add_le_static_library(${PROJECT_NAME} "${ALL_SOURCES}")
 # Add ThirdParty interface root to include path
-recursive_include("${THIRD_PARTY_INCLUDE_PATHS}")
+recursive_include(${PROJECT_NAME} "${THIRD_PARTY_INCLUDE_PATHS}")
 # Add binary directory (generated files) to include path
-recursive_include("${CMAKE_CURRENT_BINARY_DIR}")
+recursive_include(${PROJECT_NAME} "${CMAKE_CURRENT_BINARY_DIR}")
 
 ################################################################################
 # Dependencies
@@ -75,4 +75,4 @@ target_link_directories(${PROJECT_NAME} PUBLIC "${LIBRARIES_PATH}")
 target_link_libraries(${PROJECT_NAME} PUBLIC
 	physfs$<$<CONFIG:Debug>:-d>
 )
-set_target_platform_libraries()
+set_target_platform_libraries(${PROJECT_NAME})

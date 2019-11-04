@@ -45,10 +45,10 @@ set(EXE_SUFFIX "")
 ##################################
 # Interface
 ##################################
-function(set_target_platform_libraries)
+function(set_target_platform_libraries TARGET_NAME)
 	init()
-	if ("${PROJECT_NAME}" STREQUAL "Engine")
-		target_link_libraries(${PROJECT_NAME} PUBLIC
+	if ("${TARGET_NAME}" STREQUAL "LittleEngine")
+		target_link_libraries(${TARGET_NAME} PUBLIC
 			## SFML Windows
 			gdi32
 			winmm
@@ -66,11 +66,11 @@ function(set_target_platform_libraries)
 	endif()
 endfunction()
 
-function(set_target_compile_options)
+function(set_target_compile_options TARGET_NAME)
 	init()
 	set(W_CLANG_FLAGS_COMMON /W4 -Werror=return-type -Wextra -Wconversion -Wunreachable-code -Wdeprecated-declarations -Wtype-limits)
 	if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-		target_compile_options(${PROJECT_NAME} PRIVATE
+		target_compile_options(${TARGET_NAME} PRIVATE
 			$<$<CONFIG:Debug>:
 				-O0
 				-g
@@ -85,7 +85,7 @@ function(set_target_compile_options)
 			-utf-8
 		)
 	else()
-		target_compile_options(${PROJECT_NAME} PRIVATE
+		target_compile_options(${TARGET_NAME} PRIVATE
 			$<$<CONFIG:Debug>:
 				/Od
 				/MDd
@@ -108,10 +108,10 @@ function(set_target_compile_options)
 	endif()
 endfunction()
 
-function(set_target_link_options)
+function(set_target_link_options TARGET_NAME)
 	init()
 	if(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-		target_link_options(${PROJECT_NAME} PRIVATE
+		target_link_options(${TARGET_NAME} PRIVATE
 			$<$<CONFIG:Debug>:
 				/SUBSYSTEM:CONSOLE
 				/OPT:NOREF

@@ -7,8 +7,8 @@ set(ALL_INCLUDES "" CACHE INTERNAL "" FORCE)
 ################################################################################
 # Interface
 ################################################################################
-function(output_name OUTPUT_NAME)
-	set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${OUTPUT_NAME})
+function(output_name TARGET_NAME OUTPUT_NAME)
+	set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${OUTPUT_NAME})
 endfunction()
 
 function(output_directory TARGET_NAME DIRECTORY_PATH)
@@ -40,9 +40,9 @@ function(download_extract_archive ARCHIVE_NAME SRC_URL ORG_NAME DEST_NAME)
 	endif()
 endfunction()
 
-function(recursive_include DIRECTORY_PATH)
+function(recursive_include TARGET_NAME DIRECTORY_PATH)
 	set(ALL_INCLUDES "${ALL_INCLUDES};${DIRECTORY_PATH}" CACHE INTERNAL "" FORCE)
-	target_include_directories(${PROJECT_NAME} PUBLIC "${ALL_INCLUDES}")
+	target_include_directories(${TARGET_NAME} PUBLIC "${ALL_INCLUDES}")
 endfunction()
 
 function(ensure_files_present FILES_ROOT FILENAMES)

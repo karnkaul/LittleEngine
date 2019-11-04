@@ -52,8 +52,8 @@ message(STATUS "Environment: [${PLATFORM}] [${CMAKE_GENERATOR}] [${CMAKE_CXX_COM
 ##################################
 # Interface
 ##################################
-function(add_target_compile_definitions)
-	target_compile_definitions(${PROJECT_NAME} PRIVATE
+function(add_target_compile_definitions TARGET_NAME)
+	target_compile_definitions(${TARGET_NAME} PRIVATE
 		_UNICODE
 		$<$<BOOL:${SFML_STATIC_LIBS}>:SFML_STATIC>
 		$<$<NOT:$<CONFIG:Debug>>:
@@ -66,22 +66,26 @@ function(add_target_compile_definitions)
 	)
 endfunction()
 
-function(add_le_static_library SOURCES)
-	add_library(${PROJECT_NAME} STATIC ${SOURCES})
-	target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
-	output_name(${PROJECT_NAME}-$<CONFIG>)
-	output_directory(${PROJECT_NAME} "${LIBRARIES_PATH}")
-	recursive_include("${CMAKE_CURRENT_SOURCE_DIR}")
-	add_target_compile_definitions()
-	set_target_compile_options()
+function(add_le_static_library TARGET_NAME SOURCES)
+	add_library(${TARGET_NAME} STATIC ${SOURCES})
+	target_compile_features(${TARGET_NAME} PUBLIC cxx_std_17)
+	output_name(${TARGET_NAME} ${TARGET_NAME}-$<CONFIG>)
+	if(LIBRARIES_PATH)
+		output_directory(${TARGET_NAME} "${LIBRARIES_PATH}")
+	endif()
+	recursive_include(${TARGET_NAME} "${CMAKE_CURRENT_SOURCE_DIR}")
+	add_target_compile_definitions(${TARGET_NAME})
+	set_target_compile_options(${TARGET_NAME})
 endfunction()
 
-function(add_le_executable EXE_NAME SOURCES)
-	add_executable(${PROJECT_NAME} ${SOURCES})
-	output_name(${EXE_NAME})
-	#output_directory("${BUILD_PATH}/Exe")
-	recursive_include("${CMAKE_CURRENT_SOURCE_DIR}")
-	add_target_compile_definitions()
-	set_target_compile_options()
-	set_target_link_options()
+function(add_le_executable TARGET_NAME EXE_NAME SOURCES)
+	add_executable(${TARGET_NAME} ${SOURCES})
+	output_name(${TARGET_NAME} ${EXE_NAME})
+	if(EXECUTABLE_PATH)
+		output_directory(${TARGET_NAME} "${EXECUTABLE_PATH}")
+	endif()
+	recursive_include(${TARGET_NAME} "${CMAKE_CURRENT_SOURCE_DIR}")
+	add_target_compile_definitions(${TARGET_NAME})
+	set_target_compile_options(${TARGET_NAME})
+	set_target_link_options(${TARGET_NAME})
 endfunction()

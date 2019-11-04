@@ -21,9 +21,20 @@ LoadingHUD::LoadingHUD()
 	LayerID bg = LayerID::Top;
 	LayerID hud = static_cast<LayerID>(ToS32(bg) + 1);
 	auto pMainFont = g_pDefaultFont;
-	auto pTitleFont = PreloadAsset<FontAsset>("Fonts/Sunscreen.otf");
-	auto pSubtitleFont = PreloadAsset<FontAsset>("Fonts/UIFont.ttf");
-	auto pTexture = PreloadAsset<TextureAsset>("Textures/LoadingIcon.png");
+	FontAsset *pTitleFont = nullptr, *pSubtitleFont = nullptr;
+	TextureAsset* pTexture = nullptr;
+	if (g_pRepository->IsPresent("Fonts/Sunscreen.otf"))
+	{
+		pTitleFont = PreloadAsset<FontAsset>("Fonts/Sunscreen.otf");
+	}
+	if (g_pRepository->IsPresent("Fonts/UIFont.ttf"))
+	{
+		pSubtitleFont = PreloadAsset<FontAsset>("Fonts/UIFont.ttf");
+	}
+	if (g_pRepository->IsPresent("Textures/LoadingIcon.png"))
+	{
+		pTexture = PreloadAsset<TextureAsset>("Textures/LoadingIcon.png");
+	}
 
 	m_pBG = g_pGameManager->Renderer()->New<Quad>(bg);
 	m_pTitle = g_pGameManager->Renderer()->New<SFText>(hud);

@@ -44,7 +44,7 @@ Quick Start:
     1. Add `LittleEngine` as a git submodule to the main repository
     1. In the top-level `CMakeLists.txt`, set up the following:
         1. Add the subdirectory (`add_subdirectory(LittleEngine)`)
-        1. Add `Engine` as a build dependency and link library for the executable target
+        1. Add `LittleEngine` as a build dependency and link library for the executable target
         1. Add custom `World`s, `Entity`s, `Component`s, etc., and set up game initialisation through the `GameLoop` API
         1. Use `add_le_executable(EXE_NAME SOURCES)` (defined in `Common.cmake`) to set up include paths, compile flags, etc
     1. Debug/run the built/installed executable
