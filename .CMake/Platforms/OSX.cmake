@@ -17,6 +17,8 @@ macro(init)
 endmacro()
 init()
 
+set(EXE_SUFFIX "" CACHE INTERNAL "" FORCE)
+
 ##################################
 # Interface
 ##################################

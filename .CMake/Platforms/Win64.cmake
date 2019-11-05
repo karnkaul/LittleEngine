@@ -40,7 +40,7 @@ set(PLATFORM_DLLS
 	openal32.dll
 )
 
-set(EXE_SUFFIX "")
+set(EXE_SUFFIX "" CACHE INTERNAL "" FORCE)
 
 ##################################
 # Interface

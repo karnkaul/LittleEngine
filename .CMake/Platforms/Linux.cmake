@@ -16,9 +16,9 @@ macro(init)
 endmacro()
 init()
 
-set(EXE_SUFFIX ".lx" PARENT_SCOPE)
+set(EXE_SUFFIX ".lx" CACHE INTERNAL "" FORCE)
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
-	set(EXE_SUFFIX ".lxa" PARENT_SCOPE)
+	set(EXE_SUFFIX ".lxa" CACHE INTERNAL "" FORCE)
 endif()
 
 ##################################
